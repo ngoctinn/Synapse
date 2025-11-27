@@ -1,0 +1,26 @@
+from typing import List
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import AnyHttpUrl, computed_field
+
+class Settings(BaseSettings):
+    API_V1_STR: str = "/api/v1"
+    PROJECT_NAME: str = "Synapse CRM"
+
+    # CORS
+    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
+
+    # Database
+    DATABASE_URL: str
+
+    # Supabase
+    SUPABASE_URL: str
+    SUPABASE_KEY: str
+    SUPABASE_JWT_SECRET: str
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_ignore_empty=True,
+        extra="ignore"
+    )
+
+settings = Settings()

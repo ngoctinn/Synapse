@@ -1,0 +1,5 @@
+---
+trigger: always_on
+---
+
+TÓM TẮT Ý TƯỞNG DỰ ÁN SYNAPSE1. MỤC TIÊU CỐT LÕI (Ý TƯỞNG DỰ ÁN)Ý tưởng: Synapse là nền tảng Quản lý Khách hàng (CRM) chuyên biệt, thông minh, nhằm tối ưu hóa vận hành và nâng cao trải nghiệm dịch vụ cho ngành Spa tại Việt Nam.Trọng tâm Nghiệp vụ: Tự động hóa toàn bộ quy trình Lập lịch hẹn, Quản lý Liệu trình và Phân bổ tài nguyên (Kỹ thuật viên, Phòng) một cách chính xác và đồng thời.Lợi ích cốt lõi: Giải quyết triệt để vấn đề Trùng lịch (Double Booking) và Khách không đến (No-Show) bằng logic đặt lịch thông minh và hệ thống thông báo chủ động.Trải nghiệm: Giao diện hiện đại, dễ sử dụng trên mọi thiết bị và hoàn toàn bằng Tiếng Việt.2. VAI TRỒ & CHỨC NĂNG CHÍNHA. Khách hàngĐặt lịch, Hủy lịch (theo chính sách).Xem liệu trình đã mua, Tích điểm, Đánh giá dịch vụ.B. Lễ tânXem Dashboard Tổng quan lịch hẹn.Check-in/Đánh dấu No-Show.Xử lý Thanh toán tại quầy.Tạo lịch thủ công cho khách vãng lai.C. Kỹ thuật viênXem lịch làm việc cá nhân.Ghi chú chuyên môn sau buổi hẹn.Cập nhật trạng thái lịch hẹn (Hoàn thành).D. Quản trị viênQuản lý Tài khoản & Phân quyền.Cấu hình Lịch làm việc/Ngày nghỉ của KTV.Quản lý Danh mục Dịch vụ/Tài nguyên.

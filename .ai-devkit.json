@@ -1,0 +1,17 @@
+{
+  "version": "0.4.2",
+  "environments": [
+    "gemini"
+  ],
+  "initializedPhases": [
+    "requirements",
+    "design",
+    "planning",
+    "implementation",
+    "testing",
+    "deployment",
+    "monitoring"
+  ],
+  "createdAt": "2025-11-27T06:11:47.072Z",
+  "updatedAt": "2025-11-27T06:11:47.121Z"
+}
