@@ -16,6 +16,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/ui/card";
+import { PasswordInput } from "@/shared/ui/custom/password-input";
+import { showToast } from "@/shared/ui/custom/sonner";
 import {
   Form,
   FormControl,
@@ -24,7 +26,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/shared/ui/form";
-import { Input } from "@/shared/ui/input";
 import { updatePasswordAction } from "../actions";
 
 const formSchema = z
@@ -64,12 +65,15 @@ export function UpdatePasswordForm() {
       const result = await updatePasswordAction(formData);
       if (result.success) {
         setSuccess(result.message);
+        showToast.success("Cập nhật thành công", result.message);
         form.reset();
       } else {
         setError("Cập nhật mật khẩu thất bại. Vui lòng thử lại.");
+        showToast.error("Cập nhật thất bại", "Vui lòng thử lại.");
       }
     } catch {
       setError("Đã có lỗi xảy ra. Vui lòng thử lại sau.");
+      showToast.error("Lỗi hệ thống", "Đã có lỗi xảy ra. Vui lòng thử lại sau.");
     } finally {
       setIsLoading(false);
     }
@@ -93,7 +97,10 @@ export function UpdatePasswordForm() {
                 <FormItem>
                   <FormLabel>Mật khẩu mới</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Nhập mật khẩu mới" {...field} />
+                    <PasswordInput
+                      placeholder="Nhập mật khẩu mới"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -106,7 +113,10 @@ export function UpdatePasswordForm() {
                 <FormItem>
                   <FormLabel>Xác nhận mật khẩu mới</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Nhập lại mật khẩu mới" {...field} />
+                    <PasswordInput
+                      placeholder="Nhập lại mật khẩu mới"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

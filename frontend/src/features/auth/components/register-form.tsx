@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, Mail, User } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -16,6 +16,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/ui/card";
+import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
+import { PasswordInput } from "@/shared/ui/custom/password-input";
+import { showToast } from "@/shared/ui/custom/sonner";
 import {
   Form,
   FormControl,
@@ -24,7 +27,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/shared/ui/form";
-import { Input } from "@/shared/ui/input";
 import { registerAction } from "../actions";
 
 const formSchema = z
@@ -74,12 +76,15 @@ export function RegisterForm() {
       const result = await registerAction(formData);
       if (result.success) {
         setSuccess(result.message);
+        showToast.success("Đăng ký thành công", result.message);
         form.reset();
       } else {
         setError("Đăng ký thất bại. Vui lòng thử lại.");
+        showToast.error("Đăng ký thất bại", "Vui lòng thử lại.");
       }
     } catch {
       setError("Đã có lỗi xảy ra. Vui lòng thử lại sau.");
+      showToast.error("Lỗi hệ thống", "Đã có lỗi xảy ra. Vui lòng thử lại sau.");
     } finally {
       setIsLoading(false);
     }
@@ -103,7 +108,11 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel>Họ và tên</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nhập họ và tên của bạn" {...field} />
+                    <InputWithIcon
+                      icon={User}
+                      placeholder="Nhập họ và tên của bạn"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -116,7 +125,11 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nhập email của bạn" {...field} />
+                    <InputWithIcon
+                      icon={Mail}
+                      placeholder="Nhập email của bạn"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -129,7 +142,10 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel>Mật khẩu</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Nhập mật khẩu của bạn" {...field} />
+                    <PasswordInput
+                      placeholder="Nhập mật khẩu của bạn"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -142,7 +158,10 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel>Xác nhận mật khẩu</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Nhập lại mật khẩu của bạn" {...field} />
+                    <PasswordInput
+                      placeholder="Nhập lại mật khẩu của bạn"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

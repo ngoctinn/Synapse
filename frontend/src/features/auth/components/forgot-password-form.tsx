@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -16,6 +16,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/ui/card";
+import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
+import { showToast } from "@/shared/ui/custom/sonner";
 import {
   Form,
   FormControl,
@@ -24,7 +26,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/shared/ui/form";
-import { Input } from "@/shared/ui/input";
 import { forgotPasswordAction } from "../actions";
 
 const formSchema = z.object({
@@ -57,12 +58,15 @@ export function ForgotPasswordForm() {
       const result = await forgotPasswordAction(formData);
       if (result.success) {
         setSuccess(result.message);
+        showToast.success("Đã gửi yêu cầu", result.message);
         form.reset();
       } else {
         setError("Gửi yêu cầu thất bại. Vui lòng thử lại.");
+        showToast.error("Gửi yêu cầu thất bại", "Vui lòng thử lại.");
       }
     } catch {
       setError("Đã có lỗi xảy ra. Vui lòng thử lại sau.");
+      showToast.error("Lỗi hệ thống", "Đã có lỗi xảy ra. Vui lòng thử lại sau.");
     } finally {
       setIsLoading(false);
     }
@@ -86,7 +90,11 @@ export function ForgotPasswordForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nhập email của bạn" {...field} />
+                    <InputWithIcon
+                      icon={Mail}
+                      placeholder="Nhập email của bạn"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
