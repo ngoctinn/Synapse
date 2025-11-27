@@ -2,10 +2,11 @@
 
 import { Appointment } from "@/features/customer-dashboard/types"
 import { Badge } from "@/shared/ui/badge"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card"
+import { Button } from "@/shared/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card"
 import { format } from "date-fns"
 import { vi } from "date-fns/locale"
-import { Calendar, Clock, MapPin, User } from "lucide-react"
+import { Calendar, MapPin, User } from "lucide-react"
 
 interface AppointmentListProps {
   appointments: Appointment[]
@@ -31,43 +32,59 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
       {appointments.map((appt) => (
-        <Card key={appt.id}>
-          <CardHeader className="pb-2">
+        <Card key={appt.id} className="group overflow-hidden transition-all duration-300 hover:shadow-md hover:border-primary/50">
+          <CardHeader className="pb-3 bg-muted/30">
             <div className="flex items-start justify-between">
               <div className="space-y-1">
-                <CardTitle className="text-base font-semibold leading-none">
+                <Badge variant={statusMap[appt.status].variant} className="mb-2">
+                  {statusMap[appt.status].label}
+                </Badge>
+                <CardTitle className="text-base font-bold leading-tight group-hover:text-primary transition-colors">
                   {appt.serviceName}
                 </CardTitle>
-                <CardDescription>
-                  {format(new Date(appt.startTime), "EEEE, dd/MM/yyyy", { locale: vi })}
-                </CardDescription>
               </div>
-              <Badge variant={statusMap[appt.status].variant}>
-                {statusMap[appt.status].label}
-              </Badge>
             </div>
           </CardHeader>
-          <CardContent className="grid gap-2 text-sm">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Clock className="h-4 w-4" />
-              <span>
-                {format(new Date(appt.startTime), "HH:mm")} ({appt.durationMinutes} phút)
-              </span>
+          <CardContent className="grid gap-3 p-4 text-sm">
+            <div className="flex items-center gap-3 text-muted-foreground">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+                 <Calendar className="h-4 w-4" />
+              </div>
+              <div className="flex flex-col">
+                 <span className="font-medium text-foreground">
+                    {format(new Date(appt.startTime), "EEEE, dd/MM/yyyy", { locale: vi })}
+                 </span>
+                 <span className="text-xs">
+                    {format(new Date(appt.startTime), "HH:mm")} ({appt.durationMinutes} phút)
+                 </span>
+              </div>
             </div>
+
             {appt.location && (
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <MapPin className="h-4 w-4" />
+              <div className="flex items-center gap-3 text-muted-foreground">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                   <MapPin className="h-4 w-4" />
+                </div>
                 <span>{appt.location}</span>
               </div>
             )}
+
             {appt.technicianName && (
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <User className="h-4 w-4" />
+              <div className="flex items-center gap-3 text-muted-foreground">
+                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                   <User className="h-4 w-4" />
+                 </div>
                 <span>KTV: {appt.technicianName}</span>
               </div>
             )}
+
+            <div className="pt-2 mt-1 border-t flex justify-end">
+               <Button variant="outline" size="sm" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                  Xem chi tiết
+               </Button>
+            </div>
           </CardContent>
         </Card>
       ))}

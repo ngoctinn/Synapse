@@ -34,7 +34,7 @@ export function Header() {
   }
 
   return (
-    <header className="fixed top-4 left-0 right-0 z-50 mx-auto max-w-5xl px-4 transition-all duration-300">
+    <header className="fixed top-4 left-1/2 z-50 w-full -translate-x-1/2 max-w-5xl px-4 transition-all duration-300">
       <div className="flex h-14 items-center justify-between rounded-full border bg-background/80 px-6 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
         <div className="flex items-center gap-6">
           <HeaderLogo />
