@@ -4,6 +4,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Mail } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -34,12 +35,13 @@ const formSchema = z.object({
   email: z.string().email({
     message: "Email không hợp lệ.",
   }),
-  password: z.string().min(6, {
-    message: "Mật khẩu phải có ít nhất 6 ký tự.",
+  password: z.string().min(8, {
+    message: "Mật khẩu phải có ít nhất 8 ký tự.",
   }),
 });
 
 export function LoginForm() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -63,6 +65,7 @@ export function LoginForm() {
       const result = await loginAction(formData);
       if (result.success) {
         showToast.success("Đăng nhập thành công", "Chào mừng bạn quay trở lại hệ thống.");
+        router.push("/dashboard");
       } else {
         setError("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
         showToast.error("Đăng nhập thất bại", "Vui lòng kiểm tra lại thông tin.");

@@ -24,6 +24,11 @@ app.add_middleware(
 async def health_check():
     return {"status": "ok", "message": "Backend Synapse đang hoạt động"}
 
+from src.app.config import settings
+from src.modules.users.router import router as users_router
+
+app.include_router(users_router, prefix=settings.API_V1_STR)
+
 @app.get("/")
 async def root():
     return {"message": "Chào mừng đến với Synapse API"}

@@ -39,8 +39,8 @@ const formSchema = z
     email: z.string().email({
       message: "Email không hợp lệ.",
     }),
-    password: z.string().min(6, {
-      message: "Mật khẩu phải có ít nhất 6 ký tự.",
+    password: z.string().min(8, {
+      message: "Mật khẩu phải có ít nhất 8 ký tự.",
     }),
     confirmPassword: z.string(),
   })
@@ -83,8 +83,8 @@ export function RegisterForm() {
         setShowCheckEmailDialog(true);
         form.reset();
       } else {
-        setError("Đăng ký thất bại. Vui lòng thử lại.");
-        showToast.error("Đăng ký thất bại", "Vui lòng thử lại.");
+        setError(result.message || "Đăng ký thất bại. Vui lòng thử lại.");
+        showToast.error("Đăng ký thất bại", result.message || "Vui lòng thử lại.");
       }
     } catch {
       setError("Đã có lỗi xảy ra. Vui lòng thử lại sau.");

@@ -8,22 +8,22 @@ status: Draft
 ## 1. Task Breakdown
 
 ### Phase 1: Database & Backend Setup
-- [ ] **DB-01**: Tạo migration cho bảng `public.users` và Trigger `on_auth_user_created`.
-- [ ] **BE-01**: Cập nhật `SQLModel` cho `User` trong `backend/src/modules/users/models.py`.
-- [ ] **BE-02**: Implement `get_current_user` dependency trong `backend/src/common/security.py`.
-- [ ] **BE-03**: Tạo API endpoint `GET /me` và `PUT /me` trong `backend/src/modules/users/router.py`.
+- [x] **DB-01**: Tạo migration cho bảng `public.users` và Trigger `on_auth_user_created`.
+- [x] **BE-01**: Cập nhật `SQLModel` cho `User` trong `backend/src/modules/users/models.py`.
+- [x] **BE-02**: Implement `get_current_user` dependency trong `backend/src/common/security.py`.
+- [x] **BE-03**: Tạo API endpoint `GET /me` và `PUT /me` trong `backend/src/modules/users/router.py`.
 
 ### Phase 2: Frontend Authentication (Next.js)
-- [ ] **FE-01**: Cài đặt `@supabase/ssr` và cấu hình client (Server/Client/Middleware).
-- [ ] **FE-02**: Implement Server Actions cho Auth (`login`, `signup`, `logout`).
-- [ ] **FE-03**: Tạo UI trang Đăng nhập (`/login`).
-- [ ] **FE-04**: Tạo UI trang Đăng ký (`/register`).
-- [ ] **FE-05**: Tạo UI trang Quên mật khẩu (`/forgot-password`).
-- [ ] **FE-06**: Tạo UI trang Đặt lại mật khẩu (`/reset-password`).
-- [ ] **FE-07**: Cập nhật Middleware để bảo vệ routes `/dashboard`.
+- [x] **FE-01**: Cài đặt `@supabase/ssr` và cấu hình client (Server/Client/Middleware).
+- [x] **FE-02**: Implement Server Actions cho Auth (`login`, `signup`, `logout`).
+- [x] **FE-03**: Tạo UI trang Đăng nhập (`/login`).
+- [x] **FE-04**: Tạo UI trang Đăng ký (`/register`).
+- [x] **FE-05**: Tạo UI trang Quên mật khẩu (`/forgot-password`).
+- [x] **FE-06**: Tạo UI trang Đặt lại mật khẩu (`/reset-password`).
+- [x] **FE-07**: Cập nhật Middleware để bảo vệ routes `/dashboard`.
 
 ### Phase 3: Integration & Polish
-- [ ] **INT-01**: Test luồng đăng ký -> kiểm tra DB có user mới.
+- [/] **INT-01**: Test luồng đăng ký -> kiểm tra DB có user mới.
 - [ ] **INT-02**: Test luồng đăng nhập -> kiểm tra truy cập Dashboard.
 - [ ] **INT-03**: Test gọi API Backend từ Frontend (kèm Token).
 
