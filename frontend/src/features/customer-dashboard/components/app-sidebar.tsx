@@ -1,6 +1,6 @@
 "use client"
 
-import { HeaderUserDropdown } from "@/shared/ui/custom/header/user-dropdown"
+import { HeaderUserDropdown } from "@/features/layout"
 import {
   Sidebar,
   SidebarContent,

@@ -1,7 +1,6 @@
 "use client"
 
-import { HeaderLogo } from "@/shared/ui/custom/header/logo"
-import { HeaderUserDropdown } from "@/shared/ui/custom/header/user-dropdown"
+import { HeaderLogo, HeaderUserDropdown } from "@/features/layout"
 import { UserProfile } from "../types"
 
 interface DashboardHeaderProps {

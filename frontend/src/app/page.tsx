@@ -1,6 +1,5 @@
+import { Footer, Header } from "@/features/layout";
 import { Button } from "@/shared/ui/button";
-import { Footer } from "@/shared/ui/custom/footer";
-import { Header } from "@/shared/ui/custom/header";
 import { BarChart3, Calendar, Users } from "lucide-react";
 import Link from "next/link";
 

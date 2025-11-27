@@ -1,7 +1,6 @@
 import { DashboardNav } from "@/features/customer-dashboard/components/dashboard-nav"
 import { MobileNav } from "@/features/customer-dashboard/components/mobile-nav"
-import { Footer } from "@/shared/ui/custom/footer"
-import { Header } from "@/shared/ui/custom/header"
+import { Footer, Header } from "@/features/layout"
 
 export default function DashboardLayout({
   children,

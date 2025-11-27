@@ -42,12 +42,12 @@ export function MobileMenuOverlay({ isOpen, onClose, isLoggedIn, onLogout }: Mob
     <>
       {/* Backdrop to close menu when clicking outside */}
       <div
-        className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm md:hidden"
+        className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm md:hidden pointer-events-auto"
         onClick={onClose}
       />
 
       {/* Menu Content */}
-      <div className="absolute top-[calc(100%+0.5rem)] left-4 right-4 z-50 rounded-2xl border bg-background/95 p-6 shadow-lg backdrop-blur-md animate-in slide-in-from-top-2 fade-in duration-200 md:hidden">
+      <div className="absolute top-[calc(100%+0.5rem)] left-4 right-4 z-50 rounded-2xl border bg-background/95 p-6 shadow-lg backdrop-blur-md animate-in slide-in-from-top-2 fade-in duration-200 md:hidden pointer-events-auto">
         <div className="flex flex-col space-y-6 items-center text-center">
           <nav className="flex flex-col space-y-4 w-full items-center">
             <HeaderNav mobile onLinkClick={onClose} />

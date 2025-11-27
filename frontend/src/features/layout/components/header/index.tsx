@@ -8,6 +8,9 @@ import { MobileUserSheet } from "./mobile-user-sheet"
 import { HeaderNav } from "./nav-links"
 import { HeaderUserDropdown } from "./user-dropdown"
 
+export { HeaderLogo } from "./logo"
+export { HeaderUserDropdown } from "./user-dropdown"
+
 export function Header() {
   const [isLoggedIn, setIsLoggedIn] = React.useState(true) // Mock auth state
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
@@ -34,8 +37,8 @@ export function Header() {
   }
 
   return (
-    <header className="fixed top-4 left-1/2 z-50 w-full -translate-x-1/2 max-w-5xl px-4 transition-all duration-300">
-      <div className="flex h-14 items-center justify-between rounded-full border bg-background/80 px-6 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
+    <header className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 transition-all duration-300 pointer-events-none">
+      <div className="flex h-14 w-full max-w-5xl items-center justify-between rounded-full border bg-background/80 px-6 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-background/60 pointer-events-auto">
         <div className="flex items-center gap-6">
           <HeaderLogo />
           <nav className="hidden md:flex items-center space-x-6">

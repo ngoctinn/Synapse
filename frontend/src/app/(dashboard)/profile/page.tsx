@@ -6,7 +6,7 @@ export default async function ProfilePage() {
 
   return (
     <div className="space-y-6">
-      <div className="max-w-2xl">
+      <div className="max-w-2xl mx-auto">
         <ProfileForm user={user} />
       </div>
     </div>
