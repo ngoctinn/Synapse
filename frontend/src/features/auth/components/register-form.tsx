@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/ui/card";
+import { CustomDialog } from "@/shared/ui/custom/dialog";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { PasswordInput } from "@/shared/ui/custom/password-input";
 import { showToast } from "@/shared/ui/custom/sonner";
@@ -51,6 +53,7 @@ export function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [showCheckEmailDialog, setShowCheckEmailDialog] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -77,6 +80,7 @@ export function RegisterForm() {
       if (result.success) {
         setSuccess(result.message);
         showToast.success("Đăng ký thành công", result.message);
+        setShowCheckEmailDialog(true);
         form.reset();
       } else {
         setError("Đăng ký thất bại. Vui lòng thử lại.");
@@ -91,109 +95,130 @@ export function RegisterForm() {
   }
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="text-2xl">Đăng ký tài khoản</CardTitle>
-        <CardDescription>
-          Tạo tài khoản mới để trải nghiệm dịch vụ của chúng tôi.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="fullName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Họ và tên</FormLabel>
-                  <FormControl>
-                    <InputWithIcon
-                      icon={User}
-                      placeholder="Nhập họ và tên của bạn"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+    <>
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle className="text-2xl">Đăng ký tài khoản</CardTitle>
+          <CardDescription>
+            Tạo tài khoản mới để trải nghiệm dịch vụ của chúng tôi.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="fullName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Họ và tên</FormLabel>
+                    <FormControl>
+                      <InputWithIcon
+                        icon={User}
+                        placeholder="Nhập họ và tên của bạn"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <InputWithIcon
+                        icon={Mail}
+                        placeholder="Nhập email của bạn"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Mật khẩu</FormLabel>
+                    <FormControl>
+                      <PasswordInput
+                        placeholder="Nhập mật khẩu của bạn"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Xác nhận mật khẩu</FormLabel>
+                    <FormControl>
+                      <PasswordInput
+                        placeholder="Nhập lại mật khẩu của bạn"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {error && (
+                <div className="text-sm font-medium text-destructive">{error}</div>
               )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <InputWithIcon
-                      icon={Mail}
-                      placeholder="Nhập email của bạn"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+              {success && (
+                <div className="text-sm font-medium text-green-600">{success}</div>
               )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Mật khẩu</FormLabel>
-                  <FormControl>
-                    <PasswordInput
-                      placeholder="Nhập mật khẩu của bạn"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Xác nhận mật khẩu</FormLabel>
-                  <FormControl>
-                    <PasswordInput
-                      placeholder="Nhập lại mật khẩu của bạn"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {error && (
-              <div className="text-sm font-medium text-destructive">{error}</div>
-            )}
-            {success && (
-              <div className="text-sm font-medium text-green-600">{success}</div>
-            )}
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Đang xử lý...
-                </>
-              ) : (
-                "Đăng ký"
-              )}
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-      <CardFooter className="justify-center">
-        <div className="text-sm text-muted-foreground">
-          Đã có tài khoản?{" "}
-          <Link href="/login" className="text-primary hover:underline">
-            Đăng nhập ngay
-          </Link>
-        </div>
-      </CardFooter>
-    </Card>
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Đang xử lý...
+                  </>
+                ) : (
+                  "Đăng ký"
+                )}
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+        <CardFooter className="justify-center">
+          <div className="text-sm text-muted-foreground">
+            Đã có tài khoản?{" "}
+            <Link href="/login" className="text-primary hover:underline">
+              Đăng nhập ngay
+            </Link>
+          </div>
+        </CardFooter>
+      </Card>
+
+      <CustomDialog
+        open={showCheckEmailDialog}
+        onOpenChange={setShowCheckEmailDialog}
+        variant="info"
+        icon={Mail}
+        title="Kiểm tra email của bạn"
+        description="Chúng tôi đã gửi một liên kết xác thực đến email của bạn. Vui lòng kiểm tra và làm theo hướng dẫn để hoàn tất đăng ký."
+        primaryAction={{
+          label: "Đã hiểu",
+          onClick: () => setShowCheckEmailDialog(false),
+        }}
+        secondaryAction={{
+          label: "Gửi lại",
+          onClick: () => {
+            showToast.info("Đã gửi lại", "Email xác thực mới đã được gửi.");
+          },
+        }}
+      />
+    </>
   );
 }

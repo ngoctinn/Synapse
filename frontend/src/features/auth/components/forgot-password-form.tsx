@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/ui/card";
+import { CustomDialog } from "@/shared/ui/custom/dialog";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { showToast } from "@/shared/ui/custom/sonner";
 import {
@@ -38,6 +40,7 @@ export function ForgotPasswordForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [showCheckEmailDialog, setShowCheckEmailDialog] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -59,6 +62,7 @@ export function ForgotPasswordForm() {
       if (result.success) {
         setSuccess(result.message);
         showToast.success("Đã gửi yêu cầu", result.message);
+        setShowCheckEmailDialog(true);
         form.reset();
       } else {
         setError("Gửi yêu cầu thất bại. Vui lòng thử lại.");
@@ -73,60 +77,81 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="text-2xl">Quên mật khẩu</CardTitle>
-        <CardDescription>
-          Nhập email của bạn để nhận liên kết đặt lại mật khẩu.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <InputWithIcon
-                      icon={Mail}
-                      placeholder="Nhập email của bạn"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+    <>
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle className="text-2xl">Quên mật khẩu</CardTitle>
+          <CardDescription>
+            Nhập email của bạn để nhận liên kết đặt lại mật khẩu.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <InputWithIcon
+                        icon={Mail}
+                        placeholder="Nhập email của bạn"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {error && (
+                <div className="text-sm font-medium text-destructive">{error}</div>
               )}
-            />
-            {error && (
-              <div className="text-sm font-medium text-destructive">{error}</div>
-            )}
-            {success && (
-              <div className="text-sm font-medium text-green-600">{success}</div>
-            )}
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Đang xử lý...
-                </>
-              ) : (
-                "Gửi yêu cầu"
+              {success && (
+                <div className="text-sm font-medium text-green-600">{success}</div>
               )}
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-      <CardFooter className="justify-center">
-        <div className="text-sm text-muted-foreground">
-          Nhớ mật khẩu?{" "}
-          <Link href="/login" className="text-primary hover:underline">
-            Đăng nhập
-          </Link>
-        </div>
-      </CardFooter>
-    </Card>
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Đang xử lý...
+                  </>
+                ) : (
+                  "Gửi yêu cầu"
+                )}
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+        <CardFooter className="justify-center">
+          <div className="text-sm text-muted-foreground">
+            Nhớ mật khẩu?{" "}
+            <Link href="/login" className="text-primary hover:underline">
+              Đăng nhập
+            </Link>
+          </div>
+        </CardFooter>
+      </Card>
+
+      <CustomDialog
+        open={showCheckEmailDialog}
+        onOpenChange={setShowCheckEmailDialog}
+        variant="info"
+        icon={Mail}
+        title="Kiểm tra email của bạn"
+        description="Chúng tôi đã gửi một liên kết đặt lại mật khẩu đến email của bạn. Vui lòng kiểm tra và làm theo hướng dẫn."
+        primaryAction={{
+          label: "Đã hiểu",
+          onClick: () => setShowCheckEmailDialog(false),
+        }}
+        secondaryAction={{
+          label: "Gửi lại",
+          onClick: () => {
+            showToast.info("Đã gửi lại", "Email xác thực mới đã được gửi.");
+          },
+        }}
+      />
+    </>
   );
 }

@@ -47,25 +47,25 @@ export function CustomToast({ variant, title, description, t }: CustomToastProps
   return (
     <div
       className={cn(
-        "flex w-full items-start gap-4 rounded-lg border p-4 shadow-lg",
+        "flex w-full items-start gap-3 rounded-xl border p-4 shadow-lg transition-all",
         "bg-white dark:bg-gray-950", // Base background
         style.border
       )}
     >
-      <div className={cn("flex-shrink-0 mt-0.5", style.color)}>
-        <Icon size={20} />
+      <div className={cn("flex-shrink-0 rounded-full p-2", style.bg)}>
+        <Icon size={16} className={style.color} />
       </div>
-      <div className="flex-1">
-        <h3 className="font-medium text-gray-900 dark:text-gray-50">{title}</h3>
+      <div className="flex-1 pt-0.5">
+        <h3 className="font-semibold text-gray-900 dark:text-gray-50 text-sm">{title}</h3>
         {description && (
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{description}</p>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{description}</p>
         )}
       </div>
       <button
         onClick={() => toast.dismiss(t)}
-        className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 transition-colors"
+        className="flex-shrink-0 rounded-md p-1 text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:text-gray-300 dark:hover:bg-gray-800 transition-colors"
       >
-        <X size={18} />
+        <X size={16} />
       </button>
     </div>
   )
