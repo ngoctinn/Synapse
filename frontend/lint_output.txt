@@ -1,0 +1,38 @@
+
+> frontend@0.1.0 lint
+> eslint
+
+
+E:\Projects\Synapse\frontend\src\features\auth\actions.ts
+  16:38  warning  'formData' is defined but never used  @typescript-eslint/no-unused-vars
+  22:44  warning  'formData' is defined but never used  @typescript-eslint/no-unused-vars
+  28:44  warning  'formData' is defined but never used  @typescript-eslint/no-unused-vars
+
+E:\Projects\Synapse\frontend\src\features\auth\components\forgot-password-form.tsx
+  64:14  warning  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+E:\Projects\Synapse\frontend\src\features\auth\components\login-form.tsx
+  67:14  warning  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+E:\Projects\Synapse\frontend\src\features\auth\components\register-form.tsx
+  81:14  warning  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+E:\Projects\Synapse\frontend\src\features\auth\components\update-password-form.tsx
+  71:14  warning  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+E:\Projects\Synapse\frontend\src\shared\ui\sidebar.tsx
+  611:26  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+E:\Projects\Synapse\frontend\src\shared\ui\sidebar.tsx:611:26
+  609 |   // Random width between 50 to 90%.
+  610 |   const width = React.useMemo(() => {
+> 611 |     return `${Math.floor(Math.random() * 40) + 50}%`
+      |                          ^^^^^^^^^^^^^ Cannot call impure function
+  612 |   }, [])
+  613 |
+  614 |   return (  react-hooks/purity
+
+✖ 8 problems (1 error, 7 warnings)
+
