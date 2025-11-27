@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
 import { CreditCard, LayoutDashboard, LogOut, Settings, User } from "lucide-react"
+import Link from "next/link"
 
 interface HeaderUserDropdownProps {
   user?: {
@@ -60,24 +61,32 @@ export function HeaderUserDropdown({ user, onLogout }: HeaderUserDropdownProps) 
         </DropdownMenuLabel>
         <DropdownMenuSeparator className="my-2" />
         <DropdownMenuGroup>
-          <DropdownMenuItem className="cursor-pointer py-2.5">
-            <User className="mr-2 h-4 w-4 text-primary" />
-            <span>Hồ sơ cá nhân</span>
+          <DropdownMenuItem asChild>
+            <Link href="/profile" className="cursor-pointer py-2.5 w-full flex items-center">
+              <User className="mr-2 h-4 w-4 text-primary" />
+              <span>Hồ sơ cá nhân</span>
+            </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer py-2.5">
-            <CreditCard className="mr-2 h-4 w-4 text-primary" />
-            <span>Gói dịch vụ</span>
+          <DropdownMenuItem asChild>
+            <Link href="/treatments" className="cursor-pointer py-2.5 w-full flex items-center">
+              <CreditCard className="mr-2 h-4 w-4 text-primary" />
+              <span>Gói dịch vụ</span>
+            </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer py-2.5">
-            <Settings className="mr-2 h-4 w-4 text-primary" />
-            <span>Cài đặt</span>
+          <DropdownMenuItem asChild>
+            <Link href="/settings" className="cursor-pointer py-2.5 w-full flex items-center">
+              <Settings className="mr-2 h-4 w-4 text-primary" />
+              <span>Cài đặt</span>
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="my-2" />
         <DropdownMenuGroup>
-          <DropdownMenuItem className="cursor-pointer py-2.5">
-            <LayoutDashboard className="mr-2 h-4 w-4 text-primary" />
-            <span>Dashboard</span>
+          <DropdownMenuItem asChild>
+            <Link href="/" className="cursor-pointer py-2.5 w-full flex items-center">
+              <LayoutDashboard className="mr-2 h-4 w-4 text-primary" />
+              <span>Dashboard</span>
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="my-2" />

@@ -30,29 +30,29 @@ export function Footer() {
           <div className="space-y-4">
             <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground">Sản phẩm</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="#" className="hover:text-primary transition-colors">Tính năng</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Bảng giá</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Tải ứng dụng</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Changelog</Link></li>
+              <li><Link href="/features" className="hover:text-primary transition-colors">Tính năng</Link></li>
+              <li><Link href="/pricing" className="hover:text-primary transition-colors">Bảng giá</Link></li>
+              <li><Link href="/apps" className="hover:text-primary transition-colors">Tải ứng dụng</Link></li>
+              <li><Link href="/changelog" className="hover:text-primary transition-colors">Changelog</Link></li>
             </ul>
           </div>
 
           <div className="space-y-4">
             <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground">Công ty</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="#" className="hover:text-primary transition-colors">Về chúng tôi</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Tuyển dụng</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Blog</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Liên hệ</Link></li>
+              <li><Link href="/about" className="hover:text-primary transition-colors">Về chúng tôi</Link></li>
+              <li><Link href="/careers" className="hover:text-primary transition-colors">Tuyển dụng</Link></li>
+              <li><Link href="/blog" className="hover:text-primary transition-colors">Blog</Link></li>
+              <li><Link href="/contact" className="hover:text-primary transition-colors">Liên hệ</Link></li>
             </ul>
           </div>
 
           <div className="space-y-4">
             <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground">Pháp lý</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="#" className="hover:text-primary transition-colors">Điều khoản sử dụng</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Chính sách bảo mật</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Chính sách Cookie</Link></li>
+              <li><Link href="/terms" className="hover:text-primary transition-colors">Điều khoản sử dụng</Link></li>
+              <li><Link href="/privacy" className="hover:text-primary transition-colors">Chính sách bảo mật</Link></li>
+              <li><Link href="/cookies" className="hover:text-primary transition-colors">Chính sách Cookie</Link></li>
             </ul>
           </div>
         </div>
