@@ -11,8 +11,8 @@ export default function Home() {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32">
-          <div className="container mx-auto flex max-w-[64rem] flex-col items-center gap-4 text-center">
+        <section className="space-y-6 pb-8 pt-24 md:pb-12 md:pt-32 lg:py-40">
+          <div className="container mx-auto px-4 flex max-w-[64rem] flex-col items-center gap-4 text-center">
             <div className="rounded-2xl bg-muted px-4 py-1.5 text-sm font-medium">
               🚀 Phiên bản Beta đã sẵn sàng
             </div>
