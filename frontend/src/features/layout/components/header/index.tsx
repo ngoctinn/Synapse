@@ -9,7 +9,9 @@ import { HeaderLogo } from "./logo"
 import { MobileMenuOverlay, MobileMenuTrigger } from "./mobile-menu"
 import { MobileUserSheet } from "./mobile-user-sheet"
 import { HeaderNav } from "./nav-links"
+import { HeaderAuthSkeleton } from "./skeleton"
 import { HeaderUserDropdown } from "./user-dropdown"
+
 
 export { HeaderLogo } from "./logo"
 export { HeaderUserDropdown } from "./user-dropdown"
@@ -33,12 +35,17 @@ export function Header() {
 
   // Check auth state and fetch user profile
   React.useEffect(() => {
-    const checkAuthAndFetchProfile = async () => {
+    const checkAuthAndFetchProfile = async (session: any | null = null) => {
       try {
-        const supabase = createClient()
-        const { data: { session } } = await supabase.auth.getSession()
+        let currentSession = session
 
-        if (session?.access_token) {
+        if (!currentSession) {
+          const supabase = createClient()
+          const { data } = await supabase.auth.getSession()
+          currentSession = data.session
+        }
+
+        if (currentSession?.access_token) {
           setIsLoggedIn(true)
 
           // Fetch user profile from Backend API
@@ -46,13 +53,17 @@ export function Header() {
           if (apiUrl) {
             const response = await fetch(`${apiUrl}/users/me`, {
               headers: {
-                'Authorization': `Bearer ${session.access_token}`
+                'Authorization': `Bearer ${currentSession.access_token}`
               }
             })
 
             if (response.ok) {
               const profile = await response.json()
               setUserProfile(profile)
+            } else {
+              console.error("Failed to fetch profile:", response.status)
+              // If 401, maybe token expired? But Supabase should handle refresh.
+              // We could try to force refresh or just log it for now.
             }
           }
         } else {
@@ -72,10 +83,10 @@ export function Header() {
 
     // Subscribe to auth changes
     const supabase = createClient()
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: string, session: any) => {
       if (session) {
         setIsLoggedIn(true)
-        checkAuthAndFetchProfile()
+        checkAuthAndFetchProfile(session)
       } else {
         setIsLoggedIn(false)
         setUserProfile(null)
@@ -125,16 +136,6 @@ export function Header() {
     setIsMobileMenuOpen(false)
   }
 
-  if (isLoading) {
-    return (
-      <header className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 transition-all duration-300 pointer-events-none">
-        <div className="flex h-14 w-full max-w-5xl items-center justify-between rounded-full border bg-background/80 px-6 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-background/60 pointer-events-auto">
-          <HeaderLogo />
-        </div>
-      </header>
-    )
-  }
-
   const user = userProfile ? {
     name: userProfile.full_name || userProfile.email,
     email: userProfile.email,
@@ -157,7 +158,9 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-          {isLoggedIn ? (
+          {isLoading || (isLoggedIn && !userProfile) ? (
+            <HeaderAuthSkeleton />
+          ) : isLoggedIn && userProfile ? (
             <>
               <div className="hidden md:block">
                 <HeaderUserDropdown user={user} onLogout={handleLogout} />

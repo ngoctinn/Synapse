@@ -3,13 +3,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Button } from "@/shared/ui/button"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
 import { CreditCard, LayoutDashboard, LogOut, Settings, User } from "lucide-react"
 import Link from "next/link"
@@ -24,22 +24,16 @@ interface HeaderUserDropdownProps {
 }
 
 export function HeaderUserDropdown({ user, onLogout }: HeaderUserDropdownProps) {
-  const defaultUser = {
-    name: "Admin User",
-    email: "admin@synapse.com",
-    avatar: "/avatars/01.png"
-  }
-
-  const currentUser = user || defaultUser
+  if (!user) return null
 
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-9 w-9 rounded-full cursor-pointer ring-offset-background transition-all hover:ring-2 hover:ring-primary/20 focus-visible:ring-2 focus-visible:ring-primary/30">
           <Avatar className="h-9 w-9 transition-transform hover:scale-105">
-            <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
+            <AvatarImage src={user.avatar} alt={user.name} />
             <AvatarFallback className="bg-primary/10 text-primary font-medium">
-              {currentUser.name.substring(0, 2).toUpperCase()}
+              {user.name.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -48,13 +42,13 @@ export function HeaderUserDropdown({ user, onLogout }: HeaderUserDropdownProps) 
         <DropdownMenuLabel className="font-normal p-2">
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10 border border-border">
-              <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
-              <AvatarFallback>{currentUser.name.substring(0, 2).toUpperCase()}</AvatarFallback>
+              <AvatarImage src={user.avatar} alt={user.name} />
+              <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col space-y-0.5">
-              <p className="text-sm font-semibold leading-none">{currentUser.name}</p>
+              <p className="text-sm font-semibold leading-none">{user.name}</p>
               <p className="text-xs leading-none text-muted-foreground truncate max-w-[140px]">
-                {currentUser.email}
+                {user.email}
               </p>
             </div>
           </div>

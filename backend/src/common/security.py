@@ -19,7 +19,8 @@ async def get_current_user(
             token,
             settings.SUPABASE_JWT_SECRET,
             algorithms=["HS256"],
-            audience="authenticated"
+            audience="authenticated",
+            leeway=60  # Allow 60 seconds of clock skew
         )
         user_id = payload.get("sub")
         if user_id is None:

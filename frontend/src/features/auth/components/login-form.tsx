@@ -11,23 +11,23 @@ import * as z from "zod";
 
 import { Button } from "@/shared/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
 } from "@/shared/ui/card";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { PasswordInput } from "@/shared/ui/custom/password-input";
 import { showToast } from "@/shared/ui/custom/sonner";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form";
 import { loginAction } from "../actions";
 
@@ -65,7 +65,7 @@ export function LoginForm() {
       const result = await loginAction(formData);
       if (result.success) {
         showToast.success("Đăng nhập thành công", "Chào mừng bạn quay trở lại hệ thống.");
-        router.push("/dashboard");
+        router.push("/");
       } else {
         setError("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
         showToast.error("Đăng nhập thất bại", "Vui lòng kiểm tra lại thông tin.");
