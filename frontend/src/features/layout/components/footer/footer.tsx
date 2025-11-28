@@ -1,64 +1,41 @@
-import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react"
+import { Facebook, Instagram, Linkedin } from "lucide-react"
 import Link from "next/link"
 
 export function Footer() {
   return (
-    <footer className="border-t bg-gray-50 dark:bg-gray-950">
-      <div className="mx-auto max-w-5xl px-4 py-12 md:py-16">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-          <div className="space-y-4">
-            <h3 className="text-lg font-bold text-primary">Synapse</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Nền tảng quản lý vận hành và chăm sóc khách hàng chuyên biệt cho Spa. Tối ưu hóa quy trình, nâng cao trải nghiệm.
-            </p>
-            <div className="flex space-x-4">
+    <footer className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="mx-auto max-w-5xl px-4 py-8">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col md:flex-row items-center gap-4 text-sm text-muted-foreground">
+            <span className="font-semibold text-foreground">Synapse</span>
+            <span className="hidden md:inline">•</span>
+            <span>&copy; {new Date().getFullYear()} Synapse. All rights reserved.</span>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <Link href="/privacy" className="hover:text-primary transition-colors">
+                Bảo mật
+              </Link>
+              <Link href="/terms" className="hover:text-primary transition-colors">
+                Điều khoản
+              </Link>
+            </div>
+
+            <div className="h-4 w-px bg-border hidden md:block" />
+
+            <div className="flex items-center gap-3">
               <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Facebook size={20} />
+                <Facebook size={18} />
               </Link>
               <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Instagram size={20} />
+                <Instagram size={18} />
               </Link>
               <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Twitter size={20} />
-              </Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Linkedin size={20} />
+                <Linkedin size={18} />
               </Link>
             </div>
           </div>
-
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground">Sản phẩm</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/features" className="hover:text-primary transition-colors">Tính năng</Link></li>
-              <li><Link href="/pricing" className="hover:text-primary transition-colors">Bảng giá</Link></li>
-              <li><Link href="/apps" className="hover:text-primary transition-colors">Tải ứng dụng</Link></li>
-              <li><Link href="/changelog" className="hover:text-primary transition-colors">Changelog</Link></li>
-            </ul>
-          </div>
-
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground">Công ty</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/about" className="hover:text-primary transition-colors">Về chúng tôi</Link></li>
-              <li><Link href="/careers" className="hover:text-primary transition-colors">Tuyển dụng</Link></li>
-              <li><Link href="/blog" className="hover:text-primary transition-colors">Blog</Link></li>
-              <li><Link href="/contact" className="hover:text-primary transition-colors">Liên hệ</Link></li>
-            </ul>
-          </div>
-
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground">Pháp lý</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/terms" className="hover:text-primary transition-colors">Điều khoản sử dụng</Link></li>
-              <li><Link href="/privacy" className="hover:text-primary transition-colors">Chính sách bảo mật</Link></li>
-              <li><Link href="/cookies" className="hover:text-primary transition-colors">Chính sách Cookie</Link></li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="mt-12 border-t pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Synapse. Đã đăng ký bản quyền.</p>
         </div>
       </div>
     </footer>

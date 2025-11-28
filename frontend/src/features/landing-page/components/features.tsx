@@ -1,0 +1,77 @@
+"use client"
+
+import { motion } from "framer-motion"
+import { BarChart3, Calendar, ShieldCheck, Sparkles, Users, Zap } from "lucide-react"
+
+const features = [
+  {
+    icon: Calendar,
+    title: "Đặt lịch thông minh",
+    description: "Tự động hóa quy trình đặt lịch, tránh trùng lặp và tối ưu nguồn lực.",
+  },
+  {
+    icon: Users,
+    title: "Quản lý khách hàng",
+    description: "Lưu trữ hồ sơ, lịch sử liệu trình và chăm sóc khách hàng cá nhân hóa.",
+  },
+  {
+    icon: BarChart3,
+    title: "Báo cáo chi tiết",
+    description: "Theo dõi doanh thu, hiệu suất nhân viên và xu hướng kinh doanh.",
+  },
+  {
+    icon: Sparkles,
+    title: "Marketing tự động",
+    description: "Gửi tin nhắn nhắc lịch, chúc mừng sinh nhật và khuyến mãi tự động.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Bảo mật tuyệt đối",
+    description: "Dữ liệu được mã hóa và bảo vệ theo tiêu chuẩn quốc tế.",
+  },
+  {
+    icon: Zap,
+    title: "Hiệu năng cao",
+    description: "Hoạt động mượt mà trên mọi thiết bị, từ điện thoại đến máy tính.",
+  }
+]
+
+export function Features() {
+  return (
+    <section id="features" className="container mx-auto px-4 py-16 md:py-24 lg:py-32">
+      <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center mb-16">
+        <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-5xl font-bold">
+          Tính năng vượt trội
+        </h2>
+        <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+          Mọi thứ bạn cần để vận hành Spa trơn tru, từ đặt lịch đến báo cáo doanh thu.
+        </p>
+      </div>
+
+      <div className="mx-auto grid justify-center gap-6 sm:grid-cols-2 md:max-w-[72rem] md:grid-cols-3">
+        {features.map((feature, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: index * 0.1 }}
+            viewport={{ once: true }}
+            className="relative overflow-hidden rounded-2xl border bg-background/50 p-2 hover:shadow-lg transition-shadow duration-300"
+          >
+            <div className="flex h-full flex-col justify-between rounded-xl p-6 hover:bg-muted/50 transition-colors">
+              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <feature.icon className="h-6 w-6" />
+              </div>
+              <div className="space-y-2">
+                <h3 className="font-bold text-xl">{feature.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {feature.description}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </section>
+  )
+}
