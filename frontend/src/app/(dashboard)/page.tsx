@@ -1,4 +1,4 @@
-import { getCustomerAppointments, getCustomerProfile, getCustomerTreatments } from "@/features/customer-dashboard/services/api"
+import { getCustomerAppointments, getCustomerProfile, getCustomerTreatments } from "@/features/customer-dashboard"
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card"
 import { Calendar, Sparkles, User } from "lucide-react"
 

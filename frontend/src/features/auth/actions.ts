@@ -3,11 +3,23 @@
 import { createClient } from "@/shared/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import "server-only";
+import { forgotPasswordSchema, loginSchema, registerSchema, updatePasswordSchema } from "./schemas";
 
 export async function loginAction(formData: FormData) {
+  const rawData = {
+    email: formData.get("email"),
+    password: formData.get("password"),
+  };
+
+  const validatedFields = loginSchema.safeParse(rawData);
+
+  if (!validatedFields.success) {
+    return { success: false, message: validatedFields.error.issues[0].message };
+  }
+
+  const { email, password } = validatedFields.data;
   const supabase = await createClient();
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
 
   const { error } = await supabase.auth.signInWithPassword({
     email,
@@ -23,10 +35,20 @@ export async function loginAction(formData: FormData) {
 }
 
 export async function registerAction(formData: FormData) {
+  const rawData = {
+    email: formData.get("email"),
+    password: formData.get("password"),
+    fullName: formData.get("fullName"),
+  };
+
+  const validatedFields = registerSchema.safeParse(rawData);
+
+  if (!validatedFields.success) {
+    return { success: false, message: validatedFields.error.issues[0].message };
+  }
+
+  const { email, password, fullName } = validatedFields.data;
   const supabase = await createClient();
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const fullName = formData.get("fullName") as string;
 
   const { error } = await supabase.auth.signUp({
     email,
@@ -55,8 +77,18 @@ export async function logoutAction() {
 }
 
 export async function forgotPasswordAction(formData: FormData) {
+  const rawData = {
+    email: formData.get("email"),
+  };
+
+  const validatedFields = forgotPasswordSchema.safeParse(rawData);
+
+  if (!validatedFields.success) {
+    return { success: false, message: validatedFields.error.issues[0].message };
+  }
+
+  const { email } = validatedFields.data;
   const supabase = await createClient();
-  const email = formData.get("email") as string;
   const origin = (await import('next/headers')).headers().then(h => h.get('origin'));
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -71,8 +103,18 @@ export async function forgotPasswordAction(formData: FormData) {
 }
 
 export async function updatePasswordAction(formData: FormData) {
+  const rawData = {
+    password: formData.get("password"),
+  };
+
+  const validatedFields = updatePasswordSchema.safeParse(rawData);
+
+  if (!validatedFields.success) {
+    return { success: false, message: validatedFields.error.issues[0].message };
+  }
+
+  const { password } = validatedFields.data;
   const supabase = await createClient();
-  const password = formData.get("password") as string;
 
   const { error } = await supabase.auth.updateUser({
     password: password,
