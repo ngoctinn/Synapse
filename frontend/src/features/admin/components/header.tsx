@@ -1,5 +1,7 @@
 "use client"
 
+import { cn } from "@/shared/lib/utils"
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Button } from "@/shared/ui/button"
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
@@ -13,9 +15,9 @@ import {
 } from "@/shared/ui/dropdown-menu"
 import { Bell, LogOut, Search, Settings, User } from "lucide-react"
 
-export function AdminHeader() {
+export function AdminHeader({ className }: { className?: string }) {
   return (
-    <header className="flex items-center justify-between h-14 px-6 bg-white border-b border-border sticky top-0 z-10">
+    <header className={cn("flex items-center justify-between h-12 px-6 bg-white", className)}>
       <div className="flex items-center gap-4">
         {/* Breadcrumb or Page Title placeholder */}
         <h2 className="text-lg font-semibold text-slate-800">Tổng quan</h2>

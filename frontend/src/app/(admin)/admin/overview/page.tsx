@@ -3,9 +3,9 @@ import { Activity, Users } from "lucide-react"
 
 export default function AdminOverviewPage() {
   return (
-    <div className="space-y-8">
+    <div className="flex flex-col h-full gap-3">
       {/* Stats Grid */}
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4 shrink-0">
         <Card className="rounded-2xl shadow-sm border-none">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -64,27 +64,27 @@ export default function AdminOverviewPage() {
       </div>
 
       {/* Charts & Schedule Section */}
-      <div className="grid gap-6 md:grid-cols-7">
+      <div className="grid gap-3 md:grid-cols-7 flex-1 min-h-0">
         {/* Chart (Placeholder) */}
-        <Card className="col-span-4 rounded-2xl shadow-sm border-none">
+        <Card className="col-span-4 rounded-2xl shadow-sm border-none flex flex-col">
           <CardHeader>
             <CardTitle>Giờ làm việc</CardTitle>
           </CardHeader>
-          <CardContent className="pl-2">
-            <div className="h-[300px] flex items-center justify-center bg-muted/20 rounded-xl border border-dashed">
+          <CardContent className="pl-2 flex-1 min-h-0">
+            <div className="h-full w-full flex items-center justify-center bg-muted/20 rounded-xl border border-dashed">
               <p className="text-muted-foreground">Biểu đồ hoạt động</p>
             </div>
           </CardContent>
         </Card>
 
         {/* Schedule (Placeholder) */}
-        <Card className="col-span-3 rounded-2xl shadow-sm border-none">
+        <Card className="col-span-3 rounded-2xl shadow-sm border-none flex flex-col overflow-hidden">
           <CardHeader>
             <CardTitle>Lịch trình của bạn</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex-1 overflow-y-auto">
             <div className="space-y-4">
-              {[1, 2, 3].map((i) => (
+              {[1, 2, 3, 4, 5, 6].map((i) => (
                 <div key={i} className="flex items-center gap-4 p-3 bg-muted/30 rounded-xl">
                   <div className="w-2 h-2 bg-blue-500 rounded-full" />
                   <div className="flex-1">

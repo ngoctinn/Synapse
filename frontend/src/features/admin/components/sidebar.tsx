@@ -62,7 +62,7 @@ export function AdminSidebar({ className }: { className?: string }) {
   const pathname = usePathname()
 
   return (
-    <aside className={cn("flex flex-col h-full bg-white border-r border-border w-40 transition-all duration-300", className)}>
+    <aside className={cn("flex flex-col h-full bg-white w-40 transition-all duration-300", className)}>
       <div className="h-14 flex items-center px-4 border-b border-border">
         <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent">
           Synapse
