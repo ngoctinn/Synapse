@@ -51,8 +51,6 @@ const formSchema = z
 
 export function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [showCheckEmailDialog, setShowCheckEmailDialog] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -67,8 +65,6 @@ export function RegisterForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    setError(null);
-    setSuccess(null);
 
     const formData = new FormData();
     formData.append("fullName", values.fullName);
@@ -78,16 +74,13 @@ export function RegisterForm() {
     try {
       const result = await registerAction(formData);
       if (result.success) {
-        setSuccess(result.message);
         showToast.success("Đăng ký thành công", result.message);
         setShowCheckEmailDialog(true);
         form.reset();
       } else {
-        setError(result.message || "Đăng ký thất bại. Vui lòng thử lại.");
         showToast.error("Đăng ký thất bại", result.message || "Vui lòng thử lại.");
       }
     } catch {
-      setError("Đã có lỗi xảy ra. Vui lòng thử lại sau.");
       showToast.error("Lỗi hệ thống", "Đã có lỗi xảy ra. Vui lòng thử lại sau.");
     } finally {
       setIsLoading(false);
@@ -172,12 +165,8 @@ export function RegisterForm() {
                   </FormItem>
                 )}
               />
-              {error && (
-                <div className="text-sm font-medium text-destructive">{error}</div>
-              )}
-              {success && (
-                <div className="text-sm font-medium text-green-600">{success}</div>
-              )}
+
+
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? (
                   <>

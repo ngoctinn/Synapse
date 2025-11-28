@@ -3,12 +3,12 @@
 import { cn } from "@/shared/lib/utils"
 import { Button } from "@/shared/ui/button"
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/shared/ui/dialog"
 import { AlertTriangle, CheckCircle2, Info, LucideIcon, XCircle } from "lucide-react"
 
@@ -35,23 +35,23 @@ interface CustomDialogProps {
 const variantStyles = {
   success: {
     icon: CheckCircle2,
-    color: "text-green-500",
-    bg: "bg-green-100 dark:bg-green-900/30",
+    color: "text-emerald-600 dark:text-emerald-500",
+    bg: "bg-emerald-100/50 dark:bg-emerald-500/10",
   },
   info: {
     icon: Info,
-    color: "text-blue-500",
-    bg: "bg-blue-100 dark:bg-blue-900/30",
+    color: "text-blue-600 dark:text-blue-500",
+    bg: "bg-blue-100/50 dark:bg-blue-500/10",
   },
   warning: {
     icon: AlertTriangle,
-    color: "text-yellow-500",
-    bg: "bg-yellow-100 dark:bg-yellow-900/30",
+    color: "text-amber-600 dark:text-amber-500",
+    bg: "bg-amber-100/50 dark:bg-amber-500/10",
   },
   error: {
     icon: XCircle,
-    color: "text-red-500",
-    bg: "bg-red-100 dark:bg-red-900/30",
+    color: "text-red-600 dark:text-red-500",
+    bg: "bg-red-100/50 dark:bg-red-500/10",
   },
 }
 
@@ -70,43 +70,43 @@ export function CustomDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] text-center">
-        <div className="flex flex-col items-center justify-center gap-4 py-4">
-          {/* Signal Emphasis Pattern */}
-          <div className={cn("rounded-full p-3", style.bg)}>
-            <div className={cn("rounded-full bg-white dark:bg-gray-950 p-2 shadow-sm")}>
-              <Icon className={cn("h-8 w-8", style.color)} />
-            </div>
+      <DialogContent className="sm:max-w-[400px] p-6 gap-6 border-none shadow-2xl bg-background/95 backdrop-blur-xl">
+        <div className="flex flex-col items-center text-center gap-2">
+          {/* Icon with subtle glow */}
+          <div className={cn("rounded-full p-3 mb-2 transition-all duration-500", style.bg)}>
+            <Icon className={cn("h-6 w-6", style.color)} strokeWidth={2.5} />
           </div>
 
-          <DialogHeader>
-            <DialogTitle className="text-center text-xl">{title}</DialogTitle>
-            <DialogDescription className="text-center text-base">
+          <DialogHeader className="gap-2">
+            <DialogTitle className="text-xl font-semibold tracking-tight">
+              {title}
+            </DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground leading-relaxed max-w-[300px] mx-auto">
               {description}
             </DialogDescription>
           </DialogHeader>
-
-          <DialogFooter className="flex w-full flex-col gap-2 sm:flex-row sm:justify-center sm:gap-4">
-            {secondaryAction && (
-              <Button
-                variant="outline"
-                onClick={secondaryAction.onClick}
-                className="w-full sm:w-auto"
-              >
-                {secondaryAction.label}
-              </Button>
-            )}
-            {primaryAction && (
-              <Button
-                variant={primaryAction.variant || "default"}
-                onClick={primaryAction.onClick}
-                className="w-full sm:w-auto"
-              >
-                {primaryAction.label}
-              </Button>
-            )}
-          </DialogFooter>
         </div>
+
+        <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-3 w-full">
+          {secondaryAction && (
+            <Button
+              variant="outline"
+              onClick={secondaryAction.onClick}
+              className="w-full sm:flex-1 h-10 rounded-xl border-muted-foreground/20 hover:bg-muted/50 hover:text-foreground transition-colors"
+            >
+              {secondaryAction.label}
+            </Button>
+          )}
+          {primaryAction && (
+            <Button
+              variant={primaryAction.variant || "default"}
+              onClick={primaryAction.onClick}
+              className="w-full sm:flex-1 h-10 rounded-xl shadow-lg shadow-primary/20 transition-all hover:shadow-primary/30"
+            >
+              {primaryAction.label}
+            </Button>
+          )}
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )

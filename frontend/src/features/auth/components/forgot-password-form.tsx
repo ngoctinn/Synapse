@@ -38,8 +38,6 @@ const formSchema = z.object({
 
 export function ForgotPasswordForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [showCheckEmailDialog, setShowCheckEmailDialog] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -51,8 +49,6 @@ export function ForgotPasswordForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    setError(null);
-    setSuccess(null);
 
     const formData = new FormData();
     formData.append("email", values.email);
@@ -60,16 +56,13 @@ export function ForgotPasswordForm() {
     try {
       const result = await forgotPasswordAction(formData);
       if (result.success) {
-        setSuccess(result.message);
         showToast.success("Đã gửi yêu cầu", result.message);
         setShowCheckEmailDialog(true);
         form.reset();
       } else {
-        setError("Gửi yêu cầu thất bại. Vui lòng thử lại.");
         showToast.error("Gửi yêu cầu thất bại", "Vui lòng thử lại.");
       }
     } catch {
-      setError("Đã có lỗi xảy ra. Vui lòng thử lại sau.");
       showToast.error("Lỗi hệ thống", "Đã có lỗi xảy ra. Vui lòng thử lại sau.");
     } finally {
       setIsLoading(false);
@@ -105,12 +98,8 @@ export function ForgotPasswordForm() {
                   </FormItem>
                 )}
               />
-              {error && (
-                <div className="text-sm font-medium text-destructive">{error}</div>
-              )}
-              {success && (
-                <div className="text-sm font-medium text-green-600">{success}</div>
-              )}
+
+
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? (
                   <>

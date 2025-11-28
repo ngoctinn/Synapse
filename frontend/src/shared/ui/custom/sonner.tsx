@@ -16,27 +16,23 @@ interface CustomToastProps {
 const variantStyles = {
   success: {
     icon: CheckCircle2,
-    color: "text-green-600 dark:text-green-500",
-    bg: "bg-green-100/50 dark:bg-green-900/20",
-    borderLeft: "border-l-green-500",
+    color: "text-emerald-600 dark:text-emerald-500",
+    bg: "bg-emerald-100/50 dark:bg-emerald-500/10",
   },
   info: {
     icon: Info,
     color: "text-blue-600 dark:text-blue-500",
-    bg: "bg-blue-100/50 dark:bg-blue-900/20",
-    borderLeft: "border-l-blue-500",
+    bg: "bg-blue-100/50 dark:bg-blue-500/10",
   },
   warning: {
     icon: AlertTriangle,
     color: "text-amber-600 dark:text-amber-500",
-    bg: "bg-amber-100/50 dark:bg-amber-900/20",
-    borderLeft: "border-l-amber-500",
+    bg: "bg-amber-100/50 dark:bg-amber-500/10",
   },
   error: {
     icon: XCircle,
     color: "text-red-600 dark:text-red-500",
-    bg: "bg-red-100/50 dark:bg-red-900/20",
-    borderLeft: "border-l-red-500",
+    bg: "bg-red-100/50 dark:bg-red-500/10",
   },
 }
 
@@ -47,26 +43,25 @@ export function CustomToast({ variant, title, description, t }: CustomToastProps
   return (
     <div
       className={cn(
-        "flex w-full items-center gap-4 rounded-xl border border-border/50 p-4 shadow-lg transition-all", // items-center, gap-4, rounded-xl
-        "bg-background/95 backdrop-blur-md",
-        "border-l-[6px]", // Thicker left border
-        style.borderLeft
+        "flex w-full items-start gap-3 rounded-2xl border bg-background/95 p-4 shadow-xl backdrop-blur-md transition-all",
+        "border-border/50 hover:border-border",
+        "dark:bg-zinc-900/95"
       )}
     >
-      <div className={cn("flex-shrink-0 rounded-full p-2", style.bg)}> {/* Reduced padding */}
-        <Icon size={20} className={style.color} /> {/* Reduced icon size */}
+      <div className={cn("flex-shrink-0 rounded-full p-1.5 mt-0.5", style.bg)}>
+        <Icon size={18} className={style.color} strokeWidth={2.5} />
       </div>
-      <div className="flex-1">
-        <h3 className="font-semibold text-foreground text-sm">{title}</h3> {/* text-sm */}
+      <div className="flex-1 grid gap-1">
+        <h3 className="font-semibold text-sm leading-none tracking-tight">{title}</h3>
         {description && (
-          <p className="mt-1 text-sm text-muted-foreground leading-relaxed">{description}</p>
+          <p className="text-xs text-muted-foreground leading-relaxed opacity-90">{description}</p>
         )}
       </div>
       <button
         onClick={() => toast.dismiss(t)}
-        className="flex-shrink-0 rounded-full p-2 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors" // rounded-full, p-2
+        className="flex-shrink-0 rounded-full p-1 text-muted-foreground/50 hover:text-foreground hover:bg-muted/50 transition-colors -mr-1 -mt-1"
       >
-        <X size={18} />
+        <X size={16} />
       </button>
     </div>
   )

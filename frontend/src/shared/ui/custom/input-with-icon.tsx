@@ -14,9 +14,9 @@ export interface InputWithIconProps
 const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
   ({ className, icon: Icon, iconProps, rightIcon: RightIcon, rightIconProps, ...props }, ref) => {
     return (
-      <div className="relative">
+      <div className="relative group">
         {Icon && (
-          <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+          <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary group-has-[input[aria-invalid=true]]:text-destructive">
             <Icon size={18} {...iconProps} />
           </div>
         )}
@@ -30,7 +30,7 @@ const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
           {...props}
         />
         {RightIcon && (
-          <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+          <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary group-has-[input[aria-invalid=true]]:text-destructive">
             <RightIcon size={18} {...rightIconProps} />
           </div>
         )}
@@ -41,3 +41,4 @@ const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
 InputWithIcon.displayName = "InputWithIcon"
 
 export { InputWithIcon }
+

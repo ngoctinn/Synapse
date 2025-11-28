@@ -17,8 +17,8 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
     const [showPassword, setShowPassword] = React.useState(false)
 
     return (
-      <div className="relative">
-        <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+      <div className="relative group">
+        <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary group-has-[input[aria-invalid=true]]:text-destructive">
           <Icon size={18} {...iconProps} />
         </div>
         <Input
@@ -31,15 +31,15 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
           type="button"
           variant="ghost"
           size="icon"
-          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground transition-colors group-focus-within:text-primary group-has-[input[aria-invalid=true]]:text-destructive"
           onClick={() => setShowPassword((prev) => !prev)}
           tabIndex={-1} // Skip tab index for this button to keep flow natural
           aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
         >
           {showPassword ? (
-            <EyeOff size={18} className="text-muted-foreground" />
+            <EyeOff size={18} />
           ) : (
-            <Eye size={18} className="text-muted-foreground" />
+            <Eye size={18} />
           )}
         </Button>
       </div>

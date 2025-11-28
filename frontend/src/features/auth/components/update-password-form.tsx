@@ -43,7 +43,6 @@ const formSchema = z
 export function UpdatePasswordForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -56,7 +55,6 @@ export function UpdatePasswordForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     setError(null);
-    setSuccess(null);
 
     const formData = new FormData();
     formData.append("password", values.password);
@@ -64,7 +62,6 @@ export function UpdatePasswordForm() {
     try {
       const result = await updatePasswordAction(formData);
       if (result.success) {
-        setSuccess(result.message);
         showToast.success("Cập nhật thành công", result.message);
         form.reset();
       } else {
@@ -125,9 +122,7 @@ export function UpdatePasswordForm() {
             {error && (
               <div className="text-sm font-medium text-destructive">{error}</div>
             )}
-            {success && (
-              <div className="text-sm font-medium text-green-600">{success}</div>
-            )}
+
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
                 <>

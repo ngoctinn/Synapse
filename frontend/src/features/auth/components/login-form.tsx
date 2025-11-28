@@ -11,23 +11,23 @@ import * as z from "zod";
 
 import { Button } from "@/shared/ui/button";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/shared/ui/card";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { PasswordInput } from "@/shared/ui/custom/password-input";
 import { showToast } from "@/shared/ui/custom/sonner";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form";
 import { loginAction } from "../actions";
 
@@ -43,7 +43,6 @@ const formSchema = z.object({
 export function LoginForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,7 +54,6 @@ export function LoginForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    setError(null);
 
     const formData = new FormData();
     formData.append("email", values.email);
@@ -67,11 +65,9 @@ export function LoginForm() {
         showToast.success("Đăng nhập thành công", "Chào mừng bạn quay trở lại hệ thống.");
         router.push("/");
       } else {
-        setError("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
         showToast.error("Đăng nhập thất bại", "Vui lòng kiểm tra lại thông tin.");
       }
     } catch {
-      setError("Đã có lỗi xảy ra. Vui lòng thử lại sau.");
       showToast.error("Lỗi hệ thống", "Đã có lỗi xảy ra. Vui lòng thử lại sau.");
     } finally {
       setIsLoading(false);
@@ -130,9 +126,7 @@ export function LoginForm() {
                 </FormItem>
               )}
             />
-            {error && (
-              <div className="text-sm font-medium text-destructive">{error}</div>
-            )}
+
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
                 <>
