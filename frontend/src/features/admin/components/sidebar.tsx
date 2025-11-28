@@ -3,6 +3,7 @@
 import { cn } from "@/shared/lib/utils"
 import {
   Bell,
+  Briefcase,
   Calendar,
   CreditCard,
   LayoutDashboard,
@@ -25,6 +26,11 @@ const sidebarItems = [
     title: "Lịch hẹn",
     href: "/admin/appointments",
     icon: Calendar,
+  },
+  {
+    title: "Nhân sự",
+    href: "/admin/staff",
+    icon: Briefcase,
   },
   {
     title: "Tài khoản",
