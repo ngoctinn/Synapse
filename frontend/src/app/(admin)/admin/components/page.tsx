@@ -1,13 +1,19 @@
+"use client"
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card"
 import { Checkbox } from "@/shared/ui/checkbox"
+import { DatePicker } from "@/shared/ui/custom/date-picker"
+import { StripCalendar } from "@/shared/ui/custom/strip-calendar"
+import { TimePicker } from "@/shared/ui/custom/time-picker"
 import { Input } from "@/shared/ui/input"
 import { Label } from "@/shared/ui/label"
 import { Separator } from "@/shared/ui/separator"
 import { Switch } from "@/shared/ui/switch"
 import { Mail, User } from "lucide-react"
+import { useState } from "react"
 
 export default function ComponentsPage() {
   return (
@@ -120,7 +126,44 @@ export default function ComponentsPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Appointment Components */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Appointment Components</CardTitle>
+            <CardDescription>Các component chọn ngày giờ (Localized).</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid w-full max-w-sm items-center gap-1.5">
+              <Label>Chọn ngày (Vietnamese)</Label>
+              <DatePickerDemo />
+            </div>
+            <div className="grid w-full max-w-sm items-center gap-1.5">
+              <Label>Chọn giờ (24h)</Label>
+              <TimePickerDemo />
+            </div>
+            <div className="grid w-full max-w-sm items-center gap-1.5">
+              <Label>Strip Calendar (Week View)</Label>
+              <StripCalendarDemo />
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
+}
+
+function DatePickerDemo() {
+  const [date, setDate] = useState<Date | undefined>(new Date())
+  return <DatePicker date={date} setDate={setDate} />
+}
+
+function TimePickerDemo() {
+  const [time, setTime] = useState<string>("09:00")
+  return <TimePicker value={time} onChange={setTime} />
+}
+
+function StripCalendarDemo() {
+  const [date, setDate] = useState<Date>(new Date())
+  return <StripCalendar date={date} onDateChange={setDate} />
 }
