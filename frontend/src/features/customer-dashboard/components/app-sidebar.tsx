@@ -1,12 +1,12 @@
 "use client"
 
-import { HeaderUserDropdown } from "@/features/layout"
+import { HeaderUserDropdown } from "@/features/layout/components/header"
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarRail,
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarHeader,
+    SidebarRail,
 } from "@/shared/ui/sidebar"
 import * as React from "react"
 import { UserProfile } from "../types"

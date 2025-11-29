@@ -1,3 +1,4 @@
 export { Footer } from "./components/footer"
-export { Header, HeaderLogo, HeaderUserDropdown } from "./components/header"
+export { HeaderLogo, HeaderUserDropdown } from "./components/header"
+export { HeaderContainer as Header } from "./components/header/header-container"
 

@@ -1,99 +1,24 @@
 "use client"
 
 import { logoutAction } from "@/features/auth/actions"
-import { createClient } from "@/shared/lib/supabase/client"
 import * as React from "react"
 import { HeaderAuthButtons } from "./auth-buttons"
 import { HeaderLogo } from "./logo"
 import { MobileMenuOverlay, MobileMenuTrigger } from "./mobile-menu"
 import { MobileUserSheet } from "./mobile-user-sheet"
 import { HeaderNav } from "./nav-links"
-import { HeaderAuthSkeleton } from "./skeleton"
+import { UserProfile } from "./types"
 import { HeaderUserDropdown } from "./user-dropdown"
-
 
 export { HeaderLogo } from "./logo"
 export { HeaderUserDropdown } from "./user-dropdown"
 
-interface UserProfile {
-  id: string
-  email: string
-  full_name: string | null
-  avatar_url: string | null
-  phone_number: string | null
-  role: string
+interface HeaderProps {
+  userProfile: UserProfile | null
 }
 
-export function Header() {
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false)
-  const [userProfile, setUserProfile] = React.useState<UserProfile | null>(null)
+export function Header({ userProfile }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
-  const [isLoading, setIsLoading] = React.useState(true)
-
-  // Check auth state and fetch user profile
-  React.useEffect(() => {
-    const checkAuthAndFetchProfile = async (session: any | null = null) => {
-      try {
-        let currentSession = session
-
-        if (!currentSession) {
-          const supabase = createClient()
-          const { data } = await supabase.auth.getSession()
-          currentSession = data.session
-        }
-
-        if (currentSession?.access_token) {
-          setIsLoggedIn(true)
-
-          // Fetch user profile from Backend API
-          const apiUrl = process.env.NEXT_PUBLIC_API_URL
-          if (apiUrl) {
-            const response = await fetch(`${apiUrl}/users/me`, {
-              headers: {
-                'Authorization': `Bearer ${currentSession.access_token}`
-              }
-            })
-
-            if (response.ok) {
-              const profile = await response.json()
-              setUserProfile(profile)
-            } else {
-              console.error("Failed to fetch profile:", response.status)
-              // If 401, maybe token expired? But Supabase should handle refresh.
-              // We could try to force refresh or just log it for now.
-            }
-          }
-        } else {
-          setIsLoggedIn(false)
-          setUserProfile(null)
-        }
-      } catch (error) {
-        console.error("Auth check failed:", error)
-        setIsLoggedIn(false)
-        setUserProfile(null)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    checkAuthAndFetchProfile()
-
-    // Subscribe to auth changes
-    const supabase = createClient()
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: string, session: any) => {
-      if (session) {
-        setIsLoggedIn(true)
-        checkAuthAndFetchProfile(session)
-      } else {
-        setIsLoggedIn(false)
-        setUserProfile(null)
-      }
-    })
-
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [])
 
   // Close mobile menu when resizing to desktop
   React.useEffect(() => {
@@ -108,8 +33,6 @@ export function Header() {
 
   const handleLogout = async () => {
     await logoutAction()
-    setIsLoggedIn(false)
-    setUserProfile(null)
     setIsMobileMenuOpen(false)
   }
 
@@ -118,6 +41,8 @@ export function Header() {
     email: userProfile.email,
     avatar: userProfile.avatar_url || undefined
   } : undefined
+
+  const isLoggedIn = !!userProfile
 
   return (
     <header
@@ -132,9 +57,7 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-          {isLoading || (isLoggedIn && !userProfile) ? (
-            <HeaderAuthSkeleton />
-          ) : isLoggedIn && userProfile ? (
+          {isLoggedIn && user ? (
             <>
               <div className="hidden md:block">
                 <HeaderUserDropdown user={user} onLogout={handleLogout} />
