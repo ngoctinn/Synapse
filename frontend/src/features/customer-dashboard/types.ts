@@ -28,6 +28,8 @@ export interface UserProfile {
   email: string;
   phone: string;
   avatarUrl?: string;
+  address?: string;
+  dateOfBirth?: string; // ISO String or YYYY-MM-DD
   membershipTier?: 'SILVER' | 'GOLD' | 'PLATINUM';
   loyaltyPoints?: number;
 }

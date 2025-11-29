@@ -1,6 +1,7 @@
 "use client"
 
 import { Button } from "@/shared/ui/button"
+import { showToast } from "@/shared/ui/custom/sonner"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -11,7 +12,6 @@ import {
 } from "@/shared/ui/dropdown-menu"
 import { KeyRound, MoreHorizontal, Pencil, Trash2 } from "lucide-react"
 import { useState } from "react"
-import { toast } from "sonner"
 import { Staff } from "../../types"
 import { DeleteStaffDialog } from "./delete-staff-dialog"
 
@@ -26,9 +26,7 @@ export function StaffActions({ staff }: StaffActionsProps) {
     // In a real app, this would call an API
     console.log("Deleting staff:", staff.id)
     setShowDeleteDialog(false)
-    toast.success("Đã xóa nhân viên thành công", {
-      description: `Nhân viên ${staff.name} đã bị xóa khỏi hệ thống.`,
-    })
+    showToast.success("Đã xóa nhân viên thành công", `Nhân viên ${staff.name} đã bị xóa khỏi hệ thống.`)
   }
 
   return (

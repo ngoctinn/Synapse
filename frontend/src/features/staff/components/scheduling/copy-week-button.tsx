@@ -1,8 +1,8 @@
 "use client"
 
 import { Button } from "@/shared/ui/button"
+import { showToast } from "@/shared/ui/custom/sonner"
 import { Copy } from "lucide-react"
-import { toast } from "sonner"
 
 interface CopyWeekButtonProps {
   onCopy: () => void
@@ -12,9 +12,7 @@ export function CopyWeekButton({ onCopy }: CopyWeekButtonProps) {
   const handleCopy = () => {
     // In a real app, this would call an API
     onCopy()
-    toast.success("Đã sao chép lịch làm việc từ tuần trước", {
-      description: "Dữ liệu đã được áp dụng cho tuần hiện tại.",
-    })
+    showToast.success("Đã sao chép lịch làm việc từ tuần trước", "Dữ liệu đã được áp dụng cho tuần hiện tại.")
   }
 
   return (
