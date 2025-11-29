@@ -1,9 +1,9 @@
 "use client"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
+import { InviteStaffModal } from "./invite-staff-modal"
 import { PermissionMatrix } from "./permissions/permission-matrix"
 import { StaffScheduler } from "./scheduling/staff-scheduler"
-import { StaffModal } from "./staff-list/staff-modal"
 import { StaffTable } from "./staff-list/staff-table"
 
 export function StaffPage() {
@@ -17,7 +17,7 @@ export function StaffPage() {
               <TabsTrigger value="permissions" className="data-[state=active]:bg-white data-[state=active]:shadow-sm text-xs font-medium px-4">Phân quyền</TabsTrigger>
               <TabsTrigger value="scheduling" className="data-[state=active]:bg-white data-[state=active]:shadow-sm text-xs font-medium px-4">Lịch làm việc</TabsTrigger>
             </TabsList>
-            <StaffModal />
+            <InviteStaffModal />
           </div>
 
           <div className="flex-1 overflow-hidden relative">

@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from src.common.security import get_current_user
 from src.modules.users.models import User
-from src.modules.users.schemas import UserRead, UserUpdate
+from src.modules.users.schemas import UserRead, UserUpdate, InviteStaffRequest
 from src.modules.users.service import UserService
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -27,3 +27,23 @@ async def update_user_me(
     """
     return await service.update_profile(current_user, user_update)
 
+
+@router.post("/invite", response_model=UserRead)
+async def invite_staff(
+    invite_request: "InviteStaffRequest",
+    current_user: Annotated[User, Depends(get_current_user)],
+    service: Annotated[UserService, Depends(UserService)]
+):
+    """
+    Mời nhân viên mới tham gia hệ thống.
+    Chỉ dành cho Quản lý (Manager).
+    """
+    # Kiểm tra quyền Manager
+    if current_user.role != "manager":
+        from fastapi import HTTPException, status
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Bạn không có quyền thực hiện thao tác này"
+        )
+
+    return await service.invite_staff(invite_request)

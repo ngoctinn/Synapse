@@ -26,3 +26,12 @@ class UserUpdate(SQLModel):
     phone_number: str | None = None
     address: str | None = None
     date_of_birth: date | None = None
+
+class InviteStaffRequest(SQLModel):
+    email: str
+    full_name: str
+    phone_number: str
+    role: str
+    skill_ids: list[int] | None = None
+    address: str | None = None
+    date_of_birth: date | None = None
