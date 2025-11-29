@@ -11,12 +11,17 @@ export async function HeaderContainer() {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL
       if (apiUrl) {
+        const FETCH_TIMEOUT_MS = 2000
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
+
         const response = await fetch(`${apiUrl}/users/me`, {
           headers: {
             'Authorization': `Bearer ${session.access_token}`
           },
-          cache: 'no-store' // Ensure fresh data
-        })
+          cache: 'no-store',
+          signal: controller.signal
+        }).finally(() => clearTimeout(timeoutId))
 
         if (response.ok) {
           userProfile = await response.json()

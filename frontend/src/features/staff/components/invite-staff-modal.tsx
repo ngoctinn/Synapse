@@ -102,8 +102,8 @@ export function InviteStaffModal() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <Mail className="mr-2 h-4 w-4" />
+        <Button size="sm" className="h-9 text-xs shadow-sm">
+          <Mail className="mr-2 h-3.5 w-3.5" />
           Mời nhân viên
         </Button>
       </DialogTrigger>

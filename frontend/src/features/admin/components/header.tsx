@@ -4,51 +4,43 @@ import { cn } from "@/shared/lib/utils"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Button } from "@/shared/ui/button"
-import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
-import { Bell, LogOut, Search, Settings, User } from "lucide-react"
+import { Bell, LogOut, Settings, User } from "lucide-react"
 
 export function AdminHeader({ className }: { className?: string }) {
   return (
-    <header className={cn("flex items-center justify-between h-12 px-6 bg-white", className)}>
+    <header className={cn("flex items-center justify-between h-10 px-4 bg-white border-b border-slate-100", className)}>
       <div className="flex items-center gap-4">
         {/* Breadcrumb or Page Title placeholder */}
-        <h2 className="text-lg font-semibold text-slate-800">Tổng quan</h2>
+        <h2 className="text-sm font-semibold text-slate-800">Tổng quan</h2>
       </div>
 
-      <div className="flex items-center gap-4">
-        <div className="relative w-80 hidden md:block">
-          <InputWithIcon
-            icon={Search}
-            placeholder="Tìm kiếm..."
-            className="bg-white"
-          />
-        </div>
+      <div className="flex items-center gap-2">
+        {/* Search input removed as requested */}
 
-        <Button variant="ghost" size="icon" className="relative rounded-full w-10 h-10 hover:bg-slate-100 text-slate-600">
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
+        <Button variant="ghost" size="icon" className="relative rounded-full w-8 h-8 hover:bg-slate-100 text-slate-600">
+          <Bell className="w-4 h-4" />
+          <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-red-500 rounded-full border border-white" />
         </Button>
 
-        <div className="h-8 w-px bg-slate-200 mx-1" />
+        <div className="h-6 w-px bg-slate-200 mx-1" />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-3 pl-2 pr-4 h-12 rounded-full hover:bg-slate-50">
-              <Avatar className="w-9 h-9 border border-slate-200">
+            <Button variant="ghost" className="flex items-center gap-2 pl-1 pr-2 h-8 rounded-full hover:bg-slate-50">
+              <Avatar className="w-7 h-7 border border-slate-200">
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>AB</AvatarFallback>
               </Avatar>
               <div className="hidden md:block text-left">
-                <p className="text-xs font-semibold text-slate-700 leading-none">Dr. Alice Brown</p>
-                <p className="text-[10px] text-muted-foreground mt-1">Bác sĩ Tim mạch</p>
+                <p className="text-xs font-semibold text-slate-700 leading-none">Alice Brown</p>
               </div>
             </Button>
           </DropdownMenuTrigger>

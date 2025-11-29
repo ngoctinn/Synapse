@@ -172,7 +172,7 @@
     @apply bg-background text-foreground text-[17px];
   }
   html {
-    font-size: 18px;
+    font-size: 16px;
     scroll-behavior: smooth;
   }
 }
