@@ -1,5 +1,4 @@
-import { AdminHeader } from "@/features/admin/components/header"
-import { AdminSidebar } from "@/features/admin/components/sidebar"
+import { AdminHeader, AdminSidebar } from "@/features/admin"
 
 export default function AdminLayout({
   children,

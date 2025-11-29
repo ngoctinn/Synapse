@@ -1,7 +1,4 @@
-import { CTASection } from "@/features/landing-page/components/cta-section";
-import { Features } from "@/features/landing-page/components/features";
-import { Hero } from "@/features/landing-page/components/hero";
-import { Testimonials } from "@/features/landing-page/components/testimonials";
+import { CTASection, Features, Hero, Testimonials } from "@/features/landing-page";
 import { Footer, Header } from "@/features/layout";
 
 export default function Home() {

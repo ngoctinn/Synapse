@@ -1,4 +1,4 @@
-import { StaffPage } from "@/features/staff/components/staff-page"
+import { StaffPage } from "@/features/staff"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
