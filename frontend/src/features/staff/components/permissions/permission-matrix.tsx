@@ -3,32 +3,17 @@
 import { Badge } from "@/shared/ui/badge"
 import { Checkbox } from "@/shared/ui/checkbox"
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/shared/ui/table"
+import { Lock } from "lucide-react"
 import { useState } from "react"
+import { MODULES, ROLES } from "../../constants"
 import { BulkSaveBar } from "./bulk-save-bar"
-
-// Mock Modules
-const MODULES = [
-  { id: "dashboard", name: "Dashboard" },
-  { id: "staff", name: "Quản lý Nhân viên" },
-  { id: "customers", name: "Quản lý Khách hàng" },
-  { id: "services", name: "Quản lý Dịch vụ" },
-  { id: "inventory", name: "Kho & Sản phẩm" },
-  { id: "reports", name: "Báo cáo & Thống kê" },
-  { id: "settings", name: "Cấu hình Hệ thống" },
-]
-
-const ROLES = [
-  { id: "ADMIN", name: "Quản trị viên", variant: "destructive" },
-  { id: "RECEPTIONIST", name: "Lễ tân", variant: "default" },
-  { id: "TECHNICIAN", name: "Kỹ thuật viên", variant: "secondary" },
-] as const
 
 // Mock Initial Permissions (Module ID -> Role ID -> boolean)
 const INITIAL_PERMISSIONS: Record<string, Record<string, boolean>> = {
@@ -76,34 +61,45 @@ export function PermissionMatrix() {
   }
 
   return (
-    <div className="relative space-y-4">
-      <div className="rounded-md border bg-white shadow-sm">
+    <div className="h-full flex flex-col relative">
+      <div className="flex-1 overflow-auto">
         <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[200px]">Chức năng (Module)</TableHead>
+          <TableHeader className="sticky top-0 z-10 bg-white shadow-[0_1px_0_0_rgba(0,0,0,0.1)]">
+            <TableRow className="hover:bg-transparent border-b-0">
+              <TableHead className="w-[250px] font-semibold pl-6 bg-white">Chức năng (Module)</TableHead>
               {ROLES.map((role) => (
-                <TableHead key={role.id} className="text-center">
-                  <Badge variant={role.variant}>{role.name}</Badge>
+                <TableHead key={role.id} className="text-center h-12 bg-white">
+                  <Badge variant={role.variant} className="rounded-md px-3 py-1">
+                    {role.name}
+                  </Badge>
                 </TableHead>
               ))}
             </TableRow>
           </TableHeader>
           <TableBody>
             {MODULES.map((module) => (
-              <TableRow key={module.id}>
-                <TableCell className="font-medium">{module.name}</TableCell>
-                {ROLES.map((role) => (
-                  <TableCell key={role.id} className="text-center">
-                    <div className="flex justify-center">
-                      <Checkbox
-                        checked={permissions[module.id]?.[role.id] || false}
-                        onCheckedChange={() => handleToggle(module.id, role.id)}
-                        disabled={role.id === "ADMIN"} // Admin always has full access usually
-                      />
-                    </div>
-                  </TableCell>
-                ))}
+              <TableRow key={module.id} className="hover:bg-muted/5 transition-colors">
+                <TableCell className="font-medium pl-6 py-4">{module.name}</TableCell>
+                {ROLES.map((role) => {
+                  const isDisabled = role.id === "ADMIN"
+                  return (
+                    <TableCell key={role.id} className="text-center p-0">
+                      <div className="flex justify-center items-center h-full w-full py-2">
+                        {isDisabled ? (
+                          <div className="h-8 w-8 flex items-center justify-center text-muted-foreground/30 bg-muted/10 rounded-md">
+                            <Lock className="h-4 w-4" />
+                          </div>
+                        ) : (
+                          <Checkbox
+                            checked={permissions[module.id]?.[role.id] || false}
+                            onCheckedChange={() => handleToggle(module.id, role.id)}
+                            className="h-5 w-5 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
+                          />
+                        )}
+                      </div>
+                    </TableCell>
+                  )
+                })}
               </TableRow>
             ))}
           </TableBody>

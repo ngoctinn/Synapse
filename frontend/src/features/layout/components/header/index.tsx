@@ -2,7 +2,6 @@
 
 import { logoutAction } from "@/features/auth/actions"
 import { createClient } from "@/shared/lib/supabase/client"
-import { cn } from "@/shared/lib/utils"
 import * as React from "react"
 import { HeaderAuthButtons } from "./auth-buttons"
 import { HeaderLogo } from "./logo"
@@ -30,8 +29,6 @@ export function Header() {
   const [userProfile, setUserProfile] = React.useState<UserProfile | null>(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(true)
-  const [isVisible, setIsVisible] = React.useState(true)
-  const [lastScrollY, setLastScrollY] = React.useState(0)
 
   // Check auth state and fetch user profile
   React.useEffect(() => {
@@ -109,26 +106,6 @@ export function Header() {
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
-  // Handle scroll behavior
-  React.useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY
-
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        // Scrolling down & past threshold -> Hide
-        setIsVisible(false)
-      } else {
-        // Scrolling up -> Show
-        setIsVisible(true)
-      }
-
-      setLastScrollY(currentScrollY)
-    }
-
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [lastScrollY])
-
   const handleLogout = async () => {
     await logoutAction()
     setIsLoggedIn(false)
@@ -144,15 +121,12 @@ export function Header() {
 
   return (
     <header
-      className={cn(
-        "fixed top-4 left-0 right-0 z-50 flex justify-center px-4 transition-transform duration-300 pointer-events-none",
-        !isVisible && "-translate-y-[150%]"
-      )}
+      className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"
     >
-      <div className="flex h-14 w-full max-w-5xl items-center justify-between rounded-full border bg-background/80 px-6 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-background/60 pointer-events-auto">
+      <div className="flex h-12 w-full max-w-4xl items-center justify-between rounded-full border bg-background/95 px-6 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-background/80 pointer-events-auto">
         <div className="flex items-center gap-6">
           <HeaderLogo />
-          <nav className="hidden md:flex items-center space-x-6">
+          <nav className="hidden md:flex items-center space-x-5">
             <HeaderNav />
           </nav>
         </div>

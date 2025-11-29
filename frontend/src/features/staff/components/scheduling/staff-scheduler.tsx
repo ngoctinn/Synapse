@@ -1,83 +1,64 @@
 "use client"
 
-import {
-    DndContext,
-    DragEndEvent,
-    DragOverlay,
-    DragStartEvent,
-    MouseSensor,
-    TouchSensor,
-    useSensor,
-    useSensors,
-} from "@dnd-kit/core"
 import { addDays, format, startOfWeek } from "date-fns"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, Eraser, Paintbrush, X } from "lucide-react"
 import { useState } from "react"
 
 import { Button } from "@/shared/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/shared/ui/popover"
 import { MOCK_SCHEDULES } from "../../data/mock-schedules"
 import { MOCK_SHIFTS } from "../../data/mock-shifts"
 import { MOCK_STAFF } from "../../data/mock-staff"
 import { Schedule, Shift } from "../../types"
+import { AddShiftDialog } from "./add-shift-dialog"
 import { CopyWeekButton } from "./copy-week-button"
-import { DraggableShift } from "./draggable-shift"
 import { ScheduleGrid } from "./schedule-grid"
 
 export function StaffScheduler() {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [schedules, setSchedules] = useState<Schedule[]>(MOCK_SCHEDULES)
-  const [activeShift, setActiveShift] = useState<Shift | null>(null)
 
-  const sensors = useSensors(
-    useSensor(MouseSensor, {
-      activationConstraint: {
-        distance: 10,
-      },
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 250,
-        tolerance: 5,
-      },
-    })
-  )
+  // Dialog State
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
+  const [selectedCell, setSelectedCell] = useState<{ staffId: string, date: Date } | null>(null)
 
-  const handleDragStart = (event: DragStartEvent) => {
-    if (event.active.data.current?.type === "shift") {
-      setActiveShift(event.active.data.current.shift as Shift)
-    }
+  const handleAddClick = (staffId: string, date: Date) => {
+    setSelectedCell({ staffId, date })
+    setIsAddDialogOpen(true)
   }
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event
-    setActiveShift(null)
+  const handleAddShift = (shift: Shift) => {
+    if (!selectedCell) return
 
-    if (!over) return
+    const dateStr = format(selectedCell.date, "yyyy-MM-dd")
 
-    const shift = active.data.current?.shift as Shift
-    const cellId = over.id as string // Format: "staffId:date"
-    const [staffId, dateStr] = cellId.split(":")
+    setSchedules((prev) => {
+      // Remove existing schedule for this cell if any
+      const filtered = prev.filter(
+        (s) => !(s.staffId === selectedCell.staffId && s.date === dateStr)
+      )
 
-    if (shift && staffId && dateStr) {
-      setSchedules((prev) => {
-        // Remove existing schedule for this cell if any
-        const filtered = prev.filter(
-          (s) => !(s.staffId === staffId && s.date === dateStr)
-        )
+      // Add new schedule
+      const newSchedule: Schedule = {
+        id: Math.random().toString(36).substr(2, 9),
+        staffId: selectedCell.staffId,
+        date: dateStr,
+        shiftId: shift.id,
+        status: "DRAFT",
+        // Store custom shift details if needed
+        customShift: shift
+      } as any // Cast to any to bypass type check for customShift for now
 
-        // Add new schedule
-        const newSchedule: Schedule = {
-          id: Math.random().toString(36).substr(2, 9),
-          staffId,
-          date: dateStr,
-          shiftId: shift.id,
-          status: "DRAFT",
-        }
+      return [...filtered, newSchedule]
+    })
+  }
 
-        return [...filtered, newSchedule]
-      })
-    }
+  const handleRemoveSchedule = (scheduleId: string) => {
+    setSchedules((prev) => prev.filter((s) => s.id !== scheduleId))
   }
 
   const handleCopyWeek = () => {
@@ -92,69 +73,194 @@ export function StaffScheduler() {
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 })
   const weekEnd = addDays(weekStart, 6)
 
-  return (
-    <DndContext
-      sensors={sensors}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-    >
-      <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-6 h-full">
-        {/* Sidebar: Shifts Source */}
-        <div className="space-y-4">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium">Ca làm việc mẫu</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-2">
-              {MOCK_SHIFTS.map((shift) => (
-                <DraggableShift key={shift.id} shift={shift} />
-              ))}
-            </CardContent>
-          </Card>
+  const selectedStaffName = selectedCell
+    ? MOCK_STAFF.find(s => s.id === selectedCell.staffId)?.name
+    : undefined
 
-          <div className="p-4 bg-muted/30 rounded-lg text-xs text-muted-foreground">
-            <p>Kéo thả các ca làm việc vào lưới bên phải để xếp lịch.</p>
+  const selectedDateStr = selectedCell
+    ? format(selectedCell.date, "dd/MM/yyyy")
+    : undefined
+
+  // Paint Mode State
+  const [selectedTool, setSelectedTool] = useState<Shift | "eraser" | null>(null)
+  const [isPaintOpen, setIsPaintOpen] = useState(false)
+
+  const handlePaint = (staffId: string, date: Date) => {
+    if (!selectedTool) return
+
+    const dateStr = format(date, "yyyy-MM-dd")
+
+    setSchedules((prev) => {
+      // Remove existing schedule for this cell
+      const filtered = prev.filter(
+        (s) => !(s.staffId === staffId && s.date === dateStr)
+      )
+
+      // If eraser, just return filtered
+      if (selectedTool === "eraser") {
+        return filtered
+      }
+
+      // If shift tool, add new schedule
+      const newSchedule: Schedule = {
+        id: Math.random().toString(36).substr(2, 9),
+        staffId: staffId,
+        date: dateStr,
+        shiftId: selectedTool.id,
+        status: "DRAFT",
+        customShift: selectedTool
+      } as any
+
+      return [...filtered, newSchedule]
+    })
+  }
+
+  return (
+    <div className="flex flex-col gap-4 h-full">
+      {/* Toolbar */}
+      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 px-4 py-3 border-b shrink-0">
+        {/* Left: Navigation */}
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="icon" onClick={prevWeek} className="h-8 w-8">
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <div className="text-sm font-medium w-[180px] text-center">
+            {format(weekStart, "dd/MM")} - {format(weekEnd, "dd/MM/yyyy")}
           </div>
+          <Button variant="outline" size="icon" onClick={nextWeek} className="h-8 w-8">
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="sm" onClick={resetToday} className="h-8 text-xs">
+            Hôm nay
+          </Button>
         </div>
 
-        {/* Main: Schedule Grid */}
-        <div className="flex flex-col gap-4 min-w-0">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon" onClick={prevWeek}>
-                <ChevronLeft className="h-4 w-4" />
+        {/* Right: Actions & Tools */}
+        <div className="flex items-center gap-2 ml-auto xl:ml-0">
+          {/* Paint Tools */}
+          <Popover open={isPaintOpen} onOpenChange={setIsPaintOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={`
+                  h-8 gap-2 min-w-[140px] justify-between text-xs
+                  ${selectedTool ? "border-primary/50 bg-primary/5 text-primary" : "text-muted-foreground"}
+                `}
+              >
+                <div className="flex items-center gap-2">
+                  <Paintbrush className="h-3.5 w-3.5" />
+                  <span className="font-medium">
+                    {selectedTool === "eraser"
+                      ? "Đang xóa"
+                      : selectedTool
+                        ? selectedTool.name
+                        : "Chế độ tô"}
+                  </span>
+                </div>
+                {selectedTool && selectedTool !== "eraser" && (
+                  <span
+                    className="w-2 h-2 rounded-full ring-1 ring-offset-1"
+                    style={{ backgroundColor: selectedTool.color, borderColor: selectedTool.color }}
+                  />
+                )}
               </Button>
-              <div className="text-sm font-medium w-[200px] text-center">
-                {format(weekStart, "dd/MM")} - {format(weekEnd, "dd/MM/yyyy")}
+            </PopoverTrigger>
+            <PopoverContent className="w-56 p-2" align="end">
+              <div className="space-y-1">
+                <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
+                  Chọn công cụ để tô
+                </div>
+                {MOCK_SHIFTS.map(shift => (
+                  <button
+                    key={shift.id}
+                    onClick={() => {
+                      setSelectedTool(current => current === shift ? null : shift)
+                      setIsPaintOpen(false)
+                    }}
+                    className={`
+                      w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors
+                      ${selectedTool === shift
+                        ? "bg-primary/10 text-primary font-medium"
+                        : "hover:bg-muted text-foreground"}
+                    `}
+                  >
+                    <span
+                      className="w-2.5 h-2.5 rounded-full shrink-0"
+                      style={{ backgroundColor: shift.color }}
+                    />
+                    {shift.name}
+                  </button>
+                ))}
+                <div className="h-px bg-border my-1" />
+                <button
+                  onClick={() => {
+                    setSelectedTool(current => current === "eraser" ? null : "eraser")
+                    setIsPaintOpen(false)
+                  }}
+                  className={`
+                    w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors
+                    ${selectedTool === "eraser"
+                      ? "bg-destructive/10 text-destructive font-medium"
+                      : "hover:bg-muted text-foreground"}
+                  `}
+                >
+                  <Eraser className="h-4 w-4" />
+                  Xóa lịch
+                </button>
+                {selectedTool && (
+                  <>
+                    <div className="h-px bg-border my-1" />
+                    <button
+                      onClick={() => {
+                        setSelectedTool(null)
+                        setIsPaintOpen(false)
+                      }}
+                      className="w-full text-left px-2 py-1.5 rounded-md text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                    >
+                      Tắt chế độ tô
+                    </button>
+                  </>
+                )}
               </div>
-              <Button variant="outline" size="icon" onClick={nextWeek}>
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="sm" onClick={resetToday}>
-                Hôm nay
-              </Button>
-            </div>
-            <CopyWeekButton onCopy={handleCopyWeek} />
-          </div>
+            </PopoverContent>
+          </Popover>
 
-          <ScheduleGrid
-            staffList={MOCK_STAFF}
-            schedules={schedules}
-            currentDate={currentDate}
-          />
+          {selectedTool && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-muted-foreground hover:text-foreground"
+              onClick={() => setSelectedTool(null)}
+              title="Tắt chế độ tô"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+
+          <div className="w-px h-4 bg-border mx-1" />
+
+          <CopyWeekButton onCopy={handleCopyWeek} />
         </div>
       </div>
+      <div className="flex-1 min-h-0">
+        <ScheduleGrid
+          staffList={MOCK_STAFF}
+          schedules={schedules}
+          currentDate={currentDate}
+          onAddClick={handleAddClick}
+          onRemoveClick={handleRemoveSchedule}
+          selectedTool={selectedTool}
+          onPaint={handlePaint}
+        />
+      </div>
 
-      <DragOverlay>
-        {activeShift ? (
-          <div
-            className="flex items-center justify-center p-3 rounded-md shadow-lg border text-sm font-medium bg-card text-card-foreground opacity-80 w-[200px]"
-            style={{ borderLeftColor: activeShift.color, borderLeftWidth: "4px" }}
-          >
-            {activeShift.name}
-          </div>
-        ) : null}
-      </DragOverlay>
-    </DndContext>
+      <AddShiftDialog
+        open={isAddDialogOpen}
+        onOpenChange={setIsAddDialogOpen}
+        onAddShift={handleAddShift}
+        staffName={selectedStaffName}
+        dateStr={selectedDateStr}
+      />
+    </div>
   )
 }

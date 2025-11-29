@@ -10,21 +10,21 @@ const testimonials = [
     name: "Nguyễn Thu Hà",
     role: "Chủ Spa Lotus",
     content: "Synapse đã thay đổi hoàn toàn cách tôi quản lý spa. Từ việc đặt lịch đến quản lý nhân viên, mọi thứ đều trở nên dễ dàng và chuyên nghiệp hơn.",
-    avatar: "/avatars/01.png",
+    avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Ha",
     initials: "NH"
   },
   {
     name: "Trần Minh Tuấn",
     role: "Quản lý Aura Beauty",
     content: "Giao diện đẹp, dễ sử dụng. Khách hàng của tôi rất thích tính năng đặt lịch online. Doanh thu tăng 30% sau 2 tháng sử dụng.",
-    avatar: "/avatars/02.png",
+    avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Tuan",
     initials: "MT"
   },
   {
     name: "Lê Thị Mai",
     role: "CEO Mai Spa",
     content: "Đội ngũ hỗ trợ rất nhiệt tình. Hệ thống báo cáo chi tiết giúp tôi nắm bắt tình hình kinh doanh mọi lúc mọi nơi.",
-    avatar: "/avatars/03.png",
+    avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Mai",
     initials: "LM"
   }
 ]

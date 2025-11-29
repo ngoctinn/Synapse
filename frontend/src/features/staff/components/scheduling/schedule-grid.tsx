@@ -1,109 +1,176 @@
-"use client"
-
 import { cn } from "@/shared/lib/utils"
-import { useDroppable } from "@dnd-kit/core"
-import { addDays, format, startOfWeek } from "date-fns"
+import { addDays, format, isSameDay, startOfWeek } from "date-fns"
 import { vi } from "date-fns/locale"
+import { Plus, X } from "lucide-react"
+import { useEffect, useState } from "react"
 import { MOCK_SHIFTS } from "../../data/mock-shifts"
-import { Schedule, Staff } from "../../types"
+import { Schedule, Shift, Staff } from "../../types"
 
 interface ScheduleGridProps {
   staffList: Staff[]
   schedules: Schedule[]
   currentDate: Date
+  onAddClick: (staffId: string, date: Date) => void
+  onRemoveClick: (scheduleId: string) => void
+  selectedTool?: Shift | "eraser" | null
+  onPaint?: (staffId: string, date: Date) => void
 }
 
-export function ScheduleGrid({ staffList, schedules, currentDate }: ScheduleGridProps) {
+export function ScheduleGrid({
+  staffList,
+  schedules,
+  currentDate,
+  onAddClick,
+  onRemoveClick,
+  selectedTool,
+  onPaint
+}: ScheduleGridProps) {
   const startOfCurrentWeek = startOfWeek(currentDate, { weekStartsOn: 1 })
   const weekDays = Array.from({ length: 7 }).map((_, i) => addDays(startOfCurrentWeek, i))
+  const today = new Date()
+
+  const [isDragging, setIsDragging] = useState(false)
+
+  const handleMouseDown = (staffId: string, date: Date) => {
+    if (selectedTool && onPaint) {
+      setIsDragging(true)
+      onPaint(staffId, date)
+    }
+  }
+
+  const handleMouseEnter = (staffId: string, date: Date) => {
+    if (isDragging && selectedTool && onPaint) {
+      onPaint(staffId, date)
+    }
+  }
+
+  const handleMouseUp = () => {
+    setIsDragging(false)
+  }
+
+  // Global mouse up to catch release outside cells
+  useEffect(() => {
+    window.addEventListener("mouseup", handleMouseUp)
+    return () => window.removeEventListener("mouseup", handleMouseUp)
+  }, [])
 
   return (
-    <div className="border rounded-md overflow-hidden bg-white shadow-sm">
-      {/* Header Row */}
-      <div className="grid grid-cols-[200px_repeat(7,1fr)] bg-muted/50 border-b">
-        <div className="p-3 font-medium text-sm border-r flex items-center">Nhân viên</div>
-        {weekDays.map((day) => (
-          <div key={day.toString()} className="p-3 text-center border-r last:border-r-0">
-            <div className="text-xs text-muted-foreground capitalize">
-              {format(day, "EEEE", { locale: vi })}
-            </div>
-            <div className="font-semibold text-sm">
-              {format(day, "dd/MM")}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Staff Rows */}
-      <div className="divide-y">
-        {staffList.map((staff) => (
-          <div key={staff.id} className="grid grid-cols-[200px_repeat(7,1fr)] group">
-            {/* Staff Info */}
-            <div className="p-3 border-r flex items-center gap-3 bg-card group-hover:bg-muted/30 transition-colors">
-              <div className="w-8 h-8 rounded-full bg-muted overflow-hidden">
-                 {/* Avatar placeholder */}
-                 <img src={staff.avatarUrl} alt={staff.name} className="w-full h-full object-cover" />
-              </div>
-              <div className="flex flex-col overflow-hidden">
-                <span className="text-sm font-medium truncate">{staff.name}</span>
-                <span className="text-xs text-muted-foreground truncate">{staff.role}</span>
-              </div>
-            </div>
-
-            {/* Days Cells */}
+    <div className="flex flex-col h-full select-none">
+      <div className="overflow-x-auto flex-1">
+        <div className="min-w-[1000px]">
+          {/* Header Row */}
+          <div className="grid grid-cols-[220px_repeat(7,1fr)] bg-muted/30 border-b">
+            <div className="p-4 font-medium text-sm border-r flex items-center text-muted-foreground sticky left-0 bg-white z-20 shadow-[1px_0_0_0_rgba(0,0,0,0.05)]">Nhân viên</div>
             {weekDays.map((day) => {
-              const dateStr = format(day, "yyyy-MM-dd")
-              const cellId = `${staff.id}:${dateStr}`
-              const schedule = schedules.find(
-                (s) => s.staffId === staff.id && s.date === dateStr
-              )
-              const shift = schedule ? MOCK_SHIFTS.find((s) => s.id === schedule.shiftId) : null
-
+              const isToday = isSameDay(day, today)
               return (
-                <DroppableCell key={cellId} id={cellId} shift={shift} />
+                <div
+                  key={day.toString()}
+                  className={cn(
+                    "p-3 text-center border-r last:border-r-0 flex flex-col justify-center transition-colors",
+                    isToday ? "bg-primary/5" : ""
+                  )}
+                >
+                  <div className={cn("text-xs capitalize mb-1", isToday ? "text-primary font-medium" : "text-muted-foreground")}>
+                    {format(day, "EEEE", { locale: vi })}
+                  </div>
+                  <div className={cn("font-semibold text-sm", isToday ? "text-primary" : "")}>
+                    {format(day, "dd/MM")}
+                  </div>
+                </div>
               )
             })}
           </div>
-        ))}
+
+          {/* Staff Rows */}
+          <div className="divide-y">
+            {staffList.map((staff) => (
+              <div key={staff.id} className="grid grid-cols-[220px_repeat(7,1fr)] group hover:bg-muted/5 transition-colors">
+                {/* Staff Info */}
+                <div className="p-3 border-r flex items-center gap-3 bg-white group-hover:bg-muted/5 transition-colors sticky left-0 z-10 shadow-[1px_0_0_0_rgba(0,0,0,0.05)]">
+                  <div className="w-9 h-9 rounded-full bg-muted overflow-hidden border shrink-0">
+                     <img src={staff.avatarUrl} alt={staff.name} className="w-full h-full object-cover" />
+                  </div>
+                  <div className="flex flex-col overflow-hidden min-w-0">
+                    <span className="text-sm font-medium truncate">{staff.name}</span>
+                    <span className="text-xs text-muted-foreground truncate">{staff.role}</span>
+                  </div>
+                </div>
+
+                {/* Days Cells */}
+                {weekDays.map((day) => {
+                  const dateStr = format(day, "yyyy-MM-dd")
+                  const schedule = schedules.find(
+                    (s) => s.staffId === staff.id && s.date === dateStr
+                  )
+
+                  let shift = schedule ? MOCK_SHIFTS.find((s) => s.id === schedule.shiftId) : null
+                  if (schedule && !shift) {
+                      shift = (schedule as any).customShift
+                  }
+
+                  const isToday = isSameDay(day, today)
+
+                  return (
+                    <div
+                      key={day.toString()}
+                      onMouseDown={() => handleMouseDown(staff.id, day)}
+                      onMouseEnter={() => handleMouseEnter(staff.id, day)}
+                      className={cn(
+                        "p-1.5 border-r last:border-r-0 min-h-[72px] relative transition-all duration-200",
+                        !schedule && isToday ? "bg-primary/[0.02]" : "",
+                        !schedule && !isToday ? "bg-white hover:bg-muted/20" : "",
+                        selectedTool ? "cursor-crosshair" : "cursor-default"
+                      )}
+                    >
+                      {shift ? (
+                        <div
+                          className={cn(
+                            "h-full w-full rounded-lg p-2 text-xs font-medium border flex flex-col justify-center gap-1 shadow-sm transition-all hover:shadow-md group/shift relative",
+                            shift.type === "OFF"
+                              ? "bg-muted/50 text-muted-foreground border-dashed"
+                              : "bg-white text-card-foreground border-l-4",
+                             selectedTool === "eraser" && isDragging ? "opacity-50" : ""
+                          )}
+                          style={shift.type !== "OFF" ? { borderLeftColor: shift.color } : undefined}
+                        >
+                          <span className="truncate font-semibold">{shift.name}</span>
+                          <span className="text-[10px] opacity-80 flex items-center gap-1">
+                            {shift.startTime} - {shift.endTime}
+                          </span>
+
+                          {!selectedTool && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                onRemoveClick(schedule!.id)
+                              }}
+                              className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover/shift:opacity-100 transition-opacity flex items-center justify-center shadow-sm z-10"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="h-full w-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                          {!selectedTool && (
+                            <button
+                              onClick={() => onAddClick(staff.id, day)}
+                              className="h-8 w-8 rounded-full bg-muted/50 hover:bg-primary/10 hover:text-primary flex items-center justify-center transition-colors"
+                            >
+                              <Plus className="h-4 w-4" />
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
-  )
-}
-
-interface DroppableCellProps {
-  id: string
-  shift: any // Replace with Shift type
-}
-
-function DroppableCell({ id, shift }: DroppableCellProps) {
-  const { isOver, setNodeRef } = useDroppable({
-    id: id,
-  })
-
-  return (
-    <div
-      ref={setNodeRef}
-      className={cn(
-        "p-1 border-r last:border-r-0 min-h-[60px] relative transition-colors",
-        isOver ? "bg-primary/10 ring-2 ring-inset ring-primary/50" : "bg-background hover:bg-muted/20"
-      )}
-    >
-      {shift ? (
-        <div
-          className={cn(
-            "h-full w-full rounded-md p-2 text-xs font-medium border flex flex-col justify-center gap-1",
-            shift.type === "OFF" ? "bg-muted text-muted-foreground border-dashed" : "bg-card text-card-foreground shadow-sm"
-          )}
-          style={shift.type !== "OFF" ? { borderLeftColor: shift.color, borderLeftWidth: "4px" } : undefined}
-        >
-          <span className="truncate">{shift.name}</span>
-          <span className="text-[10px] opacity-80">{shift.startTime} - {shift.endTime}</span>
-        </div>
-      ) : (
-        <div className="h-full w-full flex items-center justify-center text-muted-foreground/20 text-xs">
-          +
-        </div>
-      )}
     </div>
   )
 }

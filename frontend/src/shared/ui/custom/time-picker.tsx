@@ -8,6 +8,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/shared/ui/popover"
+import { ScrollArea } from "@/shared/ui/scroll-area"
 import { Clock } from "lucide-react"
 import * as React from "react"
 
@@ -61,37 +62,41 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
         <div className="flex gap-4">
           <div className="flex flex-col gap-2">
             <Label className="text-xs text-center">Giờ</Label>
-            <div className="h-48 overflow-y-auto border rounded-md p-1 w-16 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-              {hours.map((h) => (
-                <div
-                  key={h}
-                  className={cn(
-                    "cursor-pointer px-2 py-1 text-center text-sm rounded hover:bg-slate-100",
-                    hour === h && "bg-primary text-primary-foreground hover:bg-primary"
-                  )}
-                  onClick={() => handleTimeChange(h, minute)}
-                >
-                  {h}
-                </div>
-              ))}
-            </div>
+            <ScrollArea className="h-48 w-16 border rounded-md">
+              <div className="p-1">
+                {hours.map((h) => (
+                  <div
+                    key={h}
+                    className={cn(
+                      "cursor-pointer px-2 py-1 text-center text-sm rounded hover:bg-slate-100",
+                      hour === h && "bg-primary text-primary-foreground hover:bg-primary"
+                    )}
+                    onClick={() => handleTimeChange(h, minute)}
+                  >
+                    {h}
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
           </div>
           <div className="flex flex-col gap-2">
             <Label className="text-xs text-center">Phút</Label>
-            <div className="h-48 overflow-y-auto border rounded-md p-1 w-16 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-              {minutes.map((m) => (
-                <div
-                  key={m}
-                  className={cn(
-                    "cursor-pointer px-2 py-1 text-center text-sm rounded hover:bg-slate-100",
-                    minute === m && "bg-primary text-primary-foreground hover:bg-primary"
-                  )}
-                  onClick={() => handleTimeChange(hour, m)}
-                >
-                  {m}
-                </div>
-              ))}
-            </div>
+            <ScrollArea className="h-48 w-16 border rounded-md">
+              <div className="p-1">
+                {minutes.map((m) => (
+                  <div
+                    key={m}
+                    className={cn(
+                      "cursor-pointer px-2 py-1 text-center text-sm rounded hover:bg-slate-100",
+                      minute === m && "bg-primary text-primary-foreground hover:bg-primary"
+                    )}
+                    onClick={() => handleTimeChange(hour, m)}
+                  >
+                    {m}
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
           </div>
         </div>
       </PopoverContent>

@@ -26,22 +26,24 @@ export function DraggableShift({ shift }: DraggableShiftProps) {
   return (
     <div
       ref={setNodeRef}
-      style={style}
       {...listeners}
       {...attributes}
       className={cn(
-        "flex items-center justify-center p-3 rounded-md shadow-sm cursor-grab active:cursor-grabbing border text-sm font-medium transition-colors hover:shadow-md",
-        shift.type === "OFF" ? "bg-muted text-muted-foreground border-dashed" : "bg-card text-card-foreground"
+        "flex items-center gap-2 px-3 py-1.5 rounded-lg shadow-sm cursor-grab active:cursor-grabbing border text-xs font-medium transition-all hover:shadow-md bg-white group shrink-0",
+        shift.type === "OFF" ? "bg-muted/50 border-dashed" : "border-l-4"
       )}
+      style={{
+        ...style,
+        borderLeftColor: shift.type !== "OFF" ? shift.color : undefined
+      }}
     >
-      <div
-        className="w-3 h-3 rounded-full mr-2"
-        style={{ backgroundColor: shift.color }}
-      />
-      {shift.name}
-      <span className="ml-auto text-xs text-muted-foreground">
-        {shift.startTime} - {shift.endTime}
-      </span>
+      {shift.type !== "OFF" && (
+        <div
+          className="h-2 w-2 rounded-full shrink-0"
+          style={{ backgroundColor: shift.color }}
+        />
+      )}
+      <span className="truncate max-w-[80px]">{shift.name}</span>
     </div>
   )
 }

@@ -2,16 +2,14 @@
 
 import { cn } from "@/shared/lib/utils"
 import {
-  Bell,
-  Briefcase,
-  Calendar,
-  CreditCard,
-  LayoutDashboard,
-  LogOut,
-  MessageSquare,
-  Palette,
-  Settings,
-  Users,
+    Bell,
+    Briefcase,
+    Calendar,
+    CreditCard,
+    LayoutDashboard,
+    LogOut,
+    MessageSquare,
+    Palette
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -32,16 +30,7 @@ const sidebarItems = [
     href: "/admin/staff",
     icon: Briefcase,
   },
-  {
-    title: "Tài khoản",
-    href: "/admin/accounts",
-    icon: Users,
-  },
-  {
-    title: "Lịch làm",
-    href: "/admin/schedules",
-    icon: Settings,
-  },
+
   {
     title: "Dịch vụ",
     href: "/admin/services",

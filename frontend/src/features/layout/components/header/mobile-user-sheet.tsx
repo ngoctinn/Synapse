@@ -28,7 +28,7 @@ export function MobileUserSheet({ user, onLogout }: MobileUserSheetProps) {
   const defaultUser = {
     name: "Admin User",
     email: "admin@synapse.com",
-    avatar: "/avatars/01.png"
+    avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Admin"
   }
   const currentUser = user || defaultUser
 
