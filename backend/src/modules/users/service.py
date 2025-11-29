@@ -5,6 +5,8 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from src.app.dependencies import get_db_session
 from src.modules.users.models import User
 from src.modules.users.schemas import UserUpdate, InviteStaffRequest
+from supabase import create_client, Client
+from src.app.config import settings
 
 class UserService:
     def __init__(self, session: Annotated[AsyncSession, Depends(get_db_session)]):
@@ -39,9 +41,6 @@ class UserService:
         """
         Mời nhân viên mới qua email sử dụng Supabase Admin API.
         """
-        from supabase import create_client, Client
-        from src.app.config import settings
-
         # 1. Khởi tạo Supabase Admin Client
         supabase: Client = create_client(
             settings.SUPABASE_URL,
