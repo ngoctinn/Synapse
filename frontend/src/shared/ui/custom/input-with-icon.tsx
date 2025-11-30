@@ -9,14 +9,19 @@ export interface InputWithIconProps
   iconProps?: LucideProps
   rightIcon?: LucideIcon
   rightIconProps?: LucideProps
+  error?: boolean | string
 }
 
 const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
-  ({ className, icon: Icon, iconProps, rightIcon: RightIcon, rightIconProps, ...props }, ref) => {
+  ({ className, icon: Icon, iconProps, rightIcon: RightIcon, rightIconProps, error, ...props }, ref) => {
     return (
       <div className="relative group">
         {Icon && (
-          <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary group-has-[input[aria-invalid=true]]:text-destructive">
+          <div className={cn(
+            "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 transition-colors",
+            !error && "text-muted-foreground group-focus-within:text-primary",
+            error && "text-destructive group-focus-within:text-destructive"
+          )}>
             <Icon size={18} {...iconProps} />
           </div>
         )}
@@ -27,10 +32,11 @@ const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
             className
           )}
           ref={ref}
+          aria-invalid={!!error}
           {...props}
         />
         {RightIcon && (
-          <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary group-has-[input[aria-invalid=true]]:text-destructive">
+          <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary">
             <RightIcon size={18} {...rightIconProps} />
           </div>
         )}
