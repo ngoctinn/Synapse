@@ -5,7 +5,7 @@ import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card"
 import { Checkbox } from "@/shared/ui/checkbox"
-import { DatePicker } from "@/shared/ui/custom/date-picker"
+import { DatePicker } from "@/shared/ui/custom"
 import { StripCalendar } from "@/shared/ui/custom/strip-calendar"
 import { TimePicker } from "@/shared/ui/custom/time-picker"
 import { Input } from "@/shared/ui/input"
@@ -139,6 +139,10 @@ export default function ComponentsPage() {
               <DatePickerDemo />
             </div>
             <div className="grid w-full max-w-sm items-center gap-1.5">
+              <Label>Chọn ngày sinh (1990 - 2010)</Label>
+              <DatePickerBirthDemo />
+            </div>
+            <div className="grid w-full max-w-sm items-center gap-1.5">
               <Label>Chọn giờ (24h)</Label>
               <TimePickerDemo />
             </div>
@@ -149,6 +153,10 @@ export default function ComponentsPage() {
           </CardContent>
         </Card>
       </div>
+      {/* Spacer for scrolling */}
+      <div className="h-[500px] flex items-center justify-center text-muted-foreground border-t border-dashed">
+        Khu vực cuộn để test vị trí Popover
+      </div>
     </div>
   )
 }
@@ -158,8 +166,21 @@ function DatePickerDemo() {
   return <DatePicker date={date} setDate={setDate} />
 }
 
+function DatePickerBirthDemo() {
+  const [date, setDate] = useState<Date | undefined>()
+  return (
+    <DatePicker 
+      date={date} 
+      setDate={setDate} 
+      placeholder="Chọn ngày sinh"
+      fromYear={1990}
+      toYear={2010}
+    />
+  )
+}
+
 function TimePickerDemo() {
-  const [time, setTime] = useState<string>("09:00")
+  const [time, setTime] = useState<number>(60)
   return <TimePicker value={time} onChange={setTime} />
 }
 

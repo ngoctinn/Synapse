@@ -1,12 +1,10 @@
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Mail } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState, useActionState, startTransition } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 
 import { Button } from "@/shared/ui/button";
 import {
@@ -29,52 +27,58 @@ import {
   FormMessage,
 } from "@/shared/ui/form";
 import { forgotPasswordAction } from "../actions";
-
-const formSchema = z.object({
-  email: z.string().email({
-    message: "Email không hợp lệ.",
-  }),
-});
+import { forgotPasswordSchema, type ForgotPasswordInput } from "../schemas";
 
 export function ForgotPasswordForm() {
-  const [isLoading, setIsLoading] = useState(false);
+  // Quản lý trạng thái dialog kiểm tra email
   const [showCheckEmailDialog, setShowCheckEmailDialog] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  // Sử dụng useActionState để quản lý trạng thái của Server Action
+  // initialState là { success: false, message: "" }
+  const [state, action, isPending] = useActionState(forgotPasswordAction, {
+    success: false,
+    message: "",
+  });
+
+  // Khởi tạo form với React Hook Form và Zod Resolver
+  const form = useForm<ForgotPasswordInput>({
+    resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
       email: "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true);
-
-    const formData = new FormData();
-    formData.append("email", values.email);
-
-    try {
-      const result = await forgotPasswordAction(formData);
-      if (result.success) {
-        showToast.success("Đã gửi yêu cầu", result.message);
+  // Xử lý side-effects khi state thay đổi (thành công hoặc thất bại)
+  useEffect(() => {
+    if (state?.message) {
+      if (state.success) {
+        showToast.success("Đã gửi yêu cầu", state.message);
         setShowCheckEmailDialog(true);
         form.reset();
       } else {
-        showToast.error("Gửi yêu cầu thất bại", "Vui lòng thử lại.");
+        showToast.error("Gửi yêu cầu thất bại", state.message);
       }
-    } catch {
-      showToast.error("Lỗi hệ thống", "Đã có lỗi xảy ra. Vui lòng thử lại sau.");
-    } finally {
-      setIsLoading(false);
     }
-  }
+  }, [state, form]);
+
+  // Hàm xử lý submit form
+  // Chuyển đổi dữ liệu từ RHF sang FormData để gửi lên Server Action
+  const onSubmit = (values: ForgotPasswordInput) => {
+    const formData = new FormData();
+    formData.append("email", values.email);
+    
+    // Gọi action (đã được wrap bởi useActionState)
+    startTransition(() => {
+      action(formData);
+    });
+  };
 
   return (
     <>
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle className="text-2xl">Quên mật khẩu</CardTitle>
-          <CardDescription>
+      <Card className="w-full shadow-lg border-none bg-card/50 backdrop-blur-sm">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold tracking-tight">Quên mật khẩu</CardTitle>
+          <CardDescription className="text-muted-foreground">
             Nhập email của bạn để nhận liên kết đặt lại mật khẩu.
           </CardDescription>
         </CardHeader>
@@ -90,7 +94,8 @@ export function ForgotPasswordForm() {
                     <FormControl>
                       <InputWithIcon
                         icon={Mail}
-                        placeholder="Nhập email của bạn"
+                        placeholder="name@example.com"
+                        className="h-11"
                         {...field}
                       />
                     </FormControl>
@@ -99,9 +104,12 @@ export function ForgotPasswordForm() {
                 )}
               />
 
-
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? (
+              <Button 
+                type="submit" 
+                className="w-full h-11 font-medium transition-all hover:scale-[1.02]" 
+                disabled={isPending}
+              >
+                {isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Đang xử lý...
@@ -116,7 +124,10 @@ export function ForgotPasswordForm() {
         <CardFooter className="justify-center">
           <div className="text-sm text-muted-foreground">
             Nhớ mật khẩu?{" "}
-            <Link href="/login" className="text-primary hover:underline">
+            <Link 
+              href="/login" 
+              className="text-primary font-medium hover:underline underline-offset-4 transition-colors"
+            >
               Đăng nhập
             </Link>
           </div>
@@ -137,6 +148,8 @@ export function ForgotPasswordForm() {
         secondaryAction={{
           label: "Gửi lại",
           onClick: () => {
+            // Logic gửi lại có thể gọi lại action hoặc một action khác
+            // Ở đây tạm thời chỉ hiện toast thông báo giả lập
             showToast.info("Đã gửi lại", "Email xác thực mới đã được gửi.");
           },
         }}

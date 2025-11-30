@@ -76,7 +76,7 @@ export async function logoutAction() {
   redirect("/login");
 }
 
-export async function forgotPasswordAction(formData: FormData) {
+export async function forgotPasswordAction(prevState: any, formData: FormData) {
   const rawData = {
     email: formData.get("email"),
   };

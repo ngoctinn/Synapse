@@ -13,7 +13,7 @@ export default function AdminLayout({
       {/* Main Content */}
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden gap-3">
         <AdminHeader className="rounded-2xl shadow-sm border-none" />
-        <main className="flex-1 overflow-hidden scroll-smooth">
+        <main className="flex-1 overflow-y-auto scroll-smooth">
           <div className="w-full h-full">
             {children}
           </div>

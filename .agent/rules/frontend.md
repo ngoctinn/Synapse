@@ -217,3 +217,5 @@ Bắt buộc import 'server-only' ở đầu các file Data Access Layer.
 Component gánh vác quá nhiều logic (fetch data, form handling, UI display), vi phạm SRP.
 
 Tách nhỏ logic theo kiến trúc FSD (Logic nghiệp vụ -> Feature/Action; Logic Data -> Entity API; Logic hiển thị -> Widget/Shared UI).
+
+QUAN TRỌNG: LUÔN VIẾT COMMENTS BẰNG TIẾNG VIỆT NGẮN GỌN ĐỂ GIẢI THÍCH CHO CÁC CODE PHỨC TẠP
