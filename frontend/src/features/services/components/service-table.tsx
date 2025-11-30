@@ -85,12 +85,12 @@ export function ServiceTable({ services, availableSkills }: ServiceTableProps) {
 
   if (services.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-center border rounded-md bg-slate-50/50 dashed border-slate-200">
-        <div className="p-4 rounded-full bg-slate-100 mb-4">
-          <Plus className="w-8 h-8 text-slate-400" />
+      <div className="flex flex-col items-center justify-center py-16 text-center border rounded-xl bg-white/50 backdrop-blur-sm border-dashed border-slate-300">
+        <div className="p-4 rounded-full bg-blue-50 mb-4 animate-in zoom-in duration-500">
+          <Plus className="w-10 h-10 text-blue-500" />
         </div>
-        <h3 className="text-lg font-medium text-slate-900">Chưa có dịch vụ nào</h3>
-        <p className="text-sm text-slate-500 max-w-sm mt-1 mb-4">
+        <h3 className="text-xl font-semibold text-slate-900">Chưa có dịch vụ nào</h3>
+        <p className="text-sm text-slate-500 max-w-sm mt-2 mb-6">
           Bắt đầu bằng cách tạo dịch vụ đầu tiên của bạn. Dịch vụ sẽ hiển thị trên trang đặt lịch.
         </p>
         <CreateServiceDialog availableSkills={availableSkills} />
@@ -100,10 +100,10 @@ export function ServiceTable({ services, availableSkills }: ServiceTableProps) {
 
   return (
     <>
-      <div className="rounded-md border bg-white shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-slate-200/60 bg-white/80 backdrop-blur-xl shadow-sm overflow-hidden">
         <div className="max-h-[calc(100vh-220px)] overflow-y-auto relative">
           <Table>
-            <TableHeader className="sticky top-0 z-20 bg-white shadow-sm">
+            <TableHeader className="sticky top-0 z-20 bg-white/95 backdrop-blur shadow-sm">
               <TableRow>
                 <TableHead className="bg-white">Tên dịch vụ</TableHead>
                 <TableHead className="hidden md:table-cell bg-white">Thời lượng</TableHead>
@@ -115,7 +115,7 @@ export function ServiceTable({ services, availableSkills }: ServiceTableProps) {
             </TableHeader>
             <TableBody>
               {services.map((service) => (
-                <TableRow key={service.id} className="hover:bg-slate-50/50 transition-colors">
+                <TableRow key={service.id} className="hover:bg-blue-50/50 transition-all duration-200 group">
                 <TableCell className="font-medium">
                   <div className="flex flex-col">
                     <span>{service.name}</span>
@@ -146,8 +146,21 @@ export function ServiceTable({ services, availableSkills }: ServiceTableProps) {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Badge variant={service.is_active ? "default" : "secondary"} className={service.is_active ? "bg-green-500 hover:bg-green-600" : ""}>
-                    {service.is_active ? "Hoạt động" : "Ẩn"}
+                  <Badge variant="outline" className={service.is_active ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100" : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"}>
+                    {service.is_active ? (
+                        <span className="flex items-center gap-1.5">
+                            <span className="relative flex h-2 w-2">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            </span>
+                            Hoạt động
+                        </span>
+                    ) : (
+                        <span className="flex items-center gap-1.5">
+                            <span className="h-2 w-2 rounded-full bg-slate-400"></span>
+                            Ẩn
+                        </span>
+                    )}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right">

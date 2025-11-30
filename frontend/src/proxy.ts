@@ -8,12 +8,12 @@ export default async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - images/ (public images)
-     * Feel free to modify this pattern to include more paths.
+     * Khớp tất cả các đường dẫn yêu cầu ngoại trừ các đường dẫn bắt đầu bằng:
+     * - _next/static (tệp tĩnh)
+     * - _next/image (tệp tối ưu hóa hình ảnh)
+     * - favicon.ico (tệp favicon)
+     * - images/ (hình ảnh công khai)
+     * Bạn có thể thoải mái sửa đổi mẫu này để bao gồm thêm nhiều đường dẫn hơn.
      */
     '/((?!_next/static|_next/image|favicon.ico|images/|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
