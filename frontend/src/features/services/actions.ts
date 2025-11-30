@@ -44,7 +44,7 @@ export async function createService(data: ServiceCreateInput): Promise<{ success
   // Validate dữ liệu đầu vào tại server
   const validation = serviceSchema.safeParse(data);
   if (!validation.success) {
-    return { success: false, message: "Dữ liệu không hợp lệ: " + validation.error.errors[0].message };
+    return { success: false, message: "Dữ liệu không hợp lệ: " + validation.error.issues[0].message };
   }
 
   const res = await fetchWithAuth("/services", {
@@ -93,7 +93,7 @@ export async function updateService(id: string, data: ServiceUpdateInput): Promi
   // Lưu ý: ServiceUpdateInput có thể thiếu trường, nên dùng partial()
   const validation = serviceSchema.partial().safeParse(data);
   if (!validation.success) {
-    return { success: false, message: "Dữ liệu không hợp lệ: " + validation.error.errors[0].message };
+    return { success: false, message: "Dữ liệu không hợp lệ: " + validation.error.issues[0].message };
   }
 
   const res = await fetchWithAuth(`/services/${id}`, {
