@@ -1,4 +1,5 @@
 export * from "./date-picker"
+export * from "./birthday-picker"
 export * from "./dialog"
 export * from "./input-with-icon"
 export * from "./money-input"
