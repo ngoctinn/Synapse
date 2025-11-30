@@ -19,6 +19,10 @@ class Settings(BaseSettings):
     SUPABASE_JWT_SECRET: str
     SUPABASE_SERVICE_ROLE_KEY: str
 
+    # JWT Settings
+    JWT_ALGORITHM: str = "HS256"
+    JWT_AUDIENCE: str = "authenticated"
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_ignore_empty=True,

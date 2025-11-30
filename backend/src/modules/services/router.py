@@ -6,7 +6,7 @@ from src.modules.services.schemas import (
     SkillRead, SkillCreate, SkillUpdate
 )
 from src.modules.services.service import ServiceManagementService
-from src.common.security import get_current_user
+from src.modules.users import get_current_user
 from src.modules.users.models import User
 from src.modules.users.constants import UserRole
 

@@ -1,6 +1,6 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends
-from src.common.security import get_current_user
+from src.modules.users.dependencies import get_current_user
 from src.modules.users.models import User
 from src.modules.users.schemas import UserRead, UserUpdate, InviteStaffRequest
 from src.modules.users.service import UserService
