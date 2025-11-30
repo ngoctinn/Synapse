@@ -20,6 +20,8 @@ const statusMap: Record<string, { label: string; variant: "default" | "secondary
   NO_SHOW: { label: "Vắng mặt", variant: "destructive" },
 }
 
+import { motion } from "framer-motion"
+
 export function AppointmentList({ appointments }: AppointmentListProps) {
   if (appointments.length === 0) {
     return (
@@ -31,63 +33,85 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
     )
   }
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  }
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  }
+
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+    <motion.div
+      variants={container}
+      initial="hidden"
+      animate="show"
+      className="grid gap-4 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3"
+    >
       {appointments.map((appt) => (
-        <Card key={appt.id} className="group overflow-hidden transition-all duration-300 hover:shadow-md hover:border-primary/50">
-          <CardHeader className="pb-3 bg-muted/30">
-            <div className="flex items-start justify-between">
-              <div className="space-y-1">
-                <Badge variant={statusMap[appt.status].variant} className="mb-2">
-                  {statusMap[appt.status].label}
-                </Badge>
-                <CardTitle className="text-base font-bold leading-tight group-hover:text-primary transition-colors">
-                  {appt.serviceName}
-                </CardTitle>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="grid gap-3 p-4 text-sm">
-            <div className="flex items-center gap-3 text-muted-foreground">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
-                 <Calendar className="h-4 w-4" />
-              </div>
-              <div className="flex flex-col">
-                 <span className="font-medium text-foreground">
-                    {format(new Date(appt.startTime), "EEEE, dd/MM/yyyy", { locale: vi })}
-                 </span>
-                 <span className="text-xs">
-                    {format(new Date(appt.startTime), "HH:mm")} ({appt.durationMinutes} phút)
-                 </span>
-              </div>
-            </div>
-
-            {appt.location && (
-              <div className="flex items-center gap-3 text-muted-foreground">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground">
-                   <MapPin className="h-4 w-4" />
+        <motion.div key={appt.id} variants={item}>
+          <Card className="group overflow-hidden transition-all duration-300 hover:shadow-md hover:border-primary/50 h-full">
+            <CardHeader className="pb-3 bg-muted/30">
+              <div className="flex items-start justify-between">
+                <div className="space-y-1">
+                  <Badge variant={statusMap[appt.status].variant} className="mb-2">
+                    {statusMap[appt.status].label}
+                  </Badge>
+                  <CardTitle className="text-base font-bold leading-tight group-hover:text-primary transition-colors">
+                    {appt.serviceName}
+                  </CardTitle>
                 </div>
-                <span>{appt.location}</span>
               </div>
-            )}
-
-            {appt.technicianName && (
+            </CardHeader>
+            <CardContent className="grid gap-3 p-4 text-sm">
               <div className="flex items-center gap-3 text-muted-foreground">
-                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground">
-                   <User className="h-4 w-4" />
-                 </div>
-                <span>KTV: {appt.technicianName}</span>
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+                   <Calendar className="h-4 w-4" />
+                </div>
+                <div className="flex flex-col">
+                   <span className="font-medium text-foreground">
+                      {format(new Date(appt.startTime), "EEEE, dd/MM/yyyy", { locale: vi })}
+                   </span>
+                   <span className="text-xs">
+                      {format(new Date(appt.startTime), "HH:mm")} ({appt.durationMinutes} phút)
+                   </span>
+                </div>
               </div>
-            )}
 
-            <div className="pt-2 mt-1 border-t flex justify-end">
-               <Button variant="outline" size="sm" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                  Xem chi tiết
-               </Button>
-            </div>
-          </CardContent>
-        </Card>
+              {appt.location && (
+                <div className="flex items-center gap-3 text-muted-foreground">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                     <MapPin className="h-4 w-4" />
+                  </div>
+                  <span>{appt.location}</span>
+                </div>
+              )}
+
+              {appt.technicianName && (
+                <div className="flex items-center gap-3 text-muted-foreground">
+                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                     <User className="h-4 w-4" />
+                   </div>
+                  <span>KTV: {appt.technicianName}</span>
+                </div>
+              )}
+
+              <div className="pt-2 mt-1 border-t flex justify-end">
+                 <Button variant="outline" size="sm" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                    Xem chi tiết
+                 </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   )
 }

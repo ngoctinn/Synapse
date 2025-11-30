@@ -5,7 +5,9 @@ import "server-only";
 import { profileSchema } from "./schemas";
 import { updateCustomerProfile } from "./services/api";
 
-export async function updateProfile(prevState: any, formData: FormData) {
+import { ActionState } from "./types";
+
+export async function updateProfile(prevState: ActionState, formData: FormData): Promise<ActionState> {
   const rawData = {
     fullName: formData.get("fullName"),
     phone: formData.get("phone")?.toString() || undefined,
@@ -23,10 +25,11 @@ export async function updateProfile(prevState: any, formData: FormData) {
 
   const avatarFile = formData.get("avatar") as File;
   if (avatarFile && avatarFile.size > 0) {
-    // Simulate upload - in real app, upload to storage and get URL
-    console.log("Uploading avatar:", avatarFile.name);
-    // For now, we'll just mock it by not changing the URL or setting a dummy one if needed
-    // In a real scenario, we would set rawData.avatarUrl = uploadedUrl
+    // TODO: Implement real avatar upload
+    // 1. Upload file to Supabase Storage
+    // 2. Get public URL
+    // 3. Update validatedFields.data.avatarUrl with the new URL
+    console.log("TODO: Upload avatar:", avatarFile.name);
   }
 
   try {
@@ -34,7 +37,7 @@ export async function updateProfile(prevState: any, formData: FormData) {
     revalidatePath("/dashboard/profile");
     return { message: "Cập nhật hồ sơ thành công!", success: true };
   } catch (e) {
-    console.error("Update Profile Error:", e);
+    // console.error("Update Profile Error:", e); // Removed console.error as per clean code
     return { message: `Đã có lỗi xảy ra: ${e instanceof Error ? e.message : String(e)}`, success: false };
   }
 }

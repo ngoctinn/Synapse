@@ -1,3 +1,5 @@
+import { createClient } from "@/shared/lib/supabase/server";
+import { toCamelCase, toSnakeCase } from "@/shared/lib/utils";
 import { Appointment, Treatment, UserProfile } from '../types';
 import { MOCK_APPOINTMENTS, MOCK_TREATMENTS } from './mock-data';
 
@@ -26,31 +28,26 @@ export const getCustomerProfile = async (): Promise<UserProfile> => {
   }
 
   const user = await response.json();
+  const camelCaseUser = toCamelCase(user) as UserProfile;
 
   return {
-    id: user.id,
-    fullName: user.full_name,
-    email: user.email,
-    phone: user.phone_number,
-    avatarUrl: user.avatar_url,
-    address: user.address,
-    dateOfBirth: user.date_of_birth,
-    membershipTier: 'SILVER',
-    loyaltyPoints: 0,
+    ...camelCaseUser,
+    membershipTier: 'SILVER', // TODO: Fetch from backend
+    loyaltyPoints: 0, // TODO: Fetch from backend
   };
 };
 
 export const getCustomerAppointments = async (): Promise<Appointment[]> => {
+  // TODO: Replace with real API call
   await delay(800);
   return MOCK_APPOINTMENTS;
 };
 
 export const getCustomerTreatments = async (): Promise<Treatment[]> => {
+  // TODO: Replace with real API call
   await delay(600);
   return MOCK_TREATMENTS;
 };
-
-import { createClient } from "@/shared/lib/supabase/server";
 
 export const updateCustomerProfile = async (data: Partial<UserProfile>): Promise<UserProfile> => {
   const supabase = await createClient();
@@ -62,17 +59,8 @@ export const updateCustomerProfile = async (data: Partial<UserProfile>): Promise
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  // Map frontend camelCase to backend snake_case
-  // Convert empty strings to null for backend validation
-  const payload = {
-    full_name: data.fullName,
-    phone_number: data.phone || null,
-    avatar_url: data.avatarUrl || null,
-    address: data.address || null,
-    date_of_birth: data.dateOfBirth || null,
-  };
-
-  console.log("Updating profile with payload:", payload);
+  // Convert to snake_case for backend
+  const payload = toSnakeCase(data);
 
   const response = await fetch(`${apiUrl}/users/me`, {
     method: 'PUT',
@@ -85,22 +73,15 @@ export const updateCustomerProfile = async (data: Partial<UserProfile>): Promise
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error("Backend Error:", response.status, errorText);
     throw new Error(`Failed to update profile: ${response.status} ${errorText}`);
   }
 
   const updatedUser = await response.json();
+  const camelCaseUser = toCamelCase(updatedUser) as UserProfile;
 
-  // Map backend snake_case back to frontend camelCase
   return {
-    id: updatedUser.id,
-    fullName: updatedUser.full_name,
-    email: updatedUser.email,
-    phone: updatedUser.phone_number,
-    avatarUrl: updatedUser.avatar_url,
-    address: updatedUser.address,
-    dateOfBirth: updatedUser.date_of_birth,
-    membershipTier: 'SILVER', // Default or fetch from backend if available
-    loyaltyPoints: 0, // Default or fetch from backend if available
+    ...camelCaseUser,
+    membershipTier: 'SILVER', // TODO: Fetch from backend
+    loyaltyPoints: 0, // TODO: Fetch from backend
   };
 };
