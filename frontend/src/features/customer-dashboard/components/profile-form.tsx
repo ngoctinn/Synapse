@@ -5,11 +5,11 @@ import { UserProfile } from "@/features/customer-dashboard/types"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Button } from "@/shared/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/shared/ui/card"
-import { DatePicker } from "@/shared/ui/custom/date-picker"
+import { BirthdayPicker } from "@/shared/ui/custom/birthday-picker"
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { Label } from "@/shared/ui/label"
-import { Camera, Check, Mail, MapPin, Phone, User } from "lucide-react"
+import { Cake, Camera, Check, Mail, MapPin, Phone, User } from "lucide-react"
 import { useActionState, useEffect, useState } from "react"
 import { AvatarSelector } from "./avatar-selector"
 
@@ -133,17 +133,16 @@ export function ProfileForm({ user }: ProfileFormProps) {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="dateOfBirth">Ngày sinh</Label>
-                  <div className="relative">
-                    <DatePicker
-                      date={dateOfBirth}
-                      setDate={setDateOfBirth}
-                    />
-                    <input
-                      type="hidden"
-                      name="dateOfBirth_display"
-                      value={dateOfBirth ? dateOfBirth.toLocaleDateString('vi-VN') : ''}
-                    />
-                  </div>
+                  <BirthdayPicker
+                    date={dateOfBirth}
+                    setDate={setDateOfBirth}
+                    icon={Cake}
+                  />
+                  <input
+                    type="hidden"
+                    name="dateOfBirth_display"
+                    value={dateOfBirth ? dateOfBirth.toLocaleDateString('vi-VN') : ''}
+                  />
                 </div>
               </div>
 

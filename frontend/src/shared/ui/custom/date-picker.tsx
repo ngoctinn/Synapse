@@ -2,7 +2,7 @@
 
 import { format, isToday } from "date-fns"
 import { vi } from "date-fns/locale"
-import { Calendar as CalendarIcon } from "lucide-react"
+import { Calendar as CalendarIcon, X } from "lucide-react"
 
 import { cn } from "@/shared/lib/utils"
 import { Button } from "@/shared/ui/button"
@@ -59,39 +59,65 @@ export function DatePicker({
     setIsPopoverOpen(false)
   }
 
+  // Xử lý xóa ngày (khi click nút X)
+  const handleClear = (e: React.MouseEvent) => {
+    e.stopPropagation() // Ngăn chặn mở popover
+    setDate(undefined)
+  }
+
   return (
     <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
           className={cn(
-            "w-full justify-start text-left font-normal transition-all duration-200 hover:bg-accent hover:text-accent-foreground hover:shadow-sm",
+            "group w-full justify-between text-left font-normal transition-all duration-200 hover:bg-accent hover:text-accent-foreground hover:shadow-sm",
             !date && "text-muted-foreground",
+            isPopoverOpen && "border-primary ring-2 ring-primary/20", // Active state
             className
           )}
         >
-          <CalendarIcon className="mr-2 h-4 w-4 animate-in zoom-in duration-300" />
-          {date ? (
-            isToday(date) ? (
-              <span className="font-medium text-primary">Hôm nay ({format(date, "dd/MM/yyyy")})</span>
+          <div className="flex items-center">
+            <CalendarIcon className="mr-2 h-4 w-4 animate-in zoom-in duration-300" />
+            {date ? (
+              isToday(date) ? (
+                <span className="font-medium text-primary">
+                  Hôm nay ({format(date, "dd/MM/yyyy")})
+                </span>
+              ) : (
+                format(date, "dd/MM/yyyy")
+              )
             ) : (
-              format(date, "dd/MM/yyyy")
-            )
-          ) : (
-            <span>{placeholder}</span>
+              <span>{placeholder}</span>
+            )}
+          </div>
+          {/* Nút xóa ngày (chỉ hiện khi có ngày và hover) */}
+          {date && (
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={handleClear}
+              className="ml-2 rounded-full p-1 opacity-50 hover:bg-primary/10 hover:text-destructive hover:opacity-100 focus:bg-primary/10 focus:opacity-100 focus:outline-none group-hover:opacity-100"
+            >
+              <X className="h-3 w-3" />
+            </div>
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
+      <PopoverContent className="w-auto p-0 backdrop-blur-xl bg-background/95" align="start">
         <Calendar
           mode="single"
           selected={date}
           onSelect={handleSelect}
+          required={false} // Cho phép bỏ chọn (toggle)
           captionLayout="dropdown" // Cho phép chọn Năm/Tháng qua dropdown
           fromYear={fromYear}
           toYear={toYear}
           formatters={{
-            formatCaption: (date) => format(date, "'Tháng' MM 'Năm' yyyy", { locale: vi }),
+            formatCaption: (date) =>
+              format(date, "'Tháng' MM 'Năm' yyyy", { locale: vi }),
+            formatMonthDropdown: (date) =>
+              format(date, "'Tháng' MM", { locale: vi }), // Fix lỗi hiển thị tiếng Anh
           }}
           locale={vi}
           className="rounded-md border"
@@ -101,7 +127,7 @@ export function DatePicker({
           <Button
             variant="ghost"
             size="sm"
-            className="w-full justify-center text-primary hover:bg-primary/10 hover:text-primary"
+            className="w-full justify-center text-primary transition-colors hover:bg-primary/10 hover:text-primary"
             onClick={handleSelectToday}
           >
             Hôm nay
