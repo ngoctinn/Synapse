@@ -96,8 +96,8 @@ export function RegisterForm() {
       className="w-full"
     >
       <Card className="w-full shadow-lg border-none bg-card/50 backdrop-blur-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Đăng ký tài khoản</CardTitle>
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold tracking-tight">Đăng ký tài khoản</CardTitle>
           <CardDescription>
             Tạo tài khoản mới để trải nghiệm dịch vụ của chúng tôi.
           </CardDescription>
@@ -115,6 +115,7 @@ export function RegisterForm() {
                       <InputWithIcon
                         icon={User}
                         placeholder="Nhập họ và tên của bạn"
+                        className="h-11"
                         {...field}
                       />
                     </FormControl>
@@ -132,6 +133,7 @@ export function RegisterForm() {
                       <InputWithIcon
                         icon={Mail}
                         placeholder="Nhập email của bạn"
+                        className="h-11"
                         {...field}
                       />
                     </FormControl>
@@ -148,6 +150,7 @@ export function RegisterForm() {
                     <FormControl>
                       <PasswordInput
                         placeholder="Nhập mật khẩu của bạn"
+                        className="h-11"
                         {...field}
                       />
                     </FormControl>
@@ -164,6 +167,7 @@ export function RegisterForm() {
                     <FormControl>
                       <PasswordInput
                         placeholder="Nhập lại mật khẩu của bạn"
+                        className="h-11"
                         {...field}
                       />
                     </FormControl>
@@ -173,7 +177,7 @@ export function RegisterForm() {
               />
 
 
-              <Button type="submit" className="w-full transition-all hover:scale-[1.02]" disabled={isPending}>
+              <Button type="submit" className="w-full h-11 font-medium transition-all hover:scale-[1.02]" disabled={isPending}>
                 {isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -189,7 +193,7 @@ export function RegisterForm() {
         <CardFooter className="justify-center">
           <div className="text-sm text-muted-foreground">
             Đã có tài khoản?{" "}
-            <Link href="/login" className="text-primary hover:underline">
+            <Link href="/login" className="text-primary font-medium hover:underline underline-offset-4 transition-colors">
               Đăng nhập ngay
             </Link>
           </div>

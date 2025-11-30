@@ -85,8 +85,8 @@ export function LoginForm() {
       className="w-full"
     >
       <Card className="w-full shadow-lg border-none bg-card/50 backdrop-blur-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Đăng nhập</CardTitle>
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold tracking-tight">Đăng nhập</CardTitle>
           <CardDescription>
             Nhập email và mật khẩu của bạn để truy cập hệ thống.
           </CardDescription>
@@ -104,6 +104,7 @@ export function LoginForm() {
                       <InputWithIcon
                         icon={Mail}
                         placeholder="Nhập email của bạn"
+                        className="h-11"
                         {...field}
                       />
                     </FormControl>
@@ -120,7 +121,7 @@ export function LoginForm() {
                       <FormLabel>Mật khẩu</FormLabel>
                       <Link
                         href="/forgot-password"
-                        className="text-sm font-medium text-primary hover:underline"
+                        className="text-sm font-medium text-primary hover:underline underline-offset-4 transition-colors"
                       >
                         Quên mật khẩu?
                       </Link>
@@ -128,6 +129,7 @@ export function LoginForm() {
                     <FormControl>
                       <PasswordInput
                         placeholder="Nhập mật khẩu của bạn"
+                        className="h-11"
                         {...field}
                       />
                     </FormControl>
@@ -136,7 +138,7 @@ export function LoginForm() {
                 )}
               />
 
-              <Button type="submit" className="w-full" disabled={isPending}>
+              <Button type="submit" className="w-full h-11 font-medium transition-all hover:scale-[1.02]" disabled={isPending}>
                 {isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -152,7 +154,7 @@ export function LoginForm() {
         <CardFooter className="justify-center">
           <div className="text-sm text-muted-foreground">
             Chưa có tài khoản?{" "}
-            <Link href="/register" className="text-primary hover:underline">
+            <Link href="/register" className="text-primary font-medium hover:underline underline-offset-4 transition-colors">
               Đăng ký ngay
             </Link>
           </div>
