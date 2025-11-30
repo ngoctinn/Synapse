@@ -2,58 +2,13 @@
 
 import { cn } from "@/shared/lib/utils"
 import {
-    Bell,
-    Briefcase,
-    Calendar,
-    CreditCard,
-    LayoutDashboard,
     LogOut,
-    MessageSquare,
-    Palette
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion } from "framer-motion"
 
-// Danh sách các mục trong Sidebar
-const sidebarItems = [
-  {
-    title: "Tổng quan",
-    href: "/admin/overview",
-    icon: LayoutDashboard,
-  },
-  {
-    title: "Lịch hẹn",
-    href: "/admin/appointments",
-    icon: Calendar,
-  },
-  {
-    title: "Nhân sự",
-    href: "/admin/staff",
-    icon: Briefcase,
-  },
-
-  {
-    title: "Dịch vụ",
-    href: "/admin/services",
-    icon: CreditCard,
-  },
-  {
-    title: "Tin nhắn",
-    href: "/admin/messages",
-    icon: MessageSquare,
-  },
-  {
-    title: "Thông báo",
-    href: "/admin/notifications",
-    icon: Bell,
-  },
-  {
-    title: "Components",
-    href: "/admin/components",
-    icon: Palette,
-  },
-]
+import { SIDEBAR_ITEMS } from "../constants"
 
 export function AdminSidebar({ className }: { className?: string }) {
   const pathname = usePathname()
@@ -73,7 +28,7 @@ export function AdminSidebar({ className }: { className?: string }) {
 
       {/* Navigation Menu */}
       <nav className="flex-1 px-2 py-3 space-y-1 overflow-y-auto">
-        {sidebarItems.map((item) => {
+        {SIDEBAR_ITEMS.map((item) => {
           const Icon = item.icon
           const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`)
 

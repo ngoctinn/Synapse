@@ -1,6 +1,4 @@
-import { getServices, getSkills } from "@/features/services/actions";
-import { CreateServiceDialog } from "@/features/services/components/create-service-dialog";
-import { ServiceTable } from "@/features/services/components/service-table";
+import { CreateServiceDialog, getServices, getSkills, ServiceTable } from "@/features/services";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 
 export default async function ServicesPage() {
@@ -10,7 +8,7 @@ export default async function ServicesPage() {
   ]);
 
   return (
-    <div className="h-[calc(100vh-6rem)] flex flex-col">
+    <div className="flex flex-col h-full min-h-[calc(100vh-8rem)]">
       <div className="flex-1 bg-white rounded-xl border shadow-sm overflow-hidden flex flex-col">
         <Tabs defaultValue="list" className="flex flex-col h-full">
           <div className="flex items-center justify-between px-4 py-3 border-b shrink-0 bg-white">

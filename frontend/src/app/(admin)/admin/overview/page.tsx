@@ -6,7 +6,7 @@ export default function AdminOverviewPage() {
     <div className="flex flex-col h-full gap-3">
       {/* Stats Grid */}
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4 shrink-0">
-        <Card className="rounded-2xl shadow-sm border-none">
+        <Card className="relative overflow-hidden rounded-2xl shadow-sm border-none bg-gradient-to-br from-white to-blue-50/50">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Tổng Nhân viên
@@ -15,11 +15,14 @@ export default function AdminOverviewPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-600">24</div>
-            <p className="text-xs text-muted-foreground mt-1">Đang hoạt động</p>
+            <p className="text-sm text-muted-foreground mt-1">Đang hoạt động</p>
+            <div className="absolute -right-4 -bottom-4 opacity-[0.05]">
+                <Users className="w-24 h-24" />
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl shadow-sm border-none">
+        <Card className="relative overflow-hidden rounded-2xl shadow-sm border-none bg-gradient-to-br from-white to-purple-50/50">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Lịch hẹn Hôm nay
@@ -28,11 +31,14 @@ export default function AdminOverviewPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-purple-600">45</div>
-            <p className="text-xs text-muted-foreground mt-1">+12% so với hôm qua</p>
+            <p className="text-sm text-muted-foreground mt-1">+12% so với hôm qua</p>
+            <div className="absolute -right-4 -bottom-4 opacity-[0.05]">
+                <Activity className="w-24 h-24" />
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl shadow-sm border-none">
+        <Card className="relative overflow-hidden rounded-2xl shadow-sm border-none bg-gradient-to-br from-white to-orange-50/50">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Dịch vụ Hoạt động
@@ -43,11 +49,11 @@ export default function AdminOverviewPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-orange-500">18</div>
-            <p className="text-xs text-muted-foreground mt-1">Danh mục dịch vụ</p>
+            <p className="text-sm text-muted-foreground mt-1">Danh mục dịch vụ</p>
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl shadow-sm border-none">
+        <Card className="relative overflow-hidden rounded-2xl shadow-sm border-none bg-gradient-to-br from-white to-green-50/50">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Doanh thu Tháng
@@ -57,8 +63,8 @@ export default function AdminOverviewPage() {
             </span>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-500">1.2 tỷ</div>
-            <p className="text-xs text-muted-foreground mt-1">VNĐ</p>
+            <div className="text-2xl font-bold text-green-600">1.2 tỷ</div>
+            <p className="text-sm text-muted-foreground mt-1">VNĐ</p>
           </CardContent>
         </Card>
       </div>

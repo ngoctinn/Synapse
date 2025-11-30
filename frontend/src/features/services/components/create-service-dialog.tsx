@@ -28,7 +28,7 @@ export function CreateServiceDialog({ availableSkills }: CreateServiceDialogProp
           <Plus className="mr-2 h-4 w-4" /> Thêm dịch vụ
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-5xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-5xl max-h-[90vh] overflow-y-auto duration-300">
         <DialogHeader>
           <DialogTitle>Thêm Dịch vụ Mới</DialogTitle>
           <DialogDescription>
