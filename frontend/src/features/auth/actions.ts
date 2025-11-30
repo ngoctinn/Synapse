@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import "server-only";
 import { forgotPasswordSchema, loginSchema, registerSchema, updatePasswordSchema } from "./schemas";
 
-export async function loginAction(formData: FormData) {
+export async function loginAction(prevState: any, formData: FormData) {
   const rawData = {
     email: formData.get("email"),
     password: formData.get("password"),
