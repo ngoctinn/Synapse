@@ -33,3 +33,10 @@ export interface UserProfile {
   membershipTier?: 'SILVER' | 'GOLD' | 'PLATINUM';
   loyaltyPoints?: number;
 }
+
+export type ActionState = {
+  success: boolean;
+  message: string;
+  errors?: Record<string, string[]>;
+  payload?: any;
+};

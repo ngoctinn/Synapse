@@ -9,9 +9,13 @@ import { BirthdayPicker } from "@/shared/ui/custom/birthday-picker"
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { Label } from "@/shared/ui/label"
-import { Cake, Camera, Check, Mail, MapPin, Phone, User } from "lucide-react"
+import { Cake, Camera, Check, Loader2, Mail, MapPin, Phone, User } from "lucide-react"
 import { useActionState, useEffect, useState } from "react"
 import { AvatarSelector } from "./avatar-selector"
+
+// ... existing code ...
+
+
 
 interface ProfileFormProps {
   user: UserProfile
@@ -161,7 +165,14 @@ export function ProfileForm({ user }: ProfileFormProps) {
         </CardContent>
         <CardFooter className="flex justify-end bg-muted/20 p-6">
           <Button type="submit" disabled={isPending} className="min-w-[120px]">
-            {isPending ? 'Đang lưu...' : 'Lưu thay đổi'}
+            {isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Đang lưu...
+              </>
+            ) : (
+              'Lưu thay đổi'
+            )}
           </Button>
         </CardFooter>
       </Card>
