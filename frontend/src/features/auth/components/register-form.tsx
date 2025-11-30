@@ -2,9 +2,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
 import { Loader2, Mail, User } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { startTransition, useActionState, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -50,8 +51,10 @@ const formSchema = z
   });
 
 export function RegisterForm() {
-  const [isLoading, setIsLoading] = useState(false);
   const [showCheckEmailDialog, setShowCheckEmailDialog] = useState(false);
+  
+  // Sử dụng hook useActionState để quản lý trạng thái form server action
+  const [state, action, isPending] = useActionState(registerAction, undefined);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -63,33 +66,36 @@ export function RegisterForm() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true);
+  // Effect để xử lý phản hồi từ server
+  useEffect(() => {
+    if (state?.success) {
+      showToast.success("Đăng ký thành công", state.message);
+      setShowCheckEmailDialog(true);
+      form.reset();
+    } else if (state?.success === false) {
+      showToast.error("Đăng ký thất bại", state.message);
+    }
+  }, [state, form]);
 
+  function onSubmit(values: z.infer<typeof formSchema>) {
     const formData = new FormData();
     formData.append("fullName", values.fullName);
     formData.append("email", values.email);
     formData.append("password", values.password);
 
-    try {
-      const result = await registerAction(formData);
-      if (result.success) {
-        showToast.success("Đăng ký thành công", result.message);
-        setShowCheckEmailDialog(true);
-        form.reset();
-      } else {
-        showToast.error("Đăng ký thất bại", result.message || "Vui lòng thử lại.");
-      }
-    } catch {
-      showToast.error("Lỗi hệ thống", "Đã có lỗi xảy ra. Vui lòng thử lại sau.");
-    } finally {
-      setIsLoading(false);
-    }
+    startTransition(() => {
+      action(formData);
+    });
   }
 
   return (
-    <>
-      <Card className="w-full">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="w-full"
+    >
+      <Card className="w-full shadow-lg border-none bg-card/50 backdrop-blur-sm">
         <CardHeader>
           <CardTitle className="text-2xl">Đăng ký tài khoản</CardTitle>
           <CardDescription>
@@ -167,8 +173,8 @@ export function RegisterForm() {
               />
 
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? (
+              <Button type="submit" className="w-full transition-all hover:scale-[1.02]" disabled={isPending}>
+                {isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Đang xử lý...
@@ -208,6 +214,6 @@ export function RegisterForm() {
           },
         }}
       />
-    </>
+    </motion.div>
   );
 }
