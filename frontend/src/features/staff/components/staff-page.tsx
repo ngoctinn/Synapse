@@ -1,12 +1,15 @@
-"use client"
 
+
+import { getStaffList } from "@/features/staff/actions"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { InviteStaffModal } from "./invite-staff-modal"
 import { PermissionMatrix } from "./permissions/permission-matrix"
 import { StaffScheduler } from "./scheduling/staff-scheduler"
 import { StaffTable } from "./staff-list/staff-table"
 
-export function StaffPage() {
+export async function StaffPage() {
+  const staffList = await getStaffList()
+
   return (
     <div className="h-[calc(100vh-6rem)] flex flex-col">
       <div className="flex-1 bg-white rounded-xl border shadow-sm overflow-hidden flex flex-col">
@@ -22,7 +25,7 @@ export function StaffPage() {
 
           <div className="flex-1 overflow-hidden relative">
             <TabsContent value="list" className="h-full mt-0 border-0 p-0 data-[state=inactive]:hidden">
-              <StaffTable />
+              <StaffTable data={staffList} />
             </TabsContent>
 
             <TabsContent value="permissions" className="h-full mt-0 border-0 p-0 data-[state=inactive]:hidden">

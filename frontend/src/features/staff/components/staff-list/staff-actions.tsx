@@ -1,5 +1,6 @@
 "use client"
 
+import { deleteStaff } from "@/features/staff/actions"
 import { Button } from "@/shared/ui/button"
 import { showToast } from "@/shared/ui/custom/sonner"
 import {
@@ -11,7 +12,7 @@ import {
     DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
 import { KeyRound, MoreHorizontal, Pencil, Trash2 } from "lucide-react"
-import { useState } from "react"
+import { startTransition, useState } from "react"
 import { Staff } from "../../types"
 import { DeleteStaffDialog } from "./delete-staff-dialog"
 
@@ -23,10 +24,15 @@ export function StaffActions({ staff }: StaffActionsProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
   const handleDelete = () => {
-    // In a real app, this would call an API
-    console.log("Deleting staff:", staff.id)
-    setShowDeleteDialog(false)
-    showToast.success("Đã xóa nhân viên thành công", `Nhân viên ${staff.name} đã bị xóa khỏi hệ thống.`)
+    startTransition(async () => {
+      const result = await deleteStaff(staff.id)
+      if (result.success) {
+        setShowDeleteDialog(false)
+        showToast.success("Thành công", result.message)
+      } else {
+        showToast.error("Lỗi", result.error)
+      }
+    })
   }
 
   return (

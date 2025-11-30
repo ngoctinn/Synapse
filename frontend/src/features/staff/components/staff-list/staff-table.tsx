@@ -17,15 +17,18 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/shared/ui/tooltip"
-import { MOCK_STAFF } from "../../data/mock-staff"
-import { StaffActions } from "./staff-actions"
-
+import { motion } from "framer-motion"
 import { ROLE_CONFIG } from "../../constants"
+import { Staff } from "../../types"
+import { StaffActions } from "./staff-actions"
 
 const roleConfig = ROLE_CONFIG
 
+interface StaffTableProps {
+  data: Staff[]
+}
 
-export function StaffTable() {
+export function StaffTable({ data }: StaffTableProps) {
   return (
     <div className="h-full flex flex-col">
       <div className="flex-1 overflow-auto">
@@ -40,8 +43,14 @@ export function StaffTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {MOCK_STAFF.map((staff) => (
-              <TableRow key={staff.id} className="hover:bg-muted/5">
+            {data.map((staff, index) => (
+              <motion.tr
+                key={staff.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, delay: index * 0.05 }}
+                className="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors"
+              >
                 <TableCell className="pl-6">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-9 w-9 border">
@@ -98,7 +107,7 @@ export function StaffTable() {
                 <TableCell className="text-right pr-6">
                   <StaffActions staff={staff} />
                 </TableCell>
-              </TableRow>
+              </motion.tr>
             ))}
           </TableBody>
         </Table>

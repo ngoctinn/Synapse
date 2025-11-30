@@ -1,53 +1,59 @@
 "use client"
 
-import { createClient } from "@/shared/lib/supabase/client"
+import { inviteStaff } from "@/features/staff/actions"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2, Mail } from "lucide-react"
 import * as React from "react"
+import { useActionState } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { Button } from "@/shared/ui/button"
 import { showToast } from "@/shared/ui/custom/sonner"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from "@/shared/ui/dialog"
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form"
 import { Input } from "@/shared/ui/input"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select"
 
 const inviteStaffSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
   fullName: z.string().min(2, "Tên phải có ít nhất 2 ký tự"),
   phone: z.string().min(10, "Số điện thoại không hợp lệ"),
-  role: z.enum(["manager", "receptionist", "technician"]),
-  // skillIds: z.array(z.number()).optional(), // TODO: Implement skills later
+  role: z.enum(["ADMIN", "RECEPTIONIST", "TECHNICIAN"]),
 })
 
 type InviteStaffFormValues = z.infer<typeof inviteStaffSchema>
 
+const initialState = {
+  success: false,
+  message: "",
+  error: "",
+}
+
 export function InviteStaffModal() {
   const [open, setOpen] = React.useState(false)
-  const [isLoading, setIsLoading] = React.useState(false)
+  const [state, dispatch, isPending] = useActionState(inviteStaff, initialState)
 
   const form = useForm<InviteStaffFormValues>({
     resolver: zodResolver(inviteStaffSchema),
@@ -55,48 +61,30 @@ export function InviteStaffModal() {
       email: "",
       fullName: "",
       phone: "",
-      role: "technician",
+      role: "TECHNICIAN",
     },
   })
 
-  async function onSubmit(data: InviteStaffFormValues) {
-    setIsLoading(true)
-    try {
-      const supabase = createClient()
-      const { data: { session } } = await supabase.auth.getSession()
-
-      if (!session?.access_token) {
-        throw new Error("Bạn chưa đăng nhập")
-      }
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/invite`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${session.access_token}`
-        },
-        body: JSON.stringify({
-          email: data.email,
-          full_name: data.fullName,
-          phone_number: data.phone,
-          role: data.role,
-          skill_ids: [], // TODO
-        }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.detail || "Có lỗi xảy ra")
-      }
-
-      showToast.success("Thành công", `Đã gửi lời mời tới ${data.email}`)
+  React.useEffect(() => {
+    if (state.success) {
+      showToast.success("Thành công", state.message)
       setOpen(false)
       form.reset()
-    } catch (error) {
-      showToast.error("Lỗi", error instanceof Error ? error.message : "Không thể gửi lời mời")
-    } finally {
-      setIsLoading(false)
+    } else if (state.error) {
+      showToast.error("Lỗi", state.error)
     }
+  }, [state, form])
+
+  function onSubmit(data: InviteStaffFormValues) {
+    const formData = new FormData()
+    formData.append("email", data.email)
+    formData.append("fullName", data.fullName)
+    formData.append("phone", data.phone)
+    formData.append("role", data.role)
+
+    React.startTransition(() => {
+      dispatch(formData)
+    })
   }
 
   return (
@@ -168,9 +156,9 @@ export function InviteStaffModal() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="manager">Quản lý</SelectItem>
-                      <SelectItem value="receptionist">Lễ tân</SelectItem>
-                      <SelectItem value="technician">Kỹ thuật viên</SelectItem>
+                      <SelectItem value="ADMIN">Quản lý</SelectItem>
+                      <SelectItem value="RECEPTIONIST">Lễ tân</SelectItem>
+                      <SelectItem value="TECHNICIAN">Kỹ thuật viên</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -181,8 +169,8 @@ export function InviteStaffModal() {
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 Hủy
               </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              <Button type="submit" disabled={isPending}>
+                {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Gửi lời mời
               </Button>
             </DialogFooter>
