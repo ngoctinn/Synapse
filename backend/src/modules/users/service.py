@@ -1,6 +1,8 @@
 from typing import Annotated
 import uuid
+from datetime import datetime, timezone
 from fastapi import Depends, HTTPException, status
+from starlette.concurrency import run_in_threadpool
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.app.dependencies import get_db_session
 from src.modules.users.models import User
@@ -59,7 +61,8 @@ class UserService:
         # 3. Gọi Supabase Invite API
         # Trigger handle_new_user sẽ tự động chạy và insert vào public.users
         try:
-            response = supabase.auth.admin.invite_user_by_email(
+            response = await run_in_threadpool(
+                supabase.auth.admin.invite_user_by_email,
                 email=invite_data.email,
                 options={"data": user_metadata}
             )

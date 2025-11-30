@@ -4,6 +4,7 @@ from src.common.security import get_current_user
 from src.modules.users.models import User
 from src.modules.users.schemas import UserRead, UserUpdate, InviteStaffRequest
 from src.modules.users.service import UserService
+from src.modules.users.constants import UserRole
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -39,7 +40,7 @@ async def invite_staff(
     Chỉ dành cho Quản lý (Manager).
     """
     # Kiểm tra quyền Manager
-    if current_user.role != "manager":
+    if current_user.role != UserRole.MANAGER:
         from fastapi import HTTPException, status
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

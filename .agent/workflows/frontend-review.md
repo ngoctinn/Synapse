@@ -25,6 +25,7 @@ description: Đánh giá mã nguồn Frontend theo tiêu chuẩn FSD và Next.js
      - Đánh giá giao diện hiện tại dựa trên tiêu chuẩn "Premium" & "WOW factor".
      - Đề xuất thêm các **Micro-animations** (hover, transition, loading states) để tăng tính tương tác.
      - Đảm bảo màu sắc, typography tuân thủ design system và tạo cảm giác hiện đại, sang trọng.
+     - Đảm bảo các thiết kế giữa các trang phải đồng nhất với nhau, và đơn giản nhất có thể, nếu không có gì cẩn cải thiện thì đánh giá là đạt chuẩn không không đẻ ra thâm các vấn đề phức tạp
 
 5. **Nghiên Cứu & Tối Ưu Hóa (Researcher)**:
    - Thực hiện quy trình **Researcher** (.agent/workflows/researcher.md):

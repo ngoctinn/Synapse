@@ -3,6 +3,7 @@ from datetime import date, datetime
 from sqlmodel import SQLModel
 
 from pydantic import ConfigDict
+from src.modules.users.constants import UserRole
 
 class UserBase(SQLModel):
     email: str
@@ -11,7 +12,7 @@ class UserBase(SQLModel):
     phone_number: str | None = None
     address: str | None = None
     date_of_birth: date | None = None
-    role: str = "customer"
+    role: UserRole = UserRole.CUSTOMER
 
 class UserRead(UserBase):
     id: uuid.UUID
@@ -31,7 +32,7 @@ class InviteStaffRequest(SQLModel):
     email: str
     full_name: str
     phone_number: str
-    role: str
+    role: UserRole
     skill_ids: list[int] | None = None
     address: str | None = None
     date_of_birth: date | None = None
