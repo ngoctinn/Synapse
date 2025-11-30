@@ -1,87 +1,90 @@
 ---
-title: Thiết kế Quản lý Dịch vụ & Kỹ năng
+title: Service Management Design
 status: Draft
+related_requirements: docs/ai/requirements/feature-service-management.md
 ---
 
-# Thiết kế: Quản lý Dịch vụ & Kỹ năng
+# Thiết Kế Tính Năng: Quản lý Dịch vụ Spa
 
 ## 1. Kiến trúc Hệ thống
--   **Module:** `modules/services` (Mới).
--   **Mô hình:** Skill-based Service Model.
--   **Logic:** Tách biệt `Service` (Sản phẩm bán) và `Skill` (Năng lực thực hiện).
+Sử dụng kiến trúc **Modular Monolith**. Tạo một module mới tên là `services` trong Backend.
+- **Backend**: `src/modules/services/`
+- **Frontend**: `src/features/services/` (Admin Dashboard)
 
 ## 2. Mô hình Dữ liệu (Database Schema)
 
-### `public.services`
-| Column | Type | Description |
-| :--- | :--- | :--- |
-| `id` | UUID | PK |
-| `name` | Varchar | Tên dịch vụ |
-| `price` | Decimal | Giá tiền |
-| `duration` | Integer | Thời gian thực hiện (phút) |
-| `buffer_time` | Integer | Thời gian nghỉ/dọn dẹp (phút) |
-| `image_url` | Text | URL hình ảnh (Optional) |
-| `is_active` | Boolean | Trạng thái kinh doanh |
-| `created_at` | Timestamptz | |
-| `updated_at` | Timestamptz | |
+Sử dụng `SQLModel` (SQLAlchemy + Pydantic).
 
-### `public.skills`
-| Column | Type | Description |
-| :--- | :--- | :--- |
-| `id` | UUID | PK |
-| `name` | Varchar | Tên kỹ năng (VD: Massage Body) |
-| `code` | Varchar | Mã chuẩn hóa (Unique, Lowercase, Trim) |
-| `is_active` | Boolean | Soft Delete (Default: true) |
+```mermaid
+erDiagram
+    SERVICES ||--|{ SERVICE_SKILLS : requires
+    SKILLS ||--|{ SERVICE_SKILLS : "used in"
 
-### `public.service_skills` (Many-to-Many)
-| Column | Type | Description |
-| :--- | :--- | :--- |
-| `service_id` | UUID | FK -> services.id |
-| `skill_id` | UUID | FK -> skills.id |
+    SERVICES {
+        uuid id PK
+        string name
+        int duration "Minutes (e.g., 60)"
+        int buffer_time "Minutes (e.g., 15)"
+        float price
+        string image_url "Optional"
+        bool is_active "Default: True"
+        datetime created_at
+        datetime updated_at
+    }
 
-### `public.employee_skills` (Many-to-Many)
-| Column | Type | Description |
-| :--- | :--- | :--- |
-| `user_id` | UUID | FK -> users.id (KTV) |
-| `skill_id` | UUID | FK -> skills.id |
+    SKILLS {
+        uuid id PK
+        string name "e.g., Massage Body"
+        string code "Unique, e.g., SK_BODY"
+        string description "Optional"
+    }
 
-## 3. API Design
+    SERVICE_SKILLS {
+        uuid service_id PK, FK
+        uuid skill_id PK, FK
+    }
+```
 
-### Services
--   `GET /services`: Lấy danh sách (có filter, pagination).
--   `POST /services`: Tạo dịch vụ mới. Logic: Normalize skill tags -> Find or Create Skill -> Assign.
--   `PUT /services/{id}`: Cập nhật. Lưu ý: Không ảnh hưởng bookings cũ (Bookings lưu snapshot).
--   `DELETE /services/{id}`: Soft delete (`is_active=false`).
+## 3. API Design (RESTful)
 
-### Skills
--   `GET /skills`: Lấy danh sách kỹ năng active.
--   `DELETE /skills/{id}`: Soft delete (`is_active=false`).
+### 3.1. Skills API
+- `GET /api/v1/services/skills`: Lấy danh sách kỹ năng.
+- `POST /api/v1/services/skills`: Tạo kỹ năng mới.
+    - Body: `{ name: str, code: str, description: str | None }`
+- `PUT /api/v1/services/skills/{id}`: Cập nhật kỹ năng.
+- `DELETE /api/v1/services/skills/{id}`: Xóa kỹ năng.
 
-### Employee Skills
--   `GET /users/skills`: Lấy ma trận kỹ năng (Pagination/Filter theo Role).
--   `PUT /users/{id}/skills`: Cập nhật kỹ năng cho 1 nhân viên.
+### 3.2. Services API
+- `GET /api/v1/services`: Lấy danh sách dịch vụ (có filter `is_active`).
+- `GET /api/v1/services/{id}`: Lấy chi tiết dịch vụ (kèm danh sách skills).
+- `POST /api/v1/services`: Tạo dịch vụ mới.
+    - Body:
+      ```json
+      {
+        "name": "Massage Body",
+        "duration": 60,
+        "buffer_time": 15,
+        "price": 500000,
+        "skill_ids": ["uuid-1", "uuid-2"]
+      }
+      ```
+- `PUT /api/v1/services/{id}`: Cập nhật dịch vụ.
+- `DELETE /api/v1/services/{id}`: Soft delete hoặc Hard delete (ưu tiên Soft delete bằng `is_active=False`).
 
-## 4. UI/UX Design (Frontend)
+## 4. Thành phần Frontend (Next.js)
 
-### 4.1. Service Management Page
--   **Table View:** Hiển thị danh sách dịch vụ.
--   **Columns:** Tên, Giá, Tổng thời gian (Duration + Buffer), Tags Kỹ năng, Trạng thái.
--   **Actions:** Edit, Duplicate, Delete (Soft).
+### Routes
+- `/admin/services`: Danh sách dịch vụ (Table).
+- `/admin/services/new`: Form tạo dịch vụ.
+- `/admin/services/[id]`: Form chỉnh sửa.
+- `/admin/skills`: Quản lý kỹ năng (Modal hoặc Page riêng).
 
-### 4.2. Service Modal (Create/Edit)
--   **Inputs:** Tên, Giá, Hình ảnh.
--   **Time Visualization:** Thanh Progress Bar kép (Duration [Xanh] + Buffer [Xám]). Buffer là Post-service.
--   **Skill Input (Smart Tagging):**
-    -   Component: `CreatableSelect`.
-    -   Logic: Auto-lowercase & Trim khi so sánh để tránh trùng lặp (VD: "Massage" == "massage").
-
-### 4.3. Employee Skill Matrix Page
--   **Grid View:**
-    -   Rows: Nhân viên (Có Pagination/Filter theo Tên/Role).
-    -   Cols: Kỹ năng.
-    -   Cells: Checkbox.
--   **Bulk Action:** Tích chọn nhanh.
+### Components
+- `ServiceTable`: Hiển thị danh sách, cột: Tên, Thời gian (Total), Giá, Trạng thái.
+- `ServiceForm`: Form nhập liệu, sử dụng `react-hook-form` + `zod`.
+    - Field `skill_ids`: Multi-select dropdown.
+- `SkillManager`: UI đơn giản để thêm/sửa/xóa Skill.
 
 ## 5. Bảo mật
--   Chỉ `Manager` mới có quyền Thêm/Sửa/Xóa Dịch vụ và Kỹ năng.
--   `Receptionist` có thể xem để tư vấn.
+- Chỉ user có role `manager` hoặc `admin` mới được phép thực hiện các thao tác CUD (Create, Update, Delete).
+- `GET` có thể public hoặc cho `authenticated` user tùy chính sách (hiện tại cho phép public để khách xem menu).

@@ -1,8 +1,36 @@
-export default function ServicesPage() {
+import { getServices, getSkills } from "@/features/services/actions";
+import { CreateServiceDialog } from "@/features/services/components/create-service-dialog";
+import { ServiceTable } from "@/features/services/components/service-table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
+
+export default async function ServicesPage() {
+  const [services, skills] = await Promise.all([
+    getServices(),
+    getSkills()
+  ]);
+
   return (
-    <div className="flex flex-col items-center justify-center h-full text-slate-500">
-      <h1 className="text-2xl font-bold text-slate-800">Dịch vụ</h1>
-      <p>Tính năng đang được phát triển</p>
+    <div className="h-[calc(100vh-6rem)] flex flex-col">
+      <div className="flex-1 bg-white rounded-xl border shadow-sm overflow-hidden flex flex-col">
+        <Tabs defaultValue="list" className="flex flex-col h-full">
+          <div className="flex items-center justify-between px-4 py-3 border-b shrink-0 bg-white">
+            <TabsList className="h-9 bg-muted/50 p-1">
+              <TabsTrigger value="list" className="data-[state=active]:bg-white data-[state=active]:shadow-sm text-xs font-medium px-4">
+                Danh sách dịch vụ
+              </TabsTrigger>
+            </TabsList>
+            <CreateServiceDialog availableSkills={skills} />
+          </div>
+
+          <div className="flex-1 overflow-hidden relative">
+            <TabsContent value="list" className="h-full mt-0 border-0 p-0 data-[state=inactive]:hidden">
+               <div className="h-full overflow-auto p-4">
+                 <ServiceTable services={services} availableSkills={skills} />
+               </div>
+            </TabsContent>
+          </div>
+        </Tabs>
+      </div>
     </div>
-  )
+  );
 }

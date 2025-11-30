@@ -11,7 +11,7 @@ export async function HeaderContainer() {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL
       if (apiUrl) {
-        const FETCH_TIMEOUT_MS = 2000
+        const FETCH_TIMEOUT_MS = 10000
         const controller = new AbortController()
         const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
 

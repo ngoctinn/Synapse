@@ -1,35 +1,47 @@
 ---
-title: Kế hoạch Triển khai Quản lý Dịch vụ
-status: Draft
+title: Service Management Planning
+status: Approved
+related_design: docs/ai/design/feature-service-management.md
 ---
 
-# Kế hoạch: Quản lý Dịch vụ & Kỹ năng
+# Kế Hoạch Triển Khai: Quản lý Dịch vụ Spa
 
-## Giai đoạn 1: Backend Foundation (Database & API)
-- [ ] **Migration:** Tạo bảng `services`, `skills`, `service_skills`, `employee_skills`.
-- [ ] **Models:** Định nghĩa SQLModel classes.
-- [ ] **Schemas:** Định nghĩa Pydantic Request/Response (bao gồm logic tạo skill ngầm).
-- [ ] **Service Layer:**
-    -   Logic CRUD Service.
-    -   Logic xử lý Transaction khi tạo Service kèm Skill mới.
-    -   Logic gán Skill cho nhân viên.
-- [ ] **API Endpoints:** Router cho Services và Skills.
+## Giai đoạn 1: Backend Implementation (FastAPI) - DONE
 
-## Giai đoạn 2: Frontend - Service Management
-- [ ] **API Client:** Định nghĩa các hàm fetch/mutate trong `features/services/actions.ts`.
-- [ ] **UI Components:**
-    -   `ServiceTable`: Hiển thị danh sách.
-    -   `ServiceModal`: Form thêm/sửa.
-    -   `TimeBufferVisualizer`: Component thanh thời gian.
-    -   `SkillTagInput`: Component nhập kỹ năng thông minh.
-- [ ] **Integration:** Kết nối API và xử lý state.
+### Task 1.1: Setup Module & Models - DONE
+- [x] Create Directory & Models (`Service`, `Skill`, `ServiceSkill`).
+- [x] Migrations (Create tables & Cascade Delete).
 
-## Giai đoạn 3: Frontend - Employee Skill Matrix
-- [ ] **UI Components:**
-    -   `SkillMatrixTable`: Bảng ma trận nhân viên - kỹ năng.
-- [ ] **Logic:** Xử lý cập nhật checkbox và gọi API update.
+### Task 1.2: Implement CRUD Logic - DONE
+- [x] Schemas & Service Logic.
+- [x] API Routers.
 
-## Giai đoạn 4: Verification
-- [ ] **Test:** Tạo dịch vụ với kỹ năng mới -> Kiểm tra DB.
-- [ ] **Test:** Gán kỹ năng cho nhân viên -> Kiểm tra DB.
-- [ ] **Test:** Duplicate dịch vụ -> Kiểm tra thông tin copy.
+### Task 1.3: Refine for UX (Smart Tagging) - NEW
+- [ ] **Update Schema**: `ServiceCreate` chấp nhận thêm `new_skills: list[str]`.
+- [ ] **Update Service Logic**:
+    - Trong `create_service` và `update_service`:
+    - Xử lý danh sách `new_skills`:
+        - Slugify tên để tạo `code`.
+        - Kiểm tra DB: Nếu chưa có -> Tạo mới.
+        - Gộp ID của skill mới vào danh sách `skill_ids` cần gán.
+
+## Giai đoạn 2: Frontend Implementation (Next.js)
+
+### Task 2.1: Setup Feature Structure
+- [ ] Create `src/features/services`.
+- [ ] Define Types & Server Actions.
+
+### Task 2.2: Service Management UI (Priority)
+- [ ] **Smart Service Form**:
+    - Input Tên, Giá, Thời gian.
+    - **Buffer Time Visualizer**: Thanh progress bar.
+    - **Smart Tagging Input**: Combobox cho phép chọn skill cũ hoặc gõ mới (Enter để tạo).
+- [ ] **Service Table**:
+    - Hiển thị danh sách.
+    - Action: Edit, **Duplicate (Clone)**, Delete.
+
+### Task 2.3: Skill Matrix (Employee Module - Later)
+- [ ] Dời sang feature `employee-management`.
+
+## Giai đoạn 3: Integration & Testing
+- [ ] Verify End-to-End Flow with Smart Tagging.

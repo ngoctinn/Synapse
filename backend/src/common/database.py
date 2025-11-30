@@ -8,7 +8,10 @@ from src.app.config import settings
 engine = create_async_engine(
     settings.DATABASE_URL,
     echo=True, # Đặt False khi chạy production
-    future=True
+    future=True,
+    pool_size=5,
+    max_overflow=0,
+    pool_pre_ping=True
 )
 
 # Tạo Async Session Factory

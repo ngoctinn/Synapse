@@ -1,26 +1,21 @@
 ---
-title: Triển khai Quản lý Dịch vụ
-status: Draft
+title: Service Management Implementation Notes
+status: In Progress
+related_planning: docs/ai/planning/feature-service-management.md
 ---
 
-# Triển khai: Quản lý Dịch vụ & Kỹ năng
+# Ghi Chú Triển Khai
 
-*Tài liệu này sẽ được cập nhật trong quá trình viết code.*
+## Backend (Completed)
+- **Models**: Đã tạo `Service`, `Skill`, `ServiceSkill` trong `src/modules/services/models.py`.
+- **Migration**:
+    - `d3ab1cef886b_add_services_module`: Tạo bảng.
+    - `add_cascade_delete_to_service_skills`: Thêm `ON DELETE CASCADE` để đảm bảo toàn vẹn dữ liệu khi xóa Service/Skill.
+- **Service Logic**:
+    - `create_service`: Transactional.
+    - `update_service`: Sync logic (Diffing).
+    - `get_services`: Eager loading (`selectinload`) và Filter (`is_active`).
+- **Router**: `/api/v1/services` và `/api/v1/services/skills`.
 
-## Ghi chú Kỹ thuật
--   **Smart Tagging:**
-    -   Frontend: Normalize text (lowercase, trim) trước khi gửi.
-    -   Backend: Kiểm tra `code` (slugified name) để tránh trùng lặp. Nếu chưa có -> Tạo mới.
--   **Soft Delete:**
-    -   Thêm cột `is_active` cho `skills` và `services`.
-    -   API `DELETE` chỉ update `is_active = false`.
-    -   API `GET` mặc định chỉ lấy `is_active = true`.
--   **Buffer Time:** Logic tính slot: `End Time = Start Time + Duration + Buffer Time`.
--   **Skill Matrix:** Sử dụng Pagination cho danh sách nhân viên để tránh lag UI.
-### Backend
--   `src/modules/services/`
--   `alembic/versions/`
-
-### Frontend
--   `src/features/services/`
--   `src/features/staff/components/skill-matrix.tsx`
+## Frontend (Pending)
+- Chờ thiết kế UX/UI từ User.

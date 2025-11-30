@@ -1,20 +1,24 @@
 ---
-title: Kiểm thử Quản lý Dịch vụ
+title: Service Management Testing
 status: Draft
+related_requirements: docs/ai/requirements/feature-service-management.md
 ---
 
-# Kiểm thử: Quản lý Dịch vụ & Kỹ năng
+# Kế Hoạch Kiểm Thử
 
-## Test Cases
+## 1. Unit Tests (Backend)
+- Test Model creation.
+- Test Service CRUD logic.
+- Test validation rules (e.g., duplicate skill code).
 
-### Backend
-- [ ] **Create Service (Basic):** Tạo dịch vụ chỉ có tên, giá, thời gian, buffer.
-- [ ] **Smart Tagging Logic:** Gửi "Massage" và "massage" -> Chỉ tạo 1 skill duy nhất.
-- [ ] **Soft Delete Service:** Xóa dịch vụ -> `is_active` = false.
-- [ ] **Soft Delete Skill:** Xóa skill -> `is_active` = false.
-- [ ] **Assign Skill to User:** Gán skill cho user -> Check bảng `employee_skills`.
+## 2. Integration Tests (API)
+- `POST /services`: Tạo service thành công trả về 200.
+- `POST /services`: Tạo service với skill_id không tồn tại trả về 400/404.
+- `GET /services`: Trả về danh sách đúng định dạng.
 
-### Frontend
-- [ ] **Smart Tagging UX:** Gõ tên skill -> Enter -> Tag xuất hiện. Tự động normalize.
-- [ ] **Buffer Time UX:** Thanh visualizer hiển thị đúng phần Xanh (Duration) và Xám (Buffer).
-- [ ] **Matrix View:** Pagination hoạt động. Tích chọn skill lưu thành công.
+## 3. Manual Testing (Frontend)
+- [ ] Vào trang Admin > Services.
+- [ ] Thêm mới Skill "Massage Body".
+- [ ] Thêm mới Service "Massage Thụy Điển 60p", chọn skill "Massage Body".
+- [ ] Lưu và kiểm tra hiển thị trên bảng.
+- [ ] Sửa Service, bỏ chọn skill, lưu lại. Kiểm tra DB.

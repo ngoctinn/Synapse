@@ -34,8 +34,10 @@ async def health_check():
 
 from src.app.config import settings
 from src.modules.users.router import router as users_router
+from src.modules.services.router import router as services_router
 
 app.include_router(users_router, prefix=settings.API_V1_STR)
+app.include_router(services_router, prefix=settings.API_V1_STR)
 
 @app.get("/")
 async def root():
