@@ -6,39 +6,23 @@ import { MoneyInput } from "@/shared/ui/custom/money-input";
 import { TagInput } from "@/shared/ui/custom/tag-input";
 import { TimePicker } from "@/shared/ui/custom/time-picker";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form";
 import { Switch } from "@/shared/ui/switch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Tag } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { Resolver, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import * as z from "zod";
 import { createService, updateService } from "../actions";
+import { ServiceFormValues, serviceSchema } from "../schemas";
 import { Service, Skill } from "../types";
-
-const serviceSchema = z.object({
-  name: z.string().min(1, "Tên dịch vụ là bắt buộc"),
-  duration: z.coerce.number()
-    .min(15, "Thời lượng tối thiểu 15 phút")
-    .refine((val) => val % 15 === 0, "Thời lượng phải là bội số của 15 (VD: 15, 30, 45...)"),
-  buffer_time: z.coerce.number()
-    .min(0, "Thời gian nghỉ không được âm")
-    .refine((val) => val % 15 === 0, "Thời gian nghỉ phải là bội số của 15"),
-  price: z.coerce.number().min(0, "Giá không được âm"),
-  is_active: z.boolean().default(true),
-  skill_ids: z.array(z.string()).default([]),
-  new_skills: z.array(z.string()).default([]),
-});
-
-type ServiceFormValues = z.infer<typeof serviceSchema>;
 
 interface ServiceFormProps {
   initialData?: Service;
@@ -51,7 +35,7 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<ServiceFormValues>({
-    resolver: zodResolver(serviceSchema) as any,
+    resolver: zodResolver(serviceSchema) as Resolver<ServiceFormValues>,
     mode: "onChange",
     defaultValues: {
       name: initialData?.name || "",
@@ -269,4 +253,3 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
     </Form>
   );
 }
-
