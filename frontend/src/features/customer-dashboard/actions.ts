@@ -25,10 +25,10 @@ export async function updateProfile(prevState: ActionState, formData: FormData):
 
   const avatarFile = formData.get("avatar") as File;
   if (avatarFile && avatarFile.size > 0) {
-    // TODO: Implement real avatar upload
-    // 1. Upload file to Supabase Storage
-    // 2. Get public URL
-    // 3. Update validatedFields.data.avatarUrl with the new URL
+    // TODO: Triển khai upload avatar thực tế
+    // 1. Upload file lên Supabase Storage
+    // 2. Lấy public URL
+    // 3. Cập nhật validatedFields.data.avatarUrl với URL mới
     console.log("TODO: Upload avatar:", avatarFile.name);
   }
 
@@ -37,7 +37,6 @@ export async function updateProfile(prevState: ActionState, formData: FormData):
     revalidatePath("/dashboard/profile");
     return { message: "Cập nhật hồ sơ thành công!", success: true };
   } catch (e) {
-    // console.error("Update Profile Error:", e); // Removed console.error as per clean code
     return { message: `Đã có lỗi xảy ra: ${e instanceof Error ? e.message : String(e)}`, success: false };
   }
 }

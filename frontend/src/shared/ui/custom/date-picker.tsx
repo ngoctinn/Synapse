@@ -1,139 +1,111 @@
 "use client"
 
-import { format, isToday } from "date-fns"
+import { addDays, nextMonday } from "date-fns"
 import { vi } from "date-fns/locale"
-import { Calendar as CalendarIcon, X } from "lucide-react"
+import { Calendar as CalendarIcon } from "lucide-react"
+import * as React from "react"
 
 import { cn } from "@/shared/lib/utils"
 import { Button } from "@/shared/ui/button"
 import { Calendar } from "@/shared/ui/calendar"
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
 } from "@/shared/ui/popover"
-import { useState } from "react"
+import { MaskedDateInput } from "./masked-date-input"
 
-/**
- * Props cho component DatePicker
- */
 interface DatePickerProps {
-  /** Ngày được chọn hiện tại */
   date?: Date
-  /** Hàm callback khi chọn ngày */
   setDate: (date?: Date) => void
-  /** Placeholder hiển thị khi chưa chọn ngày */
   placeholder?: string
-  /** Class tùy chỉnh cho button trigger */
   className?: string
-  /** Năm bắt đầu cho dropdown chọn năm (Mặc định: 1900) */
   fromYear?: number
-  /** Năm kết thúc cho dropdown chọn năm (Mặc định: Năm hiện tại + 10) */
   toYear?: number
 }
 
-/**
- * Component chọn ngày tháng (DatePicker)
- * Hỗ trợ chọn nhanh Năm/Tháng và nút quay về Hôm nay.
- */
 export function DatePicker({
   date,
   setDate,
-  placeholder = "Chọn ngày",
   className,
-  fromYear = 1900,
-  toYear = new Date().getFullYear() + 10,
+  fromYear,
+  toYear,
+  placeholder = "DD/MM/YYYY",
 }: DatePickerProps) {
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false)
+  const [isPopoverOpen, setIsPopoverOpen] = React.useState(false)
 
-  // Xử lý khi chọn ngày
   const handleSelect = (newDate?: Date) => {
     setDate(newDate)
-    setIsPopoverOpen(false) // Đóng popover sau khi chọn
-  }
-
-  // Xử lý chọn ngày hôm nay
-  const handleSelectToday = () => {
-    const today = new Date()
-    setDate(today)
     setIsPopoverOpen(false)
   }
 
-  // Xử lý xóa ngày (khi click nút X)
-  const handleClear = (e: React.MouseEvent) => {
-    e.stopPropagation() // Ngăn chặn mở popover
-    setDate(undefined)
-  }
+  const handleSelectToday = () => handleSelect(new Date())
+  const handleSelectTomorrow = () => handleSelect(addDays(new Date(), 1))
+  const handleSelectNextMonday = () => handleSelect(nextMonday(new Date()))
 
   return (
-    <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant={"outline"}
-          className={cn(
-            "group w-full justify-between text-left font-normal transition-all duration-200 hover:bg-accent hover:text-accent-foreground hover:shadow-sm",
-            !date && "text-muted-foreground",
-            isPopoverOpen && "border-primary ring-2 ring-primary/20", // Active state
-            className
-          )}
-        >
-          <div className="flex items-center">
-            <CalendarIcon className="mr-2 h-4 w-4 animate-in zoom-in duration-300" />
-            {date ? (
-              isToday(date) ? (
-                <span className="font-medium text-primary">
-                  Hôm nay ({format(date, "dd/MM/yyyy")})
-                </span>
-              ) : (
-                format(date, "dd/MM/yyyy")
-              )
-            ) : (
-              <span>{placeholder}</span>
-            )}
-          </div>
-          {/* Nút xóa ngày (chỉ hiện khi có ngày và hover) */}
-          {date && (
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={handleClear}
-              className="ml-2 rounded-full p-1 opacity-50 hover:bg-primary/10 hover:text-destructive hover:opacity-100 focus:bg-primary/10 focus:opacity-100 focus:outline-none group-hover:opacity-100"
-            >
-              <X className="h-3 w-3" />
-            </div>
-          )}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 backdrop-blur-xl bg-background/95" align="start">
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={handleSelect}
-          required={false} // Cho phép bỏ chọn (toggle)
-          captionLayout="dropdown" // Cho phép chọn Năm/Tháng qua dropdown
-          fromYear={fromYear}
-          toYear={toYear}
-          formatters={{
-            formatCaption: (date) =>
-              format(date, "'Tháng' MM 'Năm' yyyy", { locale: vi }),
-            formatMonthDropdown: (date) =>
-              format(date, "'Tháng' MM", { locale: vi }), // Fix lỗi hiển thị tiếng Anh
-          }}
-          locale={vi}
-          className="rounded-md border"
+    <div className={cn("flex items-center gap-2", className)}>
+      <div className="relative flex-1">
+        <MaskedDateInput
+          value={date}
+          onChange={setDate}
+          placeholder={placeholder}
+          className="pr-10" // Space for the calendar button inside if we wanted, but here it's outside
         />
-        {/* Footer: Nút chọn nhanh Hôm nay */}
-        <div className="border-t p-3">
+      </div>
+
+      <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+        <PopoverTrigger asChild>
           <Button
-            variant="ghost"
-            size="sm"
-            className="w-full justify-center text-primary transition-colors hover:bg-primary/10 hover:text-primary"
-            onClick={handleSelectToday}
+            variant="outline"
+            size="icon"
+            className={cn(
+              "h-9 w-9 shrink-0 transition-all duration-200",
+              isPopoverOpen && "border-primary ring-2 ring-primary/20"
+            )}
           >
-            Hôm nay
+            <CalendarIcon className="h-4 w-4" />
           </Button>
-        </div>
-      </PopoverContent>
-    </Popover>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0 backdrop-blur-xl bg-background/95" align="end">
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={handleSelect}
+            initialFocus
+            locale={vi}
+            fromYear={fromYear}
+            toYear={toYear}
+            className="rounded-md border-b"
+          />
+          <div className="p-3 grid grid-cols-2 gap-2 bg-muted/30">
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full text-xs h-8 hover:bg-primary/10 hover:text-primary transition-colors"
+              onClick={handleSelectToday}
+            >
+              Hôm nay
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full text-xs h-8 hover:bg-primary/10 hover:text-primary transition-colors"
+              onClick={handleSelectTomorrow}
+            >
+              Ngày mai
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="col-span-2 w-full text-xs h-8 hover:bg-primary/10 hover:text-primary transition-colors"
+              onClick={handleSelectNextMonday}
+            >
+              Thứ Hai tới
+            </Button>
+          </div>
+        </PopoverContent>
+      </Popover>
+    </div>
   )
 }
