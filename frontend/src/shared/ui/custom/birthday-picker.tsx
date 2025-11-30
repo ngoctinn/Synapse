@@ -54,6 +54,7 @@ export function BirthdayPicker({
           </div>
 
           <Button
+            type="button"
             variant={"outline"}
             className={cn(
               "w-full justify-between text-left font-normal transition-all duration-200 pl-10", // pl-10 để tránh đè icon
