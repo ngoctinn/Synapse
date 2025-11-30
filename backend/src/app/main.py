@@ -2,10 +2,19 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
+from contextlib import asynccontextmanager
+from src.common.database import engine
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+    await engine.dispose()
+
 app = FastAPI(
     title="Synapse API",
     description="Backend API for Synapse CRM",
     version="0.1.0",
+    lifespan=lifespan,
 )
 
 # Cấu hình CORS

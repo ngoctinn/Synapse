@@ -12,7 +12,7 @@ engine = create_async_engine(
     settings.DATABASE_URL,
     echo=True, # Đặt False khi chạy production
     future=True,
-    pool_size=10,
+    pool_size=5,
     max_overflow=0,
     pool_pre_ping=True
 )
