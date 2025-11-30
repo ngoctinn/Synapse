@@ -1,4 +1,4 @@
-from typing import List
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import AnyHttpUrl, computed_field
 
@@ -7,9 +7,10 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Synapse CRM"
 
     # CORS
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
+    BACKEND_CORS_ORIGINS: list[AnyHttpUrl] = []
 
     # Database
+    ECHO_SQL: bool = False
     DATABASE_URL: str
 
     # Supabase
