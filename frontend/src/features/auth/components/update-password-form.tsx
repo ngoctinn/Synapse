@@ -80,8 +80,8 @@ export function UpdatePasswordForm() {
       className="w-full"
     >
       <Card className="w-full shadow-lg border-none bg-card/50 backdrop-blur-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Cập nhật mật khẩu</CardTitle>
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold tracking-tight">Cập nhật mật khẩu</CardTitle>
           <CardDescription>
             Nhập mật khẩu mới cho tài khoản của bạn.
           </CardDescription>
@@ -98,6 +98,7 @@ export function UpdatePasswordForm() {
                     <FormControl>
                       <PasswordInput
                         placeholder="Nhập mật khẩu mới"
+                        className="h-11"
                         {...field}
                       />
                     </FormControl>
@@ -114,6 +115,7 @@ export function UpdatePasswordForm() {
                     <FormControl>
                       <PasswordInput
                         placeholder="Nhập lại mật khẩu mới"
+                        className="h-11"
                         {...field}
                       />
                     </FormControl>
@@ -122,7 +124,7 @@ export function UpdatePasswordForm() {
                 )}
               />
 
-              <Button type="submit" className="w-full transition-all hover:scale-[1.02]" disabled={isPending}>
+              <Button type="submit" className="w-full h-11 font-medium transition-all hover:scale-[1.02]" disabled={isPending}>
                 {isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -137,7 +139,7 @@ export function UpdatePasswordForm() {
         </CardContent>
         <CardFooter className="justify-center">
           <div className="text-sm text-muted-foreground">
-            <Link href="/login" className="text-primary hover:underline">
+            <Link href="/login" className="text-primary font-medium hover:underline underline-offset-4 transition-colors">
               Quay lại đăng nhập
             </Link>
           </div>
