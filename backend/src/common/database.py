@@ -1,30 +1,54 @@
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Annotated
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import text
 from sqlmodel.ext.asyncio.session import AsyncSession
+from fastapi import Depends
 from src.app.config import settings
+from src.common.auth_core import get_token_payload
+import json
 
 
-
-# Sử dụng QueuePool để quản lý kết nối hiệu quả, tránh mở quá nhiều kết nối cùng lúc
-# Giới hạn pool_size=2 để phù hợp với giới hạn của Supabase (Free Tier thường là 60-100, nhưng an toàn là 10-20 cho mỗi instance)
+# Cấu hình QueuePool: pool_size=2 (tối ưu cho Supabase Free Tier), timeout=30s
 engine = create_async_engine(
     settings.DATABASE_URL,
-    echo=settings.ECHO_SQL, # Đặt False khi chạy production
+    echo=settings.ECHO_SQL,
     future=True,
-    pool_size=2, # Giảm xuống mức tối thiểu để tránh lỗi MaxClients
+    pool_size=2,
     max_overflow=0,
-    pool_timeout=30, # Tăng thời gian chờ kết nối lên 30s
+    pool_timeout=30,
     pool_pre_ping=True,
-    connect_args={
-        "statement_cache_size": 0, # Tắt prepared statements để tương thích với Supabase Transaction Mode (Port 6543)
-    }
+    connect_args={"statement_cache_size": 0}
 )
 
-# Tạo Async Session Factory
+# Async Session Factory
 async_session_factory = sessionmaker(
     bind=engine,
     class_=AsyncSession,
     expire_on_commit=False
 )
+
+
+async def get_db_session(
+    token_payload: Annotated[dict, Depends(get_token_payload)]
+) -> AsyncGenerator[AsyncSession, None]:
+    """Cung cấp DB session với RLS context (request.jwt.claims) đã được inject."""
+    # Import local để tránh circular dependency (nếu cần thiết trong tương lai)
+
+    async with async_session_factory() as session:
+        try:
+            # 1. Chuyển role sang 'authenticated' (quyền hạn chế)
+            await session.exec(text("SET LOCAL role TO 'authenticated';"))
+
+            # 2. Inject thông tin user vào cấu hình Postgres
+            # Supabase sử dụng request.jwt.claims để kiểm tra policies
+            claims_json = json.dumps(token_payload)
+            await session.exec(
+                text("SELECT set_config('request.jwt.claims', :claims, true)"),
+                params={"claims": claims_json}
+            )
+
+            yield session
+        finally:
+            await session.close()
 

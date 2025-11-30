@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from fastapi import Depends, HTTPException, status
 from starlette.concurrency import run_in_threadpool
 from sqlmodel.ext.asyncio.session import AsyncSession
-from src.app.dependencies import get_db_session
+from src.common.database import get_db_session
 from src.modules.users.models import User
 from src.modules.users.schemas import UserUpdate, InviteStaffRequest
 from supabase import create_client, Client
@@ -15,9 +15,7 @@ class UserService:
         self.session = session
 
     async def get_profile(self, user_id: uuid.UUID) -> User:
-        """
-        Lấy thông tin hồ sơ người dùng.
-        """
+        """Lấy hồ sơ người dùng."""
         user = await self.session.get(User, user_id)
         if not user:
             raise HTTPException(
@@ -27,9 +25,7 @@ class UserService:
         return user
 
     async def update_profile(self, user: User, user_update: UserUpdate) -> User:
-        """
-        Cập nhật thông tin hồ sơ người dùng.
-        """
+        """Cập nhật hồ sơ người dùng."""
         user_data = user_update.model_dump(exclude_unset=True)
         for key, value in user_data.items():
             setattr(user, key, value)
@@ -40,16 +36,14 @@ class UserService:
         return user
 
     async def invite_staff(self, invite_data: "InviteStaffRequest") -> User:
-        """
-        Mời nhân viên mới qua email sử dụng Supabase Admin API.
-        """
-        # 1. Khởi tạo Supabase Admin Client
+        """Mời nhân viên mới (Supabase Admin API)."""
+        # 1. Init Supabase Admin Client
         supabase: Client = create_client(
             settings.SUPABASE_URL,
             settings.SUPABASE_SERVICE_ROLE_KEY
         )
 
-        # 2. Chuẩn bị Metadata
+        # 2. Prepare Metadata
         user_metadata = {
             "full_name": invite_data.full_name,
             "phone_number": invite_data.phone_number,
@@ -58,8 +52,7 @@ class UserService:
             "date_of_birth": str(invite_data.date_of_birth) if invite_data.date_of_birth else None
         }
 
-        # 3. Gọi Supabase Invite API
-        # Trigger handle_new_user sẽ tự động chạy và insert vào public.users
+        # 3. Call Supabase Invite API
         try:
             response = await run_in_threadpool(
                 supabase.auth.admin.invite_user_by_email,
@@ -73,26 +66,15 @@ class UserService:
                 detail=f"Lỗi khi gửi lời mời: {str(e)}"
             )
 
-        # 4. Xử lý Skills nếu là Technician
+        # 4. Handle Skills (Technician)
         if invite_data.role == "technician" and invite_data.skill_ids:
-            # TODO: Implement skill insertion logic here
-            # For now, we assume skills table exists or will be implemented separately
+            # TODO: Implement skill insertion
             pass
 
-        # 5. Trả về thông tin User vừa tạo (lấy từ DB để đảm bảo đồng bộ)
-        # Cần chờ một chút hoặc retry nếu trigger chạy chậm (tuy nhiên trong cùng transaction Postgres thì thường là ngay lập tức)
-        # Nhưng ở đây Supabase Auth và DB là 2 service khác nhau nếu dùng Supabase Cloud.
-        # Nếu self-hosted hoặc local thì chung DB.
-        # Với kiến trúc hiện tại, ta sẽ query lại từ DB.
-
-        # Lưu ý: Trigger chạy bất đồng bộ hoặc đồng bộ tùy cấu hình Supabase.
-        # Tuy nhiên, để an toàn, ta trả về thông tin từ response của Supabase Auth trước,
-        # hoặc query DB với retry logic. Ở đây ta query DB.
-
+        # 5. Return User (Query DB with fallback)
         user = await self.session.get(User, user_id)
         if not user:
-             # Fallback nếu trigger chưa kịp chạy xong (hiếm gặp nhưng có thể)
-             # Trả về object User tạm thời từ request
+             # Fallback: Return temp object if trigger hasn't finished
              return User(
                  id=user_id,
                  email=invite_data.email,
@@ -103,5 +85,4 @@ class UserService:
                  created_at=datetime.now(timezone.utc),
                  updated_at=datetime.now(timezone.utc)
              )
-
         return user

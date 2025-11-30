@@ -6,7 +6,7 @@ from fastapi import Depends, HTTPException, status
 from sqlmodel import select
 from sqlalchemy.orm import selectinload
 from sqlmodel.ext.asyncio.session import AsyncSession
-from src.app.dependencies import get_db_session
+from src.common.database import get_db_session
 from src.modules.services.models import Service, Skill, ServiceSkill
 from src.modules.services.schemas import ServiceCreate, ServiceUpdate, SkillCreate, SkillUpdate
 
@@ -79,57 +79,53 @@ class ServiceManagementService:
         return service
 
     async def _get_or_create_skills(self, skill_names: list[str]) -> list[uuid.UUID]:
-        # Helper để lấy hoặc tạo kỹ năng theo tên (Tối ưu hóa)
+        """Helper: Lấy hoặc tạo kỹ năng theo tên."""
         if not skill_names:
             return []
-
-
 
         def simple_slugify(text):
             text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('utf-8')
             text = re.sub(r'[^\w\s-]', '', text).strip().lower()
             return re.sub(r'[-\s]+', '_', text)
 
-        # 1. Chuẩn bị mã (codes)
+        # 1. Prepare codes
         name_map = {f"SK_{simple_slugify(name).upper()}": name for name in skill_names}
         codes = list(name_map.keys())
 
-        # 2. Tìm kiếm kỹ năng đã tồn tại
+        # 2. Find existing skills
         query = select(Skill).where(Skill.code.in_(codes))
         result = await self.session.exec(query)
         existing_skills = result.all()
         existing_codes = {skill.code for skill in existing_skills}
-
         skill_ids = [skill.id for skill in existing_skills]
 
-        # 3. Tạo kỹ năng còn thiếu
+        # 3. Create missing skills
         new_skills = []
         for code, name in name_map.items():
             if code not in existing_codes:
-                new_skill = Skill(name=name, code=code)
-                new_skills.append(new_skill)
+                new_skills.append(Skill(name=name, code=code))
 
         if new_skills:
             self.session.add_all(new_skills)
-            await self.session.flush() # Lấy ID mà không cần commit ngay
+            await self.session.flush()
             skill_ids.extend([skill.id for skill in new_skills])
 
         return skill_ids
 
     async def create_service(self, service_in: ServiceCreate) -> Service:
-        # 1. Xử lý Smart Tagging & Skill IDs
+        # 1. Handle Smart Tagging
         final_skill_ids = set(service_in.skill_ids)
         if service_in.new_skills:
             new_ids = await self._get_or_create_skills(service_in.new_skills)
             final_skill_ids.update(new_ids)
 
-        # 2. Tạo Dịch vụ
+        # 2. Create Service
         service_data = service_in.model_dump(exclude={"skill_ids", "new_skills"})
         service = Service(**service_data)
         self.session.add(service)
-        await self.session.flush() # Lấy Service ID
+        await self.session.flush()
 
-        # 3. Chèn hàng loạt liên kết (Bulk Insert Links)
+        # 3. Bulk Insert Links
         if final_skill_ids:
             links = [
                 ServiceSkill(service_id=service.id, skill_id=skill_id)
@@ -139,11 +135,10 @@ class ServiceManagementService:
 
         await self.session.commit()
         await self.session.refresh(service)
-
         return await self.get_service(service.id)
 
     async def update_service(self, service_id: uuid.UUID, service_in: ServiceUpdate) -> Service:
-        # Load service cùng với các liên kết hiện có
+        # Load service with links
         query = select(Service).where(Service.id == service_id).options(
             selectinload(Service.skill_links)
         )
@@ -153,7 +148,7 @@ class ServiceManagementService:
         if not service:
             raise HTTPException(status_code=404, detail="Dịch vụ không tồn tại")
 
-        # Xử lý Smart Tagging
+        # Handle Smart Tagging
         final_skill_ids = None
         if service_in.skill_ids is not None:
             final_skill_ids = set(service_in.skill_ids)
@@ -161,16 +156,16 @@ class ServiceManagementService:
                 new_ids = await self._get_or_create_skills(service_in.new_skills)
                 final_skill_ids.update(new_ids)
 
-        # Cập nhật các trường cơ bản
+        # Update basic fields
         update_data = service_in.model_dump(exclude_unset=True, exclude={"skill_ids", "new_skills"})
         for key, value in update_data.items():
             setattr(service, key, value)
 
-        # Cập nhật Skills nếu được cung cấp
+        # Update Skills
         if final_skill_ids is not None:
             current_skill_ids = {link.skill_id for link in service.skill_links}
 
-            # Thêm mới (To Add)
+            # Add new
             to_add = final_skill_ids - current_skill_ids
             new_links = [
                 ServiceSkill(service_id=service.id, skill_id=skill_id)
@@ -179,7 +174,7 @@ class ServiceManagementService:
             if new_links:
                 self.session.add_all(new_links)
 
-            # Xóa bỏ (To Remove)
+            # Remove old
             to_remove = current_skill_ids - final_skill_ids
             for link in service.skill_links:
                 if link.skill_id in to_remove:
@@ -188,7 +183,6 @@ class ServiceManagementService:
         self.session.add(service)
         await self.session.commit()
         await self.session.refresh(service)
-
         return await self.get_service(service.id)
 
     async def delete_service(self, service_id: uuid.UUID):
@@ -196,7 +190,7 @@ class ServiceManagementService:
         if not service:
             raise HTTPException(status_code=404, detail="Dịch vụ không tồn tại")
 
-        # Xóa mềm (Soft delete)
+        # Soft delete
         service.is_active = False
         self.session.add(service)
         await self.session.commit()

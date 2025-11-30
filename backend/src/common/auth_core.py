@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Any
 import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -8,14 +8,15 @@ security = HTTPBearer()
 
 def get_token_payload(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)]
-) -> dict:
+) -> dict[str, Any]:
+    """Giải mã và xác thực JWT token."""
     token = credentials.credentials
     try:
         payload = jwt.decode(
             token,
             settings.SUPABASE_JWT_SECRET,
-            algorithms=["HS256"],
-            audience="authenticated",
+            algorithms=[settings.JWT_ALGORITHM],
+            audience=settings.JWT_AUDIENCE,
             leeway=60  # Cho phép lệch đồng hồ 60 giây
         )
         return payload
