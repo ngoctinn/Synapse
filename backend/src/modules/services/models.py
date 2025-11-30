@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime, timezone
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, DateTime
 from sqlmodel import SQLModel, Field, Relationship
 
 # 1. Bảng Trung gian: Dịch vụ cần Kỹ năng gì
@@ -44,8 +44,8 @@ class Service(SQLModel, table=True):
     image_url: str | None = None
     is_active: bool = Field(default=True)
 
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+    created_at: datetime = Field(sa_type=DateTime(timezone=True), default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(sa_type=DateTime(timezone=True), default_factory=lambda: datetime.now(timezone.utc))
 
     # Quan hệ Many-to-Many với Skill
     skill_links: list[ServiceSkill] = Relationship(back_populates="service")

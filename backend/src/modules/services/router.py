@@ -8,6 +8,7 @@ from src.modules.services.schemas import (
 from src.modules.services.service import ServiceManagementService
 from src.common.security import get_current_user
 from src.modules.users.models import User
+from src.modules.users.constants import UserRole
 
 router = APIRouter(prefix="/services", tags=["services"])
 
@@ -100,6 +101,6 @@ async def delete_service(
     current_user: Annotated[User, Depends(get_current_user)]
 ):
     """Xóa (ẩn) dịch vụ (Chỉ Manager)."""
-    if current_user.role != "manager":
+    if current_user.role != UserRole.MANAGER:
         raise HTTPException(status_code=403, detail="Không có quyền truy cập")
     return await service.delete_service(service_id)
