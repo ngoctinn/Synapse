@@ -3,36 +3,36 @@ description: Đánh giá mã nguồn Backend theo tiêu chuẩn Modular Monolith
 ---
 
 1. **Chuẩn bị & Nạp Ngữ Cảnh**:
-   - Đọc kỹ quy tắc tại `.agent/rules/backend.md` để nắm vững tiêu chuẩn Modular Monolith và Vertical Slice Architecture.
-   - Xác định phạm vi đánh giá: `backend/src/app`, `backend/src/modules`, `backend/src/common`.
+   - **QUY TẮC BẤT DI BẤT DỊCH**: Workflow này là **READ-ONLY**. Tuyệt đối KHÔNG thực thi mã (run_command) hay chỉnh sửa code (write_to_file, replace_file_content) ngoại trừ việc tạo file báo cáo.
+   - Đọc kỹ quy tắc tại `.agent/rules/backend.md` để nắm vững tiêu chuẩn Modular Monolith và FastAPI.
+   - Xác định phạm vi đánh giá: `backend/src/modules`, `backend/src/common`, `backend/src/app`.
 
 2. **Kiểm Tra Tuân Thủ Kiến Trúc (Modular Monolith)**:
-   - **Cấu trúc Vertical Slice**: Kiểm tra xem các module trong `modules` có đầy đủ `router`, `service`, `models`, `schemas` và `__init__.py` không.
-   - **Public API (Gatekeeper)**: Kiểm tra file `__init__.py` của từng module. Có export đúng các thành phần cần thiết không?
-   - **Deep Imports**: Quét mã nguồn để phát hiện việc import trực tiếp vào file nội bộ của module khác (vi phạm quy tắc đóng gói).
-   - **Common Layer**: Đảm bảo `src/common` chỉ chứa code hạ tầng, không chứa logic nghiệp vụ.
+   - **Vertical Slices**: Kiểm tra xem mỗi module có đầy đủ `models.py`, `schemas.py`, `service.py`, `router.py` không.
+   - **Public API**: Kiểm tra file `__init__.py` của mỗi module. Chỉ được export những gì cần thiết.
+   - **Encapsulation**: Quét mã nguồn để phát hiện các import vi phạm (import file nội bộ của module khác thay vì qua `__init__.py`).
+   - **Common Layer**: Đảm bảo `src/common` chỉ chứa mã hạ tầng, không chứa logic nghiệp vụ.
 
-3. **Kiểm Tra Cú Pháp Python & FastAPI (Modern Standards)**:
-   - **Async/Await**: Kiểm tra toàn bộ Service, Router, và Database calls có phải là `async/await` không. Phát hiện blocking code (vd: `time.sleep`, `requests`).
-   - **Type Hinting**: Kiểm tra cú pháp Python 3.12+ (dùng `|` thay vì `Union`, `list[]` thay vì `List[]`).
-   - **Pydantic V2**: Kiểm tra việc sử dụng `ConfigDict`, `field_validator`.
-   - **SQLModel**: Kiểm tra việc sử dụng `session.exec()` (đúng) thay vì `session.execute()` (hạn chế), và các quan hệ Lazy Loading (string forward references).
+3. **Kiểm Tra Chất Lượng Code (Python & FastAPI)**:
+   - **Async/Await**: Kiểm tra toàn bộ Service, Router, Database calls phải là `async/await`.
+   - **Type Hinting**: Đảm bảo sử dụng Python 3.12+ syntax (`|` thay vì `Union`, `list[]` thay vì `List[]`).
+   - **Pydantic V2**: Kiểm tra `model_config = ConfigDict(from_attributes=True)`.
+   - **Dependency Injection**: Kiểm tra việc inject `Session` và `Service`.
+   - **Error Handling**: Kiểm tra việc sử dụng Custom Exceptions thay vì `HTTPException` trực tiếp trong Service.
 
-4. **Kiểm Tra Bảo Mật & Dependency Injection**:
-   - **RLS Injection**: Kiểm tra xem `get_db_session` có được sử dụng để inject thông tin user vào DB session không.
-   - **Service Injection**: Kiểm tra xem Service có được inject vào Router không (tránh khởi tạo trực tiếp).
+4. **Kiểm Tra Tài Liệu & Định Danh (Tiếng Việt)**:
+   - **Naming**: Đảm bảo `snake_case` cho biến/hàm.
+   - **Comments/Docstrings**: Toàn bộ giải thích và Docstring phải bằng **Tiếng Việt**.
+   - **Swagger Docs**: Docstring của Router phải dùng Markdown để hiển thị đẹp trên Swagger.
 
-5. **Đề Xuất Cải Tiến (Brainstorming)**:
-   - Thực hiện quy trình **Brainstormer** (.agent/workflows/brainstormer.md):
-     - Đánh giá tính nhất quán của API (Naming, Status Codes).
-     - Đề xuất cải thiện xử lý lỗi (Error Handling) và Logging.
+5. **Tổng Hợp & Lưu Báo Cáo**:
+   - **Xác định tên file**:
+     - Kiểm tra thư mục `docs/reports/` để tìm số thứ tự tiếp theo.
+     - Đặt tên file: `docs/reports/[SỐ_THỨ_TỰ]-backend-review-[TÊN_MODULE].md`.
+   - **Nội dung báo cáo**:
+     - **Vi phạm kiến trúc**: Liệt kê chi tiết.
+     - **Code Smells**: Các vấn đề về Clean Code.
+     - **Đề xuất cải tiến**: Kế hoạch cụ thể để refactor.
 
-6. **Nghiên Cứu & Tối Ưu Hóa (Researcher)**:
-   - Thực hiện quy trình **Researcher** (.agent/workflows/researcher.md):
-     - Tìm kiếm các pattern tối ưu hiệu năng cho các query phức tạp (nếu có).
-     - Đề xuất các thư viện hoặc kỹ thuật mới nếu cần thiết.
-
-7. **Tổng Hợp Báo Cáo**:
-   - Liệt kê các vi phạm (nếu có) so với `.agent/rules/backend.md`.
-   - Trình bày các đề xuất cải tiến.
-   - Đưa ra kế hoạch hành động cụ thể để refactor.
+6. **Kết Thúc**:
+   - Thông báo cho người dùng: "Báo cáo đã hoàn tất. Để thực hiện sửa đổi, hãy chạy workflow `/backend-refactor` và cung cấp đường dẫn file báo cáo này."
