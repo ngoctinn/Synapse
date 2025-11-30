@@ -84,7 +84,7 @@ export function LoginForm() {
       transition={{ duration: 0.5 }}
       className="w-full"
     >
-      <Card className="w-full">
+      <Card className="w-full shadow-lg border-none bg-card/50 backdrop-blur-sm">
         <CardHeader>
           <CardTitle className="text-2xl">Đăng nhập</CardTitle>
           <CardDescription>

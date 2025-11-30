@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
 import { Loader2, Mail } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useActionState, startTransition } from "react";
@@ -75,6 +76,12 @@ export function ForgotPasswordForm() {
 
   return (
     <>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="w-full"
+    >
       <Card className="w-full shadow-lg border-none bg-card/50 backdrop-blur-sm">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold tracking-tight">Quên mật khẩu</CardTitle>
@@ -133,6 +140,7 @@ export function ForgotPasswordForm() {
           </div>
         </CardFooter>
       </Card>
+    </motion.div>
 
       <CustomDialog
         open={showCheckEmailDialog}

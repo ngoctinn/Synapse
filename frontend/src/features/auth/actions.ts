@@ -2,16 +2,23 @@
 
 import { createClient } from "@/shared/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import "server-only";
 import { forgotPasswordSchema, loginSchema, registerSchema, updatePasswordSchema } from "./schemas";
 
+/**
+ * Xử lý đăng nhập người dùng
+ * @param prevState Trạng thái trước đó của form (từ useActionState)
+ * @param formData Dữ liệu form gửi lên
+ */
 export async function loginAction(prevState: any, formData: FormData) {
   const rawData = {
     email: formData.get("email"),
     password: formData.get("password"),
   };
 
+  // 1. Validate dữ liệu đầu vào
   const validatedFields = loginSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
@@ -21,6 +28,7 @@ export async function loginAction(prevState: any, formData: FormData) {
   const { email, password } = validatedFields.data;
   const supabase = await createClient();
 
+  // 2. Gọi Supabase Auth để đăng nhập
   const { error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -30,17 +38,23 @@ export async function loginAction(prevState: any, formData: FormData) {
     return { success: false, message: error.message };
   }
 
+  // 3. Revalidate layout để cập nhật trạng thái UI
   revalidatePath("/", "layout");
   return { success: true, message: "Đăng nhập thành công!" };
 }
 
-export async function registerAction(formData: FormData) {
+/**
+ * Xử lý đăng ký tài khoản mới
+ * @param formData Dữ liệu form gửi lên
+ */
+export async function registerAction(prevState: any, formData: FormData) {
   const rawData = {
     email: formData.get("email"),
     password: formData.get("password"),
     fullName: formData.get("fullName"),
   };
 
+  // 1. Validate dữ liệu đầu vào
   const validatedFields = registerSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
@@ -50,6 +64,7 @@ export async function registerAction(formData: FormData) {
   const { email, password, fullName } = validatedFields.data;
   const supabase = await createClient();
 
+  // 2. Gọi Supabase Auth để đăng ký
   const { error } = await supabase.auth.signUp({
     email,
     password,
@@ -65,10 +80,14 @@ export async function registerAction(formData: FormData) {
     return { success: false, message: error.message };
   }
 
+  // 3. Revalidate layout
   revalidatePath("/", "layout");
   return { success: true, message: "Đăng ký thành công! Vui lòng kiểm tra email để xác thực." };
 }
 
+/**
+ * Xử lý đăng xuất
+ */
 export async function logoutAction() {
   const supabase = await createClient();
   await supabase.auth.signOut();
@@ -76,11 +95,17 @@ export async function logoutAction() {
   redirect("/login");
 }
 
+/**
+ * Xử lý quên mật khẩu (gửi email reset)
+ * @param prevState Trạng thái trước đó
+ * @param formData Dữ liệu form
+ */
 export async function forgotPasswordAction(prevState: any, formData: FormData) {
   const rawData = {
     email: formData.get("email"),
   };
 
+  // 1. Validate email
   const validatedFields = forgotPasswordSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
@@ -89,10 +114,14 @@ export async function forgotPasswordAction(prevState: any, formData: FormData) {
 
   const { email } = validatedFields.data;
   const supabase = await createClient();
-  const origin = (await import('next/headers')).headers().then(h => h.get('origin'));
+  
+  // 2. Lấy origin hiện tại để tạo link redirect chính xác
+  const headerStore = await headers();
+  const origin = headerStore.get('origin');
 
+  // 3. Gửi yêu cầu reset password tới Supabase
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${await origin}/auth/callback?next=/reset-password`,
+    redirectTo: `${origin}/auth/callback?next=/reset-password`,
   });
 
   if (error) {
@@ -102,11 +131,16 @@ export async function forgotPasswordAction(prevState: any, formData: FormData) {
   return { success: true, message: "Đã gửi email khôi phục mật khẩu!" };
 }
 
-export async function updatePasswordAction(formData: FormData) {
+/**
+ * Xử lý cập nhật mật khẩu mới
+ * @param formData Dữ liệu form
+ */
+export async function updatePasswordAction(prevState: any, formData: FormData) {
   const rawData = {
     password: formData.get("password"),
   };
 
+  // 1. Validate mật khẩu mới
   const validatedFields = updatePasswordSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
@@ -116,6 +150,7 @@ export async function updatePasswordAction(formData: FormData) {
   const { password } = validatedFields.data;
   const supabase = await createClient();
 
+  // 2. Cập nhật user với mật khẩu mới
   const { error } = await supabase.auth.updateUser({
     password: password,
   });
