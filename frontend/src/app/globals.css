@@ -169,10 +169,10 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground text-[17px];
+    @apply bg-background text-foreground text-[16px];
   }
   html {
-    font-size: 17px;
+    font-size: 16px;
     scroll-behavior: smooth;
   }
 }
