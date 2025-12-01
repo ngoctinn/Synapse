@@ -39,3 +39,9 @@ export interface ServiceUpdateInput {
   skill_ids?: string[];
   new_skills?: string[];
 }
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+}

@@ -2,7 +2,7 @@ from typing import Annotated
 import uuid
 from fastapi import APIRouter, Depends, status, HTTPException, Query
 from src.modules.services.schemas import (
-    ServiceRead, ServiceCreate, ServiceUpdate,
+    ServiceRead, ServiceCreate, ServiceUpdate, ServicePaginationResponse,
     SkillRead, SkillCreate, SkillUpdate
 )
 from src.modules.services.service import ServiceManagementService
@@ -98,25 +98,33 @@ async def delete_skill(
         raise HTTPException(status_code=404, detail=str(e))
 
 # --- SERVICES ---
-@router.get("", response_model=list[ServiceRead])
+@router.get("", response_model=ServicePaginationResponse)
 async def list_services(
     service: Annotated[ServiceManagementService, Depends(ServiceManagementService)],
-    skip: int = Query(0, ge=0),
-    limit: int = Query(100, ge=1, le=100),
+    page: int = Query(1, ge=1),
+    limit: int = Query(10, ge=1, le=100),
     search: str | None = None,
     active: bool = False
 ):
     """
-    Lấy danh sách dịch vụ.
+    Lấy danh sách dịch vụ (Phân trang).
 
     - **Input**:
-        - `skip` (int, optional): Số lượng bản ghi bỏ qua (Pagination). Default: 0.
-        - `limit` (int, optional): Số lượng bản ghi lấy về (Pagination). Default: 100. Max: 100.
+        - `page` (int, optional): Số trang. Default: 1.
+        - `limit` (int, optional): Số lượng bản ghi/trang. Default: 10. Max: 100.
         - `search` (str, optional): Tìm kiếm theo tên dịch vụ.
         - `active` (bool, optional): Chỉ lấy dịch vụ đang hoạt động.
-    - **Output**: Danh sách các đối tượng `ServiceRead`.
+    - **Output**: `ServicePaginationResponse` (data, total, page, limit).
     """
-    return await service.get_services(skip=skip, limit=limit, search=search, only_active=active)
+    skip = (page - 1) * limit
+    services, total = await service.get_services(skip=skip, limit=limit, search=search, only_active=active)
+
+    return ServicePaginationResponse(
+        data=services,
+        total=total,
+        page=page,
+        limit=limit
+    )
 
 @router.get("/{service_id}", response_model=ServiceRead)
 async def get_service(

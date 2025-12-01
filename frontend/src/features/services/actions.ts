@@ -3,16 +3,27 @@
 import { fetchWithAuth } from "@/shared/lib/api";
 import { revalidatePath } from "next/cache";
 import { serviceSchema } from "./schemas";
-import { Service, ServiceCreateInput, ServiceUpdateInput, Skill } from "./types";
+import { PaginatedResponse, Service, ServiceCreateInput, ServiceUpdateInput, Skill } from "./types";
 
 const SERVICE_TAG = "services";
 
-export async function getServices(activeOnly = false): Promise<Service[]> {
-  // Sử dụng URLSearchParams để xử lý query string
+export async function getServices(
+  page = 1,
+  limit = 10,
+  search?: string,
+  activeOnly = false
+): Promise<PaginatedResponse<Service>> {
   const params = new URLSearchParams();
+  params.append("page", page.toString());
+  params.append("limit", limit.toString());
+
+  if (search) {
+    params.append("search", search);
+  }
   if (activeOnly) {
     params.append("active", "true");
   }
+
   const queryString = params.toString() ? `?${params.toString()}` : "";
 
   const res = await fetchWithAuth(`/services${queryString}`, {

@@ -1,6 +1,8 @@
 "use client"
 
+import { formatCurrency } from "@/shared/lib/utils"
 import { Badge } from "@/shared/ui/badge"
+import { PaginationControls } from "@/shared/ui/custom/pagination-controls"
 import {
     Table,
     TableBody,
@@ -9,13 +11,12 @@ import {
     TableHeader,
     TableRow,
 } from "@/shared/ui/table"
-import { formatCurrency } from "@/shared/lib/utils"
 import { motion } from "framer-motion"
 import { Plus } from "lucide-react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Service, Skill } from "../types"
 import { CreateServiceDialog } from "./create-service-dialog"
 import { ServiceActions } from "./service-actions"
-import { PaginationControls } from "@/shared/ui/custom/pagination-controls"
 
 interface ServiceTableProps {
   services: Service[]
@@ -25,13 +26,28 @@ interface ServiceTableProps {
   onPageChange?: (page: number) => void
 }
 
-export function ServiceTable({ 
-  services, 
+export function ServiceTable({
+  services,
   availableSkills,
   page = 1,
   totalPages = 1,
-  onPageChange = () => {}
+  onPageChange
 }: ServiceTableProps) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  const handlePageChange = (newPage: number) => {
+    if (onPageChange) {
+      onPageChange(newPage)
+      return
+    }
+
+    const params = new URLSearchParams(searchParams.toString())
+    params.set("page", newPage.toString())
+    router.push(`${pathname}?${params.toString()}`)
+  }
+
   if (services.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center border rounded-xl bg-white/50 backdrop-blur-sm border-dashed border-slate-300">
@@ -126,10 +142,10 @@ export function ServiceTable({
         </Table>
       </div>
       <div className="px-4 pb-4">
-        <PaginationControls 
-          currentPage={page} 
-          totalPages={totalPages} 
-          onPageChange={onPageChange} 
+        <PaginationControls
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
         />
       </div>
     </div>

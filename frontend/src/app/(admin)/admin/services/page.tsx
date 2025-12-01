@@ -1,11 +1,21 @@
 import { CreateServiceDialog, getServices, getSkills, ServiceTable } from "@/features/services";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 
-export default async function ServicesPage() {
-  const [services, skills] = await Promise.all([
-    getServices(),
+export default async function ServicesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; search?: string }>;
+}) {
+  const { page: pageParam, search } = await searchParams;
+  const page = Number(pageParam) || 1;
+  const limit = 10;
+
+  const [servicesData, skills] = await Promise.all([
+    getServices(page, limit, search),
     getSkills()
   ]);
+
+  const totalPages = Math.ceil(servicesData.total / limit);
 
   return (
     <div className="h-[calc(100vh-6rem)] flex flex-col">
@@ -22,11 +32,11 @@ export default async function ServicesPage() {
 
           <div className="flex-1 overflow-hidden relative">
             <TabsContent value="list" className="h-full mt-0 border-0 p-0 data-[state=inactive]:hidden">
-                 <ServiceTable 
-                   services={services} 
-                   availableSkills={skills} 
-                   page={1}
-                   totalPages={10}
+                 <ServiceTable
+                   services={servicesData.data}
+                   availableSkills={skills}
+                   page={page}
+                   totalPages={totalPages}
                  />
             </TabsContent>
           </div>
