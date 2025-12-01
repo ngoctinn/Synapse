@@ -1,5 +1,6 @@
 "use client"
 
+import { HeaderLogo } from "@/features/layout/components/header/logo"
 import {
   Sidebar,
   SidebarContent,
@@ -24,14 +25,12 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
 
   return (
     <Sidebar collapsible="icon" className="border-none" {...props}>
-      <SidebarHeader className="h-16 flex items-center justify-center px-6 group-data-[collapsible=icon]:px-2">
-        <div className="flex items-center gap-2 w-full group-data-[collapsible=icon]:justify-center">
-            {/* Full Logo */}
-            <span className="text-2xl font-bold text-primary tracking-tight group-data-[collapsible=icon]:hidden">Synapse</span>
-            {/* Icon Logo (Visible only when collapsed) */}
-            <div className="hidden group-data-[collapsible=icon]:flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <span className="font-bold text-lg">S</span>
-            </div>
+      <SidebarHeader className="h-16 justify-center px-4 group-data-[collapsible=icon]:px-2">
+        <div className="flex items-center w-full">
+            <HeaderLogo
+              className="w-full"
+              textClassName="group-data-[collapsible=icon]:hidden transition-all duration-200"
+            />
         </div>
       </SidebarHeader>
 

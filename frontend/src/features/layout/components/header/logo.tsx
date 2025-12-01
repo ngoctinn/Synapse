@@ -1,9 +1,15 @@
+import { cn } from "@/shared/lib/utils"
 import Link from "next/link"
 
-export function HeaderLogo() {
+interface HeaderLogoProps {
+  className?: string
+  textClassName?: string
+}
+
+export function HeaderLogo({ className, textClassName }: HeaderLogoProps) {
   return (
-    <Link href="/" className="flex items-center space-x-2 group">
-      <div className="bg-primary text-primary-foreground p-1 rounded-full transition-transform group-hover:scale-110">
+    <Link href="/" className={cn("flex items-center space-x-2 group", className)}>
+      <div className="bg-primary text-primary-foreground p-1 rounded-full transition-transform group-hover:scale-110 shrink-0">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 100 100"
@@ -31,7 +37,10 @@ export function HeaderLogo() {
           <path d="M 70 70 Q 50 90 30 70" strokeWidth="6" opacity="0.5" />
         </svg>
       </div>
-      <span className="hidden font-bold sm:inline-block text-lg bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80">
+      <span className={cn(
+        "hidden font-bold sm:inline-block text-lg bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80 truncate",
+        textClassName
+      )}>
         Synapse
       </span>
       <span className="sr-only">Synapse Home</span>

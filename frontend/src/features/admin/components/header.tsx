@@ -1,23 +1,25 @@
 "use client"
 
+import { logoutAction } from "@/features/auth/actions"
+import { UserProfile } from "@/features/layout/components/header/types"
 import { cn } from "@/shared/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
 } from "@/shared/ui/breadcrumb"
 import { Button } from "@/shared/ui/button"
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
 import { Separator } from "@/shared/ui/separator"
 import { SidebarTrigger } from "@/shared/ui/sidebar"
@@ -37,11 +39,25 @@ const BREADCRUMB_MAP: Record<string, string> = {
   components: "Components",
 }
 
-export function AdminHeader({ className }: { className?: string }) {
+interface AdminHeaderProps {
+  className?: string
+  user: UserProfile | null
+}
+
+export function AdminHeader({ className, user }: AdminHeaderProps) {
   const pathname = usePathname()
 
   // Tạo breadcrumbs từ pathname
   const pathSegments = pathname.split("/").filter(Boolean)
+
+  const handleLogout = async () => {
+    await logoutAction()
+  }
+
+  const displayName = user?.full_name || user?.email || "Admin"
+  const displayEmail = user?.email || ""
+  const avatarUrl = user?.avatar_url || ""
+  const initials = displayName.substring(0, 2).toUpperCase()
 
   return (
     <header className={cn(
@@ -98,16 +114,16 @@ export function AdminHeader({ className }: { className?: string }) {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full w-9 h-9 hover:bg-slate-50 transition-all hover:ring-2 hover:ring-primary/10">
               <Avatar className="w-8 h-8 border border-slate-200 shadow-sm">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>AB</AvatarFallback>
+                <AvatarImage src={avatarUrl} />
+                <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" sideOffset={12} alignOffset={-24} className="w-56 p-2">
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">Alice Brown</p>
-                <p className="text-xs leading-none text-muted-foreground">alice@example.com</p>
+                <p className="text-sm font-medium leading-none">{displayName}</p>
+                <p className="text-xs leading-none text-muted-foreground">{displayEmail}</p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
@@ -120,7 +136,7 @@ export function AdminHeader({ className }: { className?: string }) {
               <span>Cài đặt</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 group">
+            <DropdownMenuItem className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 group" onSelect={handleLogout}>
               <LogOut className="mr-2 h-4 w-4 text-red-600 group-hover:translate-x-1 transition-transform" />
               <span>Đăng xuất</span>
             </DropdownMenuItem>
@@ -130,3 +146,4 @@ export function AdminHeader({ className }: { className?: string }) {
     </header>
   )
 }
+
