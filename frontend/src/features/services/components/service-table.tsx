@@ -2,7 +2,6 @@
 
 import { Badge } from "@/shared/ui/badge"
 import {
-    Table,
     TableBody,
     TableCell,
     TableHead,
@@ -50,13 +49,13 @@ export function ServiceTable({
   return (
     <div className="h-full flex flex-col gap-4">
       <div className="flex-1 overflow-auto bg-white">
-        <Table>
+        <table className="w-full caption-bottom text-sm min-w-[1000px]">
           <TableHeader className="sticky top-0 z-20 bg-white/95 backdrop-blur shadow-sm">
             <TableRow>
               <TableHead className="bg-white pl-6">Tên dịch vụ</TableHead>
-              <TableHead className="hidden md:table-cell bg-white">Thời lượng</TableHead>
-              <TableHead className="hidden md:table-cell bg-white">Giá</TableHead>
-              <TableHead className="hidden md:table-cell bg-white">Kỹ năng yêu cầu</TableHead>
+              <TableHead className="bg-white">Thời lượng</TableHead>
+              <TableHead className="bg-white">Giá</TableHead>
+              <TableHead className="bg-white">Kỹ năng yêu cầu</TableHead>
               <TableHead className="bg-white">Trạng thái</TableHead>
               <TableHead className="text-right bg-white pr-6">Thao tác</TableHead>
             </TableRow>
@@ -73,21 +72,18 @@ export function ServiceTable({
                 <TableCell className="font-medium pl-6">
                   <div className="flex flex-col">
                     <span>{service.name}</span>
-                    <span className="md:hidden text-xs text-slate-500">
-                      {formatCurrency(service.price)}
-                    </span>
                   </div>
                 </TableCell>
-                <TableCell className="hidden md:table-cell">
+                <TableCell>
                   <div className="flex flex-col text-xs">
                     <span className="font-medium">Phục vụ: {service.duration}p</span>
                     <span className="text-slate-500">Nghỉ: {service.buffer_time}p</span>
                   </div>
                 </TableCell>
-                <TableCell className="hidden md:table-cell font-medium text-slate-700">
+                <TableCell className="font-medium text-slate-700">
                   {formatCurrency(service.price)}
                 </TableCell>
-                <TableCell className="hidden md:table-cell">
+                <TableCell>
                   <div className="flex flex-wrap gap-1">
                     {service.skills.map((skill) => (
                       <Badge key={skill.id} variant="secondary" className="text-[10px] px-1.5 py-0">
@@ -123,7 +119,7 @@ export function ServiceTable({
               </motion.tr>
             ))}
           </TableBody>
-        </Table>
+        </table>
       </div>
       <div className="px-4 pb-4">
         <PaginationControls 

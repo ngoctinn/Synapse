@@ -19,9 +19,11 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/shared/ui/breadcrumb"
-import { Bell, LogOut, Settings, User } from "lucide-react"
+import { Bell, LogOut, Settings, User, Menu } from "lucide-react"
 import { usePathname } from "next/navigation"
 import React from "react"
+import { Sheet, SheetContent, SheetTrigger } from "@/shared/ui/sheet"
+import { AdminSidebar } from "./sidebar"
 
 // Mapping đường dẫn sang tên hiển thị Tiếng Việt
 const BREADCRUMB_MAP: Record<string, string> = {
@@ -49,7 +51,19 @@ export function AdminHeader({ className }: { className?: string }) {
     )}>
       {/* Breadcrumbs Section */}
       <div className="flex items-center gap-4">
-        <Breadcrumb>
+        {/* Mobile Menu Trigger */}
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" className="md:hidden -ml-2">
+              <Menu className="w-5 h-5 text-slate-600" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="p-0 w-auto border-none bg-transparent">
+            <AdminSidebar className="h-full w-64 shadow-none border-none bg-white/95 backdrop-blur-xl" />
+          </SheetContent>
+        </Sheet>
+
+        <Breadcrumb className="hidden md:block">
           <BreadcrumbList>
             {pathSegments.map((segment, index) => {
               const isLast = index === pathSegments.length - 1
