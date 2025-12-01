@@ -30,7 +30,7 @@ export function CreateServiceDialog({ availableSkills }: CreateServiceDialogProp
       </DialogTrigger>
       <DialogContent className="sm:max-w-5xl max-h-[90vh] overflow-y-auto duration-300">
         <DialogHeader>
-          <DialogTitle>Thêm Dịch vụ Mới</DialogTitle>
+          <DialogTitle>Thêm dịch vụ mới</DialogTitle>
           <DialogDescription>
             Tạo dịch vụ mới và gán các kỹ năng yêu cầu.
           </DialogDescription>

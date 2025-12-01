@@ -12,13 +12,6 @@ import {
 } from "@/shared/ui/alert-dialog"
 import { Button } from "@/shared/ui/button"
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-} from "@/shared/ui/dialog"
-import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
@@ -32,7 +25,7 @@ import { useState, useTransition } from "react"
 import { toast } from "sonner"
 import { cloneService, deleteService } from "../actions"
 import { Service, Skill } from "../types"
-import { ServiceForm } from "./service-form"
+import { EditServiceDialog } from "./edit-service-dialog"
 
 interface ServiceActionsProps {
   service: Service
@@ -105,21 +98,12 @@ export function ServiceActions({ service, availableSkills }: ServiceActionsProps
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Dialog open={openEdit} onOpenChange={setOpenEdit}>
-        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Chỉnh sửa Dịch vụ</DialogTitle>
-            <DialogDescription>
-              Cập nhật thông tin dịch vụ và kỹ năng.
-            </DialogDescription>
-          </DialogHeader>
-          <ServiceForm
-            initialData={service}
-            availableSkills={availableSkills}
-            onSuccess={() => setOpenEdit(false)}
-          />
-        </DialogContent>
-      </Dialog>
+      <EditServiceDialog 
+        open={openEdit} 
+        onOpenChange={setOpenEdit} 
+        service={service} 
+        availableSkills={availableSkills} 
+      />
 
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
@@ -144,3 +128,4 @@ export function ServiceActions({ service, availableSkills }: ServiceActionsProps
     </>
   )
 }
+
