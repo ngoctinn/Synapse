@@ -1,21 +1,21 @@
 "use client"
 
-import { formatCurrency } from "@/shared/lib/utils"
 import { Badge } from "@/shared/ui/badge"
-import { PaginationControls } from "@/shared/ui/custom/pagination-controls"
 import {
+    Table,
     TableBody,
     TableCell,
     TableHead,
     TableHeader,
     TableRow,
 } from "@/shared/ui/table"
+import { formatCurrency } from "@/shared/lib/utils"
 import { motion } from "framer-motion"
 import { Plus } from "lucide-react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Service, Skill } from "../types"
 import { CreateServiceDialog } from "./create-service-dialog"
 import { ServiceActions } from "./service-actions"
+import { PaginationControls } from "@/shared/ui/custom/pagination-controls"
 
 interface ServiceTableProps {
   services: Service[]
@@ -25,28 +25,13 @@ interface ServiceTableProps {
   onPageChange?: (page: number) => void
 }
 
-export function ServiceTable({
-  services,
+export function ServiceTable({ 
+  services, 
   availableSkills,
   page = 1,
   totalPages = 1,
-  onPageChange
+  onPageChange = () => {}
 }: ServiceTableProps) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-
-  const handlePageChange = (newPage: number) => {
-    if (onPageChange) {
-      onPageChange(newPage)
-      return
-    }
-
-    const params = new URLSearchParams(searchParams.toString())
-    params.set("page", newPage.toString())
-    router.push(`${pathname}?${params.toString()}`)
-  }
-
   if (services.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center border rounded-xl bg-white/50 backdrop-blur-sm border-dashed border-slate-300">
@@ -65,13 +50,13 @@ export function ServiceTable({
   return (
     <div className="h-full flex flex-col gap-4">
       <div className="flex-1 overflow-auto bg-white">
-        <table className="w-full caption-bottom text-sm min-w-[1000px]">
+        <Table>
           <TableHeader className="sticky top-0 z-20 bg-white/95 backdrop-blur shadow-sm">
             <TableRow>
               <TableHead className="bg-white pl-6">Tên dịch vụ</TableHead>
-              <TableHead className="bg-white">Thời lượng</TableHead>
-              <TableHead className="bg-white">Giá</TableHead>
-              <TableHead className="bg-white">Kỹ năng yêu cầu</TableHead>
+              <TableHead className="hidden md:table-cell bg-white">Thời lượng</TableHead>
+              <TableHead className="hidden md:table-cell bg-white">Giá</TableHead>
+              <TableHead className="hidden md:table-cell bg-white">Kỹ năng yêu cầu</TableHead>
               <TableHead className="bg-white">Trạng thái</TableHead>
               <TableHead className="text-right bg-white pr-6">Thao tác</TableHead>
             </TableRow>
@@ -88,18 +73,21 @@ export function ServiceTable({
                 <TableCell className="font-medium pl-6">
                   <div className="flex flex-col">
                     <span>{service.name}</span>
+                    <span className="md:hidden text-xs text-slate-500">
+                      {formatCurrency(service.price)}
+                    </span>
                   </div>
                 </TableCell>
-                <TableCell>
+                <TableCell className="hidden md:table-cell">
                   <div className="flex flex-col text-xs">
                     <span className="font-medium">Phục vụ: {service.duration}p</span>
                     <span className="text-slate-500">Nghỉ: {service.buffer_time}p</span>
                   </div>
                 </TableCell>
-                <TableCell className="font-medium text-slate-700">
+                <TableCell className="hidden md:table-cell font-medium text-slate-700">
                   {formatCurrency(service.price)}
                 </TableCell>
-                <TableCell>
+                <TableCell className="hidden md:table-cell">
                   <div className="flex flex-wrap gap-1">
                     {service.skills.map((skill) => (
                       <Badge key={skill.id} variant="secondary" className="text-[10px] px-1.5 py-0">
@@ -135,13 +123,13 @@ export function ServiceTable({
               </motion.tr>
             ))}
           </TableBody>
-        </table>
+        </Table>
       </div>
       <div className="px-4 pb-4">
-        <PaginationControls
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
+        <PaginationControls 
+          currentPage={page} 
+          totalPages={totalPages} 
+          onPageChange={onPageChange} 
         />
       </div>
     </div>

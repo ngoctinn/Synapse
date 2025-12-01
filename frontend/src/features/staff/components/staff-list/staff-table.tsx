@@ -3,6 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
 import {
+  Table,
   TableBody,
   TableCell,
   TableHead,
@@ -55,7 +56,7 @@ export function StaffTable({
   return (
     <div className="h-full flex flex-col gap-4">
       <div className="flex-1 overflow-auto bg-white">
-        <table className="w-full caption-bottom text-sm min-w-[1000px]">
+        <Table>
           <TableHeader className="sticky top-0 z-10 bg-white/95 backdrop-blur shadow-sm">
             <TableRow className="hover:bg-transparent border-b-0">
               <TableHead className="w-[250px] pl-6 bg-white/0">Nhân viên</TableHead>
@@ -148,7 +149,7 @@ export function StaffTable({
               </motion.tr>
             ))}
           </TableBody>
-        </table>
+        </Table>
       </div>
       <div className="px-4 pb-4">
         <PaginationControls 
