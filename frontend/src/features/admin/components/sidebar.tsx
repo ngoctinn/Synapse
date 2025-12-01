@@ -1,5 +1,17 @@
 "use client"
 
+import { HeaderLogo } from "@/features/layout/components/header/logo"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/shared/ui/collapsible"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/shared/ui/dropdown-menu"
 import {
   Sidebar,
   SidebarContent,
@@ -10,10 +22,13 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   SidebarRail,
   useSidebar,
 } from "@/shared/ui/sidebar"
-import { HelpCircle } from "lucide-react"
+import { ChevronRight, HelpCircle } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { SIDEBAR_ITEMS } from "../constants"
@@ -24,14 +39,12 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
 
   return (
     <Sidebar collapsible="icon" className="border-none" {...props}>
-      <SidebarHeader className="h-16 flex items-center justify-center px-6 group-data-[collapsible=icon]:px-2">
-        <div className="flex items-center gap-2 w-full group-data-[collapsible=icon]:justify-center">
-            {/* Full Logo */}
-            <span className="text-2xl font-bold text-primary tracking-tight group-data-[collapsible=icon]:hidden">Synapse</span>
-            {/* Icon Logo (Visible only when collapsed) */}
-            <div className="hidden group-data-[collapsible=icon]:flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <span className="font-bold text-lg">S</span>
-            </div>
+      <SidebarHeader className="h-16 justify-center px-4 group-data-[collapsible=icon]:px-2">
+        <div className="flex items-center w-full">
+            <HeaderLogo
+              className="w-full"
+              textClassName="group-data-[collapsible=icon]:hidden transition-all duration-200"
+            />
         </div>
       </SidebarHeader>
 
@@ -43,13 +56,71 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                 const Icon = item.icon
                 const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`)
 
+                if (item.items) {
+                  return (
+                    <Collapsible
+                      key={item.title}
+                      asChild
+                      defaultOpen={isActive}
+                      className="group/collapsible"
+                    >
+                      <SidebarMenuItem>
+                        <CollapsibleTrigger asChild>
+                          <SidebarMenuButton
+                            tooltip={item.title}
+                            isActive={false}
+                            className="font-medium transition-all duration-200 group-data-[collapsible=icon]:justify-center group-hover/menu-item:bg-sidebar-accent group-hover/menu-item:text-sidebar-accent-foreground"
+                          >
+                            <Icon className="size-5" />
+                            <span className="group-data-[collapsible=icon]:hidden">{item.title}</span>
+                            <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 group-data-[collapsible=icon]:hidden" />
+                          </SidebarMenuButton>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent>
+                          <SidebarMenuSub className="mr-0 ml-4 border-l-slate-300">
+                            {item.items.map((subItem) => (
+                              <SidebarMenuSubItem key={subItem.title}>
+                                <SidebarMenuSubButton
+                                  asChild
+                                  isActive={pathname === subItem.href}
+                                >
+                                  <Link href={subItem.href}>
+                                    <span>{subItem.title}</span>
+                                  </Link>
+                                </SidebarMenuSubButton>
+                              </SidebarMenuSubItem>
+                            ))}
+                          </SidebarMenuSub>
+                        </CollapsibleContent>
+
+                        {/* Dropdown Menu for Collapsed State - Overlay Trigger */}
+                        {state === "collapsed" && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                               <div className="absolute inset-0 z-10 cursor-pointer" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent side="right" align="start" className="min-w-[180px]">
+                              {item.items.map((subItem) => (
+                                <DropdownMenuItem key={subItem.title} asChild>
+                                  <Link href={subItem.href} className="cursor-pointer">
+                                    {subItem.title}
+                                  </Link>
+                                </DropdownMenuItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
+                      </SidebarMenuItem>
+                    </Collapsible>
+                  )
+                }
+
                 return (
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton
                         asChild
                         isActive={isActive}
                         tooltip={item.title}
-                        size="lg"
                         className="font-medium transition-all duration-200 group-data-[collapsible=icon]:justify-center"
                     >
                       <Link href={item.href} className="flex items-center gap-3">
@@ -68,7 +139,7 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
       <SidebarFooter className="p-4 group-data-[collapsible=icon]:p-2">
         <div className="flex items-center gap-2 px-2 py-2 text-sm font-medium text-slate-400 hover:text-slate-600 cursor-pointer transition-colors group-data-[collapsible=icon]:justify-center">
             <HelpCircle className="w-5 h-5" />
-            <span className="group-data-[collapsible=icon]:hidden">Need Help?</span>
+            <span className="group-data-[collapsible=icon]:hidden">Hỗ trợ</span>
         </div>
       </SidebarFooter>
       <SidebarRail />
