@@ -35,6 +35,7 @@ const BREADCRUMB_MAP: Record<string, string> = {
   staff: "Nhân sự",
   permissions: "Phân quyền",
   schedule: "Lịch làm việc",
+  skills: "Kỹ năng",
   services: "Dịch vụ",
   messages: "Tin nhắn",
   notifications: "Thông báo",

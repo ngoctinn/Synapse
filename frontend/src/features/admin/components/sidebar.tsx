@@ -68,16 +68,16 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                         <CollapsibleTrigger asChild>
                           <SidebarMenuButton
                             tooltip={item.title}
-                            isActive={isActive}
-                            className="font-medium transition-all duration-200 group-data-[collapsible=icon]:hidden"
+                            isActive={false}
+                            className="font-medium transition-all duration-200 group-data-[collapsible=icon]:justify-center group-hover/menu-item:bg-sidebar-accent group-hover/menu-item:text-sidebar-accent-foreground"
                           >
                             <Icon className="size-5" />
-                            <span>{item.title}</span>
-                            <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                            <span className="group-data-[collapsible=icon]:hidden">{item.title}</span>
+                            <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 group-data-[collapsible=icon]:hidden" />
                           </SidebarMenuButton>
                         </CollapsibleTrigger>
                         <CollapsibleContent>
-                          <SidebarMenuSub className="mr-0 ml-4 border-l-slate-200">
+                          <SidebarMenuSub className="mr-0 ml-4 border-l-slate-300">
                             {item.items.map((subItem) => (
                               <SidebarMenuSubItem key={subItem.title}>
                                 <SidebarMenuSubButton
@@ -93,28 +93,23 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                           </SidebarMenuSub>
                         </CollapsibleContent>
 
-                        {/* Dropdown Menu for Collapsed State */}
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                             <SidebarMenuButton
-                                tooltip={item.title}
-                                isActive={isActive}
-                                className="hidden font-medium transition-all duration-200 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center"
-                              >
-                                <Icon className="size-5" />
-                                <span className="sr-only">{item.title}</span>
-                              </SidebarMenuButton>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent side="right" align="start" className="min-w-[180px]">
-                            {item.items.map((subItem) => (
-                              <DropdownMenuItem key={subItem.title} asChild>
-                                <Link href={subItem.href} className="cursor-pointer">
-                                  {subItem.title}
-                                </Link>
-                              </DropdownMenuItem>
-                            ))}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        {/* Dropdown Menu for Collapsed State - Overlay Trigger */}
+                        {state === "collapsed" && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                               <div className="absolute inset-0 z-10 cursor-pointer" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent side="right" align="start" className="min-w-[180px]">
+                              {item.items.map((subItem) => (
+                                <DropdownMenuItem key={subItem.title} asChild>
+                                  <Link href={subItem.href} className="cursor-pointer">
+                                    {subItem.title}
+                                  </Link>
+                                </DropdownMenuItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
                       </SidebarMenuItem>
                     </Collapsible>
                   )
