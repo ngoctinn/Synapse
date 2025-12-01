@@ -33,10 +33,12 @@ const BREADCRUMB_MAP: Record<string, string> = {
   overview: "Tổng quan",
   appointments: "Lịch hẹn",
   staff: "Nhân sự",
+  permissions: "Phân quyền",
+  schedule: "Lịch làm việc",
   services: "Dịch vụ",
   messages: "Tin nhắn",
   notifications: "Thông báo",
-  components: "Components",
+  components: "Thành phần giao diện",
 }
 
 interface AdminHeaderProps {
