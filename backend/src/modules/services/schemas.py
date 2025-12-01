@@ -47,3 +47,9 @@ class ServiceRead(ServiceBase):
     id: uuid.UUID
     skills: list[SkillRead] = []
     model_config = ConfigDict(from_attributes=True)
+
+class ServicePaginationResponse(SQLModel):
+    data: list[ServiceRead]
+    total: int
+    page: int
+    limit: int

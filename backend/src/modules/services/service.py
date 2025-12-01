@@ -3,7 +3,7 @@ import uuid
 import re
 import unicodedata
 from fastapi import Depends
-from sqlmodel import select
+from sqlmodel import select, func
 from sqlalchemy.orm import selectinload
 from sqlalchemy.exc import IntegrityError
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -64,7 +64,7 @@ class ServiceManagementService:
         limit: int = 100,
         search: str | None = None,
         only_active: bool = False
-    ) -> list[Service]:
+    ) -> tuple[list[Service], int]:
         query = select(Service).options(
             selectinload(Service.skills)
         )
@@ -76,13 +76,23 @@ class ServiceManagementService:
             # Tìm kiếm theo tên dịch vụ (case-insensitive)
             query = query.where(Service.name.ilike(f"%{search}%"))
 
+        # Count total
+        count_query = select(func.count()).select_from(Service)
+        if only_active:
+            count_query = count_query.where(Service.is_active == True)
+        if search:
+            count_query = count_query.where(Service.name.ilike(f"%{search}%"))
+
+        total = await self.session.exec(count_query)
+        total_count = total.one()
+
         # Pagination
         query = query.offset(skip).limit(limit)
 
         result = await self.session.exec(query)
         services = result.all()
 
-        return list(services)
+        return list(services), total_count
 
     async def get_service(self, service_id: uuid.UUID) -> Service:
         query = select(Service).where(Service.id == service_id).options(
