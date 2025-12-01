@@ -2,8 +2,8 @@
 
 import { fetchWithAuth } from "@/shared/lib/api";
 import { revalidatePath } from "next/cache";
-import { serviceSchema } from "./schemas";
-import { PaginatedResponse, Service, ServiceCreateInput, ServiceUpdateInput, Skill } from "./types";
+import { serviceSchema, skillSchema } from "./schemas";
+import { PaginatedResponse, Service, ServiceCreateInput, ServiceUpdateInput, Skill, SkillCreateInput, SkillUpdateInput } from "./types";
 
 const SERVICE_TAG = "services";
 
@@ -149,4 +149,66 @@ export async function getSkills(): Promise<Skill[]> {
     }
 
     return res.json();
+}
+
+export async function createSkill(data: SkillCreateInput): Promise<{ success: boolean; message?: string; data?: Skill }> {
+  // Validate dữ liệu đầu vào tại server
+  const validation = skillSchema.safeParse(data);
+  if (!validation.success) {
+    return { success: false, message: "Dữ liệu không hợp lệ: " + validation.error.issues[0].message };
+  }
+
+  const res = await fetchWithAuth("/services/skills", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    return { success: false, message: error.detail || "Không thể tạo kỹ năng" };
+  }
+
+  revalidatePath("/admin/services");
+  return { success: true, data: await res.json() };
+}
+
+export async function updateSkill(id: string, data: SkillUpdateInput): Promise<{ success: boolean; message?: string; data?: Skill }> {
+  // Validate dữ liệu đầu vào (partial vì là update)
+  const validation = skillSchema.partial().safeParse(data);
+  if (!validation.success) {
+    return { success: false, message: "Dữ liệu không hợp lệ: " + validation.error.issues[0].message };
+  }
+
+  const res = await fetchWithAuth(`/services/skills/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    return { success: false, message: error.detail || "Không thể cập nhật kỹ năng" };
+  }
+
+  revalidatePath("/admin/services");
+  return { success: true, data: await res.json() };
+}
+
+export async function deleteSkill(id: string): Promise<{ success: boolean; message?: string }> {
+  const res = await fetchWithAuth(`/services/skills/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    return { success: false, message: error.detail || "Không thể xóa kỹ năng" };
+  }
+
+  revalidatePath("/admin/services");
+  return { success: true, message: "Đã xóa kỹ năng thành công" };
 }

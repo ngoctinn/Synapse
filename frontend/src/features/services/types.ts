@@ -45,3 +45,15 @@ export interface PaginatedResponse<T> {
   page: number;
   limit: number;
 }
+
+export interface SkillCreateInput {
+  name: string;
+  code: string;
+  description?: string | null;
+}
+
+export interface SkillUpdateInput {
+  name?: string;
+  code?: string;
+  description?: string | null;
+}

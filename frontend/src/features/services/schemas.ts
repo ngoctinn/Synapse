@@ -15,3 +15,11 @@ export const serviceSchema = z.object({
 });
 
 export type ServiceFormValues = z.infer<typeof serviceSchema>;
+
+export const skillSchema = z.object({
+  name: z.string().min(1, "Tên kỹ năng là bắt buộc"),
+  code: z.string().min(1, "Mã kỹ năng là bắt buộc").regex(/^[A-Z0-9_]+$/, "Mã chỉ được chứa chữ hoa, số và dấu gạch dưới"),
+  description: z.string().optional().nullable(),
+});
+
+export type SkillFormValues = z.infer<typeof skillSchema>;

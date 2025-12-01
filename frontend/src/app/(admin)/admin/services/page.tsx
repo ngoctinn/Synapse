@@ -1,4 +1,6 @@
 import { CreateServiceDialog, getServices, getSkills, ServiceTable } from "@/features/services";
+import { CreateSkillDialog } from "@/features/services/components/create-skill-dialog";
+import { SkillTable } from "@/features/services/components/skill-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 
 export default async function ServicesPage({
@@ -26,8 +28,18 @@ export default async function ServicesPage({
               <TabsTrigger value="list" className="data-[state=active]:bg-white data-[state=active]:shadow-sm text-xs font-medium px-4">
                 Danh sách dịch vụ
               </TabsTrigger>
+              <TabsTrigger value="skills" className="data-[state=active]:bg-white data-[state=active]:shadow-sm text-xs font-medium px-4">
+                Danh sách kỹ năng
+              </TabsTrigger>
             </TabsList>
-            <CreateServiceDialog availableSkills={skills} />
+            <div className="flex gap-2">
+                <TabsContent value="list" className="mt-0">
+                    <CreateServiceDialog availableSkills={skills} />
+                </TabsContent>
+                <TabsContent value="skills" className="mt-0">
+                    <CreateSkillDialog />
+                </TabsContent>
+            </div>
           </div>
 
           <div className="flex-1 overflow-hidden relative">
@@ -38,6 +50,9 @@ export default async function ServicesPage({
                    page={page}
                    totalPages={totalPages}
                  />
+            </TabsContent>
+            <TabsContent value="skills" className="h-full mt-0 border-0 p-0 data-[state=inactive]:hidden">
+                <SkillTable skills={skills} />
             </TabsContent>
           </div>
         </Tabs>
