@@ -1,72 +1,77 @@
 "use client"
 
-import { cn } from "@/shared/lib/utils"
 import {
-    LogOut,
-} from "lucide-react"
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+  useSidebar,
+} from "@/shared/ui/sidebar"
+import { HelpCircle } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { motion } from "framer-motion"
-
 import { SIDEBAR_ITEMS } from "../constants"
 
-export function AdminSidebar({ className }: { className?: string }) {
+export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname()
+  const { state } = useSidebar()
 
   return (
-    <aside className={cn(
-      "flex flex-col h-full w-40 transition-all duration-300",
-      "bg-white/80 backdrop-blur-md border border-white/20 shadow-xl", // Glassmorphism
-      className
-    )}>
-      {/* Logo Section */}
-      <div className="h-14 flex items-center px-4 border-b border-slate-200/50">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent">
-          Synapse
-        </h1>
-      </div>
+    <Sidebar collapsible="icon" className="border-none" {...props}>
+      <SidebarHeader className="h-16 flex items-center justify-center px-6 group-data-[collapsible=icon]:px-2">
+        <div className="flex items-center gap-2 w-full group-data-[collapsible=icon]:justify-center">
+            {/* Full Logo */}
+            <span className="text-2xl font-bold text-primary tracking-tight group-data-[collapsible=icon]:hidden">Synapse</span>
+            {/* Icon Logo (Visible only when collapsed) */}
+            <div className="hidden group-data-[collapsible=icon]:flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <span className="font-bold text-lg">S</span>
+            </div>
+        </div>
+      </SidebarHeader>
 
-      {/* Navigation Menu */}
-      <nav className="flex-1 px-2 py-3 space-y-1 overflow-y-auto">
-        {SIDEBAR_ITEMS.map((item) => {
-          const Icon = item.icon
-          const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`)
+      <SidebarContent className="px-3 py-4 group-data-[collapsible=icon]:px-0">
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu className="gap-2">
+              {SIDEBAR_ITEMS.map((item) => {
+                const Icon = item.icon
+                const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`)
 
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="relative group block"
-            >
-              <div className={cn(
-                "relative z-10 flex items-center gap-2 px-2 py-2 text-sm font-medium rounded-md transition-colors duration-200",
-                isActive ? "text-primary-foreground" : "text-slate-600 group-hover:text-slate-900 group-hover:bg-slate-100/50"
-              )}>
-                {/* Active Background Animation */}
-                {isActive && (
-                  <motion.div
-                    layoutId="sidebar-active-bg"
-                    className="absolute inset-0 bg-primary rounded-md -z-10 shadow-md shadow-primary/20"
-                    initial={false}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
-                
-                <Icon className={cn("w-5 h-5 transition-colors", isActive ? "text-primary-foreground" : "text-slate-500 group-hover:text-slate-700")} />
-                {item.title}
-              </div>
-            </Link>
-          )
-        })}
-      </nav>
+                return (
+                  <SidebarMenuItem key={item.href}>
+                    <SidebarMenuButton
+                        asChild
+                        isActive={isActive}
+                        tooltip={item.title}
+                        size="lg"
+                        className="font-medium transition-all duration-200 group-data-[collapsible=icon]:justify-center"
+                    >
+                      <Link href={item.href} className="flex items-center gap-3">
+                        <Icon className="size-5" />
+                        <span className="group-data-[collapsible=icon]:hidden">{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
 
-      {/* Footer / Logout Section */}
-      <div className="p-3 border-t border-slate-200/50">
-        <button className="flex items-center gap-2 px-2 py-2 w-full text-sm font-medium text-red-600 rounded-md hover:bg-red-50 transition-colors group">
-          <LogOut className="w-5 h-5 group-hover:text-red-700 transition-transform group-hover:-translate-x-1" />
-          Đăng xuất
-        </button>
-      </div>
-    </aside>
+      <SidebarFooter className="p-4 group-data-[collapsible=icon]:p-2">
+        <div className="flex items-center gap-2 px-2 py-2 text-sm font-medium text-slate-400 hover:text-slate-600 cursor-pointer transition-colors group-data-[collapsible=icon]:justify-center">
+            <HelpCircle className="w-5 h-5" />
+            <span className="group-data-[collapsible=icon]:hidden">Need Help?</span>
+        </div>
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
   )
 }

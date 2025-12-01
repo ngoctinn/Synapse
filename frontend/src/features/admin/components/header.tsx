@@ -2,6 +2,14 @@
 
 import { cn } from "@/shared/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from "@/shared/ui/breadcrumb"
 import { Button } from "@/shared/ui/button"
 import {
     DropdownMenu,
@@ -11,14 +19,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/shared/ui/breadcrumb"
+import { Separator } from "@/shared/ui/separator"
+import { SidebarTrigger } from "@/shared/ui/sidebar"
 import { Bell, LogOut, Settings, User } from "lucide-react"
 import { usePathname } from "next/navigation"
 import React from "react"
@@ -37,18 +39,18 @@ const BREADCRUMB_MAP: Record<string, string> = {
 
 export function AdminHeader({ className }: { className?: string }) {
   const pathname = usePathname()
-  
+
   // Tạo breadcrumbs từ pathname
   const pathSegments = pathname.split("/").filter(Boolean)
 
   return (
     <header className={cn(
-      "flex items-center justify-between h-14 px-6 transition-all duration-300",
-      "bg-white/80 backdrop-blur-md border border-white/20 shadow-sm", // Glassmorphism
+      "flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12",
       className
     )}>
-      {/* Breadcrumbs Section */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 px-4">
+        <SidebarTrigger className="-ml-1" />
+        <Separator orientation="vertical" className="mr-2 h-4" />
         <Breadcrumb>
           <BreadcrumbList>
             {pathSegments.map((segment, index) => {
@@ -58,7 +60,7 @@ export function AdminHeader({ className }: { className?: string }) {
 
               return (
                 <React.Fragment key={href}>
-                  <BreadcrumbItem>
+                  <BreadcrumbItem className="hidden md:block">
                     {isLast ? (
                       <BreadcrumbPage className="font-semibold text-slate-800">
                         {title}
@@ -69,7 +71,7 @@ export function AdminHeader({ className }: { className?: string }) {
                       </BreadcrumbLink>
                     )}
                   </BreadcrumbItem>
-                  {!isLast && <BreadcrumbSeparator />}
+                  {!isLast && <BreadcrumbSeparator className="hidden md:block" />}
                 </React.Fragment>
               )
             })}
@@ -78,11 +80,11 @@ export function AdminHeader({ className }: { className?: string }) {
       </div>
 
       {/* Actions Section */}
-      <div className="flex items-center gap-3">
+      <div className="ml-auto flex items-center gap-3 px-4">
         {/* Notification Button */}
-        <Button 
-          variant="ghost" 
-          size="icon" 
+        <Button
+          variant="ghost"
+          size="icon"
           className="relative rounded-full w-9 h-9 hover:bg-slate-100 text-slate-600 transition-transform hover:scale-105"
         >
           <Bell className="w-5 h-5" />
