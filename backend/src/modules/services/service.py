@@ -2,13 +2,15 @@ from typing import Annotated
 import uuid
 import re
 import unicodedata
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends
 from sqlmodel import select
 from sqlalchemy.orm import selectinload
+from sqlalchemy.exc import IntegrityError
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.common.database import get_db_session
 from src.modules.services.models import Service, Skill, ServiceSkill
 from src.modules.services.schemas import ServiceCreate, ServiceUpdate, SkillCreate, SkillUpdate
+from src.modules.services.exceptions import ServiceNotFoundError, SkillNotFoundError, SkillAlreadyExistsError
 
 class ServiceManagementService:
     def __init__(self, session: Annotated[AsyncSession, Depends(get_db_session)]):
@@ -20,46 +22,62 @@ class ServiceManagementService:
         return list(result.all())
 
     async def create_skill(self, skill_in: SkillCreate) -> Skill:
-        # Kiểm tra mã trùng lặp
-        existing_skill = await self.session.exec(select(Skill).where(Skill.code == skill_in.code))
-        if existing_skill.first():
-            raise HTTPException(status_code=400, detail="Mã kỹ năng đã tồn tại")
-
         skill = Skill.model_validate(skill_in)
         self.session.add(skill)
-        await self.session.commit()
-        await self.session.refresh(skill)
-        return skill
+        try:
+            await self.session.commit()
+            await self.session.refresh(skill)
+            return skill
+        except IntegrityError:
+            await self.session.rollback()
+            raise SkillAlreadyExistsError(f"Kỹ năng với mã '{skill_in.code}' đã tồn tại.")
 
     async def update_skill(self, skill_id: uuid.UUID, skill_in: SkillUpdate) -> Skill:
         skill = await self.session.get(Skill, skill_id)
         if not skill:
-            raise HTTPException(status_code=404, detail="Kỹ năng không tồn tại")
+            raise SkillNotFoundError(f"Kỹ năng {skill_id} không tồn tại.")
 
         update_data = skill_in.model_dump(exclude_unset=True)
         for key, value in update_data.items():
             setattr(skill, key, value)
 
         self.session.add(skill)
-        await self.session.commit()
-        await self.session.refresh(skill)
-        return skill
+        try:
+            await self.session.commit()
+            await self.session.refresh(skill)
+            return skill
+        except IntegrityError:
+            await self.session.rollback()
+            raise SkillAlreadyExistsError(f"Mã kỹ năng '{skill_in.code}' đã tồn tại.")
 
     async def delete_skill(self, skill_id: uuid.UUID):
         skill = await self.session.get(Skill, skill_id)
         if not skill:
-            raise HTTPException(status_code=404, detail="Kỹ năng không tồn tại")
+            raise SkillNotFoundError(f"Kỹ năng {skill_id} không tồn tại.")
         await self.session.delete(skill)
         await self.session.commit()
 
     # --- SERVICES ---
-    async def get_services(self, only_active: bool = False) -> list[Service]:
+    async def get_services(
+        self,
+        skip: int = 0,
+        limit: int = 100,
+        search: str | None = None,
+        only_active: bool = False
+    ) -> list[Service]:
         query = select(Service).options(
             selectinload(Service.skills)
         )
 
         if only_active:
             query = query.where(Service.is_active == True)
+
+        if search:
+            # Tìm kiếm theo tên dịch vụ (case-insensitive)
+            query = query.where(Service.name.ilike(f"%{search}%"))
+
+        # Pagination
+        query = query.offset(skip).limit(limit)
 
         result = await self.session.exec(query)
         services = result.all()
@@ -74,7 +92,7 @@ class ServiceManagementService:
         service = result.first()
 
         if not service:
-            raise HTTPException(status_code=404, detail="Dịch vụ không tồn tại")
+            raise ServiceNotFoundError(f"Dịch vụ {service_id} không tồn tại.")
 
         return service
 
@@ -107,8 +125,17 @@ class ServiceManagementService:
 
         if new_skills:
             self.session.add_all(new_skills)
-            await self.session.flush()
-            skill_ids.extend([skill.id for skill in new_skills])
+            try:
+                await self.session.flush()
+                skill_ids.extend([skill.id for skill in new_skills])
+            except IntegrityError:
+                # Nếu có lỗi trùng lặp (do race condition), rollback và query lại
+                await self.session.rollback()
+                # Query lại tất cả codes để lấy ID của những cái đã được tạo bởi process khác
+                query_retry = select(Skill).where(Skill.code.in_(codes))
+                result_retry = await self.session.exec(query_retry)
+                all_skills = result_retry.all()
+                skill_ids = [skill.id for skill in all_skills]
 
         return skill_ids
 
@@ -146,7 +173,7 @@ class ServiceManagementService:
         service = result.first()
 
         if not service:
-            raise HTTPException(status_code=404, detail="Dịch vụ không tồn tại")
+            raise ServiceNotFoundError(f"Dịch vụ {service_id} không tồn tại.")
 
         # Handle Smart Tagging
         final_skill_ids = None
@@ -188,7 +215,7 @@ class ServiceManagementService:
     async def delete_service(self, service_id: uuid.UUID):
         service = await self.session.get(Service, service_id)
         if not service:
-            raise HTTPException(status_code=404, detail="Dịch vụ không tồn tại")
+            raise ServiceNotFoundError(f"Dịch vụ {service_id} không tồn tại.")
 
         # Soft delete
         service.is_active = False
