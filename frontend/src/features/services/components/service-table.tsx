@@ -2,6 +2,8 @@
 
 import { formatCurrency } from "@/shared/lib/utils"
 import { Badge } from "@/shared/ui/badge"
+import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row"
+import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state"
 import { PaginationControls } from "@/shared/ui/custom/pagination-controls"
 import {
   Table,
@@ -11,7 +13,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/ui/table"
-import { motion } from "framer-motion"
 import { Plus } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Service, Skill } from "../types"
@@ -50,16 +51,12 @@ export function ServiceTable({
 
   if (services.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center border rounded-xl bg-white/50 backdrop-blur-sm border-dashed border-slate-300">
-        <div className="p-4 rounded-full bg-blue-50 mb-4 animate-in zoom-in duration-500">
-          <Plus className="w-10 h-10 text-blue-500" />
-        </div>
-        <h3 className="text-xl font-semibold text-slate-900">Chưa có dịch vụ nào</h3>
-        <p className="text-sm text-slate-500 max-w-sm mt-2 mb-6">
-          Bắt đầu bằng cách tạo dịch vụ đầu tiên của bạn. Dịch vụ sẽ hiển thị trên trang đặt lịch.
-        </p>
-        <CreateServiceDialog availableSkills={availableSkills} />
-      </div>
+      <DataTableEmptyState
+        icon={Plus}
+        title="Chưa có dịch vụ nào"
+        description="Bắt đầu bằng cách tạo dịch vụ đầu tiên của bạn. Dịch vụ sẽ hiển thị trên trang đặt lịch."
+        action={<CreateServiceDialog availableSkills={availableSkills} />}
+      />
     )
   }
 
@@ -79,13 +76,7 @@ export function ServiceTable({
           </TableHeader>
           <TableBody>
             {services.map((service, index) => (
-              <motion.tr
-                key={service.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2, delay: index * 0.05 }}
-                className="hover:bg-blue-50/50 transition-colors border-b last:border-0"
-              >
+              <AnimatedTableRow key={service.id} index={index}>
                 <TableCell className="font-medium pl-6">
                   <div className="flex flex-col">
                     <span>{service.name}</span>
@@ -136,7 +127,7 @@ export function ServiceTable({
                 <TableCell className="text-right pr-6">
                   <ServiceActions service={service} availableSkills={availableSkills} />
                 </TableCell>
-              </motion.tr>
+              </AnimatedTableRow>
             ))}
           </TableBody>
         </Table>

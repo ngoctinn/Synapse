@@ -1,15 +1,16 @@
 "use client";
 
 import { Badge } from "@/shared/ui/badge";
+import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row";
+import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/shared/ui/table";
-import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { Skill } from "../types";
 import { CreateSkillDialog } from "./create-skill-dialog";
@@ -22,16 +23,12 @@ interface SkillTableProps {
 export function SkillTable({ skills }: SkillTableProps) {
   if (skills.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center border rounded-xl bg-white/50 backdrop-blur-sm border-dashed border-slate-300">
-        <div className="p-4 rounded-full bg-blue-50 mb-4 animate-in zoom-in duration-500">
-          <Plus className="w-10 h-10 text-blue-500" />
-        </div>
-        <h3 className="text-xl font-semibold text-slate-900">Chưa có kỹ năng nào</h3>
-        <p className="text-sm text-slate-500 max-w-sm mt-2 mb-6">
-          Tạo kỹ năng mới để gán cho dịch vụ và nhân viên.
-        </p>
-        <CreateSkillDialog />
-      </div>
+      <DataTableEmptyState
+        icon={Plus}
+        title="Chưa có kỹ năng nào"
+        description="Tạo kỹ năng mới để gán cho dịch vụ và nhân viên."
+        action={<CreateSkillDialog />}
+      />
     );
   }
 
@@ -49,13 +46,7 @@ export function SkillTable({ skills }: SkillTableProps) {
           </TableHeader>
           <TableBody>
             {skills.map((skill, index) => (
-              <motion.tr
-                key={skill.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2, delay: index * 0.05 }}
-                className="hover:bg-blue-50/50 transition-colors border-b last:border-0"
-              >
+              <AnimatedTableRow key={skill.id} index={index}>
                 <TableCell className="font-medium pl-6">
                   {skill.name}
                 </TableCell>
@@ -70,11 +61,31 @@ export function SkillTable({ skills }: SkillTableProps) {
                 <TableCell className="text-right pr-6">
                   <SkillActions skill={skill} />
                 </TableCell>
-              </motion.tr>
+              </AnimatedTableRow>
             ))}
           </TableBody>
         </Table>
       </div>
     </div>
   );
+}
+
+export function SkillTableSkeleton() {
+  return (
+    <div className="rounded-md border bg-white shadow-sm overflow-hidden">
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-4">
+           <div className="h-8 w-64 bg-slate-100 rounded animate-pulse" />
+           <div className="h-8 w-32 bg-slate-100 rounded animate-pulse" />
+        </div>
+        <div className="space-y-3">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="flex items-center gap-4">
+              <div className="h-12 w-full bg-slate-50 rounded animate-pulse" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
 }

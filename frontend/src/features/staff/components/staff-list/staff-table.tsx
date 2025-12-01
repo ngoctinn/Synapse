@@ -2,6 +2,10 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
+import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row"
+import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state"
+import { PaginationControls } from "@/shared/ui/custom/pagination-controls"
+import { Skeleton } from "@/shared/ui/skeleton"
 import {
   Table,
   TableBody,
@@ -16,13 +20,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/shared/ui/tooltip"
-import { motion } from "framer-motion"
 import { Users } from "lucide-react"
 import { ROLE_CONFIG } from "../../constants"
 import { Staff } from "../../types"
 import { StaffActions } from "./staff-actions"
-
-import { PaginationControls } from "@/shared/ui/custom/pagination-controls"
 
 const roleConfig = ROLE_CONFIG
 
@@ -33,7 +34,7 @@ interface StaffTableProps {
   onPageChange?: (page: number) => void
 }
 
-export function StaffTable({ 
+export function StaffTable({
   data,
   page = 1,
   totalPages = 1,
@@ -41,15 +42,11 @@ export function StaffTable({
 }: StaffTableProps) {
   if (data.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center border rounded-xl bg-white/50 backdrop-blur-sm border-dashed border-slate-300">
-        <div className="p-4 rounded-full bg-blue-50 mb-4 animate-in zoom-in duration-500">
-          <Users className="w-10 h-10 text-blue-500" />
-        </div>
-        <h3 className="text-xl font-semibold text-slate-900">Chưa có nhân viên nào</h3>
-        <p className="text-sm text-slate-500 max-w-sm mt-2 mb-6">
-          Danh sách nhân viên hiện đang trống.
-        </p>
-      </div>
+      <DataTableEmptyState
+        icon={Users}
+        title="Chưa có nhân viên nào"
+        description="Danh sách nhân viên hiện đang trống."
+      />
     )
   }
 
@@ -68,13 +65,7 @@ export function StaffTable({
           </TableHeader>
           <TableBody>
             {data.map((staff, index) => (
-              <motion.tr
-                key={staff.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2, delay: index * 0.05 }}
-                className="hover:bg-blue-50/50 border-b last:border-0 transition-colors"
-              >
+              <AnimatedTableRow key={staff.id} index={index}>
                 <TableCell className="pl-6">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-9 w-9 border">
@@ -146,17 +137,45 @@ export function StaffTable({
                 <TableCell className="text-right pr-6">
                   <StaffActions staff={staff} />
                 </TableCell>
-              </motion.tr>
+              </AnimatedTableRow>
             ))}
           </TableBody>
         </Table>
       </div>
       <div className="px-4 pb-4">
-        <PaginationControls 
-          currentPage={page} 
-          totalPages={totalPages} 
-          onPageChange={onPageChange} 
+        <PaginationControls
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
         />
+      </div>
+    </div>
+  )
+}
+
+export function StaffTableSkeleton() {
+  return (
+    <div className="rounded-md border bg-white shadow-sm overflow-hidden">
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex gap-2">
+            <Skeleton className="h-9 w-24" />
+            <Skeleton className="h-9 w-24" />
+            <Skeleton className="h-9 w-24" />
+          </div>
+          <Skeleton className="h-9 w-32" />
+        </div>
+        <div className="space-y-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-4">
+              <Skeleton className="h-12 w-12 rounded-full" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[250px]" />
+                <Skeleton className="h-4 w-[200px]" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )

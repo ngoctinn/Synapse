@@ -1,15 +1,24 @@
 
-
 import { getStaffList } from "@/features/staff/actions"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
+import { Suspense } from "react"
 import { InviteStaffModal } from "./invite-staff-modal"
 import { PermissionMatrix } from "./permissions/permission-matrix"
 import { StaffScheduler } from "./scheduling/staff-scheduler"
-import { StaffTable } from "./staff-list/staff-table"
+import { StaffTable, StaffTableSkeleton } from "./staff-list/staff-table"
 
-export async function StaffPage() {
+async function StaffListWrapper() {
   const staffList = await getStaffList()
+  return (
+    <StaffTable
+      data={staffList}
+      page={1}
+      totalPages={10}
+    />
+  )
+}
 
+export function StaffPage() {
   return (
     <div className="h-[calc(100vh-6rem)] flex flex-col">
       <div className="flex-1 bg-white overflow-hidden flex flex-col">
@@ -25,11 +34,9 @@ export async function StaffPage() {
 
           <div className="flex-1 overflow-hidden relative">
             <TabsContent value="list" className="h-full mt-0 border-0 p-0 data-[state=inactive]:hidden">
-              <StaffTable 
-                data={staffList} 
-                page={1}
-                totalPages={10}
-              />
+              <Suspense fallback={<StaffTableSkeleton />}>
+                <StaffListWrapper />
+              </Suspense>
             </TabsContent>
 
             <TabsContent value="permissions" className="h-full mt-0 border-0 p-0 data-[state=inactive]:hidden">
