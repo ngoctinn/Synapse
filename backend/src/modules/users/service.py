@@ -6,11 +6,11 @@ from starlette.concurrency import run_in_threadpool
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.common.database import get_db_session
 from src.modules.users.models import User
-from src.modules.users.schemas import UserUpdate, InviteStaffRequest
 from src.modules.users.models import UserSkill
-from sqlmodel import select, delete
+from sqlmodel import select, delete, func, or_, col
 from supabase import create_client, Client
 from src.app.config import settings
+from src.modules.users.schemas import UserUpdate, InviteStaffRequest, UserFilter, UserListResponse
 
 class UserService:
     def __init__(self, session: Annotated[AsyncSession, Depends(get_db_session)]):
@@ -90,3 +90,72 @@ class UserService:
                  updated_at=datetime.now(timezone.utc)
              )
         return user
+
+    async def get_users(self, filter: UserFilter) -> UserListResponse:
+        """Lấy danh sách người dùng (có phân trang & lọc)."""
+        query = select(User)
+
+        if filter.role:
+            query = query.where(User.role == filter.role)
+
+        if filter.search:
+            search_term = f"%{filter.search}%"
+            query = query.where(
+                or_(
+                    col(User.full_name).ilike(search_term),
+                    col(User.email).ilike(search_term),
+                    col(User.phone_number).ilike(search_term)
+                )
+            )
+
+        # Count total
+        count_query = select(func.count()).select_from(query.subquery())
+        total = await self.session.exec(count_query)
+        total_count = total.one()
+
+        # Pagination
+        offset = (filter.page - 1) * filter.limit
+        query = query.offset(offset).limit(filter.limit)
+
+        result = await self.session.exec(query)
+        users = result.all()
+
+        total_pages = (total_count + filter.limit - 1) // filter.limit
+
+        return UserListResponse(
+            data=users,
+            total=total_count,
+            page=filter.page,
+            limit=filter.limit,
+            total_pages=total_pages
+        )
+
+    async def update_user(self, user_id: uuid.UUID, user_update: UserUpdate) -> User:
+        """Admin cập nhật thông tin người dùng."""
+        user = await self.get_profile(user_id)
+        return await self.update_profile(user, user_update)
+
+    async def delete_user(self, user_id: uuid.UUID) -> None:
+        """Xóa người dùng (Khỏi Supabase Auth & DB)."""
+        user = await self.get_profile(user_id)
+
+        # 1. Delete from Supabase Auth
+        supabase: Client = create_client(
+            settings.SUPABASE_URL,
+            settings.SUPABASE_SERVICE_ROLE_KEY
+        )
+
+        try:
+            await run_in_threadpool(
+                supabase.auth.admin.delete_user,
+                user_id=str(user_id)
+            )
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Lỗi khi xóa người dùng trên Supabase: {str(e)}"
+            )
+
+        # 2. Delete from DB
+        await self.session.delete(user)
+        await self.session.commit()
