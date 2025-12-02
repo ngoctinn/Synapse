@@ -14,32 +14,43 @@ export function ServiceTimeVisualizer({ duration, bufferTime, className }: Servi
   const bufferPercent = totalTime > 0 ? (Number(bufferTime) / totalTime) * 100 : 0;
 
   return (
-    <div className={cn("rounded-lg border p-4 bg-slate-50", className)}>
-      <h4 className="text-sm font-medium mb-2">Trực quan hóa thời gian</h4>
-      <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
-        <span className="w-3 h-3  rounded-sm"></span> Phục vụ ({duration}p)
-        <span className="w-3 h-3 bg-slate-300 rounded-sm pattern-diagonal-lines"></span> Nghỉ ({bufferTime}p)
+    <div className={cn("rounded-xl border bg-card shadow-sm p-5", className)}>
+      <h4 className="text-sm font-medium mb-3 text-foreground">Trực quan hóa thời gian</h4>
+      
+      <div className="flex items-center gap-4 text-xs text-muted-foreground mb-3">
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-primary shadow-sm"></span>
+          <span>Phục vụ ({duration}p)</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-muted shadow-sm border"></span>
+          <span>Nghỉ ({bufferTime}p)</span>
+        </div>
       </div>
-      <div className="h-6 w-full bg-white rounded-full overflow-hidden flex border">
+
+      <div className="h-8 w-full bg-muted/20 rounded-lg overflow-hidden flex ring-1 ring-border/50">
         <div
-          className="h-full bg-blue-500 flex items-center justify-center text-[10px] text-white font-bold transition-all duration-300"
+          className="h-full bg-primary flex items-center justify-center text-[11px] text-primary-foreground font-medium transition-all duration-300 relative group"
           style={{ width: `${durationPercent}%` }}
         >
-          {duration}p
+           {duration > 0 && <span>{duration}p</span>}
+           {/* Shine effect */}
+           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer" />
         </div>
         <div
-          className="h-full bg-slate-200 flex items-center justify-center text-[10px] text-slate-600 font-bold relative transition-all duration-300"
+          className="h-full bg-muted flex items-center justify-center text-[11px] text-muted-foreground font-medium relative transition-all duration-300"
           style={{
             width: `${bufferPercent}%`,
-            backgroundImage: "linear-gradient(45deg, #cbd5e1 25%, transparent 25%, transparent 50%, #cbd5e1 50%, #cbd5e1 75%, transparent 75%, transparent)",
-            backgroundSize: "10px 10px"
+            backgroundImage: "linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%, transparent 50%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.05) 75%, transparent 75%, transparent)",
+            backgroundSize: "8px 8px"
           }}
         >
           {Number(bufferTime) > 0 && `${bufferTime}p`}
         </div>
       </div>
-      <p className="text-xs text-right mt-1 font-medium text-slate-700">
-        Tổng thời gian khóa lịch: {totalTime} phút
+      
+      <p className="text-xs text-right mt-2 text-muted-foreground">
+        Tổng thời gian khóa lịch: <span className="font-medium text-foreground">{totalTime} phút</span>
       </p>
     </div>
   );

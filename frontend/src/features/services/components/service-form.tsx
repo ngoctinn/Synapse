@@ -15,7 +15,7 @@ import {
 } from "@/shared/ui/form";
 import { Switch } from "@/shared/ui/switch";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Tag } from "lucide-react";
+import { Tag, Clock, Coffee } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Resolver, useForm } from "react-hook-form";
@@ -194,9 +194,9 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
           </div>
 
           {/* Cột Phải: Cấu hình */}
-          <div className="space-y-6 h-full flex flex-col">
+          <div className="space-y-6">
             {/* Cấu hình thời gian */}
-            <div className="rounded-lg border p-6 bg-card shadow-sm space-y-6 h-full flex flex-col">
+            <div className="rounded-lg border p-6 bg-card shadow-sm space-y-6">
               <h4 className="font-medium flex items-center gap-2 border-b pb-2 border-border">
                 Cấu hình thời gian
               </h4>
@@ -207,7 +207,10 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
                   name="duration"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Thời lượng</FormLabel>
+                      <FormLabel className="flex items-center gap-2">
+                        <Clock className="w-4 h-4" />
+                        Thời lượng
+                      </FormLabel>
                       <FormControl>
                         <TimePicker
                           value={field.value}
@@ -227,7 +230,10 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
                   name="buffer_time"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Thời gian nghỉ</FormLabel>
+                      <FormLabel className="flex items-center gap-2">
+                        <Coffee className="w-4 h-4" />
+                        Thời gian nghỉ
+                      </FormLabel>
                       <FormControl>
                         <TimePicker
                           value={field.value}
@@ -243,7 +249,7 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
                 />
               </div>
 
-              <ServiceTimeVisualizer duration={duration} bufferTime={bufferTime} className="flex-1" />
+              <ServiceTimeVisualizer duration={duration} bufferTime={bufferTime} />
             </div>
 
 

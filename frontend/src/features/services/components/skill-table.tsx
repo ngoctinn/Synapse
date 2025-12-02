@@ -3,6 +3,7 @@
 import { Badge } from "@/shared/ui/badge";
 import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
+import { PaginationControls } from "@/shared/ui/custom/pagination-controls";
 import {
   Table,
   TableBody,
@@ -12,15 +13,39 @@ import {
   TableRow,
 } from "@/shared/ui/table";
 import { Plus } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Skill } from "../types";
 import { CreateSkillDialog } from "./create-skill-dialog";
 import { SkillActions } from "./skill-actions";
 
 interface SkillTableProps {
   skills: Skill[];
+  page?: number;
+  totalPages?: number;
+  onPageChange?: (page: number) => void;
 }
 
-export function SkillTable({ skills }: SkillTableProps) {
+export function SkillTable({
+  skills,
+  page = 1,
+  totalPages = 1,
+  onPageChange,
+}: SkillTableProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const handlePageChange = (newPage: number) => {
+    if (onPageChange) {
+      onPageChange(newPage);
+      return;
+    }
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", newPage.toString());
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
   if (skills.length === 0) {
     return (
       <DataTableEmptyState
@@ -34,10 +59,10 @@ export function SkillTable({ skills }: SkillTableProps) {
 
   return (
     <div className="h-full flex flex-col gap-4">
-      <div className="flex-1 overflow-auto bg-white">
-        <Table>
-          <TableHeader className="sticky top-0 z-20 bg-white/95 backdrop-blur shadow-sm">
-            <TableRow>
+      <div className="flex-1 overflow-auto bg-white border relative">
+        <table className="w-full caption-bottom text-sm min-w-[800px]">
+          <TableHeader className="sticky top-0 z-20 bg-white shadow-sm">
+            <TableRow className="hover:bg-transparent border-b-0">
               <TableHead className="bg-white pl-6">Tên kỹ năng</TableHead>
               <TableHead className="bg-white">Mã kỹ năng</TableHead>
               <TableHead className="bg-white">Mô tả</TableHead>
@@ -64,28 +89,28 @@ export function SkillTable({ skills }: SkillTableProps) {
               </AnimatedTableRow>
             ))}
           </TableBody>
-        </Table>
+        </table>
+      </div>
+      <div className="px-4 pb-4">
+        <PaginationControls
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
     </div>
   );
 }
 
+import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
+
 export function SkillTableSkeleton() {
   return (
-    <div className="rounded-md border bg-white shadow-sm overflow-hidden">
-      <div className="p-4">
-        <div className="flex items-center justify-between mb-4">
-           <div className="h-8 w-64 bg-slate-100 rounded animate-pulse" />
-           <div className="h-8 w-32 bg-slate-100 rounded animate-pulse" />
-        </div>
-        <div className="space-y-3">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="flex items-center gap-4">
-              <div className="h-12 w-full bg-slate-50 rounded animate-pulse" />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
+    <DataTableSkeleton
+      columnCount={4}
+      rowCount={5}
+      searchable={false}
+      filterable={false}
+    />
+  );
 }
