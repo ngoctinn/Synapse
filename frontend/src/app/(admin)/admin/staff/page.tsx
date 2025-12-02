@@ -17,13 +17,15 @@ async function StaffListWrapper({
   staffListPromise: Promise<any>
   skills: Skill[]
 }) {
-  const staffList = await staffListPromise
+  const { data, total } = await staffListPromise
+  const totalPages = Math.ceil(total / 10) // Default limit is 10
+
   return (
     <StaffTable
-      data={staffList}
+      data={data}
       skills={skills}
       page={1}
-      totalPages={10}
+      totalPages={totalPages}
     />
   )
 }

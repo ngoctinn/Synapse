@@ -20,7 +20,7 @@ async function ServiceList({ page, search }: { page: number; search?: string }) 
   return (
     <ServiceTable
       services={servicesData.data}
-      availableSkills={skills}
+      availableSkills={skills.data}
       page={page}
       totalPages={totalPages}
     />
@@ -30,7 +30,7 @@ async function ServiceList({ page, search }: { page: number; search?: string }) 
 // Server Component: Create Service Button (needs skills)
 async function CreateServiceWrapper() {
   const skills = await getSkills();
-  return <CreateServiceDialog availableSkills={skills} />;
+  return <CreateServiceDialog availableSkills={skills.data} />;
 }
 
 export default async function ServicesPage({
