@@ -1,0 +1,43 @@
+"use client";
+
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from "@/shared/ui/dialog";
+import { Service, Skill } from "../types";
+import { ServiceForm } from "./service-form";
+
+interface EditServiceDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  service: Service;
+  availableSkills: Skill[];
+}
+
+export function EditServiceDialog({ 
+  open, 
+  onOpenChange, 
+  service, 
+  availableSkills 
+}: EditServiceDialogProps) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-5xl max-h-[90vh] overflow-y-auto duration-300">
+        <DialogHeader>
+          <DialogTitle>Chỉnh sửa dịch vụ</DialogTitle>
+          <DialogDescription>
+            Cập nhật thông tin dịch vụ và kỹ năng.
+          </DialogDescription>
+        </DialogHeader>
+        <ServiceForm
+          initialData={service}
+          availableSkills={availableSkills}
+          onSuccess={() => onOpenChange(false)}
+        />
+      </DialogContent>
+    </Dialog>
+  );
+}

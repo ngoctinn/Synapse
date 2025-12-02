@@ -138,7 +138,10 @@ export async function deleteService(id: string): Promise<{ success: boolean; mes
   return { success: true, message: "Đã xóa dịch vụ thành công" };
 }
 
-export async function getSkills(): Promise<Skill[]> {
+export async function getSkills(
+  page = 1,
+  limit = 10
+): Promise<{ data: Skill[]; total: number }> {
     const res = await fetchWithAuth("/services/skills", {
         method: "GET",
         next: { tags: ["skills"] },
@@ -148,7 +151,17 @@ export async function getSkills(): Promise<Skill[]> {
         throw new Error("Failed to fetch skills");
     }
 
-    return res.json();
+    const allSkills: Skill[] = await res.json();
+    
+    // Simulate pagination since backend doesn't support it yet
+    const start = (page - 1) * limit;
+    const end = start + limit;
+    const paginatedSkills = allSkills.slice(start, end);
+
+    return {
+        data: paginatedSkills,
+        total: allSkills.length
+    };
 }
 
 export async function createSkill(data: SkillCreateInput): Promise<{ success: boolean; message?: string; data?: Skill }> {

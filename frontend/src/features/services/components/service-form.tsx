@@ -15,7 +15,7 @@ import {
 } from "@/shared/ui/form";
 import { Switch } from "@/shared/ui/switch";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Tag } from "lucide-react";
+import { Tag, Clock, Coffee } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Resolver, useForm } from "react-hook-form";
@@ -23,6 +23,8 @@ import { toast } from "sonner";
 import { createService, updateService } from "../actions";
 import { ServiceFormValues, serviceSchema } from "../schemas";
 import { Service, Skill } from "../types";
+import { ImageUpload } from "./image-upload";
+import { ServiceTimeVisualizer } from "./service-time-visualizer";
 
 interface ServiceFormProps {
   initialData?: Service;
@@ -43,6 +45,7 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
       buffer_time: initialData?.buffer_time || 15,
       price: initialData?.price || 0,
       is_active: initialData?.is_active ?? true,
+      image_url: initialData?.image_url || "",
       skill_ids: initialData?.skills.map((s) => s.id) || [],
       new_skills: [],
     },
@@ -51,7 +54,7 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
   const duration = form.watch("duration");
   const bufferTime = form.watch("buffer_time");
 
-  // Transform availableSkills for TagInput
+  // Chuyển đổi availableSkills cho TagInput
   const skillOptions = availableSkills.map(s => ({ id: s.id, label: s.name }));
 
   async function onSubmit(data: ServiceFormValues) {
@@ -83,144 +86,91 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid gap-8 md:grid-cols-12">
-          {/* Left Column: Main Inputs (Span 7) */}
-          <div className="md:col-span-7 space-y-6">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tên dịch vụ</FormLabel>
-                  <FormControl>
-                    <InputWithIcon icon={Tag} placeholder="VD: Massage Body Thụy Điển" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="duration"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Thời lượng</FormLabel>
-                    <FormControl>
-                      <TimePicker
-                        value={field.value}
-                        onChange={field.onChange}
-                        min={15}
-                        step={15}
-                        placeholder="Chọn thời lượng"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="buffer_time"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Thời gian nghỉ</FormLabel>
-                    <FormControl>
-                      <TimePicker
-                        value={field.value}
-                        onChange={field.onChange}
-                        min={0}
-                        step={15}
-                        placeholder="Chọn thời gian nghỉ"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Giá dịch vụ</FormLabel>
-                    <FormControl>
-                      <MoneyInput
-                        value={field.value}
-                        onChange={field.onChange}
-                        placeholder="0"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="is_active"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Trạng thái</FormLabel>
-                    <div className="flex items-center justify-between rounded-md border p-3 shadow-sm h-10 bg-white">
-                      <span className="text-sm font-medium text-slate-700">
+        <div className="grid gap-8 md:grid-cols-2">
+          {/* Cột Trái: Thông tin chung */}
+          <div className="space-y-6">
+            <div className="rounded-lg border p-6 bg-card shadow-sm space-y-6">
+              <div className="flex items-center justify-between border-b pb-2">
+                <h4 className="font-medium">Thông tin chung</h4>
+                <FormField
+                  control={form.control}
+                  name="is_active"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center gap-3 space-y-0">
+                      <FormLabel className={`font-normal text-sm ${field.value ? "text-primary font-medium" : "text-muted-foreground"}`}>
                         {field.value ? "Đang hoạt động" : "Tạm ẩn"}
-                      </span>
+                      </FormLabel>
                       <FormControl>
                         <Switch
                           checked={field.value}
                           onCheckedChange={field.onChange}
-                          className="scale-75 origin-right"
                         />
                       </FormControl>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
-
-          {/* Right Column: Context & Skills (Span 5) */}
-          <div className="md:col-span-5 space-y-6">
-            {/* Visualization */}
-            <div className="rounded-lg border p-4 bg-slate-50">
-              <h4 className="text-sm font-medium mb-2">Trực quan hóa thời gian</h4>
-              <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
-                <span className="w-3 h-3 bg-blue-500 rounded-sm"></span> Phục vụ ({duration}p)
-                <span className="w-3 h-3 bg-slate-300 rounded-sm pattern-diagonal-lines"></span> Nghỉ ({bufferTime}p)
+                    </FormItem>
+                  )}
+                />
               </div>
-              <div className="h-6 w-full bg-white rounded-full overflow-hidden flex border">
-                <div
-                  className="h-full bg-blue-500 flex items-center justify-center text-[10px] text-white font-bold"
-                  style={{ width: `${(Number(duration) / (Number(duration) + Number(bufferTime))) * 100}%` }}
-                >
-                  {duration}p
-                </div>
-                <div
-                  className="h-full bg-slate-200 flex items-center justify-center text-[10px] text-slate-600 font-bold relative"
-                  style={{
-                    width: `${(Number(bufferTime) / (Number(duration) + Number(bufferTime))) * 100}%`,
-                    backgroundImage: "linear-gradient(45deg, #cbd5e1 25%, transparent 25%, transparent 50%, #cbd5e1 50%, #cbd5e1 75%, transparent 75%, transparent)",
-                    backgroundSize: "10px 10px"
-                  }}
-                >
-                  {Number(bufferTime) > 0 && `${bufferTime}p`}
+
+              <div className="flex flex-col sm:flex-row gap-6">
+                {/* Ảnh dịch vụ (Bên trái) */}
+                <FormField
+                  control={form.control}
+                  name="image_url"
+                  render={({ field }) => (
+                    <FormItem className="flex-shrink-0">
+                      <FormControl>
+                        <ImageUpload 
+                          value={field.value} 
+                          onChange={field.onChange}
+                          disabled={isPending}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Các trường thông tin (Bên phải) */}
+                <div className="flex-1 space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tên dịch vụ</FormLabel>
+                        <FormControl>
+                          <InputWithIcon icon={Tag} placeholder="VD: Massage Body Thụy Điển" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="price"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Giá dịch vụ</FormLabel>
+                        <FormControl>
+                          <MoneyInput
+                            value={field.value}
+                            onChange={field.onChange}
+                            placeholder="0"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
               </div>
-              <p className="text-xs text-right mt-1 font-medium text-slate-700">
-                Tổng thời gian khóa lịch: {Number(duration) + Number(bufferTime)} phút
-              </p>
             </div>
-
-            {/* Skills */}
-            <div className="space-y-2">
-              <FormLabel>Yêu cầu kỹ năng</FormLabel>
+            {/* Kỹ năng */}
+            <div className="rounded-lg border p-6 bg-card shadow-sm space-y-6">
+               <h4 className="font-medium flex items-center gap-2 border-b pb-2">
+                Yêu cầu kỹ năng
+              </h4>
               <FormField
                 control={form.control}
                 name="skill_ids"
@@ -241,6 +191,68 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
                 )}
               />
             </div>
+          </div>
+
+          {/* Cột Phải: Cấu hình */}
+          <div className="space-y-6">
+            {/* Cấu hình thời gian */}
+            <div className="rounded-lg border p-6 bg-card shadow-sm space-y-6">
+              <h4 className="font-medium flex items-center gap-2 border-b pb-2 border-border">
+                Cấu hình thời gian
+              </h4>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="duration"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2">
+                        <Clock className="w-4 h-4" />
+                        Thời lượng
+                      </FormLabel>
+                      <FormControl>
+                        <TimePicker
+                          value={field.value}
+                          onChange={field.onChange}
+                          min={15}
+                          step={15}
+                          placeholder="Chọn thời lượng"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="buffer_time"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2">
+                        <Coffee className="w-4 h-4" />
+                        Thời gian nghỉ
+                      </FormLabel>
+                      <FormControl>
+                        <TimePicker
+                          value={field.value}
+                          onChange={field.onChange}
+                          min={0}
+                          step={15}
+                          placeholder="Chọn thời gian nghỉ"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <ServiceTimeVisualizer duration={duration} bufferTime={bufferTime} />
+            </div>
+
+
           </div>
         </div>
 

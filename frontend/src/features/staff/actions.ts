@@ -8,9 +8,20 @@ import { Staff } from "./types"
 // Mock delay to simulate network request
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-export async function getStaffList(): Promise<Staff[]> {
+export async function getStaffList(
+  page: number = 1,
+  limit: number = 10
+): Promise<{ data: Staff[]; total: number }> {
   await delay(500)
-  return MOCK_STAFF
+  
+  const start = (page - 1) * limit
+  const end = start + limit
+  const paginatedData = MOCK_STAFF.slice(start, end)
+  
+  return {
+    data: paginatedData,
+    total: MOCK_STAFF.length
+  }
 }
 
 export async function getSkills(): Promise<Skill[]> {

@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
 } from "@/shared/ui/tooltip"
 import { Users } from "lucide-react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { ROLE_CONFIG } from "../../constants"
 import { Staff } from "../../types"
 import { StaffActions } from "./staff-actions"
@@ -41,8 +42,23 @@ export function StaffTable({
   skills,
   page = 1,
   totalPages = 1,
-  onPageChange = () => {}
+  onPageChange
 }: StaffTableProps) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  const handlePageChange = (newPage: number) => {
+    if (onPageChange) {
+      onPageChange(newPage)
+      return
+    }
+
+    const params = new URLSearchParams(searchParams.toString())
+    params.set("page", newPage.toString())
+    router.push(`${pathname}?${params.toString()}`)
+  }
+
   if (data.length === 0) {
     return (
       <DataTableEmptyState
@@ -55,15 +71,15 @@ export function StaffTable({
 
   return (
     <div className="h-full flex flex-col gap-4">
-      <div className="flex-1 overflow-auto bg-white">
-        <Table>
-          <TableHeader className="sticky top-0 z-10 bg-white/95 backdrop-blur shadow-sm">
+      <div className="flex-1 overflow-auto bg-white border relative">
+        <table className="w-full caption-bottom text-sm min-w-[800px]">
+          <TableHeader className="sticky top-0 z-10 bg-white shadow-sm">
             <TableRow className="hover:bg-transparent border-b-0">
-              <TableHead className="w-[250px] pl-6 bg-white/0">Nhân viên</TableHead>
-              <TableHead className="bg-white/0">Vai trò</TableHead>
-              <TableHead className="bg-white/0">Kỹ năng</TableHead>
-              <TableHead className="bg-white/0">Trạng thái</TableHead>
-              <TableHead className="text-right pr-6 bg-white/0">Hành động</TableHead>
+              <TableHead className="pl-6 bg-white">Nhân viên</TableHead>
+              <TableHead className="bg-white">Vai trò</TableHead>
+              <TableHead className="bg-white">Kỹ năng</TableHead>
+              <TableHead className="bg-white">Trạng thái</TableHead>
+              <TableHead className="text-right pr-6 bg-white">Hành động</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -120,7 +136,7 @@ export function StaffTable({
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Badge variant="outline" className={staff.isActive ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100" : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"}>
+                  <Badge variant="outline" className={staff.isActive ? "bg-emerald-500/10 text-emerald-700 border-emerald-500/20 hover:bg-emerald-500/20" : "bg-slate-500/10 text-slate-600 border-slate-500/20 hover:bg-slate-500/20"}>
                     {staff.isActive ? (
                         <span className="flex items-center gap-1.5">
                             <span className="relative flex h-2 w-2">
@@ -143,43 +159,28 @@ export function StaffTable({
               </AnimatedTableRow>
             ))}
           </TableBody>
-        </Table>
+        </table>
       </div>
       <div className="px-4 pb-4">
         <PaginationControls
           currentPage={page}
           totalPages={totalPages}
-          onPageChange={onPageChange}
+          onPageChange={handlePageChange}
         />
       </div>
     </div>
   )
 }
 
+import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
+
 export function StaffTableSkeleton() {
   return (
-    <div className="rounded-md border bg-white shadow-sm overflow-hidden">
-      <div className="p-4">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex gap-2">
-            <Skeleton className="h-9 w-24" />
-            <Skeleton className="h-9 w-24" />
-            <Skeleton className="h-9 w-24" />
-          </div>
-          <Skeleton className="h-9 w-32" />
-        </div>
-        <div className="space-y-3">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="flex items-center gap-4">
-              <Skeleton className="h-12 w-12 rounded-full" />
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-[250px]" />
-                <Skeleton className="h-4 w-[200px]" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+    <DataTableSkeleton
+      columnCount={5}
+      rowCount={5}
+      searchable={true}
+      filterable={true}
+    />
   )
 }

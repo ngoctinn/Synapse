@@ -10,6 +10,7 @@ export const serviceSchema = z.object({
     .refine((val) => val % 15 === 0, "Thời gian nghỉ phải là bội số của 15"),
   price: z.coerce.number().min(0, "Giá không được âm"),
   is_active: z.boolean().default(true),
+  image_url: z.string().optional(),
   skill_ids: z.array(z.string()).default([]),
   new_skills: z.array(z.string()).default([]),
 });
