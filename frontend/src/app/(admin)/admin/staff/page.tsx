@@ -1,5 +1,4 @@
-import { InviteStaffModal, StaffTable, StaffTableSkeleton } from "@/features/staff"
-import { getSkills, getStaffList } from "@/features/staff/actions"
+import { getSkills, getStaffList, InviteStaffModal, StaffTable, StaffTableSkeleton } from "@/features/staff"
 import { Metadata } from "next"
 import { Suspense } from "react"
 
@@ -8,7 +7,7 @@ export const metadata: Metadata = {
   description: "Quản lý nhân viên",
 }
 
-import { Skill } from "@/features/services/types"
+import { Skill } from "@/features/services"
 
 async function StaffListWrapper({
   staffListPromise,

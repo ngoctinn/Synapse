@@ -9,24 +9,24 @@ import { StaffScheduler } from "./scheduling/staff-scheduler"
 import { StaffTable, StaffTableSkeleton } from "./staff-list/staff-table"
 
 async function StaffListWrapper() {
-  const [staffList, skills] = await Promise.all([
+  const [staffListResponse, skillsResponse] = await Promise.all([
     getStaffList(),
     getSkills()
   ])
 
   return (
     <StaffTable
-      data={staffList}
-      skills={skills}
+      data={staffListResponse.data}
+      skills={skillsResponse.data}
       page={1}
-      totalPages={10}
+      totalPages={Math.ceil(staffListResponse.total / 10)}
     />
   )
 }
 
 async function StaffPageHeaderActions() {
-  const skills = await getSkills()
-  return <InviteStaffModal skills={skills} />
+  const skillsResponse = await getSkills()
+  return <InviteStaffModal skills={skillsResponse.data} />
 }
 
 export function StaffPage() {

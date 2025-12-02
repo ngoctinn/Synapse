@@ -1,16 +1,16 @@
 "use client"
 
 import { logoutAction } from "@/features/auth/actions"
+import { HeaderLogo } from "@/shared/ui/branding/header-logo"
 import * as React from "react"
 import { HeaderAuthButtons } from "./auth-buttons"
-import { HeaderLogo } from "./logo"
 import { MobileMenuOverlay, MobileMenuTrigger } from "./mobile-menu"
 import { MobileUserSheet } from "./mobile-user-sheet"
 import { HeaderNav } from "./nav-links"
 import { UserProfile } from "./types"
 import { HeaderUserDropdown } from "./user-dropdown"
 
-export { HeaderLogo } from "./logo"
+export { HeaderLogo } from "@/shared/ui/branding/header-logo"
 export { HeaderUserDropdown } from "./user-dropdown"
 
 interface HeaderProps {

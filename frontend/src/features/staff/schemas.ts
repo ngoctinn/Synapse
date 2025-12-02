@@ -15,3 +15,8 @@ export const staffFormSchema = z.object({
 })
 
 export type StaffFormValues = z.infer<typeof staffFormSchema>
+
+export const inviteStaffSchema = z.object({
+  email: z.string().email({ message: "Email không hợp lệ" }),
+  role: z.enum(["ADMIN", "RECEPTIONIST", "TECHNICIAN"]),
+})

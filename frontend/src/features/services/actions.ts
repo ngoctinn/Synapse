@@ -1,5 +1,7 @@
 "use server";
 
+import "server-only";
+
 import { fetchWithAuth } from "@/shared/lib/api";
 import { revalidatePath } from "next/cache";
 import { serviceSchema, skillSchema } from "./schemas";
@@ -152,7 +154,7 @@ export async function getSkills(
     }
 
     const allSkills: Skill[] = await res.json();
-    
+
     // Simulate pagination since backend doesn't support it yet
     const start = (page - 1) * limit;
     const end = start + limit;

@@ -1,6 +1,6 @@
 "use client"
 
-import { HeaderLogo } from "@/features/layout/components/header/logo"
+import { HeaderLogo } from "@/shared/ui/branding/header-logo"
 import {
   Collapsible,
   CollapsibleContent,
