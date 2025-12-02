@@ -36,3 +36,16 @@ class InviteStaffRequest(SQLModel):
     skill_ids: list[uuid.UUID] | None = None
     address: str | None = None
     date_of_birth: date | None = None
+
+class UserFilter(SQLModel):
+    role: UserRole | None = None
+    search: str | None = None
+    page: int = 1
+    limit: int = 10
+
+class UserListResponse(SQLModel):
+    data: list[UserRead]
+    total: int
+    page: int
+    limit: int
+    total_pages: int
