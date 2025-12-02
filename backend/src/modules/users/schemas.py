@@ -33,6 +33,6 @@ class InviteStaffRequest(SQLModel):
     full_name: str
     phone_number: str
     role: UserRole
-    skill_ids: list[int] | None = None
+    skill_ids: list[uuid.UUID] | None = None
     address: str | None = None
     date_of_birth: date | None = None

@@ -40,7 +40,11 @@ export const MOCK_STAFF: Staff[] = [
     email: "ktv1@synapse.com",
     role: "TECHNICIAN",
     avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=ktv1",
-    skills: ["Facial", "Massage Body", "Nặn mụn"],
+    skills: [
+      { id: "s1", name: "Facial", code: "FACIAL" },
+      { id: "s2", name: "Massage Body", code: "BODY" },
+      { id: "s3", name: "Nặn mụn", code: "ACNE" }
+    ],
     isActive: true,
     phone: "0901234570",
     address: "101 Quận 7, TP.HCM",
@@ -51,7 +55,10 @@ export const MOCK_STAFF: Staff[] = [
     email: "ktv2@synapse.com",
     role: "TECHNICIAN",
     avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=ktv2",
-    skills: ["Gội đầu", "Massage Cổ Vai Gáy"],
+    skills: [
+      { id: "s4", name: "Gội đầu", code: "SHAMPOO" },
+      { id: "s5", name: "Massage Cổ Vai Gáy", code: "NECK" }
+    ],
     isActive: true,
     phone: "0901234571",
     address: "202 Quận 10, TP.HCM",
@@ -62,7 +69,10 @@ export const MOCK_STAFF: Staff[] = [
     email: "ktv3@synapse.com",
     role: "TECHNICIAN",
     avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=ktv3",
-    skills: ["Facial", "Laser"],
+    skills: [
+      { id: "s1", name: "Facial", code: "FACIAL" },
+      { id: "s6", name: "Laser", code: "LASER" }
+    ],
     isActive: true,
     phone: "0901234572",
     address: "303 Quận Bình Thạnh, TP.HCM",
@@ -73,7 +83,10 @@ export const MOCK_STAFF: Staff[] = [
     email: "ktv4@synapse.com",
     role: "TECHNICIAN",
     avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=ktv4",
-    skills: ["Massage Body", "Tắm trắng"],
+    skills: [
+      { id: "s2", name: "Massage Body", code: "BODY" },
+      { id: "s7", name: "Tắm trắng", code: "WHITENING" }
+    ],
     isActive: false,
     phone: "0901234573",
     address: "404 Quận Phú Nhuận, TP.HCM",
@@ -84,7 +97,10 @@ export const MOCK_STAFF: Staff[] = [
     email: "ktv5@synapse.com",
     role: "TECHNICIAN",
     avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=ktv5",
-    skills: ["Nặn mụn", "Peel da"],
+    skills: [
+      { id: "s3", name: "Nặn mụn", code: "ACNE" },
+      { id: "s8", name: "Peel da", code: "PEEL" }
+    ],
     isActive: true,
     phone: "0901234574",
     address: "505 Quận Tân Bình, TP.HCM",
@@ -95,7 +111,10 @@ export const MOCK_STAFF: Staff[] = [
     email: "ktv6@synapse.com",
     role: "TECHNICIAN",
     avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=ktv6",
-    skills: ["Triệt lông", "Facial"],
+    skills: [
+      { id: "s9", name: "Triệt lông", code: "HAIR_REMOVAL" },
+      { id: "s1", name: "Facial", code: "FACIAL" }
+    ],
     isActive: true,
     phone: "0901234575",
     address: "606 Quận Gò Vấp, TP.HCM",
@@ -106,9 +125,27 @@ export const MOCK_STAFF: Staff[] = [
     email: "ktv7@synapse.com",
     role: "TECHNICIAN",
     avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=ktv7",
-    skills: ["Massage Body", "Massage Cổ Vai Gáy", "Gội đầu"],
+    skills: [
+      { id: "s2", name: "Massage Body", code: "BODY" },
+      { id: "s5", name: "Massage Cổ Vai Gáy", code: "NECK" },
+      { id: "s4", name: "Gội đầu", code: "SHAMPOO" }
+    ],
     isActive: true,
     phone: "0901234576",
     address: "707 TP. Thủ Đức, TP.HCM",
   },
+];
+
+import { Skill } from "@/features/services/types";
+
+export const MOCK_SKILLS: Skill[] = [
+  { id: "s1", name: "Facial", code: "FACIAL" },
+  { id: "s2", name: "Massage Body", code: "BODY" },
+  { id: "s3", name: "Nặn mụn", code: "ACNE" },
+  { id: "s4", name: "Gội đầu", code: "SHAMPOO" },
+  { id: "s5", name: "Massage Cổ Vai Gáy", code: "NECK" },
+  { id: "s6", name: "Laser", code: "LASER" },
+  { id: "s7", name: "Tắm trắng", code: "WHITENING" },
+  { id: "s8", name: "Peel da", code: "PEEL" },
+  { id: "s9", name: "Triệt lông", code: "HAIR_REMOVAL" },
 ];

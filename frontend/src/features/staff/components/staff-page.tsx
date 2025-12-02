@@ -1,4 +1,5 @@
 
+import { getSkills } from "@/features/services/actions"
 import { getStaffList } from "@/features/staff/actions"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { Suspense } from "react"
@@ -8,14 +9,24 @@ import { StaffScheduler } from "./scheduling/staff-scheduler"
 import { StaffTable, StaffTableSkeleton } from "./staff-list/staff-table"
 
 async function StaffListWrapper() {
-  const staffList = await getStaffList()
+  const [staffList, skills] = await Promise.all([
+    getStaffList(),
+    getSkills()
+  ])
+
   return (
     <StaffTable
       data={staffList}
+      skills={skills}
       page={1}
       totalPages={10}
     />
   )
+}
+
+async function StaffPageHeaderActions() {
+  const skills = await getSkills()
+  return <InviteStaffModal skills={skills} />
 }
 
 export function StaffPage() {
@@ -29,7 +40,7 @@ export function StaffPage() {
               <TabsTrigger value="permissions" className="data-[state=active]:bg-white data-[state=active]:shadow-sm text-xs font-medium px-4">Phân quyền</TabsTrigger>
               <TabsTrigger value="scheduling" className="data-[state=active]:bg-white data-[state=active]:shadow-sm text-xs font-medium px-4">Lịch làm việc</TabsTrigger>
             </TabsList>
-            <InviteStaffModal />
+            <StaffPageHeaderActions />
           </div>
 
           <div className="flex-1 overflow-hidden relative">

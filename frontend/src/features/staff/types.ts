@@ -1,3 +1,5 @@
+import { Skill } from "../services/types";
+
 export type Role = 'ADMIN' | 'RECEPTIONIST' | 'TECHNICIAN';
 
 export interface Staff {
@@ -6,7 +8,7 @@ export interface Staff {
   email: string;
   role: Role;
   avatarUrl?: string;
-  skills: string[]; // e.g., ['Facial', 'Massage']
+  skills: Skill[]; // e.g., [{id: '...', name: 'Facial'}]
   isActive: boolean;
   phone?: string;
   address?: string;

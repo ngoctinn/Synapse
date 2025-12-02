@@ -1,7 +1,8 @@
 "use server"
 
+import { Skill } from "@/features/services/types"
 import { revalidatePath } from "next/cache"
-import { MOCK_STAFF } from "./data/mock-staff"
+import { MOCK_SKILLS, MOCK_STAFF } from "./data/mock-staff"
 import { Staff } from "./types"
 
 // Mock delay to simulate network request
@@ -10,6 +11,11 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 export async function getStaffList(): Promise<Staff[]> {
   await delay(500)
   return MOCK_STAFF
+}
+
+export async function getSkills(): Promise<Skill[]> {
+  await delay(500)
+  return MOCK_SKILLS
 }
 
 export type ActionState = {

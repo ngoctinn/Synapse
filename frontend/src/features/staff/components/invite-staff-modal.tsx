@@ -4,7 +4,7 @@ import { inviteStaff } from "@/features/staff/actions"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2, Mail } from "lucide-react"
 import * as React from "react"
-import { useActionState } from "react"
+import { useActionState, useState } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -35,6 +35,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/shared/ui/select"
+import { SkillSelector } from "./skill-selector"
+import { Skill } from "@/features/services/types"
 
 const inviteStaffSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
@@ -51,8 +53,13 @@ const initialState = {
   error: "",
 }
 
-export function InviteStaffModal() {
-  const [open, setOpen] = React.useState(false)
+interface InviteStaffModalProps {
+  skills: Skill[]
+}
+
+export function InviteStaffModal({ skills }: InviteStaffModalProps) {
+  const [open, setOpen] = useState(false)
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([])
   const [state, dispatch, isPending] = useActionState(inviteStaff, initialState)
 
   const form = useForm<InviteStaffFormValues>({
@@ -70,6 +77,7 @@ export function InviteStaffModal() {
       showToast.success("Thành công", state.message)
       setOpen(false)
       form.reset()
+      setSelectedSkills([])
     } else if (state.error) {
       showToast.error("Lỗi", state.error)
     }
@@ -81,6 +89,11 @@ export function InviteStaffModal() {
     formData.append("fullName", data.fullName)
     formData.append("phone", data.phone)
     formData.append("role", data.role)
+
+    // Append skills if role is Technician
+    if (data.role === "TECHNICIAN" && selectedSkills.length > 0) {
+        formData.append("skill_ids", JSON.stringify(selectedSkills))
+    }
 
     React.startTransition(() => {
       dispatch(formData)
@@ -165,6 +178,23 @@ export function InviteStaffModal() {
                 </FormItem>
               )}
             />
+
+            {form.watch("role") === "TECHNICIAN" && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  Kỹ năng (Tùy chọn)
+                </label>
+                <SkillSelector
+                  skills={skills}
+                  selectedSkillIds={selectedSkills}
+                  onSkillsChange={setSelectedSkills}
+                />
+                <p className="text-[0.8rem] text-muted-foreground">
+                  Chọn các kỹ năng mà nhân viên này có thể thực hiện.
+                </p>
+              </div>
+            )}
+
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 Hủy

@@ -1,6 +1,16 @@
 from datetime import date, datetime, timezone
 import uuid
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel, Field, Relationship
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.modules.services.models import Skill
+
+class UserSkill(SQLModel, table=True):
+    __tablename__ = "user_skills"
+
+    user_id: uuid.UUID = Field(foreign_key="users.id", primary_key=True, ondelete="CASCADE")
+    skill_id: uuid.UUID = Field(foreign_key="skills.id", primary_key=True, ondelete="CASCADE")
 
 class User(SQLModel, table=True):
     __tablename__ = "users"
@@ -16,3 +26,5 @@ class User(SQLModel, table=True):
 
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+    skills: list["Skill"] = Relationship(back_populates="users", link_model=UserSkill)

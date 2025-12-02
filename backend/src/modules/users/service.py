@@ -7,6 +7,8 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from src.common.database import get_db_session
 from src.modules.users.models import User
 from src.modules.users.schemas import UserUpdate, InviteStaffRequest
+from src.modules.users.models import UserSkill
+from sqlmodel import select, delete
 from supabase import create_client, Client
 from src.app.config import settings
 
@@ -68,8 +70,10 @@ class UserService:
 
         # 4. Handle Skills (Technician)
         if invite_data.role == "technician" and invite_data.skill_ids:
-            # TODO: Implement skill insertion
-            pass
+            for skill_id in invite_data.skill_ids:
+                user_skill = UserSkill(user_id=user_id, skill_id=skill_id)
+                self.session.add(user_skill)
+            await self.session.commit()
 
         # 5. Return User (Query DB with fallback)
         user = await self.session.get(User, user_id)

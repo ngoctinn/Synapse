@@ -1,0 +1,51 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python313\Scripts\alembic.exe\__main__.py", line 6, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\alembic\config.py", line 641, in main
+    CommandLine(prog=prog).main(argv=argv)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\alembic\config.py", line 631, in main
+    self.run_cmd(cfg, options)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\alembic\config.py", line 608, in run_cmd
+    fn(
+    ~~^
+        config,
+        ^^^^^^^
+        *[getattr(options, k, None) for k in positional],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **{k: getattr(options, k, None) for k in kwarg},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\alembic\command.py", line 403, in upgrade
+    script.run_env()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\alembic\script\base.py", line 583, in run_env
+    util.load_python_file(self.dir, "env.py")
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\alembic\util\pyfiles.py", line 95, in load_python_file
+    module = load_module_py(module_id, path)
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\alembic\util\pyfiles.py", line 113, in load_module_py
+    spec.loader.exec_module(module)  # type: ignore
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "D:\Synapse\backend\alembic\env.py", line 12, in <module>
+    from src.modules.services.models import Service, Skill, ServiceSkill
+  File "D:\Synapse\backend\src\modules\services\__init__.py", line 1, in <module>
+    from .models import Skill, Service, ServiceSkill
+  File "D:\Synapse\backend\src\modules\services\models.py", line 27, in <module>
+    class Skill(SQLModel, table=True):
+    ...<11 lines>...
+        users: list["User"] = Relationship(back_populates="skills", link_model="UserSkill")
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlmodel\main.py", line 626, in __init__
+    ins = inspect(rel_info.link_model)
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\inspection.py", line 147, in inspect
+    raise exc.NoInspectionAvailable(
+    ...<2 lines>...
+    )
+sqlalchemy.exc.NoInspectionAvailable: No inspection system is available for object of type <class 'str'>

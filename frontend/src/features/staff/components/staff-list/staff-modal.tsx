@@ -26,9 +26,16 @@ import {
 } from "@/shared/ui/form"
 import { RadioGroup, RadioGroupItem } from "@/shared/ui/radio-group"
 import { staffFormSchema, StaffFormValues } from "../../schemas"
+import { SkillSelector } from "../skill-selector"
+import { Skill } from "@/features/services/types"
 
-export function StaffModal() {
+interface StaffModalProps {
+  skills: Skill[]
+}
+
+export function StaffModal({ skills }: StaffModalProps) {
   const [open, setOpen] = useState(false)
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([])
 
   const form = useForm<StaffFormValues>({
     resolver: zodResolver(staffFormSchema),
@@ -43,11 +50,16 @@ export function StaffModal() {
     } as StaffFormValues,
   })
 
+  // Reset selected skills when modal opens or form resets
+  // This is a simplification; in real edit mode, we'd load existing skills
+
   function onSubmit(data: StaffFormValues) {
     console.log(data)
     // TODO: Handle submit (create staff)
+    // Include selectedSkills in submission
     setOpen(false)
     form.reset()
+    setSelectedSkills([])
   }
 
   return (
@@ -160,7 +172,21 @@ export function StaffModal() {
                   <FormMessage />
                 </FormItem>
               )}
+              )}
             />
+
+            {form.watch("role") === "TECHNICIAN" && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  Kỹ năng
+                </label>
+                <SkillSelector
+                  skills={skills}
+                  selectedSkillIds={selectedSkills}
+                  onSkillsChange={setSelectedSkills}
+                />
+              </div>
+            )}
 
             <DialogFooter className="pt-4">
               <Button type="submit">Tạo tài khoản</Button>

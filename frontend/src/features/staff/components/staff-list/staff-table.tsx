@@ -1,5 +1,6 @@
 "use client"
 
+import { Skill } from "@/features/services/types"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
 import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row"
@@ -29,6 +30,7 @@ const roleConfig = ROLE_CONFIG
 
 interface StaffTableProps {
   data: Staff[]
+  skills: Skill[]
   page?: number
   totalPages?: number
   onPageChange?: (page: number) => void
@@ -36,6 +38,7 @@ interface StaffTableProps {
 
 export function StaffTable({
   data,
+  skills,
   page = 1,
   totalPages = 1,
   onPageChange = () => {}
@@ -88,8 +91,8 @@ export function StaffTable({
                     {staff.skills.length > 0 ? (
                       <>
                         {staff.skills.slice(0, 2).map((skill) => (
-                          <Badge key={skill} variant="outline" className="text-xs font-normal">
-                            {skill}
+                          <Badge key={skill.id} variant="outline" className="text-xs font-normal">
+                            {skill.name}
                           </Badge>
                         ))}
                         {staff.skills.length > 2 && (
@@ -103,7 +106,7 @@ export function StaffTable({
                               <TooltipContent>
                                 <div className="flex flex-col gap-1">
                                   {staff.skills.slice(2).map((skill) => (
-                                    <span key={skill}>{skill}</span>
+                                    <span key={skill.id}>{skill.name}</span>
                                   ))}
                                 </div>
                               </TooltipContent>
@@ -135,7 +138,7 @@ export function StaffTable({
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right pr-6">
-                  <StaffActions staff={staff} />
+                  <StaffActions staff={staff} skills={skills} />
                 </TableCell>
               </AnimatedTableRow>
             ))}
