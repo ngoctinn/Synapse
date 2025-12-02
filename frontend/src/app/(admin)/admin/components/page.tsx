@@ -20,7 +20,7 @@ export default function ComponentsPage() {
   return (
     <div className="space-y-8 pb-10">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">UI Components</h1>
+
         <p className="text-muted-foreground">
           Trang kiểm thử các component giao diện được sử dụng trong hệ thống.
         </p>

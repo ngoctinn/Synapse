@@ -172,7 +172,7 @@ export function StaffModal({ skills }: StaffModalProps) {
                   <FormMessage />
                 </FormItem>
               )}
-              )}
+
             />
 
             {form.watch("role") === "TECHNICIAN" && (

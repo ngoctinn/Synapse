@@ -2,7 +2,7 @@
 
 import { Button } from "@/shared/ui/button"
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
-import { TimePicker } from "@/shared/ui/custom/time-picker"
+import { Input } from "@/shared/ui/input"
 import {
   Dialog,
   DialogContent,
@@ -120,16 +120,18 @@ export function AddShiftDialog({
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Bắt đầu</Label>
-                <TimePicker
+                <Input
+                  type="time"
                   value={startTime}
-                  onChange={setStartTime}
+                  onChange={(e) => setStartTime(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
                 <Label>Kết thúc</Label>
-                <TimePicker
+                <Input
+                  type="time"
                   value={endTime}
-                  onChange={setEndTime}
+                  onChange={(e) => setEndTime(e.target.value)}
                 />
               </div>
             </div>

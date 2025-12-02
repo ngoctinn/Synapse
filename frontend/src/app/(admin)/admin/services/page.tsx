@@ -1,4 +1,6 @@
 import { CreateServiceDialog, getServices, getSkills, ServiceTable, ServiceTableSkeleton } from "@/features/services";
+import { SearchInput } from "@/shared/ui/custom/search-input"
+import { FilterButton } from "@/shared/ui/custom/filter-button";
 import { Metadata } from "next";
 import { Suspense } from "react";
 
@@ -44,7 +46,10 @@ export default async function ServicesPage({
   return (
     <div className="h-[calc(100vh-6rem)] flex flex-col bg-white">
       <div className="flex items-center justify-between px-4 py-3 border-b shrink-0 bg-white">
-        <h1 className="text-lg font-semibold">Danh sách dịch vụ</h1>
+        <div className="flex items-center gap-2 flex-1">
+          <SearchInput placeholder="Tìm kiếm dịch vụ..." />
+          <FilterButton />
+        </div>
         <Suspense fallback={<div className="h-9 w-32 bg-slate-100 rounded animate-pulse" />}>
             <CreateServiceWrapper />
         </Suspense>

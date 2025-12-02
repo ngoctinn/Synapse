@@ -134,6 +134,76 @@ export const MOCK_STAFF: Staff[] = [
     phone: "0901234576",
     address: "707 TP. Thủ Đức, TP.HCM",
   },
+  {
+    id: "11",
+    name: "Lý Thị Kỹ Thuật 8",
+    email: "ktv8@synapse.com",
+    role: "TECHNICIAN",
+    avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=ktv8",
+    skills: [
+      { id: "s1", name: "Facial", code: "FACIAL" },
+      { id: "s3", name: "Nặn mụn", code: "ACNE" }
+    ],
+    isActive: true,
+    phone: "0901234577",
+    address: "808 Quận 12, TP.HCM",
+  },
+  {
+    id: "12",
+    name: "Hồ Văn Kỹ Thuật 9",
+    email: "ktv9@synapse.com",
+    role: "TECHNICIAN",
+    avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=ktv9",
+    skills: [
+      { id: "s2", name: "Massage Body", code: "BODY" },
+      { id: "s6", name: "Laser", code: "LASER" }
+    ],
+    isActive: true,
+    phone: "0901234578",
+    address: "909 Huyện Bình Chánh, TP.HCM",
+  },
+  {
+    id: "13",
+    name: "Dương Thị Kỹ Thuật 10",
+    email: "ktv10@synapse.com",
+    role: "TECHNICIAN",
+    avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=ktv10",
+    skills: [
+      { id: "s4", name: "Gội đầu", code: "SHAMPOO" },
+      { id: "s9", name: "Triệt lông", code: "HAIR_REMOVAL" }
+    ],
+    isActive: true,
+    phone: "0901234579",
+    address: "111 Huyện Hóc Môn, TP.HCM",
+  },
+  {
+    id: "14",
+    name: "Mai Văn Kỹ Thuật 11",
+    email: "ktv11@synapse.com",
+    role: "TECHNICIAN",
+    avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=ktv11",
+    skills: [
+      { id: "s5", name: "Massage Cổ Vai Gáy", code: "NECK" },
+      { id: "s7", name: "Tắm trắng", code: "WHITENING" }
+    ],
+    isActive: false,
+    phone: "0901234580",
+    address: "222 Huyện Củ Chi, TP.HCM",
+  },
+  {
+    id: "15",
+    name: "Trương Thị Kỹ Thuật 12",
+    email: "ktv12@synapse.com",
+    role: "TECHNICIAN",
+    avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=ktv12",
+    skills: [
+      { id: "s8", name: "Peel da", code: "PEEL" },
+      { id: "s1", name: "Facial", code: "FACIAL" }
+    ],
+    isActive: true,
+    phone: "0901234581",
+    address: "333 Huyện Nhà Bè, TP.HCM",
+  },
 ];
 
 import { Skill } from "@/features/services/types";

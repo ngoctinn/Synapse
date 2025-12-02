@@ -8,9 +8,9 @@ import { PermissionMatrix } from "./permissions/permission-matrix"
 import { StaffScheduler } from "./scheduling/staff-scheduler"
 import { StaffTable, StaffTableSkeleton } from "./staff-list/staff-table"
 
-async function StaffListWrapper() {
+async function StaffListWrapper({ page }: { page: number }) {
   const [staffListResponse, skillsResponse] = await Promise.all([
-    getStaffList(),
+    getStaffList(page),
     getSkills()
   ])
 
@@ -18,7 +18,7 @@ async function StaffListWrapper() {
     <StaffTable
       data={staffListResponse.data}
       skills={skillsResponse.data}
-      page={1}
+      page={page}
       totalPages={Math.ceil(staffListResponse.total / 10)}
     />
   )
@@ -29,7 +29,13 @@ async function StaffPageHeaderActions() {
   return <InviteStaffModal skills={skillsResponse.data} />
 }
 
-export function StaffPage() {
+interface StaffPageProps {
+  searchParams?: { [key: string]: string | string[] | undefined }
+}
+
+export function StaffPage({ searchParams }: StaffPageProps) {
+  const page = Number(searchParams?.page) || 1
+
   return (
     <div className="h-[calc(100vh-6rem)] flex flex-col">
       <div className="flex-1 bg-white overflow-hidden flex flex-col">
@@ -46,7 +52,7 @@ export function StaffPage() {
           <div className="flex-1 overflow-hidden relative">
             <TabsContent value="list" className="h-full mt-0 border-0 p-0 data-[state=inactive]:hidden">
               <Suspense fallback={<StaffTableSkeleton />}>
-                <StaffListWrapper />
+                <StaffListWrapper page={page} />
               </Suspense>
             </TabsContent>
 

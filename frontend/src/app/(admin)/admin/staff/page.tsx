@@ -1,4 +1,6 @@
 import { getSkills, getStaffList, InviteStaffModal, StaffTable, StaffTableSkeleton } from "@/features/staff"
+import { SearchInput } from "@/shared/ui/custom/search-input"
+import { FilterButton } from "@/shared/ui/custom/filter-button"
 import { Metadata } from "next"
 import { Suspense } from "react"
 
@@ -12,9 +14,11 @@ import { Skill } from "@/features/services"
 async function StaffListWrapper({
   staffListPromise,
   skills,
+  page,
 }: {
   staffListPromise: Promise<any>
   skills: Skill[]
+  page: number
 }) {
   const { data, total } = await staffListPromise
   const totalPages = Math.ceil(total / 10) // Default limit is 10
@@ -23,22 +27,31 @@ async function StaffListWrapper({
     <StaffTable
       data={data}
       skills={skills}
-      page={1}
+      page={page}
       totalPages={totalPages}
     />
   )
 }
 
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  const resolvedSearchParams = await searchParams
+  const page = Number(resolvedSearchParams?.page) || 1
   const skillsPromise = getSkills()
-  const staffListPromise = getStaffList()
+  const staffListPromise = getStaffList(page)
 
   const skills = await skillsPromise
 
   return (
     <div className="h-[calc(100vh-6rem)] flex flex-col bg-white">
       <div className="flex items-center justify-between px-4 py-3 border-b shrink-0 bg-white">
-        <h1 className="text-lg font-semibold">Danh sách nhân viên</h1>
+        <div className="flex items-center gap-2 flex-1">
+          <SearchInput placeholder="Tìm kiếm nhân viên..." />
+          <FilterButton />
+        </div>
         <InviteStaffModal skills={skills} />
       </div>
       <div className="flex-1 overflow-hidden p-0">
@@ -46,6 +59,7 @@ export default async function Page() {
           <StaffListWrapper
             staffListPromise={staffListPromise}
             skills={skills}
+            page={page}
           />
         </Suspense>
       </div>

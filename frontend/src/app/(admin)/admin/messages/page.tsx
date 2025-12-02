@@ -1,8 +1,18 @@
+import { SearchInput } from "@/shared/ui/custom/search-input"
+import { FilterButton } from "@/shared/ui/custom/filter-button"
+
 export default function MessagesPage() {
   return (
-    <div className="flex flex-col items-center justify-center h-full text-slate-500">
-      <h1 className="text-2xl font-bold text-slate-800">Tin nhắn</h1>
-      <p>Tính năng đang được phát triển</p>
+    <div className="h-[calc(100vh-6rem)] flex flex-col bg-white">
+      <div className="flex items-center justify-between px-4 py-3 border-b shrink-0 bg-white">
+        <div className="flex items-center gap-2 flex-1">
+          <SearchInput placeholder="Tìm kiếm tin nhắn..." />
+          <FilterButton />
+        </div>
+      </div>
+      <div className="flex-1 flex flex-col items-center justify-center text-slate-500">
+        <p>Tính năng đang được phát triển</p>
+      </div>
     </div>
   )
 }

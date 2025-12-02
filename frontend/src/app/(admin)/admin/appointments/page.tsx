@@ -1,4 +1,6 @@
 import { AppointmentTable } from "@/features/appointments"
+import { SearchInput } from "@/shared/ui/custom/search-input"
+import { FilterButton } from "@/shared/ui/custom/filter-button"
 import { Metadata } from "next"
 import { Suspense } from "react"
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
@@ -19,7 +21,10 @@ export default async function AppointmentsPage({
   return (
     <div className="h-[calc(100vh-6rem)] flex flex-col bg-white">
       <div className="flex items-center justify-between px-4 py-3 border-b shrink-0 bg-white">
-        <h1 className="text-lg font-semibold">Danh sách lịch hẹn</h1>
+        <div className="flex items-center gap-2 flex-1">
+          <SearchInput placeholder="Tìm kiếm lịch hẹn..." />
+          <FilterButton />
+        </div>
         {/* Add Create Appointment Button here later */}
       </div>
       <div className="flex-1 overflow-hidden p-0">
