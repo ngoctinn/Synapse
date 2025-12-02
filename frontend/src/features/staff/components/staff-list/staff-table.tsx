@@ -1,19 +1,18 @@
 "use client"
 
 import { Skill } from "@/features/services/types"
+import { cn } from "@/shared/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
 import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row"
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state"
 import { PaginationControls } from "@/shared/ui/custom/pagination-controls"
-import { Skeleton } from "@/shared/ui/skeleton"
 import {
-  Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from "@/shared/ui/table"
 import {
   Tooltip,
@@ -98,7 +97,13 @@ export function StaffTable({
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Badge variant={roleConfig[staff.role].variant} className="rounded-md px-2.5 py-0.5 font-medium">
+                  <Badge
+                    variant={roleConfig[staff.role].variant}
+                    className={cn(
+                      "rounded-md px-2.5 py-0.5 font-medium",
+                      roleConfig[staff.role].className
+                    )}
+                  >
                     {roleConfig[staff.role].label}
                   </Badge>
                 </TableCell>

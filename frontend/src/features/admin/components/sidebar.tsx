@@ -57,6 +57,36 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                 const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`)
 
                 if (item.items) {
+                  // Collapsed State: Dropdown Menu
+                  if (state === "collapsed") {
+                    return (
+                      <SidebarMenuItem key={item.title}>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <SidebarMenuButton
+                              tooltip={item.title}
+                              isActive={isActive}
+                              className="font-medium justify-center"
+                            >
+                              <Icon className="size-5" />
+                              <span className="sr-only">{item.title}</span>
+                            </SidebarMenuButton>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent side="right" align="start" className="min-w-[180px]">
+                            {item.items.map((subItem) => (
+                              <DropdownMenuItem key={subItem.title} asChild>
+                                <Link href={subItem.href} className="cursor-pointer">
+                                  {subItem.title}
+                                </Link>
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </SidebarMenuItem>
+                    )
+                  }
+
+                  // Expanded State: Collapsible
                   return (
                     <Collapsible
                       key={item.title}
@@ -68,12 +98,12 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                         <CollapsibleTrigger asChild>
                           <SidebarMenuButton
                             tooltip={item.title}
-                            isActive={false}
-                            className="font-medium transition-all duration-200 group-data-[collapsible=icon]:justify-center group-hover/menu-item:bg-sidebar-accent group-hover/menu-item:text-sidebar-accent-foreground"
+                            isActive={isActive}
+                            className="font-medium transition-all duration-200 group-hover/menu-item:bg-sidebar-accent group-hover/menu-item:text-sidebar-accent-foreground"
                           >
                             <Icon className="size-5" />
-                            <span className="group-data-[collapsible=icon]:hidden">{item.title}</span>
-                            <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 group-data-[collapsible=icon]:hidden" />
+                            <span>{item.title}</span>
+                            <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                           </SidebarMenuButton>
                         </CollapsibleTrigger>
                         <CollapsibleContent>
@@ -92,29 +122,12 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                             ))}
                           </SidebarMenuSub>
                         </CollapsibleContent>
-
-                        {/* Dropdown Menu for Collapsed State - Overlay Trigger */}
-                        {state === "collapsed" && (
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                               <div className="absolute inset-0 z-10 cursor-pointer" />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent side="right" align="start" className="min-w-[180px]">
-                              {item.items.map((subItem) => (
-                                <DropdownMenuItem key={subItem.title} asChild>
-                                  <Link href={subItem.href} className="cursor-pointer">
-                                    {subItem.title}
-                                  </Link>
-                                </DropdownMenuItem>
-                              ))}
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        )}
                       </SidebarMenuItem>
                     </Collapsible>
                   )
                 }
 
+                // Single Item
                 return (
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton
@@ -137,10 +150,17 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
       </SidebarContent>
 
       <SidebarFooter className="p-4 group-data-[collapsible=icon]:p-2">
-        <div className="flex items-center gap-2 px-2 py-2 text-sm font-medium text-slate-400 hover:text-slate-600 cursor-pointer transition-colors group-data-[collapsible=icon]:justify-center">
-            <HelpCircle className="w-5 h-5" />
-            <span className="group-data-[collapsible=icon]:hidden">Hỗ trợ</span>
-        </div>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              tooltip="Hỗ trợ"
+              className="font-medium text-slate-400 hover:text-slate-600 transition-colors group-data-[collapsible=icon]:justify-center"
+            >
+              <HelpCircle className="size-5" />
+              <span className="group-data-[collapsible=icon]:hidden">Hỗ trợ</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

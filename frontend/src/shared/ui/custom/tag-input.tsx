@@ -4,17 +4,17 @@ import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList
 } from "@/shared/ui/command";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/shared/ui/popover";
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import * as React from "react";
@@ -90,7 +90,7 @@ export function TagInput({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-full justify-between h-auto min-h-10 py-2 px-3 text-left font-normal hover:bg-background"
+            className="w-full justify-between h-auto min-h-10 max-h-32 overflow-y-auto py-2 px-3 text-left font-normal hover:bg-background"
             onClick={() => setOpen(!open)}
           >
             <div className="flex flex-wrap gap-1">

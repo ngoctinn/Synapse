@@ -6,6 +6,7 @@ import { Button } from "@/shared/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card"
 import { Checkbox } from "@/shared/ui/checkbox"
 import { DatePicker } from "@/shared/ui/custom"
+import { showToast } from "@/shared/ui/custom/sonner"
 import { StripCalendar } from "@/shared/ui/custom/strip-calendar"
 import { TimePicker } from "@/shared/ui/custom/time-picker"
 import { Input } from "@/shared/ui/input"
@@ -152,6 +153,46 @@ export default function ComponentsPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Sonner Toasts */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Sonner Toasts</CardTitle>
+            <CardDescription>Thông báo Toast với giao diện Premium.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex flex-wrap gap-4">
+              <Button
+                variant="outline"
+                onClick={() => showToast.success("Thành công", "Thao tác đã được thực hiện thành công.")}
+                className="border-emerald-500/20 hover:bg-emerald-500/10 hover:text-emerald-600"
+              >
+                Success Toast
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => showToast.info("Thông tin", "Đây là một thông báo thông tin.")}
+                className="border-blue-500/20 hover:bg-blue-500/10 hover:text-blue-600"
+              >
+                Info Toast
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => showToast.warning("Cảnh báo", "Vui lòng kiểm tra lại thông tin.")}
+                className="border-amber-500/20 hover:bg-amber-500/10 hover:text-amber-600"
+              >
+                Warning Toast
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => showToast.error("Lỗi", "Đã có lỗi xảy ra, vui lòng thử lại.")}
+                className="border-red-500/20 hover:bg-red-500/10 hover:text-red-600"
+              >
+                Error Toast
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
       {/* Spacer for scrolling */}
       <div className="h-[500px] flex items-center justify-center text-muted-foreground border-t border-dashed">
@@ -169,9 +210,9 @@ function DatePickerDemo() {
 function DatePickerBirthDemo() {
   const [date, setDate] = useState<Date | undefined>()
   return (
-    <DatePicker 
-      date={date} 
-      setDate={setDate} 
+    <DatePicker
+      date={date}
+      setDate={setDate}
       placeholder="Chọn ngày sinh"
       fromYear={1990}
       toYear={2010}
