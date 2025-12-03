@@ -5,7 +5,8 @@ import {
   CreditCard,
   LayoutDashboard,
   MessageSquare,
-  Palette
+  Palette,
+  Settings
 } from "lucide-react"
 
 export type SidebarItem = {
@@ -77,5 +78,16 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     title: "Thành phần giao diện",
     href: "/admin/components",
     icon: Palette,
+  },
+  {
+    title: "Cài đặt",
+    href: "/admin/settings",
+    icon: Settings,
+    items: [
+      {
+        title: "Thời gian hoạt động",
+        href: "/admin/settings/operating-hours",
+      },
+    ],
   },
 ]

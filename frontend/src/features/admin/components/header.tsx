@@ -40,6 +40,8 @@ const BREADCRUMB_MAP: Record<string, string> = {
   messages: "Tin nhắn",
   notifications: "Thông báo",
   components: "Thành phần giao diện",
+  settings: "Cài đặt",
+  "operating-hours": "Thời gian hoạt động",
 }
 
 interface AdminHeaderProps {
