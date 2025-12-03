@@ -1,16 +1,10 @@
 from datetime import date, datetime, timezone
 import uuid
 from sqlmodel import SQLModel, Field, Relationship
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
-    from src.modules.services.models import Skill
-
-class UserSkill(SQLModel, table=True):
-    __tablename__ = "user_skills"
-
-    user_id: uuid.UUID = Field(foreign_key="users.id", primary_key=True, ondelete="CASCADE")
-    skill_id: uuid.UUID = Field(foreign_key="skills.id", primary_key=True, ondelete="CASCADE")
+    from src.modules.staff.models import Staff
 
 class User(SQLModel, table=True):
     __tablename__ = "users"
@@ -23,8 +17,11 @@ class User(SQLModel, table=True):
     address: str | None = None
     date_of_birth: date | None = None
     role: str = Field(default="customer")
+    is_active: bool = Field(default=True)  # Vô hiệu hóa tài khoản
 
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
-    skills: list["Skill"] = Relationship(back_populates="users", link_model=UserSkill)
+    # Relationship với Staff (1-1, optional)
+    # Chỉ User có role != "customer" mới có staff_profile
+    staff_profile: Optional["Staff"] = Relationship(back_populates="user")

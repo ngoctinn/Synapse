@@ -1,5 +1,6 @@
 "use client"
 
+import { useFilterParams } from "@/shared/lib/hooks/use-filter-params"
 import { FilterButton } from "@/shared/ui/custom/filter-button"
 import { Label } from "@/shared/ui/label"
 import {
@@ -9,7 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/select"
-import { useFilterParams } from "@/shared/lib/hooks/use-filter-params"
 import { CheckCircle2, Stethoscope, UserCog, XCircle } from "lucide-react"
 
 export function StaffFilter() {
@@ -48,10 +48,16 @@ export function StaffFilter() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tất cả</SelectItem>
-              <SelectItem value="manager">
+              <SelectItem value="admin">
                 <div className="flex items-center gap-2">
                   <UserCog className="h-4 w-4 text-muted-foreground" />
-                  <span>Quản lý</span>
+                  <span>Quản trị viên</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="receptionist">
+                <div className="flex items-center gap-2">
+                  <UserCog className="h-4 w-4 text-muted-foreground" />
+                  <span>Lễ tân</span>
                 </div>
               </SelectItem>
               <SelectItem value="technician">

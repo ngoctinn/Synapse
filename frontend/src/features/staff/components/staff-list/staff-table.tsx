@@ -83,28 +83,30 @@ export function StaffTable({
           </TableHeader>
           <TableBody>
             {data.map((staff, index) => (
-              <AnimatedTableRow key={staff.id} index={index}>
+              <AnimatedTableRow key={staff.user_id} index={index}>
                 <TableCell className="pl-6">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-9 w-9 border">
-                      <AvatarImage src={staff.avatarUrl} alt={staff.name} />
-                      <AvatarFallback className="bg-primary/10 text-primary font-medium">{staff.name.charAt(0)}</AvatarFallback>
+                      <AvatarImage src={staff.user.avatar_url || undefined} alt={staff.user.full_name || ""} />
+                      <AvatarFallback className="bg-primary/10 text-primary font-medium">
+                        {(staff.user.full_name || staff.user.email || "?").charAt(0).toUpperCase()}
+                      </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
-                      <span className="font-medium">{staff.name}</span>
-                      <span className="text-xs text-muted-foreground">{staff.email}</span>
+                      <span className="font-medium">{staff.user.full_name || "Chưa cập nhật tên"}</span>
+                      <span className="text-xs text-muted-foreground">{staff.user.email}</span>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell>
                   <Badge
-                    variant={roleConfig[staff.role].variant}
+                    variant={roleConfig[staff.user.role]?.variant || "outline"}
                     className={cn(
                       "rounded-md px-2.5 py-0.5 font-medium",
-                      roleConfig[staff.role].className
+                      roleConfig[staff.user.role]?.className || "bg-gray-100 text-gray-600"
                     )}
                   >
-                    {roleConfig[staff.role].label}
+                    {roleConfig[staff.user.role]?.label || staff.user.role}
                   </Badge>
                 </TableCell>
                 <TableCell>
@@ -141,8 +143,8 @@ export function StaffTable({
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Badge variant="outline" className={staff.isActive ? "bg-emerald-500/10 text-emerald-700 border-emerald-500/20 hover:bg-emerald-500/20" : "bg-slate-500/10 text-slate-600 border-slate-500/20 hover:bg-slate-500/20"}>
-                    {staff.isActive ? (
+                  <Badge variant="outline" className={staff.user.is_active ? "bg-emerald-500/10 text-emerald-700 border-emerald-500/20 hover:bg-emerald-500/20" : "bg-slate-500/10 text-slate-600 border-slate-500/20 hover:bg-slate-500/20"}>
+                    {staff.user.is_active ? (
                         <span className="flex items-center gap-1.5">
                             <span className="relative flex h-2 w-2">
                               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>

@@ -28,14 +28,8 @@ class UserUpdate(SQLModel):
     address: str | None = None
     date_of_birth: date | None = None
 
-class InviteStaffRequest(SQLModel):
-    email: str
-    full_name: str
-    phone_number: str
-    role: UserRole
-    skill_ids: list[uuid.UUID] | None = None
-    address: str | None = None
-    date_of_birth: date | None = None
+class UpdateSkillsRequest(SQLModel):
+    skill_ids: list[uuid.UUID]
 
 class UserFilter(SQLModel):
     role: UserRole | None = None

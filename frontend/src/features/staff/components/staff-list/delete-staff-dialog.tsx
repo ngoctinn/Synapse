@@ -33,7 +33,7 @@ export function DeleteStaffDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Bạn có chắc chắn muốn xóa nhân viên này?</AlertDialogTitle>
           <AlertDialogDescription>
-            Hành động này không thể hoàn tác. Tài khoản của nhân viên <strong>{staff.name}</strong> ({staff.email}) sẽ bị xóa vĩnh viễn khỏi hệ thống.
+            Hành động này không thể hoàn tác. Tài khoản của nhân viên <strong>{staff.user.full_name}</strong> ({staff.user.email}) sẽ bị xóa vĩnh viễn khỏi hệ thống.
             <br /><br />
             Lưu ý: Các lịch làm việc đã phân công cho nhân viên này trong tương lai cũng sẽ bị hủy bỏ.
           </AlertDialogDescription>

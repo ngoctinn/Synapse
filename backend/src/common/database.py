@@ -32,7 +32,19 @@ async_session_factory = sessionmaker(
 async def get_db_session(
     token_payload: Annotated[dict, Depends(get_token_payload)]
 ) -> AsyncGenerator[AsyncSession, None]:
-    """Cung cấp DB session với RLS context (request.jwt.claims) đã được inject."""
+    """
+    Cung cấp DB session với RLS context (request.jwt.claims) đã được inject.
+
+    Logic:
+    1. Chuyển role sang 'authenticated' (quyền hạn chế).
+    2. Inject thông tin user vào cấu hình Postgres.
+
+    Args:
+        token_payload (dict): Payload từ JWT token (chứa claims).
+
+    Yields:
+        AsyncSession: Session database an toàn.
+    """
     # Import local để tránh circular dependency (nếu cần thiết trong tương lai)
 
     async with async_session_factory() as session:

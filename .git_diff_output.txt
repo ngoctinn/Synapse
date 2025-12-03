@@ -1,0 +1,952 @@
+diff --git a/backend/src/app/__pycache__/config.cpython-313.pyc b/backend/src/app/__pycache__/config.cpython-313.pyc
+index 37ab2fd..1ef4200 100644
+Binary files a/backend/src/app/__pycache__/config.cpython-313.pyc and b/backend/src/app/__pycache__/config.cpython-313.pyc differ
+diff --git a/backend/src/app/config.py b/backend/src/app/config.py
+index f6072e5..12faf2c 100644
+--- a/backend/src/app/config.py
++++ b/backend/src/app/config.py
+@@ -8,6 +8,7 @@ class Settings(BaseSettings):
+ 
+     # CORS
+     BACKEND_CORS_ORIGINS: list[AnyHttpUrl] = []
++    FRONTEND_URL: str = "http://localhost:3000"
+ 
+     # Database
+     ECHO_SQL: bool = False
+diff --git a/backend/src/modules/staff/schemas.py b/backend/src/modules/staff/schemas.py
+index 4db3c05..ecc078f 100644
+--- a/backend/src/modules/staff/schemas.py
++++ b/backend/src/modules/staff/schemas.py
+@@ -6,7 +6,7 @@ Request/Response giữa Client và Server.
+ """
+ 
+ import uuid
+-from datetime import date
++from datetime import date, datetime
+ from pydantic import BaseModel, EmailStr, Field, ConfigDict, field_validator
+ from typing import Literal
+ 
+@@ -88,7 +88,7 @@ class StaffRead(StaffBase):
+     """Schema trả về thông tin Staff (kèm User và Skills)"""
+     user_id: uuid.UUID
+     hired_at: date
+-    created_at: date
++    created_at: datetime
+ 
+     # Nested relationships
+     user: UserRead
+diff --git a/backend/src/modules/staff/service.py b/backend/src/modules/staff/service.py
+index a7de0e0..76769f2 100644
+--- a/backend/src/modules/staff/service.py
++++ b/backend/src/modules/staff/service.py
+@@ -11,6 +11,7 @@ from datetime import date, datetime, timezone
+ from fastapi import Depends, HTTPException
+ from sqlmodel import select, func
+ from sqlmodel.ext.asyncio.session import AsyncSession
++from sqlalchemy.orm import selectinload
+ 
+ from src.common.database import get_db_session
+ from src.common.supabase_admin import get_supabase_admin
+@@ -59,7 +60,7 @@ class StaffService:
+ 
+         try:
+             # Gọi Supabase để tạo User và gửi email invite
+-            auth_response = await supabase_admin.auth.admin.invite_user_by_email(
++            auth_response = supabase_admin.auth.admin.invite_user_by_email(
+                 email=data.email,
+                 options={
+                     "data": {  # user_metadata
+@@ -108,7 +109,7 @@ class StaffService:
+         # 2. Tạo Staff profile tương ứng
+         # Retry mechanism để chờ Trigger tạo User (nếu là user mới)
+         if 'auth_response' in locals(): # Chỉ retry nếu vừa tạo mới user
+-            retries = 5
++            retries = 20
+             for i in range(retries):
+                 user = await self.session.get(User, user_id)
+                 if user:
+@@ -177,6 +178,8 @@ class StaffService:
+         query = query.offset(offset).limit(limit)
+ 
+         # Execute
++        # Eager load user and skills to avoid MissingGreenlet error
++        query = query.options(selectinload(Staff.user), selectinload(Staff.skills))
+         result = await self.session.exec(query)
+         staff_list = result.all()
+ 
+diff --git a/backend/src/modules/users/constants.py b/backend/src/modules/users/constants.py
+index 5ba763d..1016fda 100644
+--- a/backend/src/modules/users/constants.py
++++ b/backend/src/modules/users/constants.py
+@@ -3,5 +3,6 @@ from enum import StrEnum
+ class UserRole(StrEnum):
+     ADMIN = "admin"
+     MANAGER = "manager"
++    RECEPTIONIST = "receptionist"
+     TECHNICIAN = "technician"
+     CUSTOMER = "customer"
+diff --git a/frontend/src/app/(admin)/layout.tsx b/frontend/src/app/(admin)/layout.tsx
+index 71db2f0..c45da56 100644
+--- a/frontend/src/app/(admin)/layout.tsx
++++ b/frontend/src/app/(admin)/layout.tsx
+@@ -1,6 +1,7 @@
+ import { AdminHeader, AdminSidebar } from "@/features/admin"
+ import { createClient } from "@/shared/lib/supabase/server"
+ import { SidebarInset, SidebarProvider } from "@/shared/ui/sidebar"
++import { cookies } from "next/headers"
+ 
+ export default async function AdminLayout({
+   children,
+@@ -32,8 +33,11 @@ export default async function AdminLayout({
+     }
+   }
+ 
++  const cookieStore = await cookies()
++  const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
++
+   return (
+-    <SidebarProvider>
++    <SidebarProvider defaultOpen={defaultOpen}>
+       <AdminSidebar />
+       <SidebarInset>
+         <AdminHeader user={userProfile} />
+diff --git a/frontend/src/features/staff/actions.ts b/frontend/src/features/staff/actions.ts
+index c821a67..91f9ae0 100644
+--- a/frontend/src/features/staff/actions.ts
++++ b/frontend/src/features/staff/actions.ts
+@@ -2,48 +2,54 @@
+ 
+ import "server-only"
+ 
+-import { Skill } from "@/features/services/types"
++import { fetchWithAuth } from "@/shared/lib/api"
+ import { revalidatePath } from "next/cache"
+-import { MOCK_SKILLS, MOCK_STAFF } from "./data/mock-staff"
++import { Skill } from "../services/types"
+ import { inviteStaffSchema } from "./schemas"
+-import { Staff } from "./types"
++import { StaffListResponse, StaffUpdate } from "./types"
+ 
+-// Mock delay to simulate network request
+-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
++export type ActionState = {
++  success?: boolean
++  error?: string
++  message?: string
++}
+ 
+ export async function getStaffList(
+   page: number = 1,
+   limit: number = 10
+-): Promise<{ data: Staff[]; total: number }> {
+-  await delay(500)
+-
+-  const start = (page - 1) * limit
+-  const end = start + limit
+-  const paginatedData = MOCK_STAFF.slice(start, end)
+-
+-  return {
+-    data: paginatedData,
+-    total: MOCK_STAFF.length
++): Promise<StaffListResponse> {
++  const res = await fetchWithAuth(`/staff?page=${page}&limit=${limit}`, {
++    method: "GET",
++    next: { tags: ["staff"] },
++  })
++
++  if (!res.ok) {
++    throw new Error("Failed to fetch staff list")
+   }
++
++  return res.json()
+ }
+ 
+ export async function getSkills(): Promise<Skill[]> {
+-  await delay(500)
+-  return MOCK_SKILLS
+-}
++  const res = await fetchWithAuth("/services/skills", {
++    method: "GET",
++    next: { tags: ["skills"] },
++  })
+ 
+-export type ActionState = {
+-  success?: boolean
+-  error?: string
+-  message?: string
++  if (!res.ok) {
++    throw new Error("Failed to fetch skills")
++  }
++
++  return res.json()
+ }
+ 
+ export async function inviteStaff(prevState: ActionState, formData: FormData): Promise<ActionState> {
+-  await delay(1000)
+-
+   const rawData = {
+     email: formData.get("email"),
+     role: formData.get("role"),
++    full_name: formData.get("full_name"),
++    title: formData.get("title"),
++    bio: formData.get("bio") || undefined,
+   }
+ 
+   // Validate with Zod
+@@ -56,35 +62,107 @@ export async function inviteStaff(prevState: ActionState, formData: FormData): P
+     }
+   }
+ 
+-  const { email } = validatedFields.data
++  try {
++    const res = await fetchWithAuth("/staff/invite", {
++      method: "POST",
++      headers: {
++        "Content-Type": "application/json",
++      },
++      body: JSON.stringify(validatedFields.data),
++    })
++
++    if (!res.ok) {
++      const errorData = await res.json()
++      return { success: false, error: errorData.detail || "Không thể mời nhân viên" }
++    }
+ 
+-  // Simulate validation or error
+-  if (email === "error@example.com") {
+-    return { success: false, error: "Email này đã tồn tại trong hệ thống" }
++    revalidatePath("/admin/staff")
++    return { success: true, message: "Đã gửi lời mời thành công" }
++  } catch (error) {
++    return { success: false, error: "Lỗi kết nối đến server" }
+   }
+-
+-  revalidatePath("/admin/staff")
+-  return { success: true, message: "Đã gửi lời mời thành công" }
+ }
+ 
+ export async function deleteStaff(staffId: string): Promise<ActionState> {
+-  await delay(800)
++  try {
++    const res = await fetchWithAuth(`/staff/${staffId}`, {
++      method: "DELETE",
++    })
++
++    if (!res.ok) {
++      const errorData = await res.json()
++      return { success: false, error: errorData.detail || "Không thể xóa nhân viên" }
++    }
+ 
+-  // Simulate error
+-  if (staffId === "error-id") {
+-    return { success: false, error: "Không thể xóa nhân viên này" }
++    revalidatePath("/admin/staff")
++    return { success: true, message: "Đã xóa nhân viên thành công" }
++  } catch (error) {
++    return { success: false, error: "Lỗi kết nối đến server" }
+   }
++}
++
++export async function updateStaff(staffId: string, data: StaffUpdate): Promise<ActionState> {
++  try {
++    const res = await fetchWithAuth(`/staff/${staffId}`, {
++      method: "PUT",
++      headers: {
++        "Content-Type": "application/json",
++      },
++      body: JSON.stringify(data),
++    })
++
++    if (!res.ok) {
++      const errorData = await res.json()
++      return { success: false, error: errorData.detail || "Không thể cập nhật thông tin" }
++    }
+ 
+-  revalidatePath("/admin/staff")
+-  return { success: true, message: "Đã xóa nhân viên thành công" }
++    revalidatePath("/admin/staff")
++    return { success: true, message: "Cập nhật thông tin thành công" }
++  } catch (error) {
++    return { success: false, error: "Lỗi kết nối đến server" }
++  }
+ }
+ 
+-export async function updateStaff(staffId: string, data: Partial<Staff>): Promise<ActionState> {
+-  await delay(800)
++export async function updateStaffSkills(staffId: string, skillIds: string[]): Promise<ActionState> {
++  try {
++    const res = await fetchWithAuth(`/staff/${staffId}/skills`, {
++      method: "PUT",
++      headers: {
++        "Content-Type": "application/json",
++      },
++      body: JSON.stringify({ skill_ids: skillIds }),
++    })
++
++    if (!res.ok) {
++      const errorData = await res.json()
++      return { success: false, error: errorData.detail || "Không thể cập nhật kỹ năng" }
++    }
+ 
+-  // In a real app, we would validate 'data' against a schema here
+-  // const validatedData = staffFormSchema.partial().safeParse(data)
++    revalidatePath("/admin/staff")
++    return { success: true, message: "Cập nhật kỹ năng thành công" }
++  } catch (error) {
++    return { success: false, error: "Lỗi kết nối đến server" }
++  }
++}
+ 
+-  revalidatePath("/admin/staff")
+-  return { success: true, message: "Cập nhật thông tin thành công" }
++export async function updateUser(userId: string, data: { full_name?: string; phone_number?: string }): Promise<ActionState> {
++  try {
++    const res = await fetchWithAuth(`/users/${userId}`, {
++      method: "PUT",
++      headers: {
++        "Content-Type": "application/json",
++      },
++      body: JSON.stringify(data),
++    })
++
++    if (!res.ok) {
++      const errorData = await res.json()
++      return { success: false, error: errorData.detail || "Không thể cập nhật thông tin người dùng" }
++    }
++
++    revalidatePath("/admin/staff")
++    return { success: true, message: "Cập nhật thông tin thành công" }
++  } catch (error) {
++    return { success: false, error: "Lỗi kết nối đến server" }
++  }
+ }
+diff --git a/frontend/src/features/staff/components/invite-staff-modal.tsx b/frontend/src/features/staff/components/invite-staff-modal.tsx
+index e82c56b..70bceac 100644
+--- a/frontend/src/features/staff/components/invite-staff-modal.tsx
++++ b/frontend/src/features/staff/components/invite-staff-modal.tsx
+@@ -8,41 +8,41 @@ import { useActionState, useState } from "react"
+ import { useForm } from "react-hook-form"
+ import * as z from "zod"
+ 
++import { Skill } from "@/features/services/types"
+ import { Button } from "@/shared/ui/button"
+ import { showToast } from "@/shared/ui/custom/sonner"
+ import {
+-    Dialog,
+-    DialogContent,
+-    DialogDescription,
+-    DialogFooter,
+-    DialogHeader,
+-    DialogTitle,
+-    DialogTrigger,
++  Dialog,
++  DialogContent,
++  DialogDescription,
++  DialogFooter,
++  DialogHeader,
++  DialogTitle,
++  DialogTrigger,
+ } from "@/shared/ui/dialog"
+ import {
+-    Form,
+-    FormControl,
+-    FormField,
+-    FormItem,
+-    FormLabel,
+-    FormMessage,
++  Form,
++  FormControl,
++  FormField,
++  FormItem,
++  FormLabel,
++  FormMessage,
+ } from "@/shared/ui/form"
+ import { Input } from "@/shared/ui/input"
+ import {
+-    Select,
+-    SelectContent,
+-    SelectItem,
+-    SelectTrigger,
+-    SelectValue,
++  Select,
++  SelectContent,
++  SelectItem,
++  SelectTrigger,
++  SelectValue,
+ } from "@/shared/ui/select"
+ import { SkillSelector } from "./skill-selector"
+-import { Skill } from "@/features/services/types"
+ 
+ const inviteStaffSchema = z.object({
+   email: z.string().email("Email không hợp lệ"),
+-  fullName: z.string().min(2, "Tên phải có ít nhất 2 ký tự"),
+-  phone: z.string().min(10, "Số điện thoại không hợp lệ"),
+-  role: z.enum(["ADMIN", "RECEPTIONIST", "TECHNICIAN"]),
++  full_name: z.string().min(2, "Tên phải có ít nhất 2 ký tự"),
++  title: z.string().min(2, "Chức danh không được để trống"),
++  role: z.enum(["admin", "manager", "receptionist", "technician"]),
+ })
+ 
+ type InviteStaffFormValues = z.infer<typeof inviteStaffSchema>
+@@ -66,9 +66,9 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
+     resolver: zodResolver(inviteStaffSchema),
+     defaultValues: {
+       email: "",
+-      fullName: "",
+-      phone: "",
+-      role: "TECHNICIAN",
++      full_name: "",
++      title: "",
++      role: "technician",
+     },
+   })
+ 
+@@ -86,12 +86,12 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
+   function onSubmit(data: InviteStaffFormValues) {
+     const formData = new FormData()
+     formData.append("email", data.email)
+-    formData.append("fullName", data.fullName)
+-    formData.append("phone", data.phone)
++    formData.append("full_name", data.full_name)
++    formData.append("title", data.title)
+     formData.append("role", data.role)
+ 
+     // Append skills if role is Technician
+-    if (data.role === "TECHNICIAN" && selectedSkills.length > 0) {
++    if (data.role === "technician" && selectedSkills.length > 0) {
+         formData.append("skill_ids", JSON.stringify(selectedSkills))
+     }
+ 
+@@ -132,7 +132,7 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
+             />
+             <FormField
+               control={form.control}
+-              name="fullName"
++              name="full_name"
+               render={({ field }) => (
+                 <FormItem>
+                   <FormLabel>Họ và tên</FormLabel>
+@@ -145,12 +145,12 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
+             />
+             <FormField
+               control={form.control}
+-              name="phone"
++              name="title"
+               render={({ field }) => (
+                 <FormItem>
+-                  <FormLabel>Số điện thoại</FormLabel>
++                  <FormLabel>Chức danh</FormLabel>
+                   <FormControl>
+-                    <Input placeholder="0901234567" {...field} />
++                    <Input placeholder="Ví dụ: Chuyên viên da liễu" {...field} />
+                   </FormControl>
+                   <FormMessage />
+                 </FormItem>
+@@ -169,9 +169,10 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
+                       </SelectTrigger>
+                     </FormControl>
+                     <SelectContent>
+-                      <SelectItem value="ADMIN">Quản lý</SelectItem>
+-                      <SelectItem value="RECEPTIONIST">Lễ tân</SelectItem>
+-                      <SelectItem value="TECHNICIAN">Kỹ thuật viên</SelectItem>
++                      <SelectItem value="admin">Quản trị viên</SelectItem>
++                      <SelectItem value="manager">Quản lý</SelectItem>
++                      <SelectItem value="receptionist">Lễ tân</SelectItem>
++                      <SelectItem value="technician">Kỹ thuật viên</SelectItem>
+                     </SelectContent>
+                   </Select>
+                   <FormMessage />
+@@ -179,7 +180,7 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
+               )}
+             />
+ 
+-            {form.watch("role") === "TECHNICIAN" && (
++            {form.watch("role") === "technician" && (
+               <div className="space-y-2">
+                 <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                   Kỹ năng (Tùy chọn)
+diff --git a/frontend/src/features/staff/components/staff-filter.tsx b/frontend/src/features/staff/components/staff-filter.tsx
+index 37be5dd..0ea4c81 100644
+--- a/frontend/src/features/staff/components/staff-filter.tsx
++++ b/frontend/src/features/staff/components/staff-filter.tsx
+@@ -1,15 +1,15 @@
+ "use client"
+ 
++import { useFilterParams } from "@/shared/lib/hooks/use-filter-params"
+ import { FilterButton } from "@/shared/ui/custom/filter-button"
+ import { Label } from "@/shared/ui/label"
+ import {
+-  Select,
+-  SelectContent,
+-  SelectItem,
+-  SelectTrigger,
+-  SelectValue,
++    Select,
++    SelectContent,
++    SelectItem,
++    SelectTrigger,
++    SelectValue,
+ } from "@/shared/ui/select"
+-import { useFilterParams } from "@/shared/lib/hooks/use-filter-params"
+ import { CheckCircle2, Stethoscope, UserCog, XCircle } from "lucide-react"
+ 
+ export function StaffFilter() {
+@@ -48,10 +48,16 @@ export function StaffFilter() {
+             </SelectTrigger>
+             <SelectContent>
+               <SelectItem value="all">Tất cả</SelectItem>
+-              <SelectItem value="manager">
++              <SelectItem value="admin">
++                <div className="flex items-center gap-2">
++                  <UserCog className="h-4 w-4 text-muted-foreground" />
++                  <span>Quản trị viên</span>
++                </div>
++              </SelectItem>
++              <SelectItem value="receptionist">
+                 <div className="flex items-center gap-2">
+                   <UserCog className="h-4 w-4 text-muted-foreground" />
+-                  <span>Quản lý</span>
++                  <span>Lễ tân</span>
+                 </div>
+               </SelectItem>
+               <SelectItem value="technician">
+diff --git a/frontend/src/features/staff/components/staff-list/delete-staff-dialog.tsx b/frontend/src/features/staff/components/staff-list/delete-staff-dialog.tsx
+index 7bf2d1f..6a525d8 100644
+--- a/frontend/src/features/staff/components/staff-list/delete-staff-dialog.tsx
++++ b/frontend/src/features/staff/components/staff-list/delete-staff-dialog.tsx
+@@ -33,7 +33,7 @@ export function DeleteStaffDialog({
+         <AlertDialogHeader>
+           <AlertDialogTitle>Bạn có chắc chắn muốn xóa nhân viên này?</AlertDialogTitle>
+           <AlertDialogDescription>
+-            Hành động này không thể hoàn tác. Tài khoản của nhân viên <strong>{staff.name}</strong> ({staff.email}) sẽ bị xóa vĩnh viễn khỏi hệ thống.
++            Hành động này không thể hoàn tác. Tài khoản của nhân viên <strong>{staff.user.full_name}</strong> ({staff.user.email}) sẽ bị xóa vĩnh viễn khỏi hệ thống.
+             <br /><br />
+             Lưu ý: Các lịch làm việc đã phân công cho nhân viên này trong tương lai cũng sẽ bị hủy bỏ.
+           </AlertDialogDescription>
+diff --git a/frontend/src/features/staff/components/staff-list/edit-staff-modal.tsx b/frontend/src/features/staff/components/staff-list/edit-staff-modal.tsx
+index f291c6a..bde083f 100644
+--- a/frontend/src/features/staff/components/staff-list/edit-staff-modal.tsx
++++ b/frontend/src/features/staff/components/staff-list/edit-staff-modal.tsx
+@@ -1,9 +1,8 @@
+ "use client"
+ 
+-import { updateStaff } from "@/features/staff/actions"
++import { updateStaffSkills, updateUser } from "@/features/staff/actions"
+ import { zodResolver } from "@hookform/resolvers/zod"
+ import { Loader2 } from "lucide-react"
+-import * as React from "react"
+ import { useEffect, useState } from "react"
+ import { useForm } from "react-hook-form"
+ import * as z from "zod"
+@@ -40,8 +39,8 @@ import { SkillSelector } from "../skill-selector"
+ 
+ const editStaffSchema = z.object({
+   fullName: z.string().min(2, "Tên phải có ít nhất 2 ký tự"),
+-  phone: z.string().min(10, "Số điện thoại không hợp lệ"),
+-  role: z.enum(["ADMIN", "RECEPTIONIST", "TECHNICIAN"]),
++  phone: z.string().min(10, "Số điện thoại không hợp lệ").optional().or(z.literal("")),
++  role: z.enum(["admin", "receptionist", "technician"]),
+ })
+ 
+ type EditStaffFormValues = z.infer<typeof editStaffSchema>
+@@ -59,9 +58,9 @@ export function EditStaffModal({ staff, skills, open, onOpenChange }: EditStaffM
+   const form = useForm<EditStaffFormValues>({
+     resolver: zodResolver(editStaffSchema),
+     defaultValues: {
+-      fullName: staff.name,
+-      phone: staff.phone || "",
+-      role: staff.role,
++      fullName: staff.user.full_name || "",
++      phone: staff.user.phone_number || "",
++      role: staff.user.role as "admin" | "receptionist" | "technician",
+     },
+   })
+ 
+@@ -69,70 +68,39 @@ export function EditStaffModal({ staff, skills, open, onOpenChange }: EditStaffM
+   useEffect(() => {
+     if (open) {
+       form.reset({
+-        fullName: staff.name,
+-        phone: staff.phone || "",
+-        role: staff.role,
++        fullName: staff.user.full_name || "",
++        phone: staff.user.phone_number || "",
++        role: staff.user.role as "admin" | "receptionist" | "technician",
+       })
+       setSelectedSkills(staff.skills.map(s => s.id))
+     }
+   }, [open, staff, form])
+ 
+-
+-
+-  function onSubmit(data: EditStaffFormValues) {
+-    const formData = new FormData()
+-    formData.append("id", staff.id)
+-    formData.append("fullName", data.fullName)
+-    formData.append("phone", data.phone)
+-    formData.append("role", data.role)
+-
+-    if (data.role === "TECHNICIAN") {
+-        formData.append("skill_ids", JSON.stringify(selectedSkills))
+-    }
+-
+-    React.startTransition(() => {
+-      // We need to wrap dispatch because updateStaff signature in actions.ts might be different
+-      // Let's check updateStaff signature. It is (staffId: string, data: Partial<Staff>) -> Promise<ActionState>
+-      // But useActionState expects (state, payload) -> state.
+-      // So we need to adapt it or create a new action wrapper.
+-      // For now, let's assume updateStaff is compatible or we fix it.
+-      // Actually, looking at actions.ts: export async function updateStaff(staffId: string, data: Partial<Staff>)
+-      // This is NOT compatible with useActionState directly if we want to use FormData.
+-      // I should create a specific action for this form or adapt.
+-      // I'll create a wrapper here or use client-side call.
+-
+-      // Since updateStaff is defined as (staffId, data), I should call it directly, not via dispatch if it's not a form action.
+-      // But I want to use useActionState for loading state?
+-      // No, useActionState is for form actions.
+-      // I'll just call it directly.
+-    })
+-  }
+-
+-  // Re-implementing onSubmit to call updateStaff directly
+   async function handleDirectSubmit(data: EditStaffFormValues) {
+       try {
+-        const updateData: any = {
+-            name: data.fullName,
+-            phone: data.phone,
+-            role: data.role,
+-        }
+-        if (data.role === "TECHNICIAN") {
+-            // We need to pass skill IDs. But Staff type has skills: Skill[].
+-            // The backend update endpoint expects skill_ids.
+-            // The frontend updateStaff action takes Partial<Staff>.
+-            // If I pass skill_ids, it might not match Staff type.
+-            // I need to check updateStaff implementation.
+-            // It just sends JSON. So I can cast it.
+-            updateData.skill_ids = selectedSkills
++        // 1. Update User Info (Name, Phone)
++        const userUpdateResult = await updateUser(staff.user_id, {
++            full_name: data.fullName,
++            phone_number: data.phone || undefined,
++        })
++
++        if (!userUpdateResult.success) {
++            showToast.error("Lỗi cập nhật thông tin", userUpdateResult.error)
++            return
+         }
+ 
+-        const result = await updateStaff(staff.id, updateData)
+-        if (result.success) {
+-            showToast.success("Thành công", result.message)
+-            onOpenChange(false)
+-        } else {
+-            showToast.error("Lỗi", result.error)
++        // 2. Update Skills (if Technician)
++        if (data.role === "technician") {
++            const skillUpdateResult = await updateStaffSkills(staff.user_id, selectedSkills)
++            if (!skillUpdateResult.success) {
++                showToast.error("Lỗi cập nhật kỹ năng", skillUpdateResult.error)
++                return
++            }
+         }
++
++        showToast.success("Thành công", "Đã cập nhật hồ sơ nhân viên")
++        onOpenChange(false)
++
+       } catch (error) {
+           showToast.error("Lỗi", "Đã có lỗi xảy ra")
+       }
+@@ -181,16 +149,20 @@ export function EditStaffModal({ staff, skills, open, onOpenChange }: EditStaffM
+               render={({ field }) => (
+                 <FormItem>
+                   <FormLabel>Vai trò</FormLabel>
+-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
++                  <Select
++                    onValueChange={field.onChange}
++                    defaultValue={field.value}
++                    disabled={true} // Disable role editing for now
++                  >
+                     <FormControl>
+                       <SelectTrigger>
+                         <SelectValue placeholder="Chọn vai trò" />
+                       </SelectTrigger>
+                     </FormControl>
+                     <SelectContent>
+-                      <SelectItem value="ADMIN">Quản lý</SelectItem>
+-                      <SelectItem value="RECEPTIONIST">Lễ tân</SelectItem>
+-                      <SelectItem value="TECHNICIAN">Kỹ thuật viên</SelectItem>
++                      <SelectItem value="admin">Quản trị viên</SelectItem>
++                      <SelectItem value="receptionist">Lễ tân</SelectItem>
++                      <SelectItem value="technician">Kỹ thuật viên</SelectItem>
+                     </SelectContent>
+                   </Select>
+                   <FormMessage />
+@@ -198,7 +170,7 @@ export function EditStaffModal({ staff, skills, open, onOpenChange }: EditStaffM
+               )}
+             />
+ 
+-            {form.watch("role") === "TECHNICIAN" && (
++            {form.watch("role") === "technician" && (
+               <div className="space-y-2">
+                 <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                   Kỹ năng
+diff --git a/frontend/src/features/staff/components/staff-list/staff-actions.tsx b/frontend/src/features/staff/components/staff-list/staff-actions.tsx
+index 2989abd..99c70d8 100644
+--- a/frontend/src/features/staff/components/staff-list/staff-actions.tsx
++++ b/frontend/src/features/staff/components/staff-list/staff-actions.tsx
+@@ -29,7 +29,7 @@ export function StaffActions({ staff, skills }: StaffActionsProps) {
+ 
+   const handleDelete = () => {
+     startTransition(async () => {
+-      const result = await deleteStaff(staff.id)
++      const result = await deleteStaff(staff.user_id)
+       if (result.success) {
+         setShowDeleteDialog(false)
+         showToast.success("Thành công", result.message)
+diff --git a/frontend/src/features/staff/components/staff-list/staff-table.tsx b/frontend/src/features/staff/components/staff-list/staff-table.tsx
+index b468fdf..9255d60 100644
+--- a/frontend/src/features/staff/components/staff-list/staff-table.tsx
++++ b/frontend/src/features/staff/components/staff-list/staff-table.tsx
+@@ -83,28 +83,30 @@ export function StaffTable({
+           </TableHeader>
+           <TableBody>
+             {data.map((staff, index) => (
+-              <AnimatedTableRow key={staff.id} index={index}>
++              <AnimatedTableRow key={staff.user_id} index={index}>
+                 <TableCell className="pl-6">
+                   <div className="flex items-center gap-3">
+                     <Avatar className="h-9 w-9 border">
+-                      <AvatarImage src={staff.avatarUrl} alt={staff.name} />
+-                      <AvatarFallback className="bg-primary/10 text-primary font-medium">{staff.name.charAt(0)}</AvatarFallback>
++                      <AvatarImage src={staff.user.avatar_url || undefined} alt={staff.user.full_name || ""} />
++                      <AvatarFallback className="bg-primary/10 text-primary font-medium">
++                        {(staff.user.full_name || staff.user.email || "?").charAt(0).toUpperCase()}
++                      </AvatarFallback>
+                     </Avatar>
+                     <div className="flex flex-col">
+-                      <span className="font-medium">{staff.name}</span>
+-                      <span className="text-xs text-muted-foreground">{staff.email}</span>
++                      <span className="font-medium">{staff.user.full_name || "Chưa cập nhật tên"}</span>
++                      <span className="text-xs text-muted-foreground">{staff.user.email}</span>
+                     </div>
+                   </div>
+                 </TableCell>
+                 <TableCell>
+                   <Badge
+-                    variant={roleConfig[staff.role].variant}
++                    variant={roleConfig[staff.user.role].variant}
+                     className={cn(
+                       "rounded-md px-2.5 py-0.5 font-medium",
+-                      roleConfig[staff.role].className
++                      roleConfig[staff.user.role].className
+                     )}
+                   >
+-                    {roleConfig[staff.role].label}
++                    {roleConfig[staff.user.role].label}
+                   </Badge>
+                 </TableCell>
+                 <TableCell>
+@@ -141,8 +143,8 @@ export function StaffTable({
+                   </div>
+                 </TableCell>
+                 <TableCell>
+-                  <Badge variant="outline" className={staff.isActive ? "bg-emerald-500/10 text-emerald-700 border-emerald-500/20 hover:bg-emerald-500/20" : "bg-slate-500/10 text-slate-600 border-slate-500/20 hover:bg-slate-500/20"}>
+-                    {staff.isActive ? (
++                  <Badge variant="outline" className={staff.user.is_active ? "bg-emerald-500/10 text-emerald-700 border-emerald-500/20 hover:bg-emerald-500/20" : "bg-slate-500/10 text-slate-600 border-slate-500/20 hover:bg-slate-500/20"}>
++                    {staff.user.is_active ? (
+                         <span className="flex items-center gap-1.5">
+                             <span className="relative flex h-2 w-2">
+                               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+diff --git a/frontend/src/features/staff/constants.ts b/frontend/src/features/staff/constants.ts
+index 9648028..2e6dba7 100644
+--- a/frontend/src/features/staff/constants.ts
++++ b/frontend/src/features/staff/constants.ts
+@@ -1,21 +1,31 @@
+ import { Role } from "./types";
+ 
+ export const ROLE_CONFIG: Record<Role, { label: string; variant: "default" | "secondary" | "destructive" | "outline"; className?: string }> = {
+-  ADMIN: {
++  admin: {
+     label: "Quản trị viên",
+     variant: "outline",
+     className: "bg-purple-500/10 text-purple-700 border-purple-200 hover:bg-purple-500/20"
+   },
+-  RECEPTIONIST: {
++  manager: {
++    label: "Quản lý",
++    variant: "outline",
++    className: "bg-indigo-500/10 text-indigo-700 border-indigo-200 hover:bg-indigo-500/20"
++  },
++  receptionist: {
+     label: "Lễ tân",
+     variant: "outline",
+     className: "bg-blue-500/10 text-blue-700 border-blue-200 hover:bg-blue-500/20"
+   },
+-  TECHNICIAN: {
++  technician: {
+     label: "Kỹ thuật viên",
+     variant: "outline",
+     className: "bg-orange-500/10 text-orange-700 border-orange-200 hover:bg-orange-500/20"
+   },
++  customer: {
++    label: "Khách hàng",
++    variant: "outline",
++    className: "bg-gray-500/10 text-gray-700 border-gray-200"
++  }
+ }
+ 
+ export const MODULES = [
+@@ -29,7 +39,8 @@ export const MODULES = [
+ ]
+ 
+ export const ROLES = [
+-  { id: "ADMIN", name: "Quản trị viên", variant: "outline", className: "bg-purple-500/10 text-purple-700 border-purple-200" },
+-  { id: "RECEPTIONIST", name: "Lễ tân", variant: "outline", className: "bg-blue-500/10 text-blue-700 border-blue-200" },
+-  { id: "TECHNICIAN", name: "Kỹ thuật viên", variant: "outline", className: "bg-orange-500/10 text-orange-700 border-orange-200" },
++  { id: "admin", name: "Quản trị viên", variant: "outline", className: "bg-purple-500/10 text-purple-700 border-purple-200" },
++  { id: "manager", name: "Quản lý", variant: "outline", className: "bg-indigo-500/10 text-indigo-700 border-indigo-200" },
++  { id: "receptionist", name: "Lễ tân", variant: "outline", className: "bg-blue-500/10 text-blue-700 border-blue-200" },
++  { id: "technician", name: "Kỹ thuật viên", variant: "outline", className: "bg-orange-500/10 text-orange-700 border-orange-200" },
+ ] as const
+diff --git a/frontend/src/features/staff/schemas.ts b/frontend/src/features/staff/schemas.ts
+index 6d53726..13b3e8c 100644
+--- a/frontend/src/features/staff/schemas.ts
++++ b/frontend/src/features/staff/schemas.ts
+@@ -1,22 +1,24 @@
+ import { z } from "zod"
+ 
+ export const staffFormSchema = z.object({
+-  // Account Tab
++  // Account Tab (Read-only mostly)
+   email: z.string().email({ message: "Email không hợp lệ" }),
+-  password: z.string().min(6, { message: "Mật khẩu phải có ít nhất 6 ký tự" }).optional().or(z.literal("")),
+-  role: z.enum(["ADMIN", "RECEPTIONIST", "TECHNICIAN"]),
++  role: z.enum(["admin", "receptionist", "technician"]),
+ 
+   // Profile Tab
+-  // Profile Tab
+-  name: z.string().min(2, { message: "Tên phải có ít nhất 2 ký tự" }),
+-  phone: z.string().regex(/(84|0[3|5|7|8|9])+([0-9]{8})\b/, { message: "Số điện thoại không hợp lệ" }).optional().or(z.literal("")),
+-  address: z.string().optional(),
+-  skills: z.array(z.string()).optional(),
++  full_name: z.string().min(2, { message: "Tên phải có ít nhất 2 ký tự" }),
++  title: z.string().min(2, { message: "Chức danh không được để trống" }),
++  bio: z.string().optional(),
++  color_code: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, { message: "Mã màu không hợp lệ" }).optional(),
++  commission_rate: z.number().min(0).max(100).optional(),
+ })
+ 
+ export type StaffFormValues = z.infer<typeof staffFormSchema>
+ 
+ export const inviteStaffSchema = z.object({
+   email: z.string().email({ message: "Email không hợp lệ" }),
+-  role: z.enum(["ADMIN", "RECEPTIONIST", "TECHNICIAN"]),
++  role: z.enum(["admin", "manager", "receptionist", "technician"]),
++  full_name: z.string().min(2, { message: "Họ tên phải có ít nhất 2 ký tự" }),
++  title: z.string().min(2, { message: "Chức danh không được để trống" }),
++  bio: z.string().optional(),
+ })
+diff --git a/frontend/src/features/staff/types.ts b/frontend/src/features/staff/types.ts
+index bf11995..22dba28 100644
+--- a/frontend/src/features/staff/types.ts
++++ b/frontend/src/features/staff/types.ts
+@@ -1,28 +1,62 @@
+ import { Skill } from "../services/types";
+ 
+-export type Role = 'ADMIN' | 'RECEPTIONIST' | 'TECHNICIAN';
++export type Role = 'admin' | 'manager' | 'receptionist' | 'technician' | 'customer';
+ 
+-export interface Staff {
++export interface User {
+   id: string;
+-  name: string;
+   email: string;
++  full_name: string | null;
++  avatar_url: string | null;
++  phone_number: string | null;
+   role: Role;
+-  avatarUrl?: string;
+-  skills: Skill[]; // e.g., [{id: '...', name: 'Facial'}]
+-  isActive: boolean;
+-  phone?: string;
+-  address?: string;
+-  serviceIds?: string[]; // Maps to Service IDs for quick lookup
++  is_active: boolean;
++}
++
++export interface Staff {
++  user_id: string;
++  hired_at: string; // Date string
++  created_at: string; // Date string
++  bio: string | null;
++  title: string;
++  color_code: string;
++  commission_rate: number;
++
++  // Nested relationships
++  user: User;
++  skills: Skill[];
+ }
+ 
++export interface StaffInvite {
++  email: string;
++  role: Role;
++  full_name: string;
++  title: string;
++  bio?: string;
++}
++
++export interface StaffUpdate {
++  bio?: string;
++  title?: string;
++  color_code?: string;
++  commission_rate?: number;
++}
++
++export interface StaffListResponse {
++  data: Staff[];
++  total: number;
++  page: number;
++  limit: number;
++}
++
++// Keep existing UI types if needed, or refactor components to use new types
+ export type ShiftType = 'WORK' | 'OFF';
+ 
+ export interface Shift {
+   id: string;
+-  name: string; // e.g., "Ca Sáng", "Nghỉ phép"
+-  color: string; // Hex code
+-  startTime: string; // "08:00"
+-  endTime: string; // "12:00"
++  name: string;
++  color: string;
++  startTime: string;
++  endTime: string;
+   type: ShiftType;
+ }
+ 
+@@ -31,7 +65,7 @@ export type ScheduleStatus = 'PUBLISHED' | 'DRAFT';
+ export interface Schedule {
+   id: string;
+   staffId: string;
+-  date: string; // ISO Date string (YYYY-MM-DD)
++  date: string;
+   shiftId: string;
+   status: ScheduleStatus;
+ }
+@@ -39,12 +73,12 @@ export interface Schedule {
+ export interface Permission {
+   moduleId: string;
+   actions: {
+-    [key: string]: boolean; // e.g., view: true, edit: false
++    [key: string]: boolean;
+   };
+ }
+ 
+ export interface RolePermissions {
+   [role: string]: {
+-    [moduleId: string]: string[]; // List of allowed actions
++    [moduleId: string]: string[];
+   };
+ }

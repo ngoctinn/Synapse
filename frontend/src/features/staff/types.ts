@@ -1,28 +1,62 @@
 import { Skill } from "../services/types";
 
-export type Role = 'ADMIN' | 'RECEPTIONIST' | 'TECHNICIAN';
+export type Role = 'admin' | 'receptionist' | 'technician' | 'customer';
 
-export interface Staff {
+export interface User {
   id: string;
-  name: string;
   email: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  phone_number: string | null;
   role: Role;
-  avatarUrl?: string;
-  skills: Skill[]; // e.g., [{id: '...', name: 'Facial'}]
-  isActive: boolean;
-  phone?: string;
-  address?: string;
-  serviceIds?: string[]; // Maps to Service IDs for quick lookup
+  is_active: boolean;
 }
 
+export interface Staff {
+  user_id: string;
+  hired_at: string; // Date string
+  created_at: string; // Date string
+  bio: string | null;
+  title: string;
+  color_code: string;
+  commission_rate: number;
+
+  // Nested relationships
+  user: User;
+  skills: Skill[];
+}
+
+export interface StaffInvite {
+  email: string;
+  role: Role;
+  full_name: string;
+  title: string;
+  bio?: string;
+}
+
+export interface StaffUpdate {
+  bio?: string;
+  title?: string;
+  color_code?: string;
+  commission_rate?: number;
+}
+
+export interface StaffListResponse {
+  data: Staff[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+// Keep existing UI types if needed, or refactor components to use new types
 export type ShiftType = 'WORK' | 'OFF';
 
 export interface Shift {
   id: string;
-  name: string; // e.g., "Ca Sáng", "Nghỉ phép"
-  color: string; // Hex code
-  startTime: string; // "08:00"
-  endTime: string; // "12:00"
+  name: string;
+  color: string;
+  startTime: string;
+  endTime: string;
   type: ShiftType;
 }
 
@@ -31,7 +65,7 @@ export type ScheduleStatus = 'PUBLISHED' | 'DRAFT';
 export interface Schedule {
   id: string;
   staffId: string;
-  date: string; // ISO Date string (YYYY-MM-DD)
+  date: string;
   shiftId: string;
   status: ScheduleStatus;
 }
@@ -39,12 +73,12 @@ export interface Schedule {
 export interface Permission {
   moduleId: string;
   actions: {
-    [key: string]: boolean; // e.g., view: true, edit: false
+    [key: string]: boolean;
   };
 }
 
 export interface RolePermissions {
   [role: string]: {
-    [moduleId: string]: string[]; // List of allowed actions
+    [moduleId: string]: string[];
   };
 }

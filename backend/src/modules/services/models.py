@@ -2,11 +2,6 @@ import uuid
 from datetime import datetime, timezone
 from sqlalchemy import ForeignKey, DateTime
 from sqlmodel import SQLModel, Field, Relationship
-from typing import TYPE_CHECKING
-from src.modules.users.models import UserSkill
-
-if TYPE_CHECKING:
-    from src.modules.users.models import User
 
 # 1. Bảng Trung gian: Dịch vụ cần Kỹ năng gì
 class ServiceSkill(SQLModel, table=True):
@@ -35,9 +30,14 @@ class Skill(SQLModel, table=True):
 
     # Quan hệ Many-to-Many với Service
     service_links: list[ServiceSkill] = Relationship(back_populates="skill")
-    service_links: list[ServiceSkill] = Relationship(back_populates="skill")
-    services: list["Service"] = Relationship(back_populates="skills", link_model=ServiceSkill)
-    users: list["User"] = Relationship(back_populates="skills", link_model=UserSkill)
+    services: list["Service"] = Relationship(
+        back_populates="skills",
+        link_model=ServiceSkill,
+        sa_relationship_kwargs={"viewonly": True}
+    )
+
+    # NOTE: Relationship với Staff KHÔNG khai báo ở đây
+    # Chỉ khai báo một chiều từ Staff -> Skill để tránh circular import
 
 # 3. Bảng Dịch vụ (Product)
 class Service(SQLModel, table=True):
@@ -56,4 +56,8 @@ class Service(SQLModel, table=True):
 
     # Quan hệ Many-to-Many với Skill
     skill_links: list[ServiceSkill] = Relationship(back_populates="service")
-    skills: list[Skill] = Relationship(back_populates="services", link_model=ServiceSkill)
+    skills: list[Skill] = Relationship(
+        back_populates="services",
+        link_model=ServiceSkill,
+        sa_relationship_kwargs={"viewonly": True}
+    )

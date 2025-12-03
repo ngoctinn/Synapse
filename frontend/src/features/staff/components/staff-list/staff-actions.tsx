@@ -29,7 +29,7 @@ export function StaffActions({ staff, skills }: StaffActionsProps) {
 
   const handleDelete = () => {
     startTransition(async () => {
-      const result = await deleteStaff(staff.id)
+      const result = await deleteStaff(staff.user_id)
       if (result.success) {
         setShowDeleteDialog(false)
         showToast.success("Thành công", result.message)
