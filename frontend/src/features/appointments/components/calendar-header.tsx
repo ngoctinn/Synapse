@@ -1,9 +1,9 @@
 "use client"
 
 import { Button } from "@/shared/ui/button"
-import { ChevronLeft, ChevronRight } from "lucide-react"
 import { format } from "date-fns"
 import { vi } from "date-fns/locale"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 
 interface CalendarHeaderProps {
   currentDate: Date
@@ -12,14 +12,14 @@ interface CalendarHeaderProps {
   onGoToToday: () => void
 }
 
-export function CalendarHeader({ 
-  currentDate, 
-  onNextWeek, 
-  onPrevWeek, 
-  onGoToToday 
+export function CalendarHeader({
+  currentDate,
+  onNextWeek,
+  onPrevWeek,
+  onGoToToday
 }: CalendarHeaderProps) {
   return (
-    <div className="flex items-center justify-between p-4 border-b sticky top-0 z-30 bg-white/80 backdrop-blur-md supports-[backdrop-filter]:bg-white/60">
+    <div className="flex items-center justify-between p-4 border-b bg-white">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
            <Button variant="outline" size="icon" onClick={onPrevWeek} className="h-8 w-8 hover:bg-slate-100 transition-colors">

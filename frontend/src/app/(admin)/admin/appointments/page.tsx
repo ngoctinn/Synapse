@@ -1,22 +1,22 @@
-import { 
-  AppointmentTable, 
-  AppointmentCalendar, 
-  AppointmentViewToggle,
+import {
+  AppointmentCalendar,
   AppointmentDialog,
-  AppointmentViewTransition,
-  AppointmentSidebar,
   AppointmentLayout,
+  AppointmentSidebar,
+  AppointmentTable,
+  AppointmentViewToggle,
+  AppointmentViewTransition,
   getAppointments
 } from "@/features/appointments"
-import { SearchInput } from "@/shared/ui/custom/search-input"
-import { Metadata } from "next"
-import { Suspense } from "react"
-import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
-import { getStaffList } from "@/features/staff"
-import { getServices } from "@/features/services"
+import { MOCK_SERVICES } from "@/features/services/data/mock-services"
+import { MOCK_STAFF } from "@/features/staff/data/mock-staff"
 import { Button } from "@/shared/ui/button"
+import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
+import { SearchInput } from "@/shared/ui/custom/search-input"
 import { Plus } from "lucide-react"
+import { Metadata } from "next"
 import Link from "next/link"
+import { Suspense } from "react"
 
 export const metadata: Metadata = {
   title: "Quản lý lịch hẹn | Synapse",
@@ -26,8 +26,8 @@ export const metadata: Metadata = {
 export default async function AppointmentsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ 
-    page?: string; 
+  searchParams: Promise<{
+    page?: string;
     view?: string;
     status?: string;
     staff_id?: string;
@@ -37,8 +37,8 @@ export default async function AppointmentsPage({
     q?: string; // Search query
   }>
 }) {
-  const { 
-    page: pageParam, 
+  const {
+    page: pageParam,
     view: viewParam,
     status,
     staff_id,
@@ -50,12 +50,10 @@ export default async function AppointmentsPage({
 
   const page = Number(pageParam) || 1
   const view = viewParam === "calendar" ? "calendar" : "list"
-  
+
   // Tải dữ liệu song song (Parallel Fetching)
   const [
     { data: appointments, total },
-    { data: staffList },
-    { data: serviceList }
   ] = await Promise.all([
     getAppointments({
       page,
@@ -65,22 +63,24 @@ export default async function AppointmentsPage({
       date_to,
       q
     }),
-    getStaffList(1, 100), // Lấy danh sách nhân viên để lọc
-    getServices(1, 100, undefined, true) // Lấy danh sách dịch vụ đang hoạt động để lọc
   ])
+
+  // Sử dụng Mock Data cho Staff và Services
+  const staffList = MOCK_STAFF
+  const serviceList = MOCK_SERVICES
 
   return (
     <AppointmentLayout
       sidebar={
-        <AppointmentSidebar 
-          staffList={staffList} 
-          serviceList={serviceList} 
+        <AppointmentSidebar
+          staffList={staffList}
+          serviceList={serviceList}
         />
       }
     >
       <div className="flex flex-col h-full">
         {/* Thanh công cụ phía trên (Toolbar) */}
-        <div className="flex items-center justify-between px-6 py-4 border-b bg-white shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b bg-white shrink-0 relative z-10">
           <div className="flex items-center gap-4 flex-1">
             <SearchInput placeholder="Tìm kiếm lịch hẹn..." className="max-w-xs" />
             <div className="h-6 w-px bg-slate-200 mx-2" />
@@ -101,14 +101,14 @@ export default async function AppointmentsPage({
           <Suspense fallback={<DataTableSkeleton columnCount={6} />}>
             <AppointmentViewTransition view={view}>
               {view === "list" ? (
-                <AppointmentTable 
-                  appointments={appointments} 
-                  page={page} 
-                  totalPages={Math.ceil(total / 10)} 
+                <AppointmentTable
+                  appointments={appointments}
+                  page={page}
+                  totalPages={Math.ceil(total / 10)}
                 />
               ) : (
-                <AppointmentCalendar 
-                  appointments={appointments} 
+                <AppointmentCalendar
+                  appointments={appointments}
                   staffList={staffList}
                 />
               )}
