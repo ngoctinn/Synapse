@@ -6,7 +6,7 @@ Request/Response giữa Client và Server.
 """
 
 import uuid
-from datetime import date
+from datetime import date, datetime
 from pydantic import BaseModel, EmailStr, Field, ConfigDict, field_validator
 from typing import Literal
 
@@ -88,7 +88,7 @@ class StaffRead(StaffBase):
     """Schema trả về thông tin Staff (kèm User và Skills)"""
     user_id: uuid.UUID
     hired_at: date
-    created_at: date
+    created_at: datetime
 
     # Nested relationships
     user: UserRead

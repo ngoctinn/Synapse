@@ -9,8 +9,9 @@ import random
 import asyncio
 from datetime import date, datetime, timezone
 from fastapi import Depends, HTTPException
-from sqlmodel import select, func
+from sqlmodel import select, func, text
 from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from src.common.database import get_db_session
 from src.common.supabase_admin import get_supabase_admin
@@ -59,7 +60,7 @@ class StaffService:
 
         try:
             # Gọi Supabase để tạo User và gửi email invite
-            auth_response = await supabase_admin.auth.admin.invite_user_by_email(
+            auth_response = supabase_admin.auth.admin.invite_user_by_email(
                 email=data.email,
                 options={
                     "data": {  # user_metadata
@@ -105,18 +106,30 @@ class StaffService:
             else:
                 raise StaffOperationError(f"Lỗi khi tạo User: {str(e)}")
 
-        # 2. Tạo Staff profile tương ứng
-        # Retry mechanism để chờ Trigger tạo User (nếu là user mới)
-        if 'auth_response' in locals(): # Chỉ retry nếu vừa tạo mới user
-            retries = 5
-            for i in range(retries):
-                user = await self.session.get(User, user_id)
-                if user:
-                    break
-                await asyncio.sleep(0.5) # Chờ 0.5s
+        # 2. Proactive Sync: Tạo User trong DB local NGAY LẬP TỨC
+        # Switch sang 'service_role' để bypass RLS (vì ta đang insert cho user khác)
+        await self.session.exec(text("SET LOCAL role TO 'service_role';"))
 
-            if not user:
-                 raise StaffOperationError("Lỗi đồng bộ dữ liệu: User không được tạo kịp thời trong Database.")
+        # Không chờ Trigger (để tránh latency/isolation issues)
+        # Sử dụng ON CONFLICT DO UPDATE để an toàn nếu Trigger chạy nhanh hơn
+
+        # Chuẩn bị dữ liệu User
+        new_user = User(
+            id=user_id,
+            email=data.email,
+            full_name=data.full_name,
+            role=data.role,
+            is_active=True,
+            created_at=datetime.now(),
+            updated_at=datetime.now()
+        )
+
+        # Merge vào session (tương đương Upsert)
+        # Lưu ý: merge() sẽ kiểm tra primary key, nếu có rồi thì update, chưa thì insert
+        await self.session.merge(new_user)
+
+        # Flush để đảm bảo User đã nằm trong transaction hiện tại trước khi tạo Staff
+        await self.session.flush()
 
         staff = Staff(
             user_id=user_id,
@@ -124,7 +137,9 @@ class StaffService:
             hired_at=date.today(),
             bio=data.bio or "",
             color_code=self._generate_random_color(),
-            commission_rate=0.0  # Mặc định, admin sẽ cập nhật sau
+            commission_rate=0.0,  # Mặc định, admin sẽ cập nhật sau
+            created_at=datetime.now(),
+            updated_at=datetime.now()
         )
 
         self.session.add(staff)
@@ -155,6 +170,9 @@ class StaffService:
         Returns:
             StaffListResponse: Danh sách staff và metadata.
         """
+        # Switch to service_role để bypass RLS (vì admin cần xem tất cả staff)
+        await self.session.exec(text("SET LOCAL role TO 'service_role';"))
+
         # Build query với JOIN User
         query = (
             select(Staff)
@@ -177,6 +195,9 @@ class StaffService:
         query = query.offset(offset).limit(limit)
 
         # Execute
+        # Eager load user and skills to avoid MissingGreenlet error
+        query = query.options(selectinload(Staff.user), selectinload(Staff.skills))
+
         result = await self.session.exec(query)
         staff_list = result.all()
 

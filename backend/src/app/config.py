@@ -8,6 +8,7 @@ class Settings(BaseSettings):
 
     # CORS
     BACKEND_CORS_ORIGINS: list[AnyHttpUrl] = []
+    FRONTEND_URL: str = "http://localhost:3000"
 
     # Database
     ECHO_SQL: bool = False

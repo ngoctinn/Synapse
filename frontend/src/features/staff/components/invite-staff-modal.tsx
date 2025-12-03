@@ -8,41 +8,41 @@ import { useActionState, useState } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
+import { Skill } from "@/features/services/types"
 import { Button } from "@/shared/ui/button"
 import { showToast } from "@/shared/ui/custom/sonner"
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/shared/ui/dialog"
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form"
 import { Input } from "@/shared/ui/input"
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/shared/ui/select"
 import { SkillSelector } from "./skill-selector"
-import { Skill } from "@/features/services/types"
 
 const inviteStaffSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
-  fullName: z.string().min(2, "Tên phải có ít nhất 2 ký tự"),
-  phone: z.string().min(10, "Số điện thoại không hợp lệ"),
-  role: z.enum(["ADMIN", "RECEPTIONIST", "TECHNICIAN"]),
+  full_name: z.string().min(2, "Tên phải có ít nhất 2 ký tự"),
+  title: z.string().min(2, "Chức danh không được để trống"),
+  role: z.enum(["admin", "receptionist", "technician"]),
 })
 
 type InviteStaffFormValues = z.infer<typeof inviteStaffSchema>
@@ -66,9 +66,9 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
     resolver: zodResolver(inviteStaffSchema),
     defaultValues: {
       email: "",
-      fullName: "",
-      phone: "",
-      role: "TECHNICIAN",
+      full_name: "",
+      title: "",
+      role: "technician",
     },
   })
 
@@ -86,12 +86,12 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
   function onSubmit(data: InviteStaffFormValues) {
     const formData = new FormData()
     formData.append("email", data.email)
-    formData.append("fullName", data.fullName)
-    formData.append("phone", data.phone)
+    formData.append("full_name", data.full_name)
+    formData.append("title", data.title)
     formData.append("role", data.role)
 
     // Append skills if role is Technician
-    if (data.role === "TECHNICIAN" && selectedSkills.length > 0) {
+    if (data.role === "technician" && selectedSkills.length > 0) {
         formData.append("skill_ids", JSON.stringify(selectedSkills))
     }
 
@@ -132,7 +132,7 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
             />
             <FormField
               control={form.control}
-              name="fullName"
+              name="full_name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Họ và tên</FormLabel>
@@ -145,12 +145,12 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
             />
             <FormField
               control={form.control}
-              name="phone"
+              name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Số điện thoại</FormLabel>
+                  <FormLabel>Chức danh</FormLabel>
                   <FormControl>
-                    <Input placeholder="0901234567" {...field} />
+                    <Input placeholder="Ví dụ: Chuyên viên da liễu" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -169,9 +169,9 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="ADMIN">Quản lý</SelectItem>
-                      <SelectItem value="RECEPTIONIST">Lễ tân</SelectItem>
-                      <SelectItem value="TECHNICIAN">Kỹ thuật viên</SelectItem>
+                      <SelectItem value="admin">Quản trị viên</SelectItem>
+                      <SelectItem value="receptionist">Lễ tân</SelectItem>
+                      <SelectItem value="technician">Kỹ thuật viên</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -179,7 +179,7 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
               )}
             />
 
-            {form.watch("role") === "TECHNICIAN" && (
+            {form.watch("role") === "technician" && (
               <div className="space-y-2">
                 <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Kỹ năng (Tùy chọn)

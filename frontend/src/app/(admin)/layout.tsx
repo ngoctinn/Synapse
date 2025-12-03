@@ -1,6 +1,7 @@
 import { AdminHeader, AdminSidebar } from "@/features/admin"
 import { createClient } from "@/shared/lib/supabase/server"
 import { SidebarInset, SidebarProvider } from "@/shared/ui/sidebar"
+import { cookies } from "next/headers"
 
 export default async function AdminLayout({
   children,
@@ -32,8 +33,11 @@ export default async function AdminLayout({
     }
   }
 
+  const cookieStore = await cookies()
+  const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
+
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={defaultOpen}>
       <AdminSidebar />
       <SidebarInset>
         <AdminHeader user={userProfile} />

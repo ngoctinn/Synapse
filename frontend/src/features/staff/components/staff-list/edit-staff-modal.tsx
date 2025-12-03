@@ -1,9 +1,8 @@
 "use client"
 
-import { updateStaff } from "@/features/staff/actions"
+import { updateStaffSkills, updateUser } from "@/features/staff/actions"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
-import * as React from "react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
@@ -40,8 +39,8 @@ import { SkillSelector } from "../skill-selector"
 
 const editStaffSchema = z.object({
   fullName: z.string().min(2, "Tên phải có ít nhất 2 ký tự"),
-  phone: z.string().min(10, "Số điện thoại không hợp lệ"),
-  role: z.enum(["ADMIN", "RECEPTIONIST", "TECHNICIAN"]),
+  phone: z.string().min(10, "Số điện thoại không hợp lệ").optional().or(z.literal("")),
+  role: z.enum(["admin", "receptionist", "technician"]),
 })
 
 type EditStaffFormValues = z.infer<typeof editStaffSchema>
@@ -59,9 +58,9 @@ export function EditStaffModal({ staff, skills, open, onOpenChange }: EditStaffM
   const form = useForm<EditStaffFormValues>({
     resolver: zodResolver(editStaffSchema),
     defaultValues: {
-      fullName: staff.name,
-      phone: staff.phone || "",
-      role: staff.role,
+      fullName: staff.user.full_name || "",
+      phone: staff.user.phone_number || "",
+      role: staff.user.role as "admin" | "receptionist" | "technician",
     },
   })
 
@@ -69,70 +68,39 @@ export function EditStaffModal({ staff, skills, open, onOpenChange }: EditStaffM
   useEffect(() => {
     if (open) {
       form.reset({
-        fullName: staff.name,
-        phone: staff.phone || "",
-        role: staff.role,
+        fullName: staff.user.full_name || "",
+        phone: staff.user.phone_number || "",
+        role: staff.user.role as "admin" | "receptionist" | "technician",
       })
       setSelectedSkills(staff.skills.map(s => s.id))
     }
   }, [open, staff, form])
 
-
-
-  function onSubmit(data: EditStaffFormValues) {
-    const formData = new FormData()
-    formData.append("id", staff.id)
-    formData.append("fullName", data.fullName)
-    formData.append("phone", data.phone)
-    formData.append("role", data.role)
-
-    if (data.role === "TECHNICIAN") {
-        formData.append("skill_ids", JSON.stringify(selectedSkills))
-    }
-
-    React.startTransition(() => {
-      // We need to wrap dispatch because updateStaff signature in actions.ts might be different
-      // Let's check updateStaff signature. It is (staffId: string, data: Partial<Staff>) -> Promise<ActionState>
-      // But useActionState expects (state, payload) -> state.
-      // So we need to adapt it or create a new action wrapper.
-      // For now, let's assume updateStaff is compatible or we fix it.
-      // Actually, looking at actions.ts: export async function updateStaff(staffId: string, data: Partial<Staff>)
-      // This is NOT compatible with useActionState directly if we want to use FormData.
-      // I should create a specific action for this form or adapt.
-      // I'll create a wrapper here or use client-side call.
-
-      // Since updateStaff is defined as (staffId, data), I should call it directly, not via dispatch if it's not a form action.
-      // But I want to use useActionState for loading state?
-      // No, useActionState is for form actions.
-      // I'll just call it directly.
-    })
-  }
-
-  // Re-implementing onSubmit to call updateStaff directly
   async function handleDirectSubmit(data: EditStaffFormValues) {
       try {
-        const updateData: any = {
-            name: data.fullName,
-            phone: data.phone,
-            role: data.role,
-        }
-        if (data.role === "TECHNICIAN") {
-            // We need to pass skill IDs. But Staff type has skills: Skill[].
-            // The backend update endpoint expects skill_ids.
-            // The frontend updateStaff action takes Partial<Staff>.
-            // If I pass skill_ids, it might not match Staff type.
-            // I need to check updateStaff implementation.
-            // It just sends JSON. So I can cast it.
-            updateData.skill_ids = selectedSkills
+        // 1. Update User Info (Name, Phone)
+        const userUpdateResult = await updateUser(staff.user_id, {
+            full_name: data.fullName,
+            phone_number: data.phone || undefined,
+        })
+
+        if (!userUpdateResult.success) {
+            showToast.error("Lỗi cập nhật thông tin", userUpdateResult.error)
+            return
         }
 
-        const result = await updateStaff(staff.id, updateData)
-        if (result.success) {
-            showToast.success("Thành công", result.message)
-            onOpenChange(false)
-        } else {
-            showToast.error("Lỗi", result.error)
+        // 2. Update Skills (if Technician)
+        if (data.role === "technician") {
+            const skillUpdateResult = await updateStaffSkills(staff.user_id, selectedSkills)
+            if (!skillUpdateResult.success) {
+                showToast.error("Lỗi cập nhật kỹ năng", skillUpdateResult.error)
+                return
+            }
         }
+
+        showToast.success("Thành công", "Đã cập nhật hồ sơ nhân viên")
+        onOpenChange(false)
+
       } catch (error) {
           showToast.error("Lỗi", "Đã có lỗi xảy ra")
       }
@@ -181,16 +149,20 @@ export function EditStaffModal({ staff, skills, open, onOpenChange }: EditStaffM
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Vai trò</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    disabled={true} // Disable role editing for now
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Chọn vai trò" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="ADMIN">Quản lý</SelectItem>
-                      <SelectItem value="RECEPTIONIST">Lễ tân</SelectItem>
-                      <SelectItem value="TECHNICIAN">Kỹ thuật viên</SelectItem>
+                      <SelectItem value="admin">Quản trị viên</SelectItem>
+                      <SelectItem value="receptionist">Lễ tân</SelectItem>
+                      <SelectItem value="technician">Kỹ thuật viên</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -198,7 +170,7 @@ export function EditStaffModal({ staff, skills, open, onOpenChange }: EditStaffM
               )}
             />
 
-            {form.watch("role") === "TECHNICIAN" && (
+            {form.watch("role") === "technician" && (
               <div className="space-y-2">
                 <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Kỹ năng
