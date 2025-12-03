@@ -1,6 +1,6 @@
-import { CreateServiceDialog, getServices, getSkills, ServiceTable, ServiceTableSkeleton } from "@/features/services";
+import { CreateServiceDialog, getServices, getSkills, ServiceFilter, ServiceTable, ServiceTableSkeleton } from "@/features/services";
 import { SearchInput } from "@/shared/ui/custom/search-input"
-import { FilterButton } from "@/shared/ui/custom/filter-button";
+
 import { Metadata } from "next";
 import { Suspense } from "react";
 
@@ -35,6 +35,11 @@ async function CreateServiceWrapper() {
   return <CreateServiceDialog availableSkills={skills.data} />;
 }
 
+async function ServiceFilterWrapper() {
+    const skills = await getSkills();
+    return <ServiceFilter availableSkills={skills.data} />;
+}
+
 export default async function ServicesPage({
   searchParams,
 }: {
@@ -48,7 +53,9 @@ export default async function ServicesPage({
       <div className="flex items-center justify-between px-4 py-3 border-b shrink-0 bg-white">
         <div className="flex items-center gap-2 flex-1">
           <SearchInput placeholder="Tìm kiếm dịch vụ..." />
-          <FilterButton />
+          <Suspense>
+             <ServiceFilterWrapper />
+          </Suspense>
         </div>
         <Suspense fallback={<div className="h-9 w-32 bg-slate-100 rounded animate-pulse" />}>
             <CreateServiceWrapper />

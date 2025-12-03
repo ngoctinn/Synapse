@@ -4,4 +4,5 @@ export { CreateSkillDialog } from "./components/create-skill-dialog";
 export { ServiceTable, ServiceTableSkeleton } from "./components/service-table";
 export { SkillTable, SkillTableSkeleton } from "./components/skill-table";
 export * from "./types";
+export { ServiceFilter } from "./components/service-filter";
 

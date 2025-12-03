@@ -1,9 +1,14 @@
-import { AppointmentTable } from "@/features/appointments"
+import { AppointmentFilter, AppointmentTable } from "@/features/appointments"
 import { SearchInput } from "@/shared/ui/custom/search-input"
-import { FilterButton } from "@/shared/ui/custom/filter-button"
 import { Metadata } from "next"
 import { Suspense } from "react"
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
+import { getStaffList } from "@/features/staff"
+
+async function AppointmentFilterWrapper() {
+  const { data: staffList } = await getStaffList(1, 100) // Fetch all staff for filter
+  return <AppointmentFilter staffList={staffList} />
+}
 
 export const metadata: Metadata = {
   title: "Quản lý lịch hẹn | Synapse",
@@ -23,7 +28,9 @@ export default async function AppointmentsPage({
       <div className="flex items-center justify-between px-4 py-3 border-b shrink-0 bg-white">
         <div className="flex items-center gap-2 flex-1">
           <SearchInput placeholder="Tìm kiếm lịch hẹn..." />
-          <FilterButton />
+          <Suspense>
+            <AppointmentFilterWrapper />
+          </Suspense>
         </div>
         {/* Add Create Appointment Button here later */}
       </div>

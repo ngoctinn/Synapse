@@ -1,6 +1,6 @@
-import { getSkills, getStaffList, InviteStaffModal, StaffTable, StaffTableSkeleton } from "@/features/staff"
+import { getSkills, getStaffList, InviteStaffModal, StaffFilter, StaffTable, StaffTableSkeleton } from "@/features/staff"
 import { SearchInput } from "@/shared/ui/custom/search-input"
-import { FilterButton } from "@/shared/ui/custom/filter-button"
+
 import { Metadata } from "next"
 import { Suspense } from "react"
 
@@ -50,7 +50,7 @@ export default async function Page({
       <div className="flex items-center justify-between px-4 py-3 border-b shrink-0 bg-white">
         <div className="flex items-center gap-2 flex-1">
           <SearchInput placeholder="Tìm kiếm nhân viên..." />
-          <FilterButton />
+          <StaffFilter />
         </div>
         <InviteStaffModal skills={skills} />
       </div>
