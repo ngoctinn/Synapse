@@ -6,24 +6,31 @@ from starlette.concurrency import run_in_threadpool
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.common.database import get_db_session
 from src.modules.users.models import User
-from src.modules.users.models import UserSkill
 from sqlmodel import select, delete, func, or_, col
-from supabase import create_client, Client
-from src.app.config import settings
-from src.modules.users.schemas import UserUpdate, InviteStaffRequest, UserFilter, UserListResponse
+from src.common.supabase_admin import get_supabase_admin
+from src.modules.users.schemas import UserUpdate, UserFilter, UserListResponse
+from src.modules.users.exceptions import UserNotFound, UserOperationError
 
 class UserService:
     def __init__(self, session: Annotated[AsyncSession, Depends(get_db_session)]):
         self.session = session
 
     async def get_profile(self, user_id: uuid.UUID) -> User:
-        """Lấy hồ sơ người dùng."""
+        """
+        Lấy hồ sơ người dùng theo ID.
+
+        Args:
+            user_id (uuid.UUID): ID người dùng.
+
+        Returns:
+            User: Object User tìm thấy.
+
+        Raises:
+            UserNotFound: Nếu không tìm thấy user.
+        """
         user = await self.session.get(User, user_id)
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Người dùng không tồn tại"
-            )
+            raise UserNotFound("Người dùng không tồn tại")
         return user
 
     async def update_profile(self, user: User, user_update: UserUpdate) -> User:
@@ -37,59 +44,7 @@ class UserService:
         await self.session.refresh(user)
         return user
 
-    async def invite_staff(self, invite_data: "InviteStaffRequest") -> User:
-        """Mời nhân viên mới (Supabase Admin API)."""
-        # 1. Init Supabase Admin Client
-        supabase: Client = create_client(
-            settings.SUPABASE_URL,
-            settings.SUPABASE_SERVICE_ROLE_KEY
-        )
 
-        # 2. Prepare Metadata
-        user_metadata = {
-            "full_name": invite_data.full_name,
-            "phone_number": invite_data.phone_number,
-            "role": invite_data.role,
-            "address": invite_data.address,
-            "date_of_birth": str(invite_data.date_of_birth) if invite_data.date_of_birth else None
-        }
-
-        # 3. Call Supabase Invite API
-        try:
-            response = await run_in_threadpool(
-                supabase.auth.admin.invite_user_by_email,
-                email=invite_data.email,
-                options={"data": user_metadata}
-            )
-            user_id = uuid.UUID(response.user.id)
-        except Exception as e:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Lỗi khi gửi lời mời: {str(e)}"
-            )
-
-        # 4. Handle Skills (Technician)
-        if invite_data.role == "technician" and invite_data.skill_ids:
-            for skill_id in invite_data.skill_ids:
-                user_skill = UserSkill(user_id=user_id, skill_id=skill_id)
-                self.session.add(user_skill)
-            await self.session.commit()
-
-        # 5. Return User (Query DB with fallback)
-        user = await self.session.get(User, user_id)
-        if not user:
-             # Fallback: Return temp object if trigger hasn't finished
-             return User(
-                 id=user_id,
-                 email=invite_data.email,
-                 full_name=invite_data.full_name,
-                 role=invite_data.role,
-                 phone_number=invite_data.phone_number,
-                 avatar_url=None,
-                 created_at=datetime.now(timezone.utc),
-                 updated_at=datetime.now(timezone.utc)
-             )
-        return user
 
     async def get_users(self, filter: UserFilter) -> UserListResponse:
         """Lấy danh sách người dùng (có phân trang & lọc)."""
@@ -140,10 +95,7 @@ class UserService:
         user = await self.get_profile(user_id)
 
         # 1. Delete from Supabase Auth
-        supabase: Client = create_client(
-            settings.SUPABASE_URL,
-            settings.SUPABASE_SERVICE_ROLE_KEY
-        )
+        supabase = get_supabase_admin()
 
         try:
             await run_in_threadpool(
@@ -151,10 +103,7 @@ class UserService:
                 user_id=str(user_id)
             )
         except Exception as e:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Lỗi khi xóa người dùng trên Supabase: {str(e)}"
-            )
+            raise UserOperationError(f"Lỗi khi xóa người dùng trên Supabase: {str(e)}")
 
         # 2. Delete from DB
         await self.session.delete(user)

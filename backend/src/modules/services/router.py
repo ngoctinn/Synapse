@@ -6,6 +6,7 @@ from src.modules.services.schemas import (
     SkillRead, SkillCreate, SkillUpdate
 )
 from src.modules.services.service import ServiceManagementService
+from src.modules.services.skill_service import SkillService
 from src.modules.services.exceptions import ServiceNotFoundError, SkillNotFoundError, SkillAlreadyExistsError
 from src.modules.users import get_current_user, User, UserRole
 
@@ -14,7 +15,7 @@ router = APIRouter(prefix="/services", tags=["services"])
 # --- SKILLS ---
 @router.get("/skills", response_model=list[SkillRead])
 async def list_skills(
-    service: Annotated[ServiceManagementService, Depends(ServiceManagementService)]
+    service: Annotated[SkillService, Depends(SkillService)]
 ):
     """
     Lấy danh sách kỹ năng.
@@ -27,7 +28,7 @@ async def list_skills(
 @router.post("/skills", response_model=SkillRead, status_code=status.HTTP_201_CREATED)
 async def create_skill(
     skill_in: SkillCreate,
-    service: Annotated[ServiceManagementService, Depends(ServiceManagementService)],
+    service: Annotated[SkillService, Depends(SkillService)],
     current_user: Annotated[User, Depends(get_current_user)]
 ):
     """
@@ -51,7 +52,7 @@ async def create_skill(
 async def update_skill(
     skill_id: uuid.UUID,
     skill_in: SkillUpdate,
-    service: Annotated[ServiceManagementService, Depends(ServiceManagementService)],
+    service: Annotated[SkillService, Depends(SkillService)],
     current_user: Annotated[User, Depends(get_current_user)]
 ):
     """
@@ -77,7 +78,7 @@ async def update_skill(
 @router.delete("/skills/{skill_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_skill(
     skill_id: uuid.UUID,
-    service: Annotated[ServiceManagementService, Depends(ServiceManagementService)],
+    service: Annotated[SkillService, Depends(SkillService)],
     current_user: Annotated[User, Depends(get_current_user)]
 ):
     """

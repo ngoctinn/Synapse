@@ -9,53 +9,14 @@ from sqlalchemy.exc import IntegrityError
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.common.database import get_db_session
 from src.modules.services.models import Service, Skill, ServiceSkill
-from src.modules.services.schemas import ServiceCreate, ServiceUpdate, SkillCreate, SkillUpdate
-from src.modules.services.exceptions import ServiceNotFoundError, SkillNotFoundError, SkillAlreadyExistsError
+from src.modules.services.schemas import ServiceCreate, ServiceUpdate
+from src.modules.services.exceptions import ServiceNotFoundError
 
 class ServiceManagementService:
     def __init__(self, session: Annotated[AsyncSession, Depends(get_db_session)]):
         self.session = session
 
-    # --- SKILLS ---
-    async def get_skills(self) -> list[Skill]:
-        result = await self.session.exec(select(Skill))
-        return list(result.all())
 
-    async def create_skill(self, skill_in: SkillCreate) -> Skill:
-        skill = Skill.model_validate(skill_in)
-        self.session.add(skill)
-        try:
-            await self.session.commit()
-            await self.session.refresh(skill)
-            return skill
-        except IntegrityError:
-            await self.session.rollback()
-            raise SkillAlreadyExistsError(f"Kỹ năng với mã '{skill_in.code}' đã tồn tại.")
-
-    async def update_skill(self, skill_id: uuid.UUID, skill_in: SkillUpdate) -> Skill:
-        skill = await self.session.get(Skill, skill_id)
-        if not skill:
-            raise SkillNotFoundError(f"Kỹ năng {skill_id} không tồn tại.")
-
-        update_data = skill_in.model_dump(exclude_unset=True)
-        for key, value in update_data.items():
-            setattr(skill, key, value)
-
-        self.session.add(skill)
-        try:
-            await self.session.commit()
-            await self.session.refresh(skill)
-            return skill
-        except IntegrityError:
-            await self.session.rollback()
-            raise SkillAlreadyExistsError(f"Mã kỹ năng '{skill_in.code}' đã tồn tại.")
-
-    async def delete_skill(self, skill_id: uuid.UUID):
-        skill = await self.session.get(Skill, skill_id)
-        if not skill:
-            raise SkillNotFoundError(f"Kỹ năng {skill_id} không tồn tại.")
-        await self.session.delete(skill)
-        await self.session.commit()
 
     # --- SERVICES ---
     async def get_services(
@@ -65,6 +26,18 @@ class ServiceManagementService:
         search: str | None = None,
         only_active: bool = False
     ) -> tuple[list[Service], int]:
+        """
+        Lấy danh sách dịch vụ (có phân trang & lọc).
+
+        Args:
+            skip (int): Số bản ghi bỏ qua.
+            limit (int): Số bản ghi tối đa.
+            search (str | None): Từ khóa tìm kiếm (tên dịch vụ).
+            only_active (bool): Chỉ lấy dịch vụ đang hoạt động.
+
+        Returns:
+            tuple[list[Service], int]: Danh sách dịch vụ và tổng số bản ghi.
+        """
         query = select(Service).options(
             selectinload(Service.skills)
         )
@@ -95,6 +68,18 @@ class ServiceManagementService:
         return list(services), total_count
 
     async def get_service(self, service_id: uuid.UUID) -> Service:
+        """
+        Lấy chi tiết dịch vụ.
+
+        Args:
+            service_id (uuid.UUID): ID dịch vụ.
+
+        Returns:
+            Service: Dịch vụ tìm thấy.
+
+        Raises:
+            ServiceNotFoundError: Nếu không tìm thấy dịch vụ.
+        """
         query = select(Service).where(Service.id == service_id).options(
             selectinload(Service.skills)
         )
@@ -150,6 +135,15 @@ class ServiceManagementService:
         return skill_ids
 
     async def create_service(self, service_in: ServiceCreate) -> Service:
+        """
+        Tạo dịch vụ mới (kèm Smart Tagging kỹ năng).
+
+        Args:
+            service_in (ServiceCreate): Dữ liệu tạo dịch vụ.
+
+        Returns:
+            Service: Dịch vụ vừa tạo.
+        """
         # 1. Handle Smart Tagging
         final_skill_ids = set(service_in.skill_ids)
         if service_in.new_skills:
@@ -175,6 +169,19 @@ class ServiceManagementService:
         return await self.get_service(service.id)
 
     async def update_service(self, service_id: uuid.UUID, service_in: ServiceUpdate) -> Service:
+        """
+        Cập nhật dịch vụ.
+
+        Args:
+            service_id (uuid.UUID): ID dịch vụ.
+            service_in (ServiceUpdate): Dữ liệu cập nhật.
+
+        Returns:
+            Service: Dịch vụ đã cập nhật.
+
+        Raises:
+            ServiceNotFoundError: Nếu không tìm thấy dịch vụ.
+        """
         # Load service with links
         query = select(Service).where(Service.id == service_id).options(
             selectinload(Service.skill_links)
@@ -223,6 +230,15 @@ class ServiceManagementService:
         return await self.get_service(service.id)
 
     async def delete_service(self, service_id: uuid.UUID):
+        """
+        Xóa (ẩn) dịch vụ.
+
+        Args:
+            service_id (uuid.UUID): ID dịch vụ.
+
+        Raises:
+            ServiceNotFoundError: Nếu không tìm thấy dịch vụ.
+        """
         service = await self.session.get(Service, service_id)
         if not service:
             raise ServiceNotFoundError(f"Dịch vụ {service_id} không tồn tại.")

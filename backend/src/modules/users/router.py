@@ -3,10 +3,10 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException, status
 from src.modules.users.dependencies import get_current_user
 from src.modules.users.models import User
-from src.modules.users.schemas import UserRead, UserUpdate, InviteStaffRequest, UserFilter, UserListResponse
-from src.modules.users.service import UserService
-from pydantic import BaseModel
+from src.modules.users.schemas import UserRead, UserUpdate, UserFilter, UserListResponse, UpdateSkillsRequest
 from src.modules.users.constants import UserRole
+from src.modules.users.exceptions import UserNotFound, UserAlreadyExists, UserOperationError
+from src.modules.users.service import UserService
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -16,6 +16,9 @@ async def read_users_me(
 ):
     """
     Lấy thông tin hồ sơ của người dùng hiện tại.
+
+    - **Permissions**: Authenticated User.
+    - **Output**: Thông tin chi tiết của user đang đăng nhập.
     """
     return current_user
 
@@ -30,27 +33,9 @@ async def update_user_me(
     """
     return await service.update_profile(current_user, user_update)
 
-@router.post("/invite", response_model=UserRead, status_code=status.HTTP_201_CREATED)
-async def invite_staff(
-    invite_request: InviteStaffRequest,
-    current_user: Annotated[User, Depends(get_current_user)],
-    service: Annotated[UserService, Depends(UserService)]
-):
-    """
-    Mời nhân viên mới tham gia hệ thống.
-    Chỉ dành cho Quản lý (Manager).
-    """
-    # Kiểm tra quyền Manager
-    if current_user.role != UserRole.MANAGER:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Bạn không có quyền thực hiện thao tác này"
-        )
 
-    return await service.invite_staff(invite_request)
 
-class UpdateSkillsRequest(BaseModel):
-    skill_ids: list[uuid.UUID]
+
 
 @router.put("/{user_id}/skills", status_code=status.HTTP_200_OK)
 async def update_skills(
@@ -66,7 +51,7 @@ async def update_skills(
 
 @router.get("", response_model=UserListResponse)
 async def get_users(
-    filter: Annotated[UserFilter, Depends()],
+    user_filter: Annotated[UserFilter, Depends()],
     current_user: Annotated[User, Depends(get_current_user)],
     service: Annotated[UserService, Depends(UserService)]
 ):
@@ -79,7 +64,7 @@ async def get_users(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Bạn không có quyền xem danh sách nhân viên"
         )
-    return await service.get_users(filter)
+    return await service.get_users(user_filter)
 
 @router.get("/{user_id}", response_model=UserRead)
 async def get_user_detail(
@@ -95,7 +80,10 @@ async def get_user_detail(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Bạn không có quyền xem thông tin này"
         )
-    return await service.get_profile(user_id)
+    try:
+        return await service.get_profile(user_id)
+    except UserNotFound as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.detail)
 
 @router.put("/{user_id}", response_model=UserRead)
 async def update_user(
@@ -112,7 +100,10 @@ async def update_user(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Bạn không có quyền cập nhật thông tin này"
         )
-    return await service.update_user(user_id, user_update)
+    try:
+        return await service.update_user(user_id, user_update)
+    except UserNotFound as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.detail)
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(
@@ -128,4 +119,9 @@ async def delete_user(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Chỉ Admin mới có quyền xóa nhân viên"
         )
-    await service.delete_user(user_id)
+    try:
+        await service.delete_user(user_id)
+    except UserNotFound as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.detail)
+    except UserOperationError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.detail)
