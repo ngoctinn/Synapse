@@ -168,6 +168,10 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html, body {
+    height: 100%;
+    overflow: hidden; /* Prevent global scrollbar */
+  }
   body {
     @apply bg-background text-foreground text-[16px];
   }
@@ -179,8 +183,8 @@
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -190,12 +194,11 @@
 ::-webkit-scrollbar-thumb {
   background: var(--border);
   border-radius: 10px;
-  border: 2px solid transparent;
   background-clip: content-box;
+  transition: background 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--muted-foreground);
-  border: 2px solid transparent;
-  background-clip: content-box;
 }
+
