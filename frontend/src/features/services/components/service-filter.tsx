@@ -14,28 +14,44 @@ import {
 } from "@/shared/ui/select"
 import { useFilterParams } from "@/shared/lib/hooks/use-filter-params"
 import { Slider } from "@/shared/ui/slider"
+import { useEffect, useState } from "react"
 
 interface ServiceFilterProps {
   availableSkills: Skill[]
 }
 
 export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
-  const { searchParams, activeCount, updateParam, clearFilters } =
+  const { searchParams, activeCount, updateParam, updateParams, clearFilters } =
     useFilterParams({
       filterKeys: ["min_price", "max_price", "duration", "skill_ids"],
     })
 
   // Lấy giá trị hiện tại
   const minPrice = Number(searchParams.get("min_price")) || 0
-  const maxPrice = Number(searchParams.get("max_price")) || 10000000 // Mặc định max 10tr nếu chưa chọn
+  const maxPrice = Number(searchParams.get("max_price")) || 10000000
   const duration = searchParams.get("duration")
   const skillIds =
     searchParams.get("skill_ids")?.split(",").filter(Boolean) || []
 
-  // Xử lý thay đổi slider giá
+  // Local state cho slider để mượt mà khi kéo
+  const [localPriceRange, setLocalPriceRange] = useState([minPrice, maxPrice])
+
+  // Đồng bộ local state khi URL params thay đổi
+  useEffect(() => {
+    setLocalPriceRange([minPrice, maxPrice])
+  }, [minPrice, maxPrice])
+
+  // Xử lý khi kéo slider (chỉ update UI local)
   const handlePriceRangeChange = (value: number[]) => {
-    updateParam("min_price", value[0] > 0 ? value[0].toString() : null)
-    updateParam("max_price", value[1] < 10000000 ? value[1].toString() : null)
+    setLocalPriceRange(value)
+  }
+
+  // Xử lý khi thả chuột (update URL)
+  const handlePriceRangeCommit = (value: number[]) => {
+    updateParams({
+      min_price: value[0] > 0 ? value[0].toString() : null,
+      max_price: value[1] < 10000000 ? value[1].toString() : null,
+    })
   }
 
   // Xử lý thay đổi input giá min
@@ -77,11 +93,12 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
           </div>
           <Slider
             defaultValue={[0, 10000000]}
-            value={[minPrice, maxPrice || 10000000]}
+            value={localPriceRange}
             max={10000000}
             step={100000}
             minStepsBetweenThumbs={1}
             onValueChange={handlePriceRangeChange}
+            onValueCommit={handlePriceRangeCommit}
             className="py-2"
           />
           <div className="flex items-center gap-2">

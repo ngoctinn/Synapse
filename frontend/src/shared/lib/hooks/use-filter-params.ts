@@ -55,6 +55,22 @@ export function useFilterParams(options: UseFilterParamsOptions = {}) {
     [pathname, router, searchParams, createQueryString]
   )
 
+  // Cập nhật nhiều params cùng lúc
+  const updateParams = useCallback(
+    (updates: Record<string, string | null>) => {
+      const params = new URLSearchParams(searchParams.toString())
+      Object.entries(updates).forEach(([key, value]) => {
+        if (value) {
+          params.set(key, value)
+        } else {
+          params.delete(key)
+        }
+      })
+      router.push(`${pathname}?${createQueryString(params)}`)
+    },
+    [pathname, router, searchParams, createQueryString]
+  )
+
   // Xóa toàn bộ filter
   const clearFilters = useCallback(() => {
     const params = new URLSearchParams(searchParams.toString())
@@ -74,6 +90,7 @@ export function useFilterParams(options: UseFilterParamsOptions = {}) {
     searchParams,
     activeCount,
     updateParam,
+    updateParams,
     clearFilters,
   }
 }
