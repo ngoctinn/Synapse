@@ -1,6 +1,7 @@
 "use client"
 
 import { inviteStaff } from "@/features/staff/actions"
+import { inviteStaffSchema } from "@/features/staff/schemas"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2, Mail } from "lucide-react"
 import * as React from "react"
@@ -12,38 +13,31 @@ import { Skill } from "@/features/services/types"
 import { Button } from "@/shared/ui/button"
 import { showToast } from "@/shared/ui/custom/sonner"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from "@/shared/ui/dialog"
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form"
 import { Input } from "@/shared/ui/input"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select"
 import { SkillSelector } from "./skill-selector"
-
-const inviteStaffSchema = z.object({
-  email: z.string().email("Email không hợp lệ"),
-  full_name: z.string().min(2, "Tên phải có ít nhất 2 ký tự"),
-  title: z.string().min(2, "Chức danh không được để trống"),
-  role: z.enum(["admin", "receptionist", "technician"]),
-})
 
 type InviteStaffFormValues = z.infer<typeof inviteStaffSchema>
 

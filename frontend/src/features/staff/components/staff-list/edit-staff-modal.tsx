@@ -1,11 +1,11 @@
 "use client"
 
 import { updateStaffSkills, updateUser } from "@/features/staff/actions"
+import { EditStaffFormValues, editStaffSchema } from "@/features/staff/schemas"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import * as z from "zod"
 
 import { Skill } from "@/features/services/types"
 import { Button } from "@/shared/ui/button"
@@ -37,13 +37,7 @@ import {
 import { Staff } from "../../types"
 import { SkillSelector } from "../skill-selector"
 
-const editStaffSchema = z.object({
-  fullName: z.string().min(2, "Tên phải có ít nhất 2 ký tự"),
-  phone: z.string().min(10, "Số điện thoại không hợp lệ").optional().or(z.literal("")),
-  role: z.enum(["admin", "receptionist", "technician"]),
-})
 
-type EditStaffFormValues = z.infer<typeof editStaffSchema>
 
 interface EditStaffModalProps {
   staff: Staff
