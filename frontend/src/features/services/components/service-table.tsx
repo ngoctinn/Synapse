@@ -1,17 +1,17 @@
 "use client"
 
-import { formatCurrency } from "@/shared/lib/utils"
+import { cn, formatCurrency } from "@/shared/lib/utils"
 import { Badge } from "@/shared/ui/badge"
 import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row"
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state"
+import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
 import { PaginationControls } from "@/shared/ui/custom/pagination-controls"
 import {
-  Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from "@/shared/ui/table"
 import { Plus } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
@@ -25,6 +25,7 @@ interface ServiceTableProps {
   page?: number
   totalPages?: number
   onPageChange?: (page: number) => void
+  className?: string
 }
 
 export function ServiceTable({
@@ -32,7 +33,8 @@ export function ServiceTable({
   availableSkills,
   page = 1,
   totalPages = 1,
-  onPageChange
+  onPageChange,
+  className
 }: ServiceTableProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -61,40 +63,45 @@ export function ServiceTable({
   }
 
   return (
-    <div className="h-full flex flex-col gap-4">
-      <div className="flex-1 overflow-auto bg-white border relative">
+    <div className="flex flex-col gap-4">
+      <div className={cn("bg-background border rounded-lg relative shadow-sm", className)}>
         <table className="w-full caption-bottom text-sm min-w-[800px]">
-          <TableHeader className="sticky top-0 z-20 bg-white shadow-sm">
-            <TableRow>
-              <TableHead className="bg-white pl-6">Tên dịch vụ</TableHead>
-              <TableHead className="bg-white">Thời lượng</TableHead>
-              <TableHead className="bg-white">Giá</TableHead>
-              <TableHead className="bg-white">Kỹ năng yêu cầu</TableHead>
-              <TableHead className="bg-white">Trạng thái</TableHead>
-              <TableHead className="text-right bg-white pr-6">Thao tác</TableHead>
+          <TableHeader className="sticky top-[89px] z-20 bg-background shadow-sm after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-border">
+            <TableRow className="hover:bg-transparent border-none">
+              <TableHead className="bg-background pl-6 h-12 font-medium text-muted-foreground">Tên dịch vụ</TableHead>
+              <TableHead className="bg-background h-12 font-medium text-muted-foreground">Thời lượng</TableHead>
+              <TableHead className="bg-background h-12 font-medium text-muted-foreground">Giá</TableHead>
+              <TableHead className="bg-background h-12 font-medium text-muted-foreground">Kỹ năng yêu cầu</TableHead>
+              <TableHead className="bg-background h-12 font-medium text-muted-foreground">Trạng thái</TableHead>
+              <TableHead className="text-right bg-background pr-6 h-12 font-medium text-muted-foreground">Thao tác</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {services.map((service, index) => (
-              <AnimatedTableRow key={service.id} index={index}>
-                <TableCell className="font-medium pl-6">
+              <AnimatedTableRow key={service.id} index={index} className="group hover:bg-muted/30 transition-colors border-b border-border/50 last:border-0">
+                <TableCell className="font-medium pl-6 py-4">
                   <div className="flex flex-col">
-                    <span>{service.name}</span>
+                    <span className="text-base font-serif text-foreground group-hover:text-primary transition-colors">{service.name}</span>
                   </div>
                 </TableCell>
-                <TableCell>
-                  <div className="flex flex-col text-xs">
-                    <span className="font-medium">Phục vụ: {service.duration}p</span>
-                    <span className="text-muted-foreground">Nghỉ: {service.buffer_time}p</span>
+                <TableCell className="py-4">
+                  <div className="flex flex-col text-xs gap-1">
+                    <span className="font-medium flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary/70"></span>
+                      Phục vụ: {service.duration}p
+                    </span>
+                    <span className="text-muted-foreground flex items-center gap-1.5 pl-3">
+                      Nghỉ: {service.buffer_time}p
+                    </span>
                   </div>
                 </TableCell>
-                <TableCell className="font-medium text-foreground">
+                <TableCell className="font-medium text-foreground py-4">
                   {formatCurrency(service.price)}
                 </TableCell>
-                <TableCell>
-                  <div className="flex flex-wrap gap-1">
+                <TableCell className="py-4">
+                  <div className="flex flex-wrap gap-1.5">
                     {service.skills.map((skill) => (
-                      <Badge key={skill.id} variant="secondary" className="text-[10px] px-1.5 py-0">
+                      <Badge key={skill.id} variant="secondary" className="text-[10px] px-2 py-0.5 bg-secondary/50 hover:bg-secondary text-secondary-foreground border-transparent">
                         {skill.name}
                       </Badge>
                     ))}
@@ -103,25 +110,29 @@ export function ServiceTable({
                     )}
                   </div>
                 </TableCell>
-                <TableCell>
-                  <Badge variant="outline" className={service.is_active ? "bg-emerald-500/10 text-emerald-700 border-emerald-500/20 hover:bg-emerald-500/20" : "bg-slate-500/10 text-slate-600 border-slate-500/20 hover:bg-slate-500/20"}>
+                <TableCell className="py-4">
+                  <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                    service.is_active
+                      ? "bg-primary/10 text-primary border-primary/20"
+                      : "bg-muted text-muted-foreground border-border"
+                  }`}>
                     {service.is_active ? (
                         <span className="flex items-center gap-1.5">
                             <span className="relative flex h-2 w-2">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                             </span>
                             Hoạt động
                         </span>
                     ) : (
                         <span className="flex items-center gap-1.5">
-                            <span className="h-2 w-2 rounded-full bg-slate-400"></span>
+                            <span className="h-2 w-2 rounded-full bg-muted-foreground/50"></span>
                             Ẩn
                         </span>
                     )}
-                  </Badge>
+                  </div>
                 </TableCell>
-                <TableCell className="text-right pr-6">
+                <TableCell className="text-right pr-6 py-4">
                   <ServiceActions service={service} availableSkills={availableSkills} />
                 </TableCell>
               </AnimatedTableRow>
@@ -129,7 +140,7 @@ export function ServiceTable({
           </TableBody>
         </table>
       </div>
-      <div className="px-4 pb-4">
+      <div className="px-1">
         <PaginationControls
           currentPage={page}
           totalPages={totalPages}
@@ -139,7 +150,6 @@ export function ServiceTable({
     </div>
   )
 }
-import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
 
 export function ServiceTableSkeleton() {
   return (

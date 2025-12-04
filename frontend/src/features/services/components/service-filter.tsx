@@ -1,6 +1,7 @@
 "use client"
 
 import { Skill } from "@/features/services/types"
+import { useFilterParams } from "@/shared/lib/hooks/use-filter-params"
 import { FilterButton } from "@/shared/ui/custom/filter-button"
 import { MoneyInput } from "@/shared/ui/custom/money-input"
 import { TagInput } from "@/shared/ui/custom/tag-input"
@@ -12,7 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/select"
-import { useFilterParams } from "@/shared/lib/hooks/use-filter-params"
 import { Slider } from "@/shared/ui/slider"
 import { useEffect, useState } from "react"
 
@@ -82,51 +82,60 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
       count={activeCount}
       onClear={clearFilters}
     >
-      <div className="grid gap-6">
+      <div className="grid gap-6 p-1">
         {/* Lọc theo Giá */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <Label>Khoảng giá</Label>
-            <span className="text-xs text-muted-foreground">
-              (VND)
+            <Label className="text-sm font-medium">Khoảng giá</Label>
+            <span className="text-xs text-muted-foreground font-medium bg-muted px-2 py-0.5 rounded">
+              VND
             </span>
           </div>
-          <Slider
-            defaultValue={[0, 10000000]}
-            value={localPriceRange}
-            max={10000000}
-            step={100000}
-            minStepsBetweenThumbs={1}
-            onValueChange={handlePriceRangeChange}
-            onValueCommit={handlePriceRangeCommit}
-            className="py-2"
-          />
-          <div className="flex items-center gap-2">
-            <MoneyInput
-              value={minPrice}
-              onChange={handleMinPriceChange}
-              placeholder="Min"
-              className="h-8 text-xs"
+          <div className="pt-2 pb-6 px-1">
+            <Slider
+              defaultValue={[0, 10000000]}
+              value={localPriceRange}
+              max={10000000}
+              step={50000}
+              minStepsBetweenThumbs={1}
+              onValueChange={handlePriceRangeChange}
+              onValueCommit={handlePriceRangeCommit}
+              className="py-2"
             />
-            <span className="text-muted-foreground">-</span>
-            <MoneyInput
-              value={maxPrice || undefined}
-              onChange={handleMaxPriceChange}
-              placeholder="Max"
-              className="h-8 text-xs"
-            />
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="flex-1 space-y-1.5">
+              <span className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider">Từ</span>
+              <MoneyInput
+                value={minPrice}
+                onChange={handleMinPriceChange}
+                placeholder="0"
+                className="h-9 text-sm bg-background"
+              />
+            </div>
+            <div className="flex-1 space-y-1.5">
+              <span className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider">Đến</span>
+              <MoneyInput
+                value={maxPrice || undefined}
+                onChange={handleMaxPriceChange}
+                placeholder="Max"
+                className="h-9 text-sm bg-background"
+              />
+            </div>
           </div>
         </div>
 
+        <div className="h-[1px] bg-border/50" />
+
         {/* Lọc theo Thời lượng */}
-        <div className="space-y-2">
-          <Label>Thời lượng</Label>
+        <div className="space-y-3">
+          <Label className="text-sm font-medium">Thời lượng</Label>
           <Select value={duration || "all"} onValueChange={handleDurationChange}>
-            <SelectTrigger className="h-9 w-full">
-              <SelectValue placeholder="Tất cả" />
+            <SelectTrigger className="h-10 w-full bg-background">
+              <SelectValue placeholder="Tất cả thời lượng" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tất cả</SelectItem>
+              <SelectItem value="all">Tất cả thời lượng</SelectItem>
               <SelectItem value="30">30 phút</SelectItem>
               <SelectItem value="45">45 phút</SelectItem>
               <SelectItem value="60">60 phút</SelectItem>
@@ -136,9 +145,11 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
           </Select>
         </div>
 
+        <div className="h-[1px] bg-border/50" />
+
         {/* Lọc theo Kỹ năng */}
-        <div className="space-y-2">
-          <Label>Kỹ năng yêu cầu</Label>
+        <div className="space-y-3">
+          <Label className="text-sm font-medium">Kỹ năng yêu cầu</Label>
           <TagInput
             options={skillOptions}
             selectedIds={skillIds}
@@ -146,7 +157,7 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
             onSelectedChange={handleSkillsChange}
             onNewTagsChange={() => {}}
             placeholder="Chọn kỹ năng..."
-            className="w-full"
+            className="w-full bg-background min-h-[40px]"
           />
         </div>
       </div>
