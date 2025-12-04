@@ -85,10 +85,11 @@ export function HeaderUserDropdown({ user, onLogout }: HeaderUserDropdownProps) 
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="my-2" />
         <DropdownMenuItem
-          className="cursor-pointer py-2.5 text-destructive focus:text-destructive focus:bg-destructive/10"
+          variant="destructive"
+          className="cursor-pointer py-2.5"
           onClick={onLogout}
         >
-          <LogOut className="mr-2 h-4 w-4 text-destructive" />
+          <LogOut className="mr-2 h-4 w-4" />
           <span>Đăng xuất</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
