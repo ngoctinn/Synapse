@@ -1,19 +1,18 @@
-import { useState } from "react";
-import { Calendar } from "@/shared/ui/calendar";
+import { useState, useMemo } from "react";
+import { Calendar, CalendarDayButton } from "@/shared/ui/calendar";
 import { Card, CardContent } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/shared/ui/dialog";
 import { Label } from "@/shared/ui/label";
 import { Input } from "@/shared/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
 import { Switch } from "@/shared/ui/switch";
-import { Badge } from "@/shared/ui/badge";
 import { ExceptionDate } from "../model/types";
-import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { Plus, Trash2, CalendarDays, Clock, AlertCircle, ArrowLeft } from "lucide-react";
+import { Plus, CalendarDays, ArrowLeft, PartyPopper, Wrench, Settings2 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
+import { ExceptionItem } from "./exception-item";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface ExceptionsCalendarProps {
   exceptions: ExceptionDate[];
@@ -31,8 +30,11 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
 
   const handleAdd = () => {
     if (dates && dates.length > 0 && newException.reason) {
+      // Tạo một ID chung cho nhóm ngoại lệ này để dễ dàng gom nhóm hiển thị
+      const groupId = crypto.randomUUID();
+      
       const exceptionsToAdd: ExceptionDate[] = dates.map(date => ({
-        id: Math.random().toString(36).substr(2, 9),
+        id: groupId, // Sử dụng chung ID cho cả nhóm
         date: date,
         reason: newException.reason!,
         type: newException.type as 'holiday' | 'custom' | 'maintenance',
@@ -47,16 +49,47 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
   };
 
   // Highlight modifiers for calendar
-  const modifiers = {
+  const modifiers = useMemo(() => ({
     holiday: exceptions.filter(e => e.type === 'holiday').map(e => e.date),
     custom: exceptions.filter(e => e.type === 'custom').map(e => e.date),
     maintenance: exceptions.filter(e => e.type === 'maintenance').map(e => e.date),
-  };
+  }), [exceptions]);
 
-  const modifiersStyles = {
+  const modifiersStyles = useMemo(() => ({
     holiday: { color: 'var(--destructive)', fontWeight: 'bold' },
     custom: { color: 'var(--primary)', fontWeight: 'bold' },
     maintenance: { color: 'var(--warning)', fontWeight: 'bold' },
+  }), []);
+
+  // Gom nhóm các ngoại lệ theo ID để hiển thị gọn gàng
+  const groupedExceptions = useMemo(() => {
+    const groups = new Map<string, ExceptionDate[]>();
+    
+    // Sắp xếp theo ngày trước
+    const sortedExceptions = [...exceptions].sort((a, b) => a.date.getTime() - b.date.getTime());
+    
+    sortedExceptions.forEach(ex => {
+      const existing = groups.get(ex.id);
+      if (existing) {
+        existing.push(ex);
+      } else {
+        groups.set(ex.id, [ex]);
+      }
+    });
+    
+    return Array.from(groups.values());
+  }, [exceptions]);
+
+  const handleDayDoubleClick = (day: Date) => {
+    // Đảm bảo ngày được chọn khi double click
+    setDates(prev => {
+      const isSelected = prev?.some(d => d.getTime() === day.getTime());
+      if (!isSelected) {
+        return [...(prev || []), day];
+      }
+      return prev;
+    });
+    setIsDialogOpen(true);
   };
 
   return (
@@ -76,6 +109,14 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
                 classNames={{
                   day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground rounded-full",
                   day_today: "bg-accent text-accent-foreground rounded-full",
+                }}
+                components={{
+                  DayButton: (props: any) => (
+                    <CalendarDayButton
+                      {...props}
+                      onDoubleClick={() => handleDayDoubleClick(props.day.date)}
+                    />
+                  )
                 }}
               />
             </div>
@@ -127,7 +168,7 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
                 <TooltipContent>Thêm ngoại lệ cho các ngày đã chọn</TooltipContent>
               </Tooltip>
             </TooltipProvider>
-            <DialogContent className="sm:max-w-[450px] rounded-2xl">
+            <DialogContent className="sm:max-w-[500px] rounded-2xl">
               <DialogHeader>
                 <DialogTitle className="text-xl">Thêm ngoại lệ mới</DialogTitle>
                 <p className="text-sm text-muted-foreground">
@@ -145,35 +186,52 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
                     className="h-11 rounded-xl" 
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="type" className="text-sm font-medium">Loại sự kiện</Label>
-                    <Select 
-                      value={newException.type} 
-                      onValueChange={(val: 'holiday' | 'custom' | 'maintenance') => setNewException({...newException, type: val})}
-                    >
-                      <SelectTrigger className="h-11 rounded-xl">
-                        <SelectValue placeholder="Chọn loại" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="holiday">Ngày lễ</SelectItem>
-                        <SelectItem value="maintenance">Bảo trì</SelectItem>
-                        <SelectItem value="custom">Khác</SelectItem>
-                      </SelectContent>
-                    </Select>
+                
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">Loại sự kiện</Label>
+                  <div className="grid grid-cols-3 gap-3">
+                    {[
+                      { id: 'holiday', label: 'Ngày lễ', icon: PartyPopper, color: 'text-destructive', bg: 'bg-destructive/10', border: 'border-destructive/20' },
+                      { id: 'maintenance', label: 'Bảo trì', icon: Wrench, color: 'text-amber-600', bg: 'bg-amber-500/10', border: 'border-amber-500/20' },
+                      { id: 'custom', label: 'Khác', icon: Settings2, color: 'text-primary', bg: 'bg-primary/10', border: 'border-primary/20' }
+                    ].map((type) => (
+                      <div 
+                        key={type.id}
+                        onClick={() => setNewException({...newException, type: type.id as any})}
+                        className={cn(
+                          "cursor-pointer rounded-xl border-2 p-3 flex flex-col items-center gap-2 transition-all duration-200 hover:bg-muted/50",
+                          newException.type === type.id 
+                            ? `border-${type.color.split('-')[1]} bg-muted` 
+                            : "border-transparent bg-muted/20"
+                        )}
+                      >
+                        <div className={cn("p-2 rounded-full", type.bg)}>
+                          <type.icon className={cn("w-5 h-5", type.color)} />
+                        </div>
+                        <span className="text-xs font-semibold">{type.label}</span>
+                      </div>
+                    ))}
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="closed" className="text-sm font-medium">Trạng thái</Label>
-                    <div className="flex items-center gap-3 h-11 px-4 border rounded-xl bg-muted/20 hover:bg-muted/30 transition-colors">
-                      <Switch 
-                        id="closed" 
-                        checked={newException.isClosed}
-                        onCheckedChange={checked => setNewException({...newException, isClosed: checked})}
-                        className="data-[state=checked]:bg-destructive"
-                      />
-                      <Label htmlFor="closed" className="cursor-pointer text-sm font-medium flex-1">
-                        {newException.isClosed ? "Đóng cửa" : "Mở cửa"}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="closed" className="text-sm font-medium">Trạng thái hoạt động</Label>
+                  <div className="flex items-center gap-3 h-14 px-4 border rounded-xl bg-muted/20 hover:bg-muted/30 transition-colors">
+                    <Switch 
+                      id="closed" 
+                      checked={newException.isClosed}
+                      onCheckedChange={checked => setNewException({...newException, isClosed: checked})}
+                      className="data-[state=checked]:bg-destructive"
+                    />
+                    <div className="flex flex-col">
+                      <Label htmlFor="closed" className="cursor-pointer text-sm font-bold">
+                        {newException.isClosed ? "Đóng cửa hoàn toàn" : "Mở cửa (Giờ đặc biệt)"}
                       </Label>
+                      <span className="text-xs text-muted-foreground">
+                        {newException.isClosed 
+                          ? "Spa sẽ không nhận lịch hẹn vào ngày này" 
+                          : "Spa vẫn hoạt động nhưng có thể thay đổi giờ làm việc"}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -185,87 +243,41 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
           </Dialog>
         </div>
 
-        <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 scrollbar-hide">
-          {exceptions.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 border-2 border-dashed rounded-3xl text-muted-foreground bg-muted/5 relative overflow-hidden group">
-              <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25 opacity-50" />
-              <div className="relative z-10 flex flex-col items-center transition-transform duration-500 group-hover:scale-105">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center mb-6 shadow-inner ring-4 ring-background">
-                  <CalendarDays className="w-10 h-10 text-muted-foreground/40" />
-                </div>
-                <h3 className="font-semibold text-xl mb-2">Chưa có ngày ngoại lệ</h3>
-                <p className="text-sm text-muted-foreground max-w-xs text-center leading-relaxed">
-                  Chọn ngày trên lịch để thêm ngày nghỉ lễ, bảo trì hoặc giờ làm việc đặc biệt.
-                </p>
-                <div className="mt-8 flex items-center gap-2 text-primary text-sm font-medium bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
-                  <ArrowLeft className="w-4 h-4 animate-pulse-horizontal" />
-                  <span>Bắt đầu bằng việc chọn ngày</span>
-                </div>
-              </div>
-            </div>
-          ) : (
-            exceptions.sort((a, b) => a.date.getTime() - b.date.getTime()).map((ex) => (
-              <div key={ex.id} className="group relative flex items-center justify-between p-4 rounded-2xl border bg-card/50 hover:bg-card hover:shadow-lg transition-all duration-300 overflow-hidden">
-                <div className={cn(
-                  "absolute left-0 top-0 bottom-0 w-1.5 transition-all duration-300 group-hover:w-2",
-                  ex.type === 'holiday' ? "bg-destructive" : ex.type === 'maintenance' ? "bg-amber-500" : "bg-primary"
-                )} />
-                
-                <div className="flex items-center gap-5 pl-4">
-                  <div className={cn(
-                    "w-16 h-16 rounded-2xl flex flex-col items-center justify-center border shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3",
-                    ex.type === 'holiday' ? "bg-destructive/5 border-destructive/10 text-destructive" : 
-                    ex.type === 'maintenance' ? "bg-amber-500/5 border-amber-500/10 text-amber-600" :
-                    "bg-primary/5 border-primary/10 text-primary"
-                  )}>
-                    <span className="text-[10px] font-bold uppercase tracking-wider opacity-80">{format(ex.date, 'MMM', { locale: vi })}</span>
-                    <span className="text-2xl font-black leading-none tracking-tighter">{format(ex.date, 'dd')}</span>
+        <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 scrollbar-hide min-h-[300px]">
+          <AnimatePresence mode="popLayout">
+            {groupedExceptions.length === 0 ? (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="flex flex-col items-center justify-center py-16 border-2 border-dashed rounded-3xl text-muted-foreground bg-muted/5 relative overflow-hidden group"
+              >
+                <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25 opacity-50" />
+                <div className="relative z-10 flex flex-col items-center transition-transform duration-500 group-hover:scale-105">
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center mb-6 shadow-inner ring-4 ring-background">
+                    <CalendarDays className="w-10 h-10 text-muted-foreground/40" />
                   </div>
-                  <div className="space-y-1">
-                    <h4 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors">{ex.reason}</h4>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className={cn(
-                        "text-[10px] px-2 py-0.5 h-5 font-bold border-0 uppercase tracking-wide",
-                        ex.type === 'holiday' ? "bg-destructive/10 text-destructive" : 
-                        ex.type === 'maintenance' ? "bg-amber-500/10 text-amber-600" :
-                        "bg-primary/10 text-primary"
-                      )}>
-                        {ex.type === 'holiday' ? 'Ngày lễ' : ex.type === 'maintenance' ? 'Bảo trì' : 'Tùy chỉnh'}
-                      </Badge>
-                      <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
-                        {ex.isClosed ? (
-                          <>
-                            <AlertCircle className="w-3.5 h-3.5 text-destructive" />
-                            <span className="text-destructive/80">Đóng cửa cả ngày</span>
-                          </>
-                        ) : (
-                          <>
-                            <Clock className="w-3.5 h-3.5 text-primary" />
-                            <span className="text-primary/80">Giờ làm việc đặc biệt</span>
-                          </>
-                        )}
-                      </span>
-                    </div>
+                  <h3 className="font-semibold text-xl mb-2">Chưa có ngày ngoại lệ</h3>
+                  <p className="text-sm text-muted-foreground max-w-xs text-center leading-relaxed">
+                    Chọn ngày trên lịch để thêm ngày nghỉ lễ, bảo trì hoặc giờ làm việc đặc biệt.
+                  </p>
+                  <div className="mt-8 flex items-center gap-2 text-primary text-sm font-medium bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
+                    <ArrowLeft className="w-4 h-4 animate-pulse-horizontal" />
+                    <span>Bắt đầu bằng việc chọn ngày</span>
                   </div>
                 </div>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        onClick={() => onRemoveException(ex.id)} 
-                        className="opacity-0 group-hover:opacity-100 transition-all duration-300 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full h-10 w-10"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Xóa ngoại lệ này</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-            ))
-          )}
+              </motion.div>
+            ) : (
+              groupedExceptions.map((group) => (
+                <ExceptionItem 
+                  key={group[0].id} 
+                  exception={group[0]} 
+                  dateCount={group.length}
+                  onRemove={onRemoveException} 
+                />
+              ))
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>
