@@ -17,13 +17,22 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
     const [showPassword, setShowPassword] = React.useState(false)
 
     return (
-      <div className="relative group">
-        <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary group-has-[input[aria-invalid=true]]:text-destructive">
+      <div className="relative group w-full">
+        <div className={cn(
+          "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-200",
+          !props["aria-invalid"] && "text-muted-foreground group-focus-within:text-primary",
+          props["aria-invalid"] && "text-destructive group-focus-within:text-destructive"
+        )}>
           <Icon size={18} {...iconProps} />
         </div>
         <Input
           type={showPassword ? "text" : "password"}
-          className={cn("pl-10 pr-10", className)}
+          className={cn(
+            "pl-10 pr-10 transition-all duration-200 shadow-sm hover:shadow-md focus-visible:shadow-md",
+            "focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary",
+            props["aria-invalid"] && "border-destructive focus-visible:ring-destructive/20 focus-visible:border-destructive",
+            className
+          )}
           ref={ref}
           {...props}
         />
@@ -31,7 +40,11 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
           type="button"
           variant="ghost"
           size="icon"
-          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground transition-colors group-focus-within:text-primary group-has-[input[aria-invalid=true]]:text-destructive"
+          className={cn(
+            "absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent transition-colors duration-200",
+            !props["aria-invalid"] && "text-muted-foreground group-focus-within:text-primary",
+            props["aria-invalid"] && "text-destructive group-focus-within:text-destructive"
+          )}
           onClick={() => setShowPassword((prev) => !prev)}
           tabIndex={-1} // Skip tab index for this button to keep flow natural
           aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}

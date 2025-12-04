@@ -92,7 +92,13 @@ export function TagInput({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-full justify-between h-auto min-h-10 max-h-32 overflow-y-auto py-2 px-3 text-left font-normal hover:bg-background transition-all duration-200 focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            className={cn(
+              "w-full justify-between h-auto min-h-10 max-h-32 overflow-y-auto py-2 px-3 text-left font-normal",
+              "bg-background hover:bg-background",
+              "border-input transition-all duration-200 shadow-sm hover:shadow-md",
+              "focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary",
+              open && "ring-2 ring-primary/20 border-primary"
+            )}
             onClick={() => setOpen(!open)}
           >
             <div className="flex flex-wrap gap-1.5">

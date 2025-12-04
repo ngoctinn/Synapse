@@ -10,15 +10,16 @@ export interface InputWithIconProps
   rightIcon?: LucideIcon
   rightIconProps?: LucideProps
   error?: boolean | string
+  containerClassName?: string
 }
 
 const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
-  ({ className, icon: Icon, iconProps, rightIcon: RightIcon, rightIconProps, error, ...props }, ref) => {
+  ({ className, containerClassName, icon: Icon, iconProps, rightIcon: RightIcon, rightIconProps, error, ...props }, ref) => {
     return (
-      <div className="relative group">
+      <div className={cn("relative group w-full", containerClassName)}>
         {Icon && (
           <div className={cn(
-            "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 transition-colors",
+            "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-200",
             !error && "text-muted-foreground group-focus-within:text-primary",
             error && "text-destructive group-focus-within:text-destructive"
           )}>
@@ -27,8 +28,11 @@ const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
         )}
         <Input
           className={cn(
+            "transition-all duration-200 shadow-sm hover:shadow-md focus-visible:shadow-md",
+            "focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary",
             Icon && "pl-10",
             RightIcon && "pr-10",
+            error && "border-destructive focus-visible:ring-destructive/20 focus-visible:border-destructive",
             className
           )}
           ref={ref}
@@ -36,7 +40,11 @@ const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
           {...props}
         />
         {RightIcon && (
-          <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary">
+          <div className={cn(
+            "pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 transition-colors duration-200",
+            !error && "text-muted-foreground group-focus-within:text-primary",
+            error && "text-destructive group-focus-within:text-destructive"
+          )}>
             <RightIcon size={18} {...rightIconProps} />
           </div>
         )}
