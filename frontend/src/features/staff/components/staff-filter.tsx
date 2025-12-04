@@ -39,16 +39,16 @@ export function StaffFilter() {
       count={activeCount}
       onClear={clearFilters}
     >
-      <div className="grid gap-4">
+      <div className="grid gap-6 p-1">
         {/* Lọc theo Vai trò */}
-        <div className="space-y-2">
-          <Label htmlFor="role">Vai trò</Label>
+        <div className="space-y-3">
+          <Label htmlFor="role" className="text-sm font-medium">Vai trò</Label>
           <Select value={role || "all"} onValueChange={handleRoleChange}>
-            <SelectTrigger id="role" className="h-9 w-full">
-              <SelectValue placeholder="Tất cả" />
+            <SelectTrigger id="role" className="h-10 w-full bg-background">
+              <SelectValue placeholder="Tất cả vai trò" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tất cả</SelectItem>
+              <SelectItem value="all">Tất cả vai trò</SelectItem>
               {ROLES.map((role) => (
                 <SelectItem key={role.id} value={role.id}>
                   <div className="flex items-center gap-2">
@@ -61,18 +61,20 @@ export function StaffFilter() {
           </Select>
         </div>
 
+        <div className="h-[1px] bg-border/50" />
+
         {/* Lọc theo Trạng thái */}
-        <div className="space-y-2">
-          <Label htmlFor="status">Trạng thái</Label>
+        <div className="space-y-3">
+          <Label htmlFor="status" className="text-sm font-medium">Trạng thái</Label>
           <Select value={isActive || "all"} onValueChange={handleStatusChange}>
-            <SelectTrigger id="status" className="h-9 w-full">
-              <SelectValue placeholder="Tất cả" />
+            <SelectTrigger id="status" className="h-10 w-full bg-background">
+              <SelectValue placeholder="Tất cả trạng thái" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tất cả</SelectItem>
+              <SelectItem value="all">Tất cả trạng thái</SelectItem>
               <SelectItem value="true">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                   <span>Hoạt động</span>
                 </div>
               </SelectItem>
