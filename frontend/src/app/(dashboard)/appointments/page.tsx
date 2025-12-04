@@ -1,10 +1,6 @@
-import { AppointmentList } from "@/features/customer-dashboard/components/appointment-list"
-import { getCustomerAppointments } from "@/features/customer-dashboard/services/api"
 import { Separator } from "@/shared/ui/separator"
 
-export default async function AppointmentsPage() {
-  const appointments = await getCustomerAppointments()
-
+export default function AppointmentsPage() {
   return (
     <div className="space-y-6">
       <div>
@@ -14,7 +10,9 @@ export default async function AppointmentsPage() {
         </p>
       </div>
       <Separator />
-      <AppointmentList appointments={appointments} />
+      <div className="flex items-center justify-center h-[400px] border rounded-lg border-dashed">
+         <p className="text-muted-foreground">Tính năng đang được cập nhật.</p>
+      </div>
     </div>
   )
 }

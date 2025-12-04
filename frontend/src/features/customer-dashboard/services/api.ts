@@ -1,7 +1,7 @@
 import { createClient } from "@/shared/lib/supabase/server";
 import { toCamelCase, toSnakeCase } from "@/shared/lib/utils";
 import { Appointment, Treatment, UserProfile } from '../types';
-import { MOCK_APPOINTMENTS, MOCK_TREATMENTS } from './mock-data';
+import { MOCK_TREATMENTS } from './mock-data';
 
 // Giả lập độ trễ mạng
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -40,7 +40,7 @@ export const getCustomerProfile = async (): Promise<UserProfile> => {
 export const getCustomerAppointments = async (): Promise<Appointment[]> => {
   // TODO: Thay thế bằng gọi API thực tế
   await delay(800);
-  return MOCK_APPOINTMENTS;
+  return [];
 };
 
 export const getCustomerTreatments = async (): Promise<Treatment[]> => {
