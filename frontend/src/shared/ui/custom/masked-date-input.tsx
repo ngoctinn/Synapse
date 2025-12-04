@@ -1,5 +1,6 @@
 "use client"
 
+import { cn } from "@/shared/lib/utils"
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
 import { LucideIcon, LucideProps } from "lucide-react"
 import * as React from "react"
@@ -40,6 +41,10 @@ export const MaskedDateInput = React.forwardRef<HTMLInputElement, MaskedDateInpu
       }
     }, [value])
 
+    const [isShaking, setIsShaking] = React.useState(false)
+
+    // ... (existing logic)
+
     const validateDate = (val: string) => {
       const digits = val.replace(/\D/g, "")
 
@@ -74,11 +79,17 @@ export const MaskedDateInput = React.forwardRef<HTMLInputElement, MaskedDateInpu
         // Structurally invalid date (e.g. 40/40/2000)
         onChange?.(new Date(NaN))
         onInvalidInput?.(true)
+        triggerShake()
       } else {
         // Case 3: Incomplete input
         onChange?.(new Date(NaN))
         onInvalidInput?.(true)
       }
+    }
+
+    const triggerShake = () => {
+      setIsShaking(true)
+      setTimeout(() => setIsShaking(false), 500)
     }
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -159,18 +170,24 @@ export const MaskedDateInput = React.forwardRef<HTMLInputElement, MaskedDateInpu
     }
 
     return (
-      <InputWithIcon
-        ref={inputRef}
-        type="text"
-        placeholder="DD/MM/YYYY"
-        value={inputValue}
-        onChange={handleInputChange}
-        onKeyDown={handleKeyDown}
-        maxLength={10}
-        className={className}
-        error={props.error}
-        {...props}
-      />
+      <div className={cn("relative", isShaking && "animate-shake")}>
+        <InputWithIcon
+          ref={inputRef}
+          type="text"
+          placeholder="DD/MM/YYYY"
+          value={inputValue}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          maxLength={10}
+          className={cn(
+            "transition-all duration-200 focus:ring-2 focus:ring-primary/20 focus:border-primary",
+            props.error && "border-red-500 focus:ring-red-500/20 focus:border-red-500",
+            className
+          )}
+          error={props.error}
+          {...props}
+        />
+      </div>
     )
   }
 )
