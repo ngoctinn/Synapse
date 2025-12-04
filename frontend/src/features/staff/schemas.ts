@@ -1,16 +1,20 @@
 import { z } from "zod"
 
 export const staffFormSchema = z.object({
-  // Account Tab (Read-only mostly)
+  // Account Tab
   email: z.string().email({ message: "Email không hợp lệ" }),
+  password: z.string().min(6, { message: "Mật khẩu phải có ít nhất 6 ký tự" }),
   role: z.enum(["admin", "receptionist", "technician"]),
 
   // Profile Tab
-  full_name: z.string().min(2, { message: "Tên phải có ít nhất 2 ký tự" }),
-  title: z.string().min(2, { message: "Chức danh không được để trống" }),
+  name: z.string().min(2, { message: "Tên phải có ít nhất 2 ký tự" }),
+  phone: z.string().optional(),
+  address: z.string().optional(),
+  title: z.string().optional(),
   bio: z.string().optional(),
   color_code: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, { message: "Mã màu không hợp lệ" }).optional(),
   commission_rate: z.number().min(0).max(100).optional(),
+  skills: z.array(z.string()).optional(),
 })
 
 export type StaffFormValues = z.infer<typeof staffFormSchema>
