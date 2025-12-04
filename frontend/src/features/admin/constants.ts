@@ -75,7 +75,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     icon: Bell,
   },
   {
-    title: "Thành phần giao diện",
+    title: "Thành phần",
     href: "/admin/components",
     icon: Palette,
   },

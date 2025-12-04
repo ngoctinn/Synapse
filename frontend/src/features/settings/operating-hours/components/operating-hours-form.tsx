@@ -148,7 +148,7 @@ export function OperatingHoursForm() {
             value="exceptions" 
             className="rounded-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all duration-300"
           >
-            Ngày nghỉ & Ngoại lệ
+            Ngày nghỉ & ngoại lệ
           </TabsTrigger>
         </TabsList>
 

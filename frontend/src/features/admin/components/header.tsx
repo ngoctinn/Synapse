@@ -39,7 +39,7 @@ const BREADCRUMB_MAP: Record<string, string> = {
   services: "Dịch vụ",
   messages: "Tin nhắn",
   notifications: "Thông báo",
-  components: "Thành phần giao diện",
+  components: "Thành phần",
   settings: "Cài đặt",
   "operating-hours": "Thời gian hoạt động",
 }

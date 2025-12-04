@@ -111,7 +111,7 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                           </SidebarMenuButton>
                         </CollapsibleTrigger>
                         <CollapsibleContent>
-                          <SidebarMenuSub className="mr-0 ml-3.5 border-l border-sidebar-border px-0 py-1">
+                          <SidebarMenuSub className="mr-0 ml-[1.15rem] translate-x-0 border-l border-sidebar-border px-0 py-1">
                             {item.items.map((subItem) => {
                                 const isSubActive = pathname === subItem.href
                                 return (
@@ -120,8 +120,8 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                                         asChild
                                         isActive={isSubActive}
                                         className="h-9 pl-9 rounded-lg transition-all duration-200 hover:bg-transparent hover:text-primary active:bg-transparent focus:bg-transparent data-[active=true]:bg-transparent data-[active=true]:text-primary data-[active=true]:font-medium relative overflow-visible
-                                            before:absolute before:left-[-1px] before:top-0 before:h-[calc(50%)] before:w-6 before:border-b before:border-l before:border-sidebar-border before:rounded-bl-md data-[active=true]:before:border-primary
-                                            after:absolute after:left-[23px] after:top-1/2 after:-translate-y-1/2 after:h-1.5 after:w-1.5 after:rounded-full after:bg-primary after:opacity-0 data-[active=true]:after:opacity-100"
+                                            before:absolute before:left-[-1px] before:top-0 before:h-[calc(50%)] before:w-5 before:border-b before:border-l before:border-sidebar-border before:rounded-bl-md data-[active=true]:before:border-primary
+                                            after:absolute after:left-[19px] after:top-1/2 after:-translate-y-1/2 after:h-1.5 after:w-1.5 after:rounded-full after:bg-primary after:opacity-0 data-[active=true]:after:opacity-100"
                                         >
                                         <Link href={subItem.href}>
                                             <span>{subItem.title}</span>
