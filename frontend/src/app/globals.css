@@ -170,7 +170,6 @@
   }
   html, body {
     height: 100%;
-    overflow: hidden; /* Prevent global scrollbar */
   }
   body {
     @apply bg-background text-foreground text-[16px];
