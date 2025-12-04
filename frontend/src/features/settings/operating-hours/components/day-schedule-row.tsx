@@ -49,24 +49,24 @@ export function DayScheduleRow({
 
   return (
     <div className={cn(
-      "flex items-start justify-between p-4 rounded-xl border transition-all duration-300 group relative",
+      "flex items-start justify-between p-5 rounded-2xl border transition-all duration-300 group relative",
       schedule.isOpen 
-        ? "bg-card border-border shadow-sm hover:shadow-md hover:border-primary/20" 
-        : "bg-muted/30 border-transparent opacity-60 hover:opacity-80",
-      isCopying && "ring-2 ring-primary border-primary bg-primary/5",
-      isPasteTarget && "ring-2 ring-dashed ring-green-500/50 border-green-500/50 bg-green-50/50 cursor-pointer"
+        ? "bg-card border-border/60 shadow-sm hover:shadow-md hover:border-primary/30" 
+        : "bg-muted/20 border-transparent opacity-70 hover:opacity-90",
+      isCopying && "ring-2 ring-primary border-primary bg-primary/5 shadow-[0_0_15px_rgba(var(--primary),0.1)]",
+      isPasteTarget && "ring-2 ring-dashed ring-green-500/50 border-green-500/50 bg-green-50/50 cursor-pointer scale-[1.01]"
     )}>
-      <div className="flex items-center gap-4 w-48 pt-2">
+      <div className="flex items-center gap-5 w-56 pt-2">
         <Switch 
           checked={schedule.isOpen} 
           onCheckedChange={handleToggleOpen}
           id={`switch-${schedule.day}`}
-          className="data-[state=checked]:bg-primary"
+          className="data-[state=checked]:bg-primary scale-110"
         />
         <Label 
           htmlFor={`switch-${schedule.day}`}
           className={cn(
-            "font-medium cursor-pointer text-base capitalize transition-colors",
+            "font-semibold cursor-pointer text-base capitalize transition-colors select-none",
             schedule.isOpen ? "text-foreground" : "text-muted-foreground"
           )}
         >
@@ -74,7 +74,7 @@ export function DayScheduleRow({
         </Label>
       </div>
 
-      <div className="flex-1 flex flex-col items-end gap-2 overflow-hidden min-h-[40px]">
+      <div className="flex-1 flex flex-col items-end gap-3 overflow-hidden min-h-[44px]">
         <AnimatePresence mode="wait">
           {schedule.isOpen ? (
             <motion.div 
@@ -82,42 +82,45 @@ export function DayScheduleRow({
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 10 }}
-              transition={{ duration: 0.2 }}
-              className="flex flex-col gap-2 w-full items-end"
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="flex flex-col gap-3 w-full items-end"
             >
               {schedule.timeSlots.map((slot, index) => (
-                <div key={index} className="flex items-center gap-3 bg-background/50 p-1 rounded-lg border border-transparent hover:border-border transition-colors group/slot">
+                <div key={index} className="flex items-center gap-3 bg-background/80 backdrop-blur-sm p-1.5 rounded-xl border border-transparent hover:border-border/80 hover:shadow-sm transition-all duration-200 group/slot w-full max-w-xl justify-end">
                   <TimePicker 
                     value={slot.start}
                     onChange={(val) => handleTimeChange(index, 'start', val)}
-                    className="w-32 border-none shadow-none bg-transparent focus:ring-0"
+                    className="w-36 border-none shadow-none bg-transparent focus:ring-0 text-sm font-medium"
                   />
-                  <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                  <ArrowRight className="w-4 h-4 text-muted-foreground/50" />
                   <TimePicker 
                      value={slot.end}
                      onChange={(val) => handleTimeChange(index, 'end', val)}
-                     className="w-32 border-none shadow-none bg-transparent focus:ring-0 text-right"
+                     className="w-36 border-none shadow-none bg-transparent focus:ring-0 text-right text-sm font-medium"
                   />
-                  {schedule.timeSlots.length > 1 && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleRemoveSlot(index)}
-                      className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-0 group-hover/slot:opacity-100 transition-opacity"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  )}
+                  <div className="w-8 flex justify-center">
+                    {schedule.timeSlots.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleRemoveSlot(index)}
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover/slot:opacity-100 transition-all duration-200 rounded-full"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
               ))}
-              <div className="flex items-center gap-2 mt-1">
+              
+              <div className="flex items-center gap-3 mt-1 mr-1">
                  <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleAddSlot}
-                  className="text-xs text-primary hover:text-primary/80 hover:bg-primary/10 h-7"
+                  className="text-xs font-medium text-primary hover:text-primary/80 hover:bg-primary/10 h-8 px-3 rounded-full transition-colors"
                 >
-                  <Plus className="w-3 h-3 mr-1" />
+                  <Plus className="w-3.5 h-3.5 mr-1.5" />
                   Thêm khung giờ
                 </Button>
                 
@@ -127,7 +130,7 @@ export function DayScheduleRow({
                     variant="ghost"
                     size="sm"
                     onClick={onCancelCopy}
-                    className="text-xs text-destructive hover:text-destructive/80 hover:bg-destructive/10 h-7"
+                    className="text-xs font-medium text-destructive hover:text-destructive/80 hover:bg-destructive/10 h-8 px-3 rounded-full"
                   >
                     ✖ Hủy
                   </Button>
@@ -136,48 +139,49 @@ export function DayScheduleRow({
                     variant="outline"
                     size="sm"
                     onClick={onPaste}
-                    className="text-xs text-green-600 border-green-200 hover:bg-green-50 hover:text-green-700 h-7 animate-pulse"
+                    className="text-xs font-medium text-green-600 border-green-200 hover:bg-green-50 hover:text-green-700 h-8 px-3 rounded-full animate-pulse"
                   >
-                    📋 Dán
+                    📋 Dán cấu hình
                   </Button>
                 ) : (
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={onCopy}
-                    className="text-xs text-muted-foreground hover:text-foreground h-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="text-xs font-medium text-muted-foreground hover:text-foreground h-8 px-3 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200"
                   >
-                    ❐ Copy
+                    ❐ Sao chép
                   </Button>
                 )}
               </div>
             </motion.div>
           ) : (
-            <div className="flex items-center justify-between w-full">
+            <div className="flex items-center justify-between w-full h-full">
                <motion.div 
                 key="closed"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="flex items-center gap-3 text-muted-foreground bg-muted/30 border border-dashed border-muted-foreground/20 px-4 py-2 rounded-lg mt-1 w-full max-w-xs"
+                className="flex items-center gap-3 text-muted-foreground/60 bg-muted/20 border border-dashed border-muted-foreground/10 px-5 py-2.5 rounded-xl w-full max-w-sm ml-auto"
               >
-                <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-muted/50 flex items-center justify-center">
                   <Clock className="w-4 h-4 opacity-50" />
                 </div>
                 <div className="flex flex-col">
                   <span className="font-medium text-sm">Đóng cửa</span>
-                  <span className="text-xs opacity-70">Không nhận lịch hẹn</span>
+                  <span className="text-xs opacity-70">Không nhận lịch hẹn vào ngày này</span>
                 </div>
               </motion.div>
+               
                {/* Copy/Paste Buttons for Closed State */}
-               <div className="mt-1">
+               <div className="ml-4 flex items-center">
                 {isCopying ? (
                    <Button
                     variant="ghost"
                     size="sm"
                     onClick={onCancelCopy}
-                    className="text-xs text-destructive hover:text-destructive/80 hover:bg-destructive/10 h-7"
+                    className="text-xs font-medium text-destructive hover:text-destructive/80 hover:bg-destructive/10 h-8 px-3 rounded-full"
                   >
                     ✖ Hủy
                   </Button>
@@ -186,7 +190,7 @@ export function DayScheduleRow({
                     variant="outline"
                     size="sm"
                     onClick={onPaste}
-                    className="text-xs text-green-600 border-green-200 hover:bg-green-50 hover:text-green-700 h-7 animate-pulse"
+                    className="text-xs font-medium text-green-600 border-green-200 hover:bg-green-50 hover:text-green-700 h-8 px-3 rounded-full animate-pulse"
                   >
                     📋 Dán
                   </Button>
@@ -195,9 +199,9 @@ export function DayScheduleRow({
                     variant="ghost"
                     size="sm"
                     onClick={onCopy}
-                    className="text-xs text-muted-foreground hover:text-foreground h-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="text-xs font-medium text-muted-foreground hover:text-foreground h-8 px-3 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200"
                   >
-                    ❐ Copy
+                    ❐ Sao chép
                   </Button>
                 )}
                </div>

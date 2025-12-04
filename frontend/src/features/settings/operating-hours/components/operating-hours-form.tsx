@@ -102,19 +102,19 @@ export function OperatingHoursForm() {
   };
 
   return (
-    <Tabs defaultValue="schedule" className="w-full space-y-6">
-      {/* Sticky Header */}
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-4 border-b flex flex-col md:flex-row items-center justify-between gap-4">
-        <TabsList className="grid grid-cols-2 w-full max-w-[400px] p-1 bg-muted/50 rounded-full">
+    <Tabs defaultValue="schedule" className="w-full space-y-8">
+      {/* Sticky Header with enhanced Glassmorphism */}
+      <div className="sticky top-0 z-50 -mx-6 px-6 py-4 bg-background/80 backdrop-blur-md border-b flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300">
+        <TabsList className="grid grid-cols-2 w-full max-w-[400px] h-10 p-1 bg-muted/50 rounded-full border border-border/50">
           <TabsTrigger 
             value="schedule" 
-            className="rounded-full data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all"
+            className="rounded-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all duration-300"
           >
             Thời gian hoạt động
           </TabsTrigger>
           <TabsTrigger 
             value="exceptions" 
-            className="rounded-full data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all"
+            className="rounded-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all duration-300"
           >
             Ngày nghỉ & Ngoại lệ
           </TabsTrigger>
@@ -122,53 +122,69 @@ export function OperatingHoursForm() {
 
         <div className="flex items-center gap-3">
           <div className={cn(
-            "px-3 py-1 rounded-full text-xs font-medium border transition-colors flex items-center gap-1.5",
+            "px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-300 flex items-center gap-2 shadow-sm",
             isDirty 
-              ? "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800" 
-              : "bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800"
+              ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800" 
+              : "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800"
           )}>
-            <div className={cn("w-1.5 h-1.5 rounded-full", isDirty ? "bg-amber-500" : "bg-green-500")} />
+            <span className={cn("relative flex h-2 w-2")}>
+              <span className={cn("animate-ping absolute inline-flex h-full w-full rounded-full opacity-75", isDirty ? "bg-amber-500" : "bg-green-500")}></span>
+              <span className={cn("relative inline-flex rounded-full h-2 w-2", isDirty ? "bg-amber-500" : "bg-green-500")}></span>
+            </span>
             {isDirty ? "Chưa lưu thay đổi" : "Đã đồng bộ"}
           </div>
-          <Button variant="outline" onClick={handleReset} disabled={!isDirty} className="h-9">
+          <Button 
+            variant="ghost" 
+            onClick={handleReset} 
+            disabled={!isDirty} 
+            className="h-9 px-4 hover:bg-muted/50 transition-colors"
+          >
             <RotateCcw className="w-4 h-4 mr-2" />
             Khôi phục
           </Button>
-          <Button onClick={handleSave} disabled={!isDirty} className="h-9 shadow-md hover:shadow-lg transition-all">
+          <Button 
+            onClick={handleSave} 
+            disabled={!isDirty} 
+            className={cn(
+              "h-9 px-6 shadow-md hover:shadow-lg transition-all duration-300",
+              isDirty && "animate-pulse-subtle"
+            )}
+          >
             <Save className="w-4 h-4 mr-2" />
             Lưu thay đổi
           </Button>
         </div>
       </div>
       
-      <TabsContent value="schedule" className="space-y-6 animate-in fade-in-50 slide-in-from-bottom-2 duration-500">
-        <Card className="border-none shadow-md bg-card/50 backdrop-blur-sm">
-          <CardHeader className="pb-4">
+      <TabsContent value="schedule" className="space-y-6 animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out">
+        <Card className="border-none shadow-none bg-transparent">
+          <CardHeader className="px-0 pt-0 pb-6">
             <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-lg">Lịch làm việc tiêu chuẩn</CardTitle>
-                <CardDescription>
+              <div className="space-y-1">
+                <CardTitle className="text-2xl font-bold tracking-tight">Lịch làm việc tiêu chuẩn</CardTitle>
+                <CardDescription className="text-base">
                   Thiết lập giờ mở cửa mặc định cho từng ngày trong tuần.
                 </CardDescription>
               </div>
               {copySourceDay && (
-                <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5">
+                <div className="flex items-center gap-3 animate-in fade-in slide-in-from-right-8 duration-300 bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
                   <span className="text-sm text-muted-foreground">
-                    Đang sao chép từ <span className="font-medium text-foreground">{DAY_LABELS[copySourceDay]}</span>
+                    Đang sao chép từ <span className="font-bold text-primary">{DAY_LABELS[copySourceDay]}</span>
                   </span>
-                  <Button variant="secondary" size="sm" onClick={handlePasteToAll} className="text-primary">
-                    <Copy className="w-4 h-4 mr-2" />
-                    Áp dụng cho tất cả
+                  <div className="h-4 w-px bg-border" />
+                  <Button variant="secondary" size="sm" onClick={handlePasteToAll} className="h-7 text-xs font-medium bg-primary/10 text-primary hover:bg-primary/20 border-none shadow-none">
+                    <Copy className="w-3 h-3 mr-1.5" />
+                    Áp dụng tất cả
                   </Button>
-                  <Button variant="ghost" size="sm" onClick={handleCancelCopy} className="text-destructive hover:bg-destructive/10">
+                  <Button variant="ghost" size="sm" onClick={handleCancelCopy} className="h-7 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10">
                     Hủy
                   </Button>
                 </div>
               )}
             </div>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="space-y-3">
+          <CardContent className="p-0 space-y-4">
+            <div className="grid gap-4">
             {config.defaultSchedule.map((schedule, index) => (
               <DayScheduleRow 
                 key={schedule.day} 
@@ -186,7 +202,7 @@ export function OperatingHoursForm() {
         </Card>
       </TabsContent>
       
-      <TabsContent value="exceptions" className="animate-in fade-in-50 slide-in-from-bottom-2 duration-500">
+      <TabsContent value="exceptions" className="animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out">
         <ExceptionsCalendar 
           exceptions={config.exceptions}
           onAddExceptions={handleAddExceptions}
