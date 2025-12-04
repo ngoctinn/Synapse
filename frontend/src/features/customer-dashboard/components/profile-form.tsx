@@ -11,7 +11,6 @@ import { BirthdayPicker } from "@/shared/ui/custom/birthday-picker"
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/ui/form"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/ui/tooltip"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
 import { motion } from "framer-motion"
@@ -76,101 +75,85 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-      className="w-full max-w-4xl mx-auto"
+      transition={{ duration: 0.3 }}
+      className="w-full max-w-3xl mx-auto"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <Card className="overflow-hidden border-none shadow-xl bg-white/90 backdrop-blur-sm ring-1 ring-black/5">
-            <CardHeader className="p-6 border-b border-border/40 bg-gradient-to-r from-primary/5 via-transparent to-transparent">
-              <div className="flex items-center gap-4">
-                <div className="p-2.5 rounded-xl bg-primary/10 text-primary ring-1 ring-primary/20 shadow-sm">
-                  <User className="w-6 h-6" />
-                </div>
+          <Card className="border shadow-sm bg-card">
+            <CardHeader className="pb-4 border-b">
+              <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-2xl font-bold text-foreground tracking-tight">
+                  <CardTitle className="text-lg font-semibold tracking-tight">
                     {PROFILE_LABELS.TITLE}
                   </CardTitle>
-                  <CardDescription className="text-base text-muted-foreground/80 mt-1">
+                  <CardDescription className="text-sm text-muted-foreground">
                     {PROFILE_LABELS.DESCRIPTION}
                   </CardDescription>
                 </div>
+                {/* Optional: Add a subtle status indicator or edit mode toggle here if needed */}
               </div>
             </CardHeader>
 
-            <CardContent className="p-6 md:p-8">
-              <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+            <CardContent className="p-6">
+              <div className="flex flex-col md:flex-row gap-8">
                 {/* Left Column: Avatar & Identity */}
-                <div className="flex flex-col items-center space-y-6 lg:w-1/3 w-full shrink-0">
+                <div className="flex flex-col items-center space-y-4 md:w-1/3 shrink-0">
                   <FormField
                     control={form.control}
                     name="avatarUrl"
                     render={({ field }) => (
                       <FormItem className="flex flex-col items-center w-full">
                         <div className="relative group">
-                          <div className="absolute -inset-1 bg-gradient-to-tr from-primary to-primary/40 rounded-full opacity-60 blur-md group-hover:opacity-80 transition duration-500"></div>
                           <AvatarSelector
                             currentAvatar={field.value}
                             onSelect={field.onChange}
                             trigger={
-                              <motion.div
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                className="relative cursor-pointer bg-background rounded-full p-1.5 ring-2 ring-background shadow-xl"
-                              >
-                                <Avatar className="h-40 w-40 border-4 border-background shadow-inner">
+                              <div className="relative cursor-pointer rounded-full transition-opacity hover:opacity-90">
+                                <Avatar className="h-28 w-28 border-2 border-border">
                                   <AvatarImage src={field.value} alt={user.fullName} className="object-cover" />
-                                  <AvatarFallback className="text-5xl bg-primary/5 text-primary font-bold">
+                                  <AvatarFallback className="text-2xl bg-muted text-muted-foreground font-medium">
                                     {user.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
                                   </AvatarFallback>
                                 </Avatar>
-                                <div className="absolute bottom-2 right-2 bg-primary text-primary-foreground p-2.5 rounded-full shadow-lg hover:bg-primary/90 transition-all duration-300 ring-4 ring-background group-hover:scale-110">
-                                  <Camera className="h-5 w-5" />
+                                <div className="absolute bottom-0 right-0 bg-primary text-primary-foreground p-1.5 rounded-full shadow-sm ring-2 ring-background">
+                                  <Camera className="h-3.5 w-3.5" />
                                 </div>
-                              </motion.div>
+                              </div>
                             }
                           />
                         </div>
-                        <FormMessage className="mt-2" />
+                        <FormMessage className="mt-1" />
                       </FormItem>
                     )}
                   />
 
-                  <div className="text-center space-y-3 w-full px-4 py-4 rounded-2xl bg-muted/30 border border-border/40">
-                    <div>
-                      <h3 className="font-bold text-xl text-foreground tracking-tight">{user.fullName}</h3>
-                      <p className="text-sm text-muted-foreground font-medium">{user.email}</p>
-                    </div>
-
-                    <div className="flex justify-center pt-2">
-                      <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary ring-1 ring-inset ring-primary/20 shadow-sm">
-                        <span className="relative flex h-2 w-2">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                        </span>
-                        {PROFILE_LABELS.MEMBER_TIER} {user.membershipTier || PROFILE_LABELS.DEFAULT_TIER}
-                      </span>
-                    </div>
+                  <div className="text-center w-full">
+                    <h3 className="font-semibold text-base text-foreground">{user.fullName}</h3>
+                    <p className="text-xs text-muted-foreground mb-2">{user.email}</p>
+                    <span className="inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground">
+                      {user.membershipTier || PROFILE_LABELS.DEFAULT_TIER}
+                    </span>
                   </div>
                 </div>
 
                 {/* Right Column: Form Fields */}
-                <div className="flex-1 w-full space-y-6">
-                  <div className="grid grid-cols-1 gap-6">
+                <div className="flex-1 space-y-4">
+                  <div className="grid grid-cols-1 gap-4">
                     <FormField
                       control={form.control}
                       name="fullName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-foreground font-semibold text-sm ml-1">{PROFILE_LABELS.FULL_NAME}</FormLabel>
+                          <FormLabel className="text-sm font-medium">{PROFILE_LABELS.FULL_NAME}</FormLabel>
                           <FormControl>
                               <InputWithIcon
                                 icon={User}
                                 placeholder={PROFILE_LABELS.FULL_NAME_PLACEHOLDER}
                                 error={!!form.formState.errors.fullName}
-                                className="h-11 bg-background/50 focus:bg-background transition-all shadow-sm hover:shadow-md focus:shadow-md text-base"
+                                className="h-9 text-sm"
                                 {...field}
                               />
                           </FormControl>
@@ -179,13 +162,13 @@ export function ProfileForm({ user }: ProfileFormProps) {
                       )}
                     />
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <FormField
                           control={form.control}
                           name="dateOfBirth"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-foreground font-semibold text-sm ml-1">{PROFILE_LABELS.DATE_OF_BIRTH}</FormLabel>
+                              <FormLabel className="text-sm font-medium">{PROFILE_LABELS.DATE_OF_BIRTH}</FormLabel>
                               <FormControl>
                                 <BirthdayPicker
                                   date={field.value ? new Date(field.value) : undefined}
@@ -214,14 +197,14 @@ export function ProfileForm({ user }: ProfileFormProps) {
                           name="phone"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-foreground font-semibold text-sm ml-1">{PROFILE_LABELS.PHONE}</FormLabel>
+                              <FormLabel className="text-sm font-medium">{PROFILE_LABELS.PHONE}</FormLabel>
                               <FormControl>
                                   <InputWithIcon
                                     type="tel"
                                     icon={Phone}
                                     placeholder={PROFILE_LABELS.PHONE_PLACEHOLDER}
                                     error={!!form.formState.errors.phone}
-                                    className="h-11 bg-background/50 focus:bg-background transition-all shadow-sm hover:shadow-md focus:shadow-md text-base"
+                                    className="h-9 text-sm"
                                     {...field}
                                   />
                               </FormControl>
@@ -236,28 +219,19 @@ export function ProfileForm({ user }: ProfileFormProps) {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-foreground font-semibold text-sm ml-1">{PROFILE_LABELS.EMAIL}</FormLabel>
-                          <Tooltip delayDuration={0}>
-                            <TooltipTrigger asChild>
-                              <FormControl>
-                                <div className="cursor-not-allowed opacity-75">
-                                    <InputWithIcon
-                                      type="email"
-                                      readOnly
-                                      disabled
-                                      icon={Lock}
-                                      placeholder={PROFILE_LABELS.EMAIL_PLACEHOLDER}
-                                      className="h-11 bg-muted/40 text-muted-foreground border-dashed focus-visible:ring-0 text-base"
-                                      error={!!form.formState.errors.email}
-                                      {...field}
-                                    />
-                                </div>
-                              </FormControl>
-                            </TooltipTrigger>
-                            <TooltipContent side="bottom" className="bg-foreground text-background font-medium">
-                              <p>{PROFILE_LABELS.EMAIL_TOOLTIP}</p>
-                            </TooltipContent>
-                          </Tooltip>
+                          <FormLabel className="text-sm font-medium">{PROFILE_LABELS.EMAIL}</FormLabel>
+                          <FormControl>
+                            <InputWithIcon
+                                type="email"
+                                readOnly
+                                disabled
+                                icon={Lock}
+                                placeholder={PROFILE_LABELS.EMAIL_PLACEHOLDER}
+                                className="h-9 bg-muted/50 text-muted-foreground cursor-not-allowed"
+                                error={!!form.formState.errors.email}
+                                {...field}
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -268,13 +242,13 @@ export function ProfileForm({ user }: ProfileFormProps) {
                         name="address"
                         render={({ field }) => (
                         <FormItem>
-                            <FormLabel className="text-foreground font-semibold text-sm ml-1">{PROFILE_LABELS.ADDRESS}</FormLabel>
+                            <FormLabel className="text-sm font-medium">{PROFILE_LABELS.ADDRESS}</FormLabel>
                             <FormControl>
                             <InputWithIcon
                                 icon={MapPin}
                                 placeholder={PROFILE_LABELS.ADDRESS_PLACEHOLDER}
                                 error={!!form.formState.errors.address}
-                                className="h-11 bg-background/50 focus:bg-background transition-all shadow-sm hover:shadow-md focus:shadow-md text-base"
+                                className="h-9 text-sm"
                                 {...field}
                             />
                             </FormControl>
@@ -284,16 +258,16 @@ export function ProfileForm({ user }: ProfileFormProps) {
                     />
                   </div>
 
-                  <div className="flex justify-end pt-6 border-t border-border/40 mt-4">
+                  <div className="flex justify-end pt-4">
                     <Button
                       type="submit"
                       disabled={isPending || !form.formState.isDirty}
-                      size="lg"
-                      className="min-w-[160px] shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-300 font-semibold text-base"
+                      size="sm"
+                      className="min-w-[100px]"
                     >
                       {isPending ? (
                         <>
-                          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                          <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
                           {PROFILE_LABELS.SUBMITTING}
                         </>
                       ) : (
