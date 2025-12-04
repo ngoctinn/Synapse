@@ -160,10 +160,15 @@ export function DayScheduleRow({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="flex items-center gap-2 text-muted-foreground bg-muted/50 px-4 py-2 rounded-full mt-1"
+                className="flex items-center gap-3 text-muted-foreground bg-muted/30 border border-dashed border-muted-foreground/20 px-4 py-2 rounded-lg mt-1 w-full max-w-xs"
               >
-                <Clock className="w-4 h-4" />
-                <span className="italic text-sm">Đóng cửa</span>
+                <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                  <Clock className="w-4 h-4 opacity-50" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-medium text-sm">Đóng cửa</span>
+                  <span className="text-xs opacity-70">Không nhận lịch hẹn</span>
+                </div>
               </motion.div>
                {/* Copy/Paste Buttons for Closed State */}
                <div className="mt-1">
