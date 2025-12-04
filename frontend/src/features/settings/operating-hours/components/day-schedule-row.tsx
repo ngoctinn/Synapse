@@ -7,6 +7,7 @@ import { cn } from "@/shared/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Clock, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
 
 interface DayScheduleRowProps {
   schedule: DaySchedule;
@@ -49,14 +50,14 @@ export function DayScheduleRow({
 
   return (
     <div className={cn(
-      "flex items-start justify-between p-5 rounded-2xl border transition-all duration-300 group relative",
+      "flex flex-col sm:flex-row items-start sm:items-baseline justify-between p-5 rounded-2xl border transition-all duration-300 group relative gap-4 sm:gap-0",
       schedule.isOpen 
         ? "bg-card border-border/60 shadow-sm hover:shadow-md hover:border-primary/30" 
         : "bg-muted/20 border-transparent opacity-70 hover:opacity-90",
       isCopying && "ring-2 ring-primary border-primary bg-primary/5 shadow-[0_0_15px_rgba(var(--primary),0.1)]",
       isPasteTarget && "ring-2 ring-dashed ring-green-500/50 border-green-500/50 bg-green-50/50 cursor-pointer scale-[1.01]"
     )}>
-      <div className="flex items-center gap-5 w-56 pt-2">
+      <div className="flex items-center gap-5 w-full sm:w-56">
         <Switch 
           checked={schedule.isOpen} 
           onCheckedChange={handleToggleOpen}
@@ -74,7 +75,7 @@ export function DayScheduleRow({
         </Label>
       </div>
 
-      <div className="flex-1 flex flex-col items-end gap-3 overflow-hidden min-h-[44px]">
+      <div className="flex-1 flex flex-col items-end gap-3 overflow-hidden min-h-[44px] w-full">
         <AnimatePresence mode="wait">
           {schedule.isOpen ? (
             <motion.div 
@@ -85,44 +86,59 @@ export function DayScheduleRow({
               transition={{ duration: 0.2, ease: "easeOut" }}
               className="flex flex-col gap-3 w-full items-end"
             >
-              {schedule.timeSlots.map((slot, index) => (
-                <div key={index} className="flex items-center gap-3 bg-background/80 backdrop-blur-sm p-1.5 rounded-xl border border-transparent hover:border-border/80 hover:shadow-sm transition-all duration-200 group/slot w-full max-w-xl justify-end">
-                  <TimePicker 
-                    value={slot.start}
-                    onChange={(val) => handleTimeChange(index, 'start', val)}
-                    className="w-36 border-none shadow-none bg-transparent focus:ring-0 text-sm font-medium"
-                  />
-                  <ArrowRight className="w-4 h-4 text-muted-foreground/50" />
-                  <TimePicker 
-                     value={slot.end}
-                     onChange={(val) => handleTimeChange(index, 'end', val)}
-                     className="w-36 border-none shadow-none bg-transparent focus:ring-0 text-right text-sm font-medium"
-                  />
-                  <div className="w-8 flex justify-center">
+              <div className="flex flex-wrap gap-3 w-full justify-end items-center">
+                {schedule.timeSlots.map((slot, index) => (
+                  <div key={index} className="flex items-center gap-2 bg-background/80 backdrop-blur-sm p-1.5 rounded-xl border border-transparent hover:border-border/80 hover:shadow-sm transition-all duration-200 group/slot">
+                    <TimePicker 
+                      value={slot.start}
+                      onChange={(val) => handleTimeChange(index, 'start', val)}
+                      className="w-28 border-none shadow-none bg-transparent focus:ring-0 text-sm font-medium"
+                    />
+                    <ArrowRight className="w-3 h-3 text-muted-foreground/50" />
+                    <TimePicker 
+                       value={slot.end}
+                       onChange={(val) => handleTimeChange(index, 'end', val)}
+                       className="w-28 border-none shadow-none bg-transparent focus:ring-0 text-right text-sm font-medium"
+                    />
+                    
                     {schedule.timeSlots.length > 1 && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleRemoveSlot(index)}
-                        className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover/slot:opacity-100 transition-all duration-200 rounded-full"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleRemoveSlot(index)}
+                              className="h-6 w-6 text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover/slot:opacity-100 transition-all duration-200 rounded-full ml-1"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Xóa khung giờ</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     )}
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
               
               <div className="flex items-center gap-3 mt-1 mr-1">
-                 <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleAddSlot}
-                  className="text-xs font-medium text-primary hover:text-primary/80 hover:bg-primary/10 h-8 px-3 rounded-full transition-colors"
-                >
-                  <Plus className="w-3.5 h-3.5 mr-1.5" />
-                  Thêm khung giờ
-                </Button>
+                 <TooltipProvider>
+                   <Tooltip>
+                     <TooltipTrigger asChild>
+                       <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleAddSlot}
+                        className="text-xs font-medium text-primary hover:text-primary/80 hover:bg-primary/10 h-8 px-3 rounded-full transition-colors"
+                      >
+                        <Plus className="w-3.5 h-3.5 mr-1.5" />
+                        Thêm khung giờ
+                      </Button>
+                     </TooltipTrigger>
+                     <TooltipContent>Thêm khung giờ làm việc mới</TooltipContent>
+                   </Tooltip>
+                 </TooltipProvider>
                 
                 {/* Copy/Paste Buttons */}
                 {isCopying ? (
@@ -135,23 +151,37 @@ export function DayScheduleRow({
                     ✖ Hủy
                   </Button>
                 ) : isPasteTarget ? (
-                   <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={onPaste}
-                    className="text-xs font-medium text-green-600 border-green-200 hover:bg-green-50 hover:text-green-700 h-8 px-3 rounded-full animate-pulse"
-                  >
-                    📋 Dán cấu hình
-                  </Button>
+                   <TooltipProvider>
+                     <Tooltip>
+                       <TooltipTrigger asChild>
+                         <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={onPaste}
+                          className="text-xs font-medium text-green-600 border-green-200 hover:bg-green-50 hover:text-green-700 h-8 px-3 rounded-full animate-pulse"
+                        >
+                          📋 Dán cấu hình
+                        </Button>
+                       </TooltipTrigger>
+                       <TooltipContent>Dán cấu hình từ ngày đã chọn</TooltipContent>
+                     </Tooltip>
+                   </TooltipProvider>
                 ) : (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={onCopy}
-                    className="text-xs font-medium text-muted-foreground hover:text-foreground h-8 px-3 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200"
-                  >
-                    ❐ Sao chép
-                  </Button>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={onCopy}
+                          className="text-xs font-medium text-muted-foreground hover:text-foreground h-8 px-3 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200"
+                        >
+                          ❐ Sao chép
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Sao chép cấu hình ngày này</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
               </div>
             </motion.div>
@@ -186,23 +216,37 @@ export function DayScheduleRow({
                     ✖ Hủy
                   </Button>
                 ) : isPasteTarget ? (
-                   <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={onPaste}
-                    className="text-xs font-medium text-green-600 border-green-200 hover:bg-green-50 hover:text-green-700 h-8 px-3 rounded-full animate-pulse"
-                  >
-                    📋 Dán
-                  </Button>
+                   <TooltipProvider>
+                     <Tooltip>
+                       <TooltipTrigger asChild>
+                         <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={onPaste}
+                          className="text-xs font-medium text-green-600 border-green-200 hover:bg-green-50 hover:text-green-700 h-8 px-3 rounded-full animate-pulse"
+                        >
+                          📋 Dán
+                        </Button>
+                       </TooltipTrigger>
+                       <TooltipContent>Dán cấu hình từ ngày đã chọn</TooltipContent>
+                     </Tooltip>
+                   </TooltipProvider>
                 ) : (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={onCopy}
-                    className="text-xs font-medium text-muted-foreground hover:text-foreground h-8 px-3 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200"
-                  >
-                    ❐ Sao chép
-                  </Button>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={onCopy}
+                          className="text-xs font-medium text-muted-foreground hover:text-foreground h-8 px-3 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200"
+                        >
+                          ❐ Sao chép
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Sao chép cấu hình ngày này</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
                </div>
             </div>

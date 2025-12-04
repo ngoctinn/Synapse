@@ -13,6 +13,7 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Plus, Trash2, CalendarDays, Clock, AlertCircle, ArrowLeft } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
 
 interface ExceptionsCalendarProps {
   exceptions: ExceptionDate[];
@@ -106,19 +107,26 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
             <p className="text-sm text-muted-foreground mt-1">Quản lý các ngày nghỉ lễ và lịch làm việc đặc biệt</p>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button 
-                onClick={() => dates && dates.length > 0 && setIsDialogOpen(true)} 
-                disabled={!dates || dates.length === 0} 
-                className={cn(
-                  "shadow-lg transition-all duration-300",
-                  dates && dates.length > 0 ? "animate-bounce-subtle" : "opacity-50"
-                )}
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Thêm ngoại lệ ({dates?.length || 0})
-              </Button>
-            </DialogTrigger>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <DialogTrigger asChild>
+                    <Button 
+                      onClick={() => dates && dates.length > 0 && setIsDialogOpen(true)} 
+                      disabled={!dates || dates.length === 0} 
+                      className={cn(
+                        "shadow-lg transition-all duration-300",
+                        dates && dates.length > 0 ? "animate-bounce-subtle" : "opacity-50"
+                      )}
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Thêm ngoại lệ ({dates?.length || 0})
+                    </Button>
+                  </DialogTrigger>
+                </TooltipTrigger>
+                <TooltipContent>Thêm ngoại lệ cho các ngày đã chọn</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             <DialogContent className="sm:max-w-[450px] rounded-2xl">
               <DialogHeader>
                 <DialogTitle className="text-xl">Thêm ngoại lệ mới</DialogTitle>
@@ -240,14 +248,21 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
                     </div>
                   </div>
                 </div>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={() => onRemoveException(ex.id)} 
-                  className="opacity-0 group-hover:opacity-100 transition-all duration-300 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full h-10 w-10"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </Button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={() => onRemoveException(ex.id)} 
+                        className="opacity-0 group-hover:opacity-100 transition-all duration-300 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full h-10 w-10"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Xóa ngoại lệ này</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
             ))
           )}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
@@ -11,11 +11,28 @@ import { OperatingHoursConfig, DaySchedule, ExceptionDate, DayOfWeek } from "../
 import { Save, RotateCcw, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/shared/lib/utils";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
+import { motion } from "framer-motion";
 
 export function OperatingHoursForm() {
   const [config, setConfig] = useState<OperatingHoursConfig>(MOCK_OPERATING_HOURS);
   const [isDirty, setIsDirty] = useState(false);
   const [copySourceDay, setCopySourceDay] = useState<DayOfWeek | null>(null);
+
+  // Keyboard shortcut for Save
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        if (isDirty) {
+          handleSave();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isDirty]);
 
   const handleScheduleChange = (index: number, newSchedule: DaySchedule) => {
     const newDefaultSchedule = [...config.defaultSchedule];
@@ -101,6 +118,21 @@ export function OperatingHoursForm() {
     toast.info("Đã khôi phục cài đặt gốc");
   };
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
   return (
     <Tabs defaultValue="schedule" className="w-full space-y-8">
       {/* Sticky Header with enhanced Glassmorphism */}
@@ -133,26 +165,42 @@ export function OperatingHoursForm() {
             </span>
             {isDirty ? "Chưa lưu thay đổi" : "Đã đồng bộ"}
           </div>
-          <Button 
-            variant="ghost" 
-            onClick={handleReset} 
-            disabled={!isDirty} 
-            className="h-9 px-4 hover:bg-muted/50 transition-colors"
-          >
-            <RotateCcw className="w-4 h-4 mr-2" />
-            Khôi phục
-          </Button>
-          <Button 
-            onClick={handleSave} 
-            disabled={!isDirty} 
-            className={cn(
-              "h-9 px-6 shadow-md hover:shadow-lg transition-all duration-300",
-              isDirty && "animate-pulse-subtle"
-            )}
-          >
-            <Save className="w-4 h-4 mr-2" />
-            Lưu thay đổi
-          </Button>
+          
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  onClick={handleReset} 
+                  disabled={!isDirty} 
+                  className="h-9 px-4 hover:bg-muted/50 transition-colors"
+                >
+                  <RotateCcw className="w-4 h-4 mr-2" />
+                  Khôi phục
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Khôi phục về cài đặt gốc</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  onClick={handleSave} 
+                  disabled={!isDirty} 
+                  className={cn(
+                    "h-9 px-6 shadow-md hover:shadow-lg transition-all duration-300",
+                    isDirty && "animate-pulse-subtle"
+                  )}
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Lưu thay đổi
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Lưu cấu hình (Ctrl+S)</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
       
@@ -161,7 +209,7 @@ export function OperatingHoursForm() {
           <CardHeader className="px-0 pt-0 pb-6">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <CardTitle className="text-2xl font-bold tracking-tight">Lịch làm việc tiêu chuẩn</CardTitle>
+                <CardTitle className="text-2xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">Lịch làm việc tiêu chuẩn</CardTitle>
                 <CardDescription className="text-base">
                   Thiết lập giờ mở cửa mặc định cho từng ngày trong tuần.
                 </CardDescription>
@@ -172,10 +220,17 @@ export function OperatingHoursForm() {
                     Đang sao chép từ <span className="font-bold text-primary">{DAY_LABELS[copySourceDay]}</span>
                   </span>
                   <div className="h-4 w-px bg-border" />
-                  <Button variant="secondary" size="sm" onClick={handlePasteToAll} className="h-7 text-xs font-medium bg-primary/10 text-primary hover:bg-primary/20 border-none shadow-none">
-                    <Copy className="w-3 h-3 mr-1.5" />
-                    Áp dụng tất cả
-                  </Button>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="secondary" size="sm" onClick={handlePasteToAll} className="h-7 text-xs font-medium bg-primary/10 text-primary hover:bg-primary/20 border-none shadow-none">
+                          <Copy className="w-3 h-3 mr-1.5" />
+                          Áp dụng tất cả
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Áp dụng cấu hình này cho tất cả các ngày</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                   <Button variant="ghost" size="sm" onClick={handleCancelCopy} className="h-7 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10">
                     Hủy
                   </Button>
@@ -184,20 +239,26 @@ export function OperatingHoursForm() {
             </div>
           </CardHeader>
           <CardContent className="p-0 space-y-4">
-            <div className="grid gap-4">
+            <motion.div 
+              className="grid gap-4"
+              variants={container}
+              initial="hidden"
+              animate="show"
+            >
             {config.defaultSchedule.map((schedule, index) => (
-              <DayScheduleRow 
-                key={schedule.day} 
-                schedule={schedule} 
-                onChange={(newSchedule) => handleScheduleChange(index, newSchedule)}
-                onCopy={() => handleCopy(schedule.day)}
-                onPaste={() => handlePaste(schedule.day)}
-                onCancelCopy={handleCancelCopy}
-                isCopying={copySourceDay === schedule.day}
-                isPasteTarget={copySourceDay !== null && copySourceDay !== schedule.day}
-              />
+              <motion.div key={schedule.day} variants={item}>
+                <DayScheduleRow 
+                  schedule={schedule} 
+                  onChange={(newSchedule) => handleScheduleChange(index, newSchedule)}
+                  onCopy={() => handleCopy(schedule.day)}
+                  onPaste={() => handlePaste(schedule.day)}
+                  onCancelCopy={handleCancelCopy}
+                  isCopying={copySourceDay === schedule.day}
+                  isPasteTarget={copySourceDay !== null && copySourceDay !== schedule.day}
+                />
+              </motion.div>
             ))}
-            </div>
+            </motion.div>
           </CardContent>
         </Card>
       </TabsContent>
