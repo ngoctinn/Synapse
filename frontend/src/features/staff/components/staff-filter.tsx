@@ -1,16 +1,17 @@
 "use client"
 
+import { ROLES } from "@/features/staff/constants"
 import { useFilterParams } from "@/shared/lib/hooks/use-filter-params"
 import { FilterButton } from "@/shared/ui/custom/filter-button"
 import { Label } from "@/shared/ui/label"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select"
-import { CheckCircle2, Stethoscope, UserCog, XCircle } from "lucide-react"
+import { CheckCircle2, UserCog, XCircle } from "lucide-react"
 
 export function StaffFilter() {
   const { searchParams, activeCount, updateParam, clearFilters } =
@@ -48,24 +49,14 @@ export function StaffFilter() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tất cả</SelectItem>
-              <SelectItem value="admin">
-                <div className="flex items-center gap-2">
-                  <UserCog className="h-4 w-4 text-muted-foreground" />
-                  <span>Quản trị viên</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="receptionist">
-                <div className="flex items-center gap-2">
-                  <UserCog className="h-4 w-4 text-muted-foreground" />
-                  <span>Lễ tân</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="technician">
-                <div className="flex items-center gap-2">
-                  <Stethoscope className="h-4 w-4 text-muted-foreground" />
-                  <span>Kỹ thuật viên</span>
-                </div>
-              </SelectItem>
+              {ROLES.map((role) => (
+                <SelectItem key={role.id} value={role.id}>
+                  <div className="flex items-center gap-2">
+                    <UserCog className="h-4 w-4 text-muted-foreground" />
+                    <span>{role.name}</span>
+                  </div>
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>

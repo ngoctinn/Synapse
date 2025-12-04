@@ -50,6 +50,7 @@ export async function inviteStaff(prevState: ActionState, formData: FormData): P
     full_name: formData.get("full_name"),
     title: formData.get("title"),
     bio: formData.get("bio") || undefined,
+    skill_ids: formData.get("skill_ids") ? JSON.parse(formData.get("skill_ids") as string) : undefined,
   }
 
   // Validate with Zod
