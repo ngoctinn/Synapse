@@ -36,20 +36,21 @@ export function ImageUpload({ value, onChange, disabled }: ImageUploadProps) {
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-4">
         {preview ? (
-          <div className="relative w-[140px] h-[140px] rounded-lg overflow-hidden border border-slate-200 group shrink-0">
+          <div className="relative w-[140px] h-[140px] rounded-lg overflow-hidden border border-border group shrink-0 shadow-sm">
             <Image
               src={preview}
               alt="Service preview"
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
               <Button
                 type="button"
                 variant="destructive"
                 size="icon"
                 onClick={handleRemove}
                 disabled={disabled}
+                className="h-8 w-8 rounded-full shadow-lg"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -58,10 +59,12 @@ export function ImageUpload({ value, onChange, disabled }: ImageUploadProps) {
         ) : (
           <div
             onClick={() => fileInputRef.current?.click()}
-            className="w-[140px] h-[140px] rounded-lg border-2 border-dashed border-slate-300 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-50 transition-colors shrink-0"
+            className="w-[140px] h-[140px] rounded-lg border-2 border-dashed border-muted-foreground/25 flex flex-col items-center justify-center cursor-pointer hover:bg-muted/50 hover:border-primary/50 transition-all duration-200 shrink-0 group bg-muted/10"
           >
-            <ImagePlus className="h-8 w-8 text-slate-400 mb-2" />
-            <span className="text-xs text-slate-500 font-medium">Tải ảnh lên</span>
+            <div className="p-3 rounded-full bg-background shadow-sm mb-2 group-hover:scale-110 transition-transform duration-200">
+              <ImagePlus className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+            </div>
+            <span className="text-xs text-muted-foreground font-medium group-hover:text-primary transition-colors">Tải ảnh lên</span>
           </div>
         )}
         <input
