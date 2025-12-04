@@ -69,22 +69,22 @@ export function StaffTable({
   }
 
   return (
-    <div className="h-full flex flex-col gap-4">
-      <div className="flex-1 overflow-auto bg-white border relative">
+    <div className="flex flex-col gap-4">
+      <div className="bg-background border rounded-lg relative shadow-sm">
         <table className="w-full caption-bottom text-sm min-w-[800px]">
-          <TableHeader className="sticky top-0 z-10 bg-white shadow-sm">
-            <TableRow className="hover:bg-transparent border-b-0">
-              <TableHead className="pl-6 bg-white">Nhân viên</TableHead>
-              <TableHead className="bg-white">Vai trò</TableHead>
-              <TableHead className="bg-white">Kỹ năng</TableHead>
-              <TableHead className="bg-white">Trạng thái</TableHead>
-              <TableHead className="text-right pr-6 bg-white">Hành động</TableHead>
+          <TableHeader className="sticky top-[89px] z-20 bg-background shadow-sm after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-border">
+            <TableRow className="hover:bg-transparent border-none">
+              <TableHead className="bg-background pl-6 h-12 font-medium text-muted-foreground">Nhân viên</TableHead>
+              <TableHead className="bg-background h-12 font-medium text-muted-foreground">Vai trò</TableHead>
+              <TableHead className="bg-background h-12 font-medium text-muted-foreground">Kỹ năng</TableHead>
+              <TableHead className="bg-background h-12 font-medium text-muted-foreground">Trạng thái</TableHead>
+              <TableHead className="text-right bg-background pr-6 h-12 font-medium text-muted-foreground">Hành động</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {data.map((staff, index) => (
-              <AnimatedTableRow key={staff.user_id} index={index}>
-                <TableCell className="pl-6">
+              <AnimatedTableRow key={staff.user_id} index={index} className="group hover:bg-muted/30 transition-colors border-b border-border/50 last:border-0">
+                <TableCell className="pl-6 py-4">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-9 w-9 border">
                       <AvatarImage src={staff.user.avatar_url || undefined} alt={staff.user.full_name || ""} />
@@ -93,28 +93,28 @@ export function StaffTable({
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
-                      <span className="font-medium">{staff.user.full_name || "Chưa cập nhật tên"}</span>
+                      <span className="text-base font-serif text-foreground group-hover:text-primary transition-colors">{staff.user.full_name || "Chưa cập nhật tên"}</span>
                       <span className="text-xs text-muted-foreground">{staff.user.email}</span>
                     </div>
                   </div>
                 </TableCell>
-                <TableCell>
+                <TableCell className="py-4">
                   <Badge
                     variant={roleConfig[staff.user.role]?.variant || "outline"}
                     className={cn(
-                      "rounded-md px-2.5 py-0.5 font-medium",
+                      "rounded-md px-2.5 py-0.5 font-medium border-transparent",
                       roleConfig[staff.user.role]?.className || "bg-gray-100 text-gray-600"
                     )}
                   >
                     {roleConfig[staff.user.role]?.label || staff.user.role}
                   </Badge>
                 </TableCell>
-                <TableCell>
-                  <div className="flex flex-wrap gap-1">
+                <TableCell className="py-4">
+                  <div className="flex flex-wrap gap-1.5">
                     {staff.skills.length > 0 ? (
                       <>
                         {staff.skills.slice(0, 2).map((skill) => (
-                          <Badge key={skill.id} variant="outline" className="text-xs font-normal">
+                          <Badge key={skill.id} variant="secondary" className="text-[10px] px-2 py-0.5 bg-secondary/50 hover:bg-secondary text-secondary-foreground border-transparent">
                             {skill.name}
                           </Badge>
                         ))}
@@ -122,7 +122,7 @@ export function StaffTable({
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <Badge variant="outline" className="text-xs font-normal cursor-help">
+                                <Badge variant="secondary" className="text-[10px] px-2 py-0.5 bg-secondary/50 hover:bg-secondary text-secondary-foreground border-transparent cursor-help">
                                   +{staff.skills.length - 2} more
                                 </Badge>
                               </TooltipTrigger>
@@ -142,25 +142,29 @@ export function StaffTable({
                     )}
                   </div>
                 </TableCell>
-                <TableCell>
-                  <Badge variant="outline" className={staff.user.is_active ? "bg-emerald-500/10 text-emerald-700 border-emerald-500/20 hover:bg-emerald-500/20" : "bg-slate-500/10 text-slate-600 border-slate-500/20 hover:bg-slate-500/20"}>
+                <TableCell className="py-4">
+                  <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                    staff.user.is_active
+                      ? "bg-primary/10 text-primary border-primary/20"
+                      : "bg-muted text-muted-foreground border-border"
+                  }`}>
                     {staff.user.is_active ? (
                         <span className="flex items-center gap-1.5">
                             <span className="relative flex h-2 w-2">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                             </span>
                             Hoạt động
                         </span>
                     ) : (
                         <span className="flex items-center gap-1.5">
-                            <span className="h-2 w-2 rounded-full bg-slate-400"></span>
+                            <span className="h-2 w-2 rounded-full bg-muted-foreground/50"></span>
                             Ẩn
                         </span>
                     )}
-                  </Badge>
+                  </div>
                 </TableCell>
-                <TableCell className="text-right pr-6">
+                <TableCell className="text-right pr-6 py-4">
                   <StaffActions staff={staff} skills={skills} />
                 </TableCell>
               </AnimatedTableRow>
@@ -168,7 +172,7 @@ export function StaffTable({
           </TableBody>
         </table>
       </div>
-      <div className="px-4 pb-4">
+      <div className="px-1">
         <PaginationControls
           currentPage={page}
           totalPages={totalPages}
