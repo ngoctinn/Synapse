@@ -1,49 +1,78 @@
 "use client"
 
-import { Input } from "@/shared/ui/input"
 import { cn } from "@/shared/lib/utils"
-import { Search } from "lucide-react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useDebouncedCallback } from "use-debounce"
+import { Search, X } from "lucide-react"
+import * as React from "react"
 
-interface SearchInputProps {
-  placeholder?: string
-  className?: string
-  searchKey?: string
+export interface SearchInputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  onSearch?: (value: string) => void
 }
 
-export function SearchInput({
-  placeholder = "Tìm kiếm...",
-  className,
-  searchKey = "search",
-}: SearchInputProps) {
-  const searchParams = useSearchParams()
-  const pathname = usePathname()
-  const { replace } = useRouter()
+export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
+  ({ className, value, onChange, onSearch, ...props }, ref) => {
+    const [internalValue, setInternalValue] = React.useState(value || "")
+    const inputRef = React.useRef<HTMLInputElement>(null)
 
-  const handleSearch = useDebouncedCallback((term: string) => {
-    const params = new URLSearchParams(searchParams)
-    if (term) {
-      params.set(searchKey, term)
-    } else {
-      params.delete(searchKey)
+    React.useImperativeHandle(ref, () => inputRef.current!)
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setInternalValue(e.target.value)
+      onChange?.(e)
+      onSearch?.(e.target.value)
     }
-    // Reset page to 1 when searching
-    params.set("page", "1")
-    
-    replace(`${pathname}?${params.toString()}`)
-  }, 300)
 
-  return (
-    <div className={cn("relative flex-1 md:grow-0", className)}>
-      <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-      <Input
-        type="search"
-        placeholder={placeholder}
-        className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-        defaultValue={searchParams.get(searchKey)?.toString()}
-        onChange={(e) => handleSearch(e.target.value)}
-      />
-    </div>
-  )
-}
+    const handleClear = () => {
+      setInternalValue("")
+      if (inputRef.current) {
+        // Trigger a native change event for compatibility with react-hook-form etc.
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+          window.HTMLInputElement.prototype,
+          "value"
+        )?.set
+        nativeInputValueSetter?.call(inputRef.current, "")
+
+        const event = new Event("input", { bubbles: true })
+        inputRef.current.dispatchEvent(event)
+      }
+      // Also manually call handlers if needed
+      onSearch?.("")
+      inputRef.current?.focus()
+    }
+
+    return (
+      <div className="relative flex items-center w-full max-w-sm group">
+        <Search className="absolute left-3 h-4 w-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
+        <input
+          ref={inputRef}
+          type="text"
+          className={cn(
+            "flex h-10 w-full rounded-full border border-input bg-background px-9 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 shadow-sm hover:shadow-md focus-within:shadow-md",
+            className
+          )}
+          value={value !== undefined ? value : internalValue}
+          onChange={handleChange}
+          {...props}
+        />
+        {internalValue && (
+          <button
+            type="button"
+            onClick={handleClear}
+            className="absolute right-3 p-0.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <X className="h-3 w-3" />
+            <span className="sr-only">Clear search</span>
+          </button>
+        )}
+        {!internalValue && (
+           <div className="absolute right-3 pointer-events-none hidden sm:flex items-center gap-1">
+             <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+               <span className="text-xs">⌘</span>K
+             </kbd>
+           </div>
+        )}
+      </div>
+    )
+  }
+)
+SearchInput.displayName = "SearchInput"
