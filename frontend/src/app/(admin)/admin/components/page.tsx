@@ -8,6 +8,7 @@ import { Checkbox } from "@/shared/ui/checkbox"
 import { DatePicker } from "@/shared/ui/custom"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { StripCalendar } from "@/shared/ui/custom/strip-calendar"
+import { DurationPicker } from "@/shared/ui/custom/duration-picker"
 import { TimePicker } from "@/shared/ui/custom/time-picker"
 import { Input } from "@/shared/ui/input"
 import { Label } from "@/shared/ui/label"
@@ -148,6 +149,10 @@ export default function ComponentsPage() {
               <TimePickerDemo />
             </div>
             <div className="grid w-full max-w-sm items-center gap-1.5">
+              <Label>Chọn thời lượng (Phút)</Label>
+              <DurationPickerDemo />
+            </div>
+            <div className="grid w-full max-w-sm items-center gap-1.5">
               <Label>Strip Calendar (Week View)</Label>
               <StripCalendarDemo />
             </div>
@@ -220,8 +225,13 @@ function DatePickerBirthDemo() {
   )
 }
 
+function DurationPickerDemo() {
+  const [duration, setDuration] = useState<number>(60)
+  return <DurationPicker value={duration} onChange={setDuration} />
+}
+
 function TimePickerDemo() {
-  const [time, setTime] = useState<number>(60)
+  const [time, setTime] = useState<string>("09:00")
   return <TimePicker value={time} onChange={setTime} />
 }
 

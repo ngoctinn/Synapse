@@ -9,5 +9,6 @@ export * from "./sonner"
 export * from "./strip-calendar"
 export * from "./tag-input"
 export * from "./time-picker"
+export * from "./duration-picker"
 export * from "./filter-button"
 

@@ -4,7 +4,7 @@ import { Button } from "@/shared/ui/button";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { MoneyInput } from "@/shared/ui/custom/money-input";
 import { TagInput } from "@/shared/ui/custom/tag-input";
-import { TimePicker } from "@/shared/ui/custom/time-picker";
+import { DurationPicker } from "@/shared/ui/custom/duration-picker";
 import {
     Form,
     FormControl,
@@ -208,11 +208,10 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="flex items-center gap-2">
-                        <Clock className="w-4 h-4" />
                         Thời lượng
                       </FormLabel>
                       <FormControl>
-                        <TimePicker
+                        <DurationPicker
                           value={field.value}
                           onChange={field.onChange}
                           min={15}
@@ -231,11 +230,10 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="flex items-center gap-2">
-                        <Coffee className="w-4 h-4" />
                         Thời gian nghỉ
                       </FormLabel>
                       <FormControl>
-                        <TimePicker
+                        <DurationPicker
                           value={field.value}
                           onChange={field.onChange}
                           min={0}
