@@ -29,6 +29,7 @@ async function StaffListWrapper({
       skills={skills}
       page={page}
       totalPages={totalPages}
+      className="-mx-4 border-x-0 rounded-none shadow-none"
     />
   )
 }
@@ -48,7 +49,7 @@ export default async function Page({
   return (
     <div className="min-h-screen flex flex-col pb-10">
       {/* Sticky Header with enhanced Glassmorphism */}
-      <div className="sticky top-0 z-50 -mx-4 -mt-4 px-4 py-4 bg-background/80 backdrop-blur-md border-b flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300">
+      <div className="sticky top-0 z-50 -mx-4 -mt-4 px-4 py-4 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300">
         <div className="space-y-1">
             <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
                 Quản lý nhân sự
