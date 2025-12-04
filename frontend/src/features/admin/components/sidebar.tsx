@@ -2,31 +2,31 @@
 
 import { HeaderLogo } from "@/shared/ui/branding/header-logo"
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
 } from "@/shared/ui/collapsible"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-  SidebarRail,
-  useSidebar,
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubButton,
+    SidebarMenuSubItem,
+    SidebarRail,
+    useSidebar,
 } from "@/shared/ui/sidebar"
 import { ChevronRight, HelpCircle } from "lucide-react"
 import Link from "next/link"
@@ -38,9 +38,13 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
   const { state } = useSidebar()
 
   return (
-    <Sidebar collapsible="icon" className="border-none" {...props}>
+    <Sidebar
+      collapsible="icon"
+      className="border-r border-border/40 bg-sidebar/95 backdrop-blur supports-[backdrop-filter]:bg-sidebar/80"
+      {...props}
+    >
       <SidebarHeader className="h-16 justify-center px-4 group-data-[collapsible=icon]:px-2">
-        <div className="flex items-center w-full">
+        <div className="flex items-center w-full transition-all duration-200 ease-in-out">
             <HeaderLogo
               className="w-full"
               textClassName="group-data-[collapsible=icon]:hidden transition-all duration-200"
@@ -51,7 +55,7 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
       <SidebarContent className="px-3 py-4 group-data-[collapsible=icon]:px-0">
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu className="gap-2">
+            <SidebarMenu className="gap-1.5">
               {SIDEBAR_ITEMS.map((item) => {
                 const Icon = item.icon
                 const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`)
@@ -66,7 +70,7 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                             <SidebarMenuButton
                               tooltip={item.title}
                               isActive={isActive}
-                              className="font-medium justify-center"
+                              className="font-medium justify-center data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
                             >
                               <Icon className="size-5" />
                               <span className="sr-only">{item.title}</span>
@@ -99,27 +103,33 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                           <SidebarMenuButton
                             tooltip={item.title}
                             isActive={isActive}
-                            className="font-medium transition-all duration-200 group-hover/menu-item:bg-sidebar-accent group-hover/menu-item:text-sidebar-accent-foreground"
+                            className="font-medium transition-all duration-200 group-hover/menu-item:bg-sidebar-accent group-hover/menu-item:text-sidebar-accent-foreground data-[active=true]:bg-primary/5 data-[active=true]:text-primary"
                           >
                             <Icon className="size-5" />
                             <span>{item.title}</span>
-                            <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                            <ChevronRight className="ml-auto size-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 text-muted-foreground/50 group-hover/menu-item:text-muted-foreground" />
                           </SidebarMenuButton>
                         </CollapsibleTrigger>
                         <CollapsibleContent>
-                          <SidebarMenuSub className="mr-0 ml-4 border-l-slate-300">
-                            {item.items.map((subItem) => (
-                              <SidebarMenuSubItem key={subItem.title}>
-                                <SidebarMenuSubButton
-                                  asChild
-                                  isActive={pathname === subItem.href}
-                                >
-                                  <Link href={subItem.href}>
-                                    <span>{subItem.title}</span>
-                                  </Link>
-                                </SidebarMenuSubButton>
-                              </SidebarMenuSubItem>
-                            ))}
+                          <SidebarMenuSub className="mr-0 ml-4 border-l-border/50 px-0 py-1">
+                            {item.items.map((subItem) => {
+                                const isSubActive = pathname === subItem.href
+                                return (
+                                    <SidebarMenuSubItem key={subItem.title}>
+                                        <SidebarMenuSubButton
+                                        asChild
+                                        isActive={isSubActive}
+                                        className="h-9 pl-4 hover:bg-sidebar-accent/50 data-[active=true]:bg-transparent data-[active=true]:text-primary data-[active=true]:font-medium relative overflow-visible
+                                            before:absolute before:left-[-17px] before:top-1/2 before:-translate-y-1/2 before:h-px before:w-3 before:bg-border/50
+                                            data-[active=true]:before:bg-primary"
+                                        >
+                                        <Link href={subItem.href}>
+                                            <span>{subItem.title}</span>
+                                        </Link>
+                                        </SidebarMenuSubButton>
+                                    </SidebarMenuSubItem>
+                                )
+                            })}
                           </SidebarMenuSub>
                         </CollapsibleContent>
                       </SidebarMenuItem>
@@ -134,7 +144,7 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                         asChild
                         isActive={isActive}
                         tooltip={item.title}
-                        className="font-medium transition-all duration-200 group-data-[collapsible=icon]:justify-center"
+                        className="font-medium transition-all duration-200 group-data-[collapsible=icon]:justify-center data-[active=true]:bg-primary/10 data-[active=true]:text-primary hover:bg-sidebar-accent/80"
                     >
                       <Link href={item.href} className="flex items-center gap-3">
                         <Icon className="size-5" />
@@ -154,7 +164,7 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
           <SidebarMenuItem>
             <SidebarMenuButton
               tooltip="Hỗ trợ"
-              className="font-medium text-slate-400 hover:text-slate-600 transition-colors group-data-[collapsible=icon]:justify-center"
+              className="font-medium text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50 transition-colors group-data-[collapsible=icon]:justify-center"
             >
               <HelpCircle className="size-5" />
               <span className="group-data-[collapsible=icon]:hidden">Hỗ trợ</span>

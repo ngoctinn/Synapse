@@ -4,28 +4,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { Loader2, Mail } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState, useActionState, startTransition } from "react";
+import { startTransition, useActionState, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/shared/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/shared/ui/card";
 import { CustomDialog } from "@/shared/ui/custom/dialog";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { showToast } from "@/shared/ui/custom/sonner";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form";
 import { forgotPasswordAction } from "../actions";
 import { forgotPasswordSchema, type ForgotPasswordInput } from "../schemas";
@@ -67,7 +59,7 @@ export function ForgotPasswordForm() {
   const onSubmit = (values: ForgotPasswordInput) => {
     const formData = new FormData();
     formData.append("email", values.email);
-    
+
     // Gọi action (đã được wrap bởi useActionState)
     startTransition(() => {
       action(formData);
@@ -82,64 +74,62 @@ export function ForgotPasswordForm() {
       transition={{ duration: 0.5 }}
       className="w-full"
     >
-      <Card className="w-full shadow-lg border-none bg-card/50 backdrop-blur-sm">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold tracking-tight">Quên mật khẩu</CardTitle>
-          <CardDescription className="text-muted-foreground">
-            Nhập email của bạn để nhận liên kết đặt lại mật khẩu.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <InputWithIcon
-                        icon={Mail}
-                        placeholder="name@example.com"
-                        className="h-11"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+      <div className="flex flex-col space-y-2 text-center mb-8">
+        <h1 className="text-3xl font-serif font-bold tracking-tight text-primary">
+          Quên mật khẩu?
+        </h1>
+        <p className="text-muted-foreground">
+          Đừng lo lắng, chúng tôi sẽ giúp bạn lấy lại quyền truy cập.
+        </p>
+      </div>
 
-              <Button 
-                type="submit" 
-                className="w-full h-11 font-medium transition-all hover:scale-[1.02]" 
-                disabled={isPending}
-              >
-                {isPending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Đang xử lý...
-                  </>
-                ) : (
-                  "Gửi yêu cầu"
-                )}
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-        <CardFooter className="justify-center">
-          <div className="text-sm text-muted-foreground">
-            Nhớ mật khẩu?{" "}
-            <Link 
-              href="/login" 
-              className="text-primary font-medium hover:underline underline-offset-4 transition-colors"
-            >
-              Đăng nhập
-            </Link>
-          </div>
-        </CardFooter>
-      </Card>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-foreground/80">Email</FormLabel>
+                <FormControl>
+                  <InputWithIcon
+                    icon={Mail}
+                    placeholder="name@example.com"
+                    className="h-12 bg-background border-input/50 focus:border-primary/50 transition-all"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button
+            type="submit"
+            className="w-full h-12 text-base font-medium shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-[1.01]"
+            disabled={isPending}
+          >
+            {isPending ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Đang xử lý...
+              </>
+            ) : (
+              "Gửi yêu cầu"
+            )}
+          </Button>
+        </form>
+      </Form>
+
+      <div className="mt-8 text-center text-sm text-muted-foreground">
+        Nhớ mật khẩu?{" "}
+        <Link
+          href="/login"
+          className="text-primary font-bold hover:underline underline-offset-4 transition-colors"
+        >
+          Đăng nhập
+        </Link>
+      </div>
     </motion.div>
 
       <CustomDialog
