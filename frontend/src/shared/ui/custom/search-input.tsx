@@ -1,6 +1,7 @@
 "use client"
 
 import { cn } from "@/shared/lib/utils"
+import { Input } from "@/shared/ui/input"
 import { Search, X } from "lucide-react"
 import * as React from "react"
 
@@ -42,12 +43,13 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
 
     return (
       <div className="relative flex items-center w-full max-w-sm group">
-        <Search className="absolute left-3 h-4 w-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
-        <input
+        <Search className="absolute left-3 h-4 w-4 text-muted-foreground transition-colors duration-200 group-focus-within:text-primary" />
+        <Input
           ref={inputRef}
           type="text"
           className={cn(
-            "flex h-10 w-full rounded-full border border-input bg-background px-9 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 shadow-sm hover:shadow-md focus-within:shadow-md",
+            "pl-9 pr-9 rounded-full transition-all duration-200 shadow-sm hover:shadow-md focus-visible:shadow-md",
+            "focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary",
             className
           )}
           value={value !== undefined ? value : internalValue}
