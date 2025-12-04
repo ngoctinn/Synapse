@@ -38,7 +38,7 @@ export function HeaderUserDropdown({ user, onLogout }: HeaderUserDropdownProps) 
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-64 p-2 bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 border-border/50" align="end" sideOffset={12} alignOffset={-20} forceMount>
+      <DropdownMenuContent className="w-64 p-2" align="end" sideOffset={12} alignOffset={-20} forceMount>
         <DropdownMenuLabel className="font-normal p-2">
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10 border border-border">

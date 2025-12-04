@@ -2,31 +2,31 @@
 
 import { HeaderLogo } from "@/shared/ui/branding/header-logo"
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
 } from "@/shared/ui/collapsible"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-  SidebarRail,
-  useSidebar,
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubButton,
+    SidebarMenuSubItem,
+    SidebarRail,
+    useSidebar,
 } from "@/shared/ui/sidebar"
 import { ChevronRight, HelpCircle } from "lucide-react"
 import Link from "next/link"
@@ -76,7 +76,7 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                               <span className="sr-only">{item.title}</span>
                             </SidebarMenuButton>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent side="right" align="start" className="min-w-[180px] rounded-xl border-border/40 shadow-lg backdrop-blur-sm bg-background/95">
+                          <DropdownMenuContent side="right" align="start" className="min-w-[180px] rounded-xl">
                             {item.items.map((subItem) => (
                               <DropdownMenuItem key={subItem.title} asChild className="focus:bg-primary/10 focus:text-primary cursor-pointer rounded-lg my-0.5">
                                 <Link href={subItem.href}>
