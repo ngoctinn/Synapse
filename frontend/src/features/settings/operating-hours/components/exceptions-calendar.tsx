@@ -62,30 +62,34 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
     <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
       <div className="md:col-span-5 lg:col-span-4">
         <Card className="h-full border-none shadow-none bg-transparent">
-          <CardContent className="p-0 space-y-4">
-             <div className="border rounded-2xl p-6 bg-card/80 backdrop-blur-sm shadow-lg">
+          <CardContent className="p-0 space-y-6">
+             <div className="border rounded-3xl p-6 bg-card/50 backdrop-blur-md shadow-xl ring-1 ring-white/20 dark:ring-white/5">
               <Calendar
                 mode="multiple"
                 selected={dates}
                 onSelect={setDates}
                 modifiers={modifiers}
                 modifiersStyles={modifiersStyles}
-                className="rounded-md w-full flex justify-center"
+                className="rounded-md w-full flex justify-center p-2"
                 locale={vi}
+                classNames={{
+                  day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground rounded-full",
+                  day_today: "bg-accent text-accent-foreground rounded-full",
+                }}
               />
             </div>
-            <div className="flex gap-4 justify-center text-sm text-muted-foreground bg-muted/30 p-3 rounded-xl">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-destructive" />
-                <span>Ngày lễ</span>
+            <div className="flex flex-wrap gap-3 justify-center text-sm text-muted-foreground bg-muted/30 p-4 rounded-2xl border border-white/5">
+              <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-destructive/10 border border-destructive/20">
+                <div className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
+                <span className="text-destructive font-medium text-xs">Ngày lễ</span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-primary" />
-                <span>Tùy chỉnh</span>
+              <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-primary/10 border border-primary/20">
+                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                <span className="text-primary font-medium text-xs">Tùy chỉnh</span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-amber-500" />
-                <span>Bảo trì</span>
+              <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-amber-500/10 border border-amber-500/20">
+                <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                <span className="text-amber-600 font-medium text-xs">Bảo trì</span>
               </div>
             </div>
           </CardContent>
@@ -93,44 +97,54 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
       </div>
 
       <div className="md:col-span-7 lg:col-span-8 space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between pb-2 border-b border-border/40">
           <div>
-            <h3 className="text-lg font-semibold flex items-center gap-2">
+            <h3 className="text-xl font-bold flex items-center gap-2 tracking-tight">
               <CalendarDays className="w-5 h-5 text-primary" />
               Danh sách Ngoại lệ
             </h3>
-            <p className="text-sm text-muted-foreground">Quản lý các ngày nghỉ lễ và lịch làm việc đặc biệt</p>
+            <p className="text-sm text-muted-foreground mt-1">Quản lý các ngày nghỉ lễ và lịch làm việc đặc biệt</p>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button onClick={() => dates && dates.length > 0 && setIsDialogOpen(true)} disabled={!dates || dates.length === 0} className="shadow-sm">
+              <Button 
+                onClick={() => dates && dates.length > 0 && setIsDialogOpen(true)} 
+                disabled={!dates || dates.length === 0} 
+                className={cn(
+                  "shadow-lg transition-all duration-300",
+                  dates && dates.length > 0 ? "animate-bounce-subtle" : "opacity-50"
+                )}
+              >
                 <Plus className="w-4 h-4 mr-2" />
                 Thêm ngoại lệ ({dates?.length || 0})
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[450px] rounded-2xl">
               <DialogHeader>
-                <DialogTitle>Thêm ngoại lệ cho {dates?.length} ngày đã chọn</DialogTitle>
+                <DialogTitle className="text-xl">Thêm ngoại lệ mới</DialogTitle>
+                <p className="text-sm text-muted-foreground">
+                  Đang thiết lập cho <span className="font-bold text-foreground">{dates?.length}</span> ngày đã chọn.
+                </p>
               </DialogHeader>
-              <div className="grid gap-6 py-4">
+              <div className="grid gap-6 py-6">
                 <div className="space-y-2">
-                  <Label htmlFor="reason">Lý do / Tên sự kiện</Label>
+                  <Label htmlFor="reason" className="text-sm font-medium">Lý do / Tên sự kiện</Label>
                   <Input 
                     id="reason" 
                     value={newException.reason || ''} 
                     onChange={e => setNewException({...newException, reason: e.target.value})}
                     placeholder="Ví dụ: Tết Nguyên Đán"
-                    className="col-span-3" 
+                    className="h-11 rounded-xl" 
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="type">Loại sự kiện</Label>
+                    <Label htmlFor="type" className="text-sm font-medium">Loại sự kiện</Label>
                     <Select 
                       value={newException.type} 
                       onValueChange={(val: 'holiday' | 'custom' | 'maintenance') => setNewException({...newException, type: val})}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="h-11 rounded-xl">
                         <SelectValue placeholder="Chọn loại" />
                       </SelectTrigger>
                       <SelectContent>
@@ -141,14 +155,15 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="closed">Trạng thái</Label>
-                    <div className="flex items-center gap-2 h-10 px-3 border rounded-md bg-muted/20">
+                    <Label htmlFor="closed" className="text-sm font-medium">Trạng thái</Label>
+                    <div className="flex items-center gap-3 h-11 px-4 border rounded-xl bg-muted/20 hover:bg-muted/30 transition-colors">
                       <Switch 
                         id="closed" 
                         checked={newException.isClosed}
                         onCheckedChange={checked => setNewException({...newException, isClosed: checked})}
+                        className="data-[state=checked]:bg-destructive"
                       />
-                      <Label htmlFor="closed" className="cursor-pointer text-sm font-normal">
+                      <Label htmlFor="closed" className="cursor-pointer text-sm font-medium flex-1">
                         {newException.isClosed ? "Đóng cửa" : "Mở cửa"}
                       </Label>
                     </div>
@@ -156,69 +171,69 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
                 </div>
               </div>
               <DialogFooter>
-                <Button onClick={handleAdd} className="w-full">Lưu thay đổi</Button>
+                <Button onClick={handleAdd} className="w-full h-11 rounded-xl text-base font-medium">Lưu thay đổi</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 scrollbar-hide">
           {exceptions.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed rounded-xl text-muted-foreground bg-muted/10 relative overflow-hidden">
-              <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25" />
-              <div className="relative z-10 flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4 shadow-sm">
-                  <CalendarDays className="w-8 h-8 text-muted-foreground/50" />
+            <div className="flex flex-col items-center justify-center py-16 border-2 border-dashed rounded-3xl text-muted-foreground bg-muted/5 relative overflow-hidden group">
+              <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25 opacity-50" />
+              <div className="relative z-10 flex flex-col items-center transition-transform duration-500 group-hover:scale-105">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center mb-6 shadow-inner ring-4 ring-background">
+                  <CalendarDays className="w-10 h-10 text-muted-foreground/40" />
                 </div>
-                <p className="font-medium text-lg">Chưa có ngày ngoại lệ nào</p>
-                <p className="text-sm text-muted-foreground max-w-xs text-center mt-1">
-                  Chọn một hoặc nhiều ngày trên lịch bên trái để thiết lập ngày nghỉ hoặc giờ làm việc đặc biệt.
+                <h3 className="font-semibold text-xl mb-2">Chưa có ngày ngoại lệ</h3>
+                <p className="text-sm text-muted-foreground max-w-xs text-center leading-relaxed">
+                  Chọn ngày trên lịch để thêm ngày nghỉ lễ, bảo trì hoặc giờ làm việc đặc biệt.
                 </p>
-                <div className="mt-6 flex items-center gap-2 text-primary text-sm font-medium animate-pulse">
-                  <ArrowLeft className="w-4 h-4" />
-                  <span>Chọn ngày trên lịch</span>
+                <div className="mt-8 flex items-center gap-2 text-primary text-sm font-medium bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
+                  <ArrowLeft className="w-4 h-4 animate-pulse-horizontal" />
+                  <span>Bắt đầu bằng việc chọn ngày</span>
                 </div>
               </div>
             </div>
           ) : (
             exceptions.sort((a, b) => a.date.getTime() - b.date.getTime()).map((ex) => (
-              <div key={ex.id} className="group relative flex items-center justify-between p-4 rounded-xl border bg-card hover:shadow-md transition-all duration-300 overflow-hidden">
+              <div key={ex.id} className="group relative flex items-center justify-between p-4 rounded-2xl border bg-card/50 hover:bg-card hover:shadow-lg transition-all duration-300 overflow-hidden">
                 <div className={cn(
-                  "absolute left-0 top-0 bottom-0 w-1.5",
+                  "absolute left-0 top-0 bottom-0 w-1.5 transition-all duration-300 group-hover:w-2",
                   ex.type === 'holiday' ? "bg-destructive" : ex.type === 'maintenance' ? "bg-amber-500" : "bg-primary"
                 )} />
                 
-                <div className="flex items-center gap-4 pl-4">
+                <div className="flex items-center gap-5 pl-4">
                   <div className={cn(
-                    "w-14 h-14 rounded-xl flex flex-col items-center justify-center border shadow-sm",
+                    "w-16 h-16 rounded-2xl flex flex-col items-center justify-center border shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3",
                     ex.type === 'holiday' ? "bg-destructive/5 border-destructive/10 text-destructive" : 
                     ex.type === 'maintenance' ? "bg-amber-500/5 border-amber-500/10 text-amber-600" :
                     "bg-primary/5 border-primary/10 text-primary"
                   )}>
-                    <span className="text-[10px] font-bold uppercase tracking-wider">{format(ex.date, 'MMM', { locale: vi })}</span>
-                    <span className="text-xl font-bold leading-none">{format(ex.date, 'dd')}</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider opacity-80">{format(ex.date, 'MMM', { locale: vi })}</span>
+                    <span className="text-2xl font-black leading-none tracking-tighter">{format(ex.date, 'dd')}</span>
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-base">{ex.reason}</h4>
-                    <div className="flex items-center gap-2 mt-1">
+                  <div className="space-y-1">
+                    <h4 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors">{ex.reason}</h4>
+                    <div className="flex items-center gap-2">
                       <Badge variant="secondary" className={cn(
-                        "text-[10px] px-1.5 py-0 h-5 font-medium border-0",
+                        "text-[10px] px-2 py-0.5 h-5 font-bold border-0 uppercase tracking-wide",
                         ex.type === 'holiday' ? "bg-destructive/10 text-destructive" : 
                         ex.type === 'maintenance' ? "bg-amber-500/10 text-amber-600" :
                         "bg-primary/10 text-primary"
                       )}>
                         {ex.type === 'holiday' ? 'Ngày lễ' : ex.type === 'maintenance' ? 'Bảo trì' : 'Tùy chỉnh'}
                       </Badge>
-                      <span className="text-xs text-muted-foreground flex items-center gap-1">
+                      <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
                         {ex.isClosed ? (
                           <>
-                            <AlertCircle className="w-3 h-3" />
-                            Đóng cửa cả ngày
+                            <AlertCircle className="w-3.5 h-3.5 text-destructive" />
+                            <span className="text-destructive/80">Đóng cửa cả ngày</span>
                           </>
                         ) : (
                           <>
-                            <Clock className="w-3 h-3" />
-                            Giờ làm việc đặc biệt
+                            <Clock className="w-3.5 h-3.5 text-primary" />
+                            <span className="text-primary/80">Giờ làm việc đặc biệt</span>
                           </>
                         )}
                       </span>
@@ -229,9 +244,9 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
                   variant="ghost" 
                   size="icon" 
                   onClick={() => onRemoveException(ex.id)} 
-                  className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                  className="opacity-0 group-hover:opacity-100 transition-all duration-300 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full h-10 w-10"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-5 h-5" />
                 </Button>
               </div>
             ))

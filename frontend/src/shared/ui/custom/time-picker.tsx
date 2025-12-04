@@ -50,20 +50,20 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
         <Button
           variant="outline"
           className={cn(
-            "w-full justify-start text-left font-normal",
+            "w-full justify-start text-left font-normal h-9 px-3 hover:bg-muted/50 transition-colors",
             !value && "text-muted-foreground",
             className
           )}
         >
-          <Clock className="mr-2 h-4 w-4" />
+          <Clock className="mr-2 h-4 w-4 opacity-50" />
           {value || "Chọn giờ"}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <div className="flex h-[200px] divide-x">
-          <ScrollArea className="w-[70px]">
-            <div className="flex flex-col p-2">
-              <Label className="mb-2 text-center text-xs font-semibold text-muted-foreground">
+      <PopoverContent className="w-auto p-0 rounded-xl shadow-xl border-border/60" align="start">
+        <div className="flex h-[220px] divide-x divide-border/50">
+          <ScrollArea className="w-[80px]">
+            <div className="flex flex-col p-2 gap-1">
+              <Label className="mb-2 text-center text-[10px] uppercase font-bold text-muted-foreground tracking-wider sticky top-0 bg-popover py-1 z-10">
                 Giờ
               </Label>
               {hoursList.map((h) => (
@@ -71,7 +71,10 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
                   key={h}
                   variant={hours === h ? "default" : "ghost"}
                   size="sm"
-                  className="justify-center"
+                  className={cn(
+                    "justify-center h-8 rounded-lg font-medium",
+                    hours === h ? "bg-primary text-primary-foreground shadow-sm" : "text-foreground/80 hover:bg-muted"
+                  )}
                   onClick={() => handleTimeChange("hour", h)}
                 >
                   {h.toString().padStart(2, "0")}
@@ -79,9 +82,9 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
               ))}
             </div>
           </ScrollArea>
-          <ScrollArea className="w-[70px]">
-            <div className="flex flex-col p-2">
-              <Label className="mb-2 text-center text-xs font-semibold text-muted-foreground">
+          <ScrollArea className="w-[80px]">
+            <div className="flex flex-col p-2 gap-1">
+              <Label className="mb-2 text-center text-[10px] uppercase font-bold text-muted-foreground tracking-wider sticky top-0 bg-popover py-1 z-10">
                 Phút
               </Label>
               {minutesList.map((m) => (
@@ -89,7 +92,10 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
                   key={m}
                   variant={minutes === m ? "default" : "ghost"}
                   size="sm"
-                  className="justify-center"
+                  className={cn(
+                    "justify-center h-8 rounded-lg font-medium",
+                    minutes === m ? "bg-primary text-primary-foreground shadow-sm" : "text-foreground/80 hover:bg-muted"
+                  )}
                   onClick={() => handleTimeChange("minute", m)}
                 >
                   {m.toString().padStart(2, "0")}
