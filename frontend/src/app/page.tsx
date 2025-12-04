@@ -1,5 +1,5 @@
 import { CTASection, Features, Hero, Testimonials } from "@/features/landing-page";
-import { Footer, Header } from "@/features/layout";
+import { Footer, Header } from "@/shared/components/layout";
 
 export default function Home() {
   return (

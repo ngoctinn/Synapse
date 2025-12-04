@@ -1,4 +1,4 @@
-import { Footer, Header } from "@/features/layout";
+import { Footer, Header } from "@/shared/components/layout";
 import React from "react";
 
 export default function AuthLayout({

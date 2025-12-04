@@ -1,7 +1,7 @@
 "use client"
 
 import { logoutAction } from "@/features/auth/actions"
-import { UserProfile } from "@/features/layout/components/header/types"
+import { UserProfile } from "@/shared/components/layout/components/header/types"
 import { cn } from "@/shared/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import {
@@ -151,4 +151,3 @@ export function AdminHeader({ className, user }: AdminHeaderProps) {
     </header>
   )
 }
-
