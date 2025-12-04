@@ -19,9 +19,8 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
     return (
       <div className="relative group w-full">
         <div className={cn(
-          "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-200",
-          !props["aria-invalid"] && "text-muted-foreground group-focus-within:text-primary",
-          props["aria-invalid"] && "text-destructive group-focus-within:text-destructive"
+          "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-200 z-10",
+          props["aria-invalid"] ? "text-destructive" : "text-muted-foreground group-focus-within:text-primary"
         )}>
           <Icon size={18} {...iconProps} />
         </div>
@@ -41,9 +40,8 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
           variant="ghost"
           size="icon"
           className={cn(
-            "absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent transition-colors duration-200",
-            !props["aria-invalid"] && "text-muted-foreground group-focus-within:text-primary",
-            props["aria-invalid"] && "text-destructive group-focus-within:text-destructive"
+            "absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent transition-colors duration-200 z-10",
+            props["aria-invalid"] ? "text-destructive hover:text-destructive" : "text-muted-foreground hover:text-foreground group-focus-within:text-primary"
           )}
           onClick={() => setShowPassword((prev) => !prev)}
           tabIndex={-1} // Skip tab index for this button to keep flow natural

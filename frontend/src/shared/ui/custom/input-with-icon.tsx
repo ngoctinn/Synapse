@@ -19,9 +19,8 @@ const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
       <div className={cn("relative group w-full", containerClassName)}>
         {Icon && (
           <div className={cn(
-            "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-200",
-            !error && "text-muted-foreground group-focus-within:text-primary",
-            error && "text-destructive group-focus-within:text-destructive"
+            "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-200 z-10",
+            error ? "text-destructive" : "text-muted-foreground group-focus-within:text-primary"
           )}>
             <Icon size={18} {...iconProps} />
           </div>
@@ -41,9 +40,8 @@ const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
         />
         {RightIcon && (
           <div className={cn(
-            "pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 transition-colors duration-200",
-            !error && "text-muted-foreground group-focus-within:text-primary",
-            error && "text-destructive group-focus-within:text-destructive"
+            "pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 transition-colors duration-200 z-10",
+            error ? "text-destructive" : "text-muted-foreground group-focus-within:text-primary"
           )}>
             <RightIcon size={18} {...rightIconProps} />
           </div>
