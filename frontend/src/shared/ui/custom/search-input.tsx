@@ -48,7 +48,7 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
           ref={inputRef}
           type="text"
           className={cn(
-            "pl-9 pr-9 rounded-full transition-all duration-200 shadow-sm hover:shadow-md focus-visible:shadow-md",
+            "pl-9 pr-9 transition-all duration-200 shadow-sm hover:shadow-md focus-visible:shadow-md",
             "focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary",
             className
           )}
