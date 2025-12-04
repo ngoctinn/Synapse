@@ -1,14 +1,14 @@
 export type DayOfWeek = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
 
 export interface TimeSlot {
-  start: string; // Format "HH:mm"
-  end: string;   // Format "HH:mm"
+  start: string; // Định dạng "HH:mm"
+  end: string;   // Định dạng "HH:mm"
 }
 
 export interface DaySchedule {
   day: DayOfWeek;
   isOpen: boolean;
-  timeSlots: TimeSlot[]; // Support multiple slots (e.g., morning/afternoon shift) but MVP can start with 1
+  timeSlots: TimeSlot[]; // Hỗ trợ nhiều khung giờ (ví dụ: ca sáng/ca chiều)
 }
 
 export interface ExceptionDate {
@@ -16,7 +16,7 @@ export interface ExceptionDate {
   date: Date;
   reason: string;
   type: 'holiday' | 'maintenance' | 'custom';
-  isClosed: boolean; // True if completely closed, False if modified hours
+  isClosed: boolean; // True nếu đóng cửa cả ngày, False nếu chỉ thay đổi giờ làm việc
   modifiedHours?: TimeSlot[];
 }
 

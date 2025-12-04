@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Calendar } from "@/shared/ui/calendar";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/shared/ui/card";
+import { Card, CardContent } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/shared/ui/dialog";
 import { Label } from "@/shared/ui/label";
@@ -11,16 +11,16 @@ import { Badge } from "@/shared/ui/badge";
 import { ExceptionDate } from "../model/types";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { Plus, Trash2, CalendarDays, Clock, AlertCircle } from "lucide-react";
+import { Plus, Trash2, CalendarDays, Clock, AlertCircle, ArrowLeft } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 
 interface ExceptionsCalendarProps {
   exceptions: ExceptionDate[];
-  onAddException: (exception: ExceptionDate) => void;
+  onAddExceptions: (exceptions: ExceptionDate[]) => void;
   onRemoveException: (id: string) => void;
 }
 
-export function ExceptionsCalendar({ exceptions, onAddException, onRemoveException }: ExceptionsCalendarProps) {
+export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveException }: ExceptionsCalendarProps) {
   const [dates, setDates] = useState<Date[] | undefined>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newException, setNewException] = useState<Partial<ExceptionDate>>({
@@ -30,15 +30,15 @@ export function ExceptionsCalendar({ exceptions, onAddException, onRemoveExcepti
 
   const handleAdd = () => {
     if (dates && dates.length > 0 && newException.reason) {
-      dates.forEach(date => {
-        onAddException({
-          id: Math.random().toString(36).substr(2, 9),
-          date: date,
-          reason: newException.reason!,
-          type: newException.type as 'holiday' | 'custom' | 'maintenance',
-          isClosed: newException.isClosed || false,
-        });
-      });
+      const exceptionsToAdd: ExceptionDate[] = dates.map(date => ({
+        id: Math.random().toString(36).substr(2, 9),
+        date: date,
+        reason: newException.reason!,
+        type: newException.type as 'holiday' | 'custom' | 'maintenance',
+        isClosed: newException.isClosed || false,
+      }));
+      
+      onAddExceptions(exceptionsToAdd);
       setIsDialogOpen(false);
       setNewException({ type: 'holiday', isClosed: true, reason: '' });
       setDates([]);
@@ -164,12 +164,21 @@ export function ExceptionsCalendar({ exceptions, onAddException, onRemoveExcepti
 
         <div className="space-y-3">
           {exceptions.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed rounded-xl text-muted-foreground bg-muted/10">
-              <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
-                <CalendarDays className="w-6 h-6 text-muted-foreground" />
+            <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed rounded-xl text-muted-foreground bg-muted/10 relative overflow-hidden">
+              <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25" />
+              <div className="relative z-10 flex flex-col items-center">
+                <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4 shadow-sm">
+                  <CalendarDays className="w-8 h-8 text-muted-foreground/50" />
+                </div>
+                <p className="font-medium text-lg">Chưa có ngày ngoại lệ nào</p>
+                <p className="text-sm text-muted-foreground max-w-xs text-center mt-1">
+                  Chọn một hoặc nhiều ngày trên lịch bên trái để thiết lập ngày nghỉ hoặc giờ làm việc đặc biệt.
+                </p>
+                <div className="mt-6 flex items-center gap-2 text-primary text-sm font-medium animate-pulse">
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>Chọn ngày trên lịch</span>
+                </div>
               </div>
-              <p className="font-medium">Chưa có ngày ngoại lệ nào</p>
-              <p className="text-sm">Chọn một ngày trên lịch để thêm ngoại lệ mới</p>
             </div>
           ) : (
             exceptions.sort((a, b) => a.date.getTime() - b.date.getTime()).map((ex) => (

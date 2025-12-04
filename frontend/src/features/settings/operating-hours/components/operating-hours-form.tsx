@@ -6,9 +6,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/sha
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { DayScheduleRow } from "./day-schedule-row";
 import { ExceptionsCalendar } from "./exceptions-calendar";
-import { MOCK_OPERATING_HOURS } from "../model/mocks";
+import { MOCK_OPERATING_HOURS, DAY_LABELS } from "../model/mocks";
 import { OperatingHoursConfig, DaySchedule, ExceptionDate, DayOfWeek } from "../model/types";
-import { Save, RotateCcw, Copy } from "lucide-react";
+import { Save, RotateCcw, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/shared/lib/utils";
 
@@ -24,10 +24,10 @@ export function OperatingHoursForm() {
     setIsDirty(true);
   };
 
-  const handleAddException = (exception: ExceptionDate) => {
-    setConfig({ ...config, exceptions: [...config.exceptions, exception] });
+  const handleAddExceptions = (newExceptions: ExceptionDate[]) => {
+    setConfig(prev => ({ ...prev, exceptions: [...prev.exceptions, ...newExceptions] }));
     setIsDirty(true);
-    toast.success("Đã thêm ngày ngoại lệ mới");
+    toast.success(`Đã thêm ${newExceptions.length} ngày ngoại lệ mới`);
   };
 
   const handleRemoveException = (id: string) => {
@@ -36,24 +36,28 @@ export function OperatingHoursForm() {
     toast.success("Đã xóa ngày ngoại lệ");
   };
 
-  const handleCopyToAll = () => {
-    const mondaySchedule = config.defaultSchedule[0]; // Giả sử thứ 2 là phần tử đầu tiên
-    const newSchedule = config.defaultSchedule.map((day, index) => {
-      if (index === 0) return day; // Giữ nguyên thứ 2
+  const handlePasteToAll = () => {
+    if (!copySourceDay) return;
+    const sourceSchedule = config.defaultSchedule.find(s => s.day === copySourceDay);
+    if (!sourceSchedule) return;
+
+    const newSchedule = config.defaultSchedule.map((day) => {
+      if (day.day === copySourceDay) return day; 
       return {
         ...day,
-        isOpen: mondaySchedule.isOpen,
-        timeSlots: mondaySchedule.timeSlots.map(slot => ({ ...slot })),
+        isOpen: sourceSchedule.isOpen,
+        timeSlots: sourceSchedule.timeSlots.map(slot => ({ ...slot })),
       };
     });
     setConfig({ ...config, defaultSchedule: newSchedule });
     setIsDirty(true);
-    toast.success("Đã sao chép cấu hình cho tất cả các ngày");
+    toast.success(`Đã áp dụng cấu hình ${DAY_LABELS[copySourceDay]} cho tất cả các ngày`);
+    setCopySourceDay(null);
   };
 
   const handleCopy = (day: DayOfWeek) => {
     setCopySourceDay(day);
-    toast.info("Đã chọn ngày nguồn. Chọn ngày khác để dán.");
+    toast.info(`Đã chọn ${DAY_LABELS[day]}. Chọn ngày khác để dán hoặc áp dụng cho tất cả.`);
   };
 
   const handlePaste = (targetDay: DayOfWeek) => {
@@ -75,7 +79,7 @@ export function OperatingHoursForm() {
 
     setConfig({ ...config, defaultSchedule: newDefaultSchedule });
     setIsDirty(true);
-    toast.success(`Đã dán cấu hình từ ${copySourceDay} sang ${targetDay}`);
+    toast.success(`Đã dán cấu hình từ ${DAY_LABELS[copySourceDay]} sang ${DAY_LABELS[targetDay]}`);
   };
 
   const handleCancelCopy = () => {
@@ -98,37 +102,10 @@ export function OperatingHoursForm() {
   };
 
   return (
-    <div className="space-y-8">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Cấu hình Thời gian</h2>
-          <p className="text-muted-foreground">
-            Quản lý giờ mở cửa và ngày nghỉ lễ của Spa
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className={cn(
-            "px-3 py-1 rounded-full text-xs font-medium border transition-colors",
-            isDirty 
-              ? "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800" 
-              : "bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800"
-          )}>
-            {isDirty ? "Chưa lưu thay đổi" : "Đã đồng bộ"}
-          </div>
-          <Button variant="outline" onClick={handleReset} disabled={!isDirty} className="h-9">
-            <RotateCcw className="w-4 h-4 mr-2" />
-            Khôi phục
-          </Button>
-          <Button onClick={handleSave} disabled={!isDirty} className="h-9 shadow-md hover:shadow-lg transition-all">
-            <Save className="w-4 h-4 mr-2" />
-            Lưu thay đổi
-          </Button>
-        </div>
-      </div>
-
-      <Tabs defaultValue="schedule" className="w-full space-y-6">
-        <TabsList className="w-full max-w-[400px] grid grid-cols-2 p-1 bg-muted/50 rounded-full">
+    <Tabs defaultValue="schedule" className="w-full space-y-6">
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-4 border-b flex flex-col md:flex-row items-center justify-between gap-4">
+        <TabsList className="grid grid-cols-2 w-full max-w-[400px] p-1 bg-muted/50 rounded-full">
           <TabsTrigger 
             value="schedule" 
             className="rounded-full data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all"
@@ -142,50 +119,80 @@ export function OperatingHoursForm() {
             Ngày nghỉ & Ngoại lệ
           </TabsTrigger>
         </TabsList>
-        
-        <TabsContent value="schedule" className="space-y-6 animate-in fade-in-50 slide-in-from-bottom-2 duration-500">
-          <Card className="border-none shadow-md bg-card/50 backdrop-blur-sm">
-            <CardHeader className="pb-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-lg">Lịch làm việc tiêu chuẩn</CardTitle>
-                  <CardDescription>
-                    Thiết lập giờ mở cửa mặc định cho từng ngày trong tuần.
-                  </CardDescription>
+
+        <div className="flex items-center gap-3">
+          <div className={cn(
+            "px-3 py-1 rounded-full text-xs font-medium border transition-colors flex items-center gap-1.5",
+            isDirty 
+              ? "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800" 
+              : "bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800"
+          )}>
+            <div className={cn("w-1.5 h-1.5 rounded-full", isDirty ? "bg-amber-500" : "bg-green-500")} />
+            {isDirty ? "Chưa lưu thay đổi" : "Đã đồng bộ"}
+          </div>
+          <Button variant="outline" onClick={handleReset} disabled={!isDirty} className="h-9">
+            <RotateCcw className="w-4 h-4 mr-2" />
+            Khôi phục
+          </Button>
+          <Button onClick={handleSave} disabled={!isDirty} className="h-9 shadow-md hover:shadow-lg transition-all">
+            <Save className="w-4 h-4 mr-2" />
+            Lưu thay đổi
+          </Button>
+        </div>
+      </div>
+      
+      <TabsContent value="schedule" className="space-y-6 animate-in fade-in-50 slide-in-from-bottom-2 duration-500">
+        <Card className="border-none shadow-md bg-card/50 backdrop-blur-sm">
+          <CardHeader className="pb-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-lg">Lịch làm việc tiêu chuẩn</CardTitle>
+                <CardDescription>
+                  Thiết lập giờ mở cửa mặc định cho từng ngày trong tuần.
+                </CardDescription>
+              </div>
+              {copySourceDay && (
+                <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5">
+                  <span className="text-sm text-muted-foreground">
+                    Đang sao chép từ <span className="font-medium text-foreground">{DAY_LABELS[copySourceDay]}</span>
+                  </span>
+                  <Button variant="secondary" size="sm" onClick={handlePasteToAll} className="text-primary">
+                    <Copy className="w-4 h-4 mr-2" />
+                    Áp dụng cho tất cả
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={handleCancelCopy} className="text-destructive hover:bg-destructive/10">
+                    Hủy
+                  </Button>
                 </div>
-                <Button variant="ghost" size="sm" onClick={handleCopyToAll} className="text-primary hover:text-primary/80 hover:bg-primary/10">
-                  <Copy className="w-4 h-4 mr-2" />
-                  Sao chép T2 cho tất cả
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="space-y-3">
-              {config.defaultSchedule.map((schedule, index) => (
-                <DayScheduleRow 
-                  key={schedule.day} 
-                  schedule={schedule} 
-                  onChange={(newSchedule) => handleScheduleChange(index, newSchedule)}
-                  onCopy={() => handleCopy(schedule.day)}
-                  onPaste={() => handlePaste(schedule.day)}
-                  onCancelCopy={handleCancelCopy}
-                  isCopying={copySourceDay === schedule.day}
-                  isPasteTarget={copySourceDay !== null && copySourceDay !== schedule.day}
-                />
-              ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="exceptions" className="animate-in fade-in-50 slide-in-from-bottom-2 duration-500">
-          <ExceptionsCalendar 
-            exceptions={config.exceptions}
-            onAddException={handleAddException}
-            onRemoveException={handleRemoveException}
-          />
-        </TabsContent>
-      </Tabs>
-    </div>
+              )}
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="space-y-3">
+            {config.defaultSchedule.map((schedule, index) => (
+              <DayScheduleRow 
+                key={schedule.day} 
+                schedule={schedule} 
+                onChange={(newSchedule) => handleScheduleChange(index, newSchedule)}
+                onCopy={() => handleCopy(schedule.day)}
+                onPaste={() => handlePaste(schedule.day)}
+                onCancelCopy={handleCancelCopy}
+                isCopying={copySourceDay === schedule.day}
+                isPasteTarget={copySourceDay !== null && copySourceDay !== schedule.day}
+              />
+            ))}
+            </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
+      
+      <TabsContent value="exceptions" className="animate-in fade-in-50 slide-in-from-bottom-2 duration-500">
+        <ExceptionsCalendar 
+          exceptions={config.exceptions}
+          onAddExceptions={handleAddExceptions}
+          onRemoveException={handleRemoveException}
+        />
+      </TabsContent>
+    </Tabs>
   );
 }
