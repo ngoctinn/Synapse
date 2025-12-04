@@ -34,6 +34,7 @@ interface StaffTableProps {
   page?: number
   totalPages?: number
   onPageChange?: (page: number) => void
+  className?: string
 }
 
 export function StaffTable({
@@ -41,7 +42,8 @@ export function StaffTable({
   skills,
   page = 1,
   totalPages = 1,
-  onPageChange
+  onPageChange,
+  className
 }: StaffTableProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -70,51 +72,51 @@ export function StaffTable({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="bg-background border rounded-lg relative shadow-sm">
+      <div className={cn("bg-background border rounded-xl relative shadow-sm", className)}>
         <table className="w-full caption-bottom text-sm min-w-[800px]">
-          <TableHeader className="sticky top-[89px] z-20 bg-background shadow-sm after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-border">
+          <TableHeader className="sticky top-[89px] z-20 bg-background shadow-sm after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-border/50">
             <TableRow className="hover:bg-transparent border-none">
-              <TableHead className="bg-background pl-6 h-12 font-medium text-muted-foreground">Nhân viên</TableHead>
-              <TableHead className="bg-background h-12 font-medium text-muted-foreground">Vai trò</TableHead>
-              <TableHead className="bg-background h-12 font-medium text-muted-foreground">Kỹ năng</TableHead>
-              <TableHead className="bg-background h-12 font-medium text-muted-foreground">Trạng thái</TableHead>
-              <TableHead className="text-right bg-background pr-6 h-12 font-medium text-muted-foreground">Hành động</TableHead>
+              <TableHead className="bg-transparent pl-8 h-14 font-medium text-muted-foreground">Nhân viên</TableHead>
+              <TableHead className="bg-transparent h-14 font-medium text-muted-foreground">Vai trò</TableHead>
+              <TableHead className="bg-transparent h-14 font-medium text-muted-foreground">Kỹ năng</TableHead>
+              <TableHead className="bg-transparent h-14 font-medium text-muted-foreground">Trạng thái</TableHead>
+              <TableHead className="text-right bg-transparent pr-8 h-14 font-medium text-muted-foreground">Hành động</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {data.map((staff, index) => (
-              <AnimatedTableRow key={staff.user_id} index={index} className="group hover:bg-muted/30 transition-colors border-b border-border/50 last:border-0">
-                <TableCell className="pl-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-9 w-9 border">
+              <AnimatedTableRow key={staff.user_id} index={index} className="group hover:bg-muted/30 transition-colors border-b border-border/40 last:border-0">
+                <TableCell className="pl-8 py-5">
+                  <div className="flex items-center gap-4">
+                    <Avatar className="h-10 w-10 border">
                       <AvatarImage src={staff.user.avatar_url || undefined} alt={staff.user.full_name || ""} />
                       <AvatarFallback className="bg-primary/10 text-primary font-medium">
                         {(staff.user.full_name || staff.user.email || "?").charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
-                      <span className="text-base font-serif text-foreground group-hover:text-primary transition-colors">{staff.user.full_name || "Chưa cập nhật tên"}</span>
+                      <span className="text-lg font-serif text-foreground group-hover:text-primary transition-colors tracking-tight">{staff.user.full_name || "Chưa cập nhật tên"}</span>
                       <span className="text-xs text-muted-foreground">{staff.user.email}</span>
                     </div>
                   </div>
                 </TableCell>
-                <TableCell className="py-4">
+                <TableCell className="py-5">
                   <Badge
                     variant={roleConfig[staff.user.role]?.variant || "outline"}
                     className={cn(
-                      "rounded-md px-2.5 py-0.5 font-medium border-transparent",
+                      "rounded-md px-2.5 py-1 font-medium border-transparent text-[11px]",
                       roleConfig[staff.user.role]?.className || "bg-gray-100 text-gray-600"
                     )}
                   >
                     {roleConfig[staff.user.role]?.label || staff.user.role}
                   </Badge>
                 </TableCell>
-                <TableCell className="py-4">
-                  <div className="flex flex-wrap gap-1.5">
+                <TableCell className="py-5">
+                  <div className="flex flex-wrap gap-2">
                     {staff.skills.length > 0 ? (
                       <>
                         {staff.skills.slice(0, 2).map((skill) => (
-                          <Badge key={skill.id} variant="secondary" className="text-[10px] px-2 py-0.5 bg-secondary/50 hover:bg-secondary text-secondary-foreground border-transparent">
+                          <Badge key={skill.id} variant="secondary" className="text-[11px] px-2.5 py-1 bg-secondary/40 hover:bg-secondary/60 text-secondary-foreground border-transparent rounded-md transition-colors">
                             {skill.name}
                           </Badge>
                         ))}
@@ -122,7 +124,7 @@ export function StaffTable({
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <Badge variant="secondary" className="text-[10px] px-2 py-0.5 bg-secondary/50 hover:bg-secondary text-secondary-foreground border-transparent cursor-help">
+                                <Badge variant="secondary" className="text-[11px] px-2.5 py-1 bg-secondary/40 hover:bg-secondary/60 text-secondary-foreground border-transparent cursor-help rounded-md">
                                   +{staff.skills.length - 2} more
                                 </Badge>
                               </TooltipTrigger>
@@ -138,27 +140,27 @@ export function StaffTable({
                         )}
                       </>
                     ) : (
-                      <span className="text-xs text-muted-foreground italic">--</span>
+                      <span className="text-xs text-muted-foreground italic pl-1">--</span>
                     )}
                   </div>
                 </TableCell>
-                <TableCell className="py-4">
-                  <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                <TableCell className="py-5">
+                  <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border transition-all duration-300 ${
                     staff.user.is_active
-                      ? "bg-primary/10 text-primary border-primary/20"
-                      : "bg-muted text-muted-foreground border-border"
+                      ? "bg-primary/5 text-primary border-primary/20 shadow-[0_0_10px_rgba(var(--primary),0.1)]"
+                      : "bg-muted/50 text-muted-foreground border-border/50"
                   }`}>
                     {staff.user.is_active ? (
-                        <span className="flex items-center gap-1.5">
+                        <span className="flex items-center gap-2">
                             <span className="relative flex h-2 w-2">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                              <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-20 animate-pulse"></span>
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary shadow-[0_0_8px_rgba(var(--primary),0.6)]"></span>
                             </span>
                             Hoạt động
                         </span>
                     ) : (
-                        <span className="flex items-center gap-1.5">
-                            <span className="h-2 w-2 rounded-full bg-muted-foreground/50"></span>
+                        <span className="flex items-center gap-2">
+                            <span className="h-2 w-2 rounded-full bg-muted-foreground/40"></span>
                             Ẩn
                         </span>
                     )}

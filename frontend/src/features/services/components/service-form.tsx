@@ -6,12 +6,12 @@ import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { MoneyInput } from "@/shared/ui/custom/money-input";
 import { TagInput } from "@/shared/ui/custom/tag-input";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form";
 import { Switch } from "@/shared/ui/switch";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -91,7 +91,7 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
           <div className="space-y-6">
             <div className="rounded-xl border bg-background shadow-sm overflow-hidden">
               <div className="p-6 border-b bg-muted/10 flex items-center justify-between">
-                <h4 className="font-serif font-medium text-lg">Thông tin chung</h4>
+                <h4 className="font-serif font-medium text-lg text-foreground/90">Thông tin chung</h4>
                 <FormField
                   control={form.control}
                   name="is_active"
@@ -104,7 +104,7 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
                         <Switch
                           checked={field.value}
                           onCheckedChange={field.onChange}
-                          className="data-[state=checked]:bg-primary"
+                          className="data-[state=checked]:bg-primary scale-110"
                         />
                       </FormControl>
                     </FormItem>
@@ -112,8 +112,8 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
                 />
               </div>
 
-              <div className="p-6 space-y-6">
-                <div className="flex flex-col sm:flex-row gap-6">
+              <div className="p-6 space-y-8">
+                <div className="flex flex-col sm:flex-row gap-8">
                   {/* Ảnh dịch vụ (Bên trái) */}
                   <FormField
                     control={form.control}
@@ -133,15 +133,15 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
                   />
 
                   {/* Các trường thông tin (Bên phải) */}
-                  <div className="flex-1 space-y-4">
+                  <div className="flex-1 space-y-5">
                     <FormField
                       control={form.control}
                       name="name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Tên dịch vụ</FormLabel>
+                          <FormLabel className="text-foreground/80">Tên dịch vụ</FormLabel>
                           <FormControl>
-                            <InputWithIcon icon={Tag} placeholder="VD: Massage Body Thụy Điển" className="h-10" {...field} />
+                            <InputWithIcon icon={Tag} placeholder="VD: Massage Body Thụy Điển" className="h-11 rounded-lg bg-background focus:bg-background transition-colors" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -153,13 +153,13 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
                       name="price"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Giá dịch vụ</FormLabel>
+                          <FormLabel className="text-foreground/80">Giá dịch vụ</FormLabel>
                           <FormControl>
                             <MoneyInput
                               value={field.value}
                               onChange={field.onChange}
                               placeholder="0"
-                              className="h-10"
+                              className="h-11 rounded-lg bg-background focus:bg-background transition-colors"
                             />
                           </FormControl>
                           <FormMessage />
@@ -172,7 +172,7 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
                       name="skill_ids"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Yêu cầu kỹ năng</FormLabel>
+                          <FormLabel className="text-foreground/80">Yêu cầu kỹ năng</FormLabel>
                           <FormControl>
                             <TagInput
                               options={skillOptions}
@@ -181,7 +181,7 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
                               onSelectedChange={field.onChange}
                               onNewTagsChange={(tags) => form.setValue("new_skills", tags)}
                               placeholder="Chọn hoặc tạo kỹ năng..."
-                              className="min-h-[40px]"
+                              className="min-h-[44px] rounded-lg bg-background focus-within:bg-background transition-colors"
                             />
                           </FormControl>
                           <FormMessage />
@@ -199,19 +199,19 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
             {/* Cấu hình thời gian */}
             <div className="rounded-xl border bg-background shadow-sm overflow-hidden">
               <div className="p-6 border-b bg-muted/10">
-                <h4 className="font-serif font-medium text-lg flex items-center gap-2">
+                <h4 className="font-serif font-medium text-lg flex items-center gap-2 text-foreground/90">
                   Cấu hình thời gian
                 </h4>
               </div>
 
-              <div className="p-6 space-y-6">
-                <div className="grid grid-cols-2 gap-4">
+              <div className="p-6 space-y-8">
+                <div className="grid grid-cols-2 gap-6">
                   <FormField
                     control={form.control}
                     name="duration"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2">
+                        <FormLabel className="flex items-center gap-2 text-foreground/80">
                           Thời lượng
                         </FormLabel>
                         <FormControl>
@@ -221,7 +221,7 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
                             min={15}
                             step={15}
                             placeholder="Chọn thời lượng"
-                            className="h-10"
+                            className="h-11 rounded-lg bg-background focus:bg-background transition-colors"
                           />
                         </FormControl>
                         <FormMessage />
@@ -234,7 +234,7 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
                     name="buffer_time"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2">
+                        <FormLabel className="flex items-center gap-2 text-foreground/80">
                           Thời gian nghỉ
                         </FormLabel>
                         <FormControl>
@@ -244,7 +244,7 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
                             min={0}
                             step={15}
                             placeholder="Chọn thời gian nghỉ"
-                            className="h-10"
+                            className="h-11 rounded-lg bg-background focus:bg-background transition-colors"
                           />
                         </FormControl>
                         <FormMessage />
@@ -253,7 +253,7 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
                   />
                 </div>
 
-                <ServiceTimeVisualizer duration={duration} bufferTime={bufferTime} className="bg-muted/30 border-dashed" />
+                <ServiceTimeVisualizer duration={duration} bufferTime={bufferTime} className="bg-muted/30 border-dashed border-2 rounded-xl p-4" />
               </div>
             </div>
           </div>

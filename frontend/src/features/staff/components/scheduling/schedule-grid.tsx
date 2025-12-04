@@ -85,15 +85,15 @@ export function ScheduleGrid({
           {/* Staff Rows */}
           <div className="divide-y">
             {staffList.map((staff) => (
-              <div key={staff.id} className="grid grid-cols-[220px_repeat(7,1fr)] group hover:bg-muted/5 transition-colors">
+              <div key={staff.user_id} className="grid grid-cols-[220px_repeat(7,1fr)] group hover:bg-muted/5 transition-colors">
                 {/* Staff Info */}
                 <div className="p-3 border-r flex items-center gap-3 bg-white group-hover:bg-muted/5 transition-colors sticky left-0 z-10 shadow-[1px_0_0_0_rgba(0,0,0,0.05)]">
                   <div className="w-9 h-9 rounded-full bg-muted overflow-hidden border shrink-0">
-                     <img src={staff.avatarUrl} alt={staff.name} className="w-full h-full object-cover" />
+                     <img src={staff.user.avatar_url || ''} alt={staff.user.full_name || ''} className="w-full h-full object-cover" />
                   </div>
                   <div className="flex flex-col overflow-hidden min-w-0">
-                    <span className="text-sm font-medium truncate">{staff.name}</span>
-                    <span className="text-xs text-muted-foreground truncate">{staff.role}</span>
+                    <span className="text-sm font-medium truncate">{staff.user.full_name}</span>
+                    <span className="text-xs text-muted-foreground truncate">{staff.user.role}</span>
                   </div>
                 </div>
 
@@ -101,7 +101,7 @@ export function ScheduleGrid({
                 {weekDays.map((day) => {
                   const dateStr = format(day, "yyyy-MM-dd")
                   const schedule = schedules.find(
-                    (s) => s.staffId === staff.id && s.date === dateStr
+                    (s) => s.staffId === staff.user_id && s.date === dateStr
                   )
 
                   let shift = schedule ? MOCK_SHIFTS.find((s) => s.id === schedule.shiftId) : null
@@ -114,8 +114,8 @@ export function ScheduleGrid({
                   return (
                     <div
                       key={day.toString()}
-                      onMouseDown={() => handleMouseDown(staff.id, day)}
-                      onMouseEnter={() => handleMouseEnter(staff.id, day)}
+                      onMouseDown={() => handleMouseDown(staff.user_id, day)}
+                      onMouseEnter={() => handleMouseEnter(staff.user_id, day)}
                       className={cn(
                         "p-1.5 border-r last:border-r-0 min-h-[72px] relative transition-all duration-200",
                         !schedule && isToday ? "bg-primary/[0.02]" : "",
@@ -155,7 +155,7 @@ export function ScheduleGrid({
                         <div className="h-full w-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                           {!selectedTool && (
                             <button
-                              onClick={() => onAddClick(staff.id, day)}
+                              onClick={() => onAddClick(staff.user_id, day)}
                               className="h-8 w-8 rounded-full bg-muted/50 hover:bg-primary/10 hover:text-primary flex items-center justify-center transition-colors"
                             >
                               <Plus className="h-4 w-4" />

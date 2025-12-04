@@ -3,12 +3,12 @@
 import { Badge } from "@/shared/ui/badge"
 import { Checkbox } from "@/shared/ui/checkbox"
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/shared/ui/table"
 import { Lock } from "lucide-react"
 import { useState } from "react"
@@ -17,13 +17,13 @@ import { BulkSaveBar } from "./bulk-save-bar"
 
 // Mock Initial Permissions (Module ID -> Role ID -> boolean)
 const INITIAL_PERMISSIONS: Record<string, Record<string, boolean>> = {
-  dashboard: { ADMIN: true, RECEPTIONIST: true, TECHNICIAN: true },
-  staff: { ADMIN: true, RECEPTIONIST: false, TECHNICIAN: false },
-  customers: { ADMIN: true, RECEPTIONIST: true, TECHNICIAN: false },
-  services: { ADMIN: true, RECEPTIONIST: false, TECHNICIAN: false },
-  inventory: { ADMIN: true, RECEPTIONIST: true, TECHNICIAN: false },
-  reports: { ADMIN: true, RECEPTIONIST: false, TECHNICIAN: false },
-  settings: { ADMIN: true, RECEPTIONIST: false, TECHNICIAN: false },
+  dashboard: { admin: true, receptionist: true, technician: true },
+  staff: { admin: true, receptionist: false, technician: false },
+  customers: { admin: true, receptionist: true, technician: false },
+  services: { admin: true, receptionist: false, technician: false },
+  inventory: { admin: true, receptionist: true, technician: false },
+  reports: { admin: true, receptionist: false, technician: false },
+  settings: { admin: true, receptionist: false, technician: false },
 }
 
 export function PermissionMatrix() {
@@ -81,7 +81,7 @@ export function PermissionMatrix() {
               <TableRow key={module.id} className="hover:bg-muted/5 transition-colors">
                 <TableCell className="font-medium pl-6 py-4">{module.name}</TableCell>
                 {ROLES.map((role) => {
-                  const isDisabled = role.id === "ADMIN"
+                  const isDisabled = role.id === "admin"
                   return (
                     <TableCell key={role.id} className="text-center p-0">
                       <div className="flex justify-center items-center h-full w-full py-2">

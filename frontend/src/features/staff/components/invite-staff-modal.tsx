@@ -110,15 +110,15 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel className="text-foreground/80">Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="staff@example.com" {...field} />
+                    <Input placeholder="staff@example.com" className="h-11 rounded-xl bg-background focus:bg-background transition-colors" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -129,9 +129,9 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
               name="full_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Họ và tên</FormLabel>
+                  <FormLabel className="text-foreground/80">Họ và tên</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nguyễn Văn A" {...field} />
+                    <Input placeholder="Nguyễn Văn A" className="h-11 rounded-xl bg-background focus:bg-background transition-colors" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -142,9 +142,9 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Chức danh</FormLabel>
+                  <FormLabel className="text-foreground/80">Chức danh</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ví dụ: Chuyên viên da liễu" {...field} />
+                    <Input placeholder="Ví dụ: Chuyên viên da liễu" className="h-11 rounded-xl bg-background focus:bg-background transition-colors" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -155,10 +155,10 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
               name="role"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Vai trò</FormLabel>
+                  <FormLabel className="text-foreground/80">Vai trò</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-11 rounded-xl bg-background focus:bg-background transition-colors">
                         <SelectValue placeholder="Chọn vai trò" />
                       </SelectTrigger>
                     </FormControl>

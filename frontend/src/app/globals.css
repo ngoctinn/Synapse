@@ -178,11 +178,10 @@
     height: 100%;
   }
   body {
-    @apply bg-background text-foreground text-[16px] antialiased;
+    @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
   html {
-    font-size: 16px;
     scroll-behavior: smooth;
   }
 

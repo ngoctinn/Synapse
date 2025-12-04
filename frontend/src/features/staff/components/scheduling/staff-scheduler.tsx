@@ -74,7 +74,7 @@ export function StaffScheduler() {
   const weekEnd = addDays(weekStart, 6)
 
   const selectedStaffName = selectedCell
-    ? MOCK_STAFF.find(s => s.id === selectedCell.staffId)?.name
+    ? (MOCK_STAFF.find(s => s.user_id === selectedCell.staffId)?.user.full_name ?? undefined)
     : undefined
 
   const selectedDateStr = selectedCell

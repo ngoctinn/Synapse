@@ -5,29 +5,29 @@ import { Lock, Mail, Plus, User } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 
+import { Skill } from "@/features/services/types"
 import { Button } from "@/shared/ui/button"
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from "@/shared/ui/dialog"
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form"
 import { RadioGroup, RadioGroupItem } from "@/shared/ui/radio-group"
 import { staffFormSchema, StaffFormValues } from "../../schemas"
 import { SkillSelector } from "../skill-selector"
-import { Skill } from "@/features/services/types"
 
 interface StaffModalProps {
   skills: Skill[]
@@ -42,7 +42,7 @@ export function StaffModal({ skills }: StaffModalProps) {
     defaultValues: {
       email: "",
       password: "",
-      role: "RECEPTIONIST",
+      role: "receptionist",
       name: "",
       phone: "",
       address: "",
@@ -136,7 +136,7 @@ export function StaffModal({ skills }: StaffModalProps) {
                     >
                       <FormItem className="flex items-center space-y-0">
                         <FormControl>
-                          <RadioGroupItem value="ADMIN" id="r-admin" className="peer sr-only" />
+                          <RadioGroupItem value="admin" id="r-admin" className="peer sr-only" />
                         </FormControl>
                         <FormLabel
                           htmlFor="r-admin"
@@ -147,7 +147,7 @@ export function StaffModal({ skills }: StaffModalProps) {
                       </FormItem>
                       <FormItem className="flex items-center space-y-0">
                         <FormControl>
-                          <RadioGroupItem value="RECEPTIONIST" id="r-receptionist" className="peer sr-only" />
+                          <RadioGroupItem value="receptionist" id="r-receptionist" className="peer sr-only" />
                         </FormControl>
                         <FormLabel
                           htmlFor="r-receptionist"
@@ -158,7 +158,7 @@ export function StaffModal({ skills }: StaffModalProps) {
                       </FormItem>
                       <FormItem className="flex items-center space-y-0">
                         <FormControl>
-                          <RadioGroupItem value="TECHNICIAN" id="r-technician" className="peer sr-only" />
+                          <RadioGroupItem value="technician" id="r-technician" className="peer sr-only" />
                         </FormControl>
                         <FormLabel
                           htmlFor="r-technician"
@@ -175,7 +175,7 @@ export function StaffModal({ skills }: StaffModalProps) {
 
             />
 
-            {form.watch("role") === "TECHNICIAN" && (
+            {form.watch("role") === "technician" && (
               <div className="space-y-2">
                 <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Kỹ năng
