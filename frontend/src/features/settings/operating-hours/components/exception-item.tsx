@@ -1,6 +1,8 @@
+"use client";
+
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { Trash2, AlertCircle, Clock } from "lucide-react";
+import { Trash2, AlertCircle, Clock, Pencil } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
@@ -12,9 +14,10 @@ interface ExceptionItemProps {
   exception: ExceptionDate;
   dateCount?: number; // Số lượng ngày trong nhóm (nếu có)
   onRemove: (id: string) => void;
+  onEdit: (exception: ExceptionDate) => void;
 }
 
-export function ExceptionItem({ exception, dateCount = 1, onRemove }: ExceptionItemProps) {
+export function ExceptionItem({ exception, dateCount = 1, onRemove, onEdit }: ExceptionItemProps) {
   const isHoliday = exception.type === 'holiday';
   const isMaintenance = exception.type === 'maintenance';
   
@@ -89,21 +92,40 @@ export function ExceptionItem({ exception, dateCount = 1, onRemove }: ExceptionI
         </div>
       </div>
 
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={() => onRemove(exception.id)} 
-              className="opacity-0 group-hover:opacity-100 transition-all duration-300 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full h-10 w-10"
-            >
-              <Trash2 className="w-5 h-5" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Xóa ngoại lệ này</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => onEdit(exception)} 
+                className="text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full h-10 w-10"
+              >
+                <Pencil className="w-5 h-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Chỉnh sửa</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => onRemove(exception.id)} 
+                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full h-10 w-10"
+              >
+                <Trash2 className="w-5 h-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Xóa ngoại lệ này</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
     </motion.div>
   );
 }
+

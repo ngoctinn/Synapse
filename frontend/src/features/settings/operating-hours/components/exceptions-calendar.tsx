@@ -1,4 +1,6 @@
-import { useState, useMemo } from "react";
+"use client";
+
+import { useState, useMemo, useRef, useCallback } from "react";
 import { Calendar, CalendarDayButton } from "@/shared/ui/calendar";
 import { Card, CardContent } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
@@ -13,6 +15,7 @@ import { cn } from "@/shared/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
 import { ExceptionItem } from "./exception-item";
 import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "sonner";
 
 interface ExceptionsCalendarProps {
   exceptions: ExceptionDate[];
@@ -27,11 +30,21 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
     type: 'holiday',
     isClosed: true,
   });
+  const [editingException, setEditingException] = useState<ExceptionDate | null>(null);
+
+  // Drag selection state
+  const isDragging = useRef(false);
+  const dragAction = useRef<'select' | 'deselect'>('select');
 
   const handleAdd = () => {
     if (dates && dates.length > 0 && newException.reason) {
+      // Nếu đang edit, xóa cái cũ đi trước
+      if (editingException) {
+        onRemoveException(editingException.id);
+      }
+
       // Tạo một ID chung cho nhóm ngoại lệ này để dễ dàng gom nhóm hiển thị
-      const groupId = crypto.randomUUID();
+      const groupId = editingException ? editingException.id : crypto.randomUUID();
       
       const exceptionsToAdd: ExceptionDate[] = dates.map(date => ({
         id: groupId, // Sử dụng chung ID cho cả nhóm
@@ -43,9 +56,31 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
       
       onAddExceptions(exceptionsToAdd);
       setIsDialogOpen(false);
-      setNewException({ type: 'holiday', isClosed: true, reason: '' });
-      setDates([]);
+      resetForm();
+      toast.success(editingException ? "Đã cập nhật ngoại lệ" : "Đã thêm ngoại lệ mới");
     }
+  };
+
+  const resetForm = () => {
+    setNewException({ type: 'holiday', isClosed: true, reason: '' });
+    setDates([]);
+    setEditingException(null);
+  };
+
+  const handleEdit = (exception: ExceptionDate) => {
+    // Tìm tất cả các ngày thuộc nhóm ngoại lệ này
+    const groupDates = exceptions
+      .filter(e => e.id === exception.id)
+      .map(e => e.date);
+    
+    setDates(groupDates);
+    setNewException({
+      reason: exception.reason,
+      type: exception.type,
+      isClosed: exception.isClosed,
+    });
+    setEditingException(exception);
+    setIsDialogOpen(true);
   };
 
   // Highlight modifiers for calendar
@@ -89,15 +124,64 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
       }
       return prev;
     });
+    // Reset form nếu không phải đang edit
+    if (!editingException) {
+        setNewException(prev => ({ ...prev, reason: '' }));
+    }
     setIsDialogOpen(true);
   };
+
+  // Drag Handlers
+  const handleMouseDown = useCallback((day: Date) => {
+    isDragging.current = true;
+    
+    // Determine action based on whether the clicked day is already selected
+    const isSelected = dates?.some(d => d.getTime() === day.getTime());
+    dragAction.current = isSelected ? 'deselect' : 'select';
+
+    setDates(prev => {
+      if (dragAction.current === 'select') {
+        return [...(prev || []), day];
+      } else {
+        return prev?.filter(d => d.getTime() !== day.getTime());
+      }
+    });
+  }, [dates]);
+
+  const handleMouseEnter = useCallback((day: Date) => {
+    if (!isDragging.current) return;
+
+    setDates(prev => {
+      const isSelected = prev?.some(d => d.getTime() === day.getTime());
+      
+      if (dragAction.current === 'select' && !isSelected) {
+        return [...(prev || []), day];
+      } else if (dragAction.current === 'deselect' && isSelected) {
+        return prev?.filter(d => d.getTime() !== day.getTime());
+      }
+      return prev;
+    });
+  }, []);
+
+  const handleMouseUp = useCallback(() => {
+    isDragging.current = false;
+  }, []);
+
+  // Global mouse up to catch drags that end outside the calendar
+  useMemo(() => {
+    if (typeof window !== 'undefined') {
+        window.addEventListener('mouseup', handleMouseUp);
+        return () => window.removeEventListener('mouseup', handleMouseUp);
+    }
+  }, [handleMouseUp]);
+
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
       <div className="md:col-span-5 lg:col-span-4">
         <Card className="h-full border-none shadow-none bg-transparent">
           <CardContent className="p-0 space-y-6">
-             <div className="border rounded-3xl p-6 bg-card/50 backdrop-blur-md shadow-xl ring-1 ring-white/20 dark:ring-white/5">
+             <div className="border rounded-3xl p-6 bg-card/50 backdrop-blur-md shadow-xl ring-1 ring-white/20 dark:ring-white/5 select-none">
               <Calendar
                 mode="multiple"
                 selected={dates}
@@ -115,6 +199,8 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
                     <CalendarDayButton
                       {...props}
                       onDoubleClick={() => handleDayDoubleClick(props.day.date)}
+                      onMouseDown={() => handleMouseDown(props.day.date)}
+                      onMouseEnter={() => handleMouseEnter(props.day.date)}
                     />
                   )
                 }}
@@ -147,7 +233,10 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
             </h3>
             <p className="text-sm text-muted-foreground mt-1">Quản lý các ngày nghỉ lễ và lịch làm việc đặc biệt</p>
           </div>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <Dialog open={isDialogOpen} onOpenChange={(open) => {
+            setIsDialogOpen(open);
+            if (!open) resetForm();
+          }}>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -170,7 +259,9 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
             </TooltipProvider>
             <DialogContent className="sm:max-w-[500px] rounded-2xl">
               <DialogHeader>
-                <DialogTitle className="text-xl">Thêm ngoại lệ mới</DialogTitle>
+                <DialogTitle className="text-xl">
+                    {editingException ? "Chỉnh sửa ngoại lệ" : "Thêm ngoại lệ mới"}
+                </DialogTitle>
                 <p className="text-sm text-muted-foreground">
                   Đang thiết lập cho <span className="font-bold text-foreground">{dates?.length}</span> ngày đã chọn.
                 </p>
@@ -237,7 +328,9 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
                 </div>
               </div>
               <DialogFooter>
-                <Button onClick={handleAdd} className="w-full h-11 rounded-xl text-base font-medium">Lưu thay đổi</Button>
+                <Button onClick={handleAdd} className="w-full h-11 rounded-xl text-base font-medium">
+                    {editingException ? "Cập nhật thay đổi" : "Lưu thay đổi"}
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -273,7 +366,8 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
                   key={group[0].id} 
                   exception={group[0]} 
                   dateCount={group.length}
-                  onRemove={onRemoveException} 
+                  onRemove={onRemoveException}
+                  onEdit={handleEdit}
                 />
               ))
             )}
@@ -283,3 +377,4 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
     </div>
   );
 }
+
