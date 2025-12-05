@@ -74,13 +74,13 @@ export function ChatWindow({ conversation, messages, currentUserId, onSendMessag
             </div>
         </div>
         <div className="flex items-center gap-1">
-           <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary rounded-full hover:bg-primary/10">
+           <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary rounded-full hover:bg-primary/10" aria-label="Gọi điện">
              <Phone className="w-4 h-4" />
            </Button>
-           <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary rounded-full hover:bg-primary/10">
+           <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary rounded-full hover:bg-primary/10" aria-label="Video call">
              <Video className="w-4 h-4" />
            </Button>
-           <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary rounded-full hover:bg-primary/10">
+           <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary rounded-full hover:bg-primary/10" aria-label="Xem thêm tùy chọn">
              <MoreHorizontal className="w-4 h-4" />
            </Button>
         </div>

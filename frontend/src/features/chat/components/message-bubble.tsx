@@ -13,7 +13,7 @@ interface MessageBubbleProps {
 
 export function MessageBubble({ message, isMe, senderName, senderAvatar }: MessageBubbleProps) {
   return (
-    <div className={cn("flex w-full gap-3 mb-4", isMe ? "justify-end" : "justify-start")}>
+    <div className={cn("flex w-full gap-3 mb-4 animate-fade-in", isMe ? "justify-end" : "justify-start")}>
       {!isMe && (
         <Avatar className="h-8 w-8 mt-1 border border-border shadow-sm">
           <AvatarImage src={senderAvatar} alt={senderName} />
@@ -24,7 +24,7 @@ export function MessageBubble({ message, isMe, senderName, senderAvatar }: Messa
       <div className={cn("flex flex-col max-w-[85%]", isMe ? "items-end" : "items-start")}>
         <div
           className={cn(
-            "p-3 rounded-2xl shadow-sm text-sm relative group transition-all duration-200",
+            "p-3 rounded-2xl shadow-sm text-sm relative group transition-all duration-200 hover:shadow-md",
             isMe
               ? "bg-primary text-primary-foreground rounded-tr-sm"
               : "bg-white dark:bg-card border border-border text-foreground rounded-tl-sm glass-card"
