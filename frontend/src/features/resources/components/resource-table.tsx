@@ -1,5 +1,6 @@
 "use client";
 
+import { useTableSelection } from "@/shared/hooks/use-table-selection";
 import { cn } from "@/shared/lib/utils";
 import {
   AlertDialog,
@@ -12,13 +13,13 @@ import {
   AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
 import { Badge } from "@/shared/ui/badge";
-import { Button } from "@/shared/ui/button";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
-import { Bed, Box, Pencil, Trash } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
+import { TableRowActions } from "@/shared/ui/custom/table-row-actions";
+import { Bed, Box } from "lucide-react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { deleteResource } from "../actions";
 import { Resource } from "../model/types";
@@ -33,8 +34,17 @@ interface ResourceTableProps {
 
 export function ResourceTable({ data, isLoading, className, variant = "default" }: ResourceTableProps) {
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const router = useRouter();
+  const [editResource, setEditResource] = useState<Resource | null>(null);
+  const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
+  // Selection state
+  const selection = useTableSelection({
+    data,
+    keyExtractor: (item) => item.id,
+  });
+
+  // Xóa một tài nguyên
   const handleDelete = async () => {
     if (!deleteId) return;
     try {
@@ -45,6 +55,40 @@ export function ResourceTable({ data, isLoading, className, variant = "default" 
       console.error(error);
       toast.error("Không thể xóa tài nguyên");
     }
+  };
+
+  // Xóa nhiều tài nguyên
+  const handleBulkDelete = async () => {
+    const ids = Array.from(selection.selectedIds) as string[];
+    if (ids.length === 0) return;
+
+    startTransition(async () => {
+      try {
+        // Xóa từng item một (có thể tối ưu thành batch API sau)
+        let successCount = 0;
+        for (const id of ids) {
+          try {
+            await deleteResource(id);
+            successCount++;
+          } catch (e) {
+            console.error(`Failed to delete ${id}:`, e);
+          }
+        }
+
+        if (successCount > 0) {
+          toast.success(`Đã xóa ${successCount} tài nguyên`);
+          selection.clearAll();
+        }
+        if (successCount < ids.length) {
+          toast.error(`Không thể xóa ${ids.length - successCount} tài nguyên`);
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Không thể xóa tài nguyên");
+      } finally {
+        setShowBulkDeleteDialog(false);
+      }
+    });
   };
 
   const columns: Column<Resource>[] = [
@@ -138,30 +182,12 @@ export function ResourceTable({ data, isLoading, className, variant = "default" 
     },
     {
       header: "Hành động",
-      cell: (row) => {
-        return (
-          <div className="flex items-center gap-2">
-            <ResourceDialog
-              resource={row}
-              trigger={
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <span className="sr-only">Sửa</span>
-                  <Pencil className="h-4 w-4" />
-                </Button>
-              }
-            />
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-destructive hover:text-destructive"
-              onClick={() => setDeleteId(row.id)}
-            >
-              <span className="sr-only">Xóa</span>
-              <Trash className="h-4 w-4" />
-            </Button>
-          </div>
-        );
-      },
+      cell: (row) => (
+        <TableRowActions
+          onEdit={() => setEditResource(row)}
+          onDelete={() => setDeleteId(row.id)}
+        />
+      ),
     },
   ];
 
@@ -174,6 +200,13 @@ export function ResourceTable({ data, isLoading, className, variant = "default" 
         isLoading={isLoading}
         className={cn(className)}
         variant={variant}
+        // Selection props
+        selectable
+        isSelected={selection.isSelected}
+        onToggleOne={selection.toggleOne}
+        onToggleAll={selection.toggleAll}
+        isAllSelected={selection.isAllSelected}
+        isPartiallySelected={selection.isPartiallySelected}
         emptyState={
           <DataTableEmptyState
             icon={Box}
@@ -184,6 +217,22 @@ export function ResourceTable({ data, isLoading, className, variant = "default" 
         }
       />
 
+      {/* Floating Action Bar cho bulk actions */}
+      <TableActionBar
+        selectedCount={selection.selectedCount}
+        onDelete={() => setShowBulkDeleteDialog(true)}
+        onDeselectAll={selection.clearAll}
+        isLoading={isPending}
+      />
+
+      {/* Edit Dialog - controlled state */}
+      <ResourceDialog
+        resource={editResource ?? undefined}
+        open={!!editResource}
+        onOpenChange={(open) => !open && setEditResource(null)}
+      />
+
+      {/* Delete Single Confirmation */}
       <AlertDialog
         open={!!deleteId}
         onOpenChange={(open) => !open && setDeleteId(null)}
@@ -207,6 +256,34 @@ export function ResourceTable({ data, isLoading, className, variant = "default" 
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Bulk Delete Confirmation */}
+      <AlertDialog
+        open={showBulkDeleteDialog}
+        onOpenChange={setShowBulkDeleteDialog}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Xóa {selection.selectedCount} tài nguyên?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Hành động này không thể hoàn tác. Tất cả tài nguyên đã chọn sẽ bị
+              xóa vĩnh viễn khỏi hệ thống.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isPending}>Hủy</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleBulkDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              disabled={isPending}
+            >
+              {isPending ? "Đang xóa..." : `Xóa ${selection.selectedCount} mục`}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }
@@ -214,7 +291,7 @@ export function ResourceTable({ data, isLoading, className, variant = "default" 
 export function ResourceTableSkeleton() {
   return (
     <DataTableSkeleton
-      columnCount={5}
+      columnCount={6}
       rowCount={5}
       searchable={false}
       filterable={false}

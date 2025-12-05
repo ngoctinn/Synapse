@@ -1,10 +1,26 @@
 "use client";
 
+import { useTableSelection } from "@/shared/hooks/use-table-selection";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/shared/ui/alert-dialog";
 import { Badge } from "@/shared/ui/badge";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
+import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
+import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import { Plus } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
+import { deleteSkill } from "../actions";
 import { Skill } from "../types";
 import { CreateSkillDialog } from "./create-skill-dialog";
 import { SkillActions } from "./skill-actions";
@@ -29,6 +45,14 @@ export function SkillTable({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  // Selection state
+  const selection = useTableSelection({
+    data: skills,
+    keyExtractor: (item) => item.id,
+  });
 
   const handlePageChange = (newPage: number) => {
     if (onPageChange) {
@@ -39,6 +63,39 @@ export function SkillTable({
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", newPage.toString());
     router.push(`${pathname}?${params.toString()}`);
+  };
+
+  // Bulk delete
+  const handleBulkDelete = async () => {
+    const ids = Array.from(selection.selectedIds) as string[];
+    if (ids.length === 0) return;
+
+    startTransition(async () => {
+      try {
+        let successCount = 0;
+        for (const id of ids) {
+          try {
+            const result = await deleteSkill(id);
+            if (result.success) successCount++;
+          } catch (e) {
+            console.error(`Failed to delete ${id}:`, e);
+          }
+        }
+
+        if (successCount > 0) {
+          toast.success(`Đã xóa ${successCount} kỹ năng`);
+          selection.clearAll();
+        }
+        if (successCount < ids.length) {
+          toast.error(`Không thể xóa ${ids.length - successCount} kỹ năng`);
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Không thể xóa kỹ năng");
+      } finally {
+        setShowBulkDeleteDialog(false);
+      }
+    });
   };
 
   const columns: Column<Skill>[] = [
@@ -73,34 +130,74 @@ export function SkillTable({
   ];
 
   return (
-    <DataTable
-      data={skills}
-      columns={columns}
-      keyExtractor={(skill) => skill.id}
-      page={page}
-      totalPages={totalPages}
-      onPageChange={handlePageChange}
-      className={className}
-      isLoading={isLoading}
-      skeletonCount={5}
-      emptyState={
-        <DataTableEmptyState
-          icon={Plus}
-          title="Chưa có kỹ năng nào"
-          description="Tạo kỹ năng mới để gán cho dịch vụ và nhân viên."
-          action={<CreateSkillDialog />}
-        />
-      }
-    />
+    <>
+      <DataTable
+        data={skills}
+        columns={columns}
+        keyExtractor={(skill) => skill.id}
+        page={page}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        className={className}
+        isLoading={isLoading}
+        skeletonCount={5}
+        // Selection
+        selectable
+        isSelected={selection.isSelected}
+        onToggleOne={selection.toggleOne}
+        onToggleAll={selection.toggleAll}
+        isAllSelected={selection.isAllSelected}
+        isPartiallySelected={selection.isPartiallySelected}
+        emptyState={
+          <DataTableEmptyState
+            icon={Plus}
+            title="Chưa có kỹ năng nào"
+            description="Tạo kỹ năng mới để gán cho dịch vụ và nhân viên."
+            action={<CreateSkillDialog />}
+          />
+        }
+      />
+
+      <TableActionBar
+        selectedCount={selection.selectedCount}
+        onDelete={() => setShowBulkDeleteDialog(true)}
+        onDeselectAll={selection.clearAll}
+        isLoading={isPending}
+      />
+
+      <AlertDialog
+        open={showBulkDeleteDialog}
+        onOpenChange={setShowBulkDeleteDialog}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Xóa {selection.selectedCount} kỹ năng?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Hành động này không thể hoàn tác. Các kỹ năng sẽ bị gỡ khỏi dịch vụ và nhân viên liên quan.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isPending}>Hủy</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleBulkDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              disabled={isPending}
+            >
+              {isPending ? "Đang xóa..." : `Xóa ${selection.selectedCount} mục`}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
-
-import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
 
 export function SkillTableSkeleton() {
   return (
     <DataTableSkeleton
-      columnCount={4}
+      columnCount={5}
       rowCount={5}
       searchable={false}
       filterable={false}

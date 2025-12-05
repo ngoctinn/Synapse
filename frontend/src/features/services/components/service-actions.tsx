@@ -2,25 +2,21 @@
 
 import { Resource, RoomType } from "@/features/resources/model/types"
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/shared/ui/alert-dialog"
-import { Button } from "@/shared/ui/button"
+import { TableRowActions } from "@/shared/ui/custom/table-row-actions"
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenuItem,
+  DropdownMenuLabel
 } from "@/shared/ui/dropdown-menu"
-import { Copy, Edit, MoreHorizontal, Trash2 } from "lucide-react"
+import { Copy } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState, useTransition } from "react"
 import { toast } from "sonner"
@@ -73,38 +69,23 @@ export function ServiceActions({
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Mở menu</span>
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={handleClone}
-            disabled={isPending}
-          >
-            <Copy className="mr-2 h-4 w-4" />
-            <span>Nhân bản</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => setOpenEdit(true)}
-          >
-            <Edit className="mr-2 h-4 w-4" />
-            <span>Chỉnh sửa</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={() => setShowDeleteDialog(true)}
-            className="text-red-600 focus:text-red-600 focus:bg-red-50"
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            <span>Xóa dịch vụ</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <TableRowActions
+        onEdit={() => setOpenEdit(true)}
+        onDelete={() => setShowDeleteDialog(true)}
+        disabled={isPending}
+        extraActions={
+          <>
+            <DropdownMenuLabel>Thao tác khác</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={handleClone}
+              disabled={isPending}
+            >
+              <Copy className="mr-2 h-4 w-4" />
+              <span>Nhân bản</span>
+            </DropdownMenuItem>
+          </>
+        }
+      />
 
       <EditServiceDialog
         open={openEdit}
@@ -138,4 +119,3 @@ export function ServiceActions({
     </>
   )
 }
-
