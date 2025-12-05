@@ -35,7 +35,8 @@ function ServiceListWrapper({
       availableSkills={skills}
       page={page}
       totalPages={totalPages}
-      className="-mx-4 border-x-0 border-t-0 rounded-none shadow-none"
+      variant="flush"
+      className="-mx-4"
     />
   )
 }

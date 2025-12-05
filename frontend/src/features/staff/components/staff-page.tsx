@@ -1,7 +1,9 @@
+"use client"
+
 import { Skill } from "@/features/services"
 import { SearchInput } from "@/shared/ui/custom/search-input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
-import { Suspense } from "react"
+import { Suspense, use, useState } from "react"
 import { InviteStaffModal } from "./invite-staff-modal"
 import { PermissionMatrix } from "./permissions/permission-matrix"
 import { StaffScheduler } from "./scheduling/staff-scheduler"
@@ -18,7 +20,7 @@ interface StaffPageProps {
   initialSchedules: Schedule[]
 }
 
-async function StaffListWrapper({
+function StaffListWrapper({
   staffListPromise,
   skills,
   page,
@@ -27,7 +29,7 @@ async function StaffListWrapper({
   skills: Skill[]
   page: number
 }) {
-  const { data, total } = await staffListPromise
+  const { data, total } = use(staffListPromise)
   const totalPages = Math.ceil(total / 10)
 
   return (
@@ -36,20 +38,21 @@ async function StaffListWrapper({
       skills={skills}
       page={page}
       totalPages={totalPages}
-      className="-mx-4 border-x-0 border-t-0 rounded-none shadow-none"
+      variant="flush"
+      className="-mx-4"
     />
   )
 }
 
 
-async function StaffSchedulerWrapper({
+function StaffSchedulerWrapper({
   staffListPromise,
   initialSchedules,
 }: {
   staffListPromise: Promise<any>
   initialSchedules: Schedule[]
 }) {
-  const { data } = await staffListPromise
+  const { data } = use(staffListPromise)
   return <StaffScheduler initialSchedules={initialSchedules} staffList={data} />
 }
 
@@ -60,9 +63,12 @@ const Footer = () => (
 )
 
 export function StaffPage({ page, skills, staffListPromise, initialPermissions, initialSchedules }: StaffPageProps) {
+  const [activeTab, setActiveTab] = useState("list")
+  const isListTab = activeTab === "list"
+
   return (
     <div className="min-h-screen flex flex-col w-full">
-      <Tabs defaultValue="list" className="flex flex-col flex-1 w-full gap-0">
+      <Tabs defaultValue="list" className="flex flex-col flex-1 w-full gap-0" onValueChange={setActiveTab}>
         {/* Sticky Header with Tabs and Actions */}
         <div
           className="sticky top-0 z-40 -mx-4 px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4"
@@ -72,17 +78,20 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
           } as React.CSSProperties}
         >
           <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto justify-start">
-            <TabsTrigger value="list" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-xs font-medium px-4 transition-all duration-200 flex-1 md:flex-none">Danh sách</TabsTrigger>
-            <TabsTrigger value="permissions" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-xs font-medium px-4 transition-all duration-200 flex-1 md:flex-none">Phân quyền</TabsTrigger>
-            <TabsTrigger value="scheduling" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-xs font-medium px-4 transition-all duration-200 flex-1 md:flex-none">Lịch làm việc</TabsTrigger>
+            <TabsTrigger value="list" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Danh sách</TabsTrigger>
+            <TabsTrigger value="permissions" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Phân quyền</TabsTrigger>
+            <TabsTrigger value="scheduling" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Lịch làm việc</TabsTrigger>
           </TabsList>
 
           <div className="flex items-center gap-3 w-full md:w-auto">
             <div className="flex items-center gap-2 flex-1 md:flex-none">
-              <SearchInput placeholder="Tìm kiếm nhân viên..." className="w-full md:w-[250px] h-9" />
-              <StaffFilter />
+              <SearchInput
+                placeholder="Tìm kiếm nhân viên..."
+                className="w-full md:w-[250px] h-9"
+              />
+              {isListTab && <StaffFilter />}
             </div>
-            <InviteStaffModal skills={skills} />
+            {isListTab && <InviteStaffModal skills={skills} />}
           </div>
         </div>
 

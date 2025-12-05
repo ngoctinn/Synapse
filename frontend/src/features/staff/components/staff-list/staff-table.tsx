@@ -7,26 +7,25 @@ import { Badge } from "@/shared/ui/badge"
 import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row"
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state"
 import { PaginationControls } from "@/shared/ui/custom/pagination-controls"
+import { StatusBadge } from "@/shared/ui/custom/status-badge"
 import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow
 } from "@/shared/ui/table"
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
 } from "@/shared/ui/tooltip"
 import { Users } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { ROLE_CONFIG } from "../../constants"
 import { Staff } from "../../types"
 import { StaffActions } from "./staff-actions"
-
-
 
 interface StaffTableProps {
   data: Staff[]
@@ -35,6 +34,7 @@ interface StaffTableProps {
   totalPages?: number
   onPageChange?: (page: number) => void
   className?: string
+  variant?: "default" | "flush"
 }
 
 export function StaffTable({
@@ -43,7 +43,8 @@ export function StaffTable({
   page = 1,
   totalPages = 1,
   onPageChange,
-  className
+  className,
+  variant = "default"
 }: StaffTableProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -70,9 +71,15 @@ export function StaffTable({
     )
   }
 
+  const containerClasses = cn(
+    "relative bg-background",
+    variant === "default" && "border rounded-xl shadow-sm",
+    className
+  )
+
   return (
     <div className="flex flex-col gap-4">
-      <div className={cn("bg-background border rounded-xl relative shadow-sm", className)}>
+      <div className={containerClasses}>
         <table className="w-full caption-bottom text-sm min-w-[800px]">
           <TableHeader className="sticky top-[var(--staff-header-height-mobile,109px)] md:top-[var(--staff-header-height,57px)] z-20 bg-background shadow-sm after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-border/50">
             <TableRow className="hover:bg-transparent border-none">
@@ -145,26 +152,7 @@ export function StaffTable({
                   </div>
                 </TableCell>
                 <TableCell className="py-5">
-                  <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border transition-all duration-300 ${
-                    staff.user.is_active
-                      ? "bg-primary/5 text-primary border-primary/20 shadow-[0_0_10px_rgba(var(--primary),0.1)]"
-                      : "bg-muted/50 text-muted-foreground border-border/50"
-                  }`}>
-                    {staff.user.is_active ? (
-                        <span className="flex items-center gap-2">
-                            <span className="relative flex h-2 w-2">
-                              <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-20 animate-pulse"></span>
-                              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary shadow-[0_0_8px_rgba(var(--primary),0.6)]"></span>
-                            </span>
-                            Hoạt động
-                        </span>
-                    ) : (
-                        <span className="flex items-center gap-2">
-                            <span className="h-2 w-2 rounded-full bg-muted-foreground/40"></span>
-                            Ẩn
-                        </span>
-                    )}
-                  </div>
+                  <StatusBadge isActive={staff.user.is_active} />
                 </TableCell>
                 <TableCell className="text-right pr-6 py-4">
                   <StaffActions staff={staff} skills={skills} />
