@@ -16,6 +16,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shar
 import { ExceptionItem } from "./exception-item";
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
+import { ExceptionsFilterBar } from "./exceptions-filter-bar";
 
 interface ExceptionsCalendarProps {
   exceptions: ExceptionDate[];
@@ -31,7 +32,7 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
     isClosed: true,
   });
   const [editingException, setEditingException] = useState<ExceptionDate | null>(null);
-  const [filterType, setFilterType] = useState<'all' | 'holiday' | 'custom' | 'maintenance'>('all');
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [statusFilter, setStatusFilter] = useState<'all' | 'closed' | 'open'>('all');
 
   // Drag selection state
@@ -98,13 +99,21 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
     maintenance: "text-amber-600 font-bold relative after:content-[''] after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-amber-600 after:rounded-full",
   };
 
+  const toggleFilter = (type: string) => {
+    setSelectedTypes(prev => 
+      prev.includes(type) 
+        ? prev.filter(t => t !== type) 
+        : [...prev, type]
+    );
+  };
+
   // Gom nhóm các ngoại lệ theo ID để hiển thị gọn gàng
   const groupedExceptions = useMemo(() => {
     const groups = new Map<string, ExceptionDate[]>();
     
     // Filter before grouping
     const filteredExceptions = exceptions.filter(ex => {
-      const typeMatch = filterType === 'all' ? true : ex.type === filterType;
+      const typeMatch = selectedTypes.length === 0 ? true : selectedTypes.includes(ex.type);
       const statusMatch = statusFilter === 'all' ? true :
                           statusFilter === 'closed' ? ex.isClosed :
                           !ex.isClosed;
@@ -124,7 +133,7 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
     });
     
     return Array.from(groups.values());
-  }, [exceptions, filterType, statusFilter]);
+  }, [exceptions, selectedTypes, statusFilter]);
 
   const handleDayDoubleClick = (day: Date) => {
     // Đảm bảo ngày được chọn khi double click
@@ -189,7 +198,9 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+      {/* ... Calendar column ... */}
       <div className="md:col-span-5 lg:col-span-4">
+        {/* ... Card content ... */}
         <Card className="h-full border-none shadow-none bg-transparent">
           <CardContent className="p-0 space-y-6">
              <div className="border rounded-3xl p-6 bg-card/50 backdrop-blur-md shadow-xl ring-1 ring-white/20 dark:ring-white/5 select-none shadow-[0_0_15px_rgba(var(--primary),0.1)]">
@@ -326,97 +337,23 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
       </div>
 
       <div className="md:col-span-7 lg:col-span-8 space-y-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-border/40 gap-4">
-          <div>
-            <h3 className="text-xl font-bold flex items-center gap-2 tracking-tight">
-              <CalendarDays className="w-5 h-5 text-primary" />
-              Danh sách các ngày đặc biệt
-            </h3>
-            <p className="text-sm text-muted-foreground mt-1">Quản lý các ngày nghỉ lễ và lịch làm việc đặc biệt</p>
-          </div>
-          <div className="flex flex-wrap gap-2 justify-end text-sm items-center w-full sm:w-auto">
-            <div className="flex items-center gap-1 bg-muted/30 p-1 rounded-full border border-border/50">
-              <button
-                onClick={() => setStatusFilter('all')}
-                className={cn(
-                  "px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200",
-                  statusFilter === 'all' 
-                    ? "bg-background shadow-sm text-foreground ring-1 ring-black/5" 
-                    : "text-muted-foreground hover:text-foreground hover:bg-background/50"
-                )}
-              >
-                Tất cả
-              </button>
-              <button
-                onClick={() => setStatusFilter('closed')}
-                className={cn(
-                  "px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 flex items-center gap-1.5",
-                  statusFilter === 'closed' 
-                    ? "bg-destructive/10 text-destructive shadow-sm ring-1 ring-destructive/20" 
-                    : "text-muted-foreground hover:text-destructive hover:bg-destructive/5"
-                )}
-              >
-                <div className={cn("w-1.5 h-1.5 rounded-full bg-destructive", statusFilter === 'closed' && "animate-pulse")} />
-                Đóng cửa
-              </button>
-              <button
-                onClick={() => setStatusFilter('open')}
-                className={cn(
-                  "px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 flex items-center gap-1.5",
-                  statusFilter === 'open' 
-                    ? "bg-primary/10 text-primary shadow-sm ring-1 ring-primary/20" 
-                    : "text-muted-foreground hover:text-primary hover:bg-primary/5"
-                )}
-              >
-                <div className={cn("w-1.5 h-1.5 rounded-full bg-primary", statusFilter === 'open' && "animate-pulse")} />
-                Mở cửa
-              </button>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h3 className="text-xl font-bold flex items-center gap-2 tracking-tight">
+                <CalendarDays className="w-5 h-5 text-primary" />
+                Danh sách các ngày đặc biệt
+              </h3>
+              <p className="text-sm text-muted-foreground mt-1">Quản lý các ngày nghỉ lễ và lịch làm việc đặc biệt</p>
             </div>
-
-            <div className="h-6 w-px bg-border mx-1 hidden sm:block" />
-
-            <button
-              onClick={() => setFilterType(filterType === 'holiday' ? 'all' : 'holiday')}
-              className={cn(
-                "flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-200",
-                filterType === 'holiday' 
-                  ? "bg-destructive/20 border-destructive ring-1 ring-destructive/30" 
-                  : "bg-destructive/10 border-destructive/20 hover:bg-destructive/15",
-                 filterType !== 'all' && filterType !== 'holiday' && "opacity-40 grayscale"
-              )}
-            >
-              <div className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
-              <span className="text-destructive font-medium text-xs">Ngày lễ</span>
-            </button>
-
-            <button
-              onClick={() => setFilterType(filterType === 'custom' ? 'all' : 'custom')}
-              className={cn(
-                "flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-200",
-                filterType === 'custom' 
-                  ? "bg-primary/20 border-primary ring-1 ring-primary/30" 
-                  : "bg-primary/10 border-primary/20 hover:bg-primary/15",
-                 filterType !== 'all' && filterType !== 'custom' && "opacity-40 grayscale"
-              )}
-            >
-              <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              <span className="text-primary font-medium text-xs">Tùy chỉnh</span>
-            </button>
-
-            <button
-              onClick={() => setFilterType(filterType === 'maintenance' ? 'all' : 'maintenance')}
-              className={cn(
-                "flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-200",
-                filterType === 'maintenance' 
-                  ? "bg-amber-500/20 border-amber-500 ring-1 ring-amber-500/30" 
-                  : "bg-amber-500/10 border-amber-500/20 hover:bg-amber-500/15",
-                 filterType !== 'all' && filterType !== 'maintenance' && "opacity-40 grayscale"
-              )}
-            >
-              <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-              <span className="text-amber-600 font-medium text-xs">Bảo trì</span>
-            </button>
           </div>
+          
+          <ExceptionsFilterBar 
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            selectedTypes={selectedTypes}
+            toggleTypeFilter={toggleFilter}
+          />
         </div>
 
         <div className="flex flex-col gap-3 max-h-[500px] overflow-y-auto pr-2 scrollbar-hide min-h-[300px]">
@@ -435,15 +372,15 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
                   </div>
                   <h3 className="font-semibold text-xl mb-2">Chưa có ngày ngoại lệ</h3>
                   <p className="text-sm text-muted-foreground max-w-xs text-center leading-relaxed">
-                    {filterType !== 'all' || statusFilter !== 'all' 
+                    {selectedTypes.length > 0 || statusFilter !== 'all' 
                       ? "Không tìm thấy ngoại lệ phù hợp với bộ lọc hiện tại."
                       : "Chọn ngày trên lịch để thêm ngày nghỉ lễ, bảo trì hoặc giờ làm việc đặc biệt."}
                   </p>
-                  {(filterType !== 'all' || statusFilter !== 'all') && (
+                  {(selectedTypes.length > 0 || statusFilter !== 'all') && (
                     <Button 
                       variant="link" 
                       onClick={() => {
-                        setFilterType('all');
+                        setSelectedTypes([]);
                         setStatusFilter('all');
                       }}
                       className="mt-2 text-primary"
@@ -451,7 +388,7 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
                       Xóa bộ lọc
                     </Button>
                   )}
-                  {filterType === 'all' && statusFilter === 'all' && (
+                  {selectedTypes.length === 0 && statusFilter === 'all' && (
                     <div className="mt-8 flex items-center gap-2 text-primary text-sm font-medium bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
                       <ArrowLeft className="w-4 h-4 animate-pulse-horizontal" />
                       <span>Bắt đầu bằng việc chọn ngày</span>

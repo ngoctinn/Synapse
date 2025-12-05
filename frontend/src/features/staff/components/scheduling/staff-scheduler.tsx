@@ -10,17 +10,22 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/ui/popover"
-import { MOCK_SCHEDULES } from "../../data/mock-schedules"
+import { toast } from "sonner"
+import { deleteSchedule, updateSchedule } from "../../actions"
 import { MOCK_SHIFTS } from "../../data/mock-shifts"
-import { MOCK_STAFF } from "../../data/mock-staff"
-import { Schedule, Shift } from "../../types"
+import { Schedule, Shift, Staff } from "../../types"
 import { AddShiftDialog } from "./add-shift-dialog"
 import { CopyWeekButton } from "./copy-week-button"
 import { ScheduleGrid } from "./schedule-grid"
 
-export function StaffScheduler() {
+interface StaffSchedulerProps {
+  initialSchedules: Schedule[]
+  staffList: Staff[]
+}
+
+export function StaffScheduler({ initialSchedules, staffList }: StaffSchedulerProps) {
   const [currentDate, setCurrentDate] = useState(new Date())
-  const [schedules, setSchedules] = useState<Schedule[]>(MOCK_SCHEDULES)
+  const [schedules, setSchedules] = useState<Schedule[]>(initialSchedules)
 
   // Dialog State
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
@@ -31,39 +36,59 @@ export function StaffScheduler() {
     setIsAddDialogOpen(true)
   }
 
-  const handleAddShift = (shift: Shift) => {
+  const handleAddShift = async (shift: Shift) => {
     if (!selectedCell) return
 
     const dateStr = format(selectedCell.date, "yyyy-MM-dd")
 
+    // Check if schedule already exists to update or create new
+    const existingSchedule = schedules.find(
+      (s) => s.staffId === selectedCell.staffId && s.date === dateStr
+    )
+
+    const newSchedule: Schedule = {
+      id: existingSchedule ? existingSchedule.id : Math.random().toString(36).substr(2, 9),
+      staffId: selectedCell.staffId,
+      date: dateStr,
+      shiftId: shift.id,
+      status: "DRAFT",
+      customShift: shift
+    } as any
+
+    // Optimistic Update
     setSchedules((prev) => {
-      // Remove existing schedule for this cell if any
       const filtered = prev.filter(
         (s) => !(s.staffId === selectedCell.staffId && s.date === dateStr)
       )
-
-      // Add new schedule
-      const newSchedule: Schedule = {
-        id: Math.random().toString(36).substr(2, 9),
-        staffId: selectedCell.staffId,
-        date: dateStr,
-        shiftId: shift.id,
-        status: "DRAFT",
-        // Store custom shift details if needed
-        customShift: shift
-      } as any // Cast to any to bypass type check for customShift for now
-
       return [...filtered, newSchedule]
     })
+
+    // Server Action
+    const result = await updateSchedule(newSchedule)
+    if (result.success) {
+      toast.success("Đã cập nhật lịch làm việc")
+    } else {
+      toast.error(result.error)
+    }
   }
 
-  const handleRemoveSchedule = (scheduleId: string) => {
+  const handleRemoveSchedule = async (scheduleId: string) => {
+    // Optimistic Update
     setSchedules((prev) => prev.filter((s) => s.id !== scheduleId))
+
+    // Server Action
+    const result = await deleteSchedule(scheduleId)
+    if (result.success) {
+      toast.success("Đã xóa lịch làm việc")
+    } else {
+      toast.error(result.error)
+    }
   }
 
   const handleCopyWeek = () => {
     // Mock logic: just duplicate existing schedules for demo
     console.log("Copying previous week...")
+    toast.info("Tính năng sao chép tuần đang phát triển")
   }
 
   const nextWeek = () => setCurrentDate((d) => addDays(d, 7))
@@ -74,7 +99,7 @@ export function StaffScheduler() {
   const weekEnd = addDays(weekStart, 6)
 
   const selectedStaffName = selectedCell
-    ? (MOCK_STAFF.find(s => s.user_id === selectedCell.staffId)?.user.full_name ?? undefined)
+    ? (staffList.find(s => s.user_id === selectedCell.staffId)?.user.full_name ?? undefined)
     : undefined
 
   const selectedDateStr = selectedCell
@@ -85,34 +110,46 @@ export function StaffScheduler() {
   const [selectedTool, setSelectedTool] = useState<Shift | "eraser" | null>(null)
   const [isPaintOpen, setIsPaintOpen] = useState(false)
 
-  const handlePaint = (staffId: string, date: Date) => {
+  const handlePaint = async (staffId: string, date: Date) => {
     if (!selectedTool) return
 
     const dateStr = format(date, "yyyy-MM-dd")
+    const existingSchedule = schedules.find(
+        (s) => s.staffId === staffId && s.date === dateStr
+    )
 
-    setSchedules((prev) => {
-      // Remove existing schedule for this cell
-      const filtered = prev.filter(
-        (s) => !(s.staffId === staffId && s.date === dateStr)
-      )
+    if (selectedTool === "eraser") {
+        if (existingSchedule) {
+            // Optimistic Delete
+            setSchedules((prev) => prev.filter((s) => s.id !== existingSchedule.id))
+            // Server Delete
+            const result = await deleteSchedule(existingSchedule.id)
+            if (!result.success) toast.error(result.error)
+        }
+        return
+    }
 
-      // If eraser, just return filtered
-      if (selectedTool === "eraser") {
-        return filtered
-      }
-
-      // If shift tool, add new schedule
-      const newSchedule: Schedule = {
-        id: Math.random().toString(36).substr(2, 9),
+    // Add or Update
+    const newSchedule: Schedule = {
+        id: existingSchedule ? existingSchedule.id : Math.random().toString(36).substr(2, 9),
         staffId: staffId,
         date: dateStr,
         shiftId: selectedTool.id,
         status: "DRAFT",
         customShift: selectedTool
-      } as any
+    } as any
 
-      return [...filtered, newSchedule]
+    // Optimistic Update
+    setSchedules((prev) => {
+        const filtered = prev.filter(
+            (s) => !(s.staffId === staffId && s.date === dateStr)
+        )
+        return [...filtered, newSchedule]
     })
+
+    // Server Update
+    const result = await updateSchedule(newSchedule)
+    if (!result.success) toast.error(result.error)
   }
 
   return (
@@ -244,7 +281,7 @@ export function StaffScheduler() {
       </div>
       <div className="flex-1 min-h-0">
         <ScheduleGrid
-          staffList={MOCK_STAFF}
+          staffList={staffList}
           schedules={schedules}
           currentDate={currentDate}
           onAddClick={handleAddClick}
