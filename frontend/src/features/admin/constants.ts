@@ -35,20 +35,6 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     title: "Nhân sự",
     href: "/admin/staff",
     icon: Briefcase,
-    items: [
-      {
-        title: "Danh sách",
-        href: "/admin/staff",
-      },
-      {
-        title: "Phân quyền",
-        href: "/admin/staff/permissions",
-      },
-      {
-        title: "Lịch làm việc",
-        href: "/admin/staff/schedule",
-      },
-    ],
   },
   {
     title: "Dịch vụ",
