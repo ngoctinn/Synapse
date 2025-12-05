@@ -1,4 +1,4 @@
-"use client"
+  "use client"
 
 import { cn } from "@/shared/lib/utils"
 import Link from "next/link"
@@ -74,22 +74,21 @@ export function HeaderNav({ mobile = false, className, onLinkClick }: HeaderNavP
             href={item.href}
             onClick={onLinkClick}
             className={cn(
-              "relative text-sm font-medium transition-all duration-300 hover:text-primary flex items-center group",
-              isActive ? "text-primary" : "text-muted-foreground",
-              mobile && "py-2 w-full justify-center text-base"
+              "relative text-sm font-medium transition-colors duration-300 flex items-center px-3 py-2 rounded-full whitespace-nowrap",
+              isActive
+                ? "bg-primary/10 text-primary font-semibold"
+                : "text-muted-foreground hover:text-[var(--primary)]",
+              mobile && "w-full justify-center text-base"
             )}
           >
             {isActive && (
-              <span className="mr-2 h-1.5 w-1.5 rounded-full bg-primary animate-in fade-in zoom-in duration-300" />
+              <span className="relative mr-2 flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+              </span>
             )}
-            <span className="relative">
+            <span>
               {item.label}
-              {!mobile && (
-                <span className={cn(
-                  "absolute -bottom-1 left-0 h-0.5 bg-primary transition-all duration-300 rounded-full",
-                  isActive ? "w-full" : "w-0 group-hover:w-full opacity-50"
-                )} />
-              )}
             </span>
           </Link>
         )

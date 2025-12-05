@@ -51,7 +51,7 @@ export function Header({ userProfile }: HeaderProps) {
       <div className="flex h-12 w-full max-w-4xl items-center justify-between rounded-full border border-white/20 bg-white/70 dark:bg-black/70 px-6 shadow-lg backdrop-blur-xl supports-[backdrop-filter]:bg-white/60 pointer-events-auto transition-all duration-300 hover:shadow-xl hover:border-white/30">
         <div className="flex items-center gap-6">
           <HeaderLogo />
-          <nav className="hidden md:flex items-center space-x-5">
+          <nav className="hidden md:flex items-center space-x-1">
             <HeaderNav />
           </nav>
         </div>

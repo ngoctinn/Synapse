@@ -11,7 +11,7 @@
   --foreground: oklch(0.25 0.02 260);
 
   /* Card: Pure White with subtle warmth */
-  --card: oklch(1.0 0 0);
+  --card: oklch(0.99 0.005 100);
   --card-foreground: oklch(0.25 0.02 260);
 
   --popover: oklch(1.0 0 0);

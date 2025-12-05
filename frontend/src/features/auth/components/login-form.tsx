@@ -81,7 +81,7 @@ export function LoginForm() {
           Chào mừng trở lại
         </h1>
         <p className="text-muted-foreground">
-          Nhập thông tin đăng nhập để truy cập hệ thống quản lý.
+          Nhập thông tin đăng nhập để truy cập hệ thống.
         </p>
       </div>
 

@@ -4,12 +4,16 @@ import Link from "next/link"
 interface HeaderLogoProps {
   className?: string
   textClassName?: string
+  variant?: "default" | "inverted"
 }
 
-export function HeaderLogo({ className, textClassName }: HeaderLogoProps) {
+export function HeaderLogo({ className, textClassName, variant = "default" }: HeaderLogoProps) {
   return (
     <Link href="/" className={cn("flex items-center space-x-2 group", className)}>
-      <div className="bg-primary text-primary-foreground p-1 rounded-full transition-transform group-hover:scale-110 shrink-0">
+      <div className={cn(
+        "p-1 rounded-full transition-transform group-hover:scale-110 shrink-0",
+        variant === "inverted" ? "bg-white text-primary" : "bg-primary text-primary-foreground"
+      )}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 100 100"
@@ -38,7 +42,10 @@ export function HeaderLogo({ className, textClassName }: HeaderLogoProps) {
         </svg>
       </div>
       <span className={cn(
-        "hidden font-bold sm:inline-block text-lg bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80 truncate",
+        "hidden font-bold sm:inline-block text-lg truncate",
+        variant === "inverted"
+          ? "text-white"
+          : "bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80",
         textClassName
       )}>
         Synapse

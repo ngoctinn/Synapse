@@ -15,12 +15,12 @@ import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { PasswordInput } from "@/shared/ui/custom/password-input";
 import { showToast } from "@/shared/ui/custom/sonner";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form";
 import { registerAction } from "../actions";
 
@@ -92,7 +92,7 @@ export function RegisterForm() {
           Tạo tài khoản mới
         </h1>
         <p className="text-muted-foreground">
-          Trải nghiệm dịch vụ quản lý Spa chuyên nghiệp ngay hôm nay.
+          Trải nghiệm dịch vụ chuyên nghiệp ngay hôm nay.
         </p>
       </div>
 

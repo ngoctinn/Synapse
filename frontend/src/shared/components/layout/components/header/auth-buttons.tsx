@@ -29,7 +29,7 @@ export function HeaderAuthButtons({ mobile = false, onActionClick }: HeaderAuthB
   return (
     <div className="hidden md:flex items-center gap-2">
       <Link href="/login">
-        <Button variant="ghost" size="sm" className="rounded-full cursor-pointer hover:bg-primary/5">
+        <Button variant="link" size="sm" className="rounded-full cursor-pointer text-muted-foreground hover:text-primary">
           Đăng nhập
         </Button>
       </Link>

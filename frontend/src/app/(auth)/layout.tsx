@@ -1,4 +1,4 @@
-import { Sparkles } from "lucide-react";
+import { HeaderLogo } from "@/shared/components/layout/components/header/logo";
 import React from "react";
 
 export default function AuthLayout({
@@ -13,12 +13,9 @@ export default function AuthLayout({
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-40 mix-blend-overlay" />
         <div className="absolute inset-0 bg-gradient-to-br from-primary/80 to-primary/40" />
 
-        <div className="relative z-10 p-12 text-primary-foreground max-w-lg">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="p-2 bg-white/10 backdrop-blur-md rounded-xl border border-white/20">
-              <Sparkles className="w-8 h-8 text-accent" />
-            </div>
-            <h1 className="text-3xl font-serif font-bold tracking-tight">Synapse</h1>
+        <div className="relative z-10 p-12 text-primary-foreground max-w-lg select-none">
+          <div className="mb-8">
+            <HeaderLogo variant="inverted" textClassName="text-3xl font-serif" />
           </div>
 
           <blockquote className="space-y-6">
@@ -39,12 +36,7 @@ export default function AuthLayout({
       {/* Right Side: Form */}
       <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8 lg:p-12 relative">
         {/* Mobile Logo */}
-        <div className="lg:hidden absolute top-8 left-8 flex items-center gap-2">
-           <div className="p-1.5 bg-primary/10 rounded-lg">
-              <Sparkles className="w-5 h-5 text-primary" />
-           </div>
-           <span className="font-serif font-bold text-xl text-primary">Synapse</span>
-        </div>
+        <HeaderLogo className="lg:hidden absolute top-8 left-8" textClassName="text-xl font-serif inline-block" />
 
         <div className="w-full max-w-[400px] space-y-6 animate-fade-in">
           {children}
