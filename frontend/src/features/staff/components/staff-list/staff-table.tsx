@@ -26,7 +26,7 @@ import { ROLE_CONFIG } from "../../constants"
 import { Staff } from "../../types"
 import { StaffActions } from "./staff-actions"
 
-const roleConfig = ROLE_CONFIG
+
 
 interface StaffTableProps {
   data: Staff[]
@@ -74,7 +74,7 @@ export function StaffTable({
     <div className="flex flex-col gap-4">
       <div className={cn("bg-background border rounded-xl relative shadow-sm", className)}>
         <table className="w-full caption-bottom text-sm min-w-[800px]">
-          <TableHeader className="sticky top-[89px] z-20 bg-background shadow-sm after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-border/50">
+          <TableHeader className="sticky top-[52px] z-20 bg-background shadow-sm after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-border/50">
             <TableRow className="hover:bg-transparent border-none">
               <TableHead className="bg-transparent pl-8 h-14 font-medium text-muted-foreground">Nhân viên</TableHead>
               <TableHead className="bg-transparent h-14 font-medium text-muted-foreground">Vai trò</TableHead>
@@ -90,7 +90,7 @@ export function StaffTable({
                   <div className="flex items-center gap-4">
                     <Avatar className="h-10 w-10 border">
                       <AvatarImage src={staff.user.avatar_url || undefined} alt={staff.user.full_name || ""} />
-                      <AvatarFallback className="bg-primary/10 text-primary font-medium">
+                      <AvatarFallback className="bg-primary/20 text-primary font-medium">
                         {(staff.user.full_name || staff.user.email || "?").charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
@@ -102,13 +102,13 @@ export function StaffTable({
                 </TableCell>
                 <TableCell className="py-5">
                   <Badge
-                    variant={roleConfig[staff.user.role]?.variant || "outline"}
+                    variant={ROLE_CONFIG[staff.user.role]?.variant || "outline"}
                     className={cn(
                       "rounded-md px-2.5 py-1 font-medium border-transparent text-[11px]",
-                      roleConfig[staff.user.role]?.className || "bg-gray-100 text-gray-600"
+                      ROLE_CONFIG[staff.user.role]?.className || "bg-gray-100 text-gray-600"
                     )}
                   >
-                    {roleConfig[staff.user.role]?.label || staff.user.role}
+                    {ROLE_CONFIG[staff.user.role]?.label || staff.user.role}
                   </Badge>
                 </TableCell>
                 <TableCell className="py-5">

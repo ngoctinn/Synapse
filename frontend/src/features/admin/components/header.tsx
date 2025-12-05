@@ -66,7 +66,7 @@ export function AdminHeader({ className, user }: AdminHeaderProps) {
 
   return (
     <header className={cn(
-      "flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12",
+      "flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 relative",
       className
     )}>
       <div className="flex items-center gap-2 px-4">
@@ -99,6 +99,8 @@ export function AdminHeader({ className, user }: AdminHeaderProps) {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
+
+
 
       {/* Actions Section */}
       <div className="ml-auto flex items-center gap-3 px-4">

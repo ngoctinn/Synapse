@@ -3,33 +3,29 @@
 import { Badge } from "@/shared/ui/badge"
 import { Checkbox } from "@/shared/ui/checkbox"
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/shared/ui/table"
 import { Lock } from "lucide-react"
-import { useState } from "react"
+import { useState, useTransition } from "react"
+import { toast } from "sonner"
+import { updatePermissions } from "../../actions"
 import { MODULES, ROLES } from "../../constants"
 import { BulkSaveBar } from "./bulk-save-bar"
 
-// Mock Initial Permissions (Module ID -> Role ID -> boolean)
-const INITIAL_PERMISSIONS: Record<string, Record<string, boolean>> = {
-  dashboard: { admin: true, receptionist: true, technician: true },
-  staff: { admin: true, receptionist: false, technician: false },
-  customers: { admin: true, receptionist: true, technician: false },
-  services: { admin: true, receptionist: false, technician: false },
-  inventory: { admin: true, receptionist: true, technician: false },
-  reports: { admin: true, receptionist: false, technician: false },
-  settings: { admin: true, receptionist: false, technician: false },
+interface PermissionMatrixProps {
+  initialPermissions: Record<string, Record<string, boolean>>
 }
 
-export function PermissionMatrix() {
-  const [permissions, setPermissions] = useState(INITIAL_PERMISSIONS)
+export function PermissionMatrix({ initialPermissions }: PermissionMatrixProps) {
+  const [permissions, setPermissions] = useState(initialPermissions)
   const [hasChanges, setHasChanges] = useState(false)
   const [changeCount, setChangeCount] = useState(0)
+  const [isPending, startTransition] = useTransition()
 
   const handleToggle = (moduleId: string, roleId: string) => {
     setPermissions((prev) => {
@@ -48,14 +44,20 @@ export function PermissionMatrix() {
   }
 
   const handleSave = () => {
-    // TODO: Call API to save permissions
-    console.log("Saving permissions:", permissions)
-    setHasChanges(false)
-    setChangeCount(0)
+    startTransition(async () => {
+      const result = await updatePermissions(permissions)
+      if (result.success) {
+        toast.success(result.message)
+        setHasChanges(false)
+        setChangeCount(0)
+      } else {
+        toast.error(result.error)
+      }
+    })
   }
 
   const handleReset = () => {
-    setPermissions(INITIAL_PERMISSIONS)
+    setPermissions(initialPermissions)
     setHasChanges(false)
     setChangeCount(0)
   }
@@ -64,11 +66,11 @@ export function PermissionMatrix() {
     <div className="h-full flex flex-col relative">
       <div className="flex-1 overflow-auto">
         <Table>
-          <TableHeader className="sticky top-0 z-10 bg-white shadow-[0_1px_0_0_rgba(0,0,0,0.1)]">
+          <TableHeader className="sticky top-[52px] z-10 bg-background shadow-[0_1px_0_0_rgba(0,0,0,0.1)]">
             <TableRow className="hover:bg-transparent border-b-0">
-              <TableHead className="w-[250px] font-semibold pl-6 bg-white">Chức năng (Module)</TableHead>
+              <TableHead className="w-[250px] font-semibold pl-6 bg-background">Chức năng (Module)</TableHead>
               {ROLES.map((role) => (
-                <TableHead key={role.id} className="text-center h-12 bg-white">
+                <TableHead key={role.id} className="text-center h-12 bg-background">
                   <Badge variant={role.variant} className="rounded-md px-3 py-1">
                     {role.name}
                   </Badge>

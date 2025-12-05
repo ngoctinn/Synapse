@@ -59,8 +59,8 @@ export function ScheduleGrid({
       <div className="overflow-x-auto flex-1">
         <div className="min-w-[1000px]">
           {/* Header Row */}
-          <div className="grid grid-cols-[220px_repeat(7,1fr)] bg-muted/30 border-b">
-            <div className="p-4 font-medium text-sm border-r flex items-center text-muted-foreground sticky left-0 bg-white z-20 shadow-[1px_0_0_0_rgba(0,0,0,0.05)]">Nhân viên</div>
+          <div className="grid grid-cols-[220px_repeat(7,1fr)] bg-muted/30 border-b sticky top-[52px] z-30">
+            <div className="p-4 font-medium text-sm border-r flex items-center text-muted-foreground sticky left-0 bg-background z-40 shadow-[1px_0_0_0_rgba(0,0,0,0.05)]">Nhân viên</div>
             {weekDays.map((day) => {
               const isToday = isSameDay(day, today)
               return (
@@ -87,7 +87,7 @@ export function ScheduleGrid({
             {staffList.map((staff) => (
               <div key={staff.user_id} className="grid grid-cols-[220px_repeat(7,1fr)] group hover:bg-muted/5 transition-colors">
                 {/* Staff Info */}
-                <div className="p-3 border-r flex items-center gap-3 bg-white group-hover:bg-muted/5 transition-colors sticky left-0 z-10 shadow-[1px_0_0_0_rgba(0,0,0,0.05)]">
+                <div className="p-3 border-r flex items-center gap-3 bg-background group-hover:bg-muted/5 transition-colors sticky left-0 z-10 shadow-[1px_0_0_0_rgba(0,0,0,0.05)]">
                   <div className="w-9 h-9 rounded-full bg-muted overflow-hidden border shrink-0">
                      <img src={staff.user.avatar_url || ''} alt={staff.user.full_name || ''} className="w-full h-full object-cover" />
                   </div>
@@ -119,7 +119,7 @@ export function ScheduleGrid({
                       className={cn(
                         "p-1.5 border-r last:border-r-0 min-h-[72px] relative transition-all duration-200",
                         !schedule && isToday ? "bg-primary/[0.02]" : "",
-                        !schedule && !isToday ? "bg-white hover:bg-muted/20" : "",
+                        !schedule && !isToday ? "bg-background hover:bg-muted/20" : "",
                         selectedTool ? "cursor-crosshair" : "cursor-default"
                       )}
                     >
@@ -129,7 +129,7 @@ export function ScheduleGrid({
                             "h-full w-full rounded-lg p-2 text-xs font-medium border flex flex-col justify-center gap-1 shadow-sm transition-all hover:shadow-md group/shift relative",
                             shift.type === "OFF"
                               ? "bg-muted/50 text-muted-foreground border-dashed"
-                              : "bg-white text-card-foreground border-l-4",
+                              : "bg-card text-card-foreground border-l-4",
                              selectedTool === "eraser" && isDragging ? "opacity-50" : ""
                           )}
                           style={shift.type !== "OFF" ? { borderLeftColor: shift.color } : undefined}

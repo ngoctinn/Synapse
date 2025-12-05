@@ -167,3 +167,74 @@ export async function updateUser(userId: string, data: { full_name?: string; pho
     return { success: false, error: "Lỗi kết nối đến server" }
   }
 }
+
+export async function getPermissions(): Promise<Record<string, Record<string, boolean>>> {
+  // Mock data as requested
+  return {
+    dashboard: { admin: true, receptionist: true, technician: true },
+    staff: { admin: true, receptionist: false, technician: false },
+    customers: { admin: true, receptionist: true, technician: true },
+    services: { admin: true, receptionist: true, technician: false },
+    inventory: { admin: true, receptionist: true, technician: true },
+    reports: { admin: true, receptionist: false, technician: false },
+    settings: { admin: true, receptionist: false, technician: false },
+  }
+}
+
+export async function updatePermissions(permissions: Record<string, Record<string, boolean>>): Promise<ActionState> {
+  // Mock success
+  return { success: true, message: "Cập nhật phân quyền thành công (Mock)" }
+}
+
+export async function getSchedules(startDate: string, endDate: string): Promise<any[]> {
+  // Mock data as requested
+  return [
+    {
+      id: "1",
+      staffId: "staff_1", // Ensure this matches a real staff ID if possible, or use generic
+      date: startDate, // Just to show something on the start date
+      shiftId: "shift_morning",
+      status: "PUBLISHED",
+    }
+  ]
+}
+
+export async function updateSchedule(schedule: any): Promise<ActionState> { // Replace any with Schedule type
+  try {
+    const res = await fetchWithAuth("/staff/schedules", {
+      method: "POST", // Or PUT depending on API
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(schedule),
+    })
+
+    if (!res.ok) {
+      const errorData = await res.json()
+      return { success: false, error: errorData.detail || "Không thể cập nhật lịch làm việc" }
+    }
+
+    revalidatePath("/admin/staff")
+    return { success: true, message: "Cập nhật lịch làm việc thành công" }
+  } catch (error) {
+    return { success: false, error: "Lỗi kết nối đến server" }
+  }
+}
+
+export async function deleteSchedule(scheduleId: string): Promise<ActionState> {
+  try {
+    const res = await fetchWithAuth(`/staff/schedules/${scheduleId}`, {
+      method: "DELETE",
+    })
+
+    if (!res.ok) {
+      const errorData = await res.json()
+      return { success: false, error: errorData.detail || "Không thể xóa lịch làm việc" }
+    }
+
+    revalidatePath("/admin/staff")
+    return { success: true, message: "Đã xóa lịch làm việc thành công" }
+  } catch (error) {
+    return { success: false, error: "Lỗi kết nối đến server" }
+  }
+}
