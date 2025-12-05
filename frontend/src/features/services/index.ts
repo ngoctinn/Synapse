@@ -1,8 +1,12 @@
 export * from "./actions";
-export { CreateServiceDialog } from "./components/create-service-dialog";
-export { CreateSkillDialog } from "./components/create-skill-dialog";
-export { ServiceTable, ServiceTableSkeleton } from "./components/service-table";
-export { SkillTable, SkillTableSkeleton } from "./components/skill-table";
+export * from "./components/create-service-dialog";
+export * from "./components/create-skill-dialog";
+export * from "./components/service-actions";
+export * from "./components/service-filter";
+export * from "./components/service-form";
+export * from "./components/service-table";
+export * from "./components/services-page";
+export * from "./components/skill-table";
+export * from "./schemas";
 export * from "./types";
-export { ServiceFilter } from "./components/service-filter";
 

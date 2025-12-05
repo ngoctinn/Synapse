@@ -66,7 +66,7 @@ export function ServiceTable({
     <div className="flex flex-col gap-4">
       <div className={cn("bg-background border rounded-xl relative shadow-sm", className)}>
         <table className="w-full caption-bottom text-sm min-w-[800px]">
-          <TableHeader className="sticky top-[89px] z-20 bg-background shadow-sm after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-border/50">
+          <TableHeader className="sticky top-[var(--header-height,57px)] z-20 bg-background shadow-sm after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-border/50">
             <TableRow className="hover:bg-transparent border-none">
               <TableHead className="bg-transparent pl-8 h-14 font-medium text-muted-foreground">Tên dịch vụ</TableHead>
               <TableHead className="bg-transparent h-14 font-medium text-muted-foreground">Thời lượng</TableHead>

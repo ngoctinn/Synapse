@@ -7,11 +7,11 @@ import { MoneyInput } from "@/shared/ui/custom/money-input"
 import { TagInput } from "@/shared/ui/custom/tag-input"
 import { Label } from "@/shared/ui/label"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select"
 import { Slider } from "@/shared/ui/slider"
 import { useEffect, useState } from "react"
@@ -81,6 +81,7 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
       isActive={activeCount > 0}
       count={activeCount}
       onClear={clearFilters}
+      className="h-9 w-9"
     >
       <div className="grid gap-6 p-1">
         {/* Lọc theo Giá */}

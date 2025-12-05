@@ -2,12 +2,12 @@
 
 import { Button } from "@/shared/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from "@/shared/ui/dialog";
 import { Plus } from "lucide-react";
 import { useState } from "react";
@@ -24,7 +24,7 @@ export function CreateServiceDialog({ availableSkills }: CreateServiceDialogProp
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button className="h-9">
           <Plus className="mr-2 h-4 w-4" /> Thêm dịch vụ
         </Button>
       </DialogTrigger>

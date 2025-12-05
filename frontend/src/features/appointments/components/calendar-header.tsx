@@ -1,10 +1,10 @@
 import { Button } from '@/shared/ui/button';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/shared/ui/select";
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
@@ -36,22 +36,22 @@ export function CalendarHeader({ date, onDateChange, view, onViewChange }: Calen
   };
 
   return (
-    <div className="flex flex-col gap-4 border-b bg-white/80 backdrop-blur-md p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sticky top-0 z-30 transition-all duration-200">
+    <div className="sticky top-0 z-30 -mx-4 px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm transition-all duration-200">
       <div className="flex items-center gap-2">
-        <div className="flex items-center rounded-lg border bg-white p-0.5 shadow-sm">
-          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-md" onClick={handlePrev}>
+        <div className="flex items-center rounded-lg border bg-background p-0.5 shadow-sm">
+          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-md" onClick={handlePrev}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="sm" className="h-8 px-3 font-medium" onClick={handleToday}>
+          <Button variant="ghost" size="sm" className="h-9 px-3 font-medium" onClick={handleToday}>
             Hôm nay
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-md" onClick={handleNext}>
+          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-md" onClick={handleNext}>
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
 
         <div className="ml-2 flex flex-col">
-          <span className="text-lg font-bold text-gray-900 capitalize font-serif">
+          <span className="text-lg font-bold text-foreground capitalize">
             {format(date, 'EEEE, d MMMM, yyyy', { locale: vi })}
           </span>
         </div>
@@ -59,7 +59,7 @@ export function CalendarHeader({ date, onDateChange, view, onViewChange }: Calen
 
       <div className="flex items-center gap-2">
         <Select value={view} onValueChange={(v) => onViewChange(v as CalendarView)}>
-          <SelectTrigger className="w-[140px] h-9 bg-white">
+          <SelectTrigger className="w-[140px] h-9 bg-background">
             <CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
             <SelectValue placeholder="Chế độ xem" />
           </SelectTrigger>
@@ -76,7 +76,7 @@ export function CalendarHeader({ date, onDateChange, view, onViewChange }: Calen
           Bộ lọc
         </Button>
 
-        <Button variant="default" size="sm" className="h-9 shadow-md bg-primary hover:bg-primary/90">
+        <Button variant="default" size="sm" className="h-9 shadow-md">
           + Tạo lịch hẹn
         </Button>
       </div>

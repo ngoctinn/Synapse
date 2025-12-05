@@ -155,13 +155,8 @@ export async function getSkills(
 
     const allSkills: Skill[] = await res.json();
 
-    // Simulate pagination since backend doesn't support it yet
-    const start = (page - 1) * limit;
-    const end = start + limit;
-    const paginatedSkills = allSkills.slice(start, end);
-
     return {
-        data: paginatedSkills,
+        data: allSkills,
         total: allSkills.length
     };
 }

@@ -56,29 +56,32 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
   };
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden bg-muted/30 h-full relative">
-      {/* Container có thể cuộn */}
-      <div className="flex-1 overflow-auto relative">
+    <div className="flex flex-col w-full relative">
+      {/* Container có thể cuộn ngang, nhưng vertical scroll theo window */}
+      <div className="overflow-x-auto pb-4">
         <div className="min-w-fit flex flex-col">
 
           {/* Hàng Header (Thời gian) */}
           <div
-            className="sticky top-0 z-40 flex border-b border-border bg-card/80 backdrop-blur-sm shadow-sm"
-            style={{ height: APPOINTMENT_SETTINGS.HEADER_HEIGHT }}
+            className="sticky z-30 flex border-b border-border bg-background/95 backdrop-blur-sm shadow-sm"
+            style={{
+              height: APPOINTMENT_SETTINGS.HEADER_HEIGHT,
+              top: '57px' // Height of the main CalendarHeader
+            }}
           >
             {/* Góc trên trái (Sticky Corner) */}
             <div
-              className="sticky left-0 z-50 flex-shrink-0 border-r border-border bg-card/95 backdrop-blur-sm flex items-center justify-center shadow-[4px_0_24px_-12px_rgba(0,0,0,0.1)]"
+              className="sticky left-0 z-40 flex-shrink-0 border-r border-border bg-background flex items-center justify-center shadow-[4px_0_24px_-12px_rgba(0,0,0,0.1)]"
               style={{ width: APPOINTMENT_SETTINGS.SIDEBAR_WIDTH }}
             >
-              <span className="text-sm font-bold text-foreground font-serif">Nhân viên</span>
+              <span className="text-sm font-bold text-foreground">Nhân viên</span>
             </div>
 
             {/* Các khung giờ */}
             {timeSlots.map((slot, i) => (
               <div
                 key={i}
-                className="flex-shrink-0 border-r border-border px-2 py-3 text-xs font-medium text-muted-foreground flex items-center justify-center"
+                className="flex-shrink-0 border-r border-border/50 px-2 py-3 text-xs font-medium text-muted-foreground flex items-center justify-center"
                 style={{ width: APPOINTMENT_SETTINGS.CELL_WIDTH }}
               >
                 {format(slot, 'HH:mm')}
@@ -90,21 +93,21 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
           <div className="flex relative">
             {/* Sidebar (Nhân viên) - Sticky Left */}
             <div
-              className="sticky left-0 z-30 bg-card border-r border-border shadow-[4px_0_24px_-12px_rgba(0,0,0,0.1)]"
+              className="sticky left-0 z-20 bg-background border-r border-border shadow-[4px_0_24px_-12px_rgba(0,0,0,0.1)]"
               style={{ width: APPOINTMENT_SETTINGS.SIDEBAR_WIDTH }}
             >
               {resources.map((resource) => (
                 <div
                   key={resource.id}
-                  className="flex items-center gap-3 border-b border-border px-4 transition-colors hover:bg-muted/50 group bg-card"
+                  className="flex items-center gap-3 border-b border-border/50 px-4 transition-colors hover:bg-muted/30 group bg-background"
                   style={{ height: APPOINTMENT_SETTINGS.CELL_HEIGHT }}
                 >
-                  <Avatar className="h-10 w-10 border-2 border-card shadow-sm transition-transform group-hover:scale-105">
+                  <Avatar className="h-10 w-10 border-2 border-background shadow-sm transition-transform group-hover:scale-105">
                     <AvatarImage src={resource.avatar} alt={resource.name} />
                     <AvatarFallback>{resource.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col overflow-hidden">
-                    <span className="truncate text-sm font-semibold text-foreground font-serif group-hover:text-primary transition-colors">
+                    <span className="truncate text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
                       {resource.name}
                     </span>
                     <span className="truncate text-xs text-muted-foreground">
@@ -120,14 +123,14 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
               {resources.map((resource) => (
                 <div
                   key={resource.id}
-                  className="relative flex border-b border-border bg-card/30 hover:bg-card/80 transition-colors"
+                  className="relative flex border-b border-border/50 hover:bg-muted/20 transition-colors"
                   style={{ height: APPOINTMENT_SETTINGS.CELL_HEIGHT, width: totalWidth }}
                 >
                   {/* Đường kẻ dọc */}
                   {timeSlots.map((_, i) => (
                     <div
                       key={i}
-                      className="absolute top-0 bottom-0 border-r border-dashed border-border"
+                      className="absolute top-0 bottom-0 border-r border-dashed border-border/40"
                       style={{ left: i * APPOINTMENT_SETTINGS.CELL_WIDTH, width: APPOINTMENT_SETTINGS.CELL_WIDTH }}
                     />
                   ))}
@@ -156,10 +159,10 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
               {/* Chỉ báo thời gian hiện tại (Red Line) */}
               {currentTimePosition !== null && isSameDay(new Date(), date) && (
                 <div
-                  className="absolute top-0 bottom-0 border-l-2 border-red-500 z-10 pointer-events-none"
+                  className="absolute top-0 bottom-0 border-l-2 border-destructive z-10 pointer-events-none"
                   style={{ left: currentTimePosition }}
                 >
-                  <div className="absolute -top-1 -left-[5px] w-2.5 h-2.5 rounded-full bg-red-500" />
+                  <div className="absolute -top-1 -left-[5px] w-2.5 h-2.5 rounded-full bg-destructive" />
                 </div>
               )}
             </div>
