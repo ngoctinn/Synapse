@@ -1,3 +1,4 @@
+import { getEquipmentList, getRoomTypes } from "@/features/resources/actions";
 import { getServices, getSkills, ServicesPage } from "@/features/services";
 import { Metadata } from "next";
 
@@ -18,14 +19,22 @@ export default async function Page({
   // We await skills immediately for initial render (dialogs/filters need it)
   // We pass servicesPromise to be suspended inside the page
   const skillsPromise = getSkills();
+  const roomTypesPromise = getRoomTypes();
+  const equipmentPromise = getEquipmentList();
   const servicesPromise = getServices(page, 10, search);
 
-  const skills = await skillsPromise;
+  const [skills, roomTypes, equipmentList] = await Promise.all([
+    skillsPromise,
+    roomTypesPromise,
+    equipmentPromise
+  ]);
 
   return (
     <ServicesPage
       page={page}
       skills={skills.data}
+      roomTypes={roomTypes}
+      equipmentList={equipmentList}
       servicesPromise={servicesPromise}
     />
   );

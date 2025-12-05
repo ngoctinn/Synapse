@@ -1,5 +1,7 @@
 "use client";
 
+import { Equipment } from "@/features/equipment/model/types";
+import { RoomType } from "@/features/resources/model/types";
 import { Button } from "@/shared/ui/button";
 import { DurationPicker } from "@/shared/ui/custom/duration-picker";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
@@ -35,19 +37,6 @@ import { Service, Skill } from "../types";
 import { ImageUpload } from "./image-upload";
 import { ServiceTimeVisualizer } from "./service-time-visualizer";
 
-const ROOM_TYPES = [
-  { id: "standard", name: "Giường Tiêu Chuẩn" },
-  { id: "vip", name: "Phòng VIP" },
-  { id: "couple", name: "Phòng Đôi" },
-];
-
-const EQUIPMENT_OPTIONS = [
-  { id: "hifu", label: "Máy Hifu Lifting" },
-  { id: "laser", label: "Máy Laser CO2" },
-  { id: "steamer", label: "Máy Xông Hơi" },
-  { id: "led", label: "Đèn LED Liệu Pháp" },
-];
-
 const PRESET_COLORS = [
   "#3b82f6", "#ef4444", "#10b981", "#f59e0b",
   "#8b5cf6", "#ec4899", "#06b6d4", "#f97316"
@@ -56,10 +45,18 @@ const PRESET_COLORS = [
 interface ServiceFormProps {
   initialData?: Service;
   availableSkills: Skill[];
+  availableRoomTypes: RoomType[];
+  availableEquipment: Equipment[];
   onSuccess?: () => void;
 }
 
-export function ServiceForm({ initialData, availableSkills, onSuccess }: ServiceFormProps) {
+export function ServiceForm({
+  initialData,
+  availableSkills,
+  availableRoomTypes,
+  availableEquipment,
+  onSuccess
+}: ServiceFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -89,6 +86,9 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
 
   // Chuyển đổi availableSkills cho TagInput
   const skillOptions = availableSkills.map(s => ({ id: s.id, label: s.name }));
+
+  // Chuyển đổi availableEquipment cho TagInput
+  const equipmentOptions = availableEquipment.map(e => ({ id: e.id, label: e.name }));
 
   async function onSubmit(data: ServiceFormValues) {
     startTransition(async () => {
@@ -379,7 +379,7 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {ROOM_TYPES.map((type) => (
+                                        {availableRoomTypes.map((type) => (
                                             <SelectItem key={type.id} value={type.id}>{type.name}</SelectItem>
                                         ))}
                                     </SelectContent>
@@ -421,7 +421,7 @@ export function ServiceForm({ initialData, availableSkills, onSuccess }: Service
                                     <FormLabel className="text-foreground/80">Thiết bị bắt buộc</FormLabel>
                                     <FormControl>
                                         <TagInput
-                                            options={EQUIPMENT_OPTIONS}
+                                            options={equipmentOptions}
                                             selectedIds={field.value}
                                             newTags={[]}
                                             onSelectedChange={field.onChange}

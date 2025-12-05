@@ -1,5 +1,7 @@
 "use client";
 
+import { Equipment } from "@/features/equipment/model/types";
+import { RoomType } from "@/features/resources/model/types";
 import {
     Dialog,
     DialogContent,
@@ -15,13 +17,17 @@ interface EditServiceDialogProps {
   onOpenChange: (open: boolean) => void;
   service: Service;
   availableSkills: Skill[];
+  availableRoomTypes: RoomType[];
+  availableEquipment: Equipment[];
 }
 
-export function EditServiceDialog({ 
-  open, 
-  onOpenChange, 
-  service, 
-  availableSkills 
+export function EditServiceDialog({
+  open,
+  onOpenChange,
+  service,
+  availableSkills,
+  availableRoomTypes,
+  availableEquipment
 }: EditServiceDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -35,6 +41,8 @@ export function EditServiceDialog({
         <ServiceForm
           initialData={service}
           availableSkills={availableSkills}
+          availableRoomTypes={availableRoomTypes}
+          availableEquipment={availableEquipment}
           onSuccess={() => onOpenChange(false)}
         />
       </DialogContent>

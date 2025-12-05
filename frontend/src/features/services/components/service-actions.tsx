@@ -1,5 +1,7 @@
 "use client"
 
+import { Equipment } from "@/features/equipment/model/types"
+import { RoomType } from "@/features/resources/model/types"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -30,9 +32,16 @@ import { EditServiceDialog } from "./edit-service-dialog"
 interface ServiceActionsProps {
   service: Service
   availableSkills: Skill[]
+  availableRoomTypes: RoomType[]
+  availableEquipment: Equipment[]
 }
 
-export function ServiceActions({ service, availableSkills }: ServiceActionsProps) {
+export function ServiceActions({
+  service,
+  availableSkills,
+  availableRoomTypes,
+  availableEquipment
+}: ServiceActionsProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [openEdit, setOpenEdit] = useState(false)
@@ -98,11 +107,13 @@ export function ServiceActions({ service, availableSkills }: ServiceActionsProps
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <EditServiceDialog 
-        open={openEdit} 
-        onOpenChange={setOpenEdit} 
-        service={service} 
-        availableSkills={availableSkills} 
+      <EditServiceDialog
+        open={openEdit}
+        onOpenChange={setOpenEdit}
+        service={service}
+        availableSkills={availableSkills}
+        availableRoomTypes={availableRoomTypes}
+        availableEquipment={availableEquipment}
       />
 
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>

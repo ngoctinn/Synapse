@@ -1,5 +1,7 @@
 "use client"
 
+import { Equipment } from "@/features/equipment/model/types"
+import { RoomType } from "@/features/resources/model/types"
 import { SearchInput } from "@/shared/ui/custom/search-input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { useSearchParams } from "next/navigation"
@@ -14,16 +16,22 @@ import { SkillTable } from "./skill-table"
 interface ServicesPageProps {
   page: number
   skills: Skill[]
+  roomTypes: RoomType[]
+  equipmentList: Equipment[]
   servicesPromise: Promise<{ data: Service[]; total: number }>
 }
 
 function ServiceListWrapper({
   servicesPromise,
   skills,
+  roomTypes,
+  equipmentList,
   page,
 }: {
   servicesPromise: Promise<{ data: Service[]; total: number }>
   skills: Skill[]
+  roomTypes: RoomType[]
+  equipmentList: Equipment[]
   page: number
 }) {
   const { data, total } = use(servicesPromise)
@@ -33,6 +41,8 @@ function ServiceListWrapper({
     <ServiceTable
       services={data}
       availableSkills={skills}
+      availableRoomTypes={roomTypes}
+      availableEquipment={equipmentList}
       page={page}
       totalPages={totalPages}
       variant="flush"
@@ -47,7 +57,7 @@ const Footer = () => (
     </div>
   )
 
-export function ServicesPage({ page, skills, servicesPromise }: ServicesPageProps) {
+export function ServicesPage({ page, skills, roomTypes, equipmentList, servicesPromise }: ServicesPageProps) {
   const searchParams = useSearchParams()
   const [activeTab, setActiveTab] = useState("list")
 
@@ -83,7 +93,7 @@ export function ServicesPage({ page, skills, servicesPromise }: ServicesPageProp
             </div>
 
             {isServiceTab ? (
-               <CreateServiceDialog availableSkills={skills} />
+               <CreateServiceDialog availableSkills={skills} availableRoomTypes={roomTypes} availableEquipment={equipmentList} />
             ) : (
                <CreateSkillDialog />
             )}
@@ -96,6 +106,8 @@ export function ServicesPage({ page, skills, servicesPromise }: ServicesPageProp
               <ServiceListWrapper
                 servicesPromise={servicesPromise}
                 skills={skills}
+                roomTypes={roomTypes}
+                equipmentList={equipmentList}
                 page={page}
               />
             </Suspense>

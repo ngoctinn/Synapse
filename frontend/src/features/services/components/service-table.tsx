@@ -1,5 +1,7 @@
 "use client"
 
+import { Equipment } from "@/features/equipment/model/types"
+import { RoomType } from "@/features/resources/model/types"
 import { cn, formatCurrency } from "@/shared/lib/utils"
 import { Badge } from "@/shared/ui/badge"
 import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row"
@@ -23,6 +25,8 @@ import { ServiceActions } from "./service-actions"
 interface ServiceTableProps {
   services: Service[]
   availableSkills: Skill[]
+  availableRoomTypes: RoomType[]
+  availableEquipment: Equipment[]
   page?: number
   totalPages?: number
   onPageChange?: (page: number) => void
@@ -33,6 +37,8 @@ interface ServiceTableProps {
 export function ServiceTable({
   services,
   availableSkills,
+  availableRoomTypes,
+  availableEquipment,
   page = 1,
   totalPages = 1,
   onPageChange,
@@ -60,7 +66,7 @@ export function ServiceTable({
         icon={Plus}
         title="Chưa có dịch vụ nào"
         description="Bắt đầu bằng cách tạo dịch vụ đầu tiên của bạn. Dịch vụ sẽ hiển thị trên trang đặt lịch."
-        action={<CreateServiceDialog availableSkills={availableSkills} />}
+        action={<CreateServiceDialog availableSkills={availableSkills} availableRoomTypes={availableRoomTypes} availableEquipment={availableEquipment} />}
       />
     )
   }
@@ -131,7 +137,12 @@ export function ServiceTable({
                   <StatusBadge isActive={service.is_active} />
                 </TableCell>
                 <TableCell className="text-right pr-8 py-5">
-                  <ServiceActions service={service} availableSkills={availableSkills} />
+                  <ServiceActions
+                    service={service}
+                    availableSkills={availableSkills}
+                    availableRoomTypes={availableRoomTypes}
+                    availableEquipment={availableEquipment}
+                  />
                 </TableCell>
               </AnimatedTableRow>
             ))}

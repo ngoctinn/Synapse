@@ -1,5 +1,7 @@
 "use client";
 
+import { Equipment } from "@/features/equipment/model/types";
+import { RoomType } from "@/features/resources/model/types";
 import { Button } from "@/shared/ui/button";
 import {
     Dialog,
@@ -16,9 +18,15 @@ import { ServiceForm } from "./service-form";
 
 interface CreateServiceDialogProps {
   availableSkills: Skill[];
+  availableRoomTypes: RoomType[];
+  availableEquipment: Equipment[];
 }
 
-export function CreateServiceDialog({ availableSkills }: CreateServiceDialogProps) {
+export function CreateServiceDialog({
+  availableSkills,
+  availableRoomTypes,
+  availableEquipment
+}: CreateServiceDialogProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -37,6 +45,8 @@ export function CreateServiceDialog({ availableSkills }: CreateServiceDialogProp
         </DialogHeader>
         <ServiceForm
             availableSkills={availableSkills}
+            availableRoomTypes={availableRoomTypes}
+            availableEquipment={availableEquipment}
             onSuccess={() => setOpen(false)}
         />
       </DialogContent>
