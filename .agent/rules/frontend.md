@@ -219,3 +219,24 @@ Component gánh vác quá nhiều logic (fetch data, form handling, UI display),
 Tách nhỏ logic theo kiến trúc FSD (Logic nghiệp vụ -> Feature/Action; Logic Data -> Entity API; Logic hiển thị -> Widget/Shared UI).
 
 QUAN TRỌNG: LUÔN VIẾT COMMENTS BẰNG TIẾNG VIỆT NGẮN GỌN ĐỂ GIẢI THÍCH CHO CÁC CODE PHỨC TẠP
+7. Quy Tắc Giao Diện & Màu Sắc (UI/UX Rules)
+
+7.1. Hệ Thống Màu Sắc (Premium Spa Palette)
+Sử dụng hệ màu `oklch` định nghĩa trong `globals.css` để đảm bảo tính nhất quán và cảm giác cao cấp.
+- **Background**: `bg-background` (Soft Porcelain / Warm White).
+- **Primary**: `text-primary`, `bg-primary` (Deep Teal/Ocean) cho các hành động chính và điểm nhấn.
+- **Secondary**: `bg-secondary` (Soft Sage/Mist) cho các thành phần phụ.
+- **Muted**: `text-muted-foreground` cho văn bản phụ, `bg-muted` cho nền phụ.
+- **Border**: `border-border` (Subtle Gray).
+
+7.2. Sticky Headers & Layout
+- **Sticky Positioning**: Sử dụng `sticky top-0` kết hợp với `z-index` phù hợp (`z-40` cho header chính, `z-30`/`z-20` cho header con).
+- **Dynamic Height**: Sử dụng CSS variables (ví dụ: `--header-height`) để đồng bộ vị trí `top` của các thành phần sticky con (như table header) với header chính, đảm bảo không bị che khuất hoặc hở khoảng trắng.
+- **Tránh Transition**: Không áp dụng `transition-all` cho container chính của sticky header để tránh hiện tượng giật (jitter) khi cuộn.
+- **Footer Placement**: Đặt Footer bên trong container cuộn (ví dụ: `TabsContent`) để đảm bảo sticky header hoạt động chính xác đến tận cùng trang.
+
+7.3. Thành Phần UI (Components)
+- **Scrollbar**: Sử dụng class tùy chỉnh trong `globals.css` để tạo thanh cuộn mảnh, tinh tế (`w-1.5`, `rounded-full`).
+- **Glassmorphism**: Sử dụng hạn chế, ưu tiên nền đặc (solid background) cho các thành phần sticky để tăng tính dễ đọc (readability).
+- **Shadows**: Sử dụng `shadow-sm` hoặc `shadow-[...]` nhẹ nhàng để tạo độ nổi khối tinh tế.
+- **Localization**: Toàn bộ văn bản hiển thị (Label, Placeholder, Tooltip, Toast) phải là Tiếng Việt.

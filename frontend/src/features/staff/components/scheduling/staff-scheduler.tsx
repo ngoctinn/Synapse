@@ -2,7 +2,7 @@
 
 import { addDays, format, startOfWeek } from "date-fns"
 import { ChevronLeft, ChevronRight, Eraser, Paintbrush, X } from "lucide-react"
-import { useState } from "react"
+import { useState, useTransition } from "react"
 
 import { Button } from "@/shared/ui/button"
 import {
@@ -26,6 +26,7 @@ interface StaffSchedulerProps {
 export function StaffScheduler({ initialSchedules, staffList }: StaffSchedulerProps) {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [schedules, setSchedules] = useState<Schedule[]>(initialSchedules)
+  const [isPending, startTransition] = useTransition()
 
   // Dialog State
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
@@ -64,12 +65,16 @@ export function StaffScheduler({ initialSchedules, staffList }: StaffSchedulerPr
     })
 
     // Server Action
-    const result = await updateSchedule(newSchedule)
-    if (result.success) {
-      toast.success("Đã cập nhật lịch làm việc")
-    } else {
-      toast.error(result.error)
-    }
+    startTransition(async () => {
+      const result = await updateSchedule(newSchedule)
+      if (result.success) {
+        toast.success("Đã cập nhật lịch làm việc")
+      } else {
+        toast.error(result.error)
+        // Revert optimistic update on error
+        setSchedules((prev) => prev.filter((s) => s.id !== newSchedule.id))
+      }
+    })
   }
 
   const handleRemoveSchedule = async (scheduleId: string) => {
@@ -77,12 +82,16 @@ export function StaffScheduler({ initialSchedules, staffList }: StaffSchedulerPr
     setSchedules((prev) => prev.filter((s) => s.id !== scheduleId))
 
     // Server Action
-    const result = await deleteSchedule(scheduleId)
-    if (result.success) {
-      toast.success("Đã xóa lịch làm việc")
-    } else {
-      toast.error(result.error)
-    }
+    startTransition(async () => {
+      const result = await deleteSchedule(scheduleId)
+      if (result.success) {
+        toast.success("Đã xóa lịch làm việc")
+      } else {
+        toast.error(result.error)
+        // Revert optimistic update on error? (Complex to revert delete without storing deleted item)
+        // For now, we just show error. In a real app, we might fetch fresh data.
+      }
+    })
   }
 
   const handleCopyWeek = () => {
@@ -123,8 +132,10 @@ export function StaffScheduler({ initialSchedules, staffList }: StaffSchedulerPr
             // Optimistic Delete
             setSchedules((prev) => prev.filter((s) => s.id !== existingSchedule.id))
             // Server Delete
-            const result = await deleteSchedule(existingSchedule.id)
-            if (!result.success) toast.error(result.error)
+            startTransition(async () => {
+                const result = await deleteSchedule(existingSchedule.id)
+                if (!result.success) toast.error(result.error)
+            })
         }
         return
     }
@@ -148,14 +159,20 @@ export function StaffScheduler({ initialSchedules, staffList }: StaffSchedulerPr
     })
 
     // Server Update
-    const result = await updateSchedule(newSchedule)
-    if (!result.success) toast.error(result.error)
+    startTransition(async () => {
+        const result = await updateSchedule(newSchedule)
+        if (!result.success) {
+            toast.error(result.error)
+            // Revert optimistic update
+            setSchedules((prev) => prev.filter((s) => s.id !== newSchedule.id))
+        }
+    })
   }
 
   return (
-    <div className="flex flex-col gap-4 h-full">
+    <div className="flex flex-col gap-4">
       {/* Toolbar */}
-      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 px-4 py-3 border-b shrink-0">
+      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 px-4 py-3 border-b shrink-0 sticky top-[var(--header-height)] z-20 bg-background">
         {/* Left: Navigation */}
         <div className="flex items-center gap-2">
           <Button variant="outline" size="icon" onClick={prevWeek} className="h-8 w-8">
