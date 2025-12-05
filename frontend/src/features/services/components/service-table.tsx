@@ -1,7 +1,6 @@
 "use client"
 
-import { Equipment } from "@/features/equipment/model/types"
-import { RoomType } from "@/features/resources/model/types"
+import { Resource, RoomType } from "@/features/resources/model/types"
 import { formatCurrency } from "@/shared/lib/utils"
 import { Badge } from "@/shared/ui/badge"
 import { Column, DataTable } from "@/shared/ui/custom/data-table"
@@ -18,7 +17,7 @@ interface ServiceTableProps {
   services: Service[]
   availableSkills: Skill[]
   availableRoomTypes: RoomType[]
-  availableEquipment: Equipment[]
+  availableEquipment: Resource[]
   page?: number
   totalPages?: number
   onPageChange?: (page: number) => void

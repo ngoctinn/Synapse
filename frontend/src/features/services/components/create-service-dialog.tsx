@@ -1,7 +1,6 @@
 "use client";
 
-import { Equipment } from "@/features/equipment/model/types";
-import { RoomType } from "@/features/resources/model/types";
+import { Resource, RoomType } from "@/features/resources/model/types";
 import { Button } from "@/shared/ui/button";
 import {
     Dialog,
@@ -19,7 +18,7 @@ import { ServiceForm } from "./service-form";
 interface CreateServiceDialogProps {
   availableSkills: Skill[];
   availableRoomTypes: RoomType[];
-  availableEquipment: Equipment[];
+  availableEquipment: Resource[];
 }
 
 export function CreateServiceDialog({

@@ -1,7 +1,6 @@
 "use client"
 
-import { Equipment } from "@/features/equipment/model/types"
-import { RoomType } from "@/features/resources/model/types"
+import { Resource, RoomType } from "@/features/resources/model/types"
 import { SearchInput } from "@/shared/ui/custom/search-input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { useSearchParams } from "next/navigation"
@@ -17,7 +16,7 @@ interface ServicesPageProps {
   page: number
   skills: Skill[]
   roomTypes: RoomType[]
-  equipmentList: Equipment[]
+  equipmentList: Resource[]
   servicesPromise: Promise<{ data: Service[]; total: number }>
 }
 
@@ -31,7 +30,7 @@ function ServiceListWrapper({
   servicesPromise: Promise<{ data: Service[]; total: number }>
   skills: Skill[]
   roomTypes: RoomType[]
-  equipmentList: Equipment[]
+  equipmentList: Resource[]
   page: number
 }) {
   const { data, total } = use(servicesPromise)
@@ -50,6 +49,7 @@ function ServiceListWrapper({
     />
   )
 }
+
 
 const Footer = () => (
     <div className="text-center text-sm text-muted-foreground py-6 mt-auto">

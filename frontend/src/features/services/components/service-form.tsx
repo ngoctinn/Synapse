@@ -1,26 +1,25 @@
 "use client";
 
-import { Equipment } from "@/features/equipment/model/types";
-import { RoomType } from "@/features/resources/model/types";
+import { Resource, RoomType } from "@/features/resources/model/types";
 import { Button } from "@/shared/ui/button";
 import { DurationPicker } from "@/shared/ui/custom/duration-picker";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { MoneyInput } from "@/shared/ui/custom/money-input";
 import { TagInput } from "@/shared/ui/custom/tag-input";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select";
 import { Switch } from "@/shared/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
@@ -46,7 +45,7 @@ interface ServiceFormProps {
   initialData?: Service;
   availableSkills: Skill[];
   availableRoomTypes: RoomType[];
-  availableEquipment: Equipment[];
+  availableEquipment: Resource[];
   onSuccess?: () => void;
 }
 
