@@ -38,7 +38,7 @@ export function ChatSidebar({ conversations, selectedId, onSelect, className }: 
                 key={conv.id}
                 onClick={() => onSelect(conv.id)}
                 className={cn(
-                  "flex items-start gap-3 p-3 rounded-xl transition-all duration-200 text-left w-full group relative",
+                  "flex items-start gap-3 p-3 rounded-xl transition-all duration-200 text-left w-full group relative cursor-pointer",
                   isSelected
                     ? "bg-primary/5 border border-primary/20 shadow-sm"
                     : "hover:bg-accent/50 hover:border-accent border border-transparent"
