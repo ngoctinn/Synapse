@@ -1,12 +1,13 @@
 import {
-  Bell,
-  Briefcase,
-  Calendar,
-  CreditCard,
-  LayoutDashboard,
-  MessageSquare,
-  Palette,
-  Settings
+    Bell,
+    Briefcase,
+    Calendar,
+    CreditCard,
+    LayoutDashboard,
+    MessageSquare,
+    Palette,
+    Settings,
+    Wrench
 } from "lucide-react"
 
 export type SidebarItem = {
@@ -63,6 +64,11 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         href: "/admin/services/skills",
       },
     ],
+  },
+  {
+    title: "Thiết bị",
+    href: "/admin/equipment",
+    icon: Wrench,
   },
   {
     title: "Tin nhắn",
