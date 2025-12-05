@@ -1,7 +1,6 @@
 "use client";
 
-import { Equipment } from "@/features/equipment/model/types";
-import { RoomType } from "@/features/resources/model/types";
+import { Resource, RoomType } from "@/features/resources/model/types";
 import {
     Dialog,
     DialogContent,
@@ -18,7 +17,7 @@ interface EditServiceDialogProps {
   service: Service;
   availableSkills: Skill[];
   availableRoomTypes: RoomType[];
-  availableEquipment: Equipment[];
+  availableEquipment: Resource[];
 }
 
 export function EditServiceDialog({
