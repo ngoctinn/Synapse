@@ -12,6 +12,12 @@ export interface Service {
   buffer_time: number;
   price: number;
   image_url?: string | null;
+  color: string;
+  description?: string | null;
+  resource_requirements?: {
+    room_type_id?: string;
+    equipment_ids: string[];
+  };
   is_active: boolean;
   skills: Skill[];
   created_at: string;
@@ -24,6 +30,12 @@ export interface ServiceCreateInput {
   buffer_time?: number;
   price?: number;
   image_url?: string;
+  color?: string;
+  description?: string;
+  resource_requirements?: {
+    room_type_id?: string;
+    equipment_ids: string[];
+  };
   is_active?: boolean;
   skill_ids: string[];
   new_skills?: string[];
@@ -35,6 +47,12 @@ export interface ServiceUpdateInput {
   buffer_time?: number;
   price?: number;
   image_url?: string;
+  color?: string;
+  description?: string;
+  resource_requirements?: {
+    room_type_id?: string;
+    equipment_ids: string[];
+  };
   is_active?: boolean;
   skill_ids?: string[];
   new_skills?: string[];

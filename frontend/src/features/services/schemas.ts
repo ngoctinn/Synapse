@@ -11,6 +11,12 @@ export const serviceSchema = z.object({
   price: z.coerce.number().min(0, "Giá không được âm"),
   is_active: z.boolean().default(true),
   image_url: z.string().optional(),
+  color: z.string().regex(/^#/, "Mã màu không hợp lệ").default("#3b82f6"),
+  description: z.string().optional(),
+  resource_requirements: z.object({
+    room_type_id: z.string().optional(),
+    equipment_ids: z.array(z.string()).default([]),
+  }).default({ equipment_ids: [] }),
   skill_ids: z.array(z.string()).default([]),
   new_skills: z.array(z.string()).default([]),
 });

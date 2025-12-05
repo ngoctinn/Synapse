@@ -89,8 +89,16 @@ export function ServiceTable({
             {services.map((service, index) => (
               <AnimatedTableRow key={service.id} index={index} className="group hover:bg-muted/30 transition-colors border-b border-border/40 last:border-0">
                 <TableCell className="font-medium pl-8 py-5">
-                  <div className="flex flex-col">
-                    <span className="text-lg font-serif text-foreground group-hover:text-primary transition-colors tracking-tight">{service.name}</span>
+                  <div className="flex items-center gap-3">
+                    {service.color && (
+                      <div
+                        className="w-3 h-3 rounded-full shadow-sm ring-1 ring-border/20 flex-shrink-0"
+                        style={{ backgroundColor: service.color }}
+                      />
+                    )}
+                    <div className="flex flex-col">
+                      <span className="text-lg font-serif text-foreground group-hover:text-primary transition-colors tracking-tight">{service.name}</span>
+                    </div>
                   </div>
                 </TableCell>
                 <TableCell className="py-5">
