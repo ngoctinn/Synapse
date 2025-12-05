@@ -13,6 +13,7 @@ import { Skill } from "@/features/services/types"
 import { Button } from "@/shared/ui/button"
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
 import { showToast } from "@/shared/ui/custom/sonner"
+import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
   Dialog,
   DialogContent,
@@ -37,7 +38,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/select"
-import { SkillSelector } from "./skill-selector"
 
 type InviteStaffFormValues = z.infer<typeof inviteStaffSchema>
 
@@ -212,10 +212,13 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
                             Kỹ năng chuyên môn
                             </label>
                             <div className="p-3 bg-muted/20 border border-muted-foreground/10 rounded-xl">
-                                <SkillSelector
-                                skills={skills}
-                                selectedSkillIds={selectedSkills}
-                                onSkillsChange={setSelectedSkills}
+                                <TagInput
+                                  options={skills.map(s => ({ id: s.id, label: s.name }))}
+                                  selectedIds={selectedSkills}
+                                  newTags={[]}
+                                  onSelectedChange={setSelectedSkills}
+                                  onNewTagsChange={() => {}}
+                                  placeholder="Chọn kỹ năng..."
                                 />
                             </div>
                             <p className="text-[0.8rem] text-muted-foreground flex items-center gap-1">
