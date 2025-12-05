@@ -74,7 +74,7 @@ export function HeaderNav({ mobile = false, className, onLinkClick }: HeaderNavP
             href={item.href}
             onClick={onLinkClick}
             className={cn(
-              "text-sm font-medium transition-colors hover:text-primary flex items-center",
+              "relative text-sm font-medium transition-all duration-300 hover:text-primary flex items-center group",
               isActive ? "text-primary" : "text-muted-foreground",
               mobile && "py-2 w-full justify-center text-base"
             )}
@@ -82,7 +82,15 @@ export function HeaderNav({ mobile = false, className, onLinkClick }: HeaderNavP
             {isActive && (
               <span className="mr-2 h-1.5 w-1.5 rounded-full bg-primary animate-in fade-in zoom-in duration-300" />
             )}
-            {item.label}
+            <span className="relative">
+              {item.label}
+              {!mobile && (
+                <span className={cn(
+                  "absolute -bottom-1 left-0 h-0.5 bg-primary transition-all duration-300 rounded-full",
+                  isActive ? "w-full" : "w-0 group-hover:w-full opacity-50"
+                )} />
+              )}
+            </span>
           </Link>
         )
       })}

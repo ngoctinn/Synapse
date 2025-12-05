@@ -77,7 +77,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <Card className="border-0 shadow-2xl bg-white/40 backdrop-blur-xl ring-1 ring-black/5 dark:bg-zinc-900/40 dark:ring-white/10 overflow-hidden">
+          <Card className="relative overflow-hidden border border-white/20 shadow-2xl bg-white/30 backdrop-blur-3xl ring-1 ring-black/5 dark:bg-zinc-900/30 dark:ring-white/10 dark:border-white/10">
             <CardHeader className="pb-8 border-b border-white/10 bg-white/10 px-8 pt-8">
               <div className="flex items-center justify-between">
                 <div>
