@@ -2,12 +2,13 @@
 
 import { Badge } from "@/shared/ui/badge"
 import { Checkbox } from "@/shared/ui/checkbox"
+import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row"
 import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow
 } from "@/shared/ui/table"
 import { Lock } from "lucide-react"
 import { useState, useTransition } from "react"
@@ -66,9 +67,9 @@ export function PermissionMatrix({ initialPermissions }: PermissionMatrixProps) 
       <div className="">
         <div className="relative w-full">
           <table className="w-full caption-bottom text-sm">
-            <TableHeader className="sticky top-[var(--staff-header-height-mobile,109px)] md:top-[var(--staff-header-height,57px)] z-10 bg-background shadow-[0_1px_0_0_rgba(0,0,0,0.1)]">
+            <TableHeader className="sticky top-[var(--header-height-mobile,109px)] md:top-[var(--header-height,57px)] z-10 bg-background shadow-[0_1px_0_0_rgba(0,0,0,0.1)]">
               <TableRow className="hover:bg-transparent border-b-0">
-                <TableHead className="w-[250px] font-semibold pl-6 bg-background">Chức năng (Module)</TableHead>
+                <TableHead className="w-[250px] font-semibold pl-8 bg-background">Chức năng (Module)</TableHead>
                 {ROLES.map((role) => (
                   <TableHead key={role.id} className="text-center h-12 bg-background">
                     <Badge variant={role.variant} className="rounded-md px-3 py-1">
@@ -79,9 +80,9 @@ export function PermissionMatrix({ initialPermissions }: PermissionMatrixProps) 
               </TableRow>
             </TableHeader>
             <TableBody>
-              {MODULES.map((module) => (
-                <TableRow key={module.id} className="hover:bg-muted/5 transition-colors">
-                  <TableCell className="font-medium pl-6 py-4">{module.name}</TableCell>
+              {MODULES.map((module, index) => (
+                <AnimatedTableRow key={module.id} index={index} className="hover:bg-muted/5 transition-colors">
+                  <TableCell className="font-medium pl-8 py-4">{module.name}</TableCell>
                   {ROLES.map((role) => {
                     const isDisabled = role.id === "admin"
                     return (
@@ -102,7 +103,7 @@ export function PermissionMatrix({ initialPermissions }: PermissionMatrixProps) 
                       </TableCell>
                     )
                   })}
-                </TableRow>
+                </AnimatedTableRow>
               ))}
             </TableBody>
           </table>

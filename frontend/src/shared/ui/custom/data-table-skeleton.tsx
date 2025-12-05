@@ -1,3 +1,4 @@
+import { cn } from "@/shared/lib/utils"
 import { Skeleton } from "@/shared/ui/skeleton"
 
 interface DataTableSkeletonProps {
@@ -6,6 +7,7 @@ interface DataTableSkeletonProps {
   showAction?: boolean
   searchable?: boolean
   filterable?: boolean
+  className?: string
 }
 
 export function DataTableSkeleton({
@@ -14,23 +16,28 @@ export function DataTableSkeleton({
   showAction = true,
   searchable = true,
   filterable = false,
+  className,
 }: DataTableSkeletonProps) {
+  const showToolbar = showAction || searchable || filterable
+
   return (
-    <div className="rounded-md border bg-background shadow-sm overflow-hidden">
+    <div className={cn("rounded-md border bg-background shadow-sm overflow-hidden", className)}>
       <div className="p-4">
         {/* Toolbar Skeleton */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex gap-2">
-            {searchable && <Skeleton className="h-9 w-64" />}
-            {filterable && (
-              <>
-                <Skeleton className="h-9 w-24" />
-                <Skeleton className="h-9 w-24" />
-              </>
-            )}
+        {showToolbar && (
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex gap-2">
+              {searchable && <Skeleton className="h-9 w-64" />}
+              {filterable && (
+                <>
+                  <Skeleton className="h-9 w-24" />
+                  <Skeleton className="h-9 w-24" />
+                </>
+              )}
+            </div>
+            {showAction && <Skeleton className="h-9 w-32" />}
           </div>
-          {showAction && <Skeleton className="h-9 w-32" />}
-        </div>
+        )}
 
         {/* Table Header Skeleton */}
         <div className="mb-4 flex items-center gap-4 px-4 py-2 border-b">
