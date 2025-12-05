@@ -1,5 +1,8 @@
 import { AppointmentPage } from '@/features/appointments/components/appointment-page';
 import { Metadata } from 'next';
+import { Suspense } from 'react';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Quản lý Lịch hẹn | Synapse CRM',
@@ -7,5 +10,9 @@ export const metadata: Metadata = {
 };
 
 export default function AppointmentsPage() {
-  return <AppointmentPage />;
+  return (
+    <Suspense fallback={<div className="p-4 flex items-center justify-center min-h-screen text-muted-foreground">Đang tải lịch hẹn...</div>}>
+      <AppointmentPage />
+    </Suspense>
+  );
 }

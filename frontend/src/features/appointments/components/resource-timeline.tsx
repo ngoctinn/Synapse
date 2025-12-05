@@ -136,7 +136,7 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
       >
-        <div className="min-w-full flex flex-col">
+        <div className="min-w-full w-fit flex flex-col">
 
           {/* Hàng Header (Thời gian) */}
           <div
