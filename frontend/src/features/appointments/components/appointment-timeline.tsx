@@ -7,12 +7,12 @@ import { CalendarView } from '../types';
 import { CalendarHeader } from './calendar-header';
 import { ResourceTimeline } from './resource-timeline';
 
-export function AppointmentCalendar() {
+export function AppointmentTimeline() {
   const [date, setDate] = React.useState<Date>(startOfToday());
   const [view, setView] = React.useState<CalendarView>('timeline');
 
   return (
-    <div className="flex flex-col w-full h-[calc(100vh-60px)] bg-background">
+    <div className="flex flex-col flex-1 w-full min-h-0 bg-background">
       <CalendarHeader
         date={date}
         onDateChange={setDate}
@@ -21,7 +21,7 @@ export function AppointmentCalendar() {
       />
 
       {view === 'timeline' ? (
-        <div className="flex-1 flex flex-col min-h-0 relative">
+        <div className="flex-1 flex flex-col min-h-0 relative -mx-4 w-[calc(100%+2rem)]">
            <ResourceTimeline
             date={date}
             resources={MOCK_RESOURCES}

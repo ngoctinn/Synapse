@@ -8,7 +8,7 @@ import {
 } from "@/shared/ui/select";
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { CalendarView } from '../types';
 
 interface CalendarHeaderProps {
@@ -36,7 +36,7 @@ export function CalendarHeader({ date, onDateChange, view, onViewChange }: Calen
   };
 
   return (
-    <div className="-mx-4 px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm transition-all duration-200">
+    <div className="-mx-4 w-[calc(100%+2rem)] px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm transition-all duration-200 sticky top-[var(--header-height)] z-30">
       <div className="flex items-center gap-2">
         <div className="flex items-center rounded-lg border bg-background p-0.5 shadow-sm">
           <Button variant="ghost" size="icon" className="h-9 w-9 rounded-md" onClick={handlePrev}>
@@ -70,15 +70,6 @@ export function CalendarHeader({ date, onDateChange, view, onViewChange }: Calen
             <SelectItem value="month">Tháng</SelectItem>
           </SelectContent>
         </Select>
-
-        <Button variant="outline" size="sm" className="h-9 gap-2 hidden md:flex">
-          <Filter className="h-4 w-4" />
-          Bộ lọc
-        </Button>
-
-        <Button variant="default" size="sm" className="h-9 shadow-md">
-          + Tạo lịch hẹn
-        </Button>
       </div>
     </div>
   );

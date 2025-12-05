@@ -1,4 +1,4 @@
-import { AppointmentCalendar } from '@/features/appointments/components/appointment-calendar';
+import { AppointmentPage } from '@/features/appointments/components/appointment-page';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function AppointmentsPage() {
-  return <AppointmentCalendar />;
+  return <AppointmentPage />;
 }
