@@ -64,18 +64,16 @@ const Footer = () => (
 
 export function StaffPage({ page, skills, staffListPromise, initialPermissions, initialSchedules }: StaffPageProps) {
   const [activeTab, setActiveTab] = useState("list")
-  const isListTab = activeTab === "list"
 
   return (
-    <div className="min-h-screen flex flex-col w-full">
+    <div className="min-h-screen flex flex-col w-full" style={{
+      "--header-height": "57px",
+      "--header-height-mobile": "109px"
+    } as React.CSSProperties}>
       <Tabs defaultValue="list" className="flex flex-col flex-1 w-full gap-0" onValueChange={setActiveTab}>
         {/* Sticky Header with Tabs and Actions */}
         <div
           className="sticky top-0 z-40 -mx-4 px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4"
-          style={{
-            "--staff-header-height": "57px",
-            "--staff-header-height-mobile": "109px"
-          } as React.CSSProperties}
         >
           <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto justify-start">
             <TabsTrigger value="list" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Danh sách</TabsTrigger>
@@ -84,14 +82,17 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
           </TabsList>
 
           <div className="flex items-center gap-3 w-full md:w-auto">
-            <div className="flex items-center gap-2 flex-1 md:flex-none">
-              <SearchInput
-                placeholder="Tìm kiếm nhân viên..."
-                className="w-full md:w-[250px] h-9"
-              />
-              {isListTab && <StaffFilter />}
-            </div>
-            {isListTab && <InviteStaffModal skills={skills} />}
+            {activeTab === "list" && (
+              <div className="flex items-center gap-2 flex-1 md:flex-none">
+                <SearchInput
+                  placeholder="Tìm kiếm nhân viên..."
+                  className="w-full md:w-[250px] h-9"
+                />
+                <StaffFilter />
+              </div>
+            )}
+            <InviteStaffModal skills={skills} />
+            {/* Additional toolbars for other tabs can be added here if needed */}
           </div>
         </div>
 

@@ -6,9 +6,9 @@ import { useState, useTransition } from "react"
 
 import { Button } from "@/shared/ui/button"
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
 } from "@/shared/ui/popover"
 import { toast } from "sonner"
 import { deleteSchedule, updateSchedule } from "../../actions"
@@ -172,7 +172,7 @@ export function StaffScheduler({ initialSchedules, staffList }: StaffSchedulerPr
   return (
     <div className="flex flex-col gap-4">
       {/* Toolbar */}
-      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 px-4 py-3 border-b shrink-0 sticky top-[var(--header-height)] z-20 bg-background">
+      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 px-4 py-3 border-b shrink-0 sticky top-[var(--staff-header-height-mobile,109px)] md:top-[var(--staff-header-height,57px)] z-20 bg-background">
         {/* Left: Navigation */}
         <div className="flex items-center gap-2">
           <Button variant="outline" size="icon" onClick={prevWeek} className="h-8 w-8">

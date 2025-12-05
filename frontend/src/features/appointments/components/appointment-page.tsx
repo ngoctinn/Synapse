@@ -7,6 +7,12 @@ import { AppointmentFilter } from "./appointment-filter"
 import { AppointmentTimeline } from "./appointment-timeline"
 import { CreateAppointmentDialog } from "./create-appointment-dialog"
 
+const Footer = () => (
+  <div className="text-center text-sm text-muted-foreground py-6 mt-auto">
+    © 2025 Synapse. All rights reserved.
+  </div>
+)
+
 export function AppointmentPage() {
   const [activeTab, setActiveTab] = useState("timeline")
   const isTimelineTab = activeTab === "timeline"
@@ -44,13 +50,14 @@ export function AppointmentPage() {
 
              {/* The Timeline Component */}
              <AppointmentTimeline />
-
+             <Footer />
           </TabsContent>
 
           <TabsContent value="list" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
             <div className="flex flex-1 items-center justify-center text-muted-foreground p-8">
               Chế độ xem danh sách đang được phát triển...
             </div>
+            <Footer />
           </TabsContent>
         </div>
       </Tabs>
