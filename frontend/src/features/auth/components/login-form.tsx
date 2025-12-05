@@ -109,16 +109,8 @@ export function LoginForm() {
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem>
-                <div className="flex items-center justify-between">
-                  <FormLabel className="text-foreground/80">Mật khẩu</FormLabel>
-                  <Link
-                    href="/forgot-password"
-                    className="text-sm font-medium text-primary hover:text-primary/80 hover:underline underline-offset-4 transition-colors"
-                  >
-                    Quên mật khẩu?
-                  </Link>
-                </div>
+              <FormItem className="relative">
+                <FormLabel className="text-foreground/80">Mật khẩu</FormLabel>
                 <FormControl>
                   <PasswordInput
                     placeholder="Nhập mật khẩu của bạn"
@@ -126,6 +118,12 @@ export function LoginForm() {
                     {...field}
                   />
                 </FormControl>
+                <Link
+                  href="/forgot-password"
+                  className="absolute top-0 right-0 text-sm font-medium text-primary hover:text-primary/80 hover:underline underline-offset-4 transition-colors"
+                >
+                  Quên mật khẩu?
+                </Link>
                 <FormMessage />
               </FormItem>
             )}
