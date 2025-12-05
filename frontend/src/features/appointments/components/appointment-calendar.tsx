@@ -12,7 +12,7 @@ export function AppointmentCalendar() {
   const [view, setView] = React.useState<CalendarView>('timeline');
 
   return (
-    <div className="flex flex-col w-full min-h-screen bg-background">
+    <div className="flex flex-col w-full h-[calc(100vh-60px)] bg-background">
       <CalendarHeader
         date={date}
         onDateChange={setDate}
@@ -21,7 +21,7 @@ export function AppointmentCalendar() {
       />
 
       {view === 'timeline' ? (
-        <div className="flex-1 flex flex-col relative">
+        <div className="flex-1 flex flex-col min-h-0 relative">
            <ResourceTimeline
             date={date}
             resources={MOCK_RESOURCES}
@@ -29,7 +29,7 @@ export function AppointmentCalendar() {
           />
         </div>
       ) : (
-        <div className="flex flex-1 items-center justify-center text-gray-500">
+        <div className="flex flex-1 items-center justify-center text-muted-foreground">
           Chế độ xem {view} đang được phát triển...
         </div>
       )}
