@@ -119,7 +119,9 @@ export function ExceptionItem({ exceptions, onRemove, onEdit }: ExceptionItemPro
               ) : (
                 <>
                   <Clock className="w-3.5 h-3.5 text-primary" />
-                  <span className="text-primary/80">Giờ làm việc đặc biệt</span>
+                  <span className="text-primary/80">
+                    Giờ đặc biệt: {mainException.modifiedHours?.map(h => `${h.start}-${h.end}`).join(', ') || '08:00-17:00'}
+                  </span>
                 </>
               )}
             </span>

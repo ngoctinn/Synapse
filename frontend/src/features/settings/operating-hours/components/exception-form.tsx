@@ -7,15 +7,22 @@ import { Label } from "@/shared/ui/label";
 import { Input } from "@/shared/ui/input";
 import { Switch } from "@/shared/ui/switch";
 import { ExceptionDate } from "../model/types";
-import { PartyPopper, Wrench, Settings2, Type } from "lucide-react";
+import { PartyPopper, Wrench, Settings2, Type, Plus, Trash2, ArrowRight } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
+import { DateRangePicker } from "@/shared/ui/custom/date-range-picker";
+import { DateRange } from "react-day-picker";
+import { eachDayOfInterval } from "date-fns";
+import { TimePicker } from "@/shared/ui/custom/time-picker";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface ExceptionFormProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: Partial<ExceptionDate>) => void;
   initialData?: ExceptionDate | null;
-  selectedDatesCount: number;
+  selectedDates: Date[];
+  onDatesChange: (dates: Date[]) => void;
 }
 
 export function ExceptionForm({ 
@@ -23,13 +30,32 @@ export function ExceptionForm({
   onClose, 
   onSubmit, 
   initialData, 
-  selectedDatesCount 
+  selectedDates,
+  onDatesChange
 }: ExceptionFormProps) {
   const [formData, setFormData] = useState<Partial<ExceptionDate>>({
     type: 'holiday',
     isClosed: true,
     reason: '',
+    modifiedHours: []
   });
+
+  // Convert Date[] to DateRange for picker
+  const dateRange: DateRange | undefined = selectedDates.length > 0 ? {
+    from: selectedDates[0],
+    to: selectedDates[selectedDates.length - 1]
+  } : undefined;
+
+  const handleRangeChange = (range: DateRange | undefined) => {
+    if (range?.from && range?.to) {
+        const dates = eachDayOfInterval({ start: range.from, end: range.to });
+        onDatesChange(dates);
+    } else if (range?.from) {
+        onDatesChange([range.from]);
+    } else {
+        onDatesChange([]);
+    }
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -38,18 +64,57 @@ export function ExceptionForm({
           reason: initialData.reason,
           type: initialData.type,
           isClosed: initialData.isClosed,
+          modifiedHours: initialData.modifiedHours || []
         });
       } else {
-        setFormData({ type: 'holiday', isClosed: true, reason: '' });
+        setFormData({ 
+          type: 'holiday', 
+          isClosed: true, 
+          reason: '',
+          modifiedHours: [] 
+        });
       }
     }
   }, [isOpen, initialData]);
 
   const handleSubmit = () => {
     if (formData.reason) {
-      onSubmit(formData);
+      // Ensure modifiedHours is populated if not closed
+      if (!formData.isClosed && (!formData.modifiedHours || formData.modifiedHours.length === 0)) {
+         // Default to business hours
+         onSubmit({
+             ...formData,
+             modifiedHours: [{ start: "08:00", end: "17:00" }]
+         });
+      } else {
+         onSubmit(formData);
+      }
     }
   };
+
+  const handleTimeChange = (index: number, field: 'start' | 'end', value: string) => {
+      const newSlots = [...(formData.modifiedHours || [])];
+      if (!newSlots[index]) return;
+      newSlots[index] = { ...newSlots[index], [field]: value };
+      setFormData({ ...formData, modifiedHours: newSlots });
+  };
+
+  const handleAddSlot = () => {
+      const newSlots = [...(formData.modifiedHours || []), { start: "08:00", end: "17:00" }];
+      setFormData({ ...formData, modifiedHours: newSlots });
+  };
+
+  const handleRemoveSlot = (index: number) => {
+      const newSlots = (formData.modifiedHours || []).filter((_, i) => i !== index);
+      setFormData({ ...formData, modifiedHours: newSlots });
+  };
+
+  // Initialize slots when opening logic enabled
+  useEffect(() => {
+     if (!formData.isClosed && (!formData.modifiedHours || formData.modifiedHours.length === 0)) {
+         setFormData(prev => ({ ...prev, modifiedHours: [{ start: "08:00", end: "17:00" }] }));
+     }
+  }, [formData.isClosed]);
 
   const eventTypes = [
     { id: 'holiday', label: 'Ngày lễ', icon: PartyPopper, color: 'text-destructive', bg: 'bg-destructive/10', border: 'border-destructive/20' },
@@ -59,16 +124,30 @@ export function ExceptionForm({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[500px] rounded-2xl">
+      <DialogContent className="sm:max-w-[550px] rounded-2xl max-h-[90vh] overflow-y-auto scrollbar-hide">
         <DialogHeader>
           <DialogTitle className="text-xl">
               {initialData ? "Chỉnh sửa ngoại lệ" : "Thêm ngoại lệ mới"}
           </DialogTitle>
-          <p className="text-sm text-muted-foreground">
-            Đang thiết lập cho <span className="font-bold text-foreground">{selectedDatesCount}</span> ngày đã chọn.
-          </p>
+          <div className="text-sm text-muted-foreground pt-1">
+             Thiết lập thời gian và chi tiết cho sự kiện.
+          </div>
         </DialogHeader>
-        <div className="grid gap-6 py-6">
+        <div className="grid gap-6 py-4">
+          
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Thời gian áp dụng</Label>
+            <div className="w-full">
+                <DateRangePicker 
+                    date={dateRange}
+                    setDate={handleRangeChange}
+                />
+            </div>
+            <p className="text-[11px] text-muted-foreground ml-1">
+                Đã chọn {selectedDates.length} ngày
+            </p>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="reason" className="text-sm font-medium">Lý do / Tên sự kiện</Label>
             <div className="relative">
@@ -106,26 +185,84 @@ export function ExceptionForm({
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="closed" className="text-sm font-medium">Trạng thái hoạt động</Label>
-            <div className="flex items-center gap-3 h-14 px-4 border rounded-xl bg-muted/20 hover:bg-muted/30 transition-colors">
-              <Switch 
-                id="closed" 
-                checked={formData.isClosed}
-                onCheckedChange={checked => setFormData({...formData, isClosed: checked})}
-                className="data-[state=checked]:bg-destructive"
-              />
-              <div className="flex flex-col">
-                <Label htmlFor="closed" className="cursor-pointer text-sm font-bold">
-                  {formData.isClosed ? "Đóng cửa hoàn toàn" : "Mở cửa (Giờ đặc biệt)"}
-                </Label>
-                <span className="text-xs text-muted-foreground">
-                  {formData.isClosed 
-                    ? "Spa sẽ không nhận lịch hẹn vào ngày này" 
-                    : "Spa vẫn hoạt động nhưng có thể thay đổi giờ làm việc"}
-                </span>
-              </div>
-            </div>
+          <div className="space-y-4 pt-2">
+             <div className="flex items-center justify-between">
+                <Label htmlFor="closed" className="text-sm font-medium">Trạng thái hoạt động</Label>
+             </div>
+             
+             <div className="border rounded-2xl p-4 bg-muted/10 space-y-4">
+                <div className="flex items-center gap-4">
+                    <Switch 
+                        id="closed" 
+                        checked={formData.isClosed}
+                        onCheckedChange={checked => setFormData({...formData, isClosed: checked})}
+                        className="data-[state=checked]:bg-destructive scale-110"
+                    />
+                    <div className="flex flex-col">
+                        <Label htmlFor="closed" className="cursor-pointer text-sm font-bold text-foreground">
+                        {formData.isClosed ? "Đóng cửa hoàn toàn" : "Mở cửa (Giờ đặc biệt)"}
+                        </Label>
+                        <span className="text-xs text-muted-foreground">
+                        {formData.isClosed 
+                            ? "Spa sẽ không nhận lịch hẹn vào ngày này" 
+                            : "Spa vẫn hoạt động nhưng có thay đổi giờ làm việc"}
+                        </span>
+                    </div>
+                </div>
+
+                <AnimatePresence>
+                    {!formData.isClosed && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="overflow-hidden"
+                        >
+                            <div className="pt-2 pl-14 space-y-3">
+                                <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Khung giờ làm việc</Label>
+                                <div className="space-y-3">
+                                    {(formData.modifiedHours || []).map((slot, index) => (
+                                        <div key={index} className="flex items-center gap-2 group/slot">
+                                            <div className="flex items-center gap-2 bg-background border p-1 rounded-lg shadow-sm">
+                                                <TimePicker 
+                                                    value={slot.start} 
+                                                    onChange={val => handleTimeChange(index, 'start', val)}
+                                                    className="w-24 border-none shadow-none text-sm h-8"
+                                                />
+                                                <ArrowRight className="w-3 h-3 text-muted-foreground" />
+                                                <TimePicker 
+                                                    value={slot.end}
+                                                    onChange={val => handleTimeChange(index, 'end', val)}
+                                                    className="w-24 border-none shadow-none text-sm text-right h-8"
+                                                />
+                                            </div>
+                                            {(formData.modifiedHours?.length || 0) > 1 && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => handleRemoveSlot(index)}
+                                                    className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover/slot:opacity-100 transition-opacity"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={handleAddSlot}
+                                    className="text-xs font-medium text-primary hover:text-primary/80 hover:bg-primary/10 h-8 px-3 rounded-full mt-2"
+                                >
+                                    <Plus className="w-3.5 h-3.5 mr-1.5" />
+                                    Thêm khung giờ
+                                </Button>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+             </div>
           </div>
         </div>
         <DialogFooter>

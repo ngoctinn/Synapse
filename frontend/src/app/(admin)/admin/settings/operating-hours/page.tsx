@@ -1,4 +1,5 @@
 import { OperatingHoursForm } from "@/features/settings/operating-hours";
+import { getOperatingHours } from "@/features/settings/operating-hours/actions";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -6,10 +7,12 @@ export const metadata: Metadata = {
   description: "Quản lý giờ mở cửa và ngày nghỉ lễ của Spa",
 };
 
-export default function OperatingHoursPage() {
+export default async function OperatingHoursPage() {
+  const initialConfig = await getOperatingHours();
+
   return (
     <div className="container mx-auto py-6 max-w-5xl">
-       <OperatingHoursForm />
+       <OperatingHoursForm initialConfig={initialConfig} />
     </div>
   );
 }

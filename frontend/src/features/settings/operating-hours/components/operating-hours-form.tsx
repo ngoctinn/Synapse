@@ -1,30 +1,42 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { DayScheduleRow } from "./day-schedule-row";
-import { ExceptionsCalendar } from "./exceptions-calendar";
-import { MOCK_OPERATING_HOURS, DAY_LABELS } from "../model/mocks";
+import { ExceptionsViewManager } from "./exceptions-view-manager";
+import { DAY_LABELS } from "../model/mocks";
 import { OperatingHoursConfig, DaySchedule, ExceptionDate, DayOfWeek } from "../model/types";
-import { Save, RotateCcw, Copy, Check } from "lucide-react";
+import { Save, RotateCcw, Copy, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/shared/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
 import { motion } from "framer-motion";
+import { updateOperatingHours } from "../actions";
 
-export function OperatingHoursForm() {
-  const [config, setConfig] = useState<OperatingHoursConfig>(MOCK_OPERATING_HOURS);
+interface OperatingHoursFormProps {
+  initialConfig: OperatingHoursConfig;
+}
+
+export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
+  const [config, setConfig] = useState<OperatingHoursConfig>(initialConfig);
   const [isDirty, setIsDirty] = useState(false);
   const [copySourceDay, setCopySourceDay] = useState<DayOfWeek | null>(null);
+  const [isPending, startTransition] = useTransition();
+
+  // Reset internal state if server data changes (though normally this is static per load)
+  useEffect(() => {
+    setConfig(initialConfig);
+    setIsDirty(false);
+  }, [initialConfig]);
 
   // Keyboard shortcut for Save
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
-        if (isDirty) {
+        if (isDirty && !isPending) {
           handleSave();
         }
       }
@@ -32,7 +44,7 @@ export function OperatingHoursForm() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isDirty]);
+  }, [isDirty, isPending]);
 
   const handleScheduleChange = (index: number, newSchedule: DaySchedule) => {
     const newDefaultSchedule = [...config.defaultSchedule];
@@ -47,10 +59,11 @@ export function OperatingHoursForm() {
     toast.success(`Đã thêm ${newExceptions.length} ngày ngoại lệ mới`);
   };
 
-  const handleRemoveException = (id: string) => {
-    setConfig({ ...config, exceptions: config.exceptions.filter(e => e.id !== id) });
+  const handleRemoveException = (ids: string | string[]) => {
+    const idsToRemove = Array.isArray(ids) ? ids : [ids];
+    setConfig({ ...config, exceptions: config.exceptions.filter(e => !idsToRemove.includes(e.id)) });
     setIsDirty(true);
-    toast.success("Đã xóa ngày ngoại lệ");
+    toast.success(idsToRemove.length > 1 ? `Đã xóa ${idsToRemove.length} mục` : "Đã xóa ngày ngoại lệ");
   };
 
   const handlePasteToAll = () => {
@@ -104,15 +117,19 @@ export function OperatingHoursForm() {
   };
 
   const handleSave = () => {
-    // Mô phỏng gọi API
-    setTimeout(() => {
-      setIsDirty(false);
-      toast.success("Đã lưu cấu hình thời gian hoạt động");
-    }, 500);
+    startTransition(async () => {
+      const result = await updateOperatingHours(config);
+      if (result.success) {
+        setIsDirty(false);
+        toast.success(result.message);
+      } else {
+        toast.error("Đã có lỗi xảy ra khi lưu cấu hình");
+      }
+    });
   };
 
   const handleReset = () => {
-    setConfig(MOCK_OPERATING_HOURS);
+    setConfig(initialConfig);
     setIsDirty(false);
     setCopySourceDay(null);
     toast.info("Đã khôi phục cài đặt gốc");
@@ -159,7 +176,7 @@ export function OperatingHoursForm() {
               ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800" 
               : "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800"
           )}>
-            <span className={cn("relative flex h-2 w-2")}>
+            <span className="relative flex h-2 w-2">
               <span className={cn("animate-ping absolute inline-flex h-full w-full rounded-full opacity-75", isDirty ? "bg-amber-500" : "bg-green-500")}></span>
               <span className={cn("relative inline-flex rounded-full h-2 w-2", isDirty ? "bg-amber-500" : "bg-green-500")}></span>
             </span>
@@ -172,7 +189,7 @@ export function OperatingHoursForm() {
                 <Button 
                   variant="ghost" 
                   onClick={handleReset} 
-                  disabled={!isDirty} 
+                  disabled={!isDirty || isPending} 
                   className="h-9 px-4 hover:bg-muted/50 transition-colors"
                 >
                   <RotateCcw className="w-4 h-4 mr-2" />
@@ -188,14 +205,18 @@ export function OperatingHoursForm() {
               <TooltipTrigger asChild>
                 <Button 
                   onClick={handleSave} 
-                  disabled={!isDirty} 
+                  disabled={!isDirty || isPending} 
                   className={cn(
                     "h-9 px-6 shadow-md hover:shadow-lg transition-all duration-300",
                     isDirty && "animate-pulse-subtle"
                   )}
                 >
-                  <Save className="w-4 h-4 mr-2" />
-                  Lưu thay đổi
+                  {isPending ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Save className="w-4 h-4 mr-2" />
+                  )}
+                  {isPending ? "Đang lưu..." : "Lưu thay đổi"}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Lưu cấu hình (Ctrl+S)</TooltipContent>
@@ -264,7 +285,7 @@ export function OperatingHoursForm() {
       </TabsContent>
       
       <TabsContent value="exceptions" className="animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out">
-        <ExceptionsCalendar 
+        <ExceptionsViewManager
           exceptions={config.exceptions}
           onAddExceptions={handleAddExceptions}
           onRemoveException={handleRemoveException}
