@@ -10,7 +10,7 @@ import { Input } from "@/shared/ui/input";
 import { Switch } from "@/shared/ui/switch";
 import { ExceptionDate } from "../model/types";
 import { vi } from "date-fns/locale";
-import { Plus, CalendarDays, ArrowLeft, PartyPopper, Wrench, Settings2 } from "lucide-react";
+import { Plus, CalendarDays, ArrowLeft, PartyPopper, Wrench, Settings2, Filter, Type, Tag } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
 import { ExceptionItem } from "./exception-item";
@@ -32,6 +32,7 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
   });
   const [editingException, setEditingException] = useState<ExceptionDate | null>(null);
   const [filterType, setFilterType] = useState<'all' | 'holiday' | 'custom' | 'maintenance'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'closed' | 'open'>('all');
 
   // Drag selection state
   const isDragging = useRef(false);
@@ -91,20 +92,24 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
     maintenance: exceptions.filter(e => e.type === 'maintenance').map(e => e.date),
   }), [exceptions]);
 
-  const modifiersStyles = useMemo(() => ({
-    holiday: { color: 'var(--destructive)', fontWeight: 'bold' },
-    custom: { color: 'var(--primary)', fontWeight: 'bold' },
-    maintenance: { color: 'var(--warning)', fontWeight: 'bold' },
-  }), []);
+  const modifiersClassNames = {
+    holiday: "text-destructive font-bold relative after:content-[''] after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-destructive after:rounded-full",
+    custom: "text-primary font-bold relative after:content-[''] after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-primary after:rounded-full",
+    maintenance: "text-amber-600 font-bold relative after:content-[''] after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-amber-600 after:rounded-full",
+  };
 
   // Gom nhóm các ngoại lệ theo ID để hiển thị gọn gàng
   const groupedExceptions = useMemo(() => {
     const groups = new Map<string, ExceptionDate[]>();
     
     // Filter before grouping
-    const filteredExceptions = exceptions.filter(ex => 
-      filterType === 'all' ? true : ex.type === filterType
-    );
+    const filteredExceptions = exceptions.filter(ex => {
+      const typeMatch = filterType === 'all' ? true : ex.type === filterType;
+      const statusMatch = statusFilter === 'all' ? true :
+                          statusFilter === 'closed' ? ex.isClosed :
+                          !ex.isClosed;
+      return typeMatch && statusMatch;
+    });
 
     // Sắp xếp theo ngày trước
     const sortedExceptions = [...filteredExceptions].sort((a, b) => a.date.getTime() - b.date.getTime());
@@ -119,7 +124,7 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
     });
     
     return Array.from(groups.values());
-  }, [exceptions]);
+  }, [exceptions, filterType, statusFilter]);
 
   const handleDayDoubleClick = (day: Date) => {
     // Đảm bảo ngày được chọn khi double click
@@ -187,13 +192,13 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
       <div className="md:col-span-5 lg:col-span-4">
         <Card className="h-full border-none shadow-none bg-transparent">
           <CardContent className="p-0 space-y-6">
-             <div className="border rounded-3xl p-6 bg-card/50 backdrop-blur-md shadow-xl ring-1 ring-white/20 dark:ring-white/5 select-none">
+             <div className="border rounded-3xl p-6 bg-card/50 backdrop-blur-md shadow-xl ring-1 ring-white/20 dark:ring-white/5 select-none shadow-[0_0_15px_rgba(var(--primary),0.1)]">
               <Calendar
                 mode="multiple"
                 selected={dates}
                 onSelect={setDates}
                 modifiers={modifiers}
-                modifiersStyles={modifiersStyles}
+                modifiersClassNames={modifiersClassNames}
                 className="rounded-md w-full flex justify-center p-2"
                 locale={vi}
                 classNames={{
@@ -248,13 +253,16 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
                 <div className="grid gap-6 py-6">
                   <div className="space-y-2">
                     <Label htmlFor="reason" className="text-sm font-medium">Lý do / Tên sự kiện</Label>
-                    <Input 
-                      id="reason" 
-                      value={newException.reason || ''} 
-                      onChange={e => setNewException({...newException, reason: e.target.value})}
-                      placeholder="Ví dụ: Tết Nguyên Đán"
-                      className="h-11 rounded-xl" 
-                    />
+                    <div className="relative">
+                      <Type className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input 
+                        id="reason" 
+                        value={newException.reason || ''} 
+                        onChange={e => setNewException({...newException, reason: e.target.value})}
+                        placeholder="Ví dụ: Tết Nguyên Đán"
+                        className="h-11 rounded-xl pl-9" 
+                      />
+                    </div>
                   </div>
                   
                   <div className="space-y-3">
@@ -318,7 +326,7 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
       </div>
 
       <div className="md:col-span-7 lg:col-span-8 space-y-6">
-        <div className="flex items-center justify-between pb-2 border-b border-border/40">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-border/40 gap-4">
           <div>
             <h3 className="text-xl font-bold flex items-center gap-2 tracking-tight">
               <CalendarDays className="w-5 h-5 text-primary" />
@@ -326,7 +334,47 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
             </h3>
             <p className="text-sm text-muted-foreground mt-1">Quản lý các ngày nghỉ lễ và lịch làm việc đặc biệt</p>
           </div>
-          <div className="flex flex-wrap gap-2 justify-end text-sm">
+          <div className="flex flex-wrap gap-2 justify-end text-sm items-center w-full sm:w-auto">
+            <div className="flex items-center gap-1 bg-muted/30 p-1 rounded-full border border-border/50">
+              <button
+                onClick={() => setStatusFilter('all')}
+                className={cn(
+                  "px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200",
+                  statusFilter === 'all' 
+                    ? "bg-background shadow-sm text-foreground ring-1 ring-black/5" 
+                    : "text-muted-foreground hover:text-foreground hover:bg-background/50"
+                )}
+              >
+                Tất cả
+              </button>
+              <button
+                onClick={() => setStatusFilter('closed')}
+                className={cn(
+                  "px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 flex items-center gap-1.5",
+                  statusFilter === 'closed' 
+                    ? "bg-destructive/10 text-destructive shadow-sm ring-1 ring-destructive/20" 
+                    : "text-muted-foreground hover:text-destructive hover:bg-destructive/5"
+                )}
+              >
+                <div className={cn("w-1.5 h-1.5 rounded-full bg-destructive", statusFilter === 'closed' && "animate-pulse")} />
+                Đóng cửa
+              </button>
+              <button
+                onClick={() => setStatusFilter('open')}
+                className={cn(
+                  "px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 flex items-center gap-1.5",
+                  statusFilter === 'open' 
+                    ? "bg-primary/10 text-primary shadow-sm ring-1 ring-primary/20" 
+                    : "text-muted-foreground hover:text-primary hover:bg-primary/5"
+                )}
+              >
+                <div className={cn("w-1.5 h-1.5 rounded-full bg-primary", statusFilter === 'open' && "animate-pulse")} />
+                Mở cửa
+              </button>
+            </div>
+
+            <div className="h-6 w-px bg-border mx-1 hidden sm:block" />
+
             <button
               onClick={() => setFilterType(filterType === 'holiday' ? 'all' : 'holiday')}
               className={cn(
@@ -371,7 +419,7 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
           </div>
         </div>
 
-        <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 scrollbar-hide min-h-[300px]">
+        <div className="flex flex-col gap-3 max-h-[500px] overflow-y-auto pr-2 scrollbar-hide min-h-[300px]">
           <AnimatePresence mode="popLayout">
             {groupedExceptions.length === 0 ? (
               <motion.div 
@@ -380,19 +428,35 @@ export function ExceptionsCalendar({ exceptions, onAddExceptions, onRemoveExcept
                 exit={{ opacity: 0, scale: 0.9 }}
                 className="flex flex-col items-center justify-center py-16 border-2 border-dashed rounded-3xl text-muted-foreground bg-muted/5 relative overflow-hidden group"
               >
-                <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25 opacity-50" />
+                <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25 opacity-50 animate-pulse" />
                 <div className="relative z-10 flex flex-col items-center transition-transform duration-500 group-hover:scale-105">
                   <div className="w-20 h-20 rounded-full bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center mb-6 shadow-inner ring-4 ring-background">
                     <CalendarDays className="w-10 h-10 text-muted-foreground/40" />
                   </div>
                   <h3 className="font-semibold text-xl mb-2">Chưa có ngày ngoại lệ</h3>
                   <p className="text-sm text-muted-foreground max-w-xs text-center leading-relaxed">
-                    Chọn ngày trên lịch để thêm ngày nghỉ lễ, bảo trì hoặc giờ làm việc đặc biệt.
+                    {filterType !== 'all' || statusFilter !== 'all' 
+                      ? "Không tìm thấy ngoại lệ phù hợp với bộ lọc hiện tại."
+                      : "Chọn ngày trên lịch để thêm ngày nghỉ lễ, bảo trì hoặc giờ làm việc đặc biệt."}
                   </p>
-                  <div className="mt-8 flex items-center gap-2 text-primary text-sm font-medium bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
-                    <ArrowLeft className="w-4 h-4 animate-pulse-horizontal" />
-                    <span>Bắt đầu bằng việc chọn ngày</span>
-                  </div>
+                  {(filterType !== 'all' || statusFilter !== 'all') && (
+                    <Button 
+                      variant="link" 
+                      onClick={() => {
+                        setFilterType('all');
+                        setStatusFilter('all');
+                      }}
+                      className="mt-2 text-primary"
+                    >
+                      Xóa bộ lọc
+                    </Button>
+                  )}
+                  {filterType === 'all' && statusFilter === 'all' && (
+                    <div className="mt-8 flex items-center gap-2 text-primary text-sm font-medium bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
+                      <ArrowLeft className="w-4 h-4 animate-pulse-horizontal" />
+                      <span>Bắt đầu bằng việc chọn ngày</span>
+                    </div>
+                  )}
                 </div>
               </motion.div>
             ) : (
