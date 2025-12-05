@@ -1,11 +1,6 @@
 export * from "./actions"
-export { InviteStaffModal } from "./components/invite-staff-modal"
-export { PermissionMatrix } from "./components/permissions/permission-matrix"
-export { StaffScheduler } from "./components/scheduling/staff-scheduler"
-export { StaffTable, StaffTableSkeleton } from "./components/staff-list/staff-table"
 export { StaffPage } from "./components/staff-page"
 export * from "./constants"
 export * from "./schemas"
 export * from "./types"
-export { StaffFilter } from "./components/staff-filter"
 
