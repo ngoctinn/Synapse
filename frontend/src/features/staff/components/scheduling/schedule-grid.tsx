@@ -55,11 +55,11 @@ export function ScheduleGrid({
   }, [])
 
   return (
-    <div className="flex flex-col h-full select-none">
-      <div className="overflow-x-auto flex-1">
+    <div className="flex flex-col select-none">
+      <div className="">
         <div className="min-w-[1000px]">
           {/* Header Row */}
-          <div className="grid grid-cols-[220px_repeat(7,1fr)] bg-muted/30 border-b sticky top-[52px] z-30">
+          <div className="grid grid-cols-[220px_repeat(7,1fr)] bg-background border-b sticky top-[var(--staff-header-height-mobile,109px)] md:top-[var(--staff-header-height,57px)] z-30">
             <div className="p-4 font-medium text-sm border-r flex items-center text-muted-foreground sticky left-0 bg-background z-40 shadow-[1px_0_0_0_rgba(0,0,0,0.05)]">Nhân viên</div>
             {weekDays.map((day) => {
               const isToday = isSameDay(day, today)

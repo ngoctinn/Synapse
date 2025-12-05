@@ -8,12 +8,14 @@ import { StaffScheduler } from "./scheduling/staff-scheduler"
 import { StaffFilter } from "./staff-filter"
 import { StaffTable, StaffTableSkeleton } from "./staff-list/staff-table"
 
+import { Schedule } from "../types"
+
 interface StaffPageProps {
   page: number
   skills: Skill[]
   staffListPromise: Promise<any>
   initialPermissions: Record<string, Record<string, boolean>>
-  initialSchedules: any[] // Replace with Schedule type
+  initialSchedules: Schedule[]
 }
 
 async function StaffListWrapper({
@@ -45,18 +47,30 @@ async function StaffSchedulerWrapper({
   initialSchedules,
 }: {
   staffListPromise: Promise<any>
-  initialSchedules: any[]
+  initialSchedules: Schedule[]
 }) {
   const { data } = await staffListPromise
   return <StaffScheduler initialSchedules={initialSchedules} staffList={data} />
 }
 
+const Footer = () => (
+  <div className="text-center text-sm text-muted-foreground py-6 mt-auto">
+    © 2025 Synapse. All rights reserved.
+  </div>
+)
+
 export function StaffPage({ page, skills, staffListPromise, initialPermissions, initialSchedules }: StaffPageProps) {
   return (
-    <div className="min-h-screen flex flex-col pb-10">
-      <Tabs defaultValue="list" className="flex flex-col h-full">
+    <div className="min-h-screen flex flex-col w-full">
+      <Tabs defaultValue="list" className="flex flex-col flex-1 w-full gap-0">
         {/* Sticky Header with Tabs and Actions */}
-        <div className="sticky top-0 z-40 -mx-4 px-4 py-2 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300">
+        <div
+          className="sticky top-0 z-40 -mx-4 px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4"
+          style={{
+            "--staff-header-height": "57px",
+            "--staff-header-height-mobile": "109px"
+          } as React.CSSProperties}
+        >
           <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto justify-start">
             <TabsTrigger value="list" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-xs font-medium px-4 transition-all duration-200 flex-1 md:flex-none">Danh sách</TabsTrigger>
             <TabsTrigger value="permissions" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-xs font-medium px-4 transition-all duration-200 flex-1 md:flex-none">Phân quyền</TabsTrigger>
@@ -72,8 +86,8 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
           </div>
         </div>
 
-        <div className="flex-1 p-0 animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out">
-          <TabsContent value="list" className="h-full mt-0 border-0 p-0 data-[state=inactive]:hidden">
+        <div className="flex-1 p-0 animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out flex flex-col">
+          <TabsContent value="list" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
             <Suspense fallback={<StaffTableSkeleton />}>
               <StaffListWrapper
                 staffListPromise={staffListPromise}
@@ -81,27 +95,25 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
                 page={page}
               />
             </Suspense>
+            <Footer />
           </TabsContent>
 
-          <TabsContent value="permissions" className="h-full mt-0 border-0 p-0 data-[state=inactive]:hidden">
+          <TabsContent value="permissions" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
             <PermissionMatrix initialPermissions={initialPermissions} />
+            <Footer />
           </TabsContent>
 
-          <TabsContent value="scheduling" className="h-full mt-0 border-0 p-0 data-[state=inactive]:hidden">
+          <TabsContent value="scheduling" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
             <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Đang tải lịch làm việc...</div>}>
               <StaffSchedulerWrapper
                 staffListPromise={staffListPromise}
                 initialSchedules={initialSchedules}
               />
             </Suspense>
+            <Footer />
           </TabsContent>
         </div>
       </Tabs>
-
-      {/* Short Footer */}
-      <div className="text-center text-sm text-muted-foreground py-2 mt-auto">
-        © 2025 Synapse. All rights reserved.
-      </div>
     </div>
   )
 }
