@@ -31,8 +31,10 @@ export interface Service {
   image_url?: string | null;
   color: string;
   description?: string | null;
+  category?: string | null; // Added for Landing Page
   resource_requirements?: ResourceRequirements;
   is_active: boolean;
+  is_popular?: boolean; // Added for Landing Page
   skills: Skill[];
   created_at: string;
   updated_at: string;
@@ -46,6 +48,7 @@ export interface ServiceCreateInput {
   image_url?: string;
   color?: string;
   description?: string;
+  category?: string;
   resource_requirements?: ResourceRequirements;
   is_active?: boolean;
   skill_ids: string[];
@@ -60,6 +63,7 @@ export interface ServiceUpdateInput {
   image_url?: string;
   color?: string;
   description?: string;
+  category?: string;
   resource_requirements?: ResourceRequirements;
   is_active?: boolean;
   skill_ids?: string[];

@@ -2,13 +2,13 @@
 "use client"
 
 import { BookingDialog } from "@/features/customer-dashboard"; // Import BookingDialog
-import { AnimatePresence, motion } from "framer-motion"
-import { useRouter } from "next/navigation"
-import { useMemo, useState } from "react"
-import { MOCK_SERVICES } from "../mocks"
-import { Service } from "../types"
-import { ServiceCard } from "./service-card"
-import { ServiceFilter } from "./service-filter"
+import { MOCK_SERVICES } from "@/features/services/data/mocks";
+import { Service } from "@/features/services/types";
+import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
+import { ServiceCard } from "./service-card";
+import { ServiceFilter } from "./service-filter";
 
 export function ServicesSection() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -17,13 +17,13 @@ export function ServicesSection() {
   const router = useRouter()
 
   const categories = useMemo(() => {
-    return Array.from(new Set(MOCK_SERVICES.map(s => s.category)))
+    return Array.from(new Set(MOCK_SERVICES.map(s => s.category).filter((c): c is string => !!c)))
   }, [])
 
   const filteredServices = useMemo(() => {
     return MOCK_SERVICES.filter(service => {
       const matchesSearch = service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          service.description.toLowerCase().includes(searchQuery.toLowerCase())
+                          (service.description || "").toLowerCase().includes(searchQuery.toLowerCase())
       const matchesCategory = category === "All" || service.category === category
 
       return matchesSearch && matchesCategory
@@ -98,12 +98,7 @@ export function ServicesSection() {
          <BookingDialog
             open={!!selectedService}
             onOpenChange={(open) => !open && setSelectedService(null)}
-            service={selectedService ? {
-                id: selectedService.id,
-                name: selectedService.name,
-                duration: selectedService.durationMinutes,
-                price: selectedService.price
-            } : undefined}
+            service={selectedService || undefined}
         />
     </section>
   )

@@ -1,22 +1,35 @@
-
 "use client";
 
 import { useMemo, useState } from "react";
 import { ExceptionDate } from "../model/types";
 import { Button } from "@/shared/ui/button";
-import { Plus, Calendar as CalendarIcon, List as ListIcon, Paintbrush, MousePointer2 } from "lucide-react";
+import { List as ListIcon, Calendar as CalendarIcon, Plus } from "lucide-react";
 import { ExceptionsCalendar } from "./exceptions-calendar";
-import { ExceptionsTable } from "./exceptions-table";
+// import { ExceptionsTable } from "./exceptions-table"; // DELETED
 import { ExceptionsFilterBar } from "./exceptions-filter-bar";
-import { useExceptionFilters } from "../hooks/use-exception-filters";
-import { cn } from "@/shared/lib/utils";
 import { useCalendarSelection } from "../hooks/use-calendar-selection";
-import { FloatingActionDock } from "./floating-action-dock";
-import { InspectorPanel } from "./inspector-panel";
+
+import { ExceptionDialog } from "./exception-dialog";
 import { YearViewGrid } from "./year-view-grid";
-import { applyExceptionToDates, isDateSelected } from "../utils/bulk-operations";
-import { format } from "date-fns";
-import { toast } from "sonner"; // If needed
+import { applyExceptionToDates } from "../utils/bulk-operations";
+import { format, startOfYear, endOfYear, setYear } from "date-fns";
+import { vi } from "date-fns/locale";
+import { useExceptionViewLogic } from "../hooks/use-exception-view-logic";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react"; // Added icons
+import { DataTable, Column } from "@/shared/ui/custom/data-table"; // Added DataTable
+import { Badge } from "@/shared/ui/badge"; // Added Badge
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/shared/ui/dropdown-menu"; // Added DropdownMenu
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/shared/ui/resizable";
+import { cn } from "@/shared/lib/utils";
 
 interface ExceptionsViewManagerProps {
   exceptions: ExceptionDate[];
@@ -30,183 +43,329 @@ export function ExceptionsViewManager({
   onRemoveException 
 }: ExceptionsViewManagerProps) {
   
-  // 1. Data & State Logic
+  // --- 1. Shared View Logic (Hook) ---
   const {
     filteredExceptions,
-    selectedTypes,
-    toggleTypeFilter,
-    statusFilter,
-    setStatusFilter,
+    viewMode,
+    isYearView,
     dateRange,
-    setDateRange
-  } = useExceptionFilters(exceptions);
+    statusFilter,
+    typeFilter,
+    activeCount,
+    filterUnit,
+    setViewMode,
+    setFilterUnit,
+    setDateRange,
+    setStatusFilter,
+    setTypeFilter,
+    clearFilters
+  } = useExceptionViewLogic({ exceptions });
 
+  // --- 2. Selection Logic ---
   const {
     selectedDateIds,
     toggleDate,
-    selectRange,
     clearSelection,
     getSelectedDates,
     setSelectedDates,
     addToSelection,
     mode,
     setMode,
-    view,
-    setView
   } = useCalendarSelection();
 
-  const [isPanelOpen, setIsPanelOpen] = useState(false);
+  // Dialog State
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   
-  // Convert selectedDateIds Set to sorted array for Calendar display
+  // Convert selectedDateIds Set to sorted array of Dates for Calendar
   const selectedDates = useMemo(() => getSelectedDates(), [getSelectedDates, selectedDateIds]);
+  
+  // Convert selectedDateIds Set to Array of strings for Table
+  const selectedIdsArray = useMemo(() => Array.from(selectedDateIds), [selectedDateIds]);
+
+  const handleManualAdd = () => {
+    // Open Dialog with current selection (or empty if none)
+    setIsDialogOpen(true);
+  };
+
+
+  // --- Render Components Helpers ---
+  
+  const renderCalendar = () => (
+      isYearView ? (
+        <YearViewGrid 
+            year={dateRange?.from?.getFullYear() || new Date().getFullYear()} 
+            exceptions={filteredExceptions}
+            selectedDates={selectedDates}
+            onSelectDates={setSelectedDates}
+            onYearChange={(year) => {
+                const newStart = startOfYear(setYear(new Date(), year));
+                const newEnd = endOfYear(newStart);
+                setDateRange({ from: newStart, to: newEnd });
+                setFilterUnit('year');
+            }}
+        />
+    ) : (
+        <ExceptionsCalendar 
+            exceptions={filteredExceptions}
+            selectedDates={selectedDates}
+            displayDate={dateRange?.from || new Date()} 
+            onSelectDates={setSelectedDates}
+            onEdit={(ex) => {
+                clearSelection();
+                const peers = exceptions.filter(e => e.id === ex.id);
+                setSelectedDates(peers.map(p => p.date));
+                setIsDialogOpen(true);
+            }}
+        />
+    )
+  );
+
+  const getColumns = (compact: boolean): Column<ExceptionDate>[] => {
+      const baseColumns: Column<ExceptionDate>[] = [
+        {
+          header: "Ngày",
+          accessorKey: "date",
+          cell: (item) => (
+            <div className="flex flex-col">
+              <span className="font-medium">
+                {format(item.date, "dd/MM/yyyy", { locale: vi })}
+              </span>
+              {!compact && (
+                  <span className="text-xs text-muted-foreground capitalize">
+                  {format(item.date, "EEEE", { locale: vi })}
+                  </span>
+              )}
+            </div>
+          ),
+        },
+        {
+          header: "Lý do",
+          accessorKey: "reason",
+          cell: (item) => (
+              <div className={cn("truncate", compact ? "max-w-[120px]" : "max-w-[200px]")} title={item.reason}>
+                  {item.reason || "Không có lý do"}
+              </div>
+          )
+        },
+      ];
+  
+      if (!compact) {
+          baseColumns.push({
+              header: "Loại",
+              accessorKey: "type",
+              cell: (item) => {
+                  const typeMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
+                      holiday: { label: "Ngày lễ", variant: "destructive" },
+                      maintenance: { label: "Bảo trì", variant: "secondary" },
+                      custom: { label: "Tùy chỉnh", variant: "outline" },
+                  };
+                  const config = typeMap[item.type] || { label: item.type, variant: "outline" };
+                  return <Badge variant={config.variant}>{config.label}</Badge>;
+              }
+          });
+          
+          baseColumns.push({
+               header: "Trạng thái",
+               cell: (item) => (
+                   <Badge variant={item.isClosed ? "destructive" : "default"} className="bg-opacity-10 text-xs shadow-none hover:bg-opacity-20">
+                       {item.isClosed ? "Đóng cửa" : "Mở cửa"}
+                   </Badge>
+               )
+          });
+      }
+  
+      // Action column
+      baseColumns.push({
+        header: "",
+        className: "w-[50px]",
+        cell: (item) => (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-muted">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => {
+                  clearSelection();
+                  toggleDate(item.date);
+                  setIsDialogOpen(true);
+              }}>
+                <Pencil className="mr-2 h-4 w-4" /> Chỉnh sửa
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                  className="text-destructive focus:text-destructive"
+                  onClick={() => onRemoveException(item.id)}
+              >
+                <Trash2 className="mr-2 h-4 w-4" /> Xóa
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ),
+      });
+  
+      return baseColumns;
+  };
+
+  const renderTable = (compact: boolean = false) => {
+      // Calculate selected UUIDs efficiently
+      const selectedUUIDs = useMemo(() => {
+          return new Set(
+              filteredExceptions
+                  .filter(e => selectedDateIds.has(format(e.date, 'yyyy-MM-dd')))
+                  .map(e => e.id)
+          );
+      }, [filteredExceptions, selectedDateIds]);
+
+      // Logic for selection
+      const isAllSelected = filteredExceptions.length > 0 && selectedUUIDs.size === filteredExceptions.length;
+      const isPartiallySelected = selectedUUIDs.size > 0 && selectedUUIDs.size < filteredExceptions.length;
+      
+      const handleToggleOne = (id: string | number) => {
+          const strId = String(id);
+          const ex = exceptions.find(e => e.id === strId);
+          if (ex) {
+             toggleDate(ex.date);
+          }
+      };
+
+      const handleToggleAll = () => {
+          if (isAllSelected) {
+              clearSelection();
+          } else {
+              // Select all visible filtered exceptions
+              const dates = filteredExceptions.map(e => e.date);
+              setSelectedDates(dates);
+          }
+      };
+
+      return (
+          <DataTable
+                data={filteredExceptions}
+                columns={getColumns(compact)}
+                keyExtractor={(item) => item.id}
+                selectable={true}
+                isSelected={(id) => selectedUUIDs.has(String(id))}
+                onToggleOne={handleToggleOne}
+                onToggleAll={handleToggleAll}
+                isAllSelected={isAllSelected}
+                isPartiallySelected={isPartiallySelected}
+                className={cn(compact && "border-none shadow-none bg-transparent")}
+                emptyState={
+                    <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground p-4">
+                        <p className="text-sm">Không tìm thấy ngoại lệ nào khớp với bộ lọc.</p>
+                    </div>
+                }
+          />
+      );
+  };
 
   return (
-      <div className="space-y-6 relative">
-          {/* Header & Tools */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-               <div className="space-y-1">
-                 <h3 className="text-xl font-bold flex items-center gap-2 tracking-tight">
-                    Ngày nghỉ & Ngoại lệ
-                 </h3>
-                 <p className="text-sm text-muted-foreground">
-                    Quản lý các ngày nghỉ lễ, bảo trì và lịch làm việc đặc biệt.
-                 </p>
+    <div className="space-y-6 h-full flex flex-col">
+       <div className="shrink-0">
+         <ExceptionsFilterBar 
+             statusFilter={statusFilter} 
+             setStatusFilter={setStatusFilter}
+             typeFilter={typeFilter}
+             setTypeFilter={setTypeFilter}
+             dateRange={dateRange}
+             setDateRange={setDateRange}
+             filterUnit={filterUnit}
+             setFilterUnit={setFilterUnit}
+             onClearFilters={clearFilters}
+             activeCount={activeCount}
+             viewMode={viewMode}
+             // Hide view toggle on large screens where we show split view
+             startContent={
+               <div className="flex items-center gap-2 p-1 bg-muted/50 rounded-lg border lg:hidden">
+                    <Button
+                        variant={viewMode === 'calendar' ? 'secondary' : 'ghost'}
+                        size="sm"
+                        onClick={() => setViewMode('calendar')}
+                        className="gap-2"
+                    >
+                        <CalendarIcon className="w-4 h-4" />
+                        Lịch
+                    </Button>
+                    <Button
+                        variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+                        size="sm"
+                        onClick={() => setViewMode('list')}
+                        className="gap-2"
+                    >
+                        <ListIcon className="w-4 h-4" />
+                        Danh sách
+                    </Button>
                </div>
-
+             }
+             endContent={
                <div className="flex items-center gap-2">
-                    {/* Mode Toggle (Select vs Paint) - Visible only in Calendar modes */}
-                    {view !== 'list' && (
-                        <div className="bg-muted/50 p-1 rounded-lg border flex items-center mr-2">
-                            <Button 
-                                variant={mode === 'select' ? 'secondary' : 'ghost'} 
-                                size="sm" 
-                                onClick={() => setMode('select')} 
-                                className="h-8 w-8 p-0"
-                                title="Chế độ chọn (Kéo để chọn vùng)"
-                            >
-                                <MousePointer2 className="w-4 h-4" />
-                            </Button>
-                            <Button 
-                                variant={mode === 'paint' ? 'secondary' : 'ghost'} 
-                                size="sm" 
-                                onClick={() => setMode('paint')} 
-                                className="h-8 w-8 p-0"
-                                title="Chế độ tô (Kéo để thêm vào vùng chọn)"
-                            >
-                                <Paintbrush className="w-4 h-4" />
-                            </Button>
-                        </div>
-                    )}
 
-                    <div className="bg-muted/50 p-1 rounded-lg border flex items-center">
-                        <Button variant={view === 'month' ? 'default' : 'ghost'} size="sm" onClick={() => setView('month')} className="h-8 rounded-md gap-2">
-                            <CalendarIcon className="w-4 h-4" /> Tháng
-                        </Button> 
-                        <Button variant={view === 'year' ? 'default' : 'ghost'} size="sm" onClick={() => setView('year')} className="h-8 rounded-md gap-2">
-                            <CalendarIcon className="w-4 h-4" /> Năm
-                        </Button>
-                        <Button variant={view === 'list' ? 'default' : 'ghost'} size="sm" onClick={() => setView('list')} className="h-8 rounded-md gap-2">
-                            <ListIcon className="w-4 h-4" /> List
-                        </Button>
-                    </div>
+                    
+                    {/* Add Button */}
+                    <Button onClick={handleManualAdd} className="bg-primary text-primary-foreground shadow-sm hover:shadow-md transition-all">
+                        <Plus className="w-4 h-4 mr-2" /> Thêm ngoại lệ
+                    </Button>
                </div>
-          </div>
+             }
+         />
+       </div>
 
-          <div className="bg-card/30 rounded-2xl border p-4 backdrop-blur-sm space-y-4">
-            <ExceptionsFilterBar 
-                selectedTypes={selectedTypes} toggleTypeFilter={toggleTypeFilter}
-                statusFilter={statusFilter} setStatusFilter={setStatusFilter}
-                dateRange={dateRange} setDateRange={setDateRange}
-            />
-          </div>
+       <div className="flex-1 min-h-[600px] relative">
+           {/* MOBILE VIEW (Tabs) */}
+           <div className="lg:hidden h-full">
+                {viewMode === 'list' ? renderTable() : renderCalendar()}
+           </div>
 
-          <div className="min-h-[600px] relative">
-              {view === 'list' ? (
-                  <ExceptionsTable 
-                      exceptions={filteredExceptions} 
-                      onEdit={(ex) => {
-                          clearSelection();
-                          toggleDate(ex.date);
-                          setIsPanelOpen(true);
-                      }} 
-                      onRemove={onRemoveException} 
-                  />
-              ) : view === 'year' ? (
-                  <YearViewGrid 
-                      year={new Date().getFullYear()} // Todo: Add Year state
-                      exceptions={filteredExceptions}
-                      selectedDates={selectedDates}
-                      onSelectDates={(dates) => {
-                          if (mode === 'paint') {
-                              addToSelection(dates);
-                          } else {
-                              setSelectedDates(dates);
-                          }
-                      }}
-                  />
-              ) : (
-                  <>
-                      <ExceptionsCalendar 
-                          exceptions={filteredExceptions}
-                          selectedDates={selectedDates} 
-                          onSelectDates={(dates) => {
-                              if (mode === 'paint') {
-                                  addToSelection(dates);
-                              } else {
-                                  setSelectedDates(dates);
-                              }
-                          }}
-                          onEdit={(ex) => {
-                              clearSelection();
-                              toggleDate(ex.date);
-                              setIsPanelOpen(true);
-                          }}
-                      />
-                  </>
-              )}
-          </div>
+           {/* DESKTOP VIEW (Split) */}
+           <div className="hidden lg:block h-full border rounded-xl overflow-hidden bg-background shadow-sm">
+                <ResizablePanelGroup direction="horizontal">
+                    <ResizablePanel defaultSize={65} minSize={40}>
+                        <div className="h-full p-4 overflow-y-auto custom-scrollbar">
+                           {renderCalendar()}
+                        </div>
+                    </ResizablePanel>
+                    
+                    <ResizableHandle withHandle />
+                    
+                    <ResizablePanel defaultSize={35} minSize={25}>
+                        <div className="h-full flex flex-col bg-muted/10">
+                            <div className="p-3 border-b bg-muted/20 font-medium text-xs text-muted-foreground uppercase tracking-wider flex justify-between items-center">
+                                <span>Danh sách chi tiết</span>
+                            </div>
+                            <div className="p-4 flex-1 overflow-y-auto custom-scrollbar">
+                                {/* If selection exists, maybe filter table? For now show all filtered list, but auto-highlight selection */}
+                                {renderTable(true)}
+                            </div>
+                        </div>
+                    </ResizablePanel>
+                </ResizablePanelGroup>
+           </div>
+       </div>
 
-          <FloatingActionDock 
-              selectedCount={selectedDates.length} 
-              onClearSelection={clearSelection}
-              onAction={(action, payload) => {
-                  switch(action) {
-                      case 'lock':
-                          const updates = applyExceptionToDates(selectedDates, { isClosed: true, type: 'custom', reason: 'Đóng cửa' }, exceptions);
-                          onAddExceptions(updates);
-                          break;
-                      case 'time':
-                          const slots = [{ start: payload.start, end: payload.end }];
-                          const updatesTime = applyExceptionToDates(selectedDates, { isClosed: false, modifiedHours: slots, type: 'custom' }, exceptions);
-                          onAddExceptions(updatesTime);
-                          break;
-                      case 'type':
-                           const updatesType = applyExceptionToDates(selectedDates, { type: payload }, exceptions);
-                           onAddExceptions(updatesType);
-                           break;
-                  }
-              }}
-          />
-
-          <InspectorPanel 
-              isOpen={isPanelOpen || (selectedDates.length === 1 && false)} 
-              onClose={() => setIsPanelOpen(false)}
-              selectedDates={selectedDates}
-              existingExceptions={exceptions}
-              onSave={(config) => {
-                  // If we are in mixed mode/bulk edit, logic inside InspectorPanel handles what to send.
-                  // But `config` here is partial.
-                  // We apply it.
-                  const updates = applyExceptionToDates(selectedDates, config, exceptions);
-                  onAddExceptions(updates);
-              }}
-              onDelete={() => {
-                  const ids = exceptions.filter(e => isDateSelected(e.date, selectedDateIds)).map(e => e.id);
-                  onRemoveException(ids);
-                  setIsPanelOpen(false);
-                  clearSelection();
-              }}
-          />
-      </div>
+       <ExceptionDialog 
+           isOpen={isDialogOpen} 
+           onClose={() => setIsDialogOpen(false)}
+           selectedDates={selectedDates}
+           existingExceptions={exceptions}
+           onDatesChange={setSelectedDates}
+           onSubmit={(config) => {
+               const updates = applyExceptionToDates(selectedDates, config, exceptions);
+               onAddExceptions(updates);
+           }}
+           onDelete={() => {
+                // Delete logic
+                const idsToDelete = exceptions
+                     .filter(e => selectedDateIds.has(format(e.date, 'yyyy-MM-dd')))
+                     .map(e => e.id);
+                 
+                if (idsToDelete.length > 0) {
+                    onRemoveException(idsToDelete);
+                }
+                setIsDialogOpen(false);
+                clearSelection();
+           }}
+       />
+    </div>
   );
 }

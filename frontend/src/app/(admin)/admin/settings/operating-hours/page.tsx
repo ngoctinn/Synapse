@@ -10,7 +10,7 @@ export default async function OperatingHoursPage() {
   const initialConfig = await getOperatingHours();
 
   return (
-    <div className="container mx-auto py-6 max-w-5xl">
+    <div className="w-full min-h-screen flex flex-col">
        <OperatingHoursForm initialConfig={initialConfig} />
     </div>
   );

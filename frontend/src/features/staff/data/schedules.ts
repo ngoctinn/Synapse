@@ -1,7 +1,7 @@
 import { addDays, format, startOfWeek } from "date-fns";
 import { Schedule } from "../types";
-import { MOCK_SHIFTS } from "./mock-shifts";
-import { MOCK_STAFF } from "./mock-staff";
+import { MOCK_STAFF } from "./mocks";
+import { MOCK_SHIFTS } from "./shifts";
 
 // Helper to generate dates for the current week
 const getCurrentWeekDates = () => {

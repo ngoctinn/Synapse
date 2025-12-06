@@ -53,14 +53,16 @@ import { RadioGroup, RadioGroupItem } from "@/shared/ui/radio-group"
 import { ScrollArea } from "@/shared/ui/scroll-area"
 import { Separator } from "@/shared/ui/separator"
 
-import { MOCK_SLOTS, MOCK_STAFF } from "../mocks"
-import { BookingService, BookingStaff } from "../types"
+import { Service } from "@/features/services/types"
+import { MOCK_STAFF } from "@/features/staff/data/mocks"
+import { Staff } from "@/features/staff/types"
+import { MOCK_SLOTS } from "../mocks"
 
 // --- Component Props ---
 interface BookingDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  service?: BookingService
+  service?: Service
   defaultStaffId?: string // If re-booking with previous staff
 }
 
@@ -99,12 +101,13 @@ const STEP_CONFIG: Record<
 export function BookingDialog({
   open,
   onOpenChange,
+  // @ts-expect-error - Mock default service
   service = { id: "srv1", name: "Trị liệu da chuyên sâu", duration: 60, price: 500000 },
   defaultStaffId,
 }: BookingDialogProps) {
   const [step, setStep] = React.useState<Step>("preference")
   const [preference, setPreference] = React.useState<"any" | "specific">("any")
-  const [selectedStaff, setSelectedStaff] = React.useState<BookingStaff | null>(null)
+  const [selectedStaff, setSelectedStaff] = React.useState<Staff | null>(null)
   const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(new Date())
   const [selectedTime, setSelectedTime] = React.useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = React.useState(false)
@@ -125,7 +128,7 @@ export function BookingDialog({
     if (open) {
       setStep("preference")
       setPreference(defaultStaffId ? "specific" : "any")
-      setSelectedStaff(defaultStaffId ? MOCK_STAFF.find((s) => s.id === defaultStaffId) || null : null)
+      setSelectedStaff(defaultStaffId ? MOCK_STAFF.find((s) => s.user_id === defaultStaffId) || null : null)
       setSelectedDate(new Date())
       setSelectedTime(null)
       setIsSubmitting(false)
@@ -303,39 +306,39 @@ export function BookingDialog({
         </div>
         <ScrollArea className="h-auto max-h-[50vh] min-h-[300px] pr-4 md:max-h-[400px]">
           <div className="space-y-3">
-            {MOCK_STAFF.map((staff) => (
+            {MOCK_STAFF.filter(s => s.user.is_active !== false).map((staff) => (
               <button
-                key={staff.id}
+                key={staff.user_id}
                 type="button"
                 onClick={() => setSelectedStaff(staff)}
-                aria-label={`Chọn ${staff.name}`}
+                aria-label={`Chọn ${staff.user.full_name}`}
                 className={cn(
                   "w-full flex items-start gap-4 p-3 rounded-lg border transition-all cursor-pointer hover:shadow-sm text-left outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
-                  selectedStaff?.id === staff.id
+                  selectedStaff?.user_id === staff.user_id
                     ? "border-primary bg-primary/5 ring-1 ring-primary"
                     : "border-border bg-card hover:bg-accent hover:border-muted-foreground/30"
                 )}
               >
                 <Avatar className="h-14 w-14 border-2 border-background shadow-sm">
-                  <AvatarImage src={staff.avatar} alt={staff.name} />
-                  <AvatarFallback className="font-serif">{staff.name[0]}</AvatarFallback>
+                  <AvatarImage src={staff.user.avatar_url || undefined} alt={staff.user.full_name || ""} />
+                  <AvatarFallback className="font-serif">{staff.user.full_name?.[0] || "?"}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 space-y-1.5 min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-medium text-sm truncate">{staff.name}</span>
+                    <span className="font-medium text-sm truncate">{staff.user.full_name}</span>
                     <Badge variant="secondary" className="flex items-center gap-1 text-[10px] h-5 shrink-0">
                       <Star className="h-3 w-3 fill-primary text-primary" />
-                      {staff.rating}
+                      4.9
                     </Badge>
                   </div>
-                  <div className="text-xs text-muted-foreground">{staff.role}</div>
+                  <div className="text-xs text-muted-foreground">{staff.title}</div>
                   <div className="flex flex-wrap gap-1.5">
-                    {staff.tags.map((tag) => (
+                    {staff.skills.map((skill) => (
                       <span
-                        key={tag}
+                        key={skill.id}
                         className="text-[10px] px-2 py-0.5 bg-muted rounded-full text-muted-foreground"
                       >
-                        {tag}
+                        {skill.name}
                       </span>
                     ))}
                   </div>
@@ -461,7 +464,7 @@ export function BookingDialog({
                     Mặc định (Tối ưu)
                   </Badge>
                 ) : (
-                  <span className="font-medium">{selectedStaff?.name}</span>
+                  <span className="font-medium">{selectedStaff?.user.full_name}</span>
                 )}
               </div>
             </div>
