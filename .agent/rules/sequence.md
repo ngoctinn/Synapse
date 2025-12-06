@@ -16,7 +16,7 @@ I. QUY ĐỊNH HÌNH THỨC (FORMAT)
    - Ghi chú (Note): 9pt (In nghiêng).
 
 3. Màu sắc (Color)
-   - Chế độ màu: Trắng - Đen (Black & White / Grayscale).
+   - Chế độ màu: Trắng - Đen (Black & White / Grayscale).'theme': 'neutral'
    - Viền (Stroke): Màu đen (#000000).
    - Nền (Fill): Màu trắng (#FFFFFF).
    - Tuyệt đối không: Dùng màu xanh, đỏ, vàng hay màu gradient.
