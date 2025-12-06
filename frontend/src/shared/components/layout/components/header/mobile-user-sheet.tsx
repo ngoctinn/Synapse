@@ -64,13 +64,13 @@ export function MobileUserSheet({ user, onLogout }: MobileUserSheetProps) {
 
           <div className="flex flex-col gap-2">
             <Link href="/dashboard" onClick={() => setIsOpen(false)}>
-              <Button variant="outline" className="w-full justify-start h-12 cursor-pointer rounded-xl">
+              <Button variant="outline" className="w-full justify-start h-12 rounded-xl">
                 <LayoutDashboard className="mr-2 h-5 w-5 text-primary" />
                 Dashboard
               </Button>
             </Link>
             <Link href="/settings" onClick={() => setIsOpen(false)}>
-              <Button variant="outline" className="w-full justify-start h-12 cursor-pointer rounded-xl">
+              <Button variant="outline" className="w-full justify-start h-12 rounded-xl">
                 <Settings className="mr-2 h-5 w-5 text-primary" />
                 Cài đặt
               </Button>

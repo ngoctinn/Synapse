@@ -62,7 +62,7 @@ export function FloatingActionDock({ selectedCount, onAction, onClearSelection }
 
                         <Popover>
                             <PopoverTrigger asChild>
-                                <Button variant="ghost" size="sm" className="h-9 px-3 text-secondary-foreground hover:bg-white/10 gap-2">
+                                <Button variant="ghost" size="sm" className="px-3 text-secondary-foreground hover:bg-white/10 gap-2">
                                     <Clock className="w-4 h-4" />
                                     <span className="hidden sm:inline">Giờ</span>
                                 </Button>
@@ -97,7 +97,7 @@ export function FloatingActionDock({ selectedCount, onAction, onClearSelection }
 
                         <Popover>
                              <PopoverTrigger asChild>
-                                <Button variant="ghost" size="sm" className="h-9 px-3 text-secondary-foreground hover:bg-white/10 gap-2">
+                                <Button variant="ghost" size="sm" className="px-3 text-secondary-foreground hover:bg-white/10 gap-2">
                                     <Tag className="w-4 h-4" />
                                     <span className="hidden sm:inline">Nhãn</span>
                                 </Button>

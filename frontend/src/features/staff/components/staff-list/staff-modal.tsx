@@ -63,7 +63,7 @@ export function StaffModal({ skills }: StaffModalProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="h-8 gap-1">
+        <Button size="sm" className="gap-1">
           <Plus className="h-4 w-4" />
           <span className="hidden sm:inline">Thêm nhân viên</span>
         </Button>

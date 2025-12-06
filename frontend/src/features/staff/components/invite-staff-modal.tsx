@@ -15,28 +15,28 @@ import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/shared/ui/dialog"
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form"
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/shared/ui/select"
 
 type InviteStaffFormValues = z.infer<typeof inviteStaffSchema>
@@ -97,7 +97,7 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="h-9 text-xs shadow-md shadow-primary/20 rounded-lg bg-primary hover:bg-primary/90 transition-all duration-300">
+        <Button size="sm" className="text-xs">
           <Mail className="mr-2 h-3.5 w-3.5" />
           Mời nhân viên
         </Button>
@@ -232,14 +232,14 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
                     type="button"
                     variant="ghost"
                     onClick={() => setOpen(false)}
-                    className="rounded-lg h-10 hover:bg-muted"
+                    className="h-10 hover:bg-muted"
                 >
                     Hủy bỏ
                 </Button>
                 <Button
                     type="submit"
                     disabled={isPending}
-                    className="rounded-lg h-10 shadow-lg shadow-primary/25 min-w-[120px]"
+                    className="h-10 min-w-[120px]"
                 >
                     {isPending ? (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
