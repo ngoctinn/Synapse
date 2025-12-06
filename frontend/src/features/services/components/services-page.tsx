@@ -45,7 +45,7 @@ function ServiceListWrapper({
       page={page}
       totalPages={totalPages}
       variant="flush"
-      className="-mx-4"
+      className="border-t"
     />
   )
 }
@@ -68,11 +68,19 @@ export function ServicesPage({ page, skills, roomTypes, equipmentList, servicesP
   const isServiceTab = activeTab === "list"
 
   return (
-    <div className="min-h-screen flex flex-col w-full">
+    <div
+      className="min-h-screen flex flex-col w-full"
+      style={
+        {
+          "--header-height": "53px",
+          "--header-height-mobile": "105px",
+        } as React.CSSProperties
+      }
+    >
       <Tabs defaultValue="list" className="flex flex-col flex-1 w-full gap-0" onValueChange={setActiveTab}>
         {/* Sticky Header with Tabs and Actions */}
         <div
-          className="sticky top-0 z-40 -mx-4 px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4"
+          className="sticky top-0 z-40 px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4"
         >
           <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto justify-start">
             <TabsTrigger value="list" aria-label="Danh sách dịch vụ" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Dịch vụ</TabsTrigger>
@@ -121,7 +129,7 @@ export function ServicesPage({ page, skills, roomTypes, equipmentList, servicesP
               {/* Wait, 'skills' prop is Skill[]. Current SkillTable expects Skill[]. */}
               <SkillTable
                 skills={skills}
-                className="-mx-4 border-x-0 border-t-0 rounded-none shadow-none"
+                className="border-x-0 border-t rounded-none shadow-none"
               />
             <Footer />
           </TabsContent>
