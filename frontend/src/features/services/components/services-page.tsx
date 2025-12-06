@@ -1,12 +1,12 @@
 "use client"
 
-import { Resource, RoomType } from "@/features/resources/model/types"
+import { Resource, RoomType } from "@/features/resources"
 import { SearchInput } from "@/shared/ui/custom/search-input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { useSearchParams } from "next/navigation"
 import { Suspense, use, useState } from "react"
 import { Service, Skill } from "../types"
-import { CreateServiceDialog } from "./create-service-dialog"
+import { CreateServiceWizard } from "./create-service-wizard"
 import { CreateSkillDialog } from "./create-skill-dialog"
 import { ServiceFilter } from "./service-filter"
 import { ServiceTable, ServiceTableSkeleton } from "./service-table"
@@ -97,7 +97,7 @@ export function ServicesPage({ page, skills, roomTypes, equipmentList, servicesP
             </div>
 
             {isServiceTab ? (
-               <CreateServiceDialog availableSkills={skills} availableRoomTypes={roomTypes} availableEquipment={equipmentList} />
+               <CreateServiceWizard availableSkills={skills} availableRoomTypes={roomTypes} availableEquipment={equipmentList} />
             ) : (
                <CreateSkillDialog />
             )}

@@ -1,5 +1,18 @@
 import * as z from "zod";
 
+// Schema cho việc sử dụng thiết bị với timeline offset
+export const equipmentUsageSchema = z.object({
+  equipment_id: z.string().min(1, "Phải chọn thiết bị"),
+  start_offset: z.coerce.number()
+    .min(0, "Thời điểm bắt đầu không được âm")
+    .default(0),
+  duration: z.coerce.number()
+    .min(5, "Thời lượng sử dụng tối thiểu 5 phút")
+    .default(15),
+});
+
+// Type sử dụng từ types.ts để tránh conflict
+
 export const serviceSchema = z.object({
   name: z.string().min(1, "Tên dịch vụ là bắt buộc"),
   duration: z.coerce.number()
@@ -15,8 +28,9 @@ export const serviceSchema = z.object({
   description: z.string().optional(),
   resource_requirements: z.object({
     room_type_id: z.string().optional(),
-    equipment_ids: z.array(z.string()).default([]),
-  }).default({ equipment_ids: [] }),
+    equipment_ids: z.array(z.string()).default([]), // Legacy: backward compatible
+    equipment_usage: z.array(equipmentUsageSchema).default([]), // New: timeline-based
+  }).default({ equipment_ids: [], equipment_usage: [] }),
   skill_ids: z.array(z.string()).default([]),
   new_skills: z.array(z.string()).default([]),
 });

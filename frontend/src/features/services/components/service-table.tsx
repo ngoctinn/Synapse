@@ -1,17 +1,17 @@
 "use client"
 
-import { Resource, RoomType } from "@/features/resources/model/types"
+import { Resource, RoomType } from "@/features/resources"
 import { useTableSelection } from "@/shared/hooks/use-table-selection"
 import { formatCurrency } from "@/shared/lib/utils"
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
 } from "@/shared/ui/alert-dialog"
 import { Badge } from "@/shared/ui/badge"
 import { Column, DataTable } from "@/shared/ui/custom/data-table"

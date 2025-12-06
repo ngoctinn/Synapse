@@ -1,20 +1,20 @@
 "use client"
 
-import { Resource, RoomType } from "@/features/resources/model/types"
+import { Resource, RoomType } from "@/features/resources"
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
 } from "@/shared/ui/alert-dialog"
 import { TableRowActions } from "@/shared/ui/custom/table-row-actions"
 import {
-  DropdownMenuItem,
-  DropdownMenuLabel
+    DropdownMenuItem,
+    DropdownMenuLabel
 } from "@/shared/ui/dropdown-menu"
 import { Copy } from "lucide-react"
 import { useRouter } from "next/navigation"
