@@ -1,0 +1,62 @@
+
+> frontend@0.1.0 build E:\Synapse\frontend
+> next build
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of E:\Synapse\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * E:\Synapse\frontend\pnpm-lock.yaml
+
+   ▲ Next.js 16.0.5 (Turbopack)
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+> Build error occurred
+Error: Turbopack build failed with 1 errors:
+./frontend/src/shared/lib/supabase/server.ts:2:1
+Ecmascript file had an error
+[0m [90m 1 |[39m [36mimport[39m { createServerClient } [36mfrom[39m [32m'@supabase/ssr'[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { cookies } [36mfrom[39m [32m'next/headers'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m
+ [90m 4 |[39m [36mexport[39m [36masync[39m [36mfunction[39m createClient() {
+ [90m 5 |[39m   [36mconst[39m cookieStore [33m=[39m [36mawait[39m cookies()[0m
+
+You're importing a component that needs "next/headers". That only works in a Server Component which is not supported in the pages/ directory. Read more: https://nextjs.org/docs/app/building-your-application/rendering/server-components
+
+
+
+Import traces:
+  App Route:
+    ./frontend/src/shared/lib/supabase/server.ts
+    ./frontend/src/app/auth/callback/route.ts
+
+  Server Component:
+    ./frontend/src/shared/lib/supabase/server.ts
+    ./frontend/src/app/(admin)/layout.tsx
+
+  Client Component Browser:
+    ./frontend/src/shared/lib/supabase/server.ts [Client Component Browser]
+    ./frontend/src/features/customer-dashboard/services/api.ts [Client Component Browser]
+    ./frontend/src/features/customer-dashboard/index.ts [Client Component Browser]
+    ./frontend/src/features/landing-page/components/hero.tsx [Client Component Browser]
+    ./frontend/src/features/landing-page/components/hero.tsx [Server Component]
+    ./frontend/src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./frontend/src/shared/lib/supabase/server.ts [Client Component SSR]
+    ./frontend/src/features/customer-dashboard/services/api.ts [Client Component SSR]
+    ./frontend/src/features/customer-dashboard/index.ts [Client Component SSR]
+    ./frontend/src/features/landing-page/components/hero.tsx [Client Component SSR]
+    ./frontend/src/features/landing-page/components/hero.tsx [Server Component]
+    ./frontend/src/app/page.tsx [Server Component]
+
+
+    at <unknown> (./frontend/src/shared/lib/supabase/server.ts:2:1)
+ ELIFECYCLE  Command failed with exit code 1.

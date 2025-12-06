@@ -61,7 +61,7 @@ export function DateTimeSelectionStep({
               disabled={!slot.available}
               onClick={() => onTimeSlotChange(slot.time)}
               className={cn(
-                "h-10 text-sm font-medium transition-all",
+                "h-11 min-w-[44px] text-sm font-medium transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                 selectedTimeSlot === slot.time
                   ? "shadow-md shadow-primary/20"
                   : "hover:border-primary/50",
@@ -97,7 +97,7 @@ export function DateTimeSelectionStep({
             size="sm"
             onClick={() => onTechnicianChange("")}
             className={cn(
-              "gap-2 h-10 px-4",
+              "gap-2 h-11 min-w-[44px] px-4 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               !selectedTechnicianId && "shadow-md shadow-primary/20"
             )}
           >
@@ -114,7 +114,7 @@ export function DateTimeSelectionStep({
                 size="sm"
                 onClick={() => onTechnicianChange(tech.id)}
                 className={cn(
-                  "gap-2 h-10 px-3",
+                  "gap-2 h-11 min-w-[44px] px-3 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                   isSelected && "shadow-md shadow-primary/20"
                 )}
               >

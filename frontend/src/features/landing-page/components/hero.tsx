@@ -1,6 +1,6 @@
 "use client"
 
-import { BookingDialog } from "@/features/customer-dashboard/components/booking-dialog"
+import { BookingDialog } from "@/features/customer-dashboard"
 import { Button } from "@/shared/ui/button"
 import { motion } from "framer-motion"
 import Link from "next/link"

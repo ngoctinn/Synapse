@@ -45,13 +45,22 @@ export function ServiceSelectionStep({
           return (
             <Card
               key={service.id}
+              role="button"
+              tabIndex={0}
+              aria-pressed={isSelected}
               className={cn(
-                "cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-md group",
+                "cursor-pointer overflow-hidden transition-all duration-200 hover:shadow-md group focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 outline-none",
                 isSelected
                   ? "ring-2 ring-primary border-primary shadow-md shadow-primary/10"
                   : "hover:border-primary/50"
               )}
               onClick={() => onSelect(service.id)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault()
+                  onSelect(service.id)
+                }
+              }}
             >
               <CardContent className="p-0">
                 <div className="flex gap-3 p-3">
