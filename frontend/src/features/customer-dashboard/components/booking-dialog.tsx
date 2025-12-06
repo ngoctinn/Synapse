@@ -24,6 +24,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import {
   ArrowLeft,
   CalendarIcon,
+  Check,
   CheckCircle2,
   ChevronRight,
   Clock,
@@ -524,10 +525,8 @@ export function BookingDialog({
           </DialogHeader>
         </div>
 
-            {/* Step Indicator */}
-            {renderStepIndicator()}
-          </div>
-        )}
+        {/* Step Indicator */}
+        {renderStepIndicator()}
 
         {/* Content */}
         <div className={cn("flex-1 overflow-y-auto", step !== "success" && "px-6 pb-4")}>
