@@ -235,6 +235,7 @@ CREATE TABLE skills (
 CREATE TABLE staff_skills (
     staff_id UUID REFERENCES staff_profiles(user_id) ON DELETE CASCADE,
     skill_id UUID REFERENCES skills(id) ON DELETE CASCADE,
+    proficiency_level INTEGER DEFAULT 1, -- 1: Basic, 2: Intermediate, 3: Expert
     PRIMARY KEY (staff_id, skill_id)
 );
 
@@ -263,6 +264,7 @@ CREATE TABLE services (
 CREATE TABLE service_required_skills (
     service_id UUID REFERENCES services(id) ON DELETE CASCADE,
     skill_id UUID REFERENCES skills(id) ON DELETE CASCADE,
+    min_proficiency_level INTEGER DEFAULT 1,
     PRIMARY KEY (service_id, skill_id)
 );
 
@@ -318,6 +320,11 @@ CREATE TABLE bookings (
     notes TEXT,
     cancel_reason TEXT,
 
+    -- Operational Timestamps (For Analytics/waiting time)
+    check_in_time TIMESTAMPTZ,
+    actual_start_time TIMESTAMPTZ,
+    actual_end_time TIMESTAMPTZ,
+
     total_price DECIMAL(12, 2) DEFAULT 0,
 
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -333,6 +340,9 @@ CREATE TABLE booking_items (
     -- Assigned Resources
     staff_id UUID REFERENCES staff_profiles(user_id),
     resource_id UUID REFERENCES resources(id), -- Room assignment
+
+    -- Treatment Redemption
+    treatment_id UUID, -- Nếu dùng gói liệu trình, trỏ tới customer_treatments.id
 
     start_time TIMESTAMPTZ NOT NULL,
     end_time TIMESTAMPTZ NOT NULL,
@@ -385,6 +395,24 @@ CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_bookings_customer ON bookings(customer_id);
 CREATE INDEX idx_bookings_date ON bookings(start_time);
 CREATE INDEX idx_staff_schedules_date ON staff_schedules(work_date);
+
+-- --- SYSTEM & NOTIFICATIONS ---
+CREATE TABLE notifications (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    type VARCHAR(50),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE system_configurations (
+    key VARCHAR(100) PRIMARY KEY,
+    value TEXT NOT NULL, -- JSON String
+    description TEXT,
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
 ```
 ## 3. Bảng Đặc Tả Dữ Liệu (Data Dictionary)
 
@@ -559,3 +587,28 @@ Lưu trữ phản hồi của khách hàng sau khi hoàn tất dịch vụ.
 | `customer_id` | UUID | Có | Người đánh giá. |
 | `rating` | INTEGER | Có | Điểm số (1-5 sao). |
 | `comment` | TEXT | Không | Nội dung phản hồi chi tiết. |
+
+### 3.9. System & Notifications (Hệ Thống & Thông Báo)
+
+#### Bảng `notifications`
+Lưu trữ thông báo gửi đến người dùng (In-app).
+
+| Tên Trường | Kiểu Dữ Liệu | Bắt buộc | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `id` | UUID | Có | Khóa chính. |
+| `user_id` | UUID | Có | Người nhận thông báo. |
+| `title` | VARCHAR(255) | Có | Tiêu đề thông báo. |
+| `message` | TEXT | Có | Nội dung chi tiết. |
+| `is_read` | BOOLEAN | Có | Trạng thái đã đọc (`FALSE` mặc định). |
+| `type` | VARCHAR(50) | Không | Loại: `booking_update`, `promo`, `system`. |
+| `created_at` | TIMESTAMPTZ | Có | Thời gian tạo. |
+
+#### Bảng `system_configurations`
+Lưu trữ các cấu hình động của hệ thống (Operating hours, Policies).
+
+| Tên Trường | Kiểu Dữ Liệu | Bắt buộc | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `key` | VARCHAR(100) | Có | Khóa định danh cấu hình (PK). |
+| `value` | TEXT | Có | Giá trị cấu hình (JSON hoặc String). |
+| `description` | TEXT | Không | Mô tả ý nghĩa cấu hình. |
+| `updated_at` | TIMESTAMPTZ | Có | Thời điểm cập nhật cuối. |
