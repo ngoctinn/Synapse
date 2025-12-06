@@ -3,14 +3,14 @@
 import { useTableSelection } from "@/shared/hooks/use-table-selection";
 import { cn } from "@/shared/lib/utils";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
 import { Badge } from "@/shared/ui/badge";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
@@ -147,13 +147,18 @@ export function ResourceTable({ data, isLoading, className, variant = "default" 
                 Sức chứa:{" "}
                 <span className="text-foreground">{row.capacity}</span> người
               </span>
+              {row.setupTime !== undefined && row.setupTime > 0 && (
+                <span className="text-muted-foreground ml-3 border-l pl-3">
+                  Setup: <span className="text-foreground">{row.setupTime}p</span>
+                </span>
+              )}
             </div>
           );
         }
 
         if (row.type === "EQUIPMENT") {
           return (
-            <div className="text-sm">
+            <div className="text-sm flex items-center gap-3">
               {row.tags && row.tags.length > 0 ? (
                 <div className="flex gap-1 flex-wrap">
                   {row.tags.slice(0, 2).map((tag, i) => (
@@ -173,6 +178,11 @@ export function ResourceTable({ data, isLoading, className, variant = "default" 
                 </div>
               ) : (
                 <span className="text-muted-foreground">-</span>
+              )}
+              {row.setupTime !== undefined && row.setupTime > 0 && (
+                <span className="text-muted-foreground ml-3 border-l pl-3">
+                  Setup: <span className="text-foreground">{row.setupTime}p</span>
+                </span>
               )}
             </div>
           );

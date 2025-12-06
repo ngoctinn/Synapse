@@ -11,6 +11,7 @@ export const mockResources: Resource[] = [
     capacity: 1,
     description: "Phòng trị liệu cao cấp dành cho 1 khách",
     tags: ["vip", "private"],
+    setupTime: 15,
     createdAt: "2023-01-01T00:00:00Z",
   },
   {
@@ -22,6 +23,7 @@ export const mockResources: Resource[] = [
     capacity: 2,
     description: "Phòng dành cho các cặp đôi",
     tags: ["couple"],
+    setupTime: 10,
     createdAt: "2023-01-02T00:00:00Z",
   },
   {
@@ -44,6 +46,7 @@ export const mockResources: Resource[] = [
     status: "ACTIVE",
     description: "Máy triệt lông công nghệ cao",
     tags: ["laser", "hair-removal"],
+    setupTime: 5,
     createdAt: "2023-01-10T00:00:00Z",
   },
   {

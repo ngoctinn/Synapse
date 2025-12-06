@@ -44,6 +44,7 @@ export function ResourceForm({
       type: "ROOM",
       status: "ACTIVE",
       capacity: 1,
+      setupTime: 0,
       description: "",
       tags: [],
       ...defaultValues,
@@ -131,6 +132,22 @@ export function ResourceForm({
                     <SelectItem value="INACTIVE">Ngưng hoạt động</SelectItem>
                   </SelectContent>
                 </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="setupTime"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Thời gian chuẩn bị (phút)</FormLabel>
+                <FormControl>
+                  <InputWithIcon icon={Box} type="number" min={0} placeholder="0" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
