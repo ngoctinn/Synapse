@@ -7,19 +7,19 @@ import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { MoneyInput } from "@/shared/ui/custom/money-input";
 import { TagInput } from "@/shared/ui/custom/tag-input";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/shared/ui/select";
 import { Switch } from "@/shared/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
@@ -253,7 +253,7 @@ export function ServiceForm({
                                                 style={{ backgroundColor: field.value }}
                                             />
                                         </div>
-                                        <div className="flex gap-1.5 overflow-x-auto no-scrollbar py-1 px-1">
+                                        <div className="flex gap-1.5 overflow-x-auto py-1 px-1 pb-2">
                                         {PRESET_COLORS.map((color) => (
                                             <button
                                             key={color}

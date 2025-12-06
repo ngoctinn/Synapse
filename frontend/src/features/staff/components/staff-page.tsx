@@ -53,7 +53,7 @@ function StaffSchedulerWrapper({
   initialSchedules: Schedule[]
 }) {
   const { data } = use(staffListPromise)
-  return <StaffScheduler initialSchedules={initialSchedules} staffList={data} />
+  return <StaffScheduler initialSchedules={initialSchedules} staffList={data} className="-mx-4" />
 }
 
 const Footer = () => (
@@ -109,7 +109,7 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
           </TabsContent>
 
           <TabsContent value="permissions" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
-            <PermissionMatrix initialPermissions={initialPermissions} />
+            <PermissionMatrix initialPermissions={initialPermissions} className="-mx-4" />
             <Footer />
           </TabsContent>
 
