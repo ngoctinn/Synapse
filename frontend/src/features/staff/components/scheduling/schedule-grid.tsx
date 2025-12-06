@@ -56,8 +56,12 @@ export function ScheduleGrid({
 
   return (
     <div className="flex flex-col select-none">
-      <div className="">
-        <div className="min-w-[1000px]">
+      <div className="relative group/scroll-container overflow-hidden">
+        {/* Scroll Shadow Hints */}
+        <div className="absolute top-0 bottom-0 left-[220px] w-4 bg-gradient-to-r from-background to-transparent z-40 pointer-events-none md:hidden" />
+        <div className="absolute top-0 bottom-0 right-0 w-4 bg-gradient-to-l from-background to-transparent z-40 pointer-events-none md:hidden" />
+
+        <div className="min-w-[1000px] overflow-x-auto pb-4 -mb-4">
           {/* Header Row */}
           <div className="grid grid-cols-[220px_repeat(7,1fr)] bg-background border-b sticky top-[var(--staff-grid-header-mobile)] md:top-[var(--staff-grid-header)] z-30">
             <div className="p-4 font-medium text-sm border-r flex items-center text-muted-foreground sticky left-0 bg-background z-40 shadow-[1px_0_0_0_rgba(0,0,0,0.05)]">Nhân viên</div>
@@ -145,10 +149,10 @@ export function ScheduleGrid({
                                 e.stopPropagation()
                                 onRemoveClick(schedule!.id)
                               }}
-                              aria-label="Xóa lịch làm việc"
-                              className="absolute -top-1.5 -right-1.5 h-6 w-6 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover/shift:opacity-100 transition-opacity flex items-center justify-center shadow-sm z-10 before:content-[''] before:absolute before:inset-[-10px] cursor-pointer focus:opacity-100 focus:ring-2 focus:ring-destructive/50 focus:outline-none"
+                              aria-label={`Xóa ca làm việc ${shift.name} lúc ${shift.startTime}`}
+                              className="absolute -top-1.5 -right-1.5 h-8 w-8 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover/shift:opacity-100 transition-opacity flex items-center justify-center shadow-sm z-10 before:content-[''] before:absolute before:inset-[-12px] cursor-pointer focus:opacity-100 focus:ring-2 focus:ring-destructive/50 focus:outline-none"
                             >
-                              <X className="h-3 w-3" />
+                              <X className="h-3.5 w-3.5" />
                             </button>
                           )}
                         </div>
@@ -157,7 +161,7 @@ export function ScheduleGrid({
                           {!selectedTool && (
                             <button
                               onClick={() => onAddClick(staff.user_id, day)}
-                              aria-label="Thêm ca làm việc"
+                              aria-label={`Thêm ca làm việc cho ${staff.user.full_name} vào ngày ${format(day, "dd/MM")}`}
                               className="h-10 w-10 min-h-[44px] min-w-[44px] rounded-full bg-muted/50 hover:bg-primary/10 hover:text-primary flex items-center justify-center transition-colors cursor-pointer focus:ring-2 focus:ring-primary/50 focus:outline-none focus:bg-primary/10 focus:text-primary"
                             >
                               <Plus className="h-4 w-4" />
@@ -173,6 +177,8 @@ export function ScheduleGrid({
           </div>
         </div>
       </div>
+      {/* Scroll Hint Shadow - Visible only when scrolling is possible (handled by CSS usually, but here we add a static hint for now or use a wrapper) */}
+      {/* We can improve the wrapper to have a shadow hint */}
     </div>
   )
 }

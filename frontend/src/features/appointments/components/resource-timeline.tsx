@@ -27,7 +27,6 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
 
   // Tính toán vị trí hiện tại (Current Time Indicator)
   const [currentTimePosition, setCurrentTimePosition] = React.useState<number | null>(null);
-
   // Drag-to-Scroll References
   const isDown = React.useRef(false);
   const startX = React.useRef(0);
@@ -35,7 +34,10 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
   const scrollLeft = React.useRef(0);
   const scrollTop = React.useRef(0);
 
-  // Mouse Handlers for Drag-to-Scroll
+  // Touch References
+  const touchStartX = React.useRef(0);
+  const touchStartY = React.useRef(0);
+
   const handleMouseDown = (e: React.MouseEvent) => {
     const container = containerRef.current;
     if (!container) return;
@@ -88,6 +90,42 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
     container.scrollTop = scrollTop.current - walkY;
   };
 
+  // Touch Handlers for Mobile Drag-to-Scroll
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    isDown.current = true;
+    touchStartX.current = e.touches[0].pageX - container.offsetLeft;
+    touchStartY.current = e.touches[0].pageY - container.offsetTop;
+    scrollLeft.current = container.scrollLeft;
+    scrollTop.current = container.scrollTop;
+  };
+
+  const handleTouchEnd = () => {
+    isDown.current = false;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDown.current) return;
+    // Prevent default to stop native page scrolling while dragging inner content if needed.
+    // However, for better UX on mobile, we might want to respect some native behavior.
+    // But since this is a 2D canvas-like grid, preventing default is usually safer for control.
+    // e.preventDefault();
+
+    const container = containerRef.current;
+    if (!container) return;
+
+    const x = e.touches[0].pageX - container.offsetLeft;
+    const y = e.touches[0].pageY - container.offsetTop;
+
+    const walkX = (x - touchStartX.current) * 1.5;
+    const walkY = (y - touchStartY.current) * 1.5;
+
+    container.scrollLeft = scrollLeft.current - walkX;
+    container.scrollTop = scrollTop.current - walkY;
+  };
+
   // Setup cursor initial state
   React.useEffect(() => {
     const container = containerRef.current;
@@ -130,17 +168,23 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
       {/* Container cuộn 2 chiều với Drag-to-Scroll */}
       <div
         ref={containerRef}
-        className="flex-1 overflow-auto relative !scroll-auto outline-none cursor-grab"
+        className="flex-1 overflow-auto relative scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent outline-none cursor-grab touch-none"
         onMouseDown={handleMouseDown}
         onMouseLeave={handleMouseLeave}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onTouchMove={handleTouchMove}
+        role="grid"
+        aria-label="Timeline lịch hẹn"
       >
         <div className="min-w-full w-fit flex flex-col">
 
           {/* Hàng Header (Thời gian) */}
           <div
-            className="sticky top-0 z-30 flex border-b border-border bg-background/95 backdrop-blur-sm shadow-sm pointer-events-none"
+            className="sticky top-0 z-30 flex border-b border-border bg-background/95 backdrop-blur-sm shadow-sm pointer-events-none row-header"
+            role="row"
             style={{
               height: APPOINTMENT_SETTINGS.HEADER_HEIGHT
             }}
@@ -149,6 +193,8 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
             <div
               className="sticky left-0 z-40 flex-shrink-0 border-r border-border bg-background flex items-center justify-center shadow-[4px_0_24px_-12px_rgba(0,0,0,0.1)]"
               style={{ width: APPOINTMENT_SETTINGS.SIDEBAR_WIDTH }}
+              role="columnheader"
+              aria-label="Tên nhân viên"
             >
               <span className="text-sm font-bold text-foreground">Nhân viên</span>
             </div>
@@ -159,6 +205,7 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
                 key={i}
                 className="flex-shrink-0 border-r border-border/50 px-2 py-3 text-xs font-medium text-muted-foreground flex items-center justify-center"
                 style={{ width: APPOINTMENT_SETTINGS.CELL_WIDTH }}
+                role="columnheader"
               >
                 {format(slot, 'HH:mm')}
               </div>
@@ -201,6 +248,7 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
                   key={resource.id}
                   className="relative flex border-b border-border/50 hover:bg-muted/20 transition-colors"
                   style={{ height: APPOINTMENT_SETTINGS.CELL_HEIGHT, minWidth: totalWidth }}
+                  role="row"
                 >
                   {/* Đường kẻ dọc */}
                   {timeSlots.map((_, i) => (
