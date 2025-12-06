@@ -78,8 +78,9 @@ export function MaintenanceTimeline({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 rounded-r-none"
+              className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-r-none"
               onClick={handlePrevWeek}
+              aria-label="Tuần trước"
             >
               <ChevronLeft className="w-4 h-4" />
             </Button>
@@ -89,23 +90,24 @@ export function MaintenanceTimeline({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 rounded-l-none"
+              className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-l-none"
               onClick={handleNextWeek}
+              aria-label="Tuần sau"
             >
               <ChevronRight className="w-4 h-4" />
             </Button>
           </div>
         </div>
         <div className="flex gap-2 text-xs">
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2 py-1 px-2 rounded-md hover:bg-muted/50 transition-colors select-none">
             <div className="w-3 h-3 rounded-full bg-blue-500" />
             <span>Sắp tới</span>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2 py-1 px-2 rounded-md hover:bg-muted/50 transition-colors select-none">
             <div className="w-3 h-3 rounded-full bg-green-500" />
             <span>Hoàn thành</span>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2 py-1 px-2 rounded-md hover:bg-muted/50 transition-colors select-none">
             <div className="w-3 h-3 rounded-full bg-destructive" />
             <span>Quá hạn</span>
           </div>
@@ -203,7 +205,9 @@ export function MaintenanceTimeline({
                                     <button
                                         onClick={() => onTaskClick?.(task)}
                                         className={cn(
-                                        "text-xs p-1.5 rounded-md border text-left transition-all shadow-sm w-full truncate",
+                                        "text-xs p-1.5 rounded-md border text-left transition-all shadow-sm w-full truncate cursor-pointer",
+                                        "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1",
+                                        "active:scale-95",
                                         getStatusColor(task.status)
                                         )}
                                     >
