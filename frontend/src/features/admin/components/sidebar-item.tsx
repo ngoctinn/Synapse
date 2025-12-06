@@ -2,23 +2,23 @@
 
 import { cn } from "@/shared/lib/utils"
 import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
 } from "@/shared/ui/collapsible"
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
 import {
-    SidebarMenuButton,
-    SidebarMenuItem,
-    SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem,
-    useSidebar,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  useSidebar,
 } from "@/shared/ui/sidebar"
 import { ChevronRight } from "lucide-react"
 import Link from "next/link"
@@ -51,6 +51,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
                 isActive={isActive}
                 className={cn(
                   "h-11 min-h-[44px] font-medium justify-center rounded-xl transition-all duration-200 ease-out",
+                  "group-data-[collapsible=icon]:!size-11 group-data-[collapsible=icon]:!min-h-[44px]",
                   "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                   "focus-visible:ring-2 focus-visible:ring-sidebar-ring",
                   "active:scale-[0.98] active:bg-sidebar-accent/80",
@@ -95,6 +96,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
               isActive={isActive}
               className={cn(
                 "h-11 min-h-[44px] font-medium rounded-xl transition-all duration-200 ease-out",
+                "group-data-[collapsible=icon]:!size-11 group-data-[collapsible=icon]:!min-h-[44px]",
                 "group-hover/menu-item:bg-sidebar-accent group-hover/menu-item:text-sidebar-accent-foreground",
                 "focus-visible:ring-2 focus-visible:ring-sidebar-ring",
                 "active:scale-[0.98] active:bg-sidebar-accent/80",
@@ -152,7 +154,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
         tooltip={item.title}
         className={cn(
           "h-11 min-h-[44px] font-medium rounded-xl transition-all duration-200 ease-out",
-          "group-data-[collapsible=icon]:justify-center",
+          "group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:!size-11 group-data-[collapsible=icon]:!min-h-[44px]",
           "focus-visible:ring-2 focus-visible:ring-sidebar-ring",
           "active:scale-[0.98] active:bg-sidebar-accent/80",
           "data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-semibold",
