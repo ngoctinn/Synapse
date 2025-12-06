@@ -36,7 +36,7 @@ export function CalendarHeader({ date, onDateChange, view, onViewChange }: Calen
   };
 
   return (
-    <div className="-mx-4 w-[calc(100%+2rem)] px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm transition-all duration-200 sticky top-[var(--header-height)] z-30">
+    <div className="px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm transition-all duration-200 sticky top-[var(--appointment-header-height-mobile)] md:top-[var(--appointment-header-height)] z-40">
       <div className="flex items-center gap-2">
         <div className="flex items-center rounded-lg border bg-background p-0.5 shadow-sm">
           <Button variant="ghost" size="icon" className="rounded-md" onClick={handlePrev}>

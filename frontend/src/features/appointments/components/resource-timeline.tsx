@@ -109,9 +109,6 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDown.current) return;
     // Prevent default to stop native page scrolling while dragging inner content if needed.
-    // However, for better UX on mobile, we might want to respect some native behavior.
-    // But since this is a 2D canvas-like grid, preventing default is usually safer for control.
-    // e.preventDefault();
 
     const container = containerRef.current;
     if (!container) return;
@@ -168,7 +165,7 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
       {/* Container cuộn 2 chiều với Drag-to-Scroll */}
       <div
         ref={containerRef}
-        className="flex-1 overflow-auto relative scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent outline-none cursor-grab touch-none"
+        className="flex-1 overflow-auto relative scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent outline-none cursor-grab touch-pan-y"
         onMouseDown={handleMouseDown}
         onMouseLeave={handleMouseLeave}
         onMouseUp={handleMouseUp}
@@ -183,7 +180,7 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
 
           {/* Hàng Header (Thời gian) */}
           <div
-            className="sticky top-0 z-30 flex border-b border-border bg-background/95 backdrop-blur-sm shadow-sm pointer-events-none row-header"
+            className="sticky right-0 left-0 z-30 flex border-b border-border bg-background/95 backdrop-blur-sm shadow-sm pointer-events-none row-header top-[var(--timeline-header-offset-mobile)] md:top-[var(--timeline-header-offset)]"
             role="row"
             style={{
               height: APPOINTMENT_SETTINGS.HEADER_HEIGHT

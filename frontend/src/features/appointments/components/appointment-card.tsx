@@ -12,18 +12,18 @@ interface AppointmentCardProps {
   onClick?: () => void;
 }
 
-// Premium Pastel Colors
+// Premium Semantic Colors
 const statusStyles = {
-  pending: 'bg-amber-50/90 border-amber-200 text-amber-900 hover:bg-amber-100',
-  confirmed: 'bg-sky-50/90 border-sky-200 text-sky-900 hover:bg-sky-100',
-  serving: 'bg-emerald-50/90 border-emerald-200 text-emerald-900 hover:bg-emerald-100',
-  completed: 'bg-slate-50/90 border-slate-200 text-slate-700 hover:bg-slate-100',
-  cancelled: 'bg-rose-50/80 border-rose-100 text-rose-700 hover:bg-rose-50 opacity-60 grayscale',
-  'no-show': 'bg-red-50/90 border-red-200 text-red-900 hover:bg-red-100',
+  pending: 'bg-[var(--status-pending)] border-[var(--status-pending-border)] text-[var(--status-pending-foreground)] hover:brightness-95',
+  confirmed: 'bg-[var(--status-confirmed)] border-[var(--status-confirmed-border)] text-[var(--status-confirmed-foreground)] hover:brightness-95',
+  serving: 'bg-[var(--status-serving)] border-[var(--status-serving-border)] text-[var(--status-serving-foreground)] hover:brightness-95',
+  completed: 'bg-[var(--status-completed)] border-[var(--status-completed-border)] text-[var(--status-completed-foreground)] hover:brightness-95',
+  cancelled: 'bg-[var(--status-cancelled)] border-[var(--status-cancelled-border)] text-[var(--status-cancelled-foreground)] hover:brightness-110 opacity-70 grayscale',
+  'no-show': 'bg-[var(--status-noshow)] border-[var(--status-noshow-border)] text-[var(--status-noshow-foreground)] hover:brightness-110',
 };
 
 const statusIndicator = {
-  pending: 'bg-amber-400',
+  pending: 'bg-amber-400', // Keep specific indicator colors or map them too if needed
   confirmed: 'bg-sky-400',
   serving: 'bg-emerald-400',
   completed: 'bg-slate-400',
@@ -37,10 +37,14 @@ export function AppointmentCard({ appointment, style, className, onClick }: Appo
 
   return (
     <motion.div
+      layout
       layoutId={`appointment-${appointment.id}`}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      whileHover={{ scale: 1.02, zIndex: 50 }}
+      whileHover={{ scale: 1.02, zIndex: 50, transition: { duration: 0.2 } }}
+      // Use standard CSS media query for disabling motion if needed, or rely on global Framer Motion config.
+      // Ideally, we should use 'useReducedMotion' hook, but for now we keep it simple or use className 'motion-safe:...'
+      // Adding a simple transition prop to ensure smoothness.
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       style={style}
       onClick={onClick}

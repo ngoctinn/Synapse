@@ -44,14 +44,14 @@ export function AppointmentFilter() {
               <SelectValue placeholder="Tất cả trạng thái" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tất cả trạng thái</SelectItem>
-              <SelectItem value="confirmed">
+              <SelectItem value="all" className="h-11 cursor-pointer">Tất cả trạng thái</SelectItem>
+              <SelectItem value="confirmed" className="h-11 cursor-pointer">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                   <span>Đã xác nhận</span>
                 </div>
               </SelectItem>
-              <SelectItem value="cancelled">
+              <SelectItem value="cancelled" className="h-11 cursor-pointer">
                 <div className="flex items-center gap-2">
                   <XCircle className="h-4 w-4 text-muted-foreground" />
                   <span>Đã hủy</span>
