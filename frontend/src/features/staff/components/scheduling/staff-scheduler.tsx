@@ -95,8 +95,7 @@ export function StaffScheduler({ initialSchedules, staffList }: StaffSchedulerPr
   }
 
   const handleCopyWeek = () => {
-    // Mock logic: just duplicate existing schedules for demo
-    console.log("Copying previous week...")
+    // Tính năng sao chép tuần đang phát triển
     toast.info("Tính năng sao chép tuần đang phát triển")
   }
 

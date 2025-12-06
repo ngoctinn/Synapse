@@ -29,7 +29,6 @@ export async function updateProfile(prevState: ActionState, formData: FormData):
     // 1. Upload file lên Supabase Storage
     // 2. Lấy public URL
     // 3. Cập nhật validatedFields.data.avatarUrl với URL mới
-    console.log("TODO: Upload avatar:", avatarFile.name);
   }
 
   try {

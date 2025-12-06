@@ -1,4 +1,4 @@
-import { AppointmentPage } from '@/features/appointments/components/appointment-page';
+import { AppointmentPage } from '@/features/appointments';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 

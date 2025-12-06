@@ -42,8 +42,8 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     icon: CreditCard,
   },
   {
-    title: "Thiết bị",
-    href: "/admin/equipment",
+    title: "Tài nguyên",
+    href: "/admin/resources",
     icon: Wrench,
   },
   {

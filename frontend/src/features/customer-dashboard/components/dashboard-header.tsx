@@ -27,7 +27,9 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
                 email: user.email,
                 avatar: user.avatarUrl
             }}
-            onLogout={() => console.log("Logout")}
+            onLogout={() => {
+              // Logout action sẽ được triển khai sau
+            }}
           />
         </div>
       </div>

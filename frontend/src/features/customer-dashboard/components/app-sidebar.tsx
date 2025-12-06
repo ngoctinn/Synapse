@@ -3,11 +3,11 @@
 import { HeaderUserDropdown } from "@/shared/components/layout/components/header"
 import { HeaderLogo } from "@/shared/ui/branding/header-logo"
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarRail,
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarHeader,
+    SidebarRail,
 } from "@/shared/ui/sidebar"
 import * as React from "react"
 import { UserProfile } from "../types"
@@ -43,7 +43,9 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
                 email: user.email,
                 avatar: user.avatarUrl
               }}
-              onLogout={() => console.log("Logout")}
+              onLogout={() => {
+                // Logout action sẽ được triển khai sau
+              }}
             />
          </div>
       </SidebarFooter>

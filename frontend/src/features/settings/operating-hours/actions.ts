@@ -1,7 +1,7 @@
 'use server';
 
-import { OperatingHoursConfig } from './model/types';
 import { MOCK_OPERATING_HOURS } from './model/mocks';
+import { OperatingHoursConfig } from './model/types';
 
 /**
  * Fetch operating hours configuration.
@@ -10,7 +10,7 @@ import { MOCK_OPERATING_HOURS } from './model/mocks';
 export async function getOperatingHours(): Promise<OperatingHoursConfig> {
   // Simulate network delay
   await new Promise((resolve) => setTimeout(resolve, 500));
-  
+
   return MOCK_OPERATING_HOURS;
 }
 
@@ -21,9 +21,8 @@ export async function getOperatingHours(): Promise<OperatingHoursConfig> {
 export async function updateOperatingHours(data: OperatingHoursConfig): Promise<{ success: boolean; message: string }> {
   // Simulate network delay
   await new Promise((resolve) => setTimeout(resolve, 800));
-  
+
   // In a real app, this would validate and save to DB
-  console.log('Saving Operating Hours Config:', JSON.stringify(data, null, 2));
-  
+
   return { success: true, message: 'Cập nhật cấu hình thành công' };
 }

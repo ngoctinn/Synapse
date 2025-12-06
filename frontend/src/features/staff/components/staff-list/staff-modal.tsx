@@ -54,9 +54,7 @@ export function StaffModal({ skills }: StaffModalProps) {
   // This is a simplification; in real edit mode, we'd load existing skills
 
   function onSubmit(data: StaffFormValues) {
-    console.log(data)
-    // TODO: Handle submit (create staff)
-    // Include selectedSkills in submission
+    // TODO: Handle submit (create staff) - include selectedSkills in submission
     setOpen(false)
     form.reset()
     setSelectedSkills([])
