@@ -1,4 +1,4 @@
-import { getEquipmentList, getRoomTypes } from "@/features/resources/actions";
+import { getEquipmentList, getRoomTypes } from "@/features/resources";
 import { getServices, getSkills, ServicesPage } from "@/features/services";
 import { Metadata } from "next";
 

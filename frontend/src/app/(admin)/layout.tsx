@@ -28,8 +28,8 @@ export default async function AdminLayout({
           userProfile = await response.json()
         }
       }
-    } catch (error) {
-      console.error("Failed to fetch user profile in AdminLayout:", error)
+    } catch {
+      // Lỗi đã được xử lý silently - user sẽ thấy UI không authenticated
     }
   }
 

@@ -1,5 +1,4 @@
-import { DashboardNav } from "@/features/customer-dashboard/components/dashboard-nav"
-import { MobileNav } from "@/features/customer-dashboard/components/mobile-nav"
+import { DashboardNav, MobileNav } from "@/features/customer-dashboard"
 import { Footer, Header } from "@/shared/components/layout"
 
 export default function DashboardLayout({

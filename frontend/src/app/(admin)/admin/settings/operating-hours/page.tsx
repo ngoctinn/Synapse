@@ -1,5 +1,4 @@
-import { OperatingHoursForm } from "@/features/settings/operating-hours";
-import { getOperatingHours } from "@/features/settings/operating-hours/actions";
+import { getOperatingHours, OperatingHoursForm } from "@/features/settings";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

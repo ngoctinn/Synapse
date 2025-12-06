@@ -1,4 +1,4 @@
-import { HeaderLogo } from "@/shared/components/layout/components/header/logo";
+import { HeaderLogo } from "@/shared/components/layout";
 import React from "react";
 
 export default function AuthLayout({
