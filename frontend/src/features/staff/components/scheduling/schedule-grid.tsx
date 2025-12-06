@@ -145,18 +145,20 @@ export function ScheduleGrid({
                                 e.stopPropagation()
                                 onRemoveClick(schedule!.id)
                               }}
-                              className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover/shift:opacity-100 transition-opacity flex items-center justify-center shadow-sm z-10"
+                              aria-label="Xóa lịch làm việc"
+                              className="absolute -top-1.5 -right-1.5 h-6 w-6 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover/shift:opacity-100 transition-opacity flex items-center justify-center shadow-sm z-10 before:content-[''] before:absolute before:inset-[-10px] cursor-pointer focus:opacity-100 focus:ring-2 focus:ring-destructive/50 focus:outline-none"
                             >
                               <X className="h-3 w-3" />
                             </button>
                           )}
                         </div>
                       ) : (
-                        <div className="h-full w-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                        <div className="h-full w-full flex items-center justify-center opacity-0 hover:opacity-100 focus-within:opacity-100 transition-opacity">
                           {!selectedTool && (
                             <button
                               onClick={() => onAddClick(staff.user_id, day)}
-                              className="h-8 w-8 rounded-full bg-muted/50 hover:bg-primary/10 hover:text-primary flex items-center justify-center transition-colors"
+                              aria-label="Thêm ca làm việc"
+                              className="h-10 w-10 min-h-[44px] min-w-[44px] rounded-full bg-muted/50 hover:bg-primary/10 hover:text-primary flex items-center justify-center transition-colors cursor-pointer focus:ring-2 focus:ring-primary/50 focus:outline-none focus:bg-primary/10 focus:text-primary"
                             >
                               <Plus className="h-4 w-4" />
                             </button>
