@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useCallback } from "react";
+import { useMemo, useRef, useCallback, useEffect } from "react";
 import { Calendar, CalendarDayButton } from "@/shared/ui/calendar";
 import { Card, CardContent } from "@/shared/ui/card";
 import { ExceptionDate } from "../model/types";
@@ -12,6 +12,7 @@ import { getCalendarModifiers, getCalendarModifierClassNames } from "../utils/st
 interface ExceptionsCalendarProps {
   exceptions: ExceptionDate[];
   selectedDates?: Date[];
+  displayDate?: Date;
   onSelectDates: (dates: Date[]) => void;
   onEdit: (exception: ExceptionDate) => void;
 }
@@ -19,6 +20,7 @@ interface ExceptionsCalendarProps {
 export function ExceptionsCalendar({ 
   exceptions, 
   selectedDates = [], 
+  displayDate,
   onSelectDates,
   onEdit 
 }: ExceptionsCalendarProps) {
@@ -72,15 +74,48 @@ export function ExceptionsCalendar({
     isDragging.current = false;
   }, []);
 
-  useMemo(() => {
+  useEffect(() => {
     if (typeof window !== 'undefined') {
         window.addEventListener('mouseup', handleMouseUp);
         return () => window.removeEventListener('mouseup', handleMouseUp);
     }
   }, [handleMouseUp]);
 
+  const tooltipRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+      // Only update position if dragging or close to dragging
+      if (tooltipRef.current) {
+         if (isDragging.current) {
+             tooltipRef.current.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 16}px)`;
+             tooltipRef.current.style.opacity = '1';
+         } else {
+             tooltipRef.current.style.opacity = '0';
+         }
+      }
+  }, []);
+
+  // Update tooltip content when selection changes
+  useEffect(() => {
+      if (tooltipRef.current && isDragging.current) {
+           // We can manually update textContent to avoid re-renders too
+           const countSpan = tooltipRef.current.querySelector('span');
+           if (countSpan) countSpan.textContent = selectedDates.length.toString();
+      }
+  }, [selectedDates.length]);
+
   return (
-    <div className="w-full">
+    <div className="w-full" onMouseMove={handleMouseMove}>
+        {/* Cursor Follower Tooltip */}
+        <div 
+            ref={tooltipRef} 
+            className="fixed top-0 left-0 z-50 pointer-events-none opacity-0 transition-opacity duration-150 bg-primary/90 text-primary-foreground px-3 py-1.5 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm flex items-center gap-1.5"
+            style={{ willChange: 'transform, opacity' }}
+        >
+            <span className="text-sm">{selectedDates.length}</span>
+            <span className="font-normal opacity-80">ngày</span>
+        </div>
+
         <Card className="h-full border-none shadow-none bg-transparent">
           <CardContent className="p-0">
              <motion.div 
@@ -88,14 +123,19 @@ export function ExceptionsCalendar({
                animate={{ opacity: 1, scale: 1 }}
                className="border rounded-3xl p-6 bg-card/40 backdrop-blur-xl shadow-2xl ring-1 ring-white/20 dark:ring-white/5 select-none"
              >
-              <Calendar
-                mode="multiple"
-                selected={selectedDates}
-                onSelect={(dates) => onSelectDates(dates || [])}
-                required={false}
-                modifiers={modifiers}
-                modifiersClassNames={modifiersClassNames}
-                className="rounded-md w-full flex justify-center p-2"
+                <Calendar
+                  mode="multiple"
+                  selected={selectedDates}
+                  onSelect={(dates) => onSelectDates(dates || [])}
+                  required={false}
+                  
+                  // Controlled mode
+                  month={displayDate || new Date()} 
+                  
+                  modifiers={modifiers}
+                  modifiersClassNames={modifiersClassNames}
+                  className="rounded-md w-full flex justify-center p-2 text-foreground" 
+
                 locale={vi}
                 classNames={{
                   day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground shadow-lg shadow-primary/20",
