@@ -1,4 +1,4 @@
-import { DashboardStats, getCustomerAppointments, getCustomerProfile, getCustomerTreatments } from "@/features/customer-dashboard"
+import { BookingDialog, DashboardStats, getCustomerAppointments, getCustomerProfile, getCustomerTreatments } from "@/features/customer-dashboard"
 
 export default async function DashboardPage() {
   const [appointments, treatments, profile] = await Promise.all([
@@ -12,6 +12,15 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+      {/* Header với nút Đặt lịch */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-serif font-bold">Xin chào, {profile.fullName}!</h1>
+          <p className="text-muted-foreground">Chào mừng bạn quay trở lại</p>
+        </div>
+        <BookingDialog />
+      </div>
+
       <DashboardStats
         upcomingAppointments={upcomingAppointments}
         activeTreatments={activeTreatments}
@@ -22,3 +31,4 @@ export default async function DashboardPage() {
     </div>
   )
 }
+
