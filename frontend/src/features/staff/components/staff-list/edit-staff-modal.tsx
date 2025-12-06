@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form"
 import { Skill } from "@/features/services/types"
 import { Button } from "@/shared/ui/button"
 import { showToast } from "@/shared/ui/custom/sonner"
+import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
     Dialog,
     DialogContent,
@@ -35,7 +36,6 @@ import {
     SelectValue,
 } from "@/shared/ui/select"
 import { Staff } from "../../types"
-import { SkillSelector } from "../skill-selector"
 
 
 
@@ -169,10 +169,13 @@ export function EditStaffModal({ staff, skills, open, onOpenChange }: EditStaffM
                 <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Kỹ năng
                 </label>
-                <SkillSelector
-                  skills={skills}
-                  selectedSkillIds={selectedSkills}
-                  onSkillsChange={setSelectedSkills}
+                <TagInput
+                  options={skills.map(s => ({ id: s.id, label: s.name }))}
+                  selectedIds={selectedSkills}
+                  newTags={[]}
+                  onSelectedChange={setSelectedSkills}
+                  onNewTagsChange={() => {}}
+                  placeholder="Chọn kỹ năng..."
                 />
               </div>
             )}

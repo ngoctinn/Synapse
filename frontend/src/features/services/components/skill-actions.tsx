@@ -10,7 +10,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
-import { Button } from "@/shared/ui/button";
+import { TableRowActions } from "@/shared/ui/custom/table-row-actions";
 import {
     Dialog,
     DialogContent,
@@ -18,15 +18,6 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/shared/ui/dialog";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/shared/ui/dropdown-menu";
-import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { deleteSkill } from "../actions";
@@ -57,29 +48,10 @@ export function SkillActions({ skill }: SkillActionsProps) {
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
-            <Edit className="mr-2 h-4 w-4" />
-            Chỉnh sửa
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={() => setShowDeleteDialog(true)}
-            className="text-red-600 focus:text-red-600"
-          >
-            <Trash className="mr-2 h-4 w-4" />
-            Xóa kỹ năng
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <TableRowActions
+        onEdit={() => setShowEditDialog(true)}
+        onDelete={() => setShowDeleteDialog(true)}
+      />
 
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
         <DialogContent className="sm:max-w-xl">
