@@ -32,7 +32,7 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
     participant DB as Database
 
     LT->>UI: Mở Dashboard
@@ -74,8 +74,8 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
-    participant SOLVER as Bộ giải (Solver)
+    participant S as Service
+    participant SOLVER as Bộ giải
     participant DB as Database
 
     LT->>UI: Nhập thông tin khách & dịch vụ
@@ -134,7 +134,7 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
     participant DB as Database
 
     LT->>UI: Chọn lịch hẹn -> Check-in
@@ -177,7 +177,7 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
     participant DB as Database
 
     LT->>UI: Xác nhận thanh toán

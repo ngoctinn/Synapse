@@ -32,7 +32,8 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
+    participant SOLVER as Bộ giải
     participant DB as Database
 
     AD->>UI: Thêm mới dịc vụ
@@ -74,7 +75,7 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
     participant DB as Database
 
     AD->>UI: Cập nhật thông tin phòng
@@ -116,7 +117,7 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
     participant DB as Database
 
     AD->>UI: Phân ca cho nhân viên
@@ -130,13 +131,18 @@ sequenceDiagram
     API->>S: assign_work_shift(staffId, date, shift)
     activate S
 
-    S->>S: validate_overlap(staffId, date)
+    S->>SOLVER: check_soft_hard_constraints(staffId, date, shift)
+    activate SOLVER
+    note right of SOLVER: Kiểm tra ràng buộc (RCPSP)
 
-    alt Xung đột ca làm việc
-        S-->>API: Error (Overlap)
+    alt Vi phạm Ràng buộc Cứng
+        SOLVER-->>S: Invalid (Hard Constraint)
+        S-->>API: Error (Overlap/Capacity)
         API-->>BFF: Error
-        BFF-->>UI: Cảnh báo trùng lịch
-    else Hợp lệ
+        BFF-->>UI: Cảnh báo xung đột
+    else Hợp lệ (Thỏa mãn)
+        SOLVER-->>S: Valid
+        deactivate SOLVER
         S->>DB: save_schedule_record()
         activate DB
         DB-->>S: success
@@ -166,7 +172,7 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
     participant DB as Database
 
     AD->>UI: Xem báo cáo tháng

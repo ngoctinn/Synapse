@@ -32,7 +32,7 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
     participant DB as Database
 
     KTV->>UI: Truy cập ứng dụng
@@ -74,7 +74,7 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
     participant DB as Database
 
     KTV->>UI: Nhập ghi chú liệu trình

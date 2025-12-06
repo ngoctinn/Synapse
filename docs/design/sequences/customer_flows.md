@@ -32,7 +32,7 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
     participant DB as Database
 
     KH->>UI: Truy cập trang Dịch vụ
@@ -74,7 +74,7 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
     participant DB as Database
 
     KH->>UI: Chọn một dịch vụ cụ thể
@@ -116,7 +116,7 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
     participant SOLVER as Bộ giải (Solver)
     participant DB as Database
 
@@ -166,7 +166,7 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
     participant NOTI as Notification Service
     participant DB as Database
 
@@ -219,11 +219,11 @@ sequenceDiagram
 sequenceDiagram
     autonumber
     actor KH as Khách hàng
-    participant UI as Giao diện (Chat)
+    participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
     participant AI as AI Bot
-    participant S as Service (Logic)
+    participant S as Service
 
     KH->>UI: Gửi tin nhắn ("Đặt lịch mai 9h")
     activate UI
@@ -233,16 +233,26 @@ sequenceDiagram
     BFF->>API: POST /chat/message
     activate API
 
-    API->>AI: process_intent(text)
-    activate AI
-    AI->>S: check_availability(context)
+    API->>S: process_chat_message(text)
     activate S
-    S-->>AI: slots_info
-    deactivate S
-    AI-->>API: Response (Natural Language)
+
+    S->>AI: detect_intent(text)
+    activate AI
+    AI-->>S: intent="booking", entities={time: "9h", date: "tomorrow"}
     deactivate AI
 
-    API-->>BFF: Message
+    alt Intent là Đặt lịch
+        S->>S: get_booking_availability(entities)
+        S-->>AI: slots_info
+        activate AI
+        AI-->>S: response_text (Natural Language)
+        deactivate AI
+    end
+
+    S-->>API: MessageResponse
+    deactivate S
+
+    API-->>BFF: Message Data
     deactivate API
 
     BFF-->>UI: Hiển thị Phản hồi
@@ -262,7 +272,7 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
     participant DB as Database
 
     KH->>UI: Nhấn Hủy lịch
@@ -313,7 +323,7 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
     participant DB as Database
 
     KH->>UI: Truy cập Lịch sử
@@ -355,7 +365,7 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
     participant DB as Database
 
     KH->>UI: Viết đánh giá & Chấm sao
