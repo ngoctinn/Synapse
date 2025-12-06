@@ -5,6 +5,23 @@ export interface Skill {
   description?: string | null;
 }
 
+/** Cấu hình thời gian sử dụng thiết bị trong timeline dịch vụ */
+export interface EquipmentUsage {
+  equipment_id: string;
+  /** Thời điểm bắt đầu sử dụng (phút từ đầu dịch vụ) */
+  start_offset: number;
+  /** Thời lượng sử dụng (phút) */
+  duration: number;
+}
+
+export interface ResourceRequirements {
+  room_type_id?: string;
+  /** Legacy: danh sách ID thiết bị (backward compatible) */
+  equipment_ids: string[];
+  /** New: cấu hình timeline sử dụng thiết bị */
+  equipment_usage?: EquipmentUsage[];
+}
+
 export interface Service {
   id: string;
   name: string;
@@ -14,10 +31,7 @@ export interface Service {
   image_url?: string | null;
   color: string;
   description?: string | null;
-  resource_requirements?: {
-    room_type_id?: string;
-    equipment_ids: string[];
-  };
+  resource_requirements?: ResourceRequirements;
   is_active: boolean;
   skills: Skill[];
   created_at: string;
@@ -32,10 +46,7 @@ export interface ServiceCreateInput {
   image_url?: string;
   color?: string;
   description?: string;
-  resource_requirements?: {
-    room_type_id?: string;
-    equipment_ids: string[];
-  };
+  resource_requirements?: ResourceRequirements;
   is_active?: boolean;
   skill_ids: string[];
   new_skills?: string[];
@@ -49,14 +60,12 @@ export interface ServiceUpdateInput {
   image_url?: string;
   color?: string;
   description?: string;
-  resource_requirements?: {
-    room_type_id?: string;
-    equipment_ids: string[];
-  };
+  resource_requirements?: ResourceRequirements;
   is_active?: boolean;
   skill_ids?: string[];
   new_skills?: string[];
 }
+
 export interface PaginatedResponse<T> {
   data: T[];
   total: number;

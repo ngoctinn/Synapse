@@ -1,12 +1,12 @@
 "use client";
 
-import { Resource, RoomType } from "@/features/resources/model/types";
+import { Resource, RoomType } from "@/features/resources";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
 } from "@/shared/ui/dialog";
 import { Service, Skill } from "../types";
 import { ServiceForm } from "./service-form";
@@ -43,6 +43,7 @@ export function EditServiceDialog({
           availableRoomTypes={availableRoomTypes}
           availableEquipment={availableEquipment}
           onSuccess={() => onOpenChange(false)}
+          variant="dialog"
         />
       </DialogContent>
     </Dialog>

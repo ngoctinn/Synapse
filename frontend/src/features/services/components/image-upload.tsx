@@ -50,6 +50,7 @@ export function ImageUpload({ value, onChange, disabled }: ImageUploadProps) {
                 size="icon"
                 onClick={handleRemove}
                 disabled={disabled}
+                aria-label="Xóa ảnh đại diện"
                 className="h-9 w-9 rounded-full shadow-lg scale-90 group-hover:scale-100 transition-transform duration-300"
               >
                 <X className="h-4 w-4" />

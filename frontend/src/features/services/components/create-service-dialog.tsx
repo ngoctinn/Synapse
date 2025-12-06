@@ -1,14 +1,14 @@
 "use client";
 
-import { Resource, RoomType } from "@/features/resources/model/types";
+import { Resource, RoomType } from "@/features/resources";
 import { Button } from "@/shared/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from "@/shared/ui/dialog";
 import { Plus } from "lucide-react";
 import { useState } from "react";
@@ -47,6 +47,7 @@ export function CreateServiceDialog({
             availableRoomTypes={availableRoomTypes}
             availableEquipment={availableEquipment}
             onSuccess={() => setOpen(false)}
+            variant="dialog"
         />
       </DialogContent>
     </Dialog>

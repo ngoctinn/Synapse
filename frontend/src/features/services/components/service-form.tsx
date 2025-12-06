@@ -1,6 +1,6 @@
 "use client";
 
-import { Resource, RoomType } from "@/features/resources/model/types";
+import { Resource, RoomType } from "@/features/resources";
 import { Button } from "@/shared/ui/button";
 import { DurationPicker } from "@/shared/ui/custom/duration-picker";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
@@ -25,7 +25,7 @@ import { Switch } from "@/shared/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Textarea } from "@/shared/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, Clock, Save, Tag } from "lucide-react"; // Import icons
+import { ArrowLeft, Box, Clock, Loader2, Save, Tag } from "lucide-react"; // Import icons
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Resolver, useForm } from "react-hook-form";
@@ -33,6 +33,7 @@ import { toast } from "sonner";
 import { createService, updateService } from "../actions";
 import { ServiceFormValues, serviceSchema } from "../schemas";
 import { Service, Skill } from "../types";
+import { EquipmentTimelineEditor } from "./equipment-timeline-editor";
 import { ImageUpload } from "./image-upload";
 import { ServiceTimeVisualizer } from "./service-time-visualizer";
 
@@ -47,6 +48,8 @@ interface ServiceFormProps {
   availableRoomTypes: RoomType[];
   availableEquipment: Resource[];
   onSuccess?: () => void;
+  /** 'dialog' ẩn back button và sử dụng layout phù hợp cho dialog, 'page' cho standalone page */
+  variant?: "dialog" | "page";
 }
 
 export function ServiceForm({
@@ -54,7 +57,8 @@ export function ServiceForm({
   availableSkills,
   availableRoomTypes,
   availableEquipment,
-  onSuccess
+  onSuccess,
+  variant = "page"
 }: ServiceFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -71,9 +75,10 @@ export function ServiceForm({
       image_url: initialData?.image_url || "",
       color: initialData?.color || "#3b82f6",
       description: initialData?.description || "",
-      resource_requirements: initialData?.resource_requirements || {
-        room_type_id: undefined,
-        equipment_ids: []
+      resource_requirements: {
+        room_type_id: initialData?.resource_requirements?.room_type_id || undefined,
+        equipment_ids: initialData?.resource_requirements?.equipment_ids || [],
+        equipment_usage: initialData?.resource_requirements?.equipment_usage || [],
       },
       skill_ids: initialData?.skills.map((s) => s.id) || [],
       new_skills: [],
@@ -119,42 +124,81 @@ export function ServiceForm({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 
-        {/* Top Actions Bar */}
-        <div className="flex items-center justify-between bg-background/50 backdrop-blur pb-4 border-b sticky top-0 z-10">
-            <div className="flex items-center gap-4">
-                <Button variant="ghost" size="icon" type="button" onClick={() => router.back()} className="rounded-full">
-                    <ArrowLeft className="w-5 h-5 text-muted-foreground" />
-                </Button>
-                <div></div>
-            </div>
-            <div className="flex items-center gap-3">
-                 <FormField
-                  control={form.control}
-                  name="is_active"
-                  render={({ field }) => (
-                    <FormItem className="flex items-center gap-2 space-y-0 mr-4">
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                          className="data-[state=checked]:bg-primary"
-                        />
-                      </FormControl>
-                      <FormLabel className="cursor-pointer font-normal text-sm">
-                        {field.value ? "Hoạt động" : "Tạm ẩn"}
-                      </FormLabel>
-                    </FormItem>
-                  )}
-                />
-                <Button variant="outline" type="button" onClick={() => router.back()} disabled={isPending}>
-                    Hủy
-                </Button>
-                <Button type="submit" disabled={isPending} className="min-w-[120px] shadow-md shadow-primary/20">
-                    {isPending ? <span className="animate-spin mr-2">⏳</span> : <Save className="w-4 h-4 mr-2" />}
-                    {initialData ? "Lưu thay đổi" : "Tạo dịch vụ"}
-                </Button>
-            </div>
-        </div>
+        {/* Top Actions Bar - Page mode: full layout với back button */}
+        {variant === "page" && (
+          <div className="flex items-center justify-between bg-background/50 backdrop-blur pb-4 border-b sticky top-0 z-10">
+              <div className="flex items-center gap-4">
+                  <Button
+                      variant="ghost"
+                      size="icon"
+                      type="button"
+                      onClick={() => router.back()}
+                      className="rounded-full"
+                      aria-label="Quay lại trang trước"
+                  >
+                      <ArrowLeft className="w-5 h-5 text-muted-foreground" />
+                  </Button>
+              </div>
+              <div className="flex items-center gap-3">
+                   <FormField
+                    control={form.control}
+                    name="is_active"
+                    render={({ field }) => (
+                      <FormItem className="flex items-center gap-2 space-y-0 mr-4">
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            className="data-[state=checked]:bg-primary"
+                          />
+                        </FormControl>
+                        <FormLabel className="cursor-pointer font-normal text-sm">
+                          {field.value ? "Hoạt động" : "Tạm ẩn"}
+                        </FormLabel>
+                      </FormItem>
+                    )}
+                  />
+                  <Button variant="outline" type="button" onClick={() => router.back()} disabled={isPending}>
+                      Hủy
+                  </Button>
+                  <Button type="submit" disabled={isPending} className="min-w-[120px] shadow-md shadow-primary/20">
+                      {isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                      {initialData ? "Lưu thay đổi" : "Tạo dịch vụ"}
+                  </Button>
+              </div>
+          </div>
+        )}
+
+        {/* Dialog mode: compact action bar nằm ngang */}
+        {variant === "dialog" && (
+          <div className="flex items-center justify-end gap-3 pb-4 border-b">
+              <FormField
+                control={form.control}
+                name="is_active"
+                render={({ field }) => (
+                  <FormItem className="flex items-center gap-2 space-y-0 mr-auto">
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        className="data-[state=checked]:bg-primary"
+                      />
+                    </FormControl>
+                    <FormLabel className="cursor-pointer font-normal text-sm">
+                      {field.value ? "Hoạt động" : "Tạm ẩn"}
+                    </FormLabel>
+                  </FormItem>
+                )}
+              />
+              <Button variant="outline" type="button" onClick={() => onSuccess?.()} disabled={isPending}>
+                  Hủy
+              </Button>
+              <Button type="submit" disabled={isPending} className="shadow-md shadow-primary/20">
+                  {isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                  {initialData ? "Lưu thay đổi" : "Tạo dịch vụ"}
+              </Button>
+          </div>
+        )}
 
         <Tabs defaultValue="general" className="w-full space-y-6">
             <TabsList className="w-full justify-start h-12 p-1 bg-muted/40 rounded-xl">
@@ -167,7 +211,7 @@ export function ServiceForm({
             </TabsList>
 
              {/* TAB 1: THÔNG TIN CHUNG */}
-            <TabsContent value="general" className="animate-fade-in space-y-8">
+            <TabsContent value="general" className="motion-safe:animate-fade-in space-y-8">
                 <div className="grid lg:grid-cols-3 gap-8">
                      {/* Cột trái: Ảnh đại diện */}
                      <div className="lg:col-span-1 space-y-6">
@@ -253,12 +297,13 @@ export function ServiceForm({
                                                 style={{ backgroundColor: field.value }}
                                             />
                                         </div>
-                                        <div className="flex gap-1.5 overflow-x-auto py-1 px-1 pb-2">
+                                        <div className="flex gap-1.5 overflow-x-auto py-1 px-1">
                                         {PRESET_COLORS.map((color) => (
                                             <button
                                             key={color}
                                             type="button"
-                                            className={`w-5 h-5 rounded-full border transition-all flex-shrink-0 ${
+                                            aria-label={`Chọn màu ${color}`}
+                                            className={`w-6 h-6 rounded-full border transition-all flex-shrink-0 cursor-pointer focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none ${
                                                 field.value === color
                                                 ? "ring-2 ring-primary ring-offset-1 scale-110"
                                                 : "hover:scale-110 hover:shadow-sm"
@@ -299,7 +344,7 @@ export function ServiceForm({
             </TabsContent>
 
             {/* TAB 2: CẤU HÌNH & TÀI NGUYÊN */}
-            <TabsContent value="settings" className="animate-fade-in">
+            <TabsContent value="settings" className="motion-safe:animate-fade-in">
                 <div className="grid lg:grid-cols-2 gap-8">
                     {/* Block: Thời gian */}
                     <div className="space-y-6">
@@ -411,28 +456,30 @@ export function ServiceForm({
                                 )}
                             />
 
-                             {/* Equipment */}
-                             <FormField
-                                control={form.control}
-                                name="resource_requirements.equipment_ids"
-                                render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-foreground/80">Thiết bị bắt buộc</FormLabel>
-                                    <FormControl>
-                                        <TagInput
-                                            options={equipmentOptions}
-                                            selectedIds={field.value}
-                                            newTags={[]}
-                                            onSelectedChange={field.onChange}
-                                            onNewTagsChange={() => {}}
-                                            placeholder="Chọn thiết bị..."
-                                            className="min-h-[44px] rounded-lg bg-background"
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
+                             {/* Equipment Timeline */}
+                             <div className="space-y-3 pt-4 border-t">
+                               <div className="flex items-center gap-2">
+                                 <Box className="w-4 h-4 text-primary" />
+                                 <FormLabel className="text-foreground/80 font-medium">Thiết bị & Timeline</FormLabel>
+                               </div>
+                               <FormField
+                                 control={form.control}
+                                 name="resource_requirements.equipment_usage"
+                                 render={({ field }) => (
+                                   <FormItem>
+                                     <FormControl>
+                                       <EquipmentTimelineEditor
+                                         serviceDuration={duration}
+                                         availableEquipment={availableEquipment.filter(e => e.type === 'EQUIPMENT')}
+                                         value={field.value || []}
+                                         onChange={field.onChange}
+                                       />
+                                     </FormControl>
+                                     <FormMessage />
+                                   </FormItem>
+                                 )}
+                               />
+                             </div>
                          </div>
                     </div>
                 </div>
