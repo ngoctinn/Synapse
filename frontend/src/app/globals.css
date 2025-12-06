@@ -75,6 +75,21 @@
 
   /* Layout */
   --header-height: 53px;
+
+  /* Alert Colors: Warning (Amber) */
+  --alert-warning: oklch(0.96 0.08 85);
+  --alert-warning-foreground: oklch(0.45 0.12 50);
+  --alert-warning-border: oklch(0.88 0.10 85);
+
+  /* Alert Colors: Success (Green) */
+  --alert-success: oklch(0.96 0.05 155);
+  --alert-success-foreground: oklch(0.35 0.10 155);
+  --alert-success-border: oklch(0.88 0.08 155);
+
+  /* Alert Colors: Info (Blue) */
+  --alert-info: oklch(0.96 0.05 240);
+  --alert-info-foreground: oklch(0.40 0.12 240);
+  --alert-info-border: oklch(0.88 0.08 240);
 }
 
 .dark {
@@ -127,6 +142,21 @@
   --sidebar-accent-foreground: oklch(0.90 0.05 200);
   --sidebar-border: oklch(0.28 0.02 260);
   --sidebar-ring: oklch(0.65 0.15 200);
+
+  /* Alert Colors: Warning (Amber) - Dark */
+  --alert-warning: oklch(0.25 0.08 50);
+  --alert-warning-foreground: oklch(0.90 0.08 85);
+  --alert-warning-border: oklch(0.35 0.08 50);
+
+  /* Alert Colors: Success (Green) - Dark */
+  --alert-success: oklch(0.22 0.06 155);
+  --alert-success-foreground: oklch(0.88 0.08 155);
+  --alert-success-border: oklch(0.32 0.06 155);
+
+  /* Alert Colors: Info (Blue) - Dark */
+  --alert-info: oklch(0.22 0.06 240);
+  --alert-info-foreground: oklch(0.88 0.08 240);
+  --alert-info-border: oklch(0.32 0.06 240);
 }
 
 @theme inline {

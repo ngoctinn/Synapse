@@ -149,8 +149,8 @@ export function BookingSummaryStep({
       </div>
 
       {/* Reminder */}
-      <div className="rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 p-3 text-sm">
-        <p className="text-amber-800 dark:text-amber-200">
+      <div className="rounded-xl bg-[var(--alert-warning)] border border-[var(--alert-warning-border)] p-3 text-sm">
+        <p className="text-[var(--alert-warning-foreground)]">
           <strong>Lưu ý:</strong> Vui lòng đến trước giờ hẹn 10-15 phút. Trong trường hợp cần
           thay đổi, hãy liên hệ Spa trước ít nhất 2 giờ.
         </p>

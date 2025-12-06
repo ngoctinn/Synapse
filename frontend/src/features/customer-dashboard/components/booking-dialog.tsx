@@ -3,12 +3,12 @@
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from "@/shared/ui/dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
@@ -16,11 +16,11 @@ import { CalendarPlus, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import {
-  BookingFormValues,
-  bookingSchema,
-  BookingService,
-  BookingTechnician,
-  TimeSlot,
+    BookingFormValues,
+    bookingSchema,
+    BookingService,
+    BookingTechnician,
+    TimeSlot,
 } from "../schemas/booking-schema";
 import { BookingSummaryStep } from "./booking/booking-summary-step";
 import { DateTimeSelectionStep } from "./booking/datetime-selection-step";
@@ -139,7 +139,6 @@ export function BookingDialog({ trigger }: BookingDialogProps) {
     setIsSubmitting(true);
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
-    console.log("Booking submitted:", data);
     setIsSubmitting(false);
     setOpen(false);
     // Reset form

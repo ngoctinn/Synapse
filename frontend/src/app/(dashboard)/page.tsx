@@ -1,4 +1,5 @@
-import { BookingDialog, DashboardStats, getCustomerAppointments, getCustomerProfile, getCustomerTreatments } from "@/features/customer-dashboard"
+import { BookingDialog, DashboardStats } from "@/features/customer-dashboard"
+import { getCustomerAppointments, getCustomerProfile, getCustomerTreatments } from "@/features/customer-dashboard/index.server"
 
 export default async function DashboardPage() {
   const [appointments, treatments, profile] = await Promise.all([

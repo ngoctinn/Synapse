@@ -1,4 +1,5 @@
-import { getCustomerTreatments, TreatmentList } from "@/features/customer-dashboard"
+import { TreatmentList } from "@/features/customer-dashboard"
+import { getCustomerTreatments } from "@/features/customer-dashboard/index.server"
 import { Separator } from "@/shared/ui/separator"
 
 export default async function TreatmentsPage() {

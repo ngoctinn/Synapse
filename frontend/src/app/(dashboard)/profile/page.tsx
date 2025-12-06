@@ -1,4 +1,5 @@
-import { ProfileForm, getCustomerProfile } from "@/features/customer-dashboard"
+import { ProfileForm } from "@/features/customer-dashboard"
+import { getCustomerProfile } from "@/features/customer-dashboard/index.server"
 
 export default async function ProfilePage() {
   const user = await getCustomerProfile()
