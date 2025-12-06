@@ -1,4 +1,4 @@
-import { BookingDialog, DashboardStats } from "@/features/customer-dashboard"
+import { DashboardStats } from "@/features/customer-dashboard"
 import { getCustomerAppointments, getCustomerProfile, getCustomerTreatments } from "@/features/customer-dashboard/index.server"
 
 export default async function DashboardPage() {
@@ -19,7 +19,6 @@ export default async function DashboardPage() {
           <h1 className="text-2xl font-serif font-bold">Xin chào, {profile.fullName}!</h1>
           <p className="text-muted-foreground">Chào mừng bạn quay trở lại</p>
         </div>
-        <BookingDialog />
       </div>
 
       <DashboardStats
@@ -28,8 +27,12 @@ export default async function DashboardPage() {
         loyaltyPoints={profile.loyaltyPoints ?? 0}
         membershipTier={profile.membershipTier ?? 'SILVER'}
       />
-      <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+
+
+
+      <div className="min-h-[20vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
     </div>
   )
 }
+
 

@@ -1,4 +1,4 @@
-import { CTASection, Features, Hero, Testimonials } from "@/features/landing-page";
+import { CTASection, Features, Hero, ServicesSection, Testimonials } from "@/features/landing-page";
 import { Footer, Header } from "@/shared/components/layout";
 
 export default function Home() {
@@ -8,6 +8,8 @@ export default function Home() {
 
       <main className="flex-1">
         <Hero />
+
+        <ServicesSection />
         <Features />
         <Testimonials />
         <CTASection />
