@@ -2,6 +2,7 @@
 "use client"
 
 import { AnimatePresence, motion } from "framer-motion"
+import { useRouter } from "next/navigation"
 import { useMemo, useState } from "react"
 import { MOCK_SERVICES } from "../mocks"
 import { ServiceCard } from "./service-card"
@@ -10,6 +11,7 @@ import { ServiceFilter } from "./service-filter"
 export function ServicesSection() {
   const [searchQuery, setSearchQuery] = useState("")
   const [category, setCategory] = useState("All")
+  const router = useRouter()
 
   const categories = useMemo(() => {
     return Array.from(new Set(MOCK_SERVICES.map(s => s.category)))
@@ -26,9 +28,7 @@ export function ServicesSection() {
   }, [searchQuery, category])
 
   const handleBook = (id: string) => {
-    console.log("Booking service:", id)
-    // TODO: Trigger Booking Flow (Redirect to Login or open Dialog if public booking enabled)
-    window.location.href = '/login'
+    router.push('/login')
   }
 
   return (
