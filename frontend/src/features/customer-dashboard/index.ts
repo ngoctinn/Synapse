@@ -4,6 +4,7 @@ export * from "./types";
 
 export { AppSidebar } from "./components/app-sidebar";
 export { AppointmentList } from "./components/appointment-list";
+export { BookingDialog } from "./components/booking-dialog";
 export { DashboardHeader } from "./components/dashboard-header";
 export { DashboardNav } from "./components/dashboard-nav";
 export { DashboardStats } from "./components/dashboard-stats";
@@ -13,9 +14,10 @@ export { ProfileForm } from "./components/profile-form";
 export { TreatmentList } from "./components/treatment-list";
 
 export {
-  getCustomerAppointments,
-  getCustomerProfile,
-  getCustomerTreatments,
-  updateCustomerProfile
+    getCustomerAppointments,
+    getCustomerProfile,
+    getCustomerTreatments,
+    updateCustomerProfile
 } from "./services/api";
+
 

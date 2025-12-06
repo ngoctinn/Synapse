@@ -1,5 +1,6 @@
 "use client"
 
+import { BookingDialog } from "@/features/customer-dashboard/components/booking-dialog"
 import { Button } from "@/shared/ui/button"
 import { motion } from "framer-motion"
 import Link from "next/link"
@@ -51,11 +52,13 @@ export function Hero() {
                 Bắt đầu miễn phí
               </Button>
             </Link>
-            <Link href="/features">
-              <Button variant="outline" size="lg" className="h-12 px-8 text-lg rounded-full border-2">
-                Tìm hiểu thêm
-              </Button>
-            </Link>
+            <BookingDialog
+              trigger={
+                <Button variant="outline" size="lg" className="h-12 px-8 text-lg rounded-full border-2">
+                  Đặt lịch ngay
+                </Button>
+              }
+            />
           </motion.div>
         </div>
       </div>
@@ -68,3 +71,4 @@ export function Hero() {
     </section>
   )
 }
+
