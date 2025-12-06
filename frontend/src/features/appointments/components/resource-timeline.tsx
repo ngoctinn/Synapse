@@ -1,3 +1,6 @@
+'use client';
+
+import { useDraggableScroll } from '@/shared/hooks/use-draggable-scroll';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar';
 import { format, isSameDay, setHours, setMinutes, startOfDay } from 'date-fns';
 import * as React from 'react';
@@ -13,6 +16,7 @@ interface ResourceTimelineProps {
 
 export function ResourceTimeline({ date, resources, appointments }: ResourceTimelineProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const { events } = useDraggableScroll(containerRef);
 
   // Tạo các khung giờ (hours)
   const timeSlots = React.useMemo(() => {
@@ -27,109 +31,6 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
 
   // Tính toán vị trí hiện tại (Current Time Indicator)
   const [currentTimePosition, setCurrentTimePosition] = React.useState<number | null>(null);
-  // Drag-to-Scroll References
-  const isDown = React.useRef(false);
-  const startX = React.useRef(0);
-  const startY = React.useRef(0);
-  const scrollLeft = React.useRef(0);
-  const scrollTop = React.useRef(0);
-
-  // Touch References
-  const touchStartX = React.useRef(0);
-  const touchStartY = React.useRef(0);
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    // Chỉ kích hoạt khi click chuột trái
-    if (e.button !== 0) return;
-
-    isDown.current = true;
-    container.classList.add('cursor-grabbing');
-    container.classList.remove('cursor-grab');
-
-    startX.current = e.pageX - container.offsetLeft;
-    startY.current = e.pageY - container.offsetTop;
-    scrollLeft.current = container.scrollLeft;
-    scrollTop.current = container.scrollTop;
-  };
-
-  const handleMouseLeave = () => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    isDown.current = false;
-    container.classList.remove('cursor-grabbing');
-    container.classList.add('cursor-grab');
-  };
-
-  const handleMouseUp = () => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    isDown.current = false;
-    container.classList.remove('cursor-grabbing');
-    container.classList.add('cursor-grab');
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDown.current) return;
-    e.preventDefault();
-
-    const container = containerRef.current;
-    if (!container) return;
-
-    const x = e.pageX - container.offsetLeft;
-    const y = e.pageY - container.offsetTop;
-
-    const walkX = (x - startX.current) * 1.5; // Tốc độ cuộn ngang
-    const walkY = (y - startY.current) * 1.5; // Tốc độ cuộn dọc
-
-    container.scrollLeft = scrollLeft.current - walkX;
-    container.scrollTop = scrollTop.current - walkY;
-  };
-
-  // Touch Handlers for Mobile Drag-to-Scroll
-  const handleTouchStart = (e: React.TouchEvent) => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    isDown.current = true;
-    touchStartX.current = e.touches[0].pageX - container.offsetLeft;
-    touchStartY.current = e.touches[0].pageY - container.offsetTop;
-    scrollLeft.current = container.scrollLeft;
-    scrollTop.current = container.scrollTop;
-  };
-
-  const handleTouchEnd = () => {
-    isDown.current = false;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDown.current) return;
-    // Prevent default to stop native page scrolling while dragging inner content if needed.
-
-    const container = containerRef.current;
-    if (!container) return;
-
-    const x = e.touches[0].pageX - container.offsetLeft;
-    const y = e.touches[0].pageY - container.offsetTop;
-
-    const walkX = (x - touchStartX.current) * 1.5;
-    const walkY = (y - touchStartY.current) * 1.5;
-
-    container.scrollLeft = scrollLeft.current - walkX;
-    container.scrollTop = scrollTop.current - walkY;
-  };
-
-  // Setup cursor initial state
-  React.useEffect(() => {
-    const container = containerRef.current;
-    if (container) {
-      container.classList.add('cursor-grab');
-    }
-  }, []);
 
   React.useEffect(() => {
     const updatePosition = () => {
@@ -166,13 +67,7 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
       <div
         ref={containerRef}
         className="flex-1 overflow-auto relative scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent outline-none cursor-grab touch-pan-y"
-        onMouseDown={handleMouseDown}
-        onMouseLeave={handleMouseLeave}
-        onMouseUp={handleMouseUp}
-        onMouseMove={handleMouseMove}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        onTouchMove={handleTouchMove}
+        {...events}
         role="grid"
         aria-label="Timeline lịch hẹn"
       >
@@ -180,7 +75,7 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
 
           {/* Hàng Header (Thời gian) */}
           <div
-            className="sticky right-0 left-0 z-30 flex border-b border-border bg-background/95 backdrop-blur-sm shadow-sm pointer-events-none row-header top-[var(--timeline-header-offset-mobile)] md:top-[var(--timeline-header-offset)]"
+            className="sticky right-0 left-0 z-30 flex border-b border-border bg-background/95 backdrop-blur-sm shadow-sm pointer-events-none row-header top-0"
             role="row"
             style={{
               height: APPOINTMENT_SETTINGS.HEADER_HEIGHT
@@ -188,7 +83,7 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
           >
             {/* Góc trên trái (Sticky Corner) */}
             <div
-              className="sticky left-0 z-40 flex-shrink-0 border-r border-border bg-background flex items-center justify-center shadow-[4px_0_24px_-12px_rgba(0,0,0,0.1)]"
+              className="sticky left-0 z-50 flex-shrink-0 border-r border-border bg-background flex items-center justify-center shadow-[4px_0_24px_-12px_rgba(0,0,0,0.1)]"
               style={{ width: APPOINTMENT_SETTINGS.SIDEBAR_WIDTH }}
               role="columnheader"
               aria-label="Tên nhân viên"
@@ -222,7 +117,7 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
                   className="flex items-center gap-3 border-b border-border/50 px-4 transition-colors hover:bg-muted/30 group bg-background"
                   style={{ height: APPOINTMENT_SETTINGS.CELL_HEIGHT }}
                 >
-                  <Avatar className="h-10 w-10 border-2 border-background shadow-sm transition-transform group-hover:scale-105">
+                  <Avatar className="h-11 w-11 border-2 border-background shadow-sm transition-transform group-hover:scale-105">
                     <AvatarImage src={resource.avatar} alt={resource.name} />
                     <AvatarFallback>{resource.name.charAt(0)}</AvatarFallback>
                   </Avatar>
