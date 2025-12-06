@@ -12,9 +12,11 @@ interface ResourceTimelineProps {
   date: Date;
   resources: Resource[];
   appointments: Appointment[];
+  onSlotClick?: (resourceId: string, time: Date) => void;
+  onAppointmentClick?: (appointment: Appointment) => void;
 }
 
-export function ResourceTimeline({ date, resources, appointments }: ResourceTimelineProps) {
+export function ResourceTimeline({ date, resources, appointments, onSlotClick, onAppointmentClick }: ResourceTimelineProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const { events, isDragging } = useDraggableScroll(containerRef);
   const [hoverInfo, setHoverInfo] = React.useState<{ resourceId: string, time: string, left: number } | null>(null);
@@ -76,8 +78,10 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
 
       const clickTime = setMinutes(setHours(date, hour), minute);
       console.log(`Open booking for ${resourceId} at ${format(clickTime, 'HH:mm')}`);
-      // Integrate with Modal Opening Logic here
-      alert(`Mở đặt lịch cho ${resources.find(r => r.id === resourceId)?.name} lúc ${format(clickTime, 'HH:mm')}`);
+
+      if (onSlotClick) {
+          onSlotClick(resourceId, clickTime);
+      }
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, resourceId: string) => {
@@ -226,8 +230,11 @@ export function ResourceTimeline({ date, resources, appointments }: ResourceTime
                           }}
                           // Prevent grid click propagation
                           onClick={(e) => {
-                              e.stopPropagation();
-                              console.log('Clicked appointment', apt.id);
+                              // If e is available (it should be with MouseEventHandler), stop prop
+                              e?.stopPropagation();
+                              if (onAppointmentClick) {
+                                  onAppointmentClick(apt);
+                              }
                           }}
                         />
                       );

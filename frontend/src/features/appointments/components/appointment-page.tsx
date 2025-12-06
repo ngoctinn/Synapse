@@ -4,6 +4,8 @@ import { SearchInput } from "@/shared/ui/custom/search-input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { useState } from "react"
 import { MOCK_APPOINTMENTS, MOCK_RESOURCES } from "../mock-data"
+import { Appointment } from "../types"
+import { AppointmentDetailDialog } from "./appointment-detail-dialog"
 import { AppointmentFilter } from "./appointment-filter"
 import { AppointmentTimeline } from "./appointment-timeline"
 import { CreateAppointmentDialog } from "./create-appointment-dialog"
@@ -20,7 +22,45 @@ const Footer = () => (
 
 export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
   const [activeTab, setActiveTab] = useState("timeline")
-  const isTimelineTab = activeTab === "timeline"
+  const [appointments, setAppointments] = useState<Appointment[]>(MOCK_APPOINTMENTS)
+
+  // Dialog States
+  const [isCreateOpen, setIsCreateOpen] = useState(false)
+  const [createDefaultDate, setCreateDefaultDate] = useState<Date | undefined>(undefined)
+  const [createDefaultResource, setCreateDefaultResource] = useState<string | undefined>(undefined)
+
+  const [isDetailOpen, setIsDetailOpen] = useState(false)
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
+
+  // Handlers
+  const handleSlotClick = (resourceId: string, time: Date) => {
+      setCreateDefaultResource(resourceId)
+      setCreateDefaultDate(time)
+      setIsCreateOpen(true)
+  }
+
+  const handleAppointmentClick = (appointment: Appointment) => {
+      setSelectedAppointment(appointment)
+      setIsDetailOpen(true)
+  }
+
+  const handleCreateAppointment = (newAppointment: Appointment) => {
+      setAppointments(prev => [...prev, newAppointment])
+  }
+
+  const handleEditAppointment = (appointment: Appointment) => {
+     alert(`Chức năng chỉnh sửa đang phát triển cho: ${appointment.customerName}`)
+     // TODO: Implement Edit Logic
+  }
+
+  const handleCancelAppointment = (appointment: Appointment) => {
+      if (confirm("Bạn có chắc chắn muốn hủy lịch hẹn này?")) {
+        setAppointments(prev => prev.map(a =>
+            a.id === appointment.id ? { ...a, status: 'cancelled' } : a
+        ));
+        setIsDetailOpen(false);
+      }
+  }
 
   return (
     <div className="min-h-screen flex flex-col w-full">
@@ -42,7 +82,13 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
               />
               <AppointmentFilter />
             </div>
-            <CreateAppointmentDialog />
+            <CreateAppointmentDialog
+                open={isCreateOpen}
+                onOpenChange={setIsCreateOpen}
+                defaultDate={createDefaultDate}
+                defaultResourceId={createDefaultResource}
+                onSubmit={handleCreateAppointment}
+            />
           </div>
         </div>
 
@@ -51,8 +97,10 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
 
              {/* The Timeline Component */}
              <AppointmentTimeline
-               appointments={MOCK_APPOINTMENTS}
+               appointments={appointments}
                resources={MOCK_RESOURCES}
+               onSlotClick={handleSlotClick}
+               onAppointmentClick={handleAppointmentClick}
              />
              <Footer />
           </TabsContent>
@@ -65,6 +113,15 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
           </TabsContent>
         </div>
       </Tabs>
+
+      <AppointmentDetailDialog
+        open={isDetailOpen}
+        onOpenChange={setIsDetailOpen}
+        appointment={selectedAppointment}
+        resource={MOCK_RESOURCES.find(r => r.id === selectedAppointment?.resourceId) ?? null}
+        onEdit={handleEditAppointment}
+        onCancel={handleCancelAppointment}
+      />
     </div>
   )
 }

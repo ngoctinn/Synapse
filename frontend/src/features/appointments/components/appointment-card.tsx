@@ -9,7 +9,7 @@ interface AppointmentCardProps {
   appointment: Appointment;
   style?: React.CSSProperties;
   className?: string;
-  onClick?: () => void;
+  onClick?: (e?: React.MouseEvent) => void;
 }
 
 // Premium Semantic Colors

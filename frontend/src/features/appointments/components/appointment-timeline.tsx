@@ -9,9 +9,11 @@ import { ResourceTimeline } from './resource-timeline';
 interface AppointmentTimelineProps {
   appointments: Appointment[];
   resources: Resource[];
+  onSlotClick?: (resourceId: string, time: Date) => void;
+  onAppointmentClick?: (appointment: Appointment) => void;
 }
 
-export function AppointmentTimeline({ appointments, resources }: AppointmentTimelineProps) {
+export function AppointmentTimeline({ appointments, resources, onSlotClick, onAppointmentClick }: AppointmentTimelineProps) {
   const [date, setDate] = React.useState<Date>(startOfToday());
   const [view, setView] = React.useState<CalendarView>('timeline');
 
@@ -30,6 +32,8 @@ export function AppointmentTimeline({ appointments, resources }: AppointmentTime
             date={date}
             resources={resources}
             appointments={appointments}
+            onSlotClick={onSlotClick}
+            onAppointmentClick={onAppointmentClick}
           />
         </div>
       ) : (

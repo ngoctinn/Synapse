@@ -1,5 +1,6 @@
 // Public API - Export components
 export { AppointmentCard } from './components/appointment-card';
+export { AppointmentDetailDialog } from './components/appointment-detail-dialog';
 export { AppointmentFilter } from './components/appointment-filter';
 export { AppointmentPage } from './components/appointment-page';
 export { AppointmentTimeline } from './components/appointment-timeline';
