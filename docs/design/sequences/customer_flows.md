@@ -181,7 +181,7 @@ sequenceDiagram
     API->>S: create_booking
     activate S
 
-    crit Kiểm tra tính nhất quán
+    critical Kiểm tra tính nhất quán
         S->>DB: lock_resources
         S->>DB: check_conflict_last_time
         activate DB
