@@ -6,6 +6,7 @@ Tài liệu này mô tả các luồng nghiệp vụ cốt lõi của hệ thố
 Quy trình quan trọng nhất để đảm bảo không bị trùng lịch (Double Booking).
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'fontFamily': 'Times New Roman'}}}%%
 sequenceDiagram
     autonumber
     actor User as Khách hàng / Lễ tân
@@ -47,6 +48,7 @@ sequenceDiagram
 Quy trình diễn ra khi khách hàng đến Spa sử dụng dịch vụ.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'fontFamily': 'Times New Roman'}}}%%
 sequenceDiagram
     autonumber
     actor Customer as Khách hàng
@@ -88,6 +90,7 @@ sequenceDiagram
 Quy trình xử lý khi lịch hẹn thay đổi hoặc khách không đến.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'fontFamily': 'Times New Roman'}}}%%
 sequenceDiagram
     autonumber
     actor User as Khách hàng
