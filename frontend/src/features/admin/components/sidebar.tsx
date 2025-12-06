@@ -21,14 +21,16 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
   return (
     <Sidebar
       collapsible="icon"
+      role="navigation"
+      aria-label="Menu điều hướng Admin"
       className="border-r border-sidebar-border bg-sidebar/95 backdrop-blur-md supports-[backdrop-filter]:bg-sidebar/80 shadow-sm"
       {...props}
     >
       <SidebarHeader className="h-16 justify-center px-4 group-data-[collapsible=icon]:px-2">
-        <div className="flex items-center w-full transition-all duration-300 ease-in-out">
+        <div className="flex items-center w-full transition-all duration-200 ease-out">
           <HeaderLogo
             className="w-full"
-            textClassName="group-data-[collapsible=icon]:hidden transition-all duration-300"
+            textClassName="group-data-[collapsible=icon]:hidden transition-all duration-200"
           />
         </div>
       </SidebarHeader>
@@ -50,9 +52,10 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
           <SidebarMenuItem>
             <SidebarMenuButton
               tooltip="Hỗ trợ"
-              className="h-10 font-medium text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-all duration-300 hover:translate-x-1 group-data-[collapsible=icon]:justify-center rounded-xl"
+              aria-label="Hỗ trợ"
+              className="h-11 min-h-[44px] font-medium text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-all duration-200 ease-out motion-safe:hover:translate-x-1 focus-visible:ring-2 focus-visible:ring-sidebar-ring active:scale-[0.98] active:bg-sidebar-accent/80 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:hover:translate-x-0 rounded-xl"
             >
-              <HelpCircle className="size-5" />
+              <HelpCircle className="size-5" aria-hidden="true" />
               <span className="group-data-[collapsible=icon]:hidden">Hỗ trợ</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
