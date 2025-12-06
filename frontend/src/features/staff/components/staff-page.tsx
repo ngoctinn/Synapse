@@ -96,7 +96,7 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
           </div>
         </div>
 
-        <div className="flex-1 p-0 animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out flex flex-col">
+        <div className="flex-1 p-0 motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 duration-300 ease-out flex flex-col">
           <TabsContent value="list" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
             <Suspense fallback={<StaffTableSkeleton />}>
               <StaffListWrapper

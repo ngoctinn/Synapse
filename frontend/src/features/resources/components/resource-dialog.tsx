@@ -57,7 +57,7 @@ export function ResourceDialog({
   };
 
   const defaultTrigger = resource ? (
-    <Button variant="ghost" size="icon">
+    <Button variant="ghost" size="icon" aria-label="Chỉnh sửa tài nguyên" disabled={isLoading}>
       <Edit className="h-4 w-4" />
     </Button>
   ) : (

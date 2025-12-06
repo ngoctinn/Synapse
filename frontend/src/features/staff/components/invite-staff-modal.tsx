@@ -15,28 +15,28 @@ import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from "@/shared/ui/dialog"
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select"
 
 type InviteStaffFormValues = z.infer<typeof inviteStaffSchema>
@@ -204,7 +204,7 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
                         />
 
                         {form.watch("role") === "technician" && (
-                        <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                        <div className="space-y-2 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-2 duration-300">
                             <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-foreground/80 font-normal">
                             Kỹ năng chuyên môn
                             </label>

@@ -175,16 +175,16 @@ export function StaffScheduler({ initialSchedules, staffList, className }: Staff
       <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 px-4 py-3 border-b shrink-0 sticky top-[var(--staff-header-height-mobile,109px)] md:top-[var(--staff-header-height,57px)] z-20 bg-background">
         {/* Left: Navigation */}
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" onClick={prevWeek} className="h-8 w-8">
+          <Button variant="outline" size="icon" onClick={prevWeek} className="h-8 w-8 active:scale-95 transition-transform" aria-label="Tuần trước">
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <div className="text-sm font-medium w-[180px] text-center">
             {format(weekStart, "dd/MM")} - {format(weekEnd, "dd/MM/yyyy")}
           </div>
-          <Button variant="outline" size="icon" onClick={nextWeek} className="h-8 w-8">
+          <Button variant="outline" size="icon" onClick={nextWeek} className="h-8 w-8 active:scale-95 transition-transform" aria-label="Tuần sau">
             <ChevronRight className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="sm" onClick={resetToday} className="h-8 text-xs">
+          <Button variant="ghost" size="sm" onClick={resetToday} className="h-8 text-xs active:scale-95 transition-transform">
             Hôm nay
           </Button>
         </div>
@@ -232,7 +232,8 @@ export function StaffScheduler({ initialSchedules, staffList, className }: Staff
                       setIsPaintOpen(false)
                     }}
                     className={`
-                      w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors
+                      w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors cursor-pointer
+                      focus:ring-2 focus:ring-primary/50 focus:outline-none
                       ${selectedTool === shift
                         ? "bg-primary/10 text-primary font-medium"
                         : "hover:bg-muted text-foreground"}
@@ -252,7 +253,8 @@ export function StaffScheduler({ initialSchedules, staffList, className }: Staff
                     setIsPaintOpen(false)
                   }}
                   className={`
-                    w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors
+                    w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors cursor-pointer
+                    focus:ring-2 focus:ring-destructive/50 focus:outline-none
                     ${selectedTool === "eraser"
                       ? "bg-destructive/10 text-destructive font-medium"
                       : "hover:bg-muted text-foreground"}
@@ -283,9 +285,9 @@ export function StaffScheduler({ initialSchedules, staffList, className }: Staff
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground"
+              className="h-8 w-8 text-muted-foreground hover:text-foreground active:scale-95 transition-transform"
               onClick={() => setSelectedTool(null)}
-              title="Tắt chế độ tô"
+              aria-label="Tắt chế độ tô"
             >
               <X className="h-4 w-4" />
             </Button>
