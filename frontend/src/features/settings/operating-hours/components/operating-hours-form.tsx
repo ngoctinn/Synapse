@@ -150,7 +150,7 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
   };
 
   return (
-    <Tabs defaultValue="schedule" className="flex flex-col flex-1 w-full gap-0">
+    <Tabs defaultValue="schedule" className="flex flex-col flex-1 w-full gap-0 h-full overflow-hidden">
       {/* Sticky Header - Standardized with Services Page */}
       <div className="sticky top-0 z-40 px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300">
         <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto justify-start">
@@ -214,7 +214,7 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
         </div>
       </div>
       
-      <TabsContent value="schedule" className="space-y-6 animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out p-6">
+      <TabsContent value="schedule" className="space-y-6 animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out p-6 overflow-y-auto">
         <div className="space-y-6">          
             <Card className="border shadow-sm rounded-xl">
             <CardHeader className="px-6 pt-6 pb-4">
@@ -274,7 +274,7 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
         </div>
       </TabsContent>
       
-      <TabsContent value="exceptions" className="animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out p-6">
+      <TabsContent value="exceptions" className="flex flex-col flex-1 min-h-0 overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out">
         <ExceptionsViewManager
           exceptions={config.exceptions}
           onAddExceptions={handleAddExceptions}

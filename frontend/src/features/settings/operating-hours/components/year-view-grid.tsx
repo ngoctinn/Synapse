@@ -2,7 +2,7 @@
 "use client";
 
 import { useMemo, useRef } from "react";
-import { format, eachMonthOfInterval, startOfYear, endOfYear, startOfMonth, endOfMonth, eachDayOfInterval, getDay } from "date-fns";
+import { format, eachMonthOfInterval, startOfYear, endOfYear, startOfMonth, endOfMonth, eachDayOfInterval, getDay, startOfDay, endOfDay, isWithinInterval } from "date-fns";
 import { vi } from "date-fns/locale";
 import { cn } from "@/shared/lib/utils";
 import { ExceptionDate } from "../model/types";
@@ -12,15 +12,19 @@ import { Button } from "@/shared/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { YearPicker } from "@/shared/ui/custom/year-picker";
 
+import { DateRange } from "react-day-picker";
+
 interface YearViewGridProps {
     year: number;
     exceptions: ExceptionDate[];
+    matchedDateKeys: Set<string>; // New prop
     selectedDates: Date[];
+    activeDateRange?: DateRange; // Props for dimming outside range
     onSelectDates: (dates: Date[]) => void;
     onYearChange: (year: number) => void;
 }
 
-export function YearViewGrid({ year, exceptions, selectedDates, onSelectDates, onYearChange }: YearViewGridProps) {
+export function YearViewGrid({ year, exceptions, matchedDateKeys, selectedDates, activeDateRange, onSelectDates, onYearChange }: YearViewGridProps) {
     const months = useMemo(() => {
         const start = startOfYear(new Date(year, 0));
         return eachMonthOfInterval({ start, end: endOfYear(start) });
@@ -108,7 +112,7 @@ export function YearViewGrid({ year, exceptions, selectedDates, onSelectDates, o
 
     return (
         <div className="space-y-4">
-            <div className="px-4 pt-2">
+            <div className="px-4 pt-2 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center rounded-lg border bg-background/50 p-1 gap-1 shrink-0 shadow-sm w-fit">
                     <Button
                         variant="ghost"
@@ -136,15 +140,86 @@ export function YearViewGrid({ year, exceptions, selectedDates, onSelectDates, o
                         <ChevronRight className="w-4 h-4" />
                     </Button>
                 </div>
+
+                {/* Legend */}
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm p-3 rounded-lg border border-dashed bg-muted/20 md:ml-auto">
+                    {/* Status Group */}
+                    <div className="flex items-center gap-2">
+                        <span className="text-[10px] uppercase text-muted-foreground/60 font-bold tracking-wider mr-1">Trạng thái</span>
+                        <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1.5">
+                                <div className="w-5 h-5 rounded-sm border border-emerald-500/50 bg-background flex items-center justify-center shadow-sm">
+                                    <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 leading-none pt-[1px]">12</span>
+                                </div>
+                                <span className="text-muted-foreground text-xs">Mở cửa</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                                <div className="w-5 h-5 rounded-sm border border-rose-500/50 bg-background flex items-center justify-center shadow-sm">
+                                    <span className="text-[10px] font-bold text-rose-700 dark:text-rose-400 leading-none pt-[1px]">12</span>
+                                </div>
+                                <span className="text-muted-foreground text-xs">Đóng cửa</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="w-px h-4 bg-border/50 hidden sm:block mx-1" />
+
+                    {/* Type Group */}
+                    <div className="flex items-center gap-2">
+                        <span className="text-[10px] uppercase text-muted-foreground/60 font-bold tracking-wider mr-1">Loại</span>
+                        <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1.5">
+                                <div className="w-5 h-5 rounded-sm bg-red-100 dark:bg-red-900/30 border border-transparent flex items-center justify-center shadow-sm">
+                                    <span className="text-[10px] text-muted-foreground/60 font-bold leading-none pt-[1px]">12</span>
+                                </div>
+                                <span className="text-muted-foreground text-xs">Ngày lễ</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                                <div className="w-5 h-5 rounded-sm bg-amber-100 dark:bg-amber-900/30 border border-transparent flex items-center justify-center shadow-sm">
+                                    <span className="text-[10px] text-muted-foreground/60 font-bold leading-none pt-[1px]">12</span>
+                                </div>
+                                <span className="text-muted-foreground text-xs">Bảo trì</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                                <div className="w-5 h-5 rounded-sm bg-blue-100 dark:bg-blue-900/30 border border-transparent flex items-center justify-center shadow-sm">
+                                    <span className="text-[10px] text-muted-foreground/60 font-bold leading-none pt-[1px]">12</span>
+                                </div>
+                                <span className="text-muted-foreground text-xs">Tùy chỉnh</span>
+                            </div>
+                        </div>
+                    </div>
+
+                     <div className="w-px h-4 bg-border/50 hidden sm:block mx-1" />
+
+                     {/* Date Group */}
+                     <div className="flex items-center gap-2">
+                        <span className="text-[10px] uppercase text-muted-foreground/60 font-bold tracking-wider mr-1">Hiển thị</span>
+                        <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1.5">
+                                <div className="w-5 h-5 rounded-sm bg-muted border border-transparent flex items-center justify-center shadow-sm">
+                                    <span className="text-[10px] font-bold text-foreground leading-none pt-[1px]">24</span>
+                                </div>
+                                <span className="text-muted-foreground text-xs">Đã lọc</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                                <div className="w-5 h-5 rounded-sm bg-muted/30 border border-transparent flex items-center justify-center grayscale opacity-50">
+                                    <span className="text-[10px] font-medium text-muted-foreground leading-none pt-[1px]">24</span>
+                                </div>
+                                <span className="text-muted-foreground text-xs opacity-70">Ẩn</span>
+                            </div>
+                        </div>
+                     </div>
+                </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4 select-none">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 select-none">
                 {months.map(month => (
                     <MonthCard 
                         key={month.toISOString()} 
-                        month={month} 
-                        year={year}
+                        month={month}
                         exceptionMap={exceptionMap}
+                        matchedDateKeys={matchedDateKeys}
                         selectedSet={selectedSet}
+                        activeDateRange={activeDateRange}
                         onMouseDown={handleMouseDown}
                         onMouseEnter={handleMouseEnter}
                     />
@@ -154,8 +229,21 @@ export function YearViewGrid({ year, exceptions, selectedDates, onSelectDates, o
     );
 }
 
+
+
+
+interface MonthCardProps {
+    month: Date;
+    exceptionMap: Map<string, ExceptionDate>;
+    matchedDateKeys: Set<string>;
+    selectedSet: Set<string>;
+    activeDateRange?: DateRange;
+    onMouseDown: (date: Date) => void;
+    onMouseEnter: (date: Date) => void;
+}
+
 // Sub-component for individual Month (Lightweight)
-function MonthCard({ month, exceptionMap, selectedSet, onMouseDown, onMouseEnter }: any) {
+function MonthCard({ month, exceptionMap, matchedDateKeys, selectedSet, activeDateRange, onMouseDown, onMouseEnter }: MonthCardProps) {
     const days = useMemo(() => {
         const start = startOfMonth(month);
         const end = endOfMonth(month);
@@ -185,23 +273,48 @@ function MonthCard({ month, exceptionMap, selectedSet, onMouseDown, onMouseEnter
                      const id = format(date, 'yyyy-MM-dd');
                      const exception = exceptionMap.get(id);
                      const isSelected = selectedSet.has(id);
+                     const isMatched = matchedDateKeys?.has(id) ?? true; 
                      
+                     // Check if date is within active view/filter range
+                     // If activeDateRange is undefined, we assume full year/all valid
+                     let isInRange = true;
+                     if (activeDateRange?.from && activeDateRange?.to) {
+                         // We compare visually -> start/end of day inclusive
+                         // Simple string comparison might be faster but date-fns is safer
+                         if (date < startOfDay(activeDateRange.from) || date > endOfDay(activeDateRange.to)) {
+                             isInRange = false;
+                         }
+                     }
+
                      let bgClass = "bg-muted/30 hover:bg-muted";
+                     
+                     // Dimming Styles (Unified)
+                     const dimClasses = "opacity-30 grayscale saturate-0 scale-75 hover:opacity-100 hover:grayscale-0 hover:saturate-100 hover:scale-100 hover:shadow-sm hover:z-10 hover:ring-1 hover:ring-ring/50 transition-all duration-200 ease-out";
+
                      if (isSelected) {
                          bgClass = "bg-primary text-primary-foreground";
                      } else if (exception) {
-                         // Use centralized style helper
                          const styles = getStatusStyles(exception.type, exception.isClosed);
-                         bgClass = styles.badge; // Re-use badge style for cells or specific calendarItem logic if needed
-                         // Simplified for Year View cells which are small
-                         bgClass = `${styles.bg} ${styles.text} hover:bg-opacity-80`; 
+                         if (isMatched) {
+                             // Normal (Highlighted)
+                             bgClass = styles.calendarItem; 
+                         } else {
+                             // Unmatched Exception -> Dimmed
+                             bgClass = cn(styles.calendarItem, dimClasses);
+                         }
+                     } else {
+                         // Normal Empty Day
+                         if (!isInRange) {
+                             // Out of range Empty Day -> Dimmed
+                             bgClass = cn("bg-muted/30", dimClasses);
+                         }
                      }
 
                      return (
                          <SmartTooltip key={id} date={date} exception={exception}>
                              <div 
                                  className={cn(
-                                     "aspect-square flex items-center justify-center rounded-sm cursor-pointer text-[10px] transition-colors",
+                                     "aspect-square flex items-center justify-center rounded-sm cursor-pointer text-[10px] transition-colors relative",
                                      bgClass
                                  )}
                                  onMouseDown={() => onMouseDown(date)}

@@ -38,37 +38,33 @@ export const getStatusColor = (type: string, isClosed: boolean) => {
 };
 
 export const getStatusStyles = (type: string, isClosed: boolean) => {
-  const colorBase = getStatusColor(type, isClosed);
-  
-  // Xử lý custom classes cho từng màu để đảm bảo đúng chuẩn Tailwind
-  let textClass = `text-${colorBase}`;
-  let bgClass = `bg-${colorBase}/10`;
-  let borderClass = `border-${colorBase}/20`;
-  let hoverClass = `hover:bg-${colorBase}/20`;
+  // 1. Determine Background based on Type
+  let bgClass = "bg-muted/30"; // Default
+  if (type === 'holiday') bgClass = "bg-red-100 dark:bg-red-900/30";
+  else if (type === 'maintenance') bgClass = "bg-amber-100 dark:bg-amber-900/30";
+  else if (type === 'custom') bgClass = "bg-blue-100 dark:bg-blue-900/30";
 
-  // Fix cụ thể cho màu primary/destructive/amber để tránh lỗi dynamic class string nếu tailwind không quét được
-  if (colorBase === 'destructive') {
-      textClass = "text-destructive";
-      bgClass = "bg-destructive/10";
-      borderClass = "border-destructive/20";
-      hoverClass = "hover:bg-destructive/20";
-  } else if (colorBase === 'amber-500') {
-      textClass = "text-amber-600";
-      bgClass = "bg-amber-500/10";
-      borderClass = "border-amber-500/20";
-      hoverClass = "hover:bg-amber-500/20";
-  } else if (colorBase === 'primary') {
-      textClass = "text-primary";
-      bgClass = "bg-primary/10";
-      borderClass = "border-primary/20";
-      hoverClass = "hover:bg-primary/20";
+  // 2. Determine Border & Text based on Status
+  let borderClass = "";
+  let textClass = "";
+
+  if (isClosed) {
+      // Closed: Red Border & Text
+      borderClass = "border border-rose-500/50";
+      textClass = "text-rose-700 dark:text-rose-400";
+  } else {
+      // Open: Green Border & Text
+      borderClass = "border border-emerald-500/50";
+      textClass = "text-emerald-700 dark:text-emerald-400";
   }
+
+  // Hover Effect Base
+  const hoverClass = "hover:shadow-sm hover:ring-1 hover:ring-ring/50";
 
   return {
     badge: `${bgClass} ${textClass} ${borderClass}`,
-    calendarItem: `${bgClass} ${textClass} font-bold ${hoverClass}`,
+    calendarItem: `${bgClass} ${textClass} ${borderClass} font-semibold ${hoverClass}`,
     border: borderClass,
-    icon: textClass,
     text: textClass,
     bg: bgClass
   };

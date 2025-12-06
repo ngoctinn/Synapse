@@ -10,7 +10,7 @@ export default async function OperatingHoursPage() {
   const initialConfig = await getOperatingHours();
 
   return (
-    <div className="w-full min-h-screen flex flex-col">
+    <div className="w-full h-full flex flex-col">
        <OperatingHoursForm initialConfig={initialConfig} />
     </div>
   );

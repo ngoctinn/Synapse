@@ -17,6 +17,10 @@ interface FilterButtonProps {
   className?: string
   /** Hàm callback khi người dùng xóa bộ lọc */
   onClear?: () => void
+  /** Label hiển thị cạnh icon (nếu có sẽ chuyển sang dạng button thường) */
+  label?: string
+  /** Icon tùy chỉnh (mặc định là SlidersHorizontal) */
+  icon?: React.ElementType
 }
 
 export function FilterButton({
@@ -25,22 +29,30 @@ export function FilterButton({
   count = 0,
   className,
   onClear,
+  label,
+  icon: Icon = SlidersHorizontal,
 }: FilterButtonProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          size="icon"
+          size={label ? "default" : "icon"}
           className={cn(
-            "relative h-10 w-10 shrink-0 transition-all duration-300",
+            "relative shrink-0 transition-all duration-300",
+            !label && "h-10 w-10",
             isActive && "border-primary/50 bg-primary/5 text-primary ring-2 ring-primary/20",
             className
           )}
         >
-          <SlidersHorizontal className="h-4 w-4" />
+          <Icon className={cn("h-4 w-4", label && "mr-2")} />
+          {label}
+          
           {count > 0 && (
-            <span className="absolute -right-1 -top-1 flex h-4 w-4 animate-in zoom-in duration-300 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground shadow-sm ring-2 ring-background">
+            <span className={cn(
+              "absolute flex h-4 w-4 animate-in zoom-in duration-300 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground shadow-sm ring-2 ring-background",
+              label ? "-right-1 -top-1" : "-right-1 -top-1" // Keep same position or adjust if needed
+            )}>
               {count}
             </span>
           )}

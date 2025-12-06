@@ -28,7 +28,7 @@ interface UseExceptionViewLogicProps {
 export function useExceptionViewLogic({ exceptions }: UseExceptionViewLogicProps) {
   // --- 1. Filter Logic (URL Params) ---
   const { searchParams, activeCount, updateParam, updateParams, clearFilters } = useFilterParams({
-    filterKeys: ['status', 'type', 'from', 'to']
+    filterKeys: ['status', 'type', 'from', 'to', 'search']
   });
 
   const [initialized, setInitialized] = useState(false);
@@ -36,6 +36,7 @@ export function useExceptionViewLogic({ exceptions }: UseExceptionViewLogicProps
   // Derived Values from URL
   const statusFilter = searchParams.get('status');
   const typeFilter = searchParams.get('type')?.split(',') || [];
+  const searchQuery = searchParams.get('search') || '';
   const fromDate = searchParams.get('from') ? parseISO(searchParams.get('from')!) : undefined;
   const toDate = searchParams.get('to') ? parseISO(searchParams.get('to')!) : undefined;
 
@@ -108,15 +109,22 @@ export function useExceptionViewLogic({ exceptions }: UseExceptionViewLogicProps
 
        // 3. Date
        if (dateRange?.from && dateRange?.to) {
-           return isWithinInterval(ex.date, { 
+           const inRange = isWithinInterval(ex.date, { 
              start: startOfDay(dateRange.from), 
              end: endOfDay(dateRange.to) 
            });
+           if (!inRange) return false;
+       }
+
+       // 4. Search
+       if (searchQuery) {
+           const query = searchQuery.toLowerCase();
+           return ex.reason?.toLowerCase().includes(query) || false;
        }
 
        return true;
     });
-  }, [exceptions, statusFilter, typeFilter, dateRange]);
+  }, [exceptions, statusFilter, typeFilter, dateRange, searchQuery]);
 
   // --- 2. View Mode Logic ---
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
@@ -167,6 +175,7 @@ export function useExceptionViewLogic({ exceptions }: UseExceptionViewLogicProps
 
   const setStatusParam = (val: string | null) => updateParam('status', val);
   const setTypeParam = (vals: string[] | null) => updateParam('type', vals && vals.length > 0 ? vals.join(',') : null);
+  const setSearchParam = (val: string) => updateParam('search', val || null);
 
   return {
     // State
@@ -176,6 +185,7 @@ export function useExceptionViewLogic({ exceptions }: UseExceptionViewLogicProps
     dateRange,
     statusFilter,
     typeFilter,
+    searchQuery,
     activeCount,
     filterUnit,
     
@@ -185,6 +195,7 @@ export function useExceptionViewLogic({ exceptions }: UseExceptionViewLogicProps
     setDateRange: setDateRangeParam,
     setStatusFilter: setStatusParam,
     setTypeFilter: setTypeParam,
+    setSearchQuery: setSearchParam,
     clearFilters,
   };
 }

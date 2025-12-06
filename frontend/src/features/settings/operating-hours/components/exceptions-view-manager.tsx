@@ -53,11 +53,13 @@ export function ExceptionsViewManager({
     typeFilter,
     activeCount,
     filterUnit,
+    searchQuery,
     setViewMode,
     setFilterUnit,
     setDateRange,
     setStatusFilter,
     setTypeFilter,
+    setSearchQuery,
     clearFilters
   } = useExceptionViewLogic({ exceptions });
 
@@ -82,6 +84,11 @@ export function ExceptionsViewManager({
   // Convert selectedDateIds Set to Array of strings for Table
   const selectedIdsArray = useMemo(() => Array.from(selectedDateIds), [selectedDateIds]);
 
+  // Calculate matched keys for styling (Highlighed vs Dimmed)
+  const matchedDateKeys = useMemo(() => {
+    return new Set(filteredExceptions.map(e => format(e.date, 'yyyy-MM-dd')));
+  }, [filteredExceptions]);
+
   const handleManualAdd = () => {
     // Open Dialog with current selection (or empty if none)
     setIsDialogOpen(true);
@@ -94,8 +101,10 @@ export function ExceptionsViewManager({
       isYearView ? (
         <YearViewGrid 
             year={dateRange?.from?.getFullYear() || new Date().getFullYear()} 
-            exceptions={filteredExceptions}
+            exceptions={exceptions} // Pass ALL exceptions to show context
+            matchedDateKeys={matchedDateKeys} // Pass keys to highlight
             selectedDates={selectedDates}
+            activeDateRange={dateRange}
             onSelectDates={setSelectedDates}
             onYearChange={(year) => {
                 const newStart = startOfYear(setYear(new Date(), year));
@@ -260,21 +269,25 @@ export function ExceptionsViewManager({
       );
   };
 
+  // Calculate active filters count excluding Date Range (which is a View Context)
+  const filtersActiveCount = 
+      (statusFilter ? 1 : 0) + 
+      (typeFilter.length > 0 ? 1 : 0) + 
+      (searchQuery ? 1 : 0);
+
   return (
-    <div className="space-y-6 h-full flex flex-col">
-       <div className="shrink-0">
+    <div className="h-full flex flex-col">
          <ExceptionsFilterBar 
+             activeCount={filtersActiveCount}
+             onClearFilters={clearFilters}
+             searchQuery={searchQuery}
+             setSearchQuery={setSearchQuery}
              statusFilter={statusFilter} 
              setStatusFilter={setStatusFilter}
              typeFilter={typeFilter}
              setTypeFilter={setTypeFilter}
              dateRange={dateRange}
              setDateRange={setDateRange}
-             filterUnit={filterUnit}
-             setFilterUnit={setFilterUnit}
-             onClearFilters={clearFilters}
-             activeCount={activeCount}
-             viewMode={viewMode}
              // Hide view toggle on large screens where we show split view
              startContent={
                <div className="flex items-center gap-2 p-1 bg-muted/50 rounded-lg border lg:hidden">
@@ -309,11 +322,10 @@ export function ExceptionsViewManager({
                </div>
              }
          />
-       </div>
 
-       <div className="flex-1 min-h-[600px] relative">
+       <div className="flex-1 min-h-0 relative p-6">
            {/* MOBILE VIEW (Tabs) */}
-           <div className="lg:hidden h-full">
+           <div className="lg:hidden h-full overflow-y-auto">
                 {viewMode === 'list' ? renderTable() : renderCalendar()}
            </div>
 
