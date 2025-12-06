@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { ImagePlus, X } from "lucide-react";
 import Image from "next/image";
@@ -9,9 +10,10 @@ interface ImageUploadProps {
   value?: string;
   onChange: (value: string) => void;
   disabled?: boolean;
+  className?: string;
 }
 
-export function ImageUpload({ value, onChange, disabled }: ImageUploadProps) {
+export function ImageUpload({ value, onChange, disabled, className }: ImageUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | undefined>(value);
 
@@ -33,7 +35,7 @@ export function ImageUpload({ value, onChange, disabled }: ImageUploadProps) {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className={cn("flex flex-col gap-4", className)}>
       <div className="flex items-center gap-4">
         {preview ? (
           <div className="relative w-[160px] h-[160px] rounded-xl overflow-hidden border border-border group shrink-0 shadow-sm">

@@ -11,7 +11,7 @@ export const equipmentUsageSchema = z.object({
     .default(15),
 });
 
-export type EquipmentUsage = z.infer<typeof equipmentUsageSchema>;
+// Type sử dụng từ types.ts để tránh conflict
 
 export const serviceSchema = z.object({
   name: z.string().min(1, "Tên dịch vụ là bắt buộc"),

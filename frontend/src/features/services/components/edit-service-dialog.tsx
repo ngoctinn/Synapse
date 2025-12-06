@@ -1,15 +1,8 @@
 "use client";
 
 import { Resource, RoomType } from "@/features/resources";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/shared/ui/dialog";
 import { Service, Skill } from "../types";
-import { ServiceForm } from "./service-form";
+import { ServiceWizard } from "./service-wizard";
 
 interface EditServiceDialogProps {
   open: boolean;
@@ -20,6 +13,10 @@ interface EditServiceDialogProps {
   availableEquipment: Resource[];
 }
 
+/**
+ * Wrapper component cho ServiceWizard ở chế độ Edit
+ * Nhận service data để pre-populate form
+ */
 export function EditServiceDialog({
   open,
   onOpenChange,
@@ -29,23 +26,14 @@ export function EditServiceDialog({
   availableEquipment
 }: EditServiceDialogProps) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-5xl max-h-[90vh] overflow-y-auto duration-300">
-        <DialogHeader>
-          <DialogTitle>Chỉnh sửa dịch vụ</DialogTitle>
-          <DialogDescription>
-            Cập nhật thông tin dịch vụ và kỹ năng.
-          </DialogDescription>
-        </DialogHeader>
-        <ServiceForm
-          initialData={service}
-          availableSkills={availableSkills}
-          availableRoomTypes={availableRoomTypes}
-          availableEquipment={availableEquipment}
-          onSuccess={() => onOpenChange(false)}
-          variant="dialog"
-        />
-      </DialogContent>
-    </Dialog>
+    <ServiceWizard
+      mode="edit"
+      initialData={service}
+      open={open}
+      onOpenChange={onOpenChange}
+      availableSkills={availableSkills}
+      availableRoomTypes={availableRoomTypes}
+      availableEquipment={availableEquipment}
+    />
   );
 }

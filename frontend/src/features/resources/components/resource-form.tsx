@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Code2, Users } from "lucide-react";
+import { Box, Check, Code2, Loader2, Users } from "lucide-react";
 
 import { Button } from "@/shared/ui/button";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
@@ -55,7 +55,7 @@ export function ResourceForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -64,7 +64,7 @@ export function ResourceForm({
               <FormItem>
                 <FormLabel>Tên tài nguyên</FormLabel>
                 <FormControl>
-                  <InputWithIcon icon={Box} placeholder="Ví dụ: Phòng VIP 1" {...field} />
+                  <InputWithIcon icon={Box} placeholder="Ví dụ: Phòng VIP 1" className="h-11 rounded-lg" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -77,7 +77,7 @@ export function ResourceForm({
               <FormItem>
                 <FormLabel>Mã tài nguyên</FormLabel>
                 <FormControl>
-                  <InputWithIcon icon={Code2} placeholder="Ví dụ: R-VIP-01" {...field} />
+                  <InputWithIcon icon={Code2} placeholder="Ví dụ: R-VIP-01" className="h-11 rounded-lg" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -97,7 +97,7 @@ export function ResourceForm({
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-11 rounded-lg">
                       <SelectValue placeholder="Chọn loại tài nguyên" />
                     </SelectTrigger>
                   </FormControl>
@@ -122,7 +122,7 @@ export function ResourceForm({
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-11 rounded-lg">
                       <SelectValue placeholder="Chọn trạng thái" />
                     </SelectTrigger>
                   </FormControl>
@@ -146,7 +146,7 @@ export function ResourceForm({
               <FormItem>
                 <FormLabel>Thời gian chuẩn bị (phút)</FormLabel>
                 <FormControl>
-                  <InputWithIcon icon={Box} type="number" min={0} placeholder="0" {...field} />
+                  <InputWithIcon icon={Box} type="number" min={0} placeholder="0" className="h-11 rounded-lg" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -162,7 +162,7 @@ export function ResourceForm({
               <FormItem>
                 <FormLabel>Sức chứa (người)</FormLabel>
                 <FormControl>
-                  <InputWithIcon icon={Users} type="number" min={1} placeholder="1" {...field} />
+                  <InputWithIcon icon={Users} type="number" min={1} placeholder="1" className="h-11 rounded-lg" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -179,7 +179,7 @@ export function ResourceForm({
               <FormControl>
                 <Textarea
                   placeholder="Mô tả chi tiết về tài nguyên này..."
-                  className="resize-none"
+                  className="min-h-[100px] resize-none rounded-lg"
                   {...field}
                 />
               </FormControl>
@@ -189,8 +189,18 @@ export function ResourceForm({
         />
 
         <div className="flex justify-end pt-4">
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Đang lưu..." : "Lưu tài nguyên"}
+          <Button type="submit" disabled={isLoading} className="min-w-[140px]">
+            {isLoading ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Đang lưu...
+              </>
+            ) : (
+              <>
+                <Check className="w-4 h-4 mr-2" />
+                Lưu tài nguyên
+              </>
+            )}
           </Button>
         </div>
       </form>

@@ -57,12 +57,18 @@ export function ResourceDialog({
   };
 
   const defaultTrigger = resource ? (
-    <Button variant="ghost" size="icon" aria-label="Chỉnh sửa tài nguyên" disabled={isLoading}>
+    <Button
+      variant="ghost"
+      size="icon"
+      className="min-w-[44px] min-h-[44px]"
+      aria-label="Chỉnh sửa tài nguyên"
+      disabled={isLoading}
+    >
       <Edit className="h-4 w-4" />
     </Button>
   ) : (
-    <Button>
-      <Plus className="mr-2 h-4 w-4" />
+    <Button size="sm" className="text-xs">
+      <Plus className="mr-2 h-3.5 w-3.5" />
       Thêm tài nguyên
     </Button>
   );
@@ -70,22 +76,26 @@ export function ResourceDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>
-            {resource ? "Chỉnh sửa tài nguyên" : "Thêm tài nguyên mới"}
-          </DialogTitle>
-          <DialogDescription>
-            {resource
-              ? "Cập nhật thông tin chi tiết cho tài nguyên này."
-              : "Điền thông tin để tạo tài nguyên mới vào hệ thống."}
-          </DialogDescription>
-        </DialogHeader>
-        <ResourceForm
-          defaultValues={resource}
-          onSubmit={handleSubmit}
-          isLoading={isLoading}
-        />
+      <DialogContent className="sm:max-w-[500px] p-0 gap-0">
+        <div className="p-6 pb-4 border-b bg-muted/10">
+          <DialogHeader>
+            <DialogTitle className="font-serif text-xl">
+              {resource ? "Chỉnh sửa tài nguyên" : "Thêm tài nguyên mới"}
+            </DialogTitle>
+            <DialogDescription className="text-sm">
+              {resource
+                ? "Cập nhật thông tin chi tiết cho tài nguyên này."
+                : "Điền thông tin để tạo tài nguyên mới vào hệ thống."}
+            </DialogDescription>
+          </DialogHeader>
+        </div>
+        <div className="p-6">
+          <ResourceForm
+            defaultValues={resource}
+            onSubmit={handleSubmit}
+            isLoading={isLoading}
+          />
+        </div>
       </DialogContent>
     </Dialog>
   );

@@ -7,20 +7,20 @@ import { Card } from "@/shared/ui/card";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/shared/ui/select";
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/shared/ui/tooltip";
 import { GripVertical, Plus, Trash2, X } from "lucide-react";
-import { EquipmentUsage } from "../schemas";
+import { EquipmentUsage } from "../types";
 
 interface EquipmentTimelineEditorProps {
   /** Thời lượng dịch vụ (phút) - dùng để vẽ timeline */
