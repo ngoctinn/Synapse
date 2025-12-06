@@ -530,4 +530,32 @@ Giao dịch thanh toán thực tế (có thể thanh toán nhiều lần cho 1 h
 | `id` | UUID | Có | Khóa chính. |
 | `invoice_id` | UUID | Có | Thuộc về hóa đơn nào. |
 | `amount` | DECIMAL | Có | Số tiền giao dịch. |
-| `method` | ENUM | Có | `CASH`, `CARD`, `TRANSFER`. |
+
+### 3.7. Treatments (Gói Liệu Trình)
+
+#### Bảng `customer_treatments`
+Lưu trữ thông tin các gói liệu trình/combo mà khách hàng đã mua và trạng thái sử dụng.
+
+| Tên Trường | Kiểu Dữ Liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| `id` | UUID | Có | - | Khóa chính. |
+| `customer_id` | UUID | Có | - | Khách hàng sở hữu gói. |
+| `service_id` | UUID | Có | - | Dịch vụ gốc (Dịch vụ gói). |
+| `name` | VARCHAR(255) | Có | - | Tên gói tại thời điểm mua (Snapshot). |
+| `total_sessions` | INTEGER | Có | - | Tổng số buổi trong liệu trình. |
+| `used_sessions` | INTEGER | Không | `0` | Số buổi đã sử dụng. |
+| `expiry_date` | DATE | Không | - | Ngày hết hạn sử dụng. |
+| `status` | ENUM | Có | `'ACTIVE'` | `ACTIVE` (Còn hạn), `COMPLETED` (Hết buổi), `EXPIRED`. |
+
+### 3.8. Reviews (Đánh Giá)
+
+#### Bảng `reviews`
+Lưu trữ phản hồi của khách hàng sau khi hoàn tất dịch vụ.
+
+| Tên Trường | Kiểu Dữ Liệu | Bắt buộc | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `id` | UUID | Có | Khóa chính. |
+| `booking_id` | UUID | Có | Đánh giá cho lần đặt hẹn nào. |
+| `customer_id` | UUID | Có | Người đánh giá. |
+| `rating` | INTEGER | Có | Điểm số (1-5 sao). |
+| `comment` | TEXT | Không | Nội dung phản hồi chi tiết. |
