@@ -32,21 +32,21 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
     participant DB as Database
 
     LT->>UI: Mở Dashboard
     activate UI
-    UI->>BFF: getAppointments(date, viewMode)
+    UI->>BFF: getAppointments
     activate BFF
 
     BFF->>API: GET /appointments
     activate API
 
-    API->>S: get_appointments(date)
+    API->>S: get_appointments
     activate S
 
-    S->>DB: query_all_appointments_with_details()
+    S->>DB: query_all_appointments_with_details
     activate DB
     DB-->>S: appointments[]
     deactivate DB
@@ -74,20 +74,20 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
-    participant SOLVER as Bộ giải (Solver)
+    participant S as Service
+    participant SOLVER as Bộ giải
     participant DB as Database
 
     LT->>UI: Nhập thông tin khách & dịch vụ
     activate UI
-    UI->>BFF: checkAvailability(service, time)
+    UI->>BFF: checkAvailability
     activate BFF
 
     BFF->>API: POST /bookings/check
     activate API
-    API->>S: check_slot_availability(time)
+    API->>S: check_slot_availability
     activate S
-    S->>SOLVER: validate_slot(time)
+    S->>SOLVER: validate_slot
     SOLVER-->>S: Valid
     S-->>API: OK
     deactivate S
@@ -96,17 +96,17 @@ sequenceDiagram
     deactivate BFF
 
     LT->>UI: Xác nhận tạo lịch
-    UI->>BFF: createWalkInBooking(data)
+    UI->>BFF: createWalkInBooking
     activate BFF
 
     BFF->>API: POST /bookings/manual
     activate API
 
-    API->>S: create_manual_booking(data)
+    API->>S: create_manual_booking
     activate S
 
-    S->>DB: get_or_create_customer(phone)
-    S->>DB: create_booking(status='CONFIRMED')
+    S->>DB: get_or_create_customer
+    S->>DB: create_booking
     activate DB
     DB-->>S: booking
     deactivate DB
@@ -134,22 +134,22 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
     participant DB as Database
 
     LT->>UI: Chọn lịch hẹn -> Check-in
     activate UI
-    UI->>BFF: checkInCustomer(bookingId)
+    UI->>BFF: checkInCustomer
     activate BFF
 
     BFF->>API: POST /bookings/{id}/check-in
     activate API
 
-    API->>S: update_booking_status(id, 'IN_PROGRESS')
+    API->>S: update_booking_status
     activate S
 
-    S->>DB: set_status(id, 'IN_PROGRESS')
-    S->>DB: set_actual_start_time(now)
+    S->>DB: set_status
+    S->>DB: set_actual_start_time
     activate DB
     DB-->>S: updated
     deactivate DB
@@ -177,22 +177,22 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
     participant DB as Database
 
     LT->>UI: Xác nhận thanh toán
     activate UI
-    UI->>BFF: processPayment(bookingId, amount, method)
+    UI->>BFF: processPayment
     activate BFF
 
     BFF->>API: POST /payments
     activate API
 
-    API->>S: create_payment_transaction(data)
+    API->>S: create_payment_transaction
     activate S
 
-    S->>DB: create_invoice()
-    S->>DB: update_booking_status('COMPLETED')
+    S->>DB: create_invoice
+    S->>DB: update_booking_status
     activate DB
     DB-->>S: invoice
     deactivate DB

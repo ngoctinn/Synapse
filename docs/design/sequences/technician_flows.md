@@ -32,21 +32,21 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
     participant DB as Database
 
     KTV->>UI: Truy cập ứng dụng
     activate UI
-    UI->>BFF: getMySchedule(date)
+    UI->>BFF: getMySchedule
     activate BFF
 
     BFF->>API: GET /staff/me/schedule
     activate API
 
-    API->>S: get_staff_schedule(user_id, date)
+    API->>S: get_staff_schedule
     activate S
 
-    S->>DB: query_bookings_by_staff_id(id, date)
+    S->>DB: query_bookings_by_staff_id
     activate DB
     DB-->>S: booking_list
     deactivate DB
@@ -74,21 +74,21 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service (Logic)
+    participant S as Service
     participant DB as Database
 
     KTV->>UI: Nhập ghi chú liệu trình
     activate UI
-    UI->>BFF: updateBookingNote(id, note)
+    UI->>BFF: updateBookingNote
     activate BFF
 
     BFF->>API: POST /bookings/{id}/notes
     activate API
 
-    API->>S: add_treatment_note(booking_id, content)
+    API->>S: add_treatment_note
     activate S
 
-    S->>DB: save_note(booking_id, content)
+    S->>DB: save_note
     activate DB
     DB-->>S: success
     deactivate DB
