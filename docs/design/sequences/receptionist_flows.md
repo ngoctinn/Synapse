@@ -2,7 +2,24 @@
 
 Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Lễ tân.
 
-%%{init: {'theme': 'neutral'}}%%
+%%{
+  init: {
+    'theme': 'neutral',
+    'themeVariables': {
+      'fontFamily': 'Arial, Helvetica, sans-serif',
+      'fontSize': '16px',
+      'sequenceMessageFontSize': '14px',
+      'sequenceActorMargin': 15,
+      'sequenceActivationPadding': 5,
+      'sequenceDiagramMarginY': 10,
+      'sequenceLogLifeline': 'transparent',
+      'primaryColor': '#ffffff',
+      'primaryTextColor': '#000000',
+      'lineColor': '#000000',
+      'secondaryColor': '#f5f5f5'
+    }
+  }
+}%%
 
 ## 1.1.3 Sơ đồ hoạt động cho nhân viên lễ tân
 
