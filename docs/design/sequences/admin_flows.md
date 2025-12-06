@@ -28,17 +28,12 @@ Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Quản trị v
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor AD as Admin
-        participant UI as :ServiceManagementPage
-        participant BFF as :ServiceAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :ServiceRouter
-        participant S as :ServiceService
-        participant DB as :ServiceRepo
-    end
+    actor AD as Admin
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     AD->>UI: Thêm mới dịc vụ
     activate UI
@@ -75,17 +70,12 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor AD as Admin
-        participant UI as :ResourcePage
-        participant BFF as :ResourceAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :ResourceRouter
-        participant S as :ResourceService
-        participant DB as :ResourceRepo
-    end
+    actor AD as Admin
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     AD->>UI: Cập nhật thông tin phòng
     activate UI
@@ -122,17 +112,12 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor AD as Admin
-        participant UI as :StaffSchedulePage
-        participant BFF as :StaffAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :StaffRouter
-        participant S as :StaffService
-        participant DB as :ScheduleRepo
-    end
+    actor AD as Admin
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     AD->>UI: Phân ca cho nhân viên
     activate UI
@@ -177,17 +162,12 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor AD as Admin
-        participant UI as :ReportPage
-        participant BFF as :AnalyticsAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :AnalyticsRouter
-        participant S as :AnalyticsService
-        participant DB as :BookingRepo
-    end
+    actor AD as Admin
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     AD->>UI: Xem báo cáo tháng
     activate UI

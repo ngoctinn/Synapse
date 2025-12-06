@@ -28,17 +28,12 @@ Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Khách hàng, 
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor KH as Khách hàng
-        participant UI as :ServiceListPage
-        participant BFF as :ServiceAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :ServiceRouter
-        participant S as :ServiceService
-        participant DB as :ServiceRepo
-    end
+    actor KH as Khách hàng
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     KH->>UI: Truy cập trang Dịch vụ
     activate UI
@@ -75,17 +70,12 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor KH as Khách hàng
-        participant UI as :ServiceDetailPage
-        participant BFF as :ServiceAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :ServiceRouter
-        participant S as :ServiceService
-        participant DB as :ServiceRepo
-    end
+    actor KH as Khách hàng
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     KH->>UI: Chọn một dịch vụ cụ thể
     activate UI
@@ -122,18 +112,13 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor KH as Khách hàng
-        participant UI as :BookingWizard
-        participant BFF as :BookingAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :BookingRouter
-        participant S as :BookingService
-        participant SOLVER as :AvailabilitySolver
-        participant DB as :ResourceRepo
-    end
+    actor KH as Khách hàng
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant SOLVER as Bộ giải (Solver)
+    participant DB as Database
 
     KH->>UI: Chọn Dịch vụ & Ngày
     activate UI
@@ -177,18 +162,13 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor KH as Khách hàng
-        participant UI as :BookingSummary
-        participant BFF as :BookingAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :BookingRouter
-        participant S as :BookingService
-        participant NOTI as :NotificationService
-        participant DB as :BookingRepo
-    end
+    actor KH as Khách hàng
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant NOTI as Notification Service
+    participant DB as Database
 
     KH->>UI: Xác nhận đặt lịch
     activate UI
@@ -278,17 +258,12 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor KH as Khách hàng
-        participant UI as :AppointmentDetail
-        participant BFF as :BookingAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :BookingRouter
-        participant S as :BookingService
-        participant DB as :BookingRepo
-    end
+    actor KH as Khách hàng
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     KH->>UI: Nhấn Hủy lịch
     activate UI
@@ -334,17 +309,12 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor KH as Khách hàng
-        participant UI as :HistoryPage
-        participant BFF as :BookingAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :BookingRouter
-        participant S as :BookingService
-        participant DB as :BookingRepo
-    end
+    actor KH as Khách hàng
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     KH->>UI: Truy cập Lịch sử
     activate UI
@@ -381,17 +351,12 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor KH as Khách hàng
-        participant UI as :ReviewDialog
-        participant BFF as :ReviewAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :ReviewRouter
-        participant S as :ReviewService
-        participant DB as :ReviewRepo
-    end
+    actor KH as Khách hàng
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     KH->>UI: Viết đánh giá & Chấm sao
     activate UI

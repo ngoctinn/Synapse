@@ -28,17 +28,12 @@ Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Kỹ thuật v
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor KTV as Kỹ thuật viên
-        participant UI as :StaffApp
-        participant BFF as :StaffAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :StaffRouter
-        participant S as :StaffService
-        participant DB as :BookingRepo
-    end
+    actor KTV as Kỹ thuật viên
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     KTV->>UI: Truy cập ứng dụng
     activate UI
@@ -75,17 +70,12 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor KTV as Kỹ thuật viên
-        participant UI as :NoteDialog
-        participant BFF as :BookingAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :BookingRouter
-        participant S as :BookingService
-        participant DB as :NoteRepo
-    end
+    actor KTV as Kỹ thuật viên
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     KTV->>UI: Nhập ghi chú liệu trình
     activate UI

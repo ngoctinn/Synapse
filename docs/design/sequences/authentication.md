@@ -28,17 +28,12 @@ Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Xác thực, t
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor KH as Khách hàng
-        participant UI as :RegisterForm
-        participant BFF as :AuthAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :AuthRouter
-        participant S as :AuthService
-        participant DB as :UserRepo
-    end
+    actor KH as Khách hàng
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     KH->>UI: Nhập thông tin (email, password)
     activate UI
@@ -84,17 +79,12 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor KH as Khách hàng
-        participant UI as :VerifyPage
-        participant BFF as :AuthAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :AuthRouter
-        participant S as :AuthService
-        participant DB as :UserRepo
-    end
+    actor KH as Khách hàng
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     KH->>UI: Truy cập liên kết xác thực
     activate UI
@@ -136,17 +126,12 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor KH as Khách hàng
-        participant UI as :LoginForm
-        participant BFF as :AuthAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :AuthRouter
-        participant S as :AuthService
-        participant DB as :UserRepo
-    end
+    actor KH as Khách hàng
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     KH->>UI: Nhập credentials (email, password)
     activate UI
@@ -193,17 +178,12 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor KH as Khách hàng
-        participant UI as :ForgotPasswordForm
-        participant BFF as :AuthAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :AuthRouter
-        participant S as :AuthService
-        participant DB as :UserRepo
-    end
+    actor KH as Khách hàng
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     KH->>UI: Nhập email yêu cầu
     activate UI
@@ -249,17 +229,12 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor KH as Khách hàng
-        participant UI as :ResetPasswordForm
-        participant BFF as :AuthAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :AuthRouter
-        participant S as :AuthService
-        participant DB as :UserRepo
-    end
+    actor KH as Khách hàng
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     KH->>UI: Nhập mật khẩu mới
     activate UI
@@ -302,17 +277,12 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor KH as Khách hàng
-        participant UI as :ChangePasswordForm
-        participant BFF as :AuthAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :AuthRouter
-        participant S as :AuthService
-        participant DB as :UserRepo
-    end
+    actor KH as Khách hàng
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     KH->>UI: Nhập mật khẩu cũ & mới
     activate UI
@@ -359,17 +329,12 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor KH as Khách hàng
-        participant UI as :ProfileForm
-        participant BFF as :UserAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :UserRouter
-        participant S as :UserService
-        participant DB as :UserRepo
-    end
+    actor KH as Khách hàng
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     KH->>UI: Sửa thông tin & Lưu
     activate UI
@@ -406,11 +371,9 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor KH as Khách hàng
-        participant UI as :Dashboard
-        participant BFF as :AuthAction
-    end
+    actor KH as Khách hàng
+    participant UI as Giao diện
+    participant BFF as Server Action
 
     KH->>UI: Nhấn Đăng xuất
     activate UI

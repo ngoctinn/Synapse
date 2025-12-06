@@ -28,17 +28,12 @@ Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Lễ tân.
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor LT as Lễ tân
-        participant UI as :ReceptionDashboard
-        participant BFF as :AppointmentAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :AppointmentRouter
-        participant S as :AppointmentService
-        participant DB as :BookingRepo
-    end
+    actor LT as Lễ tân
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     LT->>UI: Mở Dashboard
     activate UI
@@ -75,18 +70,13 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor LT as Lễ tân
-        participant UI as :ManualBookingForm
-        participant BFF as :BookingAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :BookingRouter
-        participant S as :BookingService
-        participant SOLVER as :AvailabilitySolver
-        participant DB as :BookingRepo
-    end
+    actor LT as Lễ tân
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant SOLVER as Bộ giải (Solver)
+    participant DB as Database
 
     LT->>UI: Nhập thông tin khách & dịch vụ
     activate UI
@@ -136,17 +126,12 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor LT as Lễ tân
-        participant UI as :BookingCard
-        participant BFF as :BookingAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :BookingRouter
-        participant S as :BookingService
-        participant DB as :BookingRepo
-    end
+    actor LT as Lễ tân
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     LT->>UI: Chọn lịch hẹn -> Check-in
     activate UI
@@ -184,17 +169,12 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    box "Frontend Layer (Next.js)"
-        actor LT as Lễ tân
-        participant UI as :CheckoutDialog
-        participant BFF as :PaymentAction
-    end
-
-    box "Backend Layer (FastAPI)"
-        participant API as :PaymentRouter
-        participant S as :PaymentService
-        participant DB as :InvoiceRepo
-    end
+    actor LT as Lễ tân
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as Service (Logic)
+    participant DB as Database
 
     LT->>UI: Xác nhận thanh toán
     activate UI
