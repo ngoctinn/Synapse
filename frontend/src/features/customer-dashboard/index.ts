@@ -22,6 +22,7 @@ export { MobileNav } from "./components/mobile-nav";
 export { NavMain } from "./components/nav-main";
 export { ProfileForm } from "./components/profile-form";
 
+export { BookingDialog } from "./components/booking-dialog";
 export { TreatmentList } from "./components/treatment-list";
 
 

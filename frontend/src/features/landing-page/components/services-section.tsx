@@ -1,16 +1,19 @@
 
 "use client"
 
+import { BookingDialog } from "@/features/customer-dashboard"; // Import BookingDialog
 import { AnimatePresence, motion } from "framer-motion"
 import { useRouter } from "next/navigation"
 import { useMemo, useState } from "react"
 import { MOCK_SERVICES } from "../mocks"
+import { Service } from "../types"
 import { ServiceCard } from "./service-card"
 import { ServiceFilter } from "./service-filter"
 
 export function ServicesSection() {
   const [searchQuery, setSearchQuery] = useState("")
   const [category, setCategory] = useState("All")
+  const [selectedService, setSelectedService] = useState<Service | null>(null) // Add state for selected service
   const router = useRouter()
 
   const categories = useMemo(() => {
@@ -28,7 +31,10 @@ export function ServicesSection() {
   }, [searchQuery, category])
 
   const handleBook = (id: string) => {
-    router.push('/login')
+    const service = MOCK_SERVICES.find(s => s.id === id)
+    if (service) {
+      setSelectedService(service)
+    }
   }
 
   return (
@@ -88,6 +94,17 @@ export function ServicesSection() {
                 </div>
             )}
         </div>
+
+         <BookingDialog
+            open={!!selectedService}
+            onOpenChange={(open) => !open && setSelectedService(null)}
+            service={selectedService ? {
+                id: selectedService.id,
+                name: selectedService.name,
+                duration: selectedService.durationMinutes,
+                price: selectedService.price
+            } : undefined}
+        />
     </section>
   )
 }
