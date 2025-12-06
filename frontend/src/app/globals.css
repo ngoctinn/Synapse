@@ -70,28 +70,6 @@
   /* Shadows: Soft & Diffused */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-  --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
-  --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
-
-  /* Layout */
-  /* Layout */
-  --header-height: 53px;
-
-  /* Staff Feature Layout */
-  --staff-header-height: 57px;
-  --staff-header-height-mobile: 109px;
-  --staff-grid-header: 114px;
-  --staff-grid-header-mobile: 166px;
-
-  /* Z-Index Strata */
-  --z-sticky-toolbar: 20;
-  --z-sticky-header: 30;
-  --z-sticky-corner: 40;
-  --z-dropdown: 50;
-
-  /* Shadows */
-  --shadow-sticky: 1px 0 0 0 rgb(0 0 0 / 0.05);
-  --shadow-sticky-bottom: 0 1px 0 0 rgb(0 0 0 / 0.05);
 
   /* Alert Colors: Warning (Amber) */
   --alert-warning: oklch(0.96 0.08 85);

@@ -87,7 +87,7 @@ export function ScheduleGrid({
             {staffList.map((staff) => (
               <div key={staff.user_id} className="grid grid-cols-[220px_repeat(7,1fr)] group hover:bg-muted/5 transition-colors">
                 {/* Staff Info */}
-                <div className="p-3 border-r flex items-center gap-3 bg-background group-hover:bg-muted/5 transition-colors sticky left-0 z-30 shadow-[1px_0_0_0_rgba(0,0,0,0.05)]">
+                <div className="p-3 border-r flex items-center gap-3 bg-background group-hover:bg-muted/5 transition-colors sticky left-0 z-20 shadow-[1px_0_0_0_rgba(0,0,0,0.05)]">
                   <div className="w-9 h-9 rounded-full bg-muted overflow-hidden border shrink-0">
                      <img src={staff.user.avatar_url || ''} alt={staff.user.full_name || ''} className="w-full h-full object-cover" />
                   </div>

@@ -66,10 +66,7 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
   const [activeTab, setActiveTab] = useState("list")
 
   return (
-    <div className="min-h-screen flex flex-col w-full" style={{
-      "--header-height": "57px",
-      "--header-height-mobile": "109px"
-    } as React.CSSProperties}>
+    <div className="min-h-screen flex flex-col w-full">
       <Tabs defaultValue="list" className="flex flex-col flex-1 w-full gap-0" onValueChange={setActiveTab}>
         {/* Sticky Header with Tabs and Actions */}
         <div
