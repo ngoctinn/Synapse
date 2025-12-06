@@ -3,9 +3,14 @@
 import { SearchInput } from "@/shared/ui/custom/search-input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { useState } from "react"
+import { MOCK_APPOINTMENTS, MOCK_RESOURCES } from "../mock-data"
 import { AppointmentFilter } from "./appointment-filter"
 import { AppointmentTimeline } from "./appointment-timeline"
 import { CreateAppointmentDialog } from "./create-appointment-dialog"
+
+interface AppointmentPageProps {
+    initialData?: boolean; // Reserved for future server data
+}
 
 const Footer = () => (
   <div className="text-center text-sm text-muted-foreground py-6 mt-auto">
@@ -13,7 +18,7 @@ const Footer = () => (
   </div>
 )
 
-export function AppointmentPage() {
+export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
   const [activeTab, setActiveTab] = useState("timeline")
   const isTimelineTab = activeTab === "timeline"
 
@@ -22,11 +27,7 @@ export function AppointmentPage() {
       <Tabs defaultValue="timeline" className="flex flex-col flex-1 w-full gap-0" onValueChange={setActiveTab}>
         {/* Sticky Header with Tabs and Actions */}
         <div
-          className="sticky top-0 z-40 -mx-4 px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4"
-          style={{
-            "--header-height": "57px",
-            "--header-height-mobile": "109px"
-          } as React.CSSProperties}
+          className="sticky top-0 z-50 px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4"
         >
           <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto justify-start">
             <TabsTrigger value="timeline" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Lịch biểu</TabsTrigger>
@@ -49,7 +50,10 @@ export function AppointmentPage() {
           <TabsContent value="timeline" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
 
              {/* The Timeline Component */}
-             <AppointmentTimeline />
+             <AppointmentTimeline
+               appointments={MOCK_APPOINTMENTS}
+               resources={MOCK_RESOURCES}
+             />
              <Footer />
           </TabsContent>
 

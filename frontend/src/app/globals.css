@@ -17,6 +17,15 @@
   --popover: oklch(1.0 0 0);
   --popover-foreground: oklch(0.25 0.02 260);
 
+  /* Layout Variables */
+
+  --appointment-header-height: 53px;
+  --appointment-header-height-mobile: 130px;
+  --calendar-header-height: 53px;
+  --calendar-header-height-mobile: 130px;
+  --timeline-header-offset: calc(var(--appointment-header-height) + var(--calendar-header-height));
+  --timeline-header-offset-mobile: calc(var(--appointment-header-height-mobile) + var(--calendar-header-height-mobile));
+
   /* Primary: Deep Teal/Ocean (Sophisticated, Calming) */
   --primary: oklch(0.48 0.14 200);
   --primary-foreground: oklch(0.98 0.01 200);
@@ -85,6 +94,37 @@
   --alert-info: oklch(0.96 0.05 240);
   --alert-info-foreground: oklch(0.40 0.12 240);
   --alert-info-border: oklch(0.88 0.08 240);
+
+  /* --- Appointment Status Colors (Premium Pastel) --- */
+  /* Pending: Amber-like */
+  --status-pending: oklch(0.96 0.08 85);
+  --status-pending-foreground: oklch(0.45 0.12 50);
+  --status-pending-border: oklch(0.88 0.10 85);
+
+  /* Confirmed: Sky-like */
+  --status-confirmed: oklch(0.96 0.05 240);
+  --status-confirmed-foreground: oklch(0.40 0.12 240);
+  --status-confirmed-border: oklch(0.88 0.08 240);
+
+  /* Serving: Emerald-like */
+  --status-serving: oklch(0.96 0.05 155);
+  --status-serving-foreground: oklch(0.35 0.10 155);
+  --status-serving-border: oklch(0.88 0.08 155);
+
+  /* Completed: Slate-like */
+  --status-completed: oklch(0.97 0.01 260);
+  --status-completed-foreground: oklch(0.45 0.02 260);
+  --status-completed-border: oklch(0.92 0.01 260);
+
+  /* Cancelled: Rose-like */
+  --status-cancelled: oklch(0.96 0.05 15);
+  --status-cancelled-foreground: oklch(0.45 0.12 15);
+  --status-cancelled-border: oklch(0.88 0.08 15);
+
+  /* No-Show: Red-like */
+  --status-noshow: oklch(0.95 0.10 25);
+  --status-noshow-foreground: oklch(0.40 0.15 25);
+  --status-noshow-border: oklch(0.88 0.10 25);
 }
 
 .dark {
@@ -152,6 +192,37 @@
   --alert-info: oklch(0.22 0.06 240);
   --alert-info-foreground: oklch(0.88 0.08 240);
   --alert-info-border: oklch(0.32 0.06 240);
+
+  /* --- Appointment Status Colors (Premium Pastel) - Dark --- */
+  /* Pending: Amber-like */
+  --status-pending: oklch(0.25 0.08 50);
+  --status-pending-foreground: oklch(0.90 0.08 85);
+  --status-pending-border: oklch(0.35 0.08 50);
+
+  /* Confirmed: Sky-like */
+  --status-confirmed: oklch(0.22 0.06 240);
+  --status-confirmed-foreground: oklch(0.88 0.08 240);
+  --status-confirmed-border: oklch(0.32 0.06 240);
+
+  /* Serving: Emerald-like */
+  --status-serving: oklch(0.22 0.06 155);
+  --status-serving-foreground: oklch(0.88 0.08 155);
+  --status-serving-border: oklch(0.32 0.06 155);
+
+  /* Completed: Slate-like */
+  --status-completed: oklch(0.15 0.02 260);
+  --status-completed-foreground: oklch(0.70 0.02 260);
+  --status-completed-border: oklch(0.28 0.02 260);
+
+  /* Cancelled: Rose-like */
+  --status-cancelled: oklch(0.22 0.06 15);
+  --status-cancelled-foreground: oklch(0.88 0.08 15);
+  --status-cancelled-border: oklch(0.32 0.06 15);
+
+  /* No-Show: Red-like */
+  --status-noshow: oklch(0.25 0.10 25);
+  --status-noshow-foreground: oklch(0.90 0.10 25);
+  --status-noshow-border: oklch(0.35 0.10 25);
 }
 
 @theme inline {

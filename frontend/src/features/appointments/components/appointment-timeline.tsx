@@ -2,12 +2,16 @@
 
 import { startOfToday } from 'date-fns';
 import * as React from 'react';
-import { MOCK_APPOINTMENTS, MOCK_RESOURCES } from '../mock-data';
-import { CalendarView } from '../types';
+import { Appointment, CalendarView, Resource } from '../types';
 import { CalendarHeader } from './calendar-header';
 import { ResourceTimeline } from './resource-timeline';
 
-export function AppointmentTimeline() {
+interface AppointmentTimelineProps {
+  appointments: Appointment[];
+  resources: Resource[];
+}
+
+export function AppointmentTimeline({ appointments, resources }: AppointmentTimelineProps) {
   const [date, setDate] = React.useState<Date>(startOfToday());
   const [view, setView] = React.useState<CalendarView>('timeline');
 
@@ -21,11 +25,11 @@ export function AppointmentTimeline() {
       />
 
       {view === 'timeline' ? (
-        <div className="flex-1 flex flex-col min-h-0 relative -mx-4 w-[calc(100%+2rem)]">
+        <div className="flex-1 flex flex-col min-h-0 relative">
            <ResourceTimeline
             date={date}
-            resources={MOCK_RESOURCES}
-            appointments={MOCK_APPOINTMENTS}
+            resources={resources}
+            appointments={appointments}
           />
         </div>
       ) : (
