@@ -1,51 +1,63 @@
 # Sequence Diagrams - Hệ Thống Synapse
 
-Tài liệu này mô tả các luồng nghiệp vụ cốt lõi của hệ thống Synapse dưới dạng biểu đồ tuần tự (Sequence Diagram) đơn giản, tập trung vào tương tác giữa các vai trò người dùng và hệ thống.
+Tài liệu này mô tả chi tiết các luồng tương tác trong hệ thống Synapse, tuân thủ kiến trúc **Modular Monolith** (Next.js + FastAPI).
 
 ## 1. Luồng Đặt Lịch Hẹn (Booking Flow)
-Quy trình quan trọng nhất để đảm bảo không bị trùng lịch (Double Booking).
+Mô tả quá trình khách hàng chọn dịch vụ, kỹ thuật viên và xác nhận lịch hẹn để tránh trùng lặp.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': { 'fontFamily': 'Times New Roman'}}}%%
 sequenceDiagram
     autonumber
-    actor User as Khách hàng / Lễ tân
-    participant FE as Frontend (App/Web)
-    participant BE as Backend API
+    actor User as Khách hàng
+    participant View as :BookingDialog
+    participant Action as :BookingAction
+    participant Router as :BookingRouter
+    participant Service as :BookingService
     participant DB as Database
 
-    Note over User, FE: Giai đoạn 1: Tìm kiếm khung giờ
+    Note over User, View: Giai đoạn 1: Tìm kiếm slot trống
 
-    User->>FE: Chọn Dịch vụ & Kỹ thuật viên & Ngày
-    FE->>BE: Gọi API lấy Slot trống (Get Available Slots)
-    BE->>DB: Query lịch nhân viên & phòng
-    DB-->>BE: Trả về dữ liệu lịch đã có
+    User->>View: Chọn Dịch vụ, KTV & Ngày
+    View->>Action: getAvailableSlots()
+    Action->>Router: GET /api/slots
+    Router->>Service: getAvailability()
+    Service->>DB: querySchedules()
+    DB-->>Service: return ExistingBookings
 
-    Note right of BE: Thuật toán tìm khoảng trống<br/>trừ đi lịch bận & giờ nghỉ
+    Service->>Service: calculateFreeSlots()
 
-    BE-->>FE: Danh sách các khung giờ khả dụng (Available Slots)
-    FE-->>User: Hiển thị các giờ có thể đặt
+    Service-->>Router: return Slots
+    Router-->>Action: return JSON
+    Action-->>View: return List<Slot>
+    View-->>User: Hiển thị các khung giờ trống
 
-    Note over User, FE: Giai đoạn 2: Xác nhận đặt
+    Note over User, View: Giai đoạn 2: Xác nhận đặt lịch
 
-    User->>FE: Chọn khung giờ cụ thể & Bấm "Đặt lịch"
-    FE->>BE: Gửi yêu cầu Đặt lịch (Create Appointment)
+    User->>View: Chọn giờ & Bấm "Đặt lịch"
+    View->>Action: createAppointment()
+    Action->>Router: POST /api/appointments
+    Router->>Service: createAppointment()
 
-    Note right of BE: KHÓA (Lock) bản ghi để check trùng lần cuối
+    Note right of Service: Kiểm tra logic nghiệp vụ & Khóa (Lock)
 
-    alt Giờ vẫn còn trống
-        BE->>DB: Tạo lịch hẹn (Status: Confirmed)
-        DB-->>BE: Success
-        BE-->>FE: Trả về thông tin vé đặt
-        FE-->>User: Hiển thị thông báo thành công & Gửi Email/Zalo
-    else Đã bị người khác đặt trước đó 1 giây
-        BE-->>FE: Lỗi Conflict (409)
-        FE-->>User: Thông báo: "Giờ này vừa có người đặt, vui lòng chọn giờ khác"
+    alt Slot còn trống
+        Service->>DB: insertAppointment(CONFIRMED)
+        DB-->>Service: Success
+        Service-->>Router: return Appointment
+        Router-->>Action: return Success
+        Action-->>View: return Success
+        View-->>User: Thông báo đặt lịch thành công
+    else Slot đã bị đặt
+        Service-->>Router: raise ConflictError
+        Router-->>Action: return 409 Conflict
+        Action-->>View: return Error
+        View-->>User: Thông báo: "Giờ này vừa có người đặt"
     end
 ```
 
-## 2. Luồng Phục Vụ & Thanh Toán (Service & Payment Flow)
-Quy trình diễn ra khi khách hàng đến Spa sử dụng dịch vụ.
+## 2. Luồng Phục Vụ & Thanh Toán (Service & Payment)
+Quy trình vận hành tại Spa từ lúc khách đến (Check-in) cho đến khi thanh toán (Check-out).
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': { 'fontFamily': 'Times New Roman'}}}%%
@@ -54,69 +66,93 @@ sequenceDiagram
     actor Customer as Khách hàng
     actor Recep as Lễ tân
     actor Tech as Kỹ thuật viên
-    participant System as Hệ thống Synapse
+    participant View as :DashboardPage
+    participant Action as :ServiceAction
+    participant Router as :ServiceRouter
+    participant Service as :ServiceService
+    participant DB as Database
 
-    Note over Customer, System: Bước 1: Check-in
+    Note over Customer, View: Bước 1: Check-in
 
     Customer->>Recep: Khách đến Spa
-    Recep->>System: Tìm lịch hẹn & Bấm "Check-in"
-    System-->>Recep: Cập nhật trạng thái: "Đã đến" (Arrived)
-    System->>Tech: Gửi thông báo: "Khách của bạn đã đến!"
+    Recep->>View: Chọn lịch & Bấm "Check-in"
+    View->>Action: checkInCustomer()
+    Action->>Router: POST /api/check-in
+    Router->>Service: processCheckIn()
+    Service->>DB: updateStatus(ARRIVED)
+    Service-->>Tech: Gửi Notify: "Khách đã đến"
 
-    Note over Customer, System: Bước 2: Thực hiện dịch vụ
+    Note over Tech, DB: Bước 2: Thực hiện dịch vụ
 
-    Tech->>Customer: Mời khách vào phòng
-    Tech->>System: Bấm "Bắt đầu" trên app (Start Service)
-    System-->>Recep: Dashboard hiển thị: "Đang phục vụ" (In-Progress)
+    Tech->>View: Bấm "Bắt đầu" (Mobile)
+    View->>Action: startService()
+    Action->>Router: POST /api/start
+    Router->>Service: startService()
+    Service->>DB: updateStatus(IN_PROGRESS)
 
-    loop Trong quá trình làm
-        Tech->>System: (Tùy chọn) Ghi chú tình trạng da/sức khỏe
-    end
+    Note right of Tech: ...Thực hiện liệu trình...
 
-    Tech->>System: Bấm "Hoàn thành" (Finish)
-    System-->>Recep: Thông báo: Dịch vụ kết thúc, chờ thanh toán
+    Tech->>View: Bấm "Hoàn thành"
+    View->>Action: finishService()
+    Action->>Router: POST /api/finish
+    Router->>Service: endService()
+    Service->>DB: updateStatus(COMPLETED)
 
-    Note over Customer, System: Bước 3: Thanh toán (Check-out)
+    Note over Customer, DB: Bước 3: Thanh toán
 
-    Customer->>Recep: Ra quầy thanh toán
-    Recep->>System: Xem hóa đơn tạm tính
-    Recep->>Customer: Xác nhận các dịch vụ & phụ thu (nếu có)
-    Recep->>System: Xác nhận Thanh toán
-    System->>System: Tích điểm khách hàng
-    System-->>Recep: In hóa đơn & Hoàn tất quy trình
+    Recep->>View: Tạo hóa đơn
+    View->>Action: createInvoice()
+    Action->>Router: POST /api/invoices
+    Router->>Service: calculateTotal()
+    Service->>DB: saveInvoice() & addLoyaltyPoints()
+    Service-->>View: return InvoiceData
+    Recep->>Customer: Thu tiền & In hóa đơn
 ```
 
-## 3. Luồng Xử Lý Hủy & Vắng Mặt (Cancel & No-Show Flow)
-Quy trình xử lý khi lịch hẹn thay đổi hoặc khách không đến.
+## 3. Luồng Xử Lý Hủy & Vắng Mặt (Cancel & No-Show)
+Xử lý các trường hợp ngoại lệ khi lịch hẹn bị hủy hoặc khách không đến.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': { 'fontFamily': 'Times New Roman'}}}%%
 sequenceDiagram
     autonumber
     actor User as Khách hàng
-    actor Admin as Lễ tân / Quản lý
-    participant System as Hệ thống Synapse
-    participant Job as Background Worker (Cron)
+    participant View as :HistoryPage
+    participant Action as :BookingAction
+    participant Router as :BookingRouter
+    participant Service as :BookingService
+    participant DB as Database
+    participant Job as :CronJob
 
-    rect rgb(255, 240, 240)
-        Note right of User: Trường hợp A: Khách chủ động hủy
-        User->>System: Yêu cầu Hủy lịch (qua App/Link)
-        System->>System: Kiểm tra chính sách hủy (VD: trước 2 tiếng)
-        alt Hủy hợp lệ
-            System->>System: Cập nhật trạng thái: Cancelled
-            System->>User: Thông báo hủy thành công
-            System->>Admin: Thông báo slot đã trống
-        else Hủy quá sát giờ
-            System->>User: Từ chối hủy online (Vui lòng gọi Hotline)
+    rect rgb(255, 245, 245)
+        Note right of User: Trường hợp A: Hủy chủ động
+        User->>View: Bấm "Hủy lịch"
+        View->>Action: cancelAppointment()
+        Action->>Router: POST /api/cancel
+        Router->>Service: cancelAppointment()
+        Service->>Service: validateCancellationPolicy()
+
+        alt Hủy hợp lệ (Trước giờ G)
+            Service->>DB: updateStatus(CANCELLED)
+            Service-->>Action: return Success
+            View-->>User: Hủy thành công
+        else Hủy quá muộn
+            Service-->>Action: raise ValidationError
+            View-->>User: Thông báo: "Không thể hủy sát giờ"
         end
     end
 
-    rect rgb(240, 240, 255)
-        Note right of Job: Trường hợp B: Khách vắng mặt (No-Show)
-        Job->>System: Chạy quét định kỳ (mỗi 15 phút)
-        System->>System: Tìm các lịch quá giờ hẹn > 30p<br/>mà chưa Check-in
-        System->>System: Cập nhật trạng thái: No-Show
-        System->>User: Gửi thông báo phí phạt (nếu có)
-        System->>Admin: Cảnh báo danh sách No-Show
+    rect rgb(245, 245, 255)
+        Note right of Job: Trường hợp B: No-Show (Tự động)
+        Job->>Router: Trigger Scan (Định kỳ 15p)
+        Router->>Service: scanNoShow()
+        Service->>DB: selectOverdueAppointments()
+        DB-->>Service: List<Appt>
+
+        loop Với mỗi lịch quá hạn
+            Service->>DB: updateStatus(NO_SHOW)
+            Service->>DB: applyPenalty() (Nếu có)
+            Service->>User: Gửi Notify/Email thông báo
+        end
     end
 ```
