@@ -2,12 +2,12 @@
 
 import { Button } from "@/shared/ui/button"
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
-import { Input } from "@/shared/ui/input"
+import { TimeInput } from "@/shared/ui/custom/time-input"
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
 } from "@/shared/ui/dialog"
 import { Label } from "@/shared/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
@@ -120,16 +120,14 @@ export function AddShiftDialog({
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Bắt đầu</Label>
-                <Input
-                  type="time"
+                <TimeInput
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
                 <Label>Kết thúc</Label>
-                <Input
-                  type="time"
+                <TimeInput
                   value={endTime}
                   onChange={(e) => setEndTime(e.target.value)}
                 />

@@ -1,21 +1,23 @@
 "use client";
 
+import { Box, Code2, Users } from "lucide-react";
+
 import { Button } from "@/shared/ui/button";
+import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
 } from "@/shared/ui/form";
-import { Input } from "@/shared/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select";
 import { Textarea } from "@/shared/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -61,7 +63,7 @@ export function ResourceForm({
               <FormItem>
                 <FormLabel>Tên tài nguyên</FormLabel>
                 <FormControl>
-                  <Input placeholder="Ví dụ: Phòng VIP 1" {...field} />
+                  <InputWithIcon icon={Box} placeholder="Ví dụ: Phòng VIP 1" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -74,7 +76,7 @@ export function ResourceForm({
               <FormItem>
                 <FormLabel>Mã tài nguyên</FormLabel>
                 <FormControl>
-                  <Input placeholder="Ví dụ: R-VIP-01" {...field} />
+                  <InputWithIcon icon={Code2} placeholder="Ví dụ: R-VIP-01" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -143,7 +145,7 @@ export function ResourceForm({
               <FormItem>
                 <FormLabel>Sức chứa (người)</FormLabel>
                 <FormControl>
-                  <Input type="number" min={1} {...field} />
+                  <InputWithIcon icon={Users} type="number" min={1} placeholder="1" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

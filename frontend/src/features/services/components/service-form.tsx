@@ -208,7 +208,7 @@ export function ServiceForm({
                                 <FormItem className="col-span-2">
                                 <FormLabel className="text-foreground/80">Tên dịch vụ <span className="text-destructive">*</span></FormLabel>
                                 <FormControl>
-                                    <InputWithIcon icon={Tag} placeholder="VD: Massage Body Thụy Điển" className="h-11 rounded-lg bg-background" {...field} />
+                                    <InputWithIcon icon={Tag} placeholder="VD: Massage Body Thụy Điển" {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>

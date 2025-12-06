@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/shared/ui/button";
+import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import {
     Form,
     FormControl,
@@ -10,10 +11,9 @@ import {
     FormLabel,
     FormMessage,
 } from "@/shared/ui/form";
-import { Input } from "@/shared/ui/input";
 import { Textarea } from "@/shared/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Code, Loader2, Tag } from "lucide-react";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -72,7 +72,7 @@ export function SkillForm({ skill, onSuccess }: SkillFormProps) {
                 <FormItem>
                 <FormLabel>Tên kỹ năng</FormLabel>
                 <FormControl>
-                    <Input placeholder="VD: Massage Body" {...field} />
+                    <InputWithIcon icon={Tag} placeholder="VD: Massage Body" {...field} />
                 </FormControl>
                 <FormMessage />
                 </FormItem>
@@ -85,7 +85,7 @@ export function SkillForm({ skill, onSuccess }: SkillFormProps) {
                 <FormItem>
                 <FormLabel>Mã kỹ năng</FormLabel>
                 <FormControl>
-                    <Input placeholder="VD: SK_MASSAGE_BODY" {...field} />
+                    <InputWithIcon icon={Code} placeholder="VD: SK_MASSAGE_BODY" {...field} />
                 </FormControl>
                 <FormDescription>
                     Mã duy nhất, viết hoa, không dấu cách.

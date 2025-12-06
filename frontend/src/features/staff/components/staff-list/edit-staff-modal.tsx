@@ -3,12 +3,13 @@
 import { updateStaffSkills, updateUser } from "@/features/staff/actions"
 import { EditStaffFormValues, editStaffSchema } from "@/features/staff/schemas"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Loader2 } from "lucide-react"
+import { Loader2, Phone, User } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
 import { Skill } from "@/features/services/types"
 import { Button } from "@/shared/ui/button"
+import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
@@ -27,7 +28,6 @@ import {
     FormLabel,
     FormMessage,
 } from "@/shared/ui/form"
-import { Input } from "@/shared/ui/input"
 import {
     Select,
     SelectContent,
@@ -118,7 +118,7 @@ export function EditStaffModal({ staff, skills, open, onOpenChange }: EditStaffM
                 <FormItem>
                   <FormLabel>Họ và tên</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <InputWithIcon icon={User} placeholder="Nguyễn Văn A" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -131,7 +131,7 @@ export function EditStaffModal({ staff, skills, open, onOpenChange }: EditStaffM
                 <FormItem>
                   <FormLabel>Số điện thoại</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <InputWithIcon icon={Phone} placeholder="0912 345 678" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

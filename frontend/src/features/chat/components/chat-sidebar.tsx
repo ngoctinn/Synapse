@@ -1,7 +1,7 @@
 import { cn } from "@/shared/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { Badge } from "@/shared/ui/badge";
-import { Input } from "@/shared/ui/input"; // Using standard Input for now, can upgrade to InputWithIcon if needed
+import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { ScrollArea } from "@/shared/ui/scroll-area";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -20,13 +20,10 @@ export function ChatSidebar({ conversations, selectedId, onSelect, className }: 
     <div className={cn("flex flex-col w-96 h-full border-r border-border/50 bg-white/50 dark:bg-card/50 backdrop-blur-sm rounded-2xl md:rounded-r-none md:rounded-l-2xl glass-card", className)}>
       <div className="p-4 border-b border-border/50">
         <h2 className="text-lg font-serif font-semibold mb-4 text-primary">Tin nhắn</h2>
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Tìm kiếm khách hàng..."
-            className="pl-9 bg-white dark:bg-card border-border/50 rounded-xl focus-visible:ring-primary/20 h-10"
-          />
-        </div>
+        <InputWithIcon
+          icon={Search}
+          placeholder="Tìm kiếm khách hàng..."
+        />
       </div>
 
       <ScrollArea className="flex-1 p-3">

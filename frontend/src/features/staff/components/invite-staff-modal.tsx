@@ -126,7 +126,6 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
                                     <InputWithIcon
                                         icon={Mail}
                                         placeholder="staff@example.com"
-                                        className="h-11 rounded-xl bg-background border-muted-foreground/20 focus:border-primary/50 transition-all"
                                         {...field}
                                     />
                                 </FormControl>
@@ -146,7 +145,6 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
                                         <InputWithIcon
                                             icon={User}
                                             placeholder="Nguyễn Văn A"
-                                            className="h-11 rounded-xl bg-background border-muted-foreground/20 focus:border-primary/50 transition-all"
                                             {...field}
                                         />
                                     </FormControl>
@@ -165,7 +163,6 @@ export function InviteStaffModal({ skills }: InviteStaffModalProps) {
                                         <InputWithIcon
                                             icon={Briefcase}
                                             placeholder="VD: Chuyên viên"
-                                            className="h-11 rounded-xl bg-background border-muted-foreground/20 focus:border-primary/50 transition-all"
                                             {...field}
                                         />
                                     </FormControl>
