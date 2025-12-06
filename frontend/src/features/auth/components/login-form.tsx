@@ -97,7 +97,7 @@ export function LoginForm() {
                   <InputWithIcon
                     icon={Mail}
                     placeholder="name@example.com"
-                    className="h-12 bg-background border-input/50 focus:border-primary/50 transition-all"
+                    variant="lg"
                     {...field}
                   />
                 </FormControl>
@@ -114,7 +114,7 @@ export function LoginForm() {
                 <FormControl>
                   <PasswordInput
                     placeholder="Nhập mật khẩu của bạn"
-                    className="h-12 bg-background border-input/50 focus:border-primary/50 transition-all"
+                    variant="lg"
                     {...field}
                   />
                 </FormControl>

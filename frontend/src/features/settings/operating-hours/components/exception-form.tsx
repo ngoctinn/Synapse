@@ -1,20 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/shared/ui/dialog";
-import { Button } from "@/shared/ui/button";
-import { Label } from "@/shared/ui/label";
-import { Input } from "@/shared/ui/input";
-import { Switch } from "@/shared/ui/switch";
-import { ExceptionDate } from "../model/types";
-import { PartyPopper, Wrench, Settings2, Type, Plus, Trash2, ArrowRight } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
+import { Button } from "@/shared/ui/button";
 import { DateRangePicker } from "@/shared/ui/custom/date-range-picker";
-import { DateRange } from "react-day-picker";
-import { eachDayOfInterval } from "date-fns";
+import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { TimePicker } from "@/shared/ui/custom/time-picker";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/shared/ui/dialog";
+import { Label } from "@/shared/ui/label";
+import { Switch } from "@/shared/ui/switch";
+import { eachDayOfInterval } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight, PartyPopper, Plus, Settings2, Sparkles, Trash2, Wrench } from "lucide-react";
+import { useEffect, useState } from "react";
+import { DateRange } from "react-day-picker";
+import { ExceptionDate } from "../model/types";
 
 interface ExceptionFormProps {
   isOpen: boolean;
@@ -25,11 +24,11 @@ interface ExceptionFormProps {
   onDatesChange: (dates: Date[]) => void;
 }
 
-export function ExceptionForm({ 
-  isOpen, 
-  onClose, 
-  onSubmit, 
-  initialData, 
+export function ExceptionForm({
+  isOpen,
+  onClose,
+  onSubmit,
+  initialData,
   selectedDates,
   onDatesChange
 }: ExceptionFormProps) {
@@ -67,11 +66,11 @@ export function ExceptionForm({
           modifiedHours: initialData.modifiedHours || []
         });
       } else {
-        setFormData({ 
-          type: 'holiday', 
-          isClosed: true, 
+        setFormData({
+          type: 'holiday',
+          isClosed: true,
           reason: '',
-          modifiedHours: [] 
+          modifiedHours: []
         });
       }
     }
@@ -134,11 +133,11 @@ export function ExceptionForm({
           </div>
         </DialogHeader>
         <div className="grid gap-6 py-4">
-          
+
           <div className="space-y-2">
             <Label className="text-sm font-medium">Thời gian áp dụng</Label>
             <div className="w-full">
-                <DateRangePicker 
+                <DateRangePicker
                     date={dateRange}
                     setDate={handleRangeChange}
                 />
@@ -151,28 +150,27 @@ export function ExceptionForm({
           <div className="space-y-2">
             <Label htmlFor="reason" className="text-sm font-medium">Lý do / Tên sự kiện</Label>
             <div className="relative">
-              <Type className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input 
-                id="reason" 
-                value={formData.reason || ''} 
+              <InputWithIcon
+                icon={Sparkles}
+                id="reason"
+                value={formData.reason || ''}
                 onChange={e => setFormData({...formData, reason: e.target.value})}
                 placeholder="Ví dụ: Tết Nguyên Đán"
-                className="h-11 rounded-xl pl-9" 
               />
             </div>
           </div>
-          
+
           <div className="space-y-3">
             <Label className="text-sm font-medium">Loại sự kiện</Label>
             <div className="grid grid-cols-3 gap-3">
               {eventTypes.map((type) => (
-                <div 
+                <div
                   key={type.id}
                   onClick={() => setFormData({...formData, type: type.id as any})}
                   className={cn(
                     "cursor-pointer rounded-xl border-2 p-3 flex flex-col items-center gap-2 transition-all duration-200 hover:bg-muted/50",
-                    formData.type === type.id 
-                      ? `border-${type.color.split('-')[1]} bg-muted` 
+                    formData.type === type.id
+                      ? `border-${type.color.split('-')[1]} bg-muted`
                       : "border-transparent bg-muted/20"
                   )}
                 >
@@ -189,11 +187,11 @@ export function ExceptionForm({
              <div className="flex items-center justify-between">
                 <Label htmlFor="closed" className="text-sm font-medium">Trạng thái hoạt động</Label>
              </div>
-             
+
              <div className="border rounded-2xl p-4 bg-muted/10 space-y-4">
                 <div className="flex items-center gap-4">
-                    <Switch 
-                        id="closed" 
+                    <Switch
+                        id="closed"
                         checked={formData.isClosed}
                         onCheckedChange={checked => setFormData({...formData, isClosed: checked})}
                         className="data-[state=checked]:bg-destructive scale-110"
@@ -203,8 +201,8 @@ export function ExceptionForm({
                         {formData.isClosed ? "Đóng cửa hoàn toàn" : "Mở cửa (Giờ đặc biệt)"}
                         </Label>
                         <span className="text-xs text-muted-foreground">
-                        {formData.isClosed 
-                            ? "Spa sẽ không nhận lịch hẹn vào ngày này" 
+                        {formData.isClosed
+                            ? "Spa sẽ không nhận lịch hẹn vào ngày này"
                             : "Spa vẫn hoạt động nhưng có thay đổi giờ làm việc"}
                         </span>
                     </div>
@@ -224,13 +222,13 @@ export function ExceptionForm({
                                     {(formData.modifiedHours || []).map((slot, index) => (
                                         <div key={index} className="flex items-center gap-2 group/slot">
                                             <div className="flex items-center gap-2 bg-background border p-1 rounded-lg shadow-sm">
-                                                <TimePicker 
-                                                    value={slot.start} 
+                                                <TimePicker
+                                                    value={slot.start}
                                                     onChange={val => handleTimeChange(index, 'start', val)}
                                                     className="w-24 border-none shadow-none text-sm h-8"
                                                 />
                                                 <ArrowRight className="w-3 h-3 text-muted-foreground" />
-                                                <TimePicker 
+                                                <TimePicker
                                                     value={slot.end}
                                                     onChange={val => handleTimeChange(index, 'end', val)}
                                                     className="w-24 border-none shadow-none text-sm text-right h-8"

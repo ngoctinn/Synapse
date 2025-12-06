@@ -11,10 +11,33 @@ export interface InputWithIconProps
   rightIconProps?: LucideProps
   error?: boolean | string
   containerClassName?: string
+  /**
+   * Variant size cho Input
+   * - `default`: h-10 - kích thước mặc định
+   * - `lg`: h-12 - kích thước lớn cho form chính (login, register)
+   * - `sm`: h-9 - kích thước nhỏ gọn
+   */
+  variant?: "default" | "lg" | "sm"
+}
+
+const sizeVariants = {
+  sm: "h-9",
+  default: "h-10",
+  lg: "h-12",
 }
 
 const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
-  ({ className, containerClassName, icon: Icon, iconProps, rightIcon: RightIcon, rightIconProps, error, ...props }, ref) => {
+  ({
+    className,
+    containerClassName,
+    icon: Icon,
+    iconProps,
+    rightIcon: RightIcon,
+    rightIconProps,
+    error,
+    variant = "default",
+    ...props
+  }, ref) => {
     const isError = error || props["aria-invalid"];
 
     return (
@@ -29,11 +52,19 @@ const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
         )}
         <Input
           className={cn(
-            "transition-all duration-200 shadow-sm hover:shadow-md focus-visible:shadow-md",
-            "focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary",
+            // Base styles - Premium look
+            sizeVariants[variant],
+            "bg-background border-input/50 rounded-lg",
+            // Transitions và shadows
+            "transition-all duration-200 shadow-sm",
+            "hover:shadow-md hover:border-input",
+            // Focus states - Softer, more elegant
+            "focus-visible:shadow-md focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/50",
+            // Icon padding
             Icon && "pl-10",
             RightIcon && "pr-10",
-            isError && "border-destructive focus-visible:ring-destructive/20 focus-visible:border-destructive",
+            // Error states
+            isError && "border-destructive/50 focus-visible:ring-destructive/20 focus-visible:border-destructive/50",
             className
           )}
           ref={ref}

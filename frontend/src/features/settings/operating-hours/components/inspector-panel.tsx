@@ -1,18 +1,18 @@
 
-import { useEffect, useMemo, useState } from "react";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter, SheetClose } from "@/shared/ui/sheet";
+import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
-import { Label } from "@/shared/ui/label";
+import { TimeInput } from "@/shared/ui/custom/time-input";
 import { Input } from "@/shared/ui/input";
-import { Textarea } from "@/shared/ui/textarea";
-import { Switch } from "@/shared/ui/switch";
+import { Label } from "@/shared/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/shared/ui/radio-group";
-import { ExceptionDate, TimeSlot } from "../model/types";
+import { Sheet, SheetContent, SheetFooter } from "@/shared/ui/sheet";
+import { Switch } from "@/shared/ui/switch";
+import { Textarea } from "@/shared/ui/textarea";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { Trash2, Save, Calendar as CalendarIcon, Clock, Lock } from "lucide-react";
-import { DayScheduleRow } from "./day-schedule-row"; 
-import { cn } from "@/shared/lib/utils";
+import { Calendar as CalendarIcon, Clock, Lock, Save, Trash2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ExceptionDate, TimeSlot } from "../model/types";
 
 interface InspectorPanelProps {
     isOpen: boolean;
@@ -23,13 +23,13 @@ interface InspectorPanelProps {
     onDelete: () => void;
 }
 
-export function InspectorPanel({ 
-    isOpen, 
-    onClose, 
-    selectedDates, 
-    existingExceptions, 
-    onSave, 
-    onDelete 
+export function InspectorPanel({
+    isOpen,
+    onClose,
+    selectedDates,
+    existingExceptions,
+    onSave,
+    onDelete
 }: InspectorPanelProps) {
     // Derived state
     const currentExceptions = useMemo(() => {
@@ -42,7 +42,7 @@ export function InspectorPanel({
     const [type, setType] = useState<'holiday' | 'maintenance' | 'custom'>('custom');
     const [isClosed, setIsClosed] = useState(true);
     const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
-    
+
     // Mixed State Flags
     const [mixedReason, setMixedReason] = useState(false);
     const [mixedType, setMixedType] = useState(false);
@@ -63,7 +63,7 @@ export function InspectorPanel({
         }
 
         const first = currentExceptions[0];
-        
+
         // Reason
         const allSameReason = currentExceptions.every(e => e.reason === first.reason);
         setReason(allSameReason ? first.reason : "");
@@ -76,7 +76,7 @@ export function InspectorPanel({
 
         // IsClosed
         const allSameClosed = currentExceptions.every(e => e.isClosed === first.isClosed);
-        setIsClosed(allSameClosed ? first.isClosed : true); 
+        setIsClosed(allSameClosed ? first.isClosed : true);
         setMixedIsClosed(!allSameClosed);
 
         // Slots (Complex check, for now just load first if exists, else default)
@@ -88,11 +88,11 @@ export function InspectorPanel({
     const handleSave = () => {
         onSave({
             reason: reason || (mixedReason ? undefined : "Sự kiện"), // If mixed and unchanged, keep undefined (handled by bulk op?)
-            // actually bulk apply will overwrite. 
+            // actually bulk apply will overwrite.
             // If mixedReason is true, and user didn't type anything, we probably shouldn't overwrite reason?
             // This requires `applyExceptionToDates` to handle partial updates cleanly.
             // For now, let's assume if user hits save, they want to apply current form state.
-            // But if it was mixed, and input is empty... 
+            // But if it was mixed, and input is empty...
             // Let's rely on `onSave` logic.
             type,
             isClosed,
@@ -103,7 +103,7 @@ export function InspectorPanel({
 
     if (!isOpen) return null;
 
-    const title = selectedDates.length === 1 
+    const title = selectedDates.length === 1
         ? format(selectedDates[0], "EEEE, dd 'tháng' MM, yyyy", { locale: vi })
         : `${selectedDates.length} ngày đã chọn`;
 
@@ -121,8 +121,8 @@ export function InspectorPanel({
                     </div>
                     {/* Event Name Input (Big) */}
                     <div>
-                         <Input 
-                            value={reason} 
+                         <Input
+                            value={reason}
                             onChange={e => { setReason(e.target.value); setMixedReason(false); }}
                             placeholder={mixedReason ? "--- (Nhiều giá trị) ---" : "Tên sự kiện..."}
                             className="text-lg font-bold border-none shadow-none bg-transparent px-0 h-auto focus-visible:ring-0 placeholder:font-normal"
@@ -171,13 +171,13 @@ export function InspectorPanel({
                                 </Label>
                                 <p className="text-xs text-muted-foreground">Không nhận lịch đặt hẹn vào ngày này</p>
                             </div>
-                            <Switch 
-                                checked={isClosed} 
-                                onCheckedChange={(c) => { setIsClosed(c); setMixedIsClosed(false); }} 
+                            <Switch
+                                checked={isClosed}
+                                onCheckedChange={(c) => { setIsClosed(c); setMixedIsClosed(false); }}
                                 aria-label="Toggle closed"
                             />
                         </div>
-                        
+
                         {!isClosed && (
                             <div className="border rounded-xl p-4 space-y-4 bg-muted/20 animate-in slide-in-from-top-2">
                                 <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground pb-2 border-b">
@@ -187,13 +187,13 @@ export function InspectorPanel({
                                 <div className="space-y-2">
                                     {timeSlots.map((slot, idx) => (
                                         <div key={idx} className="flex items-center gap-2">
-                                            <Input type="time" value={slot.start} onChange={e => {
+                                            <TimeInput value={slot.start} onChange={e => {
                                                 const newSlots = [...timeSlots];
                                                 newSlots[idx].start = e.target.value;
                                                 setTimeSlots(newSlots);
                                             }} className="w-32" />
                                             <span>-</span>
-                                             <Input type="time" value={slot.end} onChange={e => {
+                                             <TimeInput value={slot.end} onChange={e => {
                                                 const newSlots = [...timeSlots];
                                                 newSlots[idx].end = e.target.value;
                                                 setTimeSlots(newSlots);
@@ -206,7 +206,7 @@ export function InspectorPanel({
                             </div>
                         )}
                     </div>
-                    
+
                     {/* Internal Note */}
                     <div className="space-y-3">
                          <Label className="text-muted-foreground uppercase text-xs font-bold tracking-wider">Ghi chú nội bộ</Label>

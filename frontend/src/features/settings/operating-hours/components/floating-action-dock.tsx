@@ -1,13 +1,13 @@
 
-import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/shared/ui/button";
-import { Lock, Clock, Tag, X, Trash2, XCircle } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
+import { Button } from "@/shared/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
+import { AnimatePresence, motion } from "framer-motion";
+import { Clock, Lock, Tag, Trash2, X } from "lucide-react";
 // import { TimeSlotInput } from "./time-slot-input"; // Assuming you have or will build this
-import { useState } from "react";
+import { TimeInput } from "@/shared/ui/custom/time-input";
 import { Label } from "@/shared/ui/label";
-import { Input } from "@/shared/ui/input";
+import { useState } from "react";
 
 interface FloatingActionDockProps {
     selectedCount: number;
@@ -38,12 +38,12 @@ export function FloatingActionDock({ selectedCount, onAction, onClearSelection }
                         <span className="font-medium text-sm text-secondary-foreground whitespace-nowrap hidden sm:inline-block">
                             ngày đã chọn
                         </span>
-                        
+
                         <div className="h-8 w-px bg-white/20 mx-2" />
-                        
-                        <Button 
-                            variant="ghost" 
-                            size="sm" 
+
+                        <Button
+                            variant="ghost"
+                            size="sm"
                             onClick={onClearSelection}
                             className="text-secondary-foreground/70 hover:text-white hover:bg-white/10 h-8 px-2"
                         >
@@ -53,9 +53,9 @@ export function FloatingActionDock({ selectedCount, onAction, onClearSelection }
                     </div>
 
                     <div className="flex items-center gap-1 pr-1">
-                        <TooltipButton 
-                            icon={<Lock className="w-4 h-4" />} 
-                            label="Đóng cửa" 
+                        <TooltipButton
+                            icon={<Lock className="w-4 h-4" />}
+                            label="Đóng cửa"
                             onClick={() => onAction('lock')}
                             className="hover:bg-destructive hover:text-white"
                         />
@@ -74,17 +74,15 @@ export function FloatingActionDock({ selectedCount, onAction, onClearSelection }
                                         <div className="grid grid-cols-2 gap-2">
                                             <div className="space-y-1">
                                                 <Label>Bắt đầu</Label>
-                                                <Input 
-                                                    type="time" 
-                                                    value={timeRange.start} 
+                                                <TimeInput
+                                                    value={timeRange.start}
                                                     onChange={e => setTimeRange(p => ({...p, start: e.target.value}))}
                                                 />
                                             </div>
                                             <div className="space-y-1">
                                                 <Label>Kết thúc</Label>
-                                                <Input 
-                                                    type="time" 
-                                                    value={timeRange.end} 
+                                                <TimeInput
+                                                    value={timeRange.end}
                                                     onChange={e => setTimeRange(p => ({...p, end: e.target.value}))}
                                                 />
                                             </div>
@@ -131,9 +129,9 @@ export function FloatingActionDock({ selectedCount, onAction, onClearSelection }
 
 function TooltipButton({ icon, label, onClick, className }: any) {
     return (
-        <Button 
-            variant="ghost" 
-            size="sm" 
+        <Button
+            variant="ghost"
+            size="sm"
             onClick={onClick}
             className={cn("h-9 px-3 text-secondary-foreground hover:bg-white/10 gap-2", className)}
         >

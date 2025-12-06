@@ -8,10 +8,23 @@ import * as React from "react"
 export interface SearchInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   onSearch?: (value: string) => void
+  /**
+   * Variant size cho SearchInput
+   * - `default`: h-10 - kích thước mặc định
+   * - `lg`: h-12 - kích thước lớn
+   * - `sm`: h-9 - kích thước nhỏ gọn
+   */
+  variant?: "default" | "lg" | "sm"
+}
+
+const sizeVariants = {
+  sm: "h-9",
+  default: "h-10",
+  lg: "h-12",
 }
 
 export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
-  ({ className, value, onChange, onSearch, ...props }, ref) => {
+  ({ className, value, onChange, onSearch, variant = "default", ...props }, ref) => {
     const [internalValue, setInternalValue] = React.useState(value || "")
     const inputRef = React.useRef<HTMLInputElement>(null)
 
@@ -43,13 +56,21 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
 
     return (
       <div className="relative flex items-center w-full max-w-sm group">
-        <Search className="absolute left-3 h-4 w-4 text-muted-foreground transition-colors duration-200 group-focus-within:text-primary" />
+        <Search className="absolute left-3 h-4 w-4 text-muted-foreground transition-colors duration-200 group-focus-within:text-primary z-10" />
         <Input
           ref={inputRef}
           type="text"
           className={cn(
-            "pl-9 pr-9 transition-all duration-200 shadow-sm hover:shadow-md focus-visible:shadow-md",
-            "focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary",
+            // Base styles - Premium look
+            sizeVariants[variant],
+            "bg-background border-input/50 rounded-lg",
+            // Padding for icons
+            "pl-9 pr-9",
+            // Transitions và shadows
+            "transition-all duration-200 shadow-sm",
+            "hover:shadow-md hover:border-input",
+            // Focus states - Softer, more elegant
+            "focus-visible:shadow-md focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/50",
             className
           )}
           value={value !== undefined ? value : internalValue}
@@ -60,7 +81,7 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
           <button
             type="button"
             onClick={handleClear}
-            className="absolute right-3 p-0.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+            className="absolute right-3 p-0.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors z-10"
           >
             <X className="h-3 w-3" />
             <span className="sr-only">Clear search</span>

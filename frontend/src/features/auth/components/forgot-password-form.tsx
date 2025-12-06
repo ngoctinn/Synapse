@@ -12,12 +12,12 @@ import { CustomDialog } from "@/shared/ui/custom/dialog";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { showToast } from "@/shared/ui/custom/sonner";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form";
 import { forgotPasswordAction } from "../actions";
 import { forgotPasswordSchema, type ForgotPasswordInput } from "../schemas";
@@ -95,7 +95,7 @@ export function ForgotPasswordForm() {
                   <InputWithIcon
                     icon={Mail}
                     placeholder="name@example.com"
-                    className="h-12 bg-background border-input/50 focus:border-primary/50 transition-all"
+                    variant="lg"
                     {...field}
                   />
                 </FormControl>

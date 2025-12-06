@@ -15,12 +15,12 @@ import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { PasswordInput } from "@/shared/ui/custom/password-input";
 import { showToast } from "@/shared/ui/custom/sonner";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form";
 import { registerAction } from "../actions";
 
@@ -108,7 +108,7 @@ export function RegisterForm() {
                   <InputWithIcon
                     icon={User}
                     placeholder="Nhập họ và tên của bạn"
-                    className="h-12 bg-background border-input/50 focus:border-primary/50 transition-all"
+                    variant="lg"
                     {...field}
                   />
                 </FormControl>
@@ -126,7 +126,7 @@ export function RegisterForm() {
                   <InputWithIcon
                     icon={Mail}
                     placeholder="name@example.com"
-                    className="h-12 bg-background border-input/50 focus:border-primary/50 transition-all"
+                    variant="lg"
                     {...field}
                   />
                 </FormControl>
@@ -143,7 +143,7 @@ export function RegisterForm() {
                 <FormControl>
                   <PasswordInput
                     placeholder="Tạo mật khẩu (tối thiểu 8 ký tự)"
-                    className="h-12 bg-background border-input/50 focus:border-primary/50 transition-all"
+                    variant="lg"
                     {...field}
                   />
                 </FormControl>
@@ -160,7 +160,7 @@ export function RegisterForm() {
                 <FormControl>
                   <PasswordInput
                     placeholder="Nhập lại mật khẩu"
-                    className="h-12 bg-background border-input/50 focus:border-primary/50 transition-all"
+                    variant="lg"
                     {...field}
                   />
                 </FormControl>

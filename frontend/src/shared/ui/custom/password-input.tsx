@@ -10,10 +10,23 @@ export interface PasswordInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   icon?: LucideIcon
   iconProps?: LucideProps
+  /**
+   * Variant size cho PasswordInput
+   * - `default`: h-10 - kích thước mặc định
+   * - `lg`: h-12 - kích thước lớn cho form chính (login, register)
+   * - `sm`: h-9 - kích thước nhỏ gọn
+   */
+  variant?: "default" | "lg" | "sm"
+}
+
+const sizeVariants = {
+  sm: "h-9",
+  default: "h-10",
+  lg: "h-12",
 }
 
 const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
-  ({ className, icon: Icon = Lock, iconProps, ...props }, ref) => {
+  ({ className, icon: Icon = Lock, iconProps, variant = "default", ...props }, ref) => {
     const [showPassword, setShowPassword] = React.useState(false)
 
     return (
@@ -27,9 +40,18 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
         <Input
           type={showPassword ? "text" : "password"}
           className={cn(
-            "pl-10 pr-10 transition-all duration-200 shadow-sm hover:shadow-md focus-visible:shadow-md",
-            "focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary",
-            props["aria-invalid"] && "border-destructive focus-visible:ring-destructive/20 focus-visible:border-destructive",
+            // Base styles - Premium look
+            sizeVariants[variant],
+            "bg-background border-input/50 rounded-lg",
+            // Padding for icons
+            "pl-10 pr-10",
+            // Transitions và shadows
+            "transition-all duration-200 shadow-sm",
+            "hover:shadow-md hover:border-input",
+            // Focus states - Softer, more elegant
+            "focus-visible:shadow-md focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/50",
+            // Error states
+            props["aria-invalid"] && "border-destructive/50 focus-visible:ring-destructive/20 focus-visible:border-destructive/50",
             className
           )}
           ref={ref}
