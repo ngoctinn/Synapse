@@ -181,7 +181,8 @@ sequenceDiagram
     API->>S: create_booking(user_id, booking_data)
     activate S
 
-    crit Kiểm tra tính nhất quán (Critical)
+    rect rgb(240, 255, 240)
+    note right of S: Critical Section: Kiểm tra tính nhất quán
         S->>DB: lock_resources(staff, room, time)
         S->>DB: check_conflict_last_time()
         activate DB
