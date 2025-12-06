@@ -72,7 +72,7 @@ export function ServicesPage({ page, skills, roomTypes, equipmentList, servicesP
       <Tabs defaultValue="list" className="flex flex-col flex-1 w-full gap-0" onValueChange={setActiveTab}>
         {/* Sticky Header with Tabs and Actions */}
         <div
-          className="sticky top-[var(--header-height,57px)] z-30 -mx-4 px-4 py-2 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b flex flex-col md:flex-row items-center justify-between gap-4"
+          className="sticky top-0 z-40 -mx-4 px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4"
         >
           <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto justify-start">
             <TabsTrigger value="list" aria-label="Danh sách dịch vụ" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Dịch vụ</TabsTrigger>
@@ -96,7 +96,7 @@ export function ServicesPage({ page, skills, roomTypes, equipmentList, servicesP
           </div>
         </div>
 
-        <div className="flex-1 p-0 animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out motion-reduce:animate-none flex flex-col">
+        <div className="flex-1 p-0 motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 duration-300 ease-out flex flex-col">
           <TabsContent value="list" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
             <Suspense fallback={<ServiceTableSkeleton />}>
               <ServiceListWrapper
