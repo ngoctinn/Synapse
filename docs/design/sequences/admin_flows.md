@@ -1,0 +1,177 @@
+# Sơ đồ Tuần tự: Hoạt động Quản trị viên (Admin Flows)
+
+Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Quản trị viên.
+
+%%{init: {'theme': 'neutral'}}%%
+
+## 1.1.5 Sơ đồ hoạt động cho quản trị viên
+
+### 3.42. Quản lý dịch vụ (CRUD Service)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor AD as Admin
+    participant UI as :ServiceManagementPage
+    participant BFF as :ServiceAction
+    participant API as :ServiceRouter
+    participant S as :ServiceService
+    participant DB as :ServiceRepo
+
+    AD->>UI: Thêm mới dịc vụ
+    activate UI
+    UI->>BFF: createService(data)
+    activate BFF
+
+    BFF->>API: POST /services
+    activate API
+
+    API->>S: create_service(data)
+    activate S
+
+    S->>DB: insert_service(data)
+    activate DB
+    DB-->>S: service_record
+    deactivate DB
+
+    S-->>API: ServiceSchema
+    deactivate S
+
+    API-->>BFF: 201 Created
+    deactivate API
+
+    BFF-->>UI: Update List
+    deactivate BFF
+
+    UI-->>AD: Hiển thị dịch vụ mới
+    deactivate UI
+```
+**Hình 3.42: Sơ đồ tuần tự chức năng Quản lý dịch vụ**
+
+### 3.44. Quản lý tài nguyên (Phòng/Thiết bị)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor AD as Admin
+    participant UI as :ResourcePage
+    participant BFF as :ResourceAction
+    participant API as :ResourceRouter
+    participant S as :ResourceService
+    participant DB as :ResourceRepo
+
+    AD->>UI: Cập nhật thông tin phòng
+    activate UI
+    UI->>BFF: updateResource(id, payload)
+    activate BFF
+
+    BFF->>API: PUT /resources/{id}
+    activate API
+
+    API->>S: update_resource(id, payload)
+    activate S
+
+    S->>DB: update(id, payload)
+    activate DB
+    DB-->>S: updated_record
+    deactivate DB
+
+    S-->>API: ResourceSchema
+    deactivate S
+
+    API-->>BFF: OK
+    deactivate API
+
+    BFF-->>UI: Success
+    deactivate BFF
+
+    UI-->>AD: Cập nhật thành công
+    deactivate UI
+```
+**Hình 3.44: Sơ đồ tuần tự chức năng Quản lý tài nguyên**
+
+### 3.47. Cấu hình lịch làm việc nhân viên
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor AD as Admin
+    participant UI as :StaffSchedulePage
+    participant BFF as :StaffAction
+    participant API as :StaffRouter
+    participant S as :StaffService
+    participant DB as :ScheduleRepo
+
+    AD->>UI: Phân ca cho nhân viên
+    activate UI
+    UI->>BFF: assignShift(staffId, date, shiftId)
+    activate BFF
+
+    BFF->>API: POST /staff/schedule
+    activate API
+
+    API->>S: assign_work_shift(staffId, date, shift)
+    activate S
+
+    S->>S: validate_overlap(staffId, date)
+
+    S->>DB: save_schedule_record()
+    activate DB
+    DB-->>S: success
+    deactivate DB
+
+    S-->>API: Success
+    deactivate S
+
+    API-->>BFF: OK
+    deactivate API
+
+    BFF-->>UI: Refresh
+    deactivate BFF
+
+    UI-->>AD: Hiển thị lịch đã phân công
+    deactivate UI
+```
+**Hình 3.47: Sơ đồ tuần tự chức năng Cấu hình lịch làm việc nhân viên**
+
+### 3.53. Xem báo cáo doanh thu
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor AD as Admin
+    participant UI as :ReportPage
+    participant BFF as :AnalyticsAction
+    participant API as :AnalyticsRouter
+    participant S as :AnalyticsService
+    participant DB as :BookingRepo
+
+    AD->>UI: Xem báo cáo tháng
+    activate UI
+    UI->>BFF: getRevenue(month, year)
+    activate BFF
+
+    BFF->>API: GET /analytics/revenue
+    activate API
+
+    API->>S: calculate_monthly_revenue(month, year)
+    activate S
+
+    S->>DB: aggregate_completed_invoices(date_range)
+    activate DB
+    DB-->>S: total_revenue
+    deactivate DB
+
+    S-->>API: ReportSchema
+    deactivate S
+
+    API-->>BFF: Data
+    deactivate API
+
+    BFF-->>UI: Draw Chart
+    deactivate BFF
+
+    UI-->>AD: Hiển thị biểu đồ báo cáo
+    deactivate UI
+```
+**Hình 3.53: Sơ đồ tuần tự chức năng Xem báo cáo**
