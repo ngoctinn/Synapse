@@ -8,8 +8,10 @@
 
 export * from "./actions";
 export * from "./constants";
+export * from "./mocks";
 export * from "./schemas";
 export * from "./types";
+
 
 // Components
 export { AppSidebar } from "./components/app-sidebar";
@@ -22,6 +24,7 @@ export { MobileNav } from "./components/mobile-nav";
 export { NavMain } from "./components/nav-main";
 export { ProfileForm } from "./components/profile-form";
 
+export { AppointmentTimeline } from "./components/appointment-timeline";
 export { BookingDialog } from "./components/booking-dialog";
 export { TreatmentList } from "./components/treatment-list";
 
