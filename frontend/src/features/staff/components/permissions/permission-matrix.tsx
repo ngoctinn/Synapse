@@ -19,9 +19,10 @@ import { BulkSaveBar } from "./bulk-save-bar"
 
 interface PermissionMatrixProps {
   initialPermissions: Record<string, Record<string, boolean>>
+  className?: string
 }
 
-export function PermissionMatrix({ initialPermissions }: PermissionMatrixProps) {
+export function PermissionMatrix({ initialPermissions, className }: PermissionMatrixProps) {
   const [permissions, setPermissions] = useState(initialPermissions)
   const [hasChanges, setHasChanges] = useState(false)
   const [changeCount, setChangeCount] = useState(0)
@@ -63,7 +64,7 @@ export function PermissionMatrix({ initialPermissions }: PermissionMatrixProps) 
   }
 
   return (
-    <div className="flex flex-col relative">
+    <div className={`flex flex-col relative ${className}`}>
       <div className="">
         <div className="relative w-full">
           <table className="w-full caption-bottom text-sm">

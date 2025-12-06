@@ -21,9 +21,10 @@ import { ScheduleGrid } from "./schedule-grid"
 interface StaffSchedulerProps {
   initialSchedules: Schedule[]
   staffList: Staff[]
+  className?: string
 }
 
-export function StaffScheduler({ initialSchedules, staffList }: StaffSchedulerProps) {
+export function StaffScheduler({ initialSchedules, staffList, className }: StaffSchedulerProps) {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [schedules, setSchedules] = useState<Schedule[]>(initialSchedules)
   const [isPending, startTransition] = useTransition()
@@ -169,7 +170,7 @@ export function StaffScheduler({ initialSchedules, staffList }: StaffSchedulerPr
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className={`flex flex-col gap-0 ${className}`}>
       {/* Toolbar */}
       <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 px-4 py-3 border-b shrink-0 sticky top-[var(--staff-header-height-mobile,109px)] md:top-[var(--staff-header-height,57px)] z-20 bg-background">
         {/* Left: Navigation */}
@@ -295,7 +296,7 @@ export function StaffScheduler({ initialSchedules, staffList }: StaffSchedulerPr
           <CopyWeekButton onCopy={handleCopyWeek} />
         </div>
       </div>
-      <div className="flex-1 min-h-0">
+      <div className="flex-1 min-w-0 px-4">
         <ScheduleGrid
           staffList={staffList}
           schedules={schedules}
