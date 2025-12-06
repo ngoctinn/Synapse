@@ -3,12 +3,12 @@
 import { Resource, RoomType } from "@/features/resources/model/types";
 import { Button } from "@/shared/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/shared/ui/dialog";
 import { Plus } from "lucide-react";
 import { useState } from "react";
@@ -31,8 +31,8 @@ export function CreateServiceDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" /> Thêm dịch vụ
+        <Button size="sm" className="text-xs">
+          <Plus className="mr-2 h-3.5 w-3.5" /> Thêm dịch vụ
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-5xl max-h-[90vh] overflow-y-auto duration-300">

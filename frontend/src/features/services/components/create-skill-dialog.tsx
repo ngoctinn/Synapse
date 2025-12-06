@@ -19,8 +19,8 @@ export function CreateSkillDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" /> Thêm kỹ năng
+        <Button size="sm" className="text-xs">
+          <Plus className="mr-2 h-3.5 w-3.5" /> Thêm kỹ năng
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl">

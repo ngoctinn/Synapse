@@ -117,7 +117,7 @@ export function StaffTable({
       header: "Nhân viên",
       cell: (staff) => (
         <div className="flex items-center gap-4">
-          <Avatar className="h-10 w-10 border">
+          <Avatar className="h-11 w-11 border">
             <AvatarImage src={staff.user.avatar_url || undefined} alt={staff.user.full_name || ""} />
             <AvatarFallback className="bg-primary/20 text-primary font-medium">
               {(staff.user.full_name || staff.user.email || "?").charAt(0).toUpperCase()}
@@ -136,7 +136,7 @@ export function StaffTable({
         <Badge
           variant={ROLE_CONFIG[staff.user.role]?.variant || "outline"}
           className={cn(
-            "rounded-md px-2.5 py-1 font-medium border-transparent text-[11px]",
+            "rounded-md px-2.5 py-1 font-medium border-transparent text-xs",
             ROLE_CONFIG[staff.user.role]?.className || "bg-gray-100 text-gray-600"
           )}
         >
@@ -151,7 +151,7 @@ export function StaffTable({
           {staff.skills.length > 0 ? (
             <>
               {staff.skills.slice(0, 2).map((skill) => (
-                <Badge key={skill.id} variant="secondary" className="text-[11px] px-2.5 py-1 bg-secondary/40 hover:bg-secondary/60 text-secondary-foreground border-transparent rounded-md transition-colors">
+                <Badge key={skill.id} variant="secondary" className="text-xs px-2.5 py-1 bg-secondary/50 hover:bg-secondary/70 text-secondary-foreground border-transparent rounded-md transition-colors">
                   {skill.name}
                 </Badge>
               ))}
@@ -159,7 +159,7 @@ export function StaffTable({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Badge variant="secondary" className="text-[11px] px-2.5 py-1 bg-secondary/40 hover:bg-secondary/60 text-secondary-foreground border-transparent cursor-help rounded-md">
+                      <Badge variant="secondary" className="text-xs px-2.5 py-1 bg-secondary/50 hover:bg-secondary/70 text-secondary-foreground border-transparent cursor-help rounded-md">
                         +{staff.skills.length - 2} nữa
                       </Badge>
                     </TooltipTrigger>
