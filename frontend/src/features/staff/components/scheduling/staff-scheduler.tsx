@@ -6,9 +6,9 @@ import { useState, useTransition } from "react"
 
 import { Button } from "@/shared/ui/button"
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/shared/ui/popover"
 import { toast } from "sonner"
 import { deleteSchedule, updateSchedule } from "../../actions"
@@ -175,16 +175,16 @@ export function StaffScheduler({ initialSchedules, staffList, className }: Staff
       <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 px-4 py-3 border-b shrink-0 sticky top-[var(--staff-header-height-mobile)] md:top-[var(--staff-header-height)] z-20 bg-background">
         {/* Left: Navigation */}
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" onClick={prevWeek} className="h-9 w-9 sm:h-8 sm:w-8 active:scale-95 transition-transform" aria-label="Tuần trước">
+          <Button variant="outline" size="icon" onClick={prevWeek} className="h-8 w-8 active:scale-95 transition-transform" aria-label="Tuần trước">
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <div className="text-sm font-medium w-[180px] text-center">
             {format(weekStart, "dd/MM")} - {format(weekEnd, "dd/MM/yyyy")}
           </div>
-          <Button variant="outline" size="icon" onClick={nextWeek} className="h-9 w-9 sm:h-8 sm:w-8 active:scale-95 transition-transform" aria-label="Tuần sau">
+          <Button variant="outline" size="icon" onClick={nextWeek} className="h-8 w-8 active:scale-95 transition-transform" aria-label="Tuần sau">
             <ChevronRight className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="sm" onClick={resetToday} className="h-9 sm:h-8 text-xs active:scale-95 transition-transform">
+          <Button variant="ghost" size="sm" onClick={resetToday} className="h-8 text-xs active:scale-95 transition-transform">
             Hôm nay
           </Button>
         </div>
@@ -206,7 +206,7 @@ export function StaffScheduler({ initialSchedules, staffList, className }: Staff
                   <span className="font-medium">
                     {selectedTool === "eraser"
                       ? "Đang xóa"
-                      : selectedTool
+                      : (typeof selectedTool === "object" && selectedTool !== null)
                         ? selectedTool.name
                         : "Chế độ tô"}
                   </span>

@@ -1,10 +1,10 @@
 import { Button } from '@/shared/ui/button';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select";
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
@@ -39,13 +39,13 @@ export function CalendarHeader({ date, onDateChange, view, onViewChange }: Calen
     <div className="-mx-4 w-[calc(100%+2rem)] px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm transition-all duration-200 sticky top-[var(--header-height)] z-30">
       <div className="flex items-center gap-2">
         <div className="flex items-center rounded-lg border bg-background p-0.5 shadow-sm">
-          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-md" onClick={handlePrev}>
+          <Button variant="ghost" size="icon" className="rounded-md" onClick={handlePrev}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="sm" className="h-9 px-3 font-medium" onClick={handleToday}>
+          <Button variant="ghost" className="font-medium" onClick={handleToday}>
             Hôm nay
           </Button>
-          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-md" onClick={handleNext}>
+          <Button variant="ghost" size="icon" className="rounded-md" onClick={handleNext}>
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>

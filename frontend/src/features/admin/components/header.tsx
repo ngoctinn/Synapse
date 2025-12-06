@@ -5,21 +5,21 @@ import { UserProfile } from "@/shared/components/layout/components/header/types"
 import { cn } from "@/shared/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
 } from "@/shared/ui/breadcrumb"
 import { Button } from "@/shared/ui/button"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
 import { Separator } from "@/shared/ui/separator"
 import { SidebarTrigger } from "@/shared/ui/sidebar"
@@ -119,7 +119,7 @@ export function AdminHeader({ className, user }: AdminHeaderProps) {
         {/* User Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="rounded-full w-9 h-9 hover:bg-slate-50 transition-all hover:ring-2 hover:ring-primary/10">
+            <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-50 transition-all hover:ring-2 hover:ring-primary/10">
               <Avatar className="w-8 h-8 border border-slate-200 shadow-sm">
                 <AvatarImage src={avatarUrl} />
                 <AvatarFallback>{initials}</AvatarFallback>

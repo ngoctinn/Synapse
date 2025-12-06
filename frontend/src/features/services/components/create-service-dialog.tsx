@@ -31,7 +31,7 @@ export function CreateServiceDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="h-9">
+        <Button>
           <Plus className="mr-2 h-4 w-4" /> Thêm dịch vụ
         </Button>
       </DialogTrigger>

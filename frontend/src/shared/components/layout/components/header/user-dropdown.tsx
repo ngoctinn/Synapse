@@ -3,13 +3,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Button } from "@/shared/ui/button"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
 import { CreditCard, LayoutDashboard, LogOut, Settings, User } from "lucide-react"
 import Link from "next/link"
@@ -29,7 +29,7 @@ export function HeaderUserDropdown({ user, onLogout }: HeaderUserDropdownProps) 
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-9 w-9 rounded-full cursor-pointer ring-offset-background transition-all hover:ring-2 hover:ring-primary/20 focus-visible:ring-2 focus-visible:ring-primary/30">
+        <Button variant="ghost" size="icon" className="relative rounded-full ring-offset-background transition-all hover:ring-2 hover:ring-primary/20 focus-visible:ring-2 focus-visible:ring-primary/30">
           <Avatar className="h-9 w-9 transition-transform hover:scale-105">
             <AvatarImage src={user.avatar} alt={user.name} />
             <AvatarFallback className="bg-primary/10 text-primary font-medium">
