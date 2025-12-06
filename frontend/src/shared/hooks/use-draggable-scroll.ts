@@ -4,6 +4,7 @@ export function useDraggableScroll(ref: RefObject<HTMLElement | null>, options: 
   const { speedMultiplier = 1.5 } = options;
 
   const isDown = useRef(false);
+  const isDragging = useRef(false);
   const startX = useRef(0);
   const startY = useRef(0);
   const scrollLeft = useRef(0);
@@ -16,6 +17,7 @@ export function useDraggableScroll(ref: RefObject<HTMLElement | null>, options: 
     if (e.button !== 0) return; // Only left click
 
     isDown.current = true;
+    isDragging.current = false;
     container.classList.add('cursor-grabbing');
     container.classList.remove('cursor-grab');
 
@@ -39,6 +41,9 @@ export function useDraggableScroll(ref: RefObject<HTMLElement | null>, options: 
     isDown.current = false;
     container.classList.remove('cursor-grabbing');
     container.classList.add('cursor-grab');
+
+    // Slight delay to allow onClick to fire and check the ref before we potentially reset it
+    // (Though we reset on MouseDown so it persists until next interaction)
   };
 
   const handleMouseMove = (e: MouseEvent) => {
@@ -52,6 +57,11 @@ export function useDraggableScroll(ref: RefObject<HTMLElement | null>, options: 
     const walkX = (x - startX.current) * speedMultiplier;
     const walkY = (y - startY.current) * speedMultiplier;
 
+    // Only mark as dragging if moved significantly (e.g. 5px)
+    if (Math.abs(walkX) > 5 || Math.abs(walkY) > 5) {
+        isDragging.current = true;
+    }
+
     container.scrollLeft = scrollLeft.current - walkX;
     container.scrollTop = scrollTop.current - walkY;
   };
@@ -61,6 +71,7 @@ export function useDraggableScroll(ref: RefObject<HTMLElement | null>, options: 
     const container = ref.current;
     if (!container) return;
     isDown.current = true;
+    isDragging.current = false;
 
     const touch = e.touches[0];
     startX.current = touch.pageX - container.offsetLeft;
@@ -84,6 +95,10 @@ export function useDraggableScroll(ref: RefObject<HTMLElement | null>, options: 
     const walkX = (x - startX.current) * speedMultiplier;
     const walkY = (y - startY.current) * speedMultiplier;
 
+    if (Math.abs(walkX) > 5 || Math.abs(walkY) > 5) {
+        isDragging.current = true;
+    }
+
     container.scrollLeft = scrollLeft.current - walkX;
     container.scrollTop = scrollTop.current - walkY;
   };
@@ -106,5 +121,6 @@ export function useDraggableScroll(ref: RefObject<HTMLElement | null>, options: 
       onTouchEnd: handleTouchEnd,
       onTouchMove: handleTouchMove,
     },
+    isDragging // Export ref
   };
 }

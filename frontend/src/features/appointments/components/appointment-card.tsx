@@ -32,8 +32,7 @@ const statusIndicator = {
 };
 
 export function AppointmentCard({ appointment, style, className, onClick }: AppointmentCardProps) {
-  const duration = (appointment.endTime.getTime() - appointment.startTime.getTime()) / (1000 * 60);
-  const isSmall = duration < 45; // Chế độ xem gọn cho lịch hẹn ngắn
+
 
   return (
     <motion.div
@@ -62,28 +61,24 @@ export function AppointmentCard({ appointment, style, className, onClick }: Appo
         )}
       />
 
-      <div className="pl-2 h-full flex flex-col justify-center">
-        <div className="flex items-center justify-between gap-1">
-          <span className="font-bold truncate text-sm leading-tight font-serif tracking-wide">
-            {appointment.customerName}
-          </span>
-          {!isSmall && (
-            <span className="opacity-70 text-[10px] whitespace-nowrap flex items-center gap-0.5 font-mono">
-              <Clock className="w-3 h-3" />
-              {format(appointment.startTime, 'HH:mm')} - {format(appointment.endTime, 'HH:mm')}
-            </span>
-          )}
+      <div className="pl-2.5 h-full flex flex-col justify-center gap-1">
+        {/* Line 1: Customer Name */}
+        <div className="font-bold truncate text-sm leading-none font-serif tracking-tight text-foreground/90">
+          {appointment.customerName}
         </div>
 
-        <div className="text-[11px] opacity-90 truncate font-normal mt-0.5 text-current/80">
+        {/* Line 2: Time */}
+        <div className="flex items-center gap-1 text-[11px] opacity-85 font-mono leading-none">
+           <Clock className="w-3 h-3" />
+           <span className="truncate">
+             {format(appointment.startTime, 'HH:mm')} - {format(appointment.endTime, 'HH:mm')}
+           </span>
+        </div>
+
+        {/* Line 3: Service Name */}
+        <div className="text-[11px] opacity-90 truncate font-medium leading-none">
           {appointment.serviceName}
         </div>
-
-        {!isSmall && appointment.notes && (
-          <div className="mt-1 text-[10px] opacity-70 truncate italic border-t border-black/5 pt-1">
-            {appointment.notes}
-          </div>
-        )}
       </div>
     </motion.div>
   );

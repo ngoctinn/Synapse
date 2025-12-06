@@ -1,0 +1,6 @@
+
+> frontend@0.1.0 build E:\Synapse\frontend
+> next build "--filter=frontend"
+
+error: unknown option '--filter=frontend'
+ ELIFECYCLE  Command failed with exit code 1.

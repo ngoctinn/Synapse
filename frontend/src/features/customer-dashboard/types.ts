@@ -40,3 +40,26 @@ export type ActionState = {
   errors?: Record<string, string[]>;
   payload?: any;
 };
+
+// --- Booking Types ---
+export interface BookingService {
+  id: string
+  name: string
+  duration: number // minutes
+  price: number
+}
+
+export interface BookingStaff {
+  id: string
+  name: string
+  role: string
+  rating: number
+  avatar: string
+  tags: string[]
+}
+
+export interface TimeSlot {
+  time: string
+  isRecommended?: boolean // High utilization / optimization hint
+  isHighDemand?: boolean
+}

@@ -1,14 +1,12 @@
 import { Button } from '@/shared/ui/button';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/shared/ui/select";
+    Tabs,
+    TabsList,
+    TabsTrigger,
+} from "@/shared/ui/tabs";
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { CalendarView } from '../types';
 
 interface CalendarHeaderProps {
@@ -58,18 +56,34 @@ export function CalendarHeader({ date, onDateChange, view, onViewChange }: Calen
       </div>
 
       <div className="flex items-center gap-2">
-        <Select value={view} onValueChange={(v) => onViewChange(v as CalendarView)}>
-          <SelectTrigger className="w-[140px] h-9 bg-background">
-            <CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
-            <SelectValue placeholder="Chế độ xem" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="timeline">Timeline (KTV)</SelectItem>
-            <SelectItem value="day">Ngày</SelectItem>
-            <SelectItem value="week">Tuần</SelectItem>
-            <SelectItem value="month">Tháng</SelectItem>
-          </SelectContent>
-        </Select>
+        <Tabs value={view} onValueChange={(v) => onViewChange(v as CalendarView)}>
+          <TabsList className="h-9 bg-muted/50 p-1">
+            <TabsTrigger
+              value="timeline"
+              className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 transition-all duration-200"
+            >
+              Timeline (KTV)
+            </TabsTrigger>
+            <TabsTrigger
+              value="day"
+              className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 transition-all duration-200"
+            >
+              Ngày
+            </TabsTrigger>
+            <TabsTrigger
+              value="week"
+              className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 transition-all duration-200"
+            >
+              Tuần
+            </TabsTrigger>
+            <TabsTrigger
+              value="month"
+              className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 transition-all duration-200"
+            >
+              Tháng
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
     </div>
   );

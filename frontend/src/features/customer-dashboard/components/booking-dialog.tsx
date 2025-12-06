@@ -22,17 +22,15 @@ import { format } from "date-fns"
 import { vi } from "date-fns/locale"
 import { AnimatePresence, motion } from "framer-motion"
 import {
-    ArrowLeft,
-    Calendar as CalendarIcon,
-    Check,
-    CheckCircle2,
-    ChevronRight,
-    Clock,
-    Info,
-    Sparkles,
-    Star,
-    User,
-    Users,
+  ArrowLeft,
+  CalendarIcon,
+  CheckCircle2,
+  ChevronRight,
+  Clock,
+  Info,
+  Star,
+  User,
+  Users
 } from "lucide-react"
 import * as React from "react"
 
@@ -43,87 +41,26 @@ import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
 import { Calendar } from "@/shared/ui/calendar"
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle
 } from "@/shared/ui/dialog"
 import { Label } from "@/shared/ui/label"
+import { Progress } from "@/shared/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/shared/ui/radio-group"
 import { ScrollArea } from "@/shared/ui/scroll-area"
 import { Separator } from "@/shared/ui/separator"
 
-// --- Types ---
-interface Service {
-  id: string
-  name: string
-  duration: number // minutes
-  price: number
-}
-
-interface Staff {
-  id: string
-  name: string
-  role: string
-  rating: number
-  avatar: string
-  tags: string[]
-}
-
-interface TimeSlot {
-  time: string
-  isRecommended?: boolean
-  isHighDemand?: boolean
-}
-
-// --- Mock Data ---
-const MOCK_STAFF: Staff[] = [
-  {
-    id: "s1",
-    name: "Nguyễn Thị Lan",
-    role: "Senior Therapist",
-    rating: 4.9,
-    avatar: "https://i.pravatar.cc/150?u=s1",
-    tags: ["Kinh nghiệm 5 năm", "Massage trị liệu"],
-  },
-  {
-    id: "s2",
-    name: "Trần Văn Hùng",
-    role: "Master Stylist",
-    rating: 4.8,
-    avatar: "https://i.pravatar.cc/150?u=s2",
-    tags: ["Kỹ thuật cao", "Cắt tóc nam"],
-  },
-  {
-    id: "s3",
-    name: "Lê Thị Mai",
-    role: "Therapist",
-    rating: 4.7,
-    avatar: "https://i.pravatar.cc/150?u=s3",
-    tags: ["Chăm sóc da", "Nhẹ nhàng"],
-  },
-]
-
-const MOCK_SLOTS: TimeSlot[] = [
-  { time: "09:00" },
-  { time: "09:30", isHighDemand: true },
-  { time: "10:00", isRecommended: true },
-  { time: "10:30" },
-  { time: "11:00", isRecommended: true },
-  { time: "13:30" },
-  { time: "14:00", isRecommended: true },
-  { time: "14:30", isHighDemand: true },
-  { time: "15:00" },
-  { time: "16:00", isRecommended: true },
-]
+import { MOCK_SLOTS, MOCK_STAFF } from "../mocks"
+import { BookingService, BookingStaff } from "../types"
 
 // --- Component Props ---
 interface BookingDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  service?: Service
-  defaultStaffId?: string
+  service?: BookingService
+  defaultStaffId?: string // If re-booking with previous staff
 }
 
 type Step = "preference" | "staff-select" | "time-select" | "confirm" | "success"
@@ -166,10 +103,21 @@ export function BookingDialog({
 }: BookingDialogProps) {
   const [step, setStep] = React.useState<Step>("preference")
   const [preference, setPreference] = React.useState<"any" | "specific">("any")
-  const [selectedStaff, setSelectedStaff] = React.useState<Staff | null>(null)
+  const [selectedStaff, setSelectedStaff] = React.useState<BookingStaff | null>(null)
   const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(new Date())
   const [selectedTime, setSelectedTime] = React.useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = React.useState(false)
+
+  // Calculate progress
+  const progress = React.useMemo(() => {
+    switch (step) {
+      case "preference": return 33
+      case "staff-select": return 66
+      case "time-select": return 66
+      case "confirm": return 100
+      default: return 100
+    }
+  }, [step])
 
   // Reset state when opening
   React.useEffect(() => {
@@ -297,28 +245,25 @@ export function BookingDialog({
         <RadioGroup
           value={preference}
           onValueChange={(v) => setPreference(v as "any" | "specific")}
-          className="grid gap-4"
+          className="grid gap-4 md:grid-cols-2"
         >
           {/* Option: Linh hoạt (Recommended) */}
           <div>
             <RadioGroupItem value="any" id="pref-any" className="peer sr-only" />
             <Label
               htmlFor="pref-any"
-              className={cn(
-                "flex flex-col items-center justify-between rounded-xl border-2 bg-popover p-4 cursor-pointer transition-all",
-                "hover:bg-accent/50 hover:border-accent",
-                "peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              )}
+              className="flex items-center gap-4 rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 cursor-pointer transition-all"
             >
-              <div className="mb-3 rounded-full bg-primary/10 p-3 text-primary">
-                <Sparkles className="h-6 w-6" />
-              </div>
-              <div className="text-center space-y-1">
-                <span className="font-semibold block text-base">Linh hoạt (Được đề xuất)</span>
-                <span className="text-sm text-muted-foreground font-normal leading-snug block max-w-[220px] mx-auto">
-                  Dễ dàng chọn được khung giờ đẹp ưng ý mà không phải chờ đợi lâu.
-                </span>
+              <div className="h-full flex flex-col">
+                 <div className="rounded-full bg-primary/10 p-2 text-primary w-fit mb-3">
+                    <Users className="h-5 w-5" />
+                  </div>
+                  <div className="space-y-1">
+                    <span className="font-semibold block text-base">Linh hoạt</span>
+                    <span className="text-sm text-muted-foreground font-normal leading-snug block">
+                      Được đề xuất để có giờ đẹp nhất.
+                    </span>
+                  </div>
               </div>
             </Label>
           </div>
@@ -328,21 +273,18 @@ export function BookingDialog({
             <RadioGroupItem value="specific" id="pref-specific" className="peer sr-only" />
             <Label
               htmlFor="pref-specific"
-              className={cn(
-                "flex items-center gap-4 rounded-xl border-2 bg-popover p-4 cursor-pointer transition-all",
-                "hover:bg-accent/50 hover:border-accent",
-                "peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              )}
+              className="flex items-center gap-4 rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 cursor-pointer transition-all h-full"
             >
-              <div className="rounded-full bg-muted p-3">
+              <div className="rounded-full bg-muted p-2 w-fit mb-auto">
                 <User className="h-5 w-5 text-muted-foreground" />
               </div>
-              <div className="flex-1">
-                <span className="font-semibold block">Chọn chuyên gia cụ thể</span>
-                <span className="text-sm text-muted-foreground font-normal">
-                  Chỉ định người bạn yêu thích
-                </span>
+              <div className="h-full flex flex-col justify-between">
+                <div>
+                   <span className="font-semibold block">Chọn chuyên gia</span>
+                   <span className="text-sm text-muted-foreground font-normal block my-1">
+                     Chỉ định người phục vụ riêng.
+                   </span>
+                </div>
               </div>
             </Label>
           </div>
@@ -358,7 +300,7 @@ export function BookingDialog({
             {MOCK_STAFF.length} người
           </Badge>
         </div>
-        <ScrollArea className="h-[40vh] min-h-[300px] pr-4">
+        <ScrollArea className="h-auto max-h-[50vh] min-h-[300px] pr-4 md:max-h-[400px]">
           <div className="space-y-3">
             {MOCK_STAFF.map((staff) => (
               <button
@@ -367,12 +309,10 @@ export function BookingDialog({
                 onClick={() => setSelectedStaff(staff)}
                 aria-label={`Chọn ${staff.name}`}
                 className={cn(
-                  "w-full flex items-start gap-4 p-4 rounded-xl border text-left transition-all cursor-pointer",
-                  "hover:shadow-md hover:border-primary/50",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                  "w-full flex items-start gap-4 p-3 rounded-lg border transition-all cursor-pointer hover:shadow-sm text-left outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                   selectedStaff?.id === staff.id
-                    ? "border-primary bg-primary/5 ring-1 ring-primary shadow-sm"
-                    : "border-border bg-card"
+                    ? "border-primary bg-primary/5 ring-1 ring-primary"
+                    : "border-border bg-card hover:bg-accent hover:border-muted-foreground/30"
                 )}
               >
                 <Avatar className="h-14 w-14 border-2 border-background shadow-sm">
@@ -407,7 +347,7 @@ export function BookingDialog({
     ),
 
     "time-select": (
-      <div className="space-y-6 pt-2">
+      <div className="space-y-6 pt-2 md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
         {/* Date Picker */}
         <div className="rounded-xl border bg-card/50 p-4 shadow-sm">
           <Calendar
@@ -420,9 +360,7 @@ export function BookingDialog({
               head_cell: "text-muted-foreground font-normal text-[0.8rem] w-9",
               cell: "h-9 w-9 text-center text-sm p-0 relative",
               day: cn(
-                "h-9 w-9 p-0 font-normal rounded-md transition-all",
-                "hover:bg-accent hover:text-accent-foreground",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                "h-9 w-9 md:h-10 md:w-10 p-0 font-normal aria-selected:opacity-100 hover:bg-accent hover:text-accent-foreground rounded-md transition-all"
               ),
               day_selected:
                 "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
@@ -434,22 +372,17 @@ export function BookingDialog({
         {/* Time Slots */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">
-              Giờ trống {selectedDate ? `- ${format(selectedDate, "dd/MM", { locale: vi })}` : ""}
-            </span>
-            {preference === "any" && (
-              <Badge
-                variant="outline"
-                className="text-[10px] bg-[var(--status-serving)]/10 text-[var(--status-serving-foreground)] border-[var(--status-serving-border)]"
-              >
-                <Sparkles className="h-3 w-3 mr-1" />
+            <span className="text-sm font-medium">Giờ trống {selectedDate ? `- ${format(selectedDate, "dd/MM", { locale: vi })}` : ""}</span>
+            {preference === 'any' && (
+              <Badge variant="outline" className="text-[10px] border-[var(--status-serving-border)] text-[var(--status-serving-foreground)] bg-[var(--status-serving)]/10">
+                <Star className="h-3 w-3 mr-1" />
                 Giờ vàng
               </Badge>
             )}
           </div>
 
-          <ScrollArea className="h-[130px]">
-            <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+          <ScrollArea className="h-[120px] md:h-[280px]">
+            <div className="grid grid-cols-4 gap-2 md:grid-cols-2 lg:grid-cols-3">
               {MOCK_SLOTS.map((slot) => (
                 <Button
                   key={slot.time}
@@ -457,20 +390,17 @@ export function BookingDialog({
                   variant={selectedTime === slot.time ? "default" : "outline"}
                   aria-label={`Chọn giờ ${slot.time}`}
                   className={cn(
-                    "h-11 text-sm relative transition-all",
-                    "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                    selectedTime === slot.time && "ring-2 ring-primary ring-offset-1",
-                    slot.isRecommended &&
-                      selectedTime !== slot.time &&
-                      "border-[var(--status-serving-border)] bg-[var(--status-serving)] text-[var(--status-serving-foreground)] hover:bg-[var(--status-serving)]/80"
+                    "h-11 text-sm relative min-w-[3.5rem]",
+                    selectedTime === slot.time ? "ring-2 ring-primary ring-offset-1" : "",
+                    slot.isRecommended && selectedTime !== slot.time ? "border-[var(--status-serving-border)] bg-[var(--status-serving)] text-[var(--status-serving-foreground)] hover:bg-[var(--status-serving)]/90" : ""
                   )}
                   onClick={() => setSelectedTime(slot.time)}
                 >
                   {slot.time}
                   {slot.isRecommended && (
-                    <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-                      <span className="motion-safe:animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--status-serving-foreground)] opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[var(--status-serving-foreground)]" />
+                    <span className="absolute -top-1 -right-1 flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--status-serving-foreground)] opacity-75 duration-1000"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--status-serving-foreground)]"></span>
                     </span>
                   )}
                 </Button>
@@ -485,17 +415,21 @@ export function BookingDialog({
       <div className="space-y-6 py-4">
         <div className="rounded-xl bg-muted/30 p-6 space-y-6 border">
           {/* Service Info */}
-          <div className="flex items-start gap-4">
-            <div className="h-14 w-14 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-              <Sparkles className="h-7 w-7 text-primary" />
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="flex items-start gap-4">
+               <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <CalendarIcon className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h4 className="font-semibold text-base">{service.name}</h4>
+                <p className="text-sm text-muted-foreground">{service.duration} phút • {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(service.price)}</p>
+              </div>
             </div>
-            <div>
-              <h4 className="font-serif font-semibold text-lg">{service.name}</h4>
-              <p className="text-sm text-muted-foreground">
-                {service.duration} phút •{" "}
-                {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(service.price)}
-              </p>
-            </div>
+            {/* Added details summary to fill space on desktop if needed, or keep simple */}
+             <div className="space-y-2 text-sm md:text-right">
+                <div className="text-muted-foreground">Thời gian dự kiến</div>
+                <div className="font-medium">{selectedDate ? format(selectedDate, "HH:mm, dd/MM/yyyy", { locale: vi }) : "..."}</div>
+             </div>
           </div>
 
           <Separator />
@@ -569,22 +503,26 @@ export function BookingDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[460px] max-h-[90vh] overflow-hidden flex flex-col p-0 gap-0">
-        {/* Header */}
-        {step !== "success" && (
-          <div className="p-6 pb-2 border-b bg-muted/10">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-serif font-semibold flex items-center gap-2">
-                <CalendarIcon className="w-5 h-5 text-primary" />
-                Đặt lịch hẹn
-              </DialogTitle>
-              <DialogDescription className="text-sm">
-                {step === "preference" && "Bước 1/3: Tùy chọn"}
-                {step === "staff-select" && "Bước 2/3: Chọn chuyên gia"}
-                {step === "time-select" && "Bước 2/3: Chọn thời gian"}
-                {step === "confirm" && "Bước 3/3: Xác nhận"}
-              </DialogDescription>
-            </DialogHeader>
+      <DialogContent className="sm:max-w-[425px] md:max-w-2xl p-0 gap-0 overflow-hidden">
+        <div className="p-6 pb-2">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl">
+              {step === "success" ? "" : "Đặt lịch hẹn"}
+            </DialogTitle>
+            <div className="space-y-1.5 mt-1">
+               <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>
+                    {step === "preference" && "Bước 1/3: Tùy chọn"}
+                    {step === "staff-select" && "Bước 2/3: Chọn chuyên gia"}
+                    {step === "time-select" && "Bước 2/3: Chọn thời gian"}
+                    {step === "confirm" && "Bước 3/3: Xác nhận"}
+                  </span>
+                  <span>{Math.round(progress)}%</span>
+               </div>
+               <Progress value={progress} className="h-1" />
+            </div>
+          </DialogHeader>
+        </div>
 
             {/* Step Indicator */}
             {renderStepIndicator()}
@@ -626,31 +564,18 @@ export function BookingDialog({
             )}
 
             <Button
-              onClick={handleNext}
-              disabled={
-                isSubmitting ||
-                (step === "staff-select" && !selectedStaff) ||
-                (step === "time-select" && !selectedTime)
-              }
-              className={cn(
-                "min-w-[140px] shadow-md shadow-primary/20",
-                step === "preference" && "w-full"
-              )}
-            >
-              {isSubmitting ? (
-                <>
-                  <span className="h-4 w-4 mr-2 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                  Đang xử lý...
-                </>
-              ) : step === "confirm" ? (
-                "Xác nhận đặt"
-              ) : (
-                <>
-                  Tiếp tục
-                  <ChevronRight className="h-4 w-4 ml-2" />
-                </>
-              )}
-            </Button>
+                onClick={handleNext}
+                className={cn("min-w-[120px] shadow-sm", step === "preference" && "w-full")}
+                aria-label={step === "confirm" ? "Confirm booking" : "Go to next step"}
+                disabled={
+                  (step === "staff-select" && !selectedStaff) ||
+                  (step === "time-select" && !selectedTime)
+                }
+              >
+                {step === "confirm" ? "Xác nhận đặt" : "Tiếp tục"}
+                {step !== "confirm" && <ChevronRight className="h-4 w-4 ml-2" />}
+              </Button>
+
           </div>
         )}
       </DialogContent>

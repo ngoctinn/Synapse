@@ -1,4 +1,4 @@
-import { DashboardStats } from "@/features/customer-dashboard"
+import { AppointmentTimeline, DashboardStats } from "@/features/customer-dashboard"
 import { getCustomerAppointments, getCustomerProfile, getCustomerTreatments } from "@/features/customer-dashboard/index.server"
 
 export default async function DashboardPage() {
@@ -30,7 +30,9 @@ export default async function DashboardPage() {
 
 
 
-      <div className="min-h-[20vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+      <div className="flex-1 md:min-h-min">
+        <AppointmentTimeline appointments={appointments} />
+      </div>
     </div>
   )
 }
