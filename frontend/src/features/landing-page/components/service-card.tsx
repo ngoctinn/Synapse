@@ -1,12 +1,12 @@
 
 "use client"
 
+import { Service } from "@/features/services/types"
 import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
 import { motion } from "framer-motion"
 import { Clock, Tag } from "lucide-react"
 import Image from "next/image"
-import { Service } from "../types"
 
 interface ServiceCardProps {
   service: Service
@@ -26,7 +26,7 @@ export function ServiceCard({ service, onBook }: ServiceCardProps) {
       {/* Image Container */}
       <div className="relative aspect-[4/3] w-full overflow-hidden">
         <Image
-          src={service.imageUrl}
+          src={service.image_url || ''}
           alt={service.name}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-110"
@@ -36,7 +36,7 @@ export function ServiceCard({ service, onBook }: ServiceCardProps) {
 
         {/* Chips/Badges overlay */}
         <div className="absolute top-3 right-3 flex gap-2">
-          {service.isPopular && (
+          {service.is_popular && (
             <Badge variant="secondary" className="bg-yellow-400/90 text-yellow-950 font-medium shadow-sm backdrop-blur-sm border-0">
               Phổ biến
             </Badge>
@@ -65,7 +65,7 @@ export function ServiceCard({ service, onBook }: ServiceCardProps) {
         <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
           <div className="flex items-center gap-1.5">
             <Clock className="h-4 w-4 text-primary" />
-            <span>{service.durationMinutes} phút</span>
+            <span>{service.duration} phút</span>
           </div>
           <div className="flex items-center gap-1.5 font-medium text-foreground">
             <Tag className="h-4 w-4 text-primary" />

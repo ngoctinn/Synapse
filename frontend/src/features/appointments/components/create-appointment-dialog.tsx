@@ -1,7 +1,7 @@
 "use client";
 
 import { Appointment } from "@/features/appointments/types";
-import { MOCK_SERVICES } from "@/features/landing-page/mocks";
+import { MOCK_SERVICES } from "@/features/services/data/mocks";
 import { Button } from "@/shared/ui/button";
 import {
     Dialog,
@@ -98,7 +98,7 @@ export function CreateAppointmentDialog({
     const [hours, minutes] = values.startTime.split(':').map(Number);
 
     const startTime = new Date(year, month - 1, day, hours, minutes);
-    const endTime = new Date(startTime.getTime() + (service?.durationMinutes || 60) * 60000);
+    const endTime = new Date(startTime.getTime() + (service?.duration || 60) * 60000);
 
     const newAppointment: Partial<Appointment> = {
         id: `apt-${Date.now()}`,
@@ -202,7 +202,7 @@ export function CreateAppointmentDialog({
                                     <SelectContent>
                                         {MOCK_SERVICES.map(service => (
                                             <SelectItem key={service.id} value={service.id}>
-                                                {service.name} ({service.durationMinutes}p)
+                                                {service.name} ({service.duration}p)
                                             </SelectItem>
                                         ))}
                                     </SelectContent>

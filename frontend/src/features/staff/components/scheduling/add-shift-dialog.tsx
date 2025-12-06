@@ -4,16 +4,16 @@ import { Button } from "@/shared/ui/button"
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
 import { TimeInput } from "@/shared/ui/custom/time-input"
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
 } from "@/shared/ui/dialog"
 import { Label } from "@/shared/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { Tag } from "lucide-react"
 import { useState } from "react"
-import { MOCK_SHIFTS } from "../../data/mock-shifts"
+import { MOCK_SHIFTS } from "../../data/shifts"
 import { Shift } from "../../types"
 
 interface AddShiftDialogProps {

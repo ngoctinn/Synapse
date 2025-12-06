@@ -1,3 +1,4 @@
+import { MOCK_SKILLS } from "@/features/services/data/mocks";
 import { Staff } from "../types";
 
 export const MOCK_STAFF: Staff[] = [
@@ -75,11 +76,7 @@ export const MOCK_STAFF: Staff[] = [
       role: "technician",
       is_active: true,
     },
-    skills: [
-      { id: "s1", name: "Facial", code: "FACIAL" },
-      { id: "s2", name: "Massage Body", code: "BODY" },
-      { id: "s3", name: "Nặn mụn", code: "ACNE" }
-    ],
+    skills: [MOCK_SKILLS[0], MOCK_SKILLS[1], MOCK_SKILLS[2]],
   },
   {
     user_id: "5",
@@ -98,10 +95,7 @@ export const MOCK_STAFF: Staff[] = [
       role: "technician",
       is_active: true,
     },
-    skills: [
-      { id: "s4", name: "Gội đầu", code: "SHAMPOO" },
-      { id: "s5", name: "Massage Cổ Vai Gáy", code: "NECK" }
-    ],
+    skills: [MOCK_SKILLS[3], MOCK_SKILLS[4]],
   },
   {
     user_id: "6",
@@ -120,10 +114,7 @@ export const MOCK_STAFF: Staff[] = [
       role: "technician",
       is_active: true,
     },
-    skills: [
-      { id: "s1", name: "Facial", code: "FACIAL" },
-      { id: "s6", name: "Laser", code: "LASER" }
-    ],
+    skills: [MOCK_SKILLS[0], MOCK_SKILLS[5]],
   },
   {
     user_id: "7",
@@ -142,10 +133,7 @@ export const MOCK_STAFF: Staff[] = [
       role: "technician",
       is_active: false,
     },
-    skills: [
-      { id: "s2", name: "Massage Body", code: "BODY" },
-      { id: "s7", name: "Tắm trắng", code: "WHITENING" }
-    ],
+    skills: [MOCK_SKILLS[1], MOCK_SKILLS[6]],
   },
   {
     user_id: "8",
@@ -164,10 +152,7 @@ export const MOCK_STAFF: Staff[] = [
       role: "technician",
       is_active: true,
     },
-    skills: [
-      { id: "s3", name: "Nặn mụn", code: "ACNE" },
-      { id: "s8", name: "Peel da", code: "PEEL" }
-    ],
+    skills: [MOCK_SKILLS[2], MOCK_SKILLS[7]],
   },
   {
     user_id: "9",
@@ -186,10 +171,7 @@ export const MOCK_STAFF: Staff[] = [
       role: "technician",
       is_active: true,
     },
-    skills: [
-      { id: "s9", name: "Triệt lông", code: "HAIR_REMOVAL" },
-      { id: "s1", name: "Facial", code: "FACIAL" }
-    ],
+    skills: [MOCK_SKILLS[8], MOCK_SKILLS[0]],
   },
   {
     user_id: "10",
@@ -208,11 +190,7 @@ export const MOCK_STAFF: Staff[] = [
       role: "technician",
       is_active: true,
     },
-    skills: [
-      { id: "s2", name: "Massage Body", code: "BODY" },
-      { id: "s5", name: "Massage Cổ Vai Gáy", code: "NECK" },
-      { id: "s4", name: "Gội đầu", code: "SHAMPOO" }
-    ],
+    skills: [MOCK_SKILLS[1], MOCK_SKILLS[4], MOCK_SKILLS[3]],
   },
   {
     user_id: "11",
@@ -231,10 +209,7 @@ export const MOCK_STAFF: Staff[] = [
       role: "technician",
       is_active: true,
     },
-    skills: [
-      { id: "s1", name: "Facial", code: "FACIAL" },
-      { id: "s3", name: "Nặn mụn", code: "ACNE" }
-    ],
+    skills: [MOCK_SKILLS[0], MOCK_SKILLS[2]],
   },
   {
     user_id: "12",
@@ -253,10 +228,7 @@ export const MOCK_STAFF: Staff[] = [
       role: "technician",
       is_active: true,
     },
-    skills: [
-      { id: "s2", name: "Massage Body", code: "BODY" },
-      { id: "s6", name: "Laser", code: "LASER" }
-    ],
+    skills: [MOCK_SKILLS[1], MOCK_SKILLS[5]],
   },
   {
     user_id: "13",
@@ -275,10 +247,7 @@ export const MOCK_STAFF: Staff[] = [
       role: "technician",
       is_active: true,
     },
-    skills: [
-      { id: "s4", name: "Gội đầu", code: "SHAMPOO" },
-      { id: "s9", name: "Triệt lông", code: "HAIR_REMOVAL" }
-    ],
+    skills: [MOCK_SKILLS[3], MOCK_SKILLS[8]],
   },
   {
     user_id: "14",
@@ -297,10 +266,7 @@ export const MOCK_STAFF: Staff[] = [
       role: "technician",
       is_active: false,
     },
-    skills: [
-      { id: "s5", name: "Massage Cổ Vai Gáy", code: "NECK" },
-      { id: "s7", name: "Tắm trắng", code: "WHITENING" }
-    ],
+    skills: [MOCK_SKILLS[4], MOCK_SKILLS[6]],
   },
   {
     user_id: "15",
@@ -319,23 +285,8 @@ export const MOCK_STAFF: Staff[] = [
       role: "technician",
       is_active: true,
     },
-    skills: [
-      { id: "s8", name: "Peel da", code: "PEEL" },
-      { id: "s1", name: "Facial", code: "FACIAL" }
-    ],
+    skills: [MOCK_SKILLS[7], MOCK_SKILLS[0]],
   },
 ];
 
-import { Skill } from "@/features/services/types";
 
-export const MOCK_SKILLS: Skill[] = [
-  { id: "s1", name: "Facial", code: "FACIAL" },
-  { id: "s2", name: "Massage Body", code: "BODY" },
-  { id: "s3", name: "Nặn mụn", code: "ACNE" },
-  { id: "s4", name: "Gội đầu", code: "SHAMPOO" },
-  { id: "s5", name: "Massage Cổ Vai Gáy", code: "NECK" },
-  { id: "s6", name: "Laser", code: "LASER" },
-  { id: "s7", name: "Tắm trắng", code: "WHITENING" },
-  { id: "s8", name: "Peel da", code: "PEEL" },
-  { id: "s9", name: "Triệt lông", code: "HAIR_REMOVAL" },
-];

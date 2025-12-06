@@ -26,6 +26,7 @@ export const serviceSchema = z.object({
   image_url: z.string().optional(),
   color: z.string().regex(/^#/, "Mã màu không hợp lệ").default("#3b82f6"),
   description: z.string().optional(),
+  category: z.string().optional(),
   resource_requirements: z.object({
     room_type_id: z.string().optional(),
     equipment_ids: z.array(z.string()).default([]), // Legacy: backward compatible

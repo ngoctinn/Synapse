@@ -3,52 +3,18 @@ import { Appointment, Resource } from './types';
 
 const today = startOfToday();
 
+import { MOCK_STAFF } from "@/features/staff/data/mocks";
+
 // Resources (Derived from Staff Mock Data for consistency)
 // Focusing on Technicians who perform services
-export const MOCK_RESOURCES: Resource[] = [
-  {
-    id: '4',
-    name: 'Phạm Văn Kỹ Thuật 1',
-    role: 'Kỹ thuật viên',
-    avatar: 'https://api.dicebear.com/9.x/avataaars/svg?seed=ktv1'
-  },
-  {
-    id: '5',
-    name: 'Hoàng Thị Kỹ Thuật 2',
-    role: 'Kỹ thuật viên',
-    avatar: 'https://api.dicebear.com/9.x/avataaars/svg?seed=ktv2'
-  },
-  {
-    id: '6',
-    name: 'Vũ Văn Kỹ Thuật 3',
-    role: 'Kỹ thuật viên',
-    avatar: 'https://api.dicebear.com/9.x/avataaars/svg?seed=ktv3'
-  },
-  {
-    id: '8',
-    name: 'Bùi Văn Kỹ Thuật 5',
-    role: 'Kỹ thuật viên',
-    avatar: 'https://api.dicebear.com/9.x/avataaars/svg?seed=ktv5'
-  },
-  {
-    id: '9',
-    name: 'Ngô Thị Kỹ Thuật 6',
-    role: 'Kỹ thuật viên',
-    avatar: 'https://api.dicebear.com/9.x/avataaars/svg?seed=ktv6'
-  },
-  {
-    id: '10',
-    name: 'Đỗ Văn Kỹ Thuật 7',
-    role: 'Kỹ thuật viên',
-    avatar: 'https://api.dicebear.com/9.x/avataaars/svg?seed=ktv7'
-  },
-  {
-    id: '12',
-    name: 'Hồ Văn Kỹ Thuật 9',
-    role: 'Kỹ thuật viên',
-    avatar: 'https://api.dicebear.com/9.x/avataaars/svg?seed=ktv9'
-  }
-];
+export const MOCK_RESOURCES: Resource[] = MOCK_STAFF
+  .filter(staff => staff.title === "Kỹ thuật viên")
+  .map(staff => ({
+    id: staff.user_id,
+    name: staff.user.full_name || "Unknown",
+    role: staff.title,
+    avatar: staff.user.avatar_url || undefined
+  }));
 
 // Helper to create date
 const createDate = (hour: number, minute: number, dayOffset: number = 0) => {

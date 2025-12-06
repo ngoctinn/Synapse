@@ -42,21 +42,7 @@ export type ActionState = {
 };
 
 // --- Booking Types ---
-export interface BookingService {
-  id: string
-  name: string
-  duration: number // minutes
-  price: number
-}
 
-export interface BookingStaff {
-  id: string
-  name: string
-  role: string
-  rating: number
-  avatar: string
-  tags: string[]
-}
 
 export interface TimeSlot {
   time: string

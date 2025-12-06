@@ -12,7 +12,7 @@ import {
 } from "@/shared/ui/popover"
 import { toast } from "sonner"
 import { deleteSchedule, updateSchedule } from "../../actions"
-import { MOCK_SHIFTS } from "../../data/mock-shifts"
+import { MOCK_SHIFTS } from "../../data/shifts"
 import { Schedule, Shift, Staff } from "../../types"
 import { AddShiftDialog } from "./add-shift-dialog"
 import { CopyWeekButton } from "./copy-week-button"
