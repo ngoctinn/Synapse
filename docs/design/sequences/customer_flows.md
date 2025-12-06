@@ -219,11 +219,11 @@ sequenceDiagram
 sequenceDiagram
     autonumber
     actor KH as Khách hàng
-    participant UI as :ChatWidget
-    participant BFF as :ChatAction
-    participant API as :ChatRouter
-    participant AI as :LLMService
-    participant S as :BookingService
+    participant UI as Giao diện (Chat)
+    participant BFF as Server Action
+    participant API as API Router
+    participant AI as AI Bot
+    participant S as Service (Logic)
 
     KH->>UI: Gửi tin nhắn ("Đặt lịch mai 9h")
     activate UI

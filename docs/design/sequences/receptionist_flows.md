@@ -85,8 +85,12 @@ sequenceDiagram
 
     BFF->>API: POST /bookings/check
     activate API
-    API->>SOLVER: validate_slot(time)
-    SOLVER-->>API: Valid
+    API->>S: check_slot_availability(time)
+    activate S
+    S->>SOLVER: validate_slot(time)
+    SOLVER-->>S: Valid
+    S-->>API: OK
+    deactivate S
     API-->>BFF: OK
     deactivate API
     deactivate BFF
