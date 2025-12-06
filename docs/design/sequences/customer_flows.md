@@ -37,16 +37,16 @@ sequenceDiagram
 
     KH->>UI: Truy cập trang Dịch vụ
     activate UI
-    UI->>BFF: fetchServices(filter)
+    UI->>BFF: fetchServices
     activate BFF
 
     BFF->>API: GET /services
     activate API
 
-    API->>S: get_all_services(filter)
+    API->>S: get_all_services
     activate S
 
-    S->>DB: query_services_by_category()
+    S->>DB: query_services_by_category
     activate DB
     DB-->>S: services_list
     deactivate DB
@@ -79,16 +79,16 @@ sequenceDiagram
 
     KH->>UI: Chọn một dịch vụ cụ thể
     activate UI
-    UI->>BFF: getServiceDetail(id)
+    UI->>BFF: getServiceDetail
     activate BFF
 
     BFF->>API: GET /services/{id}
     activate API
 
-    API->>S: get_service_by_id(id)
+    API->>S: get_service_by_id
     activate S
 
-    S->>DB: find_service_with_related(id)
+    S->>DB: find_service_with_related
     activate DB
     DB-->>S: service_record
     deactivate DB
@@ -107,7 +107,7 @@ sequenceDiagram
 ```
 **Hình 3.16: Sơ đồ tuần tự chức năng Xem chi tiết dịch vụ**
 
-### 3.21. Tìm kiếm khung giờ (Smart Scheduling)
+### 3.21. Tìm kiếm khung giờ
 
 ```mermaid
 sequenceDiagram
@@ -117,27 +117,27 @@ sequenceDiagram
     participant BFF as Server Action
     participant API as API Router
     participant S as Service
-    participant SOLVER as Bộ giải (Solver)
+    participant SOLVER as Bộ giải
     participant DB as Database
 
     KH->>UI: Chọn Dịch vụ & Ngày
     activate UI
-    UI->>BFF: getAvailableSlots(serviceId, date)
+    UI->>BFF: getAvailableSlots
     activate BFF
 
     BFF->>API: POST /bookings/availability
     activate API
 
-    API->>S: find_slots(service_id, date)
+    API->>S: find_slots
     activate S
 
-    par Lấy dữ liệu khả dụng (Song song)
-        S->>DB: get_staff_schedules(date)
-        S->>DB: get_existing_bookings(date)
-        S->>DB: get_room_availability(date)
+    par Lấy dữ liệu khả dụng
+        S->>DB: get_staff_schedules
+        S->>DB: get_existing_bookings
+        S->>DB: get_room_availability
     end
 
-    S->>SOLVER: compute_feasible_slots(data)
+    S->>SOLVER: compute_feasible_slots
     activate SOLVER
     note right of SOLVER: CP-SAT Solver checks constraints
     SOLVER-->>S: valid_slots[]
@@ -172,31 +172,31 @@ sequenceDiagram
 
     KH->>UI: Xác nhận đặt lịch
     activate UI
-    UI->>BFF: createBooking(payload)
+    UI->>BFF: createBooking
     activate BFF
 
     BFF->>API: POST /bookings
     activate API
 
-    API->>S: create_booking(user_id, booking_data)
+    API->>S: create_booking
     activate S
 
-    crit Kiểm tra tính nhất quán (Critical)
-        S->>DB: lock_resources(staff, room, time)
-        S->>DB: check_conflict_last_time()
+    crit Kiểm tra tính nhất quán
+        S->>DB: lock_resources
+        S->>DB: check_conflict_last_time
         activate DB
         DB-->>S: OK
         deactivate DB
     end
 
-    S->>DB: insert_booking(status='PENDING')
+    S->>DB: insert_booking
     activate DB
     DB-->>S: new_booking
     deactivate DB
 
     par Gửi thông báo
-        S->>NOTI: email_customer_confirmation()
-        S->>NOTI: notify_staff_new_appointment()
+        S->>NOTI: email_customer_confirmation
+        S->>NOTI: notify_staff_new_appointment
     end
 
     S-->>API: BookingSchema
@@ -225,27 +225,27 @@ sequenceDiagram
     participant AI as AI Bot
     participant S as Service
 
-    KH->>UI: Gửi tin nhắn ("Đặt lịch mai 9h")
+    KH->>UI: Gửi tin nhắn
     activate UI
-    UI->>BFF: sendMessage(text)
+    UI->>BFF: sendMessage
     activate BFF
 
     BFF->>API: POST /chat/message
     activate API
 
-    API->>S: process_chat_message(text)
+    API->>S: process_chat_message
     activate S
 
-    S->>AI: detect_intent(text)
+    S->>AI: detect_intent
     activate AI
-    AI-->>S: intent="booking", entities={time: "9h", date: "tomorrow"}
+    AI-->>S: intent, entities
     deactivate AI
 
     alt Intent là Đặt lịch
-        S->>S: get_booking_availability(entities)
+        S->>S: get_booking_availability
         S-->>AI: slots_info
         activate AI
-        AI-->>S: response_text (Natural Language)
+        AI-->>S: response_text
         deactivate AI
     end
 
@@ -277,28 +277,28 @@ sequenceDiagram
 
     KH->>UI: Nhấn Hủy lịch
     activate UI
-    UI->>BFF: cancelBooking(id, reason)
+    UI->>BFF: cancelBooking
     activate BFF
 
     BFF->>API: POST /bookings/{id}/cancel
     activate API
 
-    API->>S: cancel_booking(id, user_id)
+    API->>S: cancel_booking
     activate S
 
-    S->>DB: get_booking(id)
+    S->>DB: get_booking
     activate DB
     DB-->>S: booking
     deactivate DB
 
-    S->>S: check_penalty_policy(booking.start_time)
+    S->>S: check_penalty_policy
 
-    alt Hủy muộn (Có phí)
-        S-->>API: Error (Cancellation Fee Required)
+    alt Hủy muộn
+        S-->>API: Error
         API-->>BFF: Warning
         BFF-->>UI: Cảnh báo phí hủy
     else Hợp lệ
-        S->>DB: update_status(id, 'CANCELLED')
+        S->>DB: update_status
         activate DB
         DB-->>S: success
         deactivate DB
@@ -328,16 +328,16 @@ sequenceDiagram
 
     KH->>UI: Truy cập Lịch sử
     activate UI
-    UI->>BFF: getBookingHistory()
+    UI->>BFF: getBookingHistory
     activate BFF
 
     BFF->>API: GET /bookings/history
     activate API
 
-    API->>S: get_user_history(user_id)
+    API->>S: get_user_history
     activate S
 
-    S->>DB: query_bookings_by_user(user_id)
+    S->>DB: query_bookings_by_user
     activate DB
     DB-->>S: bookings[]
     deactivate DB
@@ -370,17 +370,17 @@ sequenceDiagram
 
     KH->>UI: Viết đánh giá & Chấm sao
     activate UI
-    UI->>BFF: submitReview(bookingId, rating, comment)
+    UI->>BFF: submitReview
     activate BFF
 
     BFF->>API: POST /reviews
     activate API
 
-    API->>S: create_review(user_id, data)
+    API->>S: create_review
     activate S
 
-    S->>DB: check_booking_completed(bookingId)
-    S->>DB: create_review_record(data)
+    S->>DB: check_booking_completed
+    S->>DB: create_review_record
     activate DB
     DB-->>S: success
     deactivate DB

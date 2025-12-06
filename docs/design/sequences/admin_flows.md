@@ -23,7 +23,7 @@ Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Quản trị v
 
 ## 1.1.5 Sơ đồ hoạt động cho quản trị viên
 
-### 3.42. Quản lý dịch vụ (CRUD Service)
+### 3.42. Quản lý dịch vụ
 
 ```mermaid
 sequenceDiagram
@@ -33,21 +33,20 @@ sequenceDiagram
     participant BFF as Server Action
     participant API as API Router
     participant S as Service
-    participant SOLVER as Bộ giải
     participant DB as Database
 
-    AD->>UI: Thêm mới dịc vụ
+    AD->>UI: Thêm mới dịch vụ
     activate UI
-    UI->>BFF: createService(data)
+    UI->>BFF: createService
     activate BFF
 
     BFF->>API: POST /services
     activate API
 
-    API->>S: create_service(data)
+    API->>S: create_service
     activate S
 
-    S->>DB: insert_service(data)
+    S->>DB: insert_service
     activate DB
     DB-->>S: service_record
     deactivate DB
@@ -66,7 +65,7 @@ sequenceDiagram
 ```
 **Hình 3.42: Sơ đồ tuần tự chức năng Quản lý dịch vụ**
 
-### 3.44. Quản lý tài nguyên (Phòng/Thiết bị)
+### 3.44. Quản lý tài nguyên
 
 ```mermaid
 sequenceDiagram
@@ -80,16 +79,16 @@ sequenceDiagram
 
     AD->>UI: Cập nhật thông tin phòng
     activate UI
-    UI->>BFF: updateResource(id, payload)
+    UI->>BFF: updateResource
     activate BFF
 
     BFF->>API: PUT /resources/{id}
     activate API
 
-    API->>S: update_resource(id, payload)
+    API->>S: update_resource
     activate S
 
-    S->>DB: update(id, payload)
+    S->>DB: update
     activate DB
     DB-->>S: updated_record
     deactivate DB
@@ -118,32 +117,33 @@ sequenceDiagram
     participant BFF as Server Action
     participant API as API Router
     participant S as Service
+    participant SOLVER as Bộ giải
     participant DB as Database
 
     AD->>UI: Phân ca cho nhân viên
     activate UI
-    UI->>BFF: assignShift(staffId, date, shiftId)
+    UI->>BFF: assignShift
     activate BFF
 
     BFF->>API: POST /staff/schedule
     activate API
 
-    API->>S: assign_work_shift(staffId, date, shift)
+    API->>S: assign_work_shift
     activate S
 
-    S->>SOLVER: check_soft_hard_constraints(staffId, date, shift)
+    S->>SOLVER: check_constraints
     activate SOLVER
-    note right of SOLVER: Kiểm tra ràng buộc (RCPSP)
+    note right of SOLVER: Kiểm tra ràng buộc
 
     alt Vi phạm Ràng buộc Cứng
-        SOLVER-->>S: Invalid (Hard Constraint)
-        S-->>API: Error (Overlap/Capacity)
+        SOLVER-->>S: Invalid
+        S-->>API: Error
         API-->>BFF: Error
         BFF-->>UI: Cảnh báo xung đột
-    else Hợp lệ (Thỏa mãn)
+    else Hợp lệ
         SOLVER-->>S: Valid
         deactivate SOLVER
-        S->>DB: save_schedule_record()
+        S->>DB: save_schedule_record
         activate DB
         DB-->>S: success
         deactivate DB
@@ -177,16 +177,16 @@ sequenceDiagram
 
     AD->>UI: Xem báo cáo tháng
     activate UI
-    UI->>BFF: getRevenue(month, year)
+    UI->>BFF: getRevenue
     activate BFF
 
     BFF->>API: GET /analytics/revenue
     activate API
 
-    API->>S: calculate_monthly_revenue(month, year)
+    API->>S: calculate_monthly_revenue
     activate S
 
-    S->>DB: aggregate_completed_invoices(date_range)
+    S->>DB: aggregate_completed_invoices
     activate DB
     DB-->>S: total_revenue
     deactivate DB
