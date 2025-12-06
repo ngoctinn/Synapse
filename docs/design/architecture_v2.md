@@ -7,14 +7,14 @@ Dưới đây là sơ đồ kiến trúc chi tiết cập nhật:
 ```mermaid
 graph TD
     %% -- User Interaction Layer --
-    User[Người dùng<br>(Mobile/Web)] -->|HTTPS| NextApp[**Frontend Next.js 15**<br>App Router]
+    User["Người dùng<br>(Mobile/Web)"] -->|HTTPS| NextApp["Frontend Next.js 15<br>App Router"]
 
     %% -- Frontend / BFF Layer --
     subgraph Frontend_Eco [Frontend Ecosystem]
         direction TB
-        NextApp -->|Interactive| ServerActions[**Server Actions (BFF)**<br>Data Validation & Orchestration]
+        NextApp -->|Interactive| ServerActions["Server Actions (BFF)<br>Data Validation & Orchestration"]
 
-        ServerActions -->|Secure API Call| APIGateway[Auth Header Injection<br>Supabase JWT]
+        ServerActions -->|Secure API Call| APIGateway["Auth Header Injection<br>Supabase JWT"]
     end
 
     %% -- Backend Infrastructure --
@@ -22,42 +22,42 @@ graph TD
         direction TB
 
         %% -- Main Monolith --
-        subgraph Modular_Monolith [**FastAPI Modular Monolith**]
+        subgraph Modular_Monolith ["FastAPI Modular Monolith"]
             direction TB
 
-            API_Core[**API Core**<br>Main.py]
+            API_Core["API Core<br>Main.py"]
 
-            subgraph Vertical_Slices [Vertical Slices / Modules]
-                AuthMod[Module<br>Xác thực]
-                StaffMod[Module<br>Nhân sự]
-                CustMod[Module<br>Khách hàng]
+            subgraph Vertical_Slices ["Vertical Slices / Modules"]
+                AuthMod["Module<br>Xác thực"]
+                StaffMod["Module<br>Nhân sự"]
+                CustMod["Module<br>Khách hàng"]
 
                 %% -- Critical Component: Booking --
-                BookingMod[**Module Lịch hẹn**<br>Booking Logic]
+                BookingMod["Module Lịch hẹn<br>Booking Logic"]
             end
 
             %% -- Infrastructure Layer --
-            Infra[**Shared Kernel**<br>DB Config, RLS Injection, Logger]
+            Infra["Shared Kernel<br>DB Config, RLS Injection, Logger"]
 
             API_Core --> Vertical_Slices
             Vertical_Slices --> Infra
         end
 
         %% -- Smart Engine (New) --
-        subgraph Optimization_Engine [**Smart Scheduling Engine**]
-            SolverWorker[**Solver Worker**<br>Background Process]
-            CSP_Model[**OR-Tools CP-SAT**<br>Constraint Solver]
+        subgraph Optimization_Engine ["Smart Scheduling Engine"]
+            SolverWorker["Solver Worker<br>Background Process"]
+            CSP_Model["OR-Tools CP-SAT<br>Constraint Solver"]
 
             SolverWorker -->|Builds| CSP_Model
-            SolverWorker -->|Optimizes| Objectives[Hàm Mục tiêu<br>(CSAT, Utilization)]
+            SolverWorker -->|Optimizes| Objectives["Hàm Mục tiêu<br>(CSAT, Utilization)"]
         end
     end
 
     %% -- Data Persistence & Messaging --
     subgraph Data_Layer [Data & State]
-        PG[(**PostgreSQL**<br>Supabase DB + RLS Enabled)]
-        Redis[(**Redis**<br>Job Queue & Caching)]
-        SupabaseAuth[Supabase Auth<br>Identity Provider]
+        PG[("PostgreSQL<br>Supabase DB + RLS Enabled")]
+        Redis[("Redis<br>Job Queue & Caching")]
+        SupabaseAuth["Supabase Auth<br>Identity Provider"]
     end
 
     %% -- Relationships --
