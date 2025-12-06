@@ -25,7 +25,7 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
   const [copySourceDay, setCopySourceDay] = useState<DayOfWeek | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  // Reset internal state if server data changes (though normally this is static per load)
+  // Reset internal state if server data changes
   useEffect(() => {
     setConfig(initialConfig);
     setIsDirty(false);
@@ -92,7 +92,6 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
 
   const handlePaste = (targetDay: DayOfWeek) => {
     if (!copySourceDay) return;
-
     const sourceSchedule = config.defaultSchedule.find(s => s.day === copySourceDay);
     if (!sourceSchedule) return;
 
@@ -151,27 +150,17 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
   };
 
   return (
-    <Tabs defaultValue="schedule" className="w-full space-y-8">
-      {/* Sticky Header with enhanced Glassmorphism */}
-      <div className="sticky top-0 z-50 -mx-6 px-6 py-4 bg-background/80 backdrop-blur-md border-b flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300">
-        <TabsList className="grid grid-cols-2 w-full max-w-[400px] h-10 p-1 bg-muted/50 rounded-full border border-border/50">
-          <TabsTrigger 
-            value="schedule" 
-            className="rounded-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all duration-300"
-          >
-            Thời gian hoạt động
-          </TabsTrigger>
-          <TabsTrigger 
-            value="exceptions" 
-            className="rounded-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all duration-300"
-          >
-            Ngày nghỉ & ngoại lệ
-          </TabsTrigger>
+    <Tabs defaultValue="schedule" className="flex flex-col flex-1 w-full gap-0">
+      {/* Sticky Header - Standardized with Services Page */}
+      <div className="sticky top-0 z-40 px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300">
+        <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto justify-start">
+          <TabsTrigger value="schedule" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Tiêu chuẩn</TabsTrigger>
+          <TabsTrigger value="exceptions" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Ngoại lệ</TabsTrigger>
         </TabsList>
 
         <div className="flex items-center gap-3">
           <div className={cn(
-            "px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-300 flex items-center gap-2 shadow-sm",
+            "px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-300 flex items-center gap-2",
             isDirty 
               ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800" 
               : "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800"
@@ -190,7 +179,7 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
                   variant="ghost" 
                   onClick={handleReset} 
                   disabled={!isDirty || isPending} 
-                  className="h-9 px-4 hover:bg-muted/50 transition-colors"
+                  className="h-9 px-4"
                 >
                   <RotateCcw className="w-4 h-4 mr-2" />
                   Khôi phục
@@ -207,7 +196,7 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
                   onClick={handleSave} 
                   disabled={!isDirty || isPending} 
                   className={cn(
-                    "h-9 px-6 shadow-md hover:shadow-lg transition-all duration-300",
+                    "h-9 px-6 transition-all duration-300",
                     isDirty && "animate-pulse-subtle"
                   )}
                 >
@@ -225,66 +214,67 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
         </div>
       </div>
       
-      <TabsContent value="schedule" className="space-y-6 animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out">
-        <Card className="border-none shadow-none bg-transparent">
-          <CardHeader className="px-0 pt-0 pb-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <CardTitle className="text-2xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">Lịch làm việc tiêu chuẩn</CardTitle>
-                <CardDescription className="text-base">
-                  Thiết lập giờ mở cửa mặc định cho từng ngày trong tuần.
-                </CardDescription>
-              </div>
-              {copySourceDay && (
-                <div className="flex items-center gap-3 animate-in fade-in slide-in-from-right-8 duration-300 bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
-                  <span className="text-sm text-muted-foreground">
-                    Đang sao chép từ <span className="font-bold text-primary">{DAY_LABELS[copySourceDay]}</span>
-                  </span>
-                  <div className="h-4 w-px bg-border" />
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button variant="secondary" size="sm" onClick={handlePasteToAll} className="h-7 text-xs font-medium bg-primary/10 text-primary hover:bg-primary/20 border-none shadow-none">
-                          <Copy className="w-3 h-3 mr-1.5" />
-                          Áp dụng tất cả
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>Áp dụng cấu hình này cho tất cả các ngày</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                  <Button variant="ghost" size="sm" onClick={handleCancelCopy} className="h-7 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10">
-                    Hủy
-                  </Button>
+      <TabsContent value="schedule" className="space-y-6 animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out p-6">
+        <div className="space-y-6">          
+            <Card className="border shadow-sm rounded-xl">
+            <CardHeader className="px-6 pt-6 pb-4">
+                <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                    <CardDescription className="text-base">
+                    Thiết lập giờ mở cửa mặc định cho từng ngày trong tuần.
+                    </CardDescription>
                 </div>
-              )}
-            </div>
-          </CardHeader>
-          <CardContent className="p-0 space-y-4">
-            <motion.div 
-              className="grid gap-4"
-              variants={container}
-              initial="hidden"
-              animate="show"
-            >
-            {config.defaultSchedule.map((schedule, index) => (
-              <motion.div key={schedule.day} variants={item}>
-                <DayScheduleRow 
-                  schedule={schedule} 
-                  onChange={(newSchedule) => handleScheduleChange(index, newSchedule)}
-                  onCopy={() => handleCopy(schedule.day)}
-                  onPaste={() => handlePaste(schedule.day)}
-                  onCancelCopy={handleCancelCopy}
-                  isCopying={copySourceDay === schedule.day}
-                  isPasteTarget={copySourceDay !== null && copySourceDay !== schedule.day}
-                />
-              </motion.div>
-            ))}
-            </motion.div>
-          </CardContent>
-        </Card>
+                {copySourceDay && (
+                    <div className="flex items-center gap-3 animate-in fade-in slide-in-from-right-8 duration-300 bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
+                    <span className="text-sm text-muted-foreground">
+                        Đang sao chép từ <span className="font-bold text-primary">{DAY_LABELS[copySourceDay]}</span>
+                    </span>
+                    <div className="h-4 w-px bg-border" />
+                    <TooltipProvider>
+                        <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant="secondary" size="sm" onClick={handlePasteToAll} className="h-7 text-xs font-medium bg-primary/10 text-primary hover:bg-primary/20 border-none shadow-none">
+                            <Copy className="w-3 h-3 mr-1.5" />
+                            Áp dụng tất cả
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Áp dụng cấu hình này cho tất cả các ngày</TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                    <Button variant="ghost" size="sm" onClick={handleCancelCopy} className="h-7 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10">
+                        Hủy
+                    </Button>
+                    </div>
+                )}
+                </div>
+            </CardHeader>
+            <CardContent className="p-6 pt-0">
+                <motion.div 
+                className="grid gap-4"
+                variants={container}
+                initial="hidden"
+                animate="show"
+                >
+                {config.defaultSchedule.map((schedule, index) => (
+                <motion.div key={schedule.day} variants={item}>
+                    <DayScheduleRow 
+                    schedule={schedule} 
+                    onChange={(newSchedule) => handleScheduleChange(index, newSchedule)}
+                    onCopy={() => handleCopy(schedule.day)}
+                    onPaste={() => handlePaste(schedule.day)}
+                    onCancelCopy={handleCancelCopy}
+                    isCopying={copySourceDay === schedule.day}
+                    isPasteTarget={copySourceDay !== null && copySourceDay !== schedule.day}
+                    />
+                </motion.div>
+                ))}
+                </motion.div>
+            </CardContent>
+            </Card>
+        </div>
       </TabsContent>
       
-      <TabsContent value="exceptions" className="animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out">
+      <TabsContent value="exceptions" className="animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out p-6">
         <ExceptionsViewManager
           exceptions={config.exceptions}
           onAddExceptions={handleAddExceptions}

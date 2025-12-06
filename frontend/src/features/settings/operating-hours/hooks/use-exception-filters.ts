@@ -5,10 +5,13 @@ import { ExceptionDate } from "../model/types";
 import { DateRange } from "react-day-picker";
 import { isWithinInterval, startOfDay, endOfDay } from "date-fns";
 
+export type FilterUnit = 'day' | 'week' | 'month' | 'year' | 'custom' | 'all';
+
 export function useExceptionFilters(exceptions: ExceptionDate[]) {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [statusFilter, setStatusFilter] = useState<'all' | 'closed' | 'open'>('all');
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+  const [filterUnit, setFilterUnit] = useState<FilterUnit>('all'); // Default to 'all' or 'month' based on reqs, usually 'all' if no range
 
   const toggleTypeFilter = (type: string) => {
     setSelectedTypes(prev => 
@@ -61,6 +64,8 @@ export function useExceptionFilters(exceptions: ExceptionDate[]) {
     setStatusFilter,
     dateRange,
     setDateRange,
-    filteredExceptions
+    filteredExceptions,
+    filterUnit,
+    setFilterUnit
   };
 }

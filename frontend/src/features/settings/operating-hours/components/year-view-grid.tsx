@@ -8,15 +8,19 @@ import { cn } from "@/shared/lib/utils";
 import { ExceptionDate } from "../model/types";
 import { SmartTooltip } from "./smart-tooltip";
 import { getStatusStyles } from "../utils/style-helpers";
+import { Button } from "@/shared/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { YearPicker } from "@/shared/ui/custom/year-picker";
 
 interface YearViewGridProps {
     year: number;
     exceptions: ExceptionDate[];
     selectedDates: Date[];
     onSelectDates: (dates: Date[]) => void;
+    onYearChange: (year: number) => void;
 }
 
-export function YearViewGrid({ year, exceptions, selectedDates, onSelectDates }: YearViewGridProps) {
+export function YearViewGrid({ year, exceptions, selectedDates, onSelectDates, onYearChange }: YearViewGridProps) {
     const months = useMemo(() => {
         const start = startOfYear(new Date(year, 0));
         return eachMonthOfInterval({ start, end: endOfYear(start) });
@@ -25,6 +29,7 @@ export function YearViewGrid({ year, exceptions, selectedDates, onSelectDates }:
     // Drag State
     const isDragging = useRef(false);
     const dragStartDate = useRef<Date | null>(null);
+    const dragAction = useRef<'select' | 'deselect'>('select');
     
     // Performance: Map for fast lookup
     const exceptionMap = useMemo(() => {
@@ -43,7 +48,16 @@ export function YearViewGrid({ year, exceptions, selectedDates, onSelectDates }:
     const handleMouseDown = (date: Date) => {
         isDragging.current = true;
         dragStartDate.current = date;
-        onSelectDates([date]);
+
+        const id = format(date, 'yyyy-MM-dd');
+        const isSelected = selectedSet.has(id);
+        dragAction.current = isSelected ? 'deselect' : 'select';
+
+        const newDates = isSelected 
+            ? selectedDates.filter(d => format(d, 'yyyy-MM-dd') !== id)
+            : [...selectedDates, date];
+
+        onSelectDates(newDates);
     };
 
     const handleMouseEnter = (date: Date) => {
@@ -58,7 +72,20 @@ export function YearViewGrid({ year, exceptions, selectedDates, onSelectDates }:
             end: end > start ? end : start
         });
         
-        onSelectDates(range);
+        const rangeIds = new Set(range.map(d => format(d, 'yyyy-MM-dd')));
+
+        let newDates: Date[];
+
+        if (dragAction.current === 'select') {
+             const toAdd = range.filter(d => !selectedSet.has(format(d, 'yyyy-MM-dd')));
+             if (toAdd.length === 0) return;
+             newDates = [...selectedDates, ...toAdd];
+        } else {
+             newDates = selectedDates.filter(d => !rangeIds.has(format(d, 'yyyy-MM-dd')));
+             if (newDates.length === selectedDates.length) return;
+        }
+        
+        onSelectDates(newDates);
     };
 
     const handleMouseUp = () => {
@@ -74,19 +101,55 @@ export function YearViewGrid({ year, exceptions, selectedDates, onSelectDates }:
         }
     }, []);
 
+    const handleNextYear = () => onYearChange(year + 1);
+    const handlePrevYear = () => onYearChange(year - 1);
+    const handleYearSelect = (date: Date) => onYearChange(date.getFullYear());
+    const currentDateForPicker = useMemo(() => new Date(year, 0, 1), [year]);
+
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4 select-none">
-            {months.map(month => (
-                <MonthCard 
-                    key={month.toISOString()} 
-                    month={month} 
-                    year={year}
-                    exceptionMap={exceptionMap}
-                    selectedSet={selectedSet}
-                    onMouseDown={handleMouseDown}
-                    onMouseEnter={handleMouseEnter}
-                />
-            ))}
+        <div className="space-y-4">
+            <div className="px-4 pt-2">
+                <div className="flex items-center rounded-lg border bg-background/50 p-1 gap-1 shrink-0 shadow-sm w-fit">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        onClick={handlePrevYear}
+                    >
+                        <ChevronLeft className="w-4 h-4" />
+                    </Button>
+
+                    <div className="flex items-center gap-2 px-2">
+                        <YearPicker 
+                            date={currentDateForPicker}
+                            onSelect={handleYearSelect}
+                            className="w-[100px] h-8 border-none bg-transparent hover:bg-accent/50 text-center justify-center font-bold"
+                        />
+                    </div>
+
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        onClick={handleNextYear}
+                    >
+                        <ChevronRight className="w-4 h-4" />
+                    </Button>
+                </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4 select-none">
+                {months.map(month => (
+                    <MonthCard 
+                        key={month.toISOString()} 
+                        month={month} 
+                        year={year}
+                        exceptionMap={exceptionMap}
+                        selectedSet={selectedSet}
+                        onMouseDown={handleMouseDown}
+                        onMouseEnter={handleMouseEnter}
+                    />
+                ))}
+            </div>
         </div>
     );
 }

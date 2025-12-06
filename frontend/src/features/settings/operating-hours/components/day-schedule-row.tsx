@@ -136,7 +136,7 @@ export function DayScheduleRow({
                         Thêm khung giờ
                       </Button>
                      </TooltipTrigger>
-                     <TooltipContent>Thêm khung giờ làm việc mới</TooltipContent>
+                     <TooltipContent>Thêm khung giờ hoạt động mới</TooltipContent>
                    </Tooltip>
                  </TooltipProvider>
                 
