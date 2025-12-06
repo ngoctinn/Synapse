@@ -13,6 +13,7 @@ export interface Resource {
   createdAt?: string;
   updatedAt?: string;
   image?: string; // Added for Avatar/Image support
+  setupTime?: number; // Time in minutes required for setup/cleaning between bookings
 }
 
 export type RoomType = Resource;
