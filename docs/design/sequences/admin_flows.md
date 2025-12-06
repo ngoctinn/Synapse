@@ -28,12 +28,17 @@ Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Quản trị v
 ```mermaid
 sequenceDiagram
     autonumber
-    actor AD as Admin
-    participant UI as :ServiceManagementPage
-    participant BFF as :ServiceAction
-    participant API as :ServiceRouter
-    participant S as :ServiceService
-    participant DB as :ServiceRepo
+    box "Frontend Layer (Next.js)"
+        actor AD as Admin
+        participant UI as :ServiceManagementPage
+        participant BFF as :ServiceAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :ServiceRouter
+        participant S as :ServiceService
+        participant DB as :ServiceRepo
+    end
 
     AD->>UI: Thêm mới dịc vụ
     activate UI
@@ -57,7 +62,7 @@ sequenceDiagram
     API-->>BFF: 201 Created
     deactivate API
 
-    BFF-->>UI: Update List
+    BFF-->>UI: Cập nhật danh sách
     deactivate BFF
 
     UI-->>AD: Hiển thị dịch vụ mới
@@ -70,12 +75,17 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor AD as Admin
-    participant UI as :ResourcePage
-    participant BFF as :ResourceAction
-    participant API as :ResourceRouter
-    participant S as :ResourceService
-    participant DB as :ResourceRepo
+    box "Frontend Layer (Next.js)"
+        actor AD as Admin
+        participant UI as :ResourcePage
+        participant BFF as :ResourceAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :ResourceRouter
+        participant S as :ResourceService
+        participant DB as :ResourceRepo
+    end
 
     AD->>UI: Cập nhật thông tin phòng
     activate UI
@@ -99,7 +109,7 @@ sequenceDiagram
     API-->>BFF: OK
     deactivate API
 
-    BFF-->>UI: Success
+    BFF-->>UI: Thành công
     deactivate BFF
 
     UI-->>AD: Cập nhật thành công
@@ -112,12 +122,17 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor AD as Admin
-    participant UI as :StaffSchedulePage
-    participant BFF as :StaffAction
-    participant API as :StaffRouter
-    participant S as :StaffService
-    participant DB as :ScheduleRepo
+    box "Frontend Layer (Next.js)"
+        actor AD as Admin
+        participant UI as :StaffSchedulePage
+        participant BFF as :StaffAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :StaffRouter
+        participant S as :StaffService
+        participant DB as :ScheduleRepo
+    end
 
     AD->>UI: Phân ca cho nhân viên
     activate UI
@@ -132,10 +147,16 @@ sequenceDiagram
 
     S->>S: validate_overlap(staffId, date)
 
-    S->>DB: save_schedule_record()
-    activate DB
-    DB-->>S: success
-    deactivate DB
+    alt Xung đột ca làm việc
+        S-->>API: Error (Overlap)
+        API-->>BFF: Error
+        BFF-->>UI: Cảnh báo trùng lịch
+    else Hợp lệ
+        S->>DB: save_schedule_record()
+        activate DB
+        DB-->>S: success
+        deactivate DB
+    end
 
     S-->>API: Success
     deactivate S
@@ -143,7 +164,7 @@ sequenceDiagram
     API-->>BFF: OK
     deactivate API
 
-    BFF-->>UI: Refresh
+    BFF-->>UI: Làm mới danh sách
     deactivate BFF
 
     UI-->>AD: Hiển thị lịch đã phân công
@@ -156,12 +177,17 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor AD as Admin
-    participant UI as :ReportPage
-    participant BFF as :AnalyticsAction
-    participant API as :AnalyticsRouter
-    participant S as :AnalyticsService
-    participant DB as :BookingRepo
+    box "Frontend Layer (Next.js)"
+        actor AD as Admin
+        participant UI as :ReportPage
+        participant BFF as :AnalyticsAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :AnalyticsRouter
+        participant S as :AnalyticsService
+        participant DB as :BookingRepo
+    end
 
     AD->>UI: Xem báo cáo tháng
     activate UI
@@ -185,7 +211,7 @@ sequenceDiagram
     API-->>BFF: Data
     deactivate API
 
-    BFF-->>UI: Draw Chart
+    BFF-->>UI: Vẽ biểu đồ
     deactivate BFF
 
     UI-->>AD: Hiển thị biểu đồ báo cáo

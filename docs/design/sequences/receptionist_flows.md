@@ -28,12 +28,17 @@ Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Lễ tân.
 ```mermaid
 sequenceDiagram
     autonumber
-    actor LT as Lễ tân
-    participant UI as :ReceptionDashboard
-    participant BFF as :AppointmentAction
-    participant API as :AppointmentRouter
-    participant S as :AppointmentService
-    participant DB as :BookingRepo
+    box "Frontend Layer (Next.js)"
+        actor LT as Lễ tân
+        participant UI as :ReceptionDashboard
+        participant BFF as :AppointmentAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :AppointmentRouter
+        participant S as :AppointmentService
+        participant DB as :BookingRepo
+    end
 
     LT->>UI: Mở Dashboard
     activate UI
@@ -57,7 +62,7 @@ sequenceDiagram
     API-->>BFF: Data
     deactivate API
 
-    BFF-->>UI: Render Scheduler
+    BFF-->>UI: Hiển thị Lịch hẹn
     deactivate BFF
 
     UI-->>LT: Hiển thị lịch tổng quan
@@ -70,13 +75,18 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor LT as Lễ tân
-    participant UI as :ManualBookingForm
-    participant BFF as :BookingAction
-    participant API as :BookingRouter
-    participant S as :BookingService
-    participant SOLVER as :AvailabilitySolver
-    participant DB as :BookingRepo
+    box "Frontend Layer (Next.js)"
+        actor LT as Lễ tân
+        participant UI as :ManualBookingForm
+        participant BFF as :BookingAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :BookingRouter
+        participant S as :BookingService
+        participant SOLVER as :AvailabilitySolver
+        participant DB as :BookingRepo
+    end
 
     LT->>UI: Nhập thông tin khách & dịch vụ
     activate UI
@@ -113,7 +123,7 @@ sequenceDiagram
     API-->>BFF: OK
     deactivate API
 
-    BFF-->>UI: Update Dashboard
+    BFF-->>UI: Cập nhật Dashboard
     deactivate BFF
 
     UI-->>LT: Hiển thị lịch mới trên bảng
@@ -126,12 +136,17 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor LT as Lễ tân
-    participant UI as :BookingCard
-    participant BFF as :BookingAction
-    participant API as :BookingRouter
-    participant S as :BookingService
-    participant DB as :BookingRepo
+    box "Frontend Layer (Next.js)"
+        actor LT as Lễ tân
+        participant UI as :BookingCard
+        participant BFF as :BookingAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :BookingRouter
+        participant S as :BookingService
+        participant DB as :BookingRepo
+    end
 
     LT->>UI: Chọn lịch hẹn -> Check-in
     activate UI
@@ -156,7 +171,7 @@ sequenceDiagram
     API-->>BFF: OK
     deactivate API
 
-    BFF-->>UI: Change Color (Processing)
+    BFF-->>UI: Đổi màu (Đang xử lý)
     deactivate BFF
 
     UI-->>LT: Cập nhật trạng thái "Đang phục vụ"
@@ -169,12 +184,17 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor LT as Lễ tân
-    participant UI as :CheckoutDialog
-    participant BFF as :PaymentAction
-    participant API as :PaymentRouter
-    participant S as :PaymentService
-    participant DB as :InvoiceRepo
+    box "Frontend Layer (Next.js)"
+        actor LT as Lễ tân
+        participant UI as :CheckoutDialog
+        participant BFF as :PaymentAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :PaymentRouter
+        participant S as :PaymentService
+        participant DB as :InvoiceRepo
+    end
 
     LT->>UI: Xác nhận thanh toán
     activate UI
@@ -199,7 +219,7 @@ sequenceDiagram
     API-->>BFF: Success
     deactivate API
 
-    BFF-->>UI: Show Receipt
+    BFF-->>UI: Hiển thị Hóa đơn
     deactivate BFF
 
     UI-->>LT: In hóa đơn & Hoàn tất

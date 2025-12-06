@@ -28,12 +28,17 @@ Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Kỹ thuật v
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KTV as Kỹ thuật viên
-    participant UI as :StaffApp
-    participant BFF as :StaffAction
-    participant API as :StaffRouter
-    participant S as :StaffService
-    participant DB as :BookingRepo
+    box "Frontend Layer (Next.js)"
+        actor KTV as Kỹ thuật viên
+        participant UI as :StaffApp
+        participant BFF as :StaffAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :StaffRouter
+        participant S as :StaffService
+        participant DB as :BookingRepo
+    end
 
     KTV->>UI: Truy cập ứng dụng
     activate UI
@@ -57,7 +62,7 @@ sequenceDiagram
     API-->>BFF: Data
     deactivate API
 
-    BFF-->>UI: Render Timeline
+    BFF-->>UI: Hiển thị Lịch trình
     deactivate BFF
 
     UI-->>KTV: Hiển thị danh sách khách
@@ -70,12 +75,17 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KTV as Kỹ thuật viên
-    participant UI as :NoteDialog
-    participant BFF as :BookingAction
-    participant API as :BookingRouter
-    participant S as :BookingService
-    participant DB as :NoteRepo
+    box "Frontend Layer (Next.js)"
+        actor KTV as Kỹ thuật viên
+        participant UI as :NoteDialog
+        participant BFF as :BookingAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :BookingRouter
+        participant S as :BookingService
+        participant DB as :NoteRepo
+    end
 
     KTV->>UI: Nhập ghi chú liệu trình
     activate UI
@@ -99,7 +109,7 @@ sequenceDiagram
     API-->>BFF: OK
     deactivate API
 
-    BFF-->>UI: Close Dialog
+    BFF-->>UI: Đóng hộp thoại
     deactivate BFF
 
     UI-->>KTV: Lưu thành công

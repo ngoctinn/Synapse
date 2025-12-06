@@ -28,12 +28,17 @@ Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Khách hàng, 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant UI as :ServiceListPage
-    participant BFF as :ServiceAction
-    participant API as :ServiceRouter
-    participant S as :ServiceService
-    participant DB as :ServiceRepo
+    box "Frontend Layer (Next.js)"
+        actor KH as Khách hàng
+        participant UI as :ServiceListPage
+        participant BFF as :ServiceAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :ServiceRouter
+        participant S as :ServiceService
+        participant DB as :ServiceRepo
+    end
 
     KH->>UI: Truy cập trang Dịch vụ
     activate UI
@@ -57,7 +62,7 @@ sequenceDiagram
     API-->>BFF: ServiceData
     deactivate API
 
-    BFF-->>UI: Data
+    BFF-->>UI: Dữ liệu
     deactivate BFF
 
     UI-->>KH: Hiển thị danh sách dịch vụ
@@ -70,12 +75,17 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant UI as :ServiceDetailPage
-    participant BFF as :ServiceAction
-    participant API as :ServiceRouter
-    participant S as :ServiceService
-    participant DB as :ServiceRepo
+    box "Frontend Layer (Next.js)"
+        actor KH as Khách hàng
+        participant UI as :ServiceDetailPage
+        participant BFF as :ServiceAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :ServiceRouter
+        participant S as :ServiceService
+        participant DB as :ServiceRepo
+    end
 
     KH->>UI: Chọn một dịch vụ cụ thể
     activate UI
@@ -99,7 +109,7 @@ sequenceDiagram
     API-->>BFF: Data
     deactivate API
 
-    BFF-->>UI: Data
+    BFF-->>UI: Dữ liệu
     deactivate BFF
 
     UI-->>KH: Hiển thị chi tiết dịch vụ
@@ -112,13 +122,18 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant UI as :BookingWizard
-    participant BFF as :BookingAction
-    participant API as :BookingRouter
-    participant S as :BookingService
-    participant SOLVER as :AvailabilitySolver
-    participant DB as :ResourceRepo
+    box "Frontend Layer (Next.js)"
+        actor KH as Khách hàng
+        participant UI as :BookingWizard
+        participant BFF as :BookingAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :BookingRouter
+        participant S as :BookingService
+        participant SOLVER as :AvailabilitySolver
+        participant DB as :ResourceRepo
+    end
 
     KH->>UI: Chọn Dịch vụ & Ngày
     activate UI
@@ -131,7 +146,7 @@ sequenceDiagram
     API->>S: find_slots(service_id, date)
     activate S
 
-    par Fetch Availability Data
+    par Lấy dữ liệu khả dụng (Song song)
         S->>DB: get_staff_schedules(date)
         S->>DB: get_existing_bookings(date)
         S->>DB: get_room_availability(date)
@@ -149,7 +164,7 @@ sequenceDiagram
     API-->>BFF: Slots JSON
     deactivate API
 
-    BFF-->>UI: Render Time Slots
+    BFF-->>UI: Hiển thị Khung giờ
     deactivate BFF
 
     UI-->>KH: Hiển thị các khung giờ trống
@@ -162,13 +177,18 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant UI as :BookingSummary
-    participant BFF as :BookingAction
-    participant API as :BookingRouter
-    participant S as :BookingService
-    participant DB as :BookingRepo
-    participant NOTI as :NotificationService
+    box "Frontend Layer (Next.js)"
+        actor KH as Khách hàng
+        participant UI as :BookingSummary
+        participant BFF as :BookingAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :BookingRouter
+        participant S as :BookingService
+        participant NOTI as :NotificationService
+        participant DB as :BookingRepo
+    end
 
     KH->>UI: Xác nhận đặt lịch
     activate UI
@@ -181,7 +201,7 @@ sequenceDiagram
     API->>S: create_booking(user_id, booking_data)
     activate S
 
-    crit Consistency Check
+    crit Kiểm tra tính nhất quán (Critical)
         S->>DB: lock_resources(staff, room, time)
         S->>DB: check_conflict_last_time()
         activate DB
@@ -194,7 +214,7 @@ sequenceDiagram
     DB-->>S: new_booking
     deactivate DB
 
-    par Notifications
+    par Gửi thông báo
         S->>NOTI: email_customer_confirmation()
         S->>NOTI: notify_staff_new_appointment()
     end
@@ -205,7 +225,7 @@ sequenceDiagram
     API-->>BFF: 201 Created
     deactivate API
 
-    BFF-->>UI: Success
+    BFF-->>UI: Thành công
     deactivate BFF
 
     UI-->>KH: Hiển thị thông báo thành công
@@ -245,7 +265,7 @@ sequenceDiagram
     API-->>BFF: Message
     deactivate API
 
-    BFF-->>UI: Show Reply
+    BFF-->>UI: Hiển thị Phản hồi
     deactivate BFF
 
     UI-->>KH: Hiển thị phản hồi từ Chatbot
@@ -258,12 +278,17 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant UI as :AppointmentDetail
-    participant BFF as :BookingAction
-    participant API as :BookingRouter
-    participant S as :BookingService
-    participant DB as :BookingRepo
+    box "Frontend Layer (Next.js)"
+        actor KH as Khách hàng
+        participant UI as :AppointmentDetail
+        participant BFF as :BookingAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :BookingRouter
+        participant S as :BookingService
+        participant DB as :BookingRepo
+    end
 
     KH->>UI: Nhấn Hủy lịch
     activate UI
@@ -283,11 +308,11 @@ sequenceDiagram
 
     S->>S: check_penalty_policy(booking.start_time)
 
-    alt Late Cancellation
+    alt Hủy muộn (Có phí)
         S-->>API: Error (Cancellation Fee Required)
         API-->>BFF: Warning
         BFF-->>UI: Cảnh báo phí hủy
-    else Valid
+    else Hợp lệ
         S->>DB: update_status(id, 'CANCELLED')
         activate DB
         DB-->>S: success
@@ -296,7 +321,7 @@ sequenceDiagram
         deactivate S
         API-->>BFF: OK
         deactivate API
-        BFF-->>UI: Success
+        BFF-->>UI: Thành công
         deactivate BFF
         UI-->>KH: Xác nhận đã hủy
         deactivate UI
@@ -309,12 +334,17 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant UI as :HistoryPage
-    participant BFF as :BookingAction
-    participant API as :BookingRouter
-    participant S as :BookingService
-    participant DB as :BookingRepo
+    box "Frontend Layer (Next.js)"
+        actor KH as Khách hàng
+        participant UI as :HistoryPage
+        participant BFF as :BookingAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :BookingRouter
+        participant S as :BookingService
+        participant DB as :BookingRepo
+    end
 
     KH->>UI: Truy cập Lịch sử
     activate UI
@@ -338,7 +368,7 @@ sequenceDiagram
     API-->>BFF: Data
     deactivate API
 
-    BFF-->>UI: Render List
+    BFF-->>UI: Hiển thị Danh sách
     deactivate BFF
 
     UI-->>KH: Hiển thị danh sách lịch sử
@@ -351,12 +381,17 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant UI as :ReviewDialog
-    participant BFF as :ReviewAction
-    participant API as :ReviewRouter
-    participant S as :ReviewService
-    participant DB as :ReviewRepo
+    box "Frontend Layer (Next.js)"
+        actor KH as Khách hàng
+        participant UI as :ReviewDialog
+        participant BFF as :ReviewAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :ReviewRouter
+        participant S as :ReviewService
+        participant DB as :ReviewRepo
+    end
 
     KH->>UI: Viết đánh giá & Chấm sao
     activate UI
@@ -381,7 +416,7 @@ sequenceDiagram
     API-->>BFF: OK
     deactivate API
 
-    BFF-->>UI: Success
+    BFF-->>UI: Thành công
     deactivate BFF
 
     UI-->>KH: Thông báo cảm ơn

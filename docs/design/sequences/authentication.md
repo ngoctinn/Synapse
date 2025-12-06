@@ -28,12 +28,17 @@ Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Xác thực, t
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant UI as :RegisterForm
-    participant BFF as :AuthAction
-    participant API as :AuthRouter
-    participant S as :AuthService
-    participant DB as :UserRepo
+    box "Frontend Layer (Next.js)"
+        actor KH as Khách hàng
+        participant UI as :RegisterForm
+        participant BFF as :AuthAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :AuthRouter
+        participant S as :AuthService
+        participant DB as :UserRepo
+    end
 
     KH->>UI: Nhập thông tin (email, password)
     activate UI
@@ -48,7 +53,7 @@ sequenceDiagram
 
     S->>DB: get_user_by_email(email)
     activate DB
-    DB-->>S: null (User not found)
+    DB-->>S: null (Người dùng chưa tồn tại)
     deactivate DB
 
     S->>S: hash_password(password)
@@ -66,7 +71,7 @@ sequenceDiagram
     API-->>BFF: 201 Created
     deactivate API
 
-    BFF-->>UI: Success Result
+    BFF-->>UI: Kết quả thành công
     deactivate BFF
 
     UI-->>KH: Hiển thị thông báo "Kiểm tra email"
@@ -79,12 +84,17 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant UI as :VerifyPage
-    participant BFF as :AuthAction
-    participant API as :AuthRouter
-    participant S as :AuthService
-    participant DB as :UserRepo
+    box "Frontend Layer (Next.js)"
+        actor KH as Khách hàng
+        participant UI as :VerifyPage
+        participant BFF as :AuthAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :AuthRouter
+        participant S as :AuthService
+        participant DB as :UserRepo
+    end
 
     KH->>UI: Truy cập liên kết xác thực
     activate UI
@@ -113,7 +123,7 @@ sequenceDiagram
     API-->>BFF: 200 OK
     deactivate API
 
-    BFF-->>UI: Verification Success
+    BFF-->>UI: Xác thực thành công
     deactivate BFF
 
     UI-->>KH: Chuyển hướng trang đăng nhập
@@ -126,12 +136,17 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant UI as :LoginForm
-    participant BFF as :AuthAction
-    participant API as :AuthRouter
-    participant S as :AuthService
-    participant DB as :UserRepo
+    box "Frontend Layer (Next.js)"
+        actor KH as Khách hàng
+        participant UI as :LoginForm
+        participant BFF as :AuthAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :AuthRouter
+        participant S as :AuthService
+        participant DB as :UserRepo
+    end
 
     KH->>UI: Nhập credentials (email, password)
     activate UI
@@ -151,11 +166,11 @@ sequenceDiagram
 
     S->>S: verify_password(input, hash)
 
-    alt Password Invalid
+    alt Mật khẩu không đúng
         S-->>API: Error (Invalid Credentials)
         API-->>BFF: 401 Unauthorized
-        BFF-->>UI: Hiển thị lỗi đăng nhập
-    else Password Valid
+        BFF-->>UI: Hiển thị lỗi thông tin đăng nhập
+    else Mật khẩu hợp lệ
         S->>S: create_access_token(user_id)
         S-->>API: TokenSchema (JWT)
         deactivate S
@@ -164,7 +179,7 @@ sequenceDiagram
         deactivate API
 
         BFF->>BFF: store_cookie(session)
-        BFF-->>UI: Redirect to Dashboard
+        BFF-->>UI: Chuyển hướng Dashboard
         deactivate BFF
 
         UI-->>KH: Chuyển hướng trang chủ
@@ -178,12 +193,17 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant UI as :ForgotPasswordForm
-    participant BFF as :AuthAction
-    participant API as :AuthRouter
-    participant S as :AuthService
-    participant DB as :UserRepo
+    box "Frontend Layer (Next.js)"
+        actor KH as Khách hàng
+        participant UI as :ForgotPasswordForm
+        participant BFF as :AuthAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :AuthRouter
+        participant S as :AuthService
+        participant DB as :UserRepo
+    end
 
     KH->>UI: Nhập email yêu cầu
     activate UI
@@ -201,7 +221,7 @@ sequenceDiagram
     DB-->>S: user_record
     deactivate DB
 
-    opt User exists
+    opt Người dùng tồn tại
         S->>S: generate_reset_token()
         S->>DB: save_reset_token(user_id, token)
         activate DB
@@ -229,12 +249,17 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant UI as :ResetPasswordForm
-    participant BFF as :AuthAction
-    participant API as :AuthRouter
-    participant S as :AuthService
-    participant DB as :UserRepo
+    box "Frontend Layer (Next.js)"
+        actor KH as Khách hàng
+        participant UI as :ResetPasswordForm
+        participant BFF as :AuthAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :AuthRouter
+        participant S as :AuthService
+        participant DB as :UserRepo
+    end
 
     KH->>UI: Nhập mật khẩu mới
     activate UI
@@ -264,7 +289,7 @@ sequenceDiagram
     API-->>BFF: 200 OK
     deactivate API
 
-    BFF-->>UI: Redirect Login
+    BFF-->>UI: Chuyển hướng Đăng nhập
     deactivate BFF
 
     UI-->>KH: Chuyển hướng đăng nhập
@@ -277,12 +302,17 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant UI as :ChangePasswordForm
-    participant BFF as :AuthAction
-    participant API as :AuthRouter
-    participant S as :AuthService
-    participant DB as :UserRepo
+    box "Frontend Layer (Next.js)"
+        actor KH as Khách hàng
+        participant UI as :ChangePasswordForm
+        participant BFF as :AuthAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :AuthRouter
+        participant S as :AuthService
+        participant DB as :UserRepo
+    end
 
     KH->>UI: Nhập mật khẩu cũ & mới
     activate UI
@@ -302,11 +332,11 @@ sequenceDiagram
 
     S->>S: verify_password(old, current_hash)
 
-    alt Invalid Old Password
+    alt Mật khẩu cũ sai
         S-->>API: Error (Wrong Password)
         API-->>BFF: 400 Bad Request
         BFF-->>UI: Hiển thị lỗi
-    else Valid
+    else Hợp lệ
         S->>S: hash_password(new)
         S->>DB: update_password(user_id, new_hash)
         activate DB
@@ -329,12 +359,17 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant UI as :ProfileForm
-    participant BFF as :UserAction
-    participant API as :UserRouter
-    participant S as :UserService
-    participant DB as :UserRepo
+    box "Frontend Layer (Next.js)"
+        actor KH as Khách hàng
+        participant UI as :ProfileForm
+        participant BFF as :UserAction
+    end
+
+    box "Backend Layer (FastAPI)"
+        participant API as :UserRouter
+        participant S as :UserService
+        participant DB as :UserRepo
+    end
 
     KH->>UI: Sửa thông tin & Lưu
     activate UI
@@ -358,7 +393,7 @@ sequenceDiagram
     API-->>BFF: 200 OK
     deactivate API
 
-    BFF-->>UI: Update State
+    BFF-->>UI: Cập nhật trạng thái
     deactivate BFF
 
     UI-->>KH: Hiển thị thông tin mới
@@ -371,9 +406,11 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant UI as :Dashboard
-    participant BFF as :AuthAction
+    box "Frontend Layer (Next.js)"
+        actor KH as Khách hàng
+        participant UI as :Dashboard
+        participant BFF as :AuthAction
+    end
 
     KH->>UI: Nhấn Đăng xuất
     activate UI
@@ -381,7 +418,7 @@ sequenceDiagram
     activate BFF
 
     BFF->>BFF: delete_cookie(session)
-    BFF-->>UI: Redirect Login
+    BFF-->>UI: Chuyển hướng Đăng nhập
     deactivate BFF
 
     UI-->>KH: Trang đăng nhập
