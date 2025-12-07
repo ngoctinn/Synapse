@@ -12,7 +12,7 @@ erDiagram
         string email UK
         string full_name
         string phone_number UK
-        enum role "admin, manager, staff, customer"
+        enum role "admin, receptionist, technician, customer"
         string avatar_url
         boolean is_active
         timestamp deleted_at "Soft Delete"
@@ -258,7 +258,7 @@ CREATE EXTENSION IF NOT EXISTS "pg_trgm"; -- For text search
 -- ============================================================
 -- ENUMS
 -- ============================================================
-CREATE TYPE user_role AS ENUM ('admin', 'manager', 'staff', 'customer');
+CREATE TYPE user_role AS ENUM ('admin', 'receptionist', 'technician', 'customer');
 CREATE TYPE membership_tier AS ENUM ('SILVER', 'GOLD', 'PLATINUM');
 CREATE TYPE resource_type AS ENUM ('ROOM', 'EQUIPMENT');
 CREATE TYPE resource_status AS ENUM ('ACTIVE', 'MAINTENANCE', 'INACTIVE');
@@ -300,6 +300,14 @@ BEGIN
     );
 EXCEPTION
     WHEN OTHERS THEN RETURN NULL;
+END;
+$$ LANGUAGE plpgsql STABLE;
+
+-- Check if current user is staff (receptionist or technician or admin)
+CREATE OR REPLACE FUNCTION auth.is_staff()
+RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN auth.role() IN ('admin', 'receptionist', 'technician');
 END;
 $$ LANGUAGE plpgsql STABLE;
 
