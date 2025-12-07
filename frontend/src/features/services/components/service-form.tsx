@@ -6,6 +6,7 @@ import { DurationPicker } from "@/shared/ui/custom/duration-picker";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { MoneyInput } from "@/shared/ui/custom/money-input";
 import { TagInput } from "@/shared/ui/custom/tag-input";
+import { DialogFooter } from "@/shared/ui/dialog";
 import {
   Form,
   FormControl,
@@ -169,36 +170,7 @@ export function ServiceForm({
           </div>
         )}
 
-        {/* Dialog mode: compact action bar nằm ngang */}
-        {variant === "dialog" && (
-          <div className="flex items-center justify-end gap-3 pb-4 border-b">
-              <FormField
-                control={form.control}
-                name="is_active"
-                render={({ field }) => (
-                  <FormItem className="flex items-center gap-2 space-y-0 mr-auto">
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        className="data-[state=checked]:bg-primary"
-                      />
-                    </FormControl>
-                    <FormLabel className="cursor-pointer font-normal text-sm">
-                      {field.value ? "Hoạt động" : "Tạm ẩn"}
-                    </FormLabel>
-                  </FormItem>
-                )}
-              />
-              <Button variant="outline" type="button" onClick={() => onSuccess?.()} disabled={isPending}>
-                  Hủy
-              </Button>
-              <Button type="submit" disabled={isPending} className="shadow-md shadow-primary/20">
-                  {isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-                  {initialData ? "Lưu thay đổi" : "Tạo dịch vụ"}
-              </Button>
-          </div>
-        )}
+        {/* Dialog mode: No top bar, actions moved to footer */}
 
         <Tabs defaultValue="general" className="w-full space-y-6">
             <TabsList className="w-full justify-start h-12 p-1 bg-muted/40 rounded-xl">
@@ -485,6 +457,38 @@ export function ServiceForm({
                 </div>
             </TabsContent>
         </Tabs>
+
+        {variant === "dialog" && (
+           <DialogFooter className="pt-4 border-t mt-8">
+               <div className="flex items-center mr-auto">
+                    <FormField
+                        control={form.control}
+                        name="is_active"
+                        render={({ field }) => (
+                        <FormItem className="flex items-center gap-2 space-y-0">
+                            <FormControl>
+                            <Switch
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                                className="data-[state=checked]:bg-primary"
+                            />
+                            </FormControl>
+                            <FormLabel className="cursor-pointer font-normal text-sm">
+                            {field.value ? "Đang hoạt động" : "Tạm ẩn"}
+                            </FormLabel>
+                        </FormItem>
+                        )}
+                    />
+               </div>
+               <Button variant="outline" type="button" onClick={() => onSuccess?.()} disabled={isPending} className="h-11">
+                   Hủy
+               </Button>
+               <Button type="submit" disabled={isPending} className="shadow-md shadow-primary/20 h-11 min-w-[140px]">
+                   {isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                   {initialData ? "Lưu thay đổi" : "Tạo dịch vụ"}
+               </Button>
+           </DialogFooter>
+        )}
       </form>
     </Form>
   );

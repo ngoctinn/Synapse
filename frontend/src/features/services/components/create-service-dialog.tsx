@@ -35,20 +35,24 @@ export function CreateServiceDialog({
           <Plus className="mr-2 h-3.5 w-3.5" /> Thêm dịch vụ
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-5xl max-h-[90vh] overflow-y-auto duration-300">
-        <DialogHeader>
-          <DialogTitle>Thêm dịch vụ mới</DialogTitle>
-          <DialogDescription>
-            Tạo dịch vụ mới và gán các kỹ năng yêu cầu.
-          </DialogDescription>
-        </DialogHeader>
-        <ServiceForm
-            availableSkills={availableSkills}
-            availableRoomTypes={availableRoomTypes}
-            availableEquipment={availableEquipment}
-            onSuccess={() => setOpen(false)}
-            variant="dialog"
-        />
+      <DialogContent className="sm:max-w-5xl max-h-[90vh] overflow-y-auto p-0 gap-0 duration-300">
+        <div className="p-6 pb-4 border-b bg-muted/10 sticky top-0 z-20 backdrop-blur-md">
+          <DialogHeader>
+            <DialogTitle className="font-serif text-xl">Thêm dịch vụ mới</DialogTitle>
+            <DialogDescription>
+              Tạo dịch vụ mới và gán các kỹ năng yêu cầu.
+            </DialogDescription>
+          </DialogHeader>
+        </div>
+        <div className="p-6">
+            <ServiceForm
+                availableSkills={availableSkills}
+                availableRoomTypes={availableRoomTypes}
+                availableEquipment={availableEquipment}
+                onSuccess={() => setOpen(false)}
+                variant="dialog"
+            />
+        </div>
       </DialogContent>
     </Dialog>
   );

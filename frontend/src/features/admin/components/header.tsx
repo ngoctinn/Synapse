@@ -112,6 +112,7 @@ export function AdminHeader({ className, user }: AdminHeaderProps) {
         >
           <Bell className="w-5 h-5" />
           <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white animate-pulse" />
+          <span className="sr-only">Có thông báo mới</span>
         </Button>
 
         <div className="h-6 w-px bg-slate-200 mx-1" />

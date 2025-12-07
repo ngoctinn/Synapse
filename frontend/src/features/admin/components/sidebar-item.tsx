@@ -2,23 +2,23 @@
 
 import { cn } from "@/shared/lib/utils"
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
 } from "@/shared/ui/collapsible"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
 import {
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-  useSidebar,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubButton,
+    SidebarMenuSubItem,
+    useSidebar,
 } from "@/shared/ui/sidebar"
 import { ChevronRight } from "lucide-react"
 import Link from "next/link"
@@ -33,9 +33,12 @@ export function SidebarItem({ item }: SidebarItemProps) {
   const pathname = usePathname()
   const { state } = useSidebar()
   const Icon = item.icon
-  const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`)
+  // Helper: Exact match for leaf nodes, Prefix match for parent nodes
+  const isActive = item.items
+    ? pathname.startsWith(item.href)
+    : pathname === item.href
 
-  // Helper to check if a sub-item is active
+  // Helper to check if a sub-item is active (Exact match)
   const isSubItemActive = (href: string) => pathname === href
 
   // Items with Submenu
@@ -105,7 +108,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
               )}
             >
               <Icon className="size-5" />
-              <span>{item.title}</span>
+              <span className="truncate">{item.title}</span>
               <ChevronRight className="ml-auto size-4 transition-transform duration-200 ease-out group-data-[state=open]/collapsible:rotate-90 text-sidebar-foreground/50 group-hover/menu-item:text-sidebar-foreground" aria-hidden="true" />
             </SidebarMenuButton>
           </CollapsibleTrigger>
@@ -133,7 +136,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
                     )}
                   >
                     <Link href={subItem.href}>
-                      <span>{subItem.title}</span>
+                      <span className="truncate">{subItem.title}</span>
                     </Link>
                   </SidebarMenuSubButton>
                 </SidebarMenuSubItem>
@@ -163,7 +166,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
       >
         <Link href={item.href} className="flex items-center gap-3">
           <Icon className="size-5" />
-          <span className="group-data-[collapsible=icon]:hidden">
+          <span className="group-data-[collapsible=icon]:hidden truncate">
             {item.title}
           </span>
         </Link>

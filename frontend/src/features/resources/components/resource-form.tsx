@@ -4,20 +4,21 @@ import { Box, Check, Code2, Loader2, Users } from "lucide-react";
 
 import { Button } from "@/shared/ui/button";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
+import { DialogFooter } from "@/shared/ui/dialog";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
 } from "@/shared/ui/form";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/shared/ui/select";
 import { Textarea } from "@/shared/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -188,7 +189,7 @@ export function ResourceForm({
           )}
         />
 
-        <div className="flex justify-end pt-4">
+        <DialogFooter className="pt-4">
           <Button type="submit" disabled={isLoading} className="min-w-[140px]">
             {isLoading ? (
               <>
@@ -202,7 +203,7 @@ export function ResourceForm({
               </>
             )}
           </Button>
-        </div>
+        </DialogFooter>
       </form>
     </Form>
   );
