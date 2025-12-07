@@ -3,9 +3,8 @@
 import { useMemo, useState } from "react";
 import { ExceptionDate } from "../model/types";
 import { Button } from "@/shared/ui/button";
-import { List as ListIcon, Calendar as CalendarIcon, Plus } from "lucide-react";
+import { List as ListIcon, Calendar as CalendarIcon, Plus, Search } from "lucide-react";
 import { ExceptionsCalendar } from "./exceptions-calendar";
-// import { ExceptionsTable } from "./exceptions-table"; // DELETED
 import { ExceptionsFilterBar } from "./exceptions-filter-bar";
 import { useCalendarSelection } from "../hooks/use-calendar-selection";
 
@@ -15,21 +14,13 @@ import { applyExceptionToDates } from "../utils/bulk-operations";
 import { format, startOfYear, endOfYear, setYear } from "date-fns";
 import { vi } from "date-fns/locale";
 import { useExceptionViewLogic } from "../hooks/use-exception-view-logic";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react"; // Added icons
-import { DataTable, Column } from "@/shared/ui/custom/data-table"; // Added DataTable
-import { Badge } from "@/shared/ui/badge"; // Added Badge
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/shared/ui/dropdown-menu"; // Added DropdownMenu
+import { ExceptionListItem } from "./exception-list-item";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/shared/ui/resizable";
-import { cn } from "@/shared/lib/utils";
+import { groupExceptions } from "../utils/grouping";
 
 interface ExceptionsViewManagerProps {
   exceptions: ExceptionDate[];
@@ -70,9 +61,6 @@ export function ExceptionsViewManager({
     clearSelection,
     getSelectedDates,
     setSelectedDates,
-    addToSelection,
-    mode,
-    setMode,
   } = useCalendarSelection();
 
   // Dialog State
@@ -81,19 +69,14 @@ export function ExceptionsViewManager({
   // Convert selectedDateIds Set to sorted array of Dates for Calendar
   const selectedDates = useMemo(() => getSelectedDates(), [getSelectedDates, selectedDateIds]);
   
-  // Convert selectedDateIds Set to Array of strings for Table
-  const selectedIdsArray = useMemo(() => Array.from(selectedDateIds), [selectedDateIds]);
-
   // Calculate matched keys for styling (Highlighed vs Dimmed)
   const matchedDateKeys = useMemo(() => {
     return new Set(filteredExceptions.map(e => format(e.date, 'yyyy-MM-dd')));
   }, [filteredExceptions]);
 
   const handleManualAdd = () => {
-    // Open Dialog with current selection (or empty if none)
     setIsDialogOpen(true);
   };
-
 
   // --- Render Components Helpers ---
   
@@ -129,143 +112,59 @@ export function ExceptionsViewManager({
     )
   );
 
-  const getColumns = (compact: boolean): Column<ExceptionDate>[] => {
-      const baseColumns: Column<ExceptionDate>[] = [
-        {
-          header: "Ngày",
-          accessorKey: "date",
-          cell: (item) => (
-            <div className="flex flex-col">
-              <span className="font-medium">
-                {format(item.date, "dd/MM/yyyy", { locale: vi })}
-              </span>
-              {!compact && (
-                  <span className="text-xs text-muted-foreground capitalize">
-                  {format(item.date, "EEEE", { locale: vi })}
-                  </span>
-              )}
-            </div>
-          ),
-        },
-        {
-          header: "Lý do",
-          accessorKey: "reason",
-          cell: (item) => (
-              <div className={cn("truncate", compact ? "max-w-[120px]" : "max-w-[200px]")} title={item.reason}>
-                  {item.reason || "Không có lý do"}
+  const renderList = () => {
+      const groupedItems = useMemo(() => groupExceptions(filteredExceptions), [filteredExceptions]);
+
+      if (groupedItems.length === 0) {
+          return (
+              <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground p-4 bg-muted/5 rounded-xl border border-dashed m-4">
+                  <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center mb-3">
+                      <Search className="w-5 h-5 text-muted-foreground/50" />
+                  </div>
+                  <p className="text-sm font-medium text-foreground">Không tìm thấy ngoại lệ nào</p>
+                  <p className="text-xs text-muted-foreground mt-1 max-w-[200px]">Thử thay đổi bộ lọc hoặc tìm kiếm từ khóa khác</p>
+                  <Button variant="link" size="sm" onClick={clearFilters} className="mt-2 text-primary">Xóa bộ lọc</Button>
               </div>
-          )
-        },
-      ];
-  
-      if (!compact) {
-          baseColumns.push({
-              header: "Loại",
-              accessorKey: "type",
-              cell: (item) => {
-                  const typeMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
-                      holiday: { label: "Ngày lễ", variant: "destructive" },
-                      maintenance: { label: "Bảo trì", variant: "secondary" },
-                      custom: { label: "Tùy chỉnh", variant: "outline" },
-                  };
-                  const config = typeMap[item.type] || { label: item.type, variant: "outline" };
-                  return <Badge variant={config.variant}>{config.label}</Badge>;
-              }
-          });
-          
-          baseColumns.push({
-               header: "Trạng thái",
-               cell: (item) => (
-                   <Badge variant={item.isClosed ? "destructive" : "default"} className="bg-opacity-10 text-xs shadow-none hover:bg-opacity-20">
-                       {item.isClosed ? "Đóng cửa" : "Mở cửa"}
-                   </Badge>
-               )
-          });
-      }
-  
-      // Action column
-      baseColumns.push({
-        header: "",
-        className: "w-[50px]",
-        cell: (item) => (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-muted">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => {
-                  clearSelection();
-                  toggleDate(item.date);
-                  setIsDialogOpen(true);
-              }}>
-                <Pencil className="mr-2 h-4 w-4" /> Chỉnh sửa
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                  className="text-destructive focus:text-destructive"
-                  onClick={() => onRemoveException(item.id)}
-              >
-                <Trash2 className="mr-2 h-4 w-4" /> Xóa
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ),
-      });
-  
-      return baseColumns;
-  };
-
-  const renderTable = (compact: boolean = false) => {
-      // Calculate selected UUIDs efficiently
-      const selectedUUIDs = useMemo(() => {
-          return new Set(
-              filteredExceptions
-                  .filter(e => selectedDateIds.has(format(e.date, 'yyyy-MM-dd')))
-                  .map(e => e.id)
           );
-      }, [filteredExceptions, selectedDateIds]);
-
-      // Logic for selection
-      const isAllSelected = filteredExceptions.length > 0 && selectedUUIDs.size === filteredExceptions.length;
-      const isPartiallySelected = selectedUUIDs.size > 0 && selectedUUIDs.size < filteredExceptions.length;
-      
-      const handleToggleOne = (id: string | number) => {
-          const strId = String(id);
-          const ex = exceptions.find(e => e.id === strId);
-          if (ex) {
-             toggleDate(ex.date);
-          }
-      };
-
-      const handleToggleAll = () => {
-          if (isAllSelected) {
-              clearSelection();
-          } else {
-              // Select all visible filtered exceptions
-              const dates = filteredExceptions.map(e => e.date);
-              setSelectedDates(dates);
-          }
-      };
+      }
 
       return (
-          <DataTable
-                data={filteredExceptions}
-                columns={getColumns(compact)}
-                keyExtractor={(item) => item.id}
-                selectable={true}
-                isSelected={(id) => selectedUUIDs.has(String(id))}
-                onToggleOne={handleToggleOne}
-                onToggleAll={handleToggleAll}
-                isAllSelected={isAllSelected}
-                isPartiallySelected={isPartiallySelected}
-                className={cn(compact && "border-none shadow-none bg-transparent")}
-                emptyState={
-                    <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground p-4">
-                        <p className="text-sm">Không tìm thấy ngoại lệ nào khớp với bộ lọc.</p>
-                    </div>
-                }
-          />
+          <div className="space-y-4 p-1 pb-10">
+              {groupedItems.map((group, index) => {
+                  const showYearHeader = index === 0 || group.year !== groupedItems[index - 1].year;
+                  
+                  return (
+                      <ExceptionListItem
+                          key={group.id}
+                          group={group}
+                          showYearHeader={showYearHeader}
+                          selectedDateIds={selectedDateIds}
+                          onSelectGroup={(dates, isFullySelected) => {
+                              const groupDateStrings = dates.map(d => format(d, 'yyyy-MM-dd'));
+                              const allDates = getSelectedDates();
+                              
+                              if (isFullySelected) {
+                                  const newDates = allDates.filter(d => !groupDateStrings.includes(format(d, 'yyyy-MM-dd')));
+                                  setSelectedDates(newDates);
+                              } else {
+                                  // Merge unique
+                                  const allUnique = [...allDates, ...dates].filter((d, i, self) => 
+                                      i === self.findIndex(t => t.getTime() === d.getTime())
+                                  );
+                                  setSelectedDates(allUnique);
+                              }
+                          }}
+                          onEdit={(dates) => {
+                              clearSelection();
+                              setSelectedDates(dates);
+                              setIsDialogOpen(true);
+                          }}
+                          onRemove={(ids) => onRemoveException(ids)}
+                          onToggleDate={toggleDate}
+                      />
+                  );
+              })}
+          </div>
       );
   };
 
@@ -313,8 +212,6 @@ export function ExceptionsViewManager({
              }
              endContent={
                <div className="flex items-center gap-2">
-
-                    
                     {/* Add Button */}
                     <Button onClick={handleManualAdd} className="bg-primary text-primary-foreground shadow-sm hover:shadow-md transition-all">
                         <Plus className="w-4 h-4 mr-2" /> Thêm ngoại lệ
@@ -326,7 +223,7 @@ export function ExceptionsViewManager({
        <div className="flex-1 min-h-0 relative p-6">
            {/* MOBILE VIEW (Tabs) */}
            <div className="lg:hidden h-full overflow-y-auto">
-                {viewMode === 'list' ? renderTable() : renderCalendar()}
+                {viewMode === 'list' ? renderList() : renderCalendar()}
            </div>
 
            {/* DESKTOP VIEW (Split) */}
@@ -338,16 +235,18 @@ export function ExceptionsViewManager({
                         </div>
                     </ResizablePanel>
                     
-                    <ResizableHandle withHandle />
+                    <ResizableHandle />
                     
                     <ResizablePanel defaultSize={35} minSize={25}>
-                        <div className="h-full flex flex-col bg-muted/10">
-                            <div className="p-3 border-b bg-muted/20 font-medium text-xs text-muted-foreground uppercase tracking-wider flex justify-between items-center">
-                                <span>Danh sách chi tiết</span>
+                        <div className="h-full flex flex-col bg-muted/5">
+                            <div className="p-3 border-b bg-muted/10 font-bold text-xs text-muted-foreground uppercase tracking-wider flex justify-between items-center sticky top-0 backdrop-blur-sm z-10">
+                                <span className="flex items-center gap-2">
+                                    <ListIcon className="w-3 h-3" />
+                                    Danh sách chi tiết ({filteredExceptions.length})
+                                </span>
                             </div>
                             <div className="p-4 flex-1 overflow-y-auto custom-scrollbar">
-                                {/* If selection exists, maybe filter table? For now show all filtered list, but auto-highlight selection */}
-                                {renderTable(true)}
+                                {renderList()}
                             </div>
                         </div>
                     </ResizablePanel>
