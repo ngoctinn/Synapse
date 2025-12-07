@@ -1,8 +1,20 @@
 "use client"
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from "@/shared/ui/alert-dialog"
 import { SearchInput } from "@/shared/ui/custom/search-input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { useState } from "react"
+import { toast } from "sonner"
+
 import { MOCK_APPOINTMENTS, MOCK_RESOURCES } from "../mock-data"
 import { Appointment } from "../types"
 import { AppointmentDetailDialog } from "./appointment-detail-dialog"
@@ -32,6 +44,10 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
   const [isDetailOpen, setIsDetailOpen] = useState(false)
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
 
+  // Alert Dialog States
+  const [isCancelAlertOpen, setIsCancelAlertOpen] = useState(false)
+  const [appointmentToCancel, setAppointmentToCancel] = useState<Appointment | null>(null)
+
   // Handlers
   const handleSlotClick = (resourceId: string, time: Date) => {
       setCreateDefaultResource(resourceId)
@@ -46,20 +62,31 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
 
   const handleCreateAppointment = (newAppointment: Appointment) => {
       setAppointments(prev => [...prev, newAppointment])
+      toast.success("Đã tạo lịch hẹn mới")
   }
 
   const handleEditAppointment = (appointment: Appointment) => {
-     alert(`Chức năng chỉnh sửa đang phát triển cho: ${appointment.customerName}`)
+     toast.info(`Chức năng chỉnh sửa đang phát triển cho: ${appointment.customerName}`)
      // TODO: Implement Edit Logic
   }
 
-  const handleCancelAppointment = (appointment: Appointment) => {
-      if (confirm("Bạn có chắc chắn muốn hủy lịch hẹn này?")) {
-        setAppointments(prev => prev.map(a =>
-            a.id === appointment.id ? { ...a, status: 'cancelled' } : a
-        ));
-        setIsDetailOpen(false);
-      }
+  const handleCreateCancelRequest = (appointment: Appointment) => {
+      setAppointmentToCancel(appointment)
+      setIsCancelAlertOpen(true)
+  }
+
+  const handleConfirmCancel = () => {
+      if (!appointmentToCancel) return
+
+      setAppointments(prev => prev.map(a =>
+          a.id === appointmentToCancel.id ? { ...a, status: 'cancelled' } : a
+      ))
+
+      toast.success("Đã hủy lịch hẹn thành công")
+
+      setIsCancelAlertOpen(false)
+      setIsDetailOpen(false)
+      setAppointmentToCancel(null)
   }
 
   return (
@@ -120,8 +147,26 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
         appointment={selectedAppointment}
         resource={MOCK_RESOURCES.find(r => r.id === selectedAppointment?.resourceId) ?? null}
         onEdit={handleEditAppointment}
-        onCancel={handleCancelAppointment}
+        onCancel={handleCreateCancelRequest}
       />
+
+      <AlertDialog open={isCancelAlertOpen} onOpenChange={setIsCancelAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Hủy lịch hẹn?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Bạn có chắc chắn muốn hủy lịch hẹn của khách hàng {appointmentToCancel?.customerName}?
+              Hành động này không thể hoàn tác.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Quay lại</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmCancel} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Xác nhận hủy
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
