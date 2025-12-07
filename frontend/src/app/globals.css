@@ -30,9 +30,9 @@
   --primary: oklch(0.48 0.14 200);
   --primary-foreground: oklch(0.98 0.01 200);
 
-  /* Secondary: Soft Sage/Mist */
-  --secondary: oklch(0.95 0.03 160);
-  --secondary-foreground: oklch(0.35 0.08 160);
+  /* Secondary: Soft Sage/Mist (Tăng chroma để nổi bật hơn) */
+  --secondary: oklch(0.93 0.06 160);
+  --secondary-foreground: oklch(0.30 0.10 160);
 
   /* Muted: Neutral Gray for dividers/subtext */
   --muted: oklch(0.96 0.01 260);
@@ -144,9 +144,9 @@
   --primary: oklch(0.65 0.15 200);
   --primary-foreground: oklch(0.15 0.02 260);
 
-  /* Secondary: Deep Sage */
-  --secondary: oklch(0.25 0.05 160);
-  --secondary-foreground: oklch(0.90 0.05 160);
+  /* Secondary: Deep Sage (Tăng chroma để nổi bật hơn) */
+  --secondary: oklch(0.28 0.08 160);
+  --secondary-foreground: oklch(0.92 0.06 160);
 
   /* Muted: Dark Gray */
   --muted: oklch(0.25 0.02 260);
@@ -258,6 +258,37 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Alert Colors - Export cho Tailwind utilities */
+  --color-alert-warning: var(--alert-warning);
+  --color-alert-warning-foreground: var(--alert-warning-foreground);
+  --color-alert-warning-border: var(--alert-warning-border);
+  --color-alert-success: var(--alert-success);
+  --color-alert-success-foreground: var(--alert-success-foreground);
+  --color-alert-success-border: var(--alert-success-border);
+  --color-alert-info: var(--alert-info);
+  --color-alert-info-foreground: var(--alert-info-foreground);
+  --color-alert-info-border: var(--alert-info-border);
+
+  /* Status Colors - Export cho Tailwind utilities */
+  --color-status-pending: var(--status-pending);
+  --color-status-pending-foreground: var(--status-pending-foreground);
+  --color-status-pending-border: var(--status-pending-border);
+  --color-status-confirmed: var(--status-confirmed);
+  --color-status-confirmed-foreground: var(--status-confirmed-foreground);
+  --color-status-confirmed-border: var(--status-confirmed-border);
+  --color-status-serving: var(--status-serving);
+  --color-status-serving-foreground: var(--status-serving-foreground);
+  --color-status-serving-border: var(--status-serving-border);
+  --color-status-completed: var(--status-completed);
+  --color-status-completed-foreground: var(--status-completed-foreground);
+  --color-status-completed-border: var(--status-completed-border);
+  --color-status-cancelled: var(--status-cancelled);
+  --color-status-cancelled-foreground: var(--status-cancelled-foreground);
+  --color-status-cancelled-border: var(--status-cancelled-border);
+  --color-status-noshow: var(--status-noshow);
+  --color-status-noshow-foreground: var(--status-noshow-foreground);
+  --color-status-noshow-border: var(--status-noshow-border);
 
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
