@@ -9,8 +9,9 @@ import { ExceptionDate } from "../model/types";
 import { SmartTooltip } from "./smart-tooltip";
 import { getStatusStyles } from "../utils/style-helpers";
 import { Button } from "@/shared/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Info, ChevronDown } from "lucide-react";
 import { YearPicker } from "@/shared/ui/custom/year-picker";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/shared/ui/collapsible";
 
 import { DateRange } from "react-day-picker";
 
@@ -112,7 +113,7 @@ export function YearViewGrid({ year, exceptions, matchedDateKeys, selectedDates,
 
     return (
         <div className="space-y-4">
-            <div className="px-4 pt-2 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="px-4 pt-2 flex flex-col md:flex-row md:items-start justify-between gap-4">
                 <div className="flex items-center rounded-lg border bg-background/50 p-1 gap-1 shrink-0 shadow-sm w-fit">
                     <Button
                         variant="ghost"
@@ -141,77 +142,35 @@ export function YearViewGrid({ year, exceptions, matchedDateKeys, selectedDates,
                     </Button>
                 </div>
 
-                {/* Legend */}
-                <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm p-3 rounded-lg border border-dashed bg-muted/20 md:ml-auto">
-                    {/* Status Group */}
-                    <div className="flex items-center gap-2">
-                        <span className="text-[10px] uppercase text-muted-foreground/60 font-bold tracking-wider mr-1">Trạng thái</span>
-                        <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-1.5">
-                                <div className="w-5 h-5 rounded-sm border border-emerald-500/50 bg-background flex items-center justify-center shadow-sm">
-                                    <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 leading-none pt-[1px]">12</span>
-                                </div>
-                                <span className="text-muted-foreground text-xs">Mở cửa</span>
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                                <div className="w-5 h-5 rounded-sm border border-rose-500/50 bg-background flex items-center justify-center shadow-sm">
-                                    <span className="text-[10px] font-bold text-rose-700 dark:text-rose-400 leading-none pt-[1px]">12</span>
-                                </div>
-                                <span className="text-muted-foreground text-xs">Đóng cửa</span>
-                            </div>
-                        </div>
+                {/* Legend - Responsive */}
+                <div className="w-full md:w-auto md:ml-auto">
+                    {/* Desktop Legend */}
+                    <div className="hidden md:flex flex-col items-start gap-3 text-sm p-3 rounded-lg border border-dashed bg-muted/20">
+                        <LegendContent />
                     </div>
 
-                    <div className="w-px h-4 bg-border/50 hidden sm:block mx-1" />
-
-                    {/* Type Group */}
-                    <div className="flex items-center gap-2">
-                        <span className="text-[10px] uppercase text-muted-foreground/60 font-bold tracking-wider mr-1">Loại</span>
-                        <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-1.5">
-                                <div className="w-5 h-5 rounded-sm bg-red-100 dark:bg-red-900/30 border border-transparent flex items-center justify-center shadow-sm">
-                                    <span className="text-[10px] text-muted-foreground/60 font-bold leading-none pt-[1px]">12</span>
-                                </div>
-                                <span className="text-muted-foreground text-xs">Ngày lễ</span>
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                                <div className="w-5 h-5 rounded-sm bg-amber-100 dark:bg-amber-900/30 border border-transparent flex items-center justify-center shadow-sm">
-                                    <span className="text-[10px] text-muted-foreground/60 font-bold leading-none pt-[1px]">12</span>
-                                </div>
-                                <span className="text-muted-foreground text-xs">Bảo trì</span>
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                                <div className="w-5 h-5 rounded-sm bg-blue-100 dark:bg-blue-900/30 border border-transparent flex items-center justify-center shadow-sm">
-                                    <span className="text-[10px] text-muted-foreground/60 font-bold leading-none pt-[1px]">12</span>
-                                </div>
-                                <span className="text-muted-foreground text-xs">Tùy chỉnh</span>
-                            </div>
-                        </div>
+                    {/* Mobile Legend (Collapsible) */}
+                    <div className="md:hidden">
+                        <Collapsible>
+                            <CollapsibleTrigger asChild>
+                                <Button variant="outline" size="sm" className="w-full justify-between bg-muted/20 border-dashed hover:bg-muted/30 h-auto py-2">
+                                    <span className="flex items-center gap-2">
+                                        <Info className="w-4 h-4 text-muted-foreground" />
+                                        <span className="text-muted-foreground">Chú thích màu sắc</span>
+                                    </span>
+                                    <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-200 data-[state=open]:rotate-180" />
+                                </Button>
+                            </CollapsibleTrigger>
+                            <CollapsibleContent className="mt-2 text-sm p-3 rounded-lg border border-dashed bg-muted/20 animate-in slide-in-from-top-2 fade-in duration-200">
+                                <LegendContent />
+                            </CollapsibleContent>
+                        </Collapsible>
                     </div>
-
-                     <div className="w-px h-4 bg-border/50 hidden sm:block mx-1" />
-
-                     {/* Date Group */}
-                     <div className="flex items-center gap-2">
-                        <span className="text-[10px] uppercase text-muted-foreground/60 font-bold tracking-wider mr-1">Hiển thị</span>
-                        <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-1.5">
-                                <div className="w-5 h-5 rounded-sm bg-muted border border-transparent flex items-center justify-center shadow-sm">
-                                    <span className="text-[10px] font-bold text-foreground leading-none pt-[1px]">24</span>
-                                </div>
-                                <span className="text-muted-foreground text-xs">Đã lọc</span>
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                                <div className="w-5 h-5 rounded-sm bg-muted/30 border border-transparent flex items-center justify-center grayscale opacity-50">
-                                    <span className="text-[10px] font-medium text-muted-foreground leading-none pt-[1px]">24</span>
-                                </div>
-                                <span className="text-muted-foreground text-xs opacity-70">Ẩn</span>
-                            </div>
-                        </div>
-                     </div>
                 </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 select-none">
+            
+            {/* Main Grid - Auto-fill for responsiveness (No Media Queries needed) */}
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-6 p-4 select-none">
                 {months.map(month => (
                     <MonthCard 
                         key={month.toISOString()} 
@@ -225,6 +184,75 @@ export function YearViewGrid({ year, exceptions, matchedDateKeys, selectedDates,
                     />
                 ))}
             </div>
+        </div>
+    );
+}
+
+function LegendContent() {
+    return (
+        <div className="flex flex-col gap-3">
+            {/* Status Group */}
+            <div className="flex items-center gap-2">
+                <span className="text-[10px] uppercase text-muted-foreground/60 font-bold tracking-wider mr-1 w-20 whitespace-nowrap">Trạng thái</span>
+                <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1.5">
+                        <div className="w-5 h-5 rounded-sm border border-emerald-500/50 bg-background flex items-center justify-center shadow-sm">
+                            <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 leading-none pt-[1px]">12</span>
+                        </div>
+                        <span className="text-muted-foreground text-xs">Mở cửa</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                        <div className="w-5 h-5 rounded-sm border border-rose-500/50 bg-background flex items-center justify-center shadow-sm">
+                            <span className="text-[10px] font-bold text-rose-700 dark:text-rose-400 leading-none pt-[1px]">12</span>
+                        </div>
+                        <span className="text-muted-foreground text-xs">Đóng cửa</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Type Group */}
+            <div className="flex items-center gap-2">
+                <span className="text-[10px] uppercase text-muted-foreground/60 font-bold tracking-wider mr-1 w-20 whitespace-nowrap">Loại</span>
+                <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1.5">
+                        <div className="w-5 h-5 rounded-sm bg-red-100 dark:bg-red-900/30 border border-transparent flex items-center justify-center shadow-sm">
+                            <span className="text-[10px] text-muted-foreground/60 font-bold leading-none pt-[1px]">12</span>
+                        </div>
+                        <span className="text-muted-foreground text-xs">Ngày lễ</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                        <div className="w-5 h-5 rounded-sm bg-amber-100 dark:bg-amber-900/30 border border-transparent flex items-center justify-center shadow-sm">
+                            <span className="text-[10px] text-muted-foreground/60 font-bold leading-none pt-[1px]">12</span>
+                        </div>
+                        <span className="text-muted-foreground text-xs">Bảo trì</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                        <div className="w-5 h-5 rounded-sm bg-blue-100 dark:bg-blue-900/30 border border-transparent flex items-center justify-center shadow-sm">
+                            <span className="text-[10px] text-muted-foreground/60 font-bold leading-none pt-[1px]">12</span>
+                        </div>
+                        <span className="text-muted-foreground text-xs">Tùy chỉnh</span>
+                    </div>
+                </div>
+            </div>
+
+             {/* Date Group */}
+             <div className="flex items-center gap-2">
+                <span className="text-[10px] uppercase text-muted-foreground/60 font-bold tracking-wider mr-1 w-20 whitespace-nowrap">Hiển thị</span>
+                <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1.5">
+                        <div className="w-5 h-5 rounded-sm bg-muted border border-transparent flex items-center justify-center shadow-sm">
+                            <span className="text-[10px] font-bold text-foreground leading-none pt-[1px]">24</span>
+                        </div>
+                        <span className="text-muted-foreground text-xs">Đã lọc</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                        <div className="w-5 h-5 rounded-sm bg-muted/30 border border-transparent flex items-center justify-center grayscale opacity-50">
+                            <span className="text-[10px] font-medium text-muted-foreground leading-none pt-[1px]">24</span>
+                        </div>
+                        <span className="text-muted-foreground text-xs opacity-70">Ẩn</span>
+                    </div>
+                </div>
+             </div>
         </div>
     );
 }
@@ -289,15 +317,15 @@ function MonthCard({ month, exceptionMap, matchedDateKeys, selectedSet, activeDa
                      let bgClass = "bg-muted/30 hover:bg-muted";
                      
                      // Dimming Styles (Unified)
-                     const dimClasses = "opacity-30 grayscale saturate-0 scale-75 hover:opacity-100 hover:grayscale-0 hover:saturate-100 hover:scale-100 hover:shadow-sm hover:z-10 hover:ring-1 hover:ring-ring/50 transition-all duration-200 ease-out";
+                     const dimClasses = "opacity-40 scale-75 hover:opacity-100 hover:scale-100 hover:shadow-sm hover:z-10 hover:ring-1 hover:ring-ring/50 transition-all duration-200 ease-out";
 
                      if (isSelected) {
                          bgClass = "bg-primary text-primary-foreground";
                      } else if (exception) {
                          const styles = getStatusStyles(exception.type, exception.isClosed);
                          if (isMatched) {
-                             // Normal (Highlighted)
-                             bgClass = styles.calendarItem; 
+                             // Matched Exception -> Bold & Eye-catching
+                             bgClass = cn(styles.calendarItem, "shadow-sm ring-1 ring-ring/30 saturate-125 brightness-105 font-bold z-10"); 
                          } else {
                              // Unmatched Exception -> Dimmed
                              bgClass = cn(styles.calendarItem, dimClasses);

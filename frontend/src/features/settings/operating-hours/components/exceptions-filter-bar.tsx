@@ -64,8 +64,8 @@ export function ExceptionsFilterBar({
   endContent
 }: ExceptionsFilterBarProps) {
   
-  // Calculate count for the combined filter button (Type + Status)
-  const paramCount = (typeFilter?.length || 0) + (statusFilter ? 1 : 0);
+  // Calculate count for the combined filter button (Type + Status + Date)
+  const paramCount = (typeFilter?.length || 0) + (statusFilter ? 1 : 0) + (dateRange?.from ? 1 : 0);
 
   return (
     <div 
@@ -85,14 +85,7 @@ export function ExceptionsFilterBar({
             />
         </div>
 
-        {/* 2. Date Filter (Always visible for context) */}
-        <DateRangeFilter 
-            dateRange={dateRange} 
-            setDateRange={setDateRange} 
-            className="hidden lg:flex shrink-0 shadow-sm"
-        />
-
-        {/* 3. Combined Filter Button (Type + Status) */}
+        {/* 2. Combined Filter Button (Type + Status + Date) */}
         <FilterButton
           isActive={paramCount > 0}
           count={paramCount}
@@ -101,6 +94,19 @@ export function ExceptionsFilterBar({
           icon={SlidersHorizontal}
         >
           <div className="w-full flex flex-col gap-4 p-1">
+            {/* Date Range Section */}
+            <div className="space-y-2">
+               <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider px-1">
+                 Thời gian
+               </h4>
+               <DateRangeFilter 
+                    dateRange={dateRange} 
+                    setDateRange={setDateRange} 
+                    className="w-full shadow-sm justify-between"
+                />
+            </div>
+            <div className="h-px bg-border/50" />
+
             {/* Status Section */}
             <div className="space-y-2">
               <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider px-1">

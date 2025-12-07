@@ -54,7 +54,7 @@ export function ExceptionDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[550px] gap-0 p-0 overflow-hidden outline-none">
+      <DialogContent className="w-full sm:max-w-[550px] gap-0 p-0 overflow-hidden outline-none">
         <DialogHeader className="p-6 pb-2 border-b bg-muted/5">
           <DialogTitle className="text-xl flex items-center gap-2">
               {isEditing ? (
@@ -76,7 +76,7 @@ export function ExceptionDialog({
            </div>
         </DialogHeader>
 
-        <div className="px-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
+        <div className="px-6 max-h-[80vh] overflow-y-auto custom-scrollbar">
             <ExceptionForm 
                 initialData={initialData}
                 selectedDates={selectedDates}

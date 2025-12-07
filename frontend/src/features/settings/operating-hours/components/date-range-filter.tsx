@@ -160,26 +160,26 @@ export function DateRangeFilter({
         <Button
           variant="outline"
           className={cn(
-            "w-[200px] h-9 justify-start text-left font-normal",
+            "w-full sm:w-[200px] h-9 justify-start text-left font-normal transition-colors hover:border-primary/50",
             !dateRange && "text-muted-foreground",
             className
           )}
         >
-          <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
+          <CalendarIcon className="mr-2 h-4 w-4 shrink-0 text-muted-foreground/70" />
           <span className="truncate">{getTriggerLabel()}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         {!showCalendar ? (
-          <div className="flex flex-col p-1 min-w-[180px]">
+          <div className="flex flex-col p-1 min-w-[180px] gap-0.5">
             <Button
               variant="ghost"
-              className="justify-start font-normal h-8 px-2"
+              className="justify-start font-normal h-8 px-2 data-[state=active]:bg-accent"
               onClick={() => handlePresetChange("all")}
             >
               Toàn thời gian
             </Button>
-            <div className="h-[1px] bg-border my-1" />
+            <div className="h-[1px] bg-border/50 my-1 mx-2" />
             <Button
               variant="ghost"
               className="justify-start font-normal h-8 px-2"
@@ -215,14 +215,14 @@ export function DateRangeFilter({
             >
               Năm nay
             </Button>
-            <div className="h-[1px] bg-border my-1" />
+            <div className="h-[1px] bg-border/50 my-1 mx-2" />
             <Button
               variant="ghost"
-              className="justify-between font-normal h-8 px-2 text-primary hover:text-primary"
+              className="justify-between font-normal h-8 px-2 text-primary hover:text-primary transition-colors group"
               onClick={() => setShowCalendar(true)}
             >
               Tùy chọn...
-              <ChevronRight className="h-4 w-4 opacity-50" />
+              <ChevronRight className="h-4 w-4 opacity-50 group-hover:translate-x-0.5 transition-transform" />
             </Button>
           </div>
         ) : (
