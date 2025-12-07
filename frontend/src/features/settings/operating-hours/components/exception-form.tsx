@@ -133,21 +133,21 @@ export function ExceptionForm({
       <div className="space-y-3">
         <Label className="text-sm font-medium">Thời gian áp dụng</Label>
 
-        <div className="w-full flex items-end gap-3 border rounded-xl p-4 bg-muted/10">
-            <div className="flex-1 space-y-1.5">
+        <div className="w-full flex flex-col sm:flex-row sm:items-end gap-3 border rounded-xl p-4 bg-muted/10">
+            <div className="flex-1 space-y-1.5 w-full">
                 <Label className="text-xs text-muted-foreground">Nhập ngày (DD/MM/YYYY)</Label>
                 <BirthdayPicker
                     date={tempDate}
                     setDate={setTempDate}
                     placeholder="Ví dụ: 25/12/2025"
-                    className="bg-background"
+                    className="bg-background w-full"
                 />
             </div>
             <Button 
                 onClick={handleAddTempDate} 
                 disabled={!tempDate}
                 type="button"
-                className="h-10 px-4 shrink-0 bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary border-primary/20"
+                className="h-10 px-4 shrink-0 bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary border-primary/20 w-full sm:w-auto"
                 variant="outline"
             >
                 <Plus className="w-4 h-4 mr-2" />
@@ -163,20 +163,21 @@ export function ExceptionForm({
                 </span>
             ) : (
                 selectedDates.map((date, idx) => (
-                    <div key={idx} className="flex items-center gap-1 bg-background text-foreground shadow-sm px-2.5 py-1 rounded-full text-xs font-medium border animate-in fade-in zoom-in-95 duration-200">
+                    <div key={idx} className="flex items-center gap-1 bg-background text-foreground shadow-sm pl-3 pr-1 py-1 rounded-full text-xs font-medium border animate-in fade-in zoom-in-95 duration-200">
                         {format(date, 'dd/MM/yyyy')}
                         <button 
                             onClick={() => handleRemoveDate(date)} 
-                            className="ml-1 text-muted-foreground hover:text-destructive focus:outline-none transition-colors"
+                            className="ml-1 p-1 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                            aria-label={`Xóa ngày ${format(date, 'dd/MM/yyyy')}`}
                         >
-                            <X className="w-3 h-3" />
+                            <X className="w-3.5 h-3.5" />
                         </button>
                     </div>
                 ))
             )}
         </div>
         <p className="text-[11px] text-muted-foreground ml-1">
-            Đã chọn <span className="font-semibold text-primary">{selectedDates.length}</span> ngày. Bạn có thể xóa bớt từng ngày lẻ.
+            Bạn có thể xóa bớt từng ngày lẻ.
         </p>
       </div>
 
@@ -200,9 +201,9 @@ export function ExceptionForm({
                 key={type.id}
                 onClick={() => setFormData({...formData, type: type.id})}
                 className={cn(
-                "cursor-pointer rounded-xl border-2 p-3 flex flex-col items-center gap-2 transition-all duration-200 hover:bg-muted/50 active:scale-95",
+                "cursor-pointer rounded-xl border-2 p-3 flex flex-col items-center gap-2 transition-all duration-200 hover:bg-muted/50 active:scale-95 relative",
                 formData.type === type.id
-                    ? cn("bg-muted", type.border)
+                    ? cn("bg-muted ring-2 ring-primary ring-offset-2 ring-offset-background", type.border)
                     : "border-transparent bg-muted/20"
                 )}
             >
@@ -252,29 +253,31 @@ export function ExceptionForm({
                     >
                         <div className="pt-4 pl-1 border-t border-border/50 mt-2 space-y-3">
                             <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Khung giờ hoạt động</Label>
-                            <div className="flex flex-wrap gap-3 w-full justify-start items-center">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
                                 {(formData.modifiedHours || []).map((slot, index) => (
-                                    <div key={index} className="flex items-center gap-2 bg-background/80 backdrop-blur-sm p-1.5 rounded-xl border border-transparent hover:border-border/80 hover:shadow-sm transition-all duration-200 group/slot">
-                                        <TimePicker
-                                            value={slot.start}
-                                            onChange={val => handleTimeChange(index, 'start', val)}
-                                            className="w-28 border-none shadow-none bg-transparent focus:ring-0 text-sm font-medium"
-                                        />
-                                        <ArrowRight className="w-3 h-3 text-muted-foreground/50" />
-                                        <TimePicker
-                                            value={slot.end}
-                                            onChange={val => handleTimeChange(index, 'end', val)}
-                                            className="w-28 border-none shadow-none bg-transparent focus:ring-0 text-right text-sm font-medium"
-                                        />
+                                    <div key={index} className="flex items-center justify-between gap-2 bg-background/80 backdrop-blur-sm p-1.5 pl-3 rounded-xl border border-transparent hover:border-border/80 hover:shadow-sm transition-all duration-200 group/slot w-full">
+                                        <div className="flex items-center gap-2">
+                                            <TimePicker
+                                                value={slot.start}
+                                                onChange={val => handleTimeChange(index, 'start', val)}
+                                                className="w-20 xs:w-24 border-none shadow-none bg-transparent focus:ring-0 text-sm font-medium p-0"
+                                            />
+                                            <ArrowRight className="w-3 h-3 text-muted-foreground/50 shrink-0" />
+                                            <TimePicker
+                                                value={slot.end}
+                                                onChange={val => handleTimeChange(index, 'end', val)}
+                                                className="w-20 xs:w-24 border-none shadow-none bg-transparent focus:ring-0 text-right text-sm font-medium p-0"
+                                            />
+                                        </div>
 
                                         {(formData.modifiedHours?.length || 0) > 1 && (
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => handleRemoveSlot(index)}
-                                                className="h-6 w-6 text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover/slot:opacity-100 transition-all duration-200 rounded-full ml-1"
+                                                className="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-100 sm:opacity-50 sm:group-hover/slot:opacity-100 transition-all duration-200 rounded-full"
                                             >
-                                                <Trash2 className="w-3.5 h-3.5" />
+                                                <Trash2 className="w-4 h-4" />
                                             </Button>
                                         )}
                                     </div>
@@ -297,7 +300,12 @@ export function ExceptionForm({
       </div>
       
       {!hideFooter && (
-          <div className="flex justify-end gap-2 pt-4 border-t">
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-4 border-t">
+              {secondaryAction && (
+                <div className="w-full sm:w-auto">
+                    {secondaryAction}
+                </div>
+              )}
               <Button onClick={handleSubmit} disabled={!formData.reason || selectedDates.length === 0} className="w-full sm:w-auto h-11 rounded-xl text-base font-medium min-w-[120px]">
                 {initialData ? "Cập nhật" : "Lưu thay đổi"}
               </Button>

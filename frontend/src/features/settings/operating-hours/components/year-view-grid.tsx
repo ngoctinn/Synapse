@@ -50,19 +50,35 @@ export function YearViewGrid({ year, exceptions, matchedDateKeys, selectedDates,
     }, [selectedDates]);
 
     // Handlers
+    const toggleDate = (date: Date) => {
+        const id = format(date, 'yyyy-MM-dd');
+        const isSelected = selectedSet.has(id);
+        
+        const newDates = isSelected 
+            ? selectedDates.filter(d => format(d, 'yyyy-MM-dd') !== id)
+            : [...selectedDates, date];
+
+        onSelectDates(newDates);
+        return !isSelected; // Returns true if it became selected
+    };
+
     const handleMouseDown = (date: Date) => {
         isDragging.current = true;
         dragStartDate.current = date;
 
         const id = format(date, 'yyyy-MM-dd');
         const isSelected = selectedSet.has(id);
+        // If currently selected, we want to deselect. If not, select.
         dragAction.current = isSelected ? 'deselect' : 'select';
 
-        const newDates = isSelected 
-            ? selectedDates.filter(d => format(d, 'yyyy-MM-dd') !== id)
-            : [...selectedDates, date];
+        toggleDate(date);
+    };
 
-        onSelectDates(newDates);
+    const handleKeyDown = (e: React.KeyboardEvent, date: Date) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleDate(date);
+        }
     };
 
     const handleMouseEnter = (date: Date) => {
@@ -118,34 +134,34 @@ export function YearViewGrid({ year, exceptions, matchedDateKeys, selectedDates,
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        className="h-9 w-9 text-muted-foreground hover:text-foreground"
                         onClick={handlePrevYear}
                     >
-                        <ChevronLeft className="w-4 h-4" />
+                        <ChevronLeft className="w-5 h-5" />
                     </Button>
 
                     <div className="flex items-center gap-2 px-2">
                         <YearPicker 
                             date={currentDateForPicker}
                             onSelect={handleYearSelect}
-                            className="w-[100px] h-8 border-none bg-transparent hover:bg-accent/50 text-center justify-center font-bold"
+                            className="w-[100px] h-9 border-none bg-transparent hover:bg-accent/50 text-center justify-center font-bold text-base"
                         />
                     </div>
 
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        className="h-9 w-9 text-muted-foreground hover:text-foreground"
                         onClick={handleNextYear}
                     >
-                        <ChevronRight className="w-4 h-4" />
+                        <ChevronRight className="w-5 h-5" />
                     </Button>
                 </div>
 
                 {/* Legend - Responsive */}
                 <div className="w-full md:w-auto md:ml-auto">
                     {/* Desktop Legend */}
-                    <div className="hidden md:flex flex-col items-start gap-3 text-sm p-3 rounded-lg border border-dashed bg-muted/20">
+                    <div className="hidden md:flex flex-col items-start gap-3 text-sm p-3 rounded-lg border border-dashed bg-muted/20 hover:bg-muted/30 transition-colors duration-200">
                         <LegendContent />
                     </div>
 
@@ -181,6 +197,7 @@ export function YearViewGrid({ year, exceptions, matchedDateKeys, selectedDates,
                         activeDateRange={activeDateRange}
                         onMouseDown={handleMouseDown}
                         onMouseEnter={handleMouseEnter}
+                        onKeyDown={handleKeyDown}
                     />
                 ))}
             </div>
@@ -268,10 +285,11 @@ interface MonthCardProps {
     activeDateRange?: DateRange;
     onMouseDown: (date: Date) => void;
     onMouseEnter: (date: Date) => void;
+    onKeyDown: (e: React.KeyboardEvent, date: Date) => void;
 }
 
 // Sub-component for individual Month (Lightweight)
-function MonthCard({ month, exceptionMap, matchedDateKeys, selectedSet, activeDateRange, onMouseDown, onMouseEnter }: MonthCardProps) {
+function MonthCard({ month, exceptionMap, matchedDateKeys, selectedSet, activeDateRange, onMouseDown, onMouseEnter, onKeyDown }: MonthCardProps) {
     const days = useMemo(() => {
         const start = startOfMonth(month);
         const end = endOfMonth(month);
@@ -340,16 +358,20 @@ function MonthCard({ month, exceptionMap, matchedDateKeys, selectedSet, activeDa
 
                      return (
                          <SmartTooltip key={id} date={date} exception={exception}>
-                             <div 
+                             <button
+                                 type="button"
                                  className={cn(
-                                     "aspect-square flex items-center justify-center rounded-sm cursor-pointer text-[10px] transition-colors relative",
+                                     "aspect-square flex items-center justify-center rounded-sm cursor-pointer text-[10px] transition-all duration-200 relative outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
                                      bgClass
                                  )}
                                  onMouseDown={() => onMouseDown(date)}
                                  onMouseEnter={() => onMouseEnter(date)}
+                                 onKeyDown={(e) => onKeyDown(e, date)}
+                                 aria-label={`${format(date, 'd MMMM yyyy')}${exception ? `, ${exception.reason}` : ''}${isSelected ? ', Selected' : ''}`}
+                                 aria-pressed={isSelected}
                              >
                                  {format(date, 'd')}
-                             </div>
+                             </button>
                          </SmartTooltip>
                      )
                  })}

@@ -21,6 +21,16 @@ import {
   ResizablePanelGroup,
 } from "@/shared/ui/resizable";
 import { groupExceptions } from "../utils/grouping";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/shared/ui/alert-dialog";
 
 interface ExceptionsViewManagerProps {
   exceptions: ExceptionDate[];
@@ -65,6 +75,10 @@ export function ExceptionsViewManager({
 
   // Dialog State
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{
+      isOpen: boolean;
+      ids: string[];
+  }>({ isOpen: false, ids: [] });
   
   // Convert selectedDateIds Set to sorted array of Dates for Calendar
   const selectedDates = useMemo(() => getSelectedDates(), [getSelectedDates, selectedDateIds]);
@@ -74,12 +88,24 @@ export function ExceptionsViewManager({
     return new Set(filteredExceptions.map(e => format(e.date, 'yyyy-MM-dd')));
   }, [filteredExceptions]);
 
+  const groupedItems = useMemo(() => groupExceptions(filteredExceptions), [filteredExceptions]);
+
+
   const handleManualAdd = () => {
     setIsDialogOpen(true);
   };
 
   // --- Render Components Helpers ---
   
+  const renderListHeader = () => (
+      <div className="p-3 border-b bg-muted/10 font-bold text-xs text-muted-foreground uppercase tracking-wider flex justify-between items-center sticky top-0 backdrop-blur-sm z-10">
+          <span className="flex items-center gap-2">
+              <ListIcon className="w-3 h-3" />
+              Danh sách chi tiết ({filteredExceptions.length})
+          </span>
+      </div>
+  );
+
   const renderCalendar = () => (
       isYearView ? (
         <YearViewGrid 
@@ -113,7 +139,8 @@ export function ExceptionsViewManager({
   );
 
   const renderList = () => {
-      const groupedItems = useMemo(() => groupExceptions(filteredExceptions), [filteredExceptions]);
+
+
 
       if (groupedItems.length === 0) {
           return (
@@ -159,7 +186,7 @@ export function ExceptionsViewManager({
                               setSelectedDates(dates);
                               setIsDialogOpen(true);
                           }}
-                          onRemove={(ids) => onRemoveException(ids)}
+                          onRemove={(ids) => setDeleteConfirmation({ isOpen: true, ids })}
                           onToggleDate={toggleDate}
                       />
                   );
@@ -187,43 +214,51 @@ export function ExceptionsViewManager({
              setTypeFilter={setTypeFilter}
              dateRange={dateRange}
              setDateRange={setDateRange}
-             // Hide view toggle on large screens where we show split view
-             startContent={
-               <div className="flex items-center gap-2 p-1 bg-muted/50 rounded-lg border lg:hidden">
-                    <Button
-                        variant={viewMode === 'calendar' ? 'secondary' : 'ghost'}
-                        size="sm"
-                        onClick={() => setViewMode('calendar')}
-                        className="gap-2"
-                    >
-                        <CalendarIcon className="w-4 h-4" />
-                        Lịch
-                    </Button>
-                    <Button
-                        variant={viewMode === 'list' ? 'secondary' : 'ghost'}
-                        size="sm"
-                        onClick={() => setViewMode('list')}
-                        className="gap-2"
-                    >
-                        <ListIcon className="w-4 h-4" />
-                        Danh sách
-                    </Button>
-               </div>
-             }
              endContent={
                <div className="flex items-center gap-2">
-                    {/* Add Button */}
-                    <Button onClick={handleManualAdd} className="bg-primary text-primary-foreground shadow-sm hover:shadow-md transition-all">
+                   {/* View Toggles (Mobile Only) */}
+                   <div className="flex items-center gap-2 p-1 bg-muted/50 rounded-lg border lg:hidden">
+                        <Button
+                            variant={viewMode === 'calendar' ? 'secondary' : 'ghost'}
+                            onClick={() => setViewMode('calendar')}
+                            className="gap-2 h-9"
+                        >
+                            <CalendarIcon className="w-4 h-4" />
+                            Lịch
+                        </Button>
+                        <Button
+                            variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+                            onClick={() => setViewMode('list')}
+                            className="gap-2 h-9"
+                        >
+                            <ListIcon className="w-4 h-4" />
+                            Danh sách
+                        </Button>
+                   </div>
+
+                   {/* Add Button */}
+                   <Button onClick={handleManualAdd} className="bg-primary text-primary-foreground shadow-sm hover:shadow-md transition-all">
                         <Plus className="w-4 h-4 mr-2" /> Thêm ngoại lệ
-                    </Button>
+                   </Button>
                </div>
              }
          />
 
-       <div className="flex-1 min-h-0 relative p-6">
+       <div className="flex-1 min-h-0 relative p-4 sm:p-6">
            {/* MOBILE VIEW (Tabs) */}
-           <div className="lg:hidden h-full overflow-y-auto">
-                {viewMode === 'list' ? renderList() : renderCalendar()}
+           <div className="lg:hidden h-full overflow-y-auto bg-muted/5 rounded-lg border">
+                {viewMode === 'list' ? (
+                    <div className="h-full flex flex-col">
+                       {renderListHeader()}
+                       <div className="p-4 flex-1">
+                            {renderList()}
+                       </div>
+                    </div>
+                ) : (
+                   <div className="bg-background h-full p-2 sm:p-4">
+                       {renderCalendar()}
+                   </div>
+                )}
            </div>
 
            {/* DESKTOP VIEW (Split) */}
@@ -239,12 +274,7 @@ export function ExceptionsViewManager({
                     
                     <ResizablePanel defaultSize={35} minSize={25}>
                         <div className="h-full flex flex-col bg-muted/5">
-                            <div className="p-3 border-b bg-muted/10 font-bold text-xs text-muted-foreground uppercase tracking-wider flex justify-between items-center sticky top-0 backdrop-blur-sm z-10">
-                                <span className="flex items-center gap-2">
-                                    <ListIcon className="w-3 h-3" />
-                                    Danh sách chi tiết ({filteredExceptions.length})
-                                </span>
-                            </div>
+                            {renderListHeader()}
                             <div className="p-4 flex-1 overflow-y-auto custom-scrollbar">
                                 {renderList()}
                             </div>
@@ -271,12 +301,40 @@ export function ExceptionsViewManager({
                      .map(e => e.id);
                  
                 if (idsToDelete.length > 0) {
-                    onRemoveException(idsToDelete);
+                    setIsDialogOpen(false);
+                    setDeleteConfirmation({ isOpen: true, ids: idsToDelete });
+                } else {
+                    setIsDialogOpen(false);
                 }
-                setIsDialogOpen(false);
                 clearSelection();
            }}
        />
+
+       <AlertDialog 
+          open={deleteConfirmation.isOpen} 
+          onOpenChange={(open) => !open && setDeleteConfirmation(prev => ({ ...prev, isOpen: false }))}
+       >
+          <AlertDialogContent>
+              <AlertDialogHeader>
+                  <AlertDialogTitle>Xác nhận xóa ngoại lệ?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                      Bạn sắp xóa {deleteConfirmation.ids.length} ngoại lệ. Hành động này không thể hoàn tác.
+                  </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                  <AlertDialogCancel>Hủy bỏ</AlertDialogCancel>
+                  <AlertDialogAction 
+                      onClick={() => {
+                          onRemoveException(deleteConfirmation.ids);
+                          setDeleteConfirmation({ isOpen: false, ids: [] });
+                      }}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                      Xóa vĩnh viễn
+                  </AlertDialogAction>
+              </AlertDialogFooter>
+          </AlertDialogContent>
+       </AlertDialog>
     </div>
   );
 }

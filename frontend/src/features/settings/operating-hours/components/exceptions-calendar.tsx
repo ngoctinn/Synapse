@@ -109,7 +109,7 @@ export function ExceptionsCalendar({
         {/* Cursor Follower Tooltip */}
         <div 
             ref={tooltipRef} 
-            className="fixed top-0 left-0 z-50 pointer-events-none opacity-0 transition-opacity duration-150 bg-primary/90 text-primary-foreground px-3 py-1.5 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm flex items-center gap-1.5"
+            className="hidden sm:flex fixed top-0 left-0 z-50 pointer-events-none opacity-0 transition-opacity duration-150 bg-primary/90 text-primary-foreground px-3 py-1.5 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm items-center gap-1.5"
             style={{ willChange: 'transform, opacity' }}
         >
             <span className="text-sm">{selectedDates.length}</span>
@@ -121,7 +121,7 @@ export function ExceptionsCalendar({
              <motion.div 
                initial={{ opacity: 0, scale: 0.95 }}
                animate={{ opacity: 1, scale: 1 }}
-               className="border rounded-3xl p-6 bg-card/40 backdrop-blur-xl shadow-2xl ring-1 ring-white/20 dark:ring-white/5 select-none"
+               className="border rounded-3xl p-4 sm:p-6 bg-card/40 backdrop-blur-xl shadow-2xl ring-1 ring-white/20 dark:ring-white/5 select-none"
              >
                 <Calendar
                   mode="multiple"
@@ -140,7 +140,7 @@ export function ExceptionsCalendar({
                 classNames={{
                   day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground shadow-lg shadow-primary/20",
                   day_today: "bg-accent/50 text-accent-foreground font-semibold",
-                  day: "h-10 w-10 p-0 font-normal aria-selected:opacity-100 transition-all duration-200 hover:scale-105",
+                  day: "h-9 w-9 sm:h-10 sm:w-10 p-0 font-normal aria-selected:opacity-100 transition-all duration-200 hover:scale-105",
                 }}
                 components={{
                   DayButton: (props: any) => {

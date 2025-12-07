@@ -61,6 +61,7 @@ export function ExceptionsFilterBar({
   activeCount,
   searchQuery,
   setSearchQuery,
+  startContent,
   endContent
 }: ExceptionsFilterBarProps) {
   
@@ -72,13 +73,17 @@ export function ExceptionsFilterBar({
       className="bg-background py-3 px-4 sm:px-6 border-b flex flex-col sm:flex-row items-center justify-between gap-3 w-full shrink-0"
     >
       {/* LEFT: Search + Filters */}
-      <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto p-1 bg-background">
+      <div className="flex items-center gap-2 w-full sm:w-auto p-1 bg-background overflow-x-auto no-scrollbar">
+        {/* Start Content (e.g. View Toggles) */}
+        {startContent}
+
         {/* 1. Search */}
         <div className="relative w-full sm:w-[260px] shrink-0">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
                 type="search"
                 placeholder="Tìm kiếm..."
+                aria-label="Tìm kiếm ngoại lệ"
                 className="w-full pl-9 h-9 bg-background border shadow-sm focus-visible:ring-1"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -102,7 +107,7 @@ export function ExceptionsFilterBar({
                <DateRangeFilter 
                     dateRange={dateRange} 
                     setDateRange={setDateRange} 
-                    className="w-full shadow-sm justify-between"
+                    className="w-full shadow-sm"
                 />
             </div>
             <div className="h-px bg-border/50" />
@@ -181,6 +186,7 @@ export function ExceptionsFilterBar({
                 onClick={onClearFilters}
                 className="h-9 w-9 text-muted-foreground hover:text-foreground shrink-0"
                 title="Xóa tất cả bộ lọc"
+                aria-label="Xóa tất cả bộ lọc"
             >
                 <X className="h-4 w-4" />
             </Button>

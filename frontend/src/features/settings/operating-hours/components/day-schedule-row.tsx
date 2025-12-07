@@ -92,13 +92,13 @@ export function DayScheduleRow({
                     <TimePicker 
                       value={slot.start}
                       onChange={(val) => handleTimeChange(index, 'start', val)}
-                      className="w-28 border-none shadow-none bg-transparent focus:ring-0 text-sm font-medium"
+                      className="w-24 xs:w-28 border-none shadow-none bg-transparent focus:ring-0 text-sm font-medium"
                     />
                     <ArrowRight className="w-3 h-3 text-muted-foreground/50" />
                     <TimePicker 
                        value={slot.end}
                        onChange={(val) => handleTimeChange(index, 'end', val)}
-                       className="w-28 border-none shadow-none bg-transparent focus:ring-0 text-right text-sm font-medium"
+                       className="w-24 xs:w-28 border-none shadow-none bg-transparent focus:ring-0 text-right text-sm font-medium"
                     />
                     
                     {schedule.timeSlots.length > 1 && (
@@ -109,7 +109,7 @@ export function DayScheduleRow({
                               variant="ghost"
                               size="icon"
                               onClick={() => handleRemoveSlot(index)}
-                              className="h-6 w-6 text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover/slot:opacity-100 transition-all duration-200 rounded-full ml-1"
+                              className="h-6 w-6 text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-100 sm:opacity-0 sm:group-hover/slot:opacity-100 transition-all duration-200 rounded-full ml-1"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </Button>
@@ -174,7 +174,7 @@ export function DayScheduleRow({
                           variant="ghost"
                           size="sm"
                           onClick={onCopy}
-                          className="text-xs font-medium text-muted-foreground hover:text-foreground h-8 px-3 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200"
+                          className="text-xs font-medium text-muted-foreground hover:text-foreground h-8 px-3 rounded-full opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all duration-200"
                         >
                           ❐ Sao chép
                         </Button>
@@ -239,7 +239,7 @@ export function DayScheduleRow({
                           variant="ghost"
                           size="sm"
                           onClick={onCopy}
-                          className="text-xs font-medium text-muted-foreground hover:text-foreground h-8 px-3 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200"
+                          className="text-xs font-medium text-muted-foreground hover:text-foreground h-8 px-3 rounded-full opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all duration-200"
                         >
                           ❐ Sao chép
                         </Button>

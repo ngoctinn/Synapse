@@ -1,46 +1,82 @@
 ---
-description: Ensure UI/UX quality, responsiveness, and data safety across all screens
+description: Quy trình kiểm tra này giúp đảm bảo giao diện không chỉ đẹp và responsive mà còn dễ truy cập, xử lý lỗi tốt và mang lại trải nghiệm người dùng trọn vẹn.
 ---
 
-# UI/UX Standardization & Responsive Check
+1. Kiểm tra Tính thẩm mỹ & Sự đồng bộ ("Aesthetic & Consistency")
+[ ] Bảng màu & Theme:
 
-This workflow is designed to ensure that user interfaces are aesthetic, consistent, friendly, responsive, and prevent information loss.
+Sử dụng biến CSS/Tailwind config (text-primary, bg-muted) thay vì mã hex cứng.
 
-## 1. Aesthetic & Consistency Audit ("Tính thẩm mỹ & Đồng bộ")
-- [ ] **Color Palette**: Ensure all colors use the project's CSS variables (e.g., `text-primary`, `bg-muted`). Avoid hardcoded hex values.
-- [ ] **Typography**: Verify font hierarchy (H1 -> H6, p, small). Ensure readability (contrast ratios).
-- [ ] **Component Consistency**: Use shared UI components (`@/shared/ui/*`) instead of building from scratch.
-- [ ] **Visual "Premium" Feel**: 
-    - Add subtle transitions (`transition-all duration-200`).
-    - Use meaningful icons (Lucide React).
-    - Ensure whitespace is generous and consistent (using Tailwind padding/margin classes like `p-4`, `gap-4`).
+Dark Mode: Kiểm tra giao diện khi chuyển sang chế độ tối (đặc biệt là màu viền border và độ tương phản của nền).
 
-## 2. Responsiveness Check ("Responsive & Thân thiện")
-- [ ] **Mobile First**:
-    - Does the layout stack correctly on screens < 640px?
-    - Are touch targets at least 44x44px where possible (or comfortable to tap)?
-    - Is the text size legible on mobile (min 14px usually, 16px for inputs to verify zoom)?
-- [ ] **Tablet/Desktop**:
-    - Does the layout expand gracefully?
-    - Are strict widths used only when necessary (`max-w-md` instead of `w-[500px]`)?
-- [ ] **Overflow Handling**:
-    - Check for unintended horizontal scrolling.
-    - Ensure extensive content (long text, large tables) has scroll containers (`overflow-auto`) or text truncation (`truncate`).
+[ ] Typography: Xác minh phân cấp (H1 -> H6, p, small). Đảm bảo độ tương phản màu chữ đạt chuẩn dễ đọc.
 
-## 3. Information Integrity Check ("Thông tin không bị mất")
-- [ ] **Data Visibility**:
-    - Are *all* critical fields visible on mobile? If not, is there an expand/collapse mechanism?
-    - Avoid `hidden` on critical data unless there is an alternative view (e.g., specific mobile list item).
-- [ ] **Form Safety**:
-    - Are destructive actions protected (confirm dialogs)?
-    - Does the UI handle "Empty States" gracefully?
-    - Are loading states visible to prevent user confusion?
+[ ] Component Consistency: Sử dụng lại các component trong @/shared/ui/*, hạn chế tạo mới nếu không cần thiết.
 
-## 4. Work Flow Implementation (Review Process)
-1.  **Analyze**: Open the component files and identifying hardcoded styles or fixed dimensions that might break responsiveness.
-2.  **Refactor**: Apply Tailwind responsive prefixes (`sm:`, `lg:`) to layout containers.
-3.  **Verify**: Simulate mobile viewport (or reason through the logic) to ensure content stacking.
-4.  **Polish**: Add hover effects, focusing rings, and transitions.
+[ ] Cảm giác "Premium":
 
-## Usage
-Run this checklist whenever creating or modifying UI components, especially complex views like Grids, Tables, or Forms.
+Hiệu ứng chuyển đổi mượt mà (transition-all duration-200).
+
+Icon có ý nghĩa (Lucide React), kích thước đồng bộ.
+
+Khoảng trắng (Spacing) rộng rãi, tuân thủ hệ thống lưới (4px/8px rule - p-4, gap-4).
+
+2. Kiểm tra Độ tương thích ("Responsive & Thân thiện")
+[ ] Mobile First:
+
+Bố cục xếp chồng (stack) đúng trên màn hình < 640px.
+
+Touch Targets: Các nút bấm/liên kết tối thiểu 44x44px.
+
+Font Size: Input text size tối thiểu 16px (tránh lỗi auto-zoom trên iOS).
+
+[ ] Tablet/Desktop:
+
+Layout mở rộng hợp lý, không bị kéo giãn quá mức (dùng max-w-* cho container).
+
+[ ] Xử lý tràn (Overflow):
+
+Không có thanh cuộn ngang (horizontal scroll) ngoài ý muốn.
+
+Nội dung dài (tên dài, bảng dữ liệu) được xử lý bằng truncate hoặc overflow-auto.
+
+3. Kiểm tra Tính toàn vẹn & Trạng thái hệ thống ("System States")
+[ ] An toàn dữ liệu:
+
+Tránh dùng hidden cho dữ liệu quan trọng trên mobile (dùng thiết kế thay thế).
+
+Các hành động hủy/xóa phải có Confirm Dialog.
+
+[ ] Các trạng thái UI (UI States):
+
+Loading: Hiển thị Skeleton hoặc Spinner khi đang tải dữ liệu.
+
+Empty State: Giao diện thân thiện khi danh sách trống (kèm nút kêu gọi hành động nếu cần).
+
+Error State: Hiển thị thông báo lỗi rõ ràng khi API thất bại (kèm nút "Thử lại/Retry").
+
+[ ] Phản hồi người dùng (Feedback):
+
+Hiển thị thông báo (Toast notification) khi thao tác thành công hoặc thất bại.
+
+4. Kiểm tra Khả năng truy cập ("Accessibility - a11y")
+[ ] Điều hướng bàn phím: Có thể dùng phím Tab để di chuyển qua các input/button theo thứ tự logic không?
+
+[ ] Focus Indicator: Có hiển thị vòng sáng (ring) rõ ràng khi đang focus vào một phần tử không?
+
+[ ] Form Label: Mọi ô input đều có nhãn (label) hoặc aria-label rõ ràng.
+
+5. Quy trình thực hiện (Workflow Review)
+Analyze: Tìm các style bị hardcode, kích thước cố định (w-[500px]), hoặc thiếu trạng thái loading/error.
+
+Refactor: Chuyển sang Tailwind classes responsive (sm:, lg:), thêm xử lý dark mode (dark:bg-slate-900).
+
+Verify:
+
+Giả lập mobile viewport.
+
+Test tab order (bàn phím).
+
+Test tắt mạng/API lỗi để xem Error State.
+
+Polish: Thêm hover, focus ring, transition và animation nhẹ nhàng.

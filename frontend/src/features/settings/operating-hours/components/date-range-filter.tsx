@@ -160,7 +160,7 @@ export function DateRangeFilter({
         <Button
           variant="outline"
           className={cn(
-            "w-full sm:w-[200px] h-9 justify-start text-left font-normal transition-colors hover:border-primary/50",
+            "w-full h-9 justify-start text-left font-normal transition-colors hover:border-primary/50",
             !dateRange && "text-muted-foreground",
             className
           )}

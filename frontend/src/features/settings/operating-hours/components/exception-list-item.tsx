@@ -175,7 +175,7 @@ export function ExceptionListItem({
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-5 px-1.5 text-[10px] gap-1 text-primary hover:text-primary hover:bg-primary/10 -ml-1"
+                          className="h-8 px-2 text-[10px] gap-1 text-primary hover:text-primary hover:bg-primary/10 -ml-1"
                         >
                           Xem chi tiết {group.dates.length} ngày{" "}
                           <ChevronDown className="w-3 h-3" />
@@ -212,10 +212,11 @@ export function ExceptionListItem({
                       const dateStr = format(date, "yyyy-MM-dd");
                       const isDateSelected = selectedDateIds.has(dateStr);
                       return (
-                        <div
+                        <button
+                          type="button"
                           key={idx}
                           className={cn(
-                            "text-[10px] px-1.5 py-1 rounded border text-center cursor-pointer transition-colors",
+                            "text-[10px] px-1.5 py-1 rounded border text-center cursor-pointer transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
                             isDateSelected
                               ? "bg-primary text-primary-foreground border-primary"
                               : "bg-muted/30 border-transparent hover:bg-muted hover:border-border"
@@ -224,6 +225,8 @@ export function ExceptionListItem({
                             e.stopPropagation();
                             onToggleDate(date);
                           }}
+                          aria-label={`Ngày ${format(date, "dd/MM")}, ${format(date, "EEEE", { locale: vi })}${isDateSelected ? ", Đang chọn" : ""}`}
+                          aria-pressed={isDateSelected}
                         >
                           <div className="font-medium">{format(date, "dd/MM")}</div>
                           <div
@@ -236,7 +239,7 @@ export function ExceptionListItem({
                           >
                             {format(date, "EEEE", { locale: vi })}
                           </div>
-                        </div>
+                        </button>
                       );
                     })}
                   </div>
@@ -245,38 +248,40 @@ export function ExceptionListItem({
             </div>
           </div>
 
-          {/* 3. Hover Actions (Floating) */}
+          {/* 3. Hover Actions (Floating) - Always visible on mobile, hover on desktop */}
           <div
             className={cn(
               "absolute right-2 top-2 flex gap-1 transition-all duration-200 bg-background/95 backdrop-blur-sm rounded-md border shadow-sm p-0.5 z-10",
               isSelected
                 ? "opacity-100"
-                : "opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0"
+                : "opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:translate-x-2 sm:group-hover:translate-x-0"
             )}
           >
             <Button
               size="icon"
               variant="ghost"
-              className="h-6 w-6 hover:bg-muted hover:text-foreground"
+              className="h-8 w-8 hover:bg-muted hover:text-foreground"
               onClick={(e) => {
                 e.stopPropagation();
                 onEdit(group.dates);
               }}
               title="Chỉnh sửa nhóm"
+              aria-label="Chỉnh sửa nhóm ngoại lệ này"
             >
-              <Pencil className="w-3 h-3" />
+              <Pencil className="w-4 h-4" />
             </Button>
             <Button
               size="icon"
               variant="ghost"
-              className="h-6 w-6 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+              className="h-8 w-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
               onClick={(e) => {
                 e.stopPropagation();
                 onRemove(group.originalIds);
               }}
               title="Xóa nhóm"
+              aria-label="Xóa nhóm ngoại lệ này"
             >
-              <Trash2 className="w-3 h-3" />
+              <Trash2 className="w-4 h-4" />
             </Button>
           </div>
         </div>

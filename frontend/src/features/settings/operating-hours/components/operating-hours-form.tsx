@@ -151,11 +151,10 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
 
   return (
     <Tabs defaultValue="schedule" className="flex flex-col flex-1 w-full gap-0 h-full overflow-hidden">
-      {/* Sticky Header - Standardized with Services Page */}
-      <div className="sticky top-0 z-40 px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300">
-        <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto justify-start">
-          <TabsTrigger value="schedule" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Tiêu chuẩn</TabsTrigger>
-          <TabsTrigger value="exceptions" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Ngoại lệ</TabsTrigger>
+      <div className="sticky top-0 z-40 px-4 py-3 bg-background/95 backdrop-blur-sm border-b flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300 support-[backdrop-filter]:bg-background/60">
+        <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto grid grid-cols-2 md:flex md:justify-start">
+          <TabsTrigger value="schedule" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 transition-all duration-200">Tiêu chuẩn</TabsTrigger>
+          <TabsTrigger value="exceptions" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 transition-all duration-200">Ngoại lệ</TabsTrigger>
         </TabsList>
 
         <div className="flex items-center gap-3">
@@ -214,22 +213,23 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
         </div>
       </div>
       
-      <TabsContent value="schedule" className="space-y-6 animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out p-6 overflow-y-auto">
+      <TabsContent value="schedule" className="space-y-6 animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out p-4 sm:p-6 overflow-y-auto">
         <div className="space-y-6">          
             <Card className="border shadow-sm rounded-xl">
-            <CardHeader className="px-6 pt-6 pb-4">
-                <div className="flex items-center justify-between">
+            <CardHeader className="px-4 pt-6 pb-4 sm:px-6">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="space-y-1">
-                    <CardDescription className="text-base">
+                    <CardDescription className="text-sm text-muted-foreground">
                     Thiết lập giờ mở cửa mặc định cho từng ngày trong tuần.
                     </CardDescription>
                 </div>
                 {copySourceDay && (
-                    <div className="flex items-center gap-3 animate-in fade-in slide-in-from-right-8 duration-300 bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
-                    <span className="text-sm text-muted-foreground">
-                        Đang sao chép từ <span className="font-bold text-primary">{DAY_LABELS[copySourceDay]}</span>
+                    <div className="flex flex-wrap items-center gap-3 animate-in fade-in slide-in-from-right-8 duration-300 bg-primary/5 px-3 py-2 rounded-lg border border-primary/10 w-full sm:w-auto">
+                    <span className="text-sm text-muted-foreground whitespace-nowrap">
+                        Từ: <span className="font-bold text-primary">{DAY_LABELS[copySourceDay]}</span>
                     </span>
-                    <div className="h-4 w-px bg-border" />
+                    <div className="h-4 w-px bg-border hidden sm:block" />
+                    <div className="flex items-center gap-2 flex-1 sm:flex-none justify-end">
                     <TooltipProvider>
                         <Tooltip>
                         <TooltipTrigger asChild>
@@ -245,10 +245,11 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
                         Hủy
                     </Button>
                     </div>
+                    </div>
                 )}
                 </div>
             </CardHeader>
-            <CardContent className="p-6 pt-0">
+            <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
                 <motion.div 
                 className="grid gap-4"
                 variants={container}
