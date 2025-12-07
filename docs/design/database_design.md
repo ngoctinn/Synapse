@@ -685,11 +685,11 @@ ALTER TABLE shifts ENABLE ROW LEVEL SECURITY;
 -- === USERS POLICIES ===
 -- Users can read their own profile
 CREATE POLICY users_select_own ON users
-    FOR SELECT USING (id = auth.uid() OR auth.role() IN ('admin', 'manager', 'staff'));
+    FOR SELECT USING (id = auth.uid() OR auth.is_staff());
 
--- Staff can see basic info of customers
+-- Receptionist/Technician/Admin can see customers
 CREATE POLICY users_select_customers ON users
-    FOR SELECT USING (role = 'customer' AND auth.role() IN ('staff', 'manager', 'admin'));
+    FOR SELECT USING (role = 'customer' AND auth.is_staff());
 
 -- Only admins can modify users
 CREATE POLICY users_admin_all ON users
@@ -700,17 +700,37 @@ CREATE POLICY users_admin_all ON users
 CREATE POLICY bookings_customer_select ON bookings
     FOR SELECT USING (customer_id = auth.uid());
 
--- Staff see all bookings
+-- All staff (receptionist, technician, admin) see all bookings
 CREATE POLICY bookings_staff_select ON bookings
-    FOR SELECT USING (auth.role() IN ('staff', 'manager', 'admin'));
+    FOR SELECT USING (auth.is_staff());
 
--- Customers can create bookings
+-- Customers can create bookings, staff can create for walk-in customers
 CREATE POLICY bookings_customer_insert ON bookings
-    FOR INSERT WITH CHECK (customer_id = auth.uid() OR auth.role() IN ('staff', 'manager', 'admin'));
+    FOR INSERT WITH CHECK (customer_id = auth.uid() OR auth.is_staff());
 
--- Staff can update bookings
-CREATE POLICY bookings_staff_update ON bookings
-    FOR UPDATE USING (auth.role() IN ('staff', 'manager', 'admin'));
+-- Receptionist và Admin có thể cập nhật bookings (check-in, cancel...)
+-- Technician chỉ có thể cập nhật trạng thái buổi làm của mình
+CREATE POLICY bookings_receptionist_update ON bookings
+    FOR UPDATE USING (auth.role() IN ('admin', 'receptionist'));
+
+CREATE POLICY bookings_technician_update ON bookings
+    FOR UPDATE USING (
+        auth.role() = 'technician'
+        AND EXISTS (
+            SELECT 1 FROM booking_items bi
+            WHERE bi.booking_id = bookings.id
+            AND bi.staff_id = auth.uid()
+        )
+    );
+
+-- === BOOKING ITEMS POLICIES ===
+CREATE POLICY booking_items_staff_select ON booking_items
+    FOR SELECT USING (auth.is_staff());
+
+CREATE POLICY booking_items_customer_select ON booking_items
+    FOR SELECT USING (
+        EXISTS (SELECT 1 FROM bookings b WHERE b.id = booking_id AND b.customer_id = auth.uid())
+    );
 
 -- === NOTIFICATIONS POLICIES ===
 -- Users see only their notifications
@@ -721,19 +741,34 @@ CREATE POLICY notifications_own ON notifications
 CREATE POLICY skills_public_read ON skills FOR SELECT USING (true);
 CREATE POLICY categories_public_read ON service_categories FOR SELECT USING (true);
 CREATE POLICY services_public_read ON services FOR SELECT USING (is_active = true);
-CREATE POLICY resources_staff_read ON resources FOR SELECT USING (auth.role() IN ('staff', 'manager', 'admin'));
-CREATE POLICY shifts_staff_read ON shifts FOR SELECT USING (auth.role() IN ('staff', 'manager', 'admin'));
+CREATE POLICY resources_staff_read ON resources FOR SELECT USING (auth.is_staff());
+CREATE POLICY shifts_staff_read ON shifts FOR SELECT USING (auth.is_staff());
 
 -- === CUSTOMER PROFILES POLICIES ===
 CREATE POLICY customer_profiles_own ON customer_profiles
-    FOR ALL USING (user_id = auth.uid() OR auth.role() IN ('staff', 'manager', 'admin'));
+    FOR ALL USING (user_id = auth.uid() OR auth.is_staff());
 
 -- === STAFF PROFILES POLICIES ===
+-- Public có thể xem thông tin KTV để đặt lịch
 CREATE POLICY staff_profiles_public_read ON staff_profiles
-    FOR SELECT USING (true); -- Customers can see staff info for booking
+    FOR SELECT USING (true);
 
+-- Chỉ Admin quản lý staff profiles
 CREATE POLICY staff_profiles_admin_write ON staff_profiles
-    FOR ALL USING (auth.role() IN ('manager', 'admin'));
+    FOR ALL USING (auth.role() = 'admin');
+
+-- === STAFF SCHEDULES POLICIES ===
+-- KTV xem lịch của mình
+CREATE POLICY staff_schedules_own ON staff_schedules
+    FOR SELECT USING (staff_id = auth.uid());
+
+-- Lễ tân và Admin xem tất cả lịch
+CREATE POLICY staff_schedules_receptionist ON staff_schedules
+    FOR SELECT USING (auth.role() IN ('admin', 'receptionist'));
+
+-- Admin quản lý lịch làm việc
+CREATE POLICY staff_schedules_admin_write ON staff_schedules
+    FOR ALL USING (auth.role() = 'admin');
 
 -- === REVIEWS POLICIES ===
 CREATE POLICY reviews_customer_create ON reviews
@@ -744,10 +779,32 @@ CREATE POLICY reviews_public_read ON reviews
 
 -- === TREATMENTS POLICIES ===
 CREATE POLICY treatments_customer_read ON customer_treatments
-    FOR SELECT USING (customer_id = auth.uid() OR auth.role() IN ('staff', 'manager', 'admin'));
+    FOR SELECT USING (customer_id = auth.uid() OR auth.is_staff());
 
-CREATE POLICY treatments_staff_write ON customer_treatments
-    FOR ALL USING (auth.role() IN ('staff', 'manager', 'admin'));
+-- Lễ tân và Admin quản lý gói liệu trình
+CREATE POLICY treatments_receptionist_write ON customer_treatments
+    FOR ALL USING (auth.role() IN ('admin', 'receptionist'));
+
+-- === INVOICES & PAYMENTS POLICIES ===
+CREATE POLICY invoices_customer_read ON invoices
+    FOR SELECT USING (
+        EXISTS (SELECT 1 FROM bookings b WHERE b.id = booking_id AND b.customer_id = auth.uid())
+    );
+
+CREATE POLICY invoices_staff_all ON invoices
+    FOR ALL USING (auth.role() IN ('admin', 'receptionist'));
+
+CREATE POLICY payments_customer_read ON payments
+    FOR SELECT USING (
+        EXISTS (
+            SELECT 1 FROM invoices i
+            JOIN bookings b ON b.id = i.booking_id
+            WHERE i.id = invoice_id AND b.customer_id = auth.uid()
+        )
+    );
+
+CREATE POLICY payments_receptionist_all ON payments
+    FOR ALL USING (auth.role() IN ('admin', 'receptionist'));
 ```
 
 ## 3. Bảng Đặc Tả Dữ Liệu (Data Dictionary)
@@ -762,7 +819,7 @@ Lưu trữ thông tin xác thực và hồ sơ cơ bản của mọi người d�
 | `id` | UUID | PK | Khóa chính, đồng bộ Supabase Auth. |
 | `email` | VARCHAR(255) | UNIQUE, NOT NULL | Địa chỉ email duy nhất. |
 | `phone_number` | VARCHAR(50) | UNIQUE (partial) | Số điện thoại (unique khi không null). |
-| `role` | ENUM | NOT NULL | Vai trò: `admin`, `manager`, `staff`, `customer`. |
+| `role` | ENUM | NOT NULL | Vai trò: `admin` (Quản trị viên), `receptionist` (Lễ tân), `technician` (KTV), `customer` (Khách hàng). |
 | `is_active` | BOOLEAN | NOT NULL, DEFAULT TRUE | Trạng thái hoạt động. |
 | `deleted_at` | TIMESTAMPTZ | NULL | Thời điểm xóa mềm (Soft Delete). |
 
@@ -828,13 +885,36 @@ Ghi lại mọi thay đổi quan trọng trong hệ thống.
 
 | Hạng mục | Thay đổi |
 |:---|:---|
+| **Vai trò (Roles)** | Chuẩn hóa 4 vai trò nghiệp vụ: `admin` (Quản trị viên), `receptionist` (Lễ tân), `technician` (KTV), `customer` (Khách hàng). |
 | **Cấu trúc** | Tách `customer_profiles` ra khỏi `users`. |
 | **FK Constraints** | Thêm FK cho `booking_items.treatment_id`. |
 | **UNIQUE Constraints** | Thêm cho `invoices.booking_id`, `reviews.(booking_id, customer_id)`. |
 | **CHECK Constraints** | Thêm cho tất cả các trường số (price, duration, sessions, commission). |
 | **Indexes** | Thêm 20+ indexes tối ưu cho scheduling và conflict detection. |
-| **RLS Policies** | Bổ sung đầy đủ chính sách bảo mật mức hàng. |
+| **RLS Policies** | Bổ sung đầy đủ chính sách bảo mật mức hàng, phân quyền theo vai trò nghiệp vụ. |
+| **Helper Functions** | Thêm `auth.is_staff()` để kiểm tra nhân viên (receptionist/technician/admin). |
 | **Triggers** | Tự động cập nhật `updated_at`. |
 | **Audit Logs** | Bảng mới để tracking thay đổi. |
 | **Soft Delete** | Thêm `deleted_at` cho bảng `users`. |
 | **JSONB** | Chuyển `system_configurations.value` sang JSONB. |
+
+---
+
+## 5. Ma trận Phân quyền (Permission Matrix)
+
+| Chức năng | Khách hàng | KTV | Lễ tân | Admin |
+|:---|:---:|:---:|:---:|:---:|
+| **Xem danh sách dịch vụ** | ✅ | ✅ | ✅ | ✅ |
+| **Đặt lịch hẹn** | ✅ (cho mình) | ❌ | ✅ (cho khách) | ✅ |
+| **Xem booking của mình** | ✅ | ✅ | ✅ | ✅ |
+| **Xem tất cả booking** | ❌ | ❌ | ✅ | ✅ |
+| **Check-in / Cancel booking** | ❌ | ❌ | ✅ | ✅ |
+| **Cập nhật trạng thái buổi làm** | ❌ | ✅ (của mình) | ✅ | ✅ |
+| **Xem lịch làm việc KTV** | ❌ | ✅ (của mình) | ✅ | ✅ |
+| **Quản lý lịch làm việc** | ❌ | ❌ | ❌ | ✅ |
+| **Quản lý gói liệu trình** | ❌ | ❌ | ✅ | ✅ |
+| **Xử lý thanh toán** | ❌ | ❌ | ✅ | ✅ |
+| **Quản lý tài khoản** | ❌ | ❌ | ❌ | ✅ |
+| **Xem báo cáo/thống kê** | ❌ | ❌ | ❌ | ✅ |
+| **Đánh giá dịch vụ** | ✅ | ❌ | ❌ | ❌ |
+
