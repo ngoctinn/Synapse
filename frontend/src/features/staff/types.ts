@@ -68,6 +68,7 @@ export interface Schedule {
   date: string;
   shiftId: string;
   status: ScheduleStatus;
+  shift?: Shift;
 }
 
 export interface Permission {

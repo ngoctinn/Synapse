@@ -11,15 +11,15 @@ import { Avatar, AvatarFallback } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
 import {
-  Card,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardHeader,
+    CardTitle,
 } from "@/shared/ui/card"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
 
 interface TimelineConfig {
@@ -396,8 +396,13 @@ export function AppointmentTimeline({
 
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" size="icon" className="h-6 w-6 -mr-1 -mt-1 opacity-0 group-hover/item:opacity-100 transition-opacity hover:bg-black/5 focus:opacity-100">
-                                            <MoreHorizontal className="h-3 w-3" />
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-8 w-8 min-h-[32px] min-w-[32px] -mr-1 -mt-1 opacity-0 group-hover/item:opacity-100 transition-opacity hover:bg-black/5 focus:opacity-100"
+                                            aria-label="Thêm tùy chọn"
+                                        >
+                                            <MoreHorizontal className="h-4 w-4" />
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">

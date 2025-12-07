@@ -1,8 +1,8 @@
 "use client"
 
-import { addDays, format, startOfWeek } from "date-fns"
+import { format } from "date-fns"
 import { ChevronLeft, ChevronRight, Eraser, Paintbrush, X } from "lucide-react"
-import { useState, useTransition } from "react"
+import { useState } from "react"
 
 import { Button } from "@/shared/ui/button"
 import {
@@ -11,8 +11,8 @@ import {
   PopoverTrigger,
 } from "@/shared/ui/popover"
 import { toast } from "sonner"
-import { deleteSchedule, updateSchedule } from "../../actions"
 import { MOCK_SHIFTS } from "../../data/shifts"
+import { useStaffSchedule } from "../../hooks/use-staff-schedule"
 import { Schedule, Shift, Staff } from "../../types"
 import { AddShiftDialog } from "./add-shift-dialog"
 import { CopyWeekButton } from "./copy-week-button"
@@ -25,9 +25,10 @@ interface StaffSchedulerProps {
 }
 
 export function StaffScheduler({ initialSchedules, staffList, className }: StaffSchedulerProps) {
-  const [currentDate, setCurrentDate] = useState(new Date())
-  const [schedules, setSchedules] = useState<Schedule[]>(initialSchedules)
-  const [isPending, startTransition] = useTransition()
+  const {
+      state: { currentDate, weekStart, weekEnd, schedules },
+      actions: { nextWeek, prevWeek, resetToday, addShift, removeSchedule, removeScheduleBySlot }
+  } = useStaffSchedule({ initialSchedules })
 
   // Dialog State
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
@@ -40,72 +41,17 @@ export function StaffScheduler({ initialSchedules, staffList, className }: Staff
 
   const handleAddShift = async (shift: Shift) => {
     if (!selectedCell) return
-
-    const dateStr = format(selectedCell.date, "yyyy-MM-dd")
-
-    // Check if schedule already exists to update or create new
-    const existingSchedule = schedules.find(
-      (s) => s.staffId === selectedCell.staffId && s.date === dateStr
-    )
-
-    const newSchedule: Schedule = {
-      id: existingSchedule ? existingSchedule.id : Math.random().toString(36).substr(2, 9),
-      staffId: selectedCell.staffId,
-      date: dateStr,
-      shiftId: shift.id,
-      status: "DRAFT",
-      customShift: shift
-    } as any
-
-    // Optimistic Update
-    setSchedules((prev) => {
-      const filtered = prev.filter(
-        (s) => !(s.staffId === selectedCell.staffId && s.date === dateStr)
-      )
-      return [...filtered, newSchedule]
-    })
-
-    // Server Action
-    startTransition(async () => {
-      const result = await updateSchedule(newSchedule)
-      if (result.success) {
-        toast.success("Đã cập nhật lịch làm việc")
-      } else {
-        toast.error(result.error)
-        // Revert optimistic update on error
-        setSchedules((prev) => prev.filter((s) => s.id !== newSchedule.id))
-      }
-    })
+    await addShift(selectedCell.staffId, selectedCell.date, shift)
   }
 
   const handleRemoveSchedule = async (scheduleId: string) => {
-    // Optimistic Update
-    setSchedules((prev) => prev.filter((s) => s.id !== scheduleId))
-
-    // Server Action
-    startTransition(async () => {
-      const result = await deleteSchedule(scheduleId)
-      if (result.success) {
-        toast.success("Đã xóa lịch làm việc")
-      } else {
-        toast.error(result.error)
-        // Revert optimistic update on error? (Complex to revert delete without storing deleted item)
-        // For now, we just show error. In a real app, we might fetch fresh data.
-      }
-    })
+    await removeSchedule(scheduleId)
   }
 
   const handleCopyWeek = () => {
     // Tính năng sao chép tuần đang phát triển
     toast.info("Tính năng sao chép tuần đang phát triển")
   }
-
-  const nextWeek = () => setCurrentDate((d) => addDays(d, 7))
-  const prevWeek = () => setCurrentDate((d) => addDays(d, -7))
-  const resetToday = () => setCurrentDate(new Date())
-
-  const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 })
-  const weekEnd = addDays(weekStart, 6)
 
   const selectedStaffName = selectedCell
     ? (staffList.find(s => s.user_id === selectedCell.staffId)?.user.full_name ?? undefined)
@@ -123,50 +69,14 @@ export function StaffScheduler({ initialSchedules, staffList, className }: Staff
     if (!selectedTool) return
 
     const dateStr = format(date, "yyyy-MM-dd")
-    const existingSchedule = schedules.find(
-        (s) => s.staffId === staffId && s.date === dateStr
-    )
 
     if (selectedTool === "eraser") {
-        if (existingSchedule) {
-            // Optimistic Delete
-            setSchedules((prev) => prev.filter((s) => s.id !== existingSchedule.id))
-            // Server Delete
-            startTransition(async () => {
-                const result = await deleteSchedule(existingSchedule.id)
-                if (!result.success) toast.error(result.error)
-            })
-        }
+        await removeScheduleBySlot(staffId, dateStr)
         return
     }
 
-    // Add or Update
-    const newSchedule: Schedule = {
-        id: existingSchedule ? existingSchedule.id : Math.random().toString(36).substr(2, 9),
-        staffId: staffId,
-        date: dateStr,
-        shiftId: selectedTool.id,
-        status: "DRAFT",
-        customShift: selectedTool
-    } as any
-
-    // Optimistic Update
-    setSchedules((prev) => {
-        const filtered = prev.filter(
-            (s) => !(s.staffId === staffId && s.date === dateStr)
-        )
-        return [...filtered, newSchedule]
-    })
-
-    // Server Update
-    startTransition(async () => {
-        const result = await updateSchedule(newSchedule)
-        if (!result.success) {
-            toast.error(result.error)
-            // Revert optimistic update
-            setSchedules((prev) => prev.filter((s) => s.id !== newSchedule.id))
-        }
-    })
+    // Add or Update with selected shift
+    await addShift(staffId, date, selectedTool)
   }
 
   return (
