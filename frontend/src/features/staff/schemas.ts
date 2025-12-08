@@ -16,6 +16,8 @@ export const staffCreateSchema = baseStaffSchema.extend({
 export const staffUpdateSchema = baseStaffSchema.extend({
   full_name: z.string().min(2, { message: "Họ tên phải có ít nhất 2 ký tự" }),
   phone_number: z.string().min(10, "Số điện thoại không hợp lệ").optional().or(z.literal("")),
+  hired_at: z.string().optional(),
+  commission_rate: z.number().min(0).max(100).optional(),
 })
 
 export type StaffCreateFormValues = z.infer<typeof staffCreateSchema>

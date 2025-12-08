@@ -88,6 +88,8 @@ export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffShe
         bio: staff?.bio || "",
         color_code: staff?.color_code || "#3B82F6",
         skill_ids: staff?.skills.map(s => s.id) || [],
+        hired_at: staff?.hired_at ? staff.hired_at.split("T")[0] : "", // Simple date format
+        commission_rate: staff?.commission_rate || 0,
       })
     }
   }, [open, mode, staff, form])
@@ -115,7 +117,7 @@ export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffShe
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-xl p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
+      <SheetContent className="w-full sm:max-w-md p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
         <SheetHeader className="px-6 py-4 border-b">
             <div className="flex items-center justify-between">
                 <SheetTitle className="text-xl font-semibold text-foreground">
