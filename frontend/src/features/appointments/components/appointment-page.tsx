@@ -12,7 +12,7 @@ import {
 } from "@/shared/ui/alert-dialog"
 import { SearchInput } from "@/shared/ui/custom/search-input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { toast } from "sonner"
 
 import { MOCK_APPOINTMENTS, MOCK_RESOURCES } from "../mock-data"
@@ -21,6 +21,7 @@ import { AppointmentDetailDialog } from "./appointment-detail-dialog"
 import { AppointmentFilter } from "./appointment-filter"
 import { AppointmentTimeline } from "./appointment-timeline"
 import { CreateAppointmentDialog } from "./create-appointment-dialog"
+import { AppointmentTable } from "./appointment-table"
 
 interface AppointmentPageProps {
     initialData?: boolean; // Reserved for future server data
@@ -32,9 +33,43 @@ const Footer = () => (
   </div>
 )
 
+import { useSearchParams } from "next/navigation"
+
+// ... imports
+
 export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
+  const searchParams = useSearchParams()
   const [activeTab, setActiveTab] = useState("timeline")
-  const [appointments, setAppointments] = useState<Appointment[]>(MOCK_APPOINTMENTS)
+  // Keep raw appointments state for mutations (add/cancel)
+  const [rawAppointments, setRawAppointments] = useState<Appointment[]>(MOCK_APPOINTMENTS)
+
+  // Derive filtered appointments
+  const appointments = useMemo(() => {
+    let filtered = [...rawAppointments]
+    
+    const statusParam = searchParams.get("status")
+    const staffParam = searchParams.get("staffId")
+    const queryParam = searchParams.get("q") // If search input adds this
+
+    if (statusParam && statusParam !== "all") {
+        filtered = filtered.filter(a => a.status === statusParam)
+    }
+
+    if (staffParam && staffParam !== "all") {
+        filtered = filtered.filter(a => a.resourceId === staffParam)
+    }
+    
+    // Simple mock search if needed
+    if (queryParam) {
+        const lowerQ = queryParam.toLowerCase()
+        filtered = filtered.filter(a => 
+            a.customerName.toLowerCase().includes(lowerQ) || 
+            a.serviceName.toLowerCase().includes(lowerQ)
+        )
+    }
+
+    return filtered
+  }, [rawAppointments, searchParams])
 
   // Dialog States
   const [isCreateOpen, setIsCreateOpen] = useState(false)
@@ -61,7 +96,7 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
   }
 
   const handleCreateAppointment = (newAppointment: Appointment) => {
-      setAppointments(prev => [...prev, newAppointment])
+      setRawAppointments(prev => [...prev, newAppointment])
       toast.success("Đã tạo lịch hẹn mới")
   }
 
@@ -78,12 +113,12 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
   const handleConfirmCancel = () => {
       if (!appointmentToCancel) return
 
-      setAppointments(prev => prev.map(a =>
+      setRawAppointments(prev => prev.map(a => 
           a.id === appointmentToCancel.id ? { ...a, status: 'cancelled' } : a
       ))
 
       toast.success("Đã hủy lịch hẹn thành công")
-
+      
       setIsCancelAlertOpen(false)
       setIsDetailOpen(false)
       setAppointmentToCancel(null)
@@ -93,7 +128,7 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
     <div className="min-h-screen flex flex-col w-full">
       <Tabs defaultValue="timeline" className="flex flex-col flex-1 w-full gap-0" onValueChange={setActiveTab}>
         {/* Sticky Header with Tabs and Actions */}
-        <div
+        <div 
           className="sticky top-0 z-50 px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4"
         >
           <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto justify-start">
@@ -103,14 +138,14 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
 
           <div className="flex items-center gap-3 w-full md:w-auto">
             <div className="flex items-center gap-2 flex-1 md:flex-none">
-              <SearchInput
-                placeholder="Tìm kiếm lịch hẹn..."
+              <SearchInput 
+                placeholder="Tìm kiếm lịch hẹn..." 
                 className="w-full md:w-[250px] h-9"
               />
               <AppointmentFilter />
             </div>
-            <CreateAppointmentDialog
-                open={isCreateOpen}
+            <CreateAppointmentDialog 
+                open={isCreateOpen} 
                 onOpenChange={setIsCreateOpen}
                 defaultDate={createDefaultDate}
                 defaultResourceId={createDefaultResource}
@@ -121,10 +156,10 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
 
         <div className="flex-1 p-0 animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out flex flex-col">
           <TabsContent value="timeline" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
-
+             
              {/* The Timeline Component */}
-             <AppointmentTimeline
-               appointments={appointments}
+             <AppointmentTimeline 
+               appointments={appointments} 
                resources={MOCK_RESOURCES}
                onSlotClick={handleSlotClick}
                onAppointmentClick={handleAppointmentClick}
@@ -133,16 +168,21 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
           </TabsContent>
 
           <TabsContent value="list" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
-            <div className="flex flex-1 items-center justify-center text-muted-foreground p-8">
-              Chế độ xem danh sách đang được phát triển...
-            </div>
-            <Footer />
+             <div className="flex-1 p-4 md:p-6 overflow-hidden">
+                <AppointmentTable 
+                  appointments={appointments}
+                  resources={MOCK_RESOURCES}
+                  onEdit={handleEditAppointment}
+                  onCancel={handleCreateCancelRequest}
+                />
+             </div>
+             <Footer />
           </TabsContent>
         </div>
       </Tabs>
 
-      <AppointmentDetailDialog
-        open={isDetailOpen}
+      <AppointmentDetailDialog 
+        open={isDetailOpen} 
         onOpenChange={setIsDetailOpen}
         appointment={selectedAppointment}
         resource={MOCK_RESOURCES.find(r => r.id === selectedAppointment?.resourceId) ?? null}

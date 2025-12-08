@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import {
     Briefcase,
-    Calendar,
+    Calendar as CalendarIcon,
     Check,
     Clock,
     FileText,
@@ -13,9 +13,17 @@ import {
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { vi } from "date-fns/locale";
 
 import { Button } from "@/shared/ui/button";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
+import { Calendar } from "@/shared/ui/calendar";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/shared/ui/popover";
+import { cn } from "@/shared/lib/utils";
 import {
     Form,
     FormControl,
@@ -144,16 +152,43 @@ export function AppointmentForm({
                         control={form.control}
                         name="date"
                         render={({ field }) => (
-                            <FormItem>
+                            <FormItem className="flex flex-col">
                                 <FormLabel>Ngày hẹn</FormLabel>
-                                <FormControl>
-                                    <InputWithIcon
-                                        type="date"
-                                        icon={Calendar}
-                                        {...field}
-                                        className="h-11 rounded-lg"
-                                    />
-                                </FormControl>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <FormControl>
+                                            <Button
+                                                variant={"outline"}
+                                                className={cn(
+                                                    "h-11 w-full pl-3 text-left font-normal rounded-lg border-input hover:bg-accent hover:text-accent-foreground",
+                                                    !field.value && "text-muted-foreground"
+                                                )}
+                                            >
+                                                {field.value ? (
+                                                    format(new Date(field.value), "PPP", { locale: vi })
+                                                ) : (
+                                                    <span>Chọn ngày</span>
+                                                )}
+                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                            </Button>
+                                        </FormControl>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                        <Calendar
+                                            mode="single"
+                                            selected={field.value ? new Date(field.value) : undefined}
+                                            onSelect={(date) => field.onChange(date ? format(date, 'yyyy-MM-dd') : "")}
+                                            disabled={(date) =>
+                                                date < new Date("1900-01-01")
+                                            }
+                                            initialFocus
+                                            className="p-3 pointer-events-auto"
+                                            classNames={{
+                                                day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
+                                            }}
+                                        />
+                                    </PopoverContent>
+                                </Popover>
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -260,7 +295,7 @@ export function AppointmentForm({
                     <Button type="button" variant="outline" onClick={onCancel} className="h-11">
                         Hủy
                     </Button>
-                    <Button type="submit" className="h-11 min-w-[140px]">
+                    <Button type="submit" className="h-11 min-w-[140px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all">
                         <Check className="w-4 h-4 mr-2" />
                         Tạo lịch hẹn
                     </Button>
