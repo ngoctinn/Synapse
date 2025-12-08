@@ -12,16 +12,15 @@ import {
 } from "@/shared/ui/alert-dialog"
 import { SearchInput } from "@/shared/ui/custom/search-input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
-import { useState, useMemo } from "react"
+import { useState } from "react"
 import { toast } from "sonner"
 
 import { MOCK_APPOINTMENTS, MOCK_RESOURCES } from "../mock-data"
 import { Appointment } from "../types"
-import { AppointmentDetailDialog } from "./appointment-detail-dialog"
 import { AppointmentFilter } from "./appointment-filter"
 import { AppointmentTimeline } from "./appointment-timeline"
-import { CreateAppointmentDialog } from "./create-appointment-dialog"
 import { AppointmentTable } from "./appointment-table"
+import { AppointmentSheet } from "./appointment-sheet"
 
 interface AppointmentPageProps {
     initialData?: boolean; // Reserved for future server data
@@ -33,51 +32,23 @@ const Footer = () => (
   </div>
 )
 
-import { useSearchParams } from "next/navigation"
-
-// ... imports
-
 export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
-  const searchParams = useSearchParams()
+  // In a real SSR app, we would read searchParams here or receive them via props
+  // and pass them to use(promise). For now, we simulate "Client Side Filtering" removed
+  // and just use MOCK_APPOINTMENTS directly or via state for local mutation simulation.
+  
   const [activeTab, setActiveTab] = useState("timeline")
   // Keep raw appointments state for mutations (add/cancel)
-  const [rawAppointments, setRawAppointments] = useState<Appointment[]>(MOCK_APPOINTMENTS)
+  const [appointments, setAppointments] = useState<Appointment[]>(MOCK_APPOINTMENTS)
 
-  // Derive filtered appointments
-  const appointments = useMemo(() => {
-    let filtered = [...rawAppointments]
-    
-    const statusParam = searchParams.get("status")
-    const staffParam = searchParams.get("staffId")
-    const queryParam = searchParams.get("q") // If search input adds this
-
-    if (statusParam && statusParam !== "all") {
-        filtered = filtered.filter(a => a.status === statusParam)
-    }
-
-    if (staffParam && staffParam !== "all") {
-        filtered = filtered.filter(a => a.resourceId === staffParam)
-    }
-    
-    // Simple mock search if needed
-    if (queryParam) {
-        const lowerQ = queryParam.toLowerCase()
-        filtered = filtered.filter(a => 
-            a.customerName.toLowerCase().includes(lowerQ) || 
-            a.serviceName.toLowerCase().includes(lowerQ)
-        )
-    }
-
-    return filtered
-  }, [rawAppointments, searchParams])
-
-  // Dialog States
-  const [isCreateOpen, setIsCreateOpen] = useState(false)
+  // Sheet States
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
+  const [sheetMode, setSheetMode] = useState<"create" | "update">("create")
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
+  
+  // Create Pre-fill States
   const [createDefaultDate, setCreateDefaultDate] = useState<Date | undefined>(undefined)
   const [createDefaultResource, setCreateDefaultResource] = useState<string | undefined>(undefined)
-
-  const [isDetailOpen, setIsDetailOpen] = useState(false)
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
 
   // Alert Dialog States
   const [isCancelAlertOpen, setIsCancelAlertOpen] = useState(false)
@@ -85,24 +56,40 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
 
   // Handlers
   const handleSlotClick = (resourceId: string, time: Date) => {
+      setSheetMode("create")
       setCreateDefaultResource(resourceId)
       setCreateDefaultDate(time)
-      setIsCreateOpen(true)
+      setSelectedAppointment(null)
+      setIsSheetOpen(true)
   }
 
   const handleAppointmentClick = (appointment: Appointment) => {
+      setSheetMode("update")
       setSelectedAppointment(appointment)
-      setIsDetailOpen(true)
+      setIsSheetOpen(true)
   }
 
-  const handleCreateAppointment = (newAppointment: Appointment) => {
-      setRawAppointments(prev => [...prev, newAppointment])
-      toast.success("Đã tạo lịch hẹn mới")
+  const handleCreateButtonClick = () => {
+      setSheetMode("create")
+      setCreateDefaultDate(undefined)
+      setCreateDefaultResource(undefined)
+      setSelectedAppointment(null)
+      setIsSheetOpen(true)
   }
 
+  const handleSheetSubmit = (data: any) => {
+      // In a real app, this would be a server revalidation.
+      // Here we update local state to reflect changes instantly.
+      if (sheetMode === "create") {
+          setAppointments(prev => [...prev, data as Appointment])
+      } else {
+          setAppointments(prev => prev.map(a => a.id === data.id ? { ...a, ...data } : a))
+      }
+      // Toast is handled inside Sheet but we can add extra logic here
+  }
+  
   const handleEditAppointment = (appointment: Appointment) => {
-     toast.info(`Chức năng chỉnh sửa đang phát triển cho: ${appointment.customerName}`)
-     // TODO: Implement Edit Logic
+     handleAppointmentClick(appointment)
   }
 
   const handleCreateCancelRequest = (appointment: Appointment) => {
@@ -113,14 +100,17 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
   const handleConfirmCancel = () => {
       if (!appointmentToCancel) return
 
-      setRawAppointments(prev => prev.map(a => 
+      setAppointments(prev => prev.map(a => 
           a.id === appointmentToCancel.id ? { ...a, status: 'cancelled' } : a
       ))
 
       toast.success("Đã hủy lịch hẹn thành công")
       
       setIsCancelAlertOpen(false)
-      setIsDetailOpen(false)
+      // If the sheet was open for this appointment, close it
+      if (selectedAppointment?.id === appointmentToCancel.id) {
+          setIsSheetOpen(false)
+      }
       setAppointmentToCancel(null)
   }
 
@@ -144,13 +134,18 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
               />
               <AppointmentFilter />
             </div>
-            <CreateAppointmentDialog 
-                open={isCreateOpen} 
-                onOpenChange={setIsCreateOpen}
-                defaultDate={createDefaultDate}
-                defaultResourceId={createDefaultResource}
-                onSubmit={handleCreateAppointment}
-            />
+            
+            {/* Replaced CreateDialog with Button that triggers Sheet */}
+            <div className="hidden md:block">
+                 <button 
+                    onClick={handleCreateButtonClick}
+                    className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
+                 >
+                     <span className="mr-2 text-lg leading-none">+</span>
+                     Tạo lịch hẹn
+                 </button>
+            </div>
+            {/* Mobile FAB or smaller button could go here */}
           </div>
         </div>
 
@@ -181,13 +176,14 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
         </div>
       </Tabs>
 
-      <AppointmentDetailDialog 
-        open={isDetailOpen} 
-        onOpenChange={setIsDetailOpen}
+      <AppointmentSheet
+        open={isSheetOpen}
+        onOpenChange={setIsSheetOpen}
+        mode={sheetMode}
         appointment={selectedAppointment}
-        resource={MOCK_RESOURCES.find(r => r.id === selectedAppointment?.resourceId) ?? null}
-        onEdit={handleEditAppointment}
-        onCancel={handleCreateCancelRequest}
+        defaultDate={createDefaultDate}
+        defaultResourceId={createDefaultResource}
+        onSubmit={handleSheetSubmit}
       />
 
       <AlertDialog open={isCancelAlertOpen} onOpenChange={setIsCancelAlertOpen}>

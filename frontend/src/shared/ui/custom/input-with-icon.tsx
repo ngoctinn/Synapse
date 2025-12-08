@@ -21,9 +21,9 @@ export interface InputWithIconProps
 }
 
 const sizeVariants = {
-  sm: "h-9",
-  default: "h-10",
-  lg: "h-12",
+  sm: "h-8 text-xs",
+  default: "h-9",
+  lg: "h-11",
 }
 
 const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
@@ -41,30 +41,22 @@ const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
     const isError = error || props["aria-invalid"];
 
     return (
-      <div className={cn("relative group w-full", containerClassName)}>
+      <div className={cn("relative w-full", containerClassName)}>
         {Icon && (
           <div className={cn(
             "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-200 z-10",
             isError ? "text-destructive" : "text-muted-foreground group-focus-within:text-primary"
           )}>
-            <Icon size={18} {...iconProps} />
+            <Icon size={16} {...iconProps} />
           </div>
         )}
         <Input
           className={cn(
-            // Base styles - Premium look
-            // Base styles - Premium look
             sizeVariants[variant],
-            "bg-background rounded-lg",
-            // Transitions và shadows
-            "transition-all duration-200 shadow-sm",
-            "hover:shadow-md hover:border-input",
-            // Focus states (Global handles invalid state now)
-            "focus-premium",
-
+            
             // Icon padding
-            Icon && "pl-10",
-            RightIcon && "pr-10",
+            Icon && "pl-9",
+            RightIcon && "pr-9",
 
             // Error styling (Border only, focus ring handled by globals)
             isError && "border-destructive/50",
@@ -80,7 +72,7 @@ const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
             "pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 transition-colors duration-200 z-10",
             isError ? "text-destructive" : "text-muted-foreground group-focus-within:text-primary"
           )}>
-            <RightIcon size={18} {...rightIconProps} />
+            <RightIcon size={16} {...rightIconProps} />
           </div>
         )}
       </div>
