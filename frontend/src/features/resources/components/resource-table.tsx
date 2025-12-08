@@ -23,7 +23,7 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { deleteResource } from "../actions";
 import { Resource } from "../model/types";
-import { ResourceDialog } from "./resource-dialog";
+import { ResourceSheet } from "./resource-sheet";
 
 interface ResourceTableProps {
   data: Resource[];
@@ -222,7 +222,7 @@ export function ResourceTable({ data, isLoading, className, variant = "default" 
             icon={Box}
             title="Chưa có tài nguyên nào"
             description="Tạo tài nguyên đầu tiên để bắt đầu quản lý."
-            action={<ResourceDialog />}
+            action={<ResourceSheet />}
           />
         }
       />
@@ -235,8 +235,8 @@ export function ResourceTable({ data, isLoading, className, variant = "default" 
         isLoading={isPending}
       />
 
-      {/* Edit Dialog - controlled state */}
-      <ResourceDialog
+      {/* Edit Sheet - controlled state */}
+      <ResourceSheet
         resource={editResource ?? undefined}
         open={!!editResource}
         onOpenChange={(open) => !open && setEditResource(null)}

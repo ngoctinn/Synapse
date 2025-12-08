@@ -1,25 +1,19 @@
 "use client";
 
-import { Box, Check, Code2, Loader2, Users } from "lucide-react";
+import { Activity, Box, Check, Code2, Loader2, Users } from "lucide-react";
 
 import { Button } from "@/shared/ui/button";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
+import { SelectWithIcon } from "@/shared/ui/custom/select-with-icon";
 import { DialogFooter } from "@/shared/ui/dialog";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
 } from "@/shared/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/shared/ui/select";
 import { Textarea } from "@/shared/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -57,15 +51,27 @@ export function ResourceForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-2 gap-4">
+
+        {/* Image Placeholder */}
+        <div className="flex items-center gap-4 p-4 border rounded-lg bg-muted/20">
+            <div className="size-16 rounded-lg bg-muted flex items-center justify-center border-2 border-background shadow-sm">
+                <Box className="size-8 text-muted-foreground" />
+            </div>
+            <div className="flex-1">
+                <p className="text-sm font-medium">Hình ảnh tài nguyên</p>
+                <p className="text-xs text-muted-foreground">Chạm vào để thay đổi (Chưa hỗ trợ)</p>
+            </div>
+        </div>
+
+        <div className="space-y-4">
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tên tài nguyên</FormLabel>
+                <FormLabel className="text-foreground/80 font-normal">Tên tài nguyên</FormLabel>
                 <FormControl>
-                  <InputWithIcon icon={Box} placeholder="Ví dụ: Phòng VIP 1" className="h-11 rounded-lg" {...field} />
+                  <InputWithIcon icon={Box} placeholder="Ví dụ: Phòng VIP 1" className="h-11 rounded-lg bg-background" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -76,37 +82,31 @@ export function ResourceForm({
             name="code"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Mã tài nguyên</FormLabel>
+                <FormLabel className="text-foreground/80 font-normal">Mã tài nguyên</FormLabel>
                 <FormControl>
-                  <InputWithIcon icon={Code2} placeholder="Ví dụ: R-VIP-01" className="h-11 rounded-lg" {...field} />
+                  <InputWithIcon icon={Code2} placeholder="Ví dụ: R-VIP-01" className="h-11 rounded-lg bg-background" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-        </div>
 
-        <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Loại</FormLabel>
-                <Select
+                <FormLabel className="text-foreground/80 font-normal">Loại</FormLabel>
+                <SelectWithIcon
                   onValueChange={field.onChange}
                   defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger className="h-11 rounded-lg">
-                      <SelectValue placeholder="Chọn loại tài nguyên" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="ROOM">Phòng</SelectItem>
-                    <SelectItem value="EQUIPMENT">Thiết bị</SelectItem>
-                  </SelectContent>
-                </Select>
+                  icon={Box}
+                  placeholder="Chọn loại tài nguyên"
+                  options={[
+                    { label: "Phòng", value: "ROOM" },
+                    { label: "Thiết bị", value: "EQUIPMENT" },
+                  ]}
+                />
                 <FormMessage />
               </FormItem>
             )}
@@ -117,43 +117,37 @@ export function ResourceForm({
             name="status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Trạng thái</FormLabel>
-                <Select
+                <FormLabel className="text-foreground/80 font-normal">Trạng thái</FormLabel>
+                <SelectWithIcon
                   onValueChange={field.onChange}
                   defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger className="h-11 rounded-lg">
-                      <SelectValue placeholder="Chọn trạng thái" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="ACTIVE">Hoạt động</SelectItem>
-                    <SelectItem value="MAINTENANCE">Bảo trì</SelectItem>
-                    <SelectItem value="INACTIVE">Ngưng hoạt động</SelectItem>
-                  </SelectContent>
-                </Select>
+                  icon={Activity}
+                  placeholder="Chọn trạng thái"
+                  options={[
+                    { label: "Hoạt động", value: "ACTIVE" },
+                    { label: "Bảo trì", value: "MAINTENANCE" },
+                    { label: "Ngưng hoạt động", value: "INACTIVE" },
+                  ]}
+                />
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="setupTime"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Thời gian chuẩn bị (phút)</FormLabel>
+                <FormLabel className="text-foreground/80 font-normal">Thời gian chuẩn bị (phút)</FormLabel>
                 <FormControl>
-                  <InputWithIcon icon={Box} type="number" min={0} placeholder="0" className="h-11 rounded-lg" {...field} />
+                  <InputWithIcon icon={Box} type="number" min={0} placeholder="0" className="h-11 rounded-lg bg-background" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-        </div>
 
         {resourceType === "ROOM" && (
           <FormField
@@ -161,9 +155,9 @@ export function ResourceForm({
             name="capacity"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Sức chứa (người)</FormLabel>
+                <FormLabel className="text-foreground/80 font-normal">Sức chứa (người)</FormLabel>
                 <FormControl>
-                  <InputWithIcon icon={Users} type="number" min={1} placeholder="1" className="h-11 rounded-lg" {...field} />
+                  <InputWithIcon icon={Users} type="number" min={1} placeholder="1" className="h-11 rounded-lg bg-background" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -176,11 +170,11 @@ export function ResourceForm({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Mô tả</FormLabel>
+              <FormLabel className="text-foreground/80 font-normal">Mô tả</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Mô tả chi tiết về tài nguyên này..."
-                  className="min-h-[100px] resize-none rounded-lg"
+                  className="min-h-[100px] resize-none rounded-lg bg-background"
                   {...field}
                 />
               </FormControl>
