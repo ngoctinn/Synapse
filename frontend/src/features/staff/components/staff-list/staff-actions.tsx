@@ -5,23 +5,22 @@ import { deleteStaff } from "@/features/staff/actions"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { TableRowActions } from "@/shared/ui/custom/table-row-actions"
 import {
-    DropdownMenuItem,
-    DropdownMenuLabel
+  DropdownMenuItem,
+  DropdownMenuLabel
 } from "@/shared/ui/dropdown-menu"
 import { KeyRound } from "lucide-react"
 import { startTransition, useState } from "react"
 import { Staff } from "../../types"
 import { DeleteStaffDialog } from "./delete-staff-dialog"
-import { EditStaffModal } from "./edit-staff-modal"
 
 interface StaffActionsProps {
   staff: Staff
   skills: Skill[]
+  onEdit: () => void
 }
 
-export function StaffActions({ staff, skills }: StaffActionsProps) {
+export function StaffActions({ staff, skills, onEdit }: StaffActionsProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
-  const [showEditDialog, setShowEditDialog] = useState(false)
 
   const handleDelete = () => {
     startTransition(async () => {
@@ -38,7 +37,7 @@ export function StaffActions({ staff, skills }: StaffActionsProps) {
   return (
     <>
       <TableRowActions
-        onEdit={() => setShowEditDialog(true)}
+        onEdit={onEdit}
         onDelete={() => setShowDeleteDialog(true)}
         extraActions={
           <>
@@ -57,13 +56,7 @@ export function StaffActions({ staff, skills }: StaffActionsProps) {
         onOpenChange={setShowDeleteDialog}
         onConfirm={handleDelete}
       />
-
-      <EditStaffModal
-        staff={staff}
-        skills={skills}
-        open={showEditDialog}
-        onOpenChange={setShowEditDialog}
-      />
     </>
   )
 }
+

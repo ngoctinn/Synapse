@@ -35,6 +35,16 @@ winget install Python.Python.3.12
 
 ## How to Use This Workflow
 
+### 🚀 Smart Context: Design System Integration
+> **For projects with existing Design Systems (like Synapse with Shadcn/Global CSS):**
+
+*   **SKIP** the searches for: `style`, `color`, `typography`.
+*   **FOCUS** only on: `ux` (interaction rules), `landing` (layout structures), `product` (features).
+*   **RULE**: Map all findings to your **existing CSS variables** (`--primary`, `--card`) to avoid boilerplate code.
+
+---
+
+
 When user requests UI/UX work (design, build, create, implement, review, fix, improve), follow this workflow:
 
 ### Step 1: Analyze User Requirements

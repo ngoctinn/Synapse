@@ -46,10 +46,10 @@
   --destructive: oklch(0.65 0.22 25);
   --destructive-foreground: oklch(1.0 0 0);
 
-  /* Border: Subtle Gray */
-  --border: oklch(0.92 0.01 260);
-  --input: oklch(0.92 0.01 260);
-  --ring: oklch(0.48 0.14 200); /* Matches Primary */
+  /* Border: Subtle Gray - Premium Light */
+  --border: oklch(0.94 0.01 260); /* Lighter than before (0.92) */
+  --input: oklch(0.94 0.01 260);  /* Softens the default border */
+  --ring: oklch(0.48 0.14 200);   /* Keep Primary Teal */
 
   /* Charts: Harmonious Nature Tones */
   --chart-1: oklch(0.48 0.14 200); /* Teal */
@@ -325,6 +325,17 @@
   /* Glassmorphism Utilities */
   .glass {
     @apply bg-white/70 dark:bg-black/40 backdrop-blur-lg border border-white/20 dark:border-white/10 shadow-sm;
+  }
+
+  /* Premium Form Focus Ring - Soft Glow */
+  /* Only apply Primary Teal glow if NOT invalid (Error state handles its own Red glow) */
+  .focus-premium:not([aria-invalid="true"]) {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/50 transition-all duration-200;
+  }
+
+  /* Ensure Error State Focus is Red */
+  .focus-premium[aria-invalid="true"] {
+     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/20 focus-visible:border-destructive transition-all duration-200;
   }
 
   .glass-card {

@@ -1,37 +1,23 @@
 import { z } from "zod"
 
-export const staffFormSchema = z.object({
-  // Account Tab
-  email: z.string().email({ message: "Email không hợp lệ" }),
-  password: z.string().min(6, { message: "Mật khẩu phải có ít nhất 6 ký tự" }),
+export const baseStaffSchema = z.object({
   role: z.enum(["admin", "receptionist", "technician"]),
-
-  // Profile Tab
-  name: z.string().min(2, { message: "Tên phải có ít nhất 2 ký tự" }),
-  phone: z.string().optional(),
-  address: z.string().optional(),
-  title: z.string().optional(),
+  title: z.string().min(2, { message: "Chức danh phải có ít nhất 2 ký tự" }).optional(),
   bio: z.string().optional(),
-  color_code: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, { message: "Mã màu không hợp lệ" }).optional(),
-  commission_rate: z.number().min(0).max(100).optional(),
-  skills: z.array(z.string()).optional(),
-})
-
-export type StaffFormValues = z.infer<typeof staffFormSchema>
-
-export const inviteStaffSchema = z.object({
-  email: z.string().email({ message: "Email không hợp lệ" }),
-  role: z.enum(["admin", "receptionist", "technician"]),
-  full_name: z.string().min(2, { message: "Họ tên phải có ít nhất 2 ký tự" }),
-  title: z.string().min(2, { message: "Chức danh không được trống" }),
-  bio: z.string().optional(),
+  color_code: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Mã màu không hợp lệ").optional(),
   skill_ids: z.array(z.string()).optional(),
 })
 
-export const editStaffSchema = z.object({
-  fullName: z.string().min(2, "Tên phải có ít nhất 2 ký tự"),
-  phone: z.string().min(10, "Số điện thoại không hợp lệ").optional().or(z.literal("")),
-  role: z.enum(["admin", "receptionist", "technician"]),
+export const staffCreateSchema = baseStaffSchema.extend({
+  email: z.string().email({ message: "Email không hợp lệ" }),
+  full_name: z.string().min(2, { message: "Họ tên phải có ít nhất 2 ký tự" }),
 })
 
-export type EditStaffFormValues = z.infer<typeof editStaffSchema>
+export const staffUpdateSchema = baseStaffSchema.extend({
+  full_name: z.string().min(2, { message: "Họ tên phải có ít nhất 2 ký tự" }),
+  phone_number: z.string().min(10, "Số điện thoại không hợp lệ").optional().or(z.literal("")),
+})
+
+export type StaffCreateFormValues = z.infer<typeof staffCreateSchema>
+export type StaffUpdateFormValues = z.infer<typeof staffUpdateSchema>
+

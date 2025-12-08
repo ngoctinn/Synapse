@@ -4,7 +4,7 @@ import "server-only"
 
 import { revalidatePath } from "next/cache"
 import { Skill } from "../services/types"
-import { inviteStaffSchema } from "./schemas"
+import { staffCreateSchema } from "./schemas"
 import { Schedule, StaffListResponse, StaffUpdate } from "./types"
 
 export type ActionState = {
@@ -50,10 +50,11 @@ export async function inviteStaff(prevState: ActionState, formData: FormData): P
     full_name: formData.get("full_name"),
     title: formData.get("title"),
     bio: formData.get("bio") || undefined,
+    color_code: formData.get("color_code") || undefined,
     skill_ids: formData.get("skill_ids") ? JSON.parse(formData.get("skill_ids") as string) : undefined,
   }
 
-  const validatedFields = inviteStaffSchema.safeParse(rawData)
+  const validatedFields = staffCreateSchema.safeParse(rawData)
 
   if (!validatedFields.success) {
     return {

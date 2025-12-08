@@ -4,17 +4,17 @@ import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList
 } from "@/shared/ui/command";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/shared/ui/popover";
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import * as React from "react";
@@ -30,11 +30,12 @@ interface TagInputProps {
   newTags: string[];
   onSelectedChange: (ids: string[]) => void;
   onNewTagsChange: (tags: string[]) => void;
-  placeholder?: string;
-  className?: string;
+  placeholder?: string
+  className?: string
+  isError?: boolean
 }
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion"
 
 export function TagInput({
   options,
@@ -44,45 +45,46 @@ export function TagInput({
   onNewTagsChange,
   placeholder = "Chọn thẻ...",
   className,
+  isError,
 }: TagInputProps) {
-  const [open, setOpen] = React.useState(false);
-  const [inputValue, setInputValue] = React.useState("");
+  const [open, setOpen] = React.useState(false)
+  const [inputValue, setInputValue] = React.useState("")
 
-  const selectedOptions = options.filter((opt) => selectedIds.includes(opt.id));
+  const selectedOptions = options.filter((opt) => selectedIds.includes(opt.id))
 
   const handleSelect = (id: string) => {
     if (selectedIds.includes(id)) {
-      onSelectedChange(selectedIds.filter((i) => i !== id));
+      onSelectedChange(selectedIds.filter((i) => i !== id))
     } else {
-      onSelectedChange([...selectedIds, id]);
+      onSelectedChange([...selectedIds, id])
     }
-    setInputValue(""); // Clear input after selection
-  };
+    setInputValue("") // Clear input after selection
+  }
 
   const handleCreateNew = () => {
-    const trimmed = inputValue.trim();
+    const trimmed = inputValue.trim()
     if (trimmed && !newTags.includes(trimmed)) {
       // Check if it matches an existing option case-insensitively
       const existing = options.find(
         (opt) => opt.label.toLowerCase() === trimmed.toLowerCase()
-      );
+      )
 
       if (existing) {
-        handleSelect(existing.id);
+        handleSelect(existing.id)
       } else {
-        onNewTagsChange([...newTags, trimmed]);
+        onNewTagsChange([...newTags, trimmed])
       }
     }
-    setInputValue("");
-  };
+    setInputValue("")
+  }
 
   const removeNewTag = (tag: string) => {
-    onNewTagsChange(newTags.filter((t) => t !== tag));
-  };
+    onNewTagsChange(newTags.filter((t) => t !== tag))
+  }
 
   const removeSelectedId = (id: string) => {
-    onSelectedChange(selectedIds.filter((i) => i !== id));
-  };
+    onSelectedChange(selectedIds.filter((i) => i !== id))
+  }
 
   return (
     <div className={cn("space-y-2", className)}>
@@ -92,16 +94,23 @@ export function TagInput({
             variant="outline"
             role="combobox"
             aria-expanded={open}
+            aria-invalid={!!isError}
             className={cn(
-              "w-full justify-between h-auto min-h-10 max-h-32 overflow-y-auto py-2 px-3 text-left font-normal",
+              "w-full justify-between h-auto min-h-10 py-2 px-3 text-left font-normal",
               "bg-background hover:bg-background",
-              "border-input transition-all duration-200 shadow-sm hover:shadow-md",
-              "focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary",
-              open && "ring-2 ring-primary/20 border-primary"
+              "transition-all duration-200 shadow-sm hover:shadow-md hover:border-input", // Synced border & shadow
+              "focus-premium",
+
+              // Error Border
+              isError && "border-destructive/50",
+
+              // Open State Ring (Green if Valid, Red if Error)
+              open && !isError && "ring-2 ring-primary/20 border-primary/50",
+              open && isError && "ring-2 ring-destructive/20 border-destructive"
             )}
             onClick={() => setOpen(!open)}
           >
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1.5 w-full">
               {selectedOptions.length === 0 && newTags.length === 0 && (
                 <span className="text-muted-foreground">{placeholder}</span>
               )}

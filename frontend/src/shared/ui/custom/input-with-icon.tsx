@@ -53,22 +53,26 @@ const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
         <Input
           className={cn(
             // Base styles - Premium look
+            // Base styles - Premium look
             sizeVariants[variant],
-            "bg-background border-input/50 rounded-lg",
+            "bg-background rounded-lg",
             // Transitions và shadows
             "transition-all duration-200 shadow-sm",
             "hover:shadow-md hover:border-input",
-            // Focus states - Softer, more elegant
-            "focus-visible:shadow-md focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/50",
+            // Focus states (Global handles invalid state now)
+            "focus-premium",
+
             // Icon padding
             Icon && "pl-10",
             RightIcon && "pr-10",
-            // Error states
-            isError && "border-destructive/50 focus-visible:ring-destructive/20 focus-visible:border-destructive/50",
+
+            // Error styling (Border only, focus ring handled by globals)
+            isError && "border-destructive/50",
+
             className
           )}
           ref={ref}
-          aria-invalid={!!error}
+          aria-invalid={!!isError}
           {...props}
         />
         {RightIcon && (

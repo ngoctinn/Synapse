@@ -5,14 +5,14 @@ import { deleteStaff } from "@/features/staff/actions"
 import { useTableSelection } from "@/shared/hooks/use-table-selection"
 import { cn } from "@/shared/lib/utils"
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/shared/ui/alert-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
@@ -23,16 +23,17 @@ import { showToast } from "@/shared/ui/custom/sonner"
 import { StatusBadge } from "@/shared/ui/custom/status-badge"
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar"
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/shared/ui/tooltip"
 import { Users } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useState, useTransition } from "react"
 import { ROLE_CONFIG } from "../../constants"
 import { Staff } from "../../types"
+import { StaffSheet } from "../staff-sheet"
 import { StaffActions } from "./staff-actions"
 
 interface StaffTableProps {
@@ -60,7 +61,12 @@ export function StaffTable({
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false)
+  const [editingStaff, setEditingStaff] = useState<Staff | null>(null)
   const [isPending, startTransition] = useTransition()
+
+  // Sorting State
+  const sortColumn = searchParams.get("sort_by") || "created_at"
+  const sortDirection = (searchParams.get("order") as "asc" | "desc") || "desc"
 
   // Selection state
   const selection = useTableSelection({
@@ -76,6 +82,17 @@ export function StaffTable({
 
     const params = new URLSearchParams(searchParams.toString())
     params.set("page", newPage.toString())
+    router.push(`${pathname}?${params.toString()}`)
+  }
+
+  const handleSort = (column: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (sortColumn === column) {
+      params.set("order", sortDirection === "asc" ? "desc" : "asc")
+    } else {
+      params.set("sort_by", column)
+      params.set("order", "asc") // Default to asc for new column
+    }
     router.push(`${pathname}?${params.toString()}`)
   }
 
@@ -115,6 +132,8 @@ export function StaffTable({
   const columns: Column<Staff>[] = [
     {
       header: "Nhân viên",
+      accessorKey: "user.full_name" as any, // Cast to avoid TS error with nested keys if generic is simple
+      sortable: true,
       cell: (staff) => (
         <div className="flex items-center gap-4">
           <Avatar className="h-11 w-11 border">
@@ -132,6 +151,8 @@ export function StaffTable({
     },
     {
       header: "Vai trò",
+      accessorKey: "user.role" as any,
+      sortable: true,
       cell: (staff) => (
         <Badge
           variant={ROLE_CONFIG[staff.user.role]?.variant || "outline"}
@@ -187,7 +208,15 @@ export function StaffTable({
     {
       header: "Hành động",
       className: "pr-6",
-      cell: (staff) => <StaffActions staff={staff} skills={skills} />
+      cell: (staff) => (
+        <div onClick={(e) => e.stopPropagation()}>
+          <StaffActions
+            staff={staff}
+            skills={skills}
+            onEdit={() => setEditingStaff(staff)}
+          />
+        </div>
+      )
     }
   ]
 
@@ -211,6 +240,11 @@ export function StaffTable({
         onToggleAll={selection.toggleAll}
         isAllSelected={selection.isAllSelected}
         isPartiallySelected={selection.isPartiallySelected}
+        // Interaction
+        onRowClick={(staff) => setEditingStaff(staff)}
+        sortColumn={sortColumn}
+        sortDirection={sortDirection}
+        onSort={handleSort}
         emptyState={
           <DataTableEmptyState
             icon={Users}
@@ -252,6 +286,16 @@ export function StaffTable({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {editingStaff && (
+        <StaffSheet
+          mode="update"
+          staff={editingStaff}
+          skills={skills}
+          open={!!editingStaff}
+          onOpenChange={(open) => !open && setEditingStaff(null)}
+        />
+      )}
     </>
   )
 }
@@ -268,3 +312,4 @@ export function StaffTableSkeleton() {
     />
   )
 }
+

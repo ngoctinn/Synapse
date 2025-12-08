@@ -1,43 +1,26 @@
 "use client"
 
-import { updateStaffSkills, updateUser } from "@/features/staff/actions"
-import { EditStaffFormValues, editStaffSchema } from "@/features/staff/schemas"
+import { updateStaff, updateStaffSkills, updateUser } from "@/features/staff/actions"
+import { StaffUpdateFormValues, staffUpdateSchema } from "@/features/staff/schemas"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Loader2, Phone, User } from "lucide-react"
-import { useEffect, useState } from "react"
+import { Loader2, Save } from "lucide-react"
+import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 
 import { Skill } from "@/features/services/types"
 import { Button } from "@/shared/ui/button"
-import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
 import { showToast } from "@/shared/ui/custom/sonner"
-import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/shared/ui/dialog"
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/shared/ui/form"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/shared/ui/select"
+import { Form } from "@/shared/ui/form"
 import { Staff } from "../../types"
-
-
+import { StaffForm } from "../staff-form"
 
 interface EditStaffModalProps {
   staff: Staff
@@ -47,45 +30,62 @@ interface EditStaffModalProps {
 }
 
 export function EditStaffModal({ staff, skills, open, onOpenChange }: EditStaffModalProps) {
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([])
-
-  const form = useForm<EditStaffFormValues>({
-    resolver: zodResolver(editStaffSchema),
+  const form = useForm<StaffUpdateFormValues>({
+    resolver: zodResolver(staffUpdateSchema),
     defaultValues: {
-      fullName: staff.user.full_name || "",
-      phone: staff.user.phone_number || "",
+      full_name: staff.user.full_name || "",
+      phone_number: staff.user.phone_number || "",
       role: staff.user.role as "admin" | "receptionist" | "technician",
+      title: staff.title || "",
+      bio: staff.bio || "",
+      color_code: staff.color_code || "#3B82F6",
+      skill_ids: staff.skills.map(s => s.id)
     },
   })
 
-  // Initialize skills when modal opens or staff changes
+  // Reset form when modal opens or staff changes
   useEffect(() => {
     if (open) {
       form.reset({
-        fullName: staff.user.full_name || "",
-        phone: staff.user.phone_number || "",
+        full_name: staff.user.full_name || "",
+        phone_number: staff.user.phone_number || "",
         role: staff.user.role as "admin" | "receptionist" | "technician",
+        title: staff.title || "",
+        bio: staff.bio || "",
+        color_code: staff.color_code || "#3B82F6",
+        skill_ids: staff.skills.map(s => s.id)
       })
-      setSelectedSkills(staff.skills.map(s => s.id))
     }
   }, [open, staff, form])
 
-  async function handleDirectSubmit(data: EditStaffFormValues) {
+  async function handleDirectSubmit(data: StaffUpdateFormValues) {
       try {
-        // 1. Update User Info (Name, Phone)
+        // 1. Update User basic info
         const userUpdateResult = await updateUser(staff.user_id, {
-            full_name: data.fullName,
-            phone_number: data.phone || undefined,
+            full_name: data.full_name,
+            phone_number: data.phone_number || undefined,
         })
 
         if (!userUpdateResult.success) {
-            showToast.error("Lỗi cập nhật thông tin", userUpdateResult.error)
+            showToast.error("Lỗi cập nhật user", userUpdateResult.error)
             return
         }
 
-        // 2. Update Skills (if Technician)
-        if (data.role === "technician") {
-            const skillUpdateResult = await updateStaffSkills(staff.user_id, selectedSkills)
+        // 2. Update Staff Profile (Title, Bio, Color)
+        const staffUpdateResult = await updateStaff(staff.user_id, {
+            title: data.title,
+            bio: data.bio,
+            color_code: data.color_code,
+        })
+
+         if (!staffUpdateResult.success) {
+            showToast.error("Lỗi cập nhật hồ sơ", staffUpdateResult.error)
+            return
+        }
+
+        // 3. Update Skills (if Technician)
+        if (data.role === "technician" && data.skill_ids) {
+            const skillUpdateResult = await updateStaffSkills(staff.user_id, data.skill_ids)
             if (!skillUpdateResult.success) {
                 showToast.error("Lỗi cập nhật kỹ năng", skillUpdateResult.error)
                 return
@@ -102,95 +102,46 @@ export function EditStaffModal({ staff, skills, open, onOpenChange }: EditStaffM
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Chỉnh sửa hồ sơ nhân viên</DialogTitle>
-          <DialogDescription>
-            Cập nhật thông tin và kỹ năng của nhân viên.
+      <DialogContent className="sm:max-w-[550px] p-0 border-0 shadow-lg rounded-xl flex flex-col max-h-[90vh]">
+        <DialogHeader className="px-6 pt-6 pb-2 flex-shrink-0">
+          <DialogTitle className="text-xl font-serif font-semibold text-foreground">
+            Hồ sơ nhân viên
+          </DialogTitle>
+          <DialogDescription className="text-muted-foreground text-sm">
+            Quản lý thông tin cá nhân, vai trò và kỹ năng chuyên môn.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleDirectSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="fullName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Họ và tên</FormLabel>
-                  <FormControl>
-                    <InputWithIcon icon={User} placeholder="Nguyễn Văn A" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Số điện thoại</FormLabel>
-                  <FormControl>
-                    <InputWithIcon icon={Phone} placeholder="0912 345 678" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Vai trò</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    disabled={true} // Disable role editing for now
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Chọn vai trò" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="admin">Quản trị viên</SelectItem>
-                      <SelectItem value="receptionist">Lễ tân</SelectItem>
-                      <SelectItem value="technician">Kỹ thuật viên</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
-            {form.watch("role") === "technician" && (
-              <div className="space-y-2">
-                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  Kỹ năng
-                </label>
-                <TagInput
-                  options={skills.map(s => ({ id: s.id, label: s.name }))}
-                  selectedIds={selectedSkills}
-                  newTags={[]}
-                  onSelectedChange={setSelectedSkills}
-                  onNewTagsChange={() => {}}
-                  placeholder="Chọn kỹ năng..."
-                />
-              </div>
-            )}
+        <div className="flex-1 overflow-y-auto px-6 py-2">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleDirectSubmit)} className="space-y-6 pb-6">
+                <StaffForm mode="update" skills={skills} />
+            </form>
+          </Form>
+        </div>
 
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                Hủy
-              </Button>
-              <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Lưu thay đổi
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+        <DialogFooter className="px-6 py-4 border-t flex-shrink-0 bg-background/50 backdrop-blur-sm rounded-b-xl">
+            <Button
+                type="button"
+                variant="ghost"
+                onClick={() => onOpenChange(false)}
+                className="h-10 hover:bg-muted"
+            >
+                Hủy bỏ
+            </Button>
+            <Button
+                onClick={form.handleSubmit(handleDirectSubmit)}
+                disabled={form.formState.isSubmitting}
+                className="h-10 min-w-[120px]"
+            >
+                {form.formState.isSubmitting ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                <Save className="mr-2 h-4 w-4" />
+                )}
+                Lưu hồ sơ
+            </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )
