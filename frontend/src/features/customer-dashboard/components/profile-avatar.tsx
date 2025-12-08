@@ -27,18 +27,26 @@ export function ProfileAvatar({ user, control }: ProfileAvatarProps) {
                 currentAvatar={field.value}
                 onSelect={field.onChange}
                 trigger={
-                  <div className="relative cursor-pointer rounded-full transition-all duration-300 hover:scale-105 hover:ring-4 hover:ring-primary/10">
-                    <Avatar className="h-32 w-32 border-4 border-background shadow-xl">
+                  <div className="relative cursor-pointer group/avatar">
+                    <Avatar className="h-32 w-32 border-4 border-background shadow-xl transition-transform duration-300 group-hover/avatar:scale-105">
                       <AvatarImage src={field.value} alt={user.fullName} className="object-cover" />
                       <AvatarFallback className="text-3xl bg-muted text-muted-foreground font-medium">
                         {user.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="absolute bottom-1 right-1 bg-primary text-primary-foreground p-2 rounded-full shadow-lg ring-2 ring-background transition-transform duration-300 group-hover:scale-110">
+
+                    {/* Hover Overlay */}
+                    <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-300 backdrop-blur-[1px]">
+                      <Camera className="h-8 w-8 text-white drop-shadow-md" />
+                    </div>
+
+                    {/* Bottom Badge (Optional - keep or remove, keeping for visibility) */}
+                    <div className="absolute bottom-1 right-1 bg-primary text-primary-foreground p-2 rounded-full shadow-lg ring-2 ring-background transition-transform duration-300 group-hover/avatar:scale-110 group-hover/avatar:rotate-12">
                       <Camera className="h-4 w-4" />
                     </div>
                   </div>
                 }
+
               />
             </div>
             <FormMessage className="mt-2 text-center" />

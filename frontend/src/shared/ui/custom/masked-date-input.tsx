@@ -180,8 +180,7 @@ export const MaskedDateInput = React.forwardRef<HTMLInputElement, MaskedDateInpu
           onKeyDown={handleKeyDown}
           maxLength={10}
           className={cn(
-            "transition-all duration-200 focus:ring-2 focus:ring-primary/20 focus:border-primary",
-            props.error && "border-red-500 focus:ring-red-500/20 focus:border-red-500",
+            "font-medium",
             className
           )}
           error={props.error}

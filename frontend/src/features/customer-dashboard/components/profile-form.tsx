@@ -89,12 +89,12 @@ export function ProfileForm({ user }: ProfileFormProps) {
   return (
     <MotionWrapper
       {...motionProps}
-      className="w-full max-w-4xl mx-auto"
+      className="w-full max-w-5xl mx-auto pt-20 md:pt-24 pb-12"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <Card className="relative overflow-hidden border border-white/20 shadow-2xl bg-card/80 backdrop-blur-3xl ring-1 ring-black/5 dark:bg-card/30 dark:ring-white/10 dark:border-white/10">
-            <CardHeader className="pb-8 border-b border-white/10 bg-card/50 px-8 pt-8">
+          <Card className="relative overflow-hidden border-200 border shadow-sm bg-card/100 dark:bg-card/50 backdrop-blur-md ring-1 ring-black/5 dark:ring-white/10 dark:border-white/10">
+            <CardHeader className="pb-8 border-b border-border/10 bg-muted/20 px-8 pt-8">
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="text-2xl font-bold tracking-tight text-foreground">
@@ -108,7 +108,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
             </CardHeader>
 
             <CardContent className="p-8 md:p-10">
-              <div className="flex flex-col md:flex-row gap-10 md:gap-16">
+              <div className="flex flex-col md:flex-row gap-8 md:gap-12 lg:gap-16">
                 {/* Left Column: Avatar & Identity */}
                 <ProfileAvatar user={user} control={form.control} />
 

@@ -60,7 +60,7 @@ const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
             "transition-all duration-200 shadow-sm",
             "hover:shadow-md hover:border-input",
             // Focus states (Global handles invalid state now)
-            "focus-premium",
+            "focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary",
 
             // Icon padding
             Icon && "pl-10",
