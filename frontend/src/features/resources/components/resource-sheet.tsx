@@ -2,13 +2,13 @@
 
 import { Button } from "@/shared/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/shared/ui/dialog";
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/shared/ui/sheet";
 import { Edit, Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -17,19 +17,19 @@ import { ResourceFormValues } from "../model/schema";
 import { Resource } from "../model/types";
 import { ResourceForm } from "./resource-form";
 
-interface ResourceDialogProps {
+interface ResourceSheetProps {
   resource?: Resource; // If provided, existing resource to edit
   trigger?: React.ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
 
-export function ResourceDialog({
+export function ResourceSheet({
   resource,
   trigger,
   open: controlledOpen,
   onOpenChange: controlledOnOpenChange,
-}: ResourceDialogProps) {
+}: ResourceSheetProps) {
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
@@ -74,29 +74,30 @@ export function ResourceDialog({
   );
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] p-0 gap-0">
-        <div className="p-6 pb-4 border-b bg-muted/10">
-          <DialogHeader>
-            <DialogTitle className="font-serif text-xl">
-              {resource ? "Chỉnh sửa tài nguyên" : "Thêm tài nguyên mới"}
-            </DialogTitle>
-            <DialogDescription className="text-sm">
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetTrigger asChild>{trigger || defaultTrigger}</SheetTrigger>
+      <SheetContent className="w-full sm:max-w-md p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
+        <SheetHeader className="px-6 py-4 border-b">
+            <div className="flex items-center justify-between">
+                <SheetTitle className="text-xl font-semibold text-foreground">
+                    {resource ? "Chỉnh sửa tài nguyên" : "Thêm tài nguyên mới"}
+                </SheetTitle>
+            </div>
+            <SheetDescription className="text-muted-foreground text-sm">
               {resource
                 ? "Cập nhật thông tin chi tiết cho tài nguyên này."
                 : "Điền thông tin để tạo tài nguyên mới vào hệ thống."}
-            </DialogDescription>
-          </DialogHeader>
-        </div>
-        <div className="p-6">
+            </SheetDescription>
+        </SheetHeader>
+
+        <div className="flex-1 overflow-y-auto px-6 py-6 [scrollbar-gutter:stable]">
           <ResourceForm
             defaultValues={resource}
             onSubmit={handleSubmit}
             isLoading={isLoading}
           />
         </div>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }

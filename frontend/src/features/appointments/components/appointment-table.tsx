@@ -45,15 +45,15 @@ interface AppointmentTableProps {
 const getStatusConfig = (status: AppointmentStatus) => {
   switch (status) {
     case 'pending':
-      return { label: 'Chờ xác nhận', variant: 'outline' as const, className: "text-amber-600 border-amber-200 bg-amber-50" }
+      return { label: 'Chờ xác nhận', variant: 'outline' as const, className: "text-[var(--status-pending-text)] bg-[var(--status-pending-bg)] border-[var(--status-pending-border)]" }
     case 'confirmed':
-      return { label: 'Đã xác nhận', variant: 'default' as const, className: "bg-blue-600 hover:bg-blue-700" }
+      return { label: 'Đã xác nhận', variant: 'outline' as const, className: "text-[var(--status-confirmed-text)] bg-[var(--status-confirmed-bg)] border-[var(--status-confirmed-border)]" }
     case 'serving':
-      return { label: 'Đang phục vụ', variant: 'default' as const, className: "bg-green-600 hover:bg-green-700 animate-pulse" }
+      return { label: 'Đang phục vụ', variant: 'outline' as const, className: "text-[var(--status-serving-text)] bg-[var(--status-serving-bg)] border-[var(--status-serving-border)] animate-pulse" }
     case 'completed':
-      return { label: 'Hoàn thành', variant: 'secondary' as const, className: "bg-slate-100 text-slate-700" }
+      return { label: 'Hoàn thành', variant: 'outline' as const, className: "text-[var(--status-completed-text)] bg-[var(--status-completed-bg)] border-[var(--status-completed-border)]" }
     case 'cancelled':
-      return { label: 'Đã hủy', variant: 'destructive' as const, className: "bg-red-100 text-red-700 hover:bg-red-200 border-red-200" }
+      return { label: 'Đã hủy', variant: 'outline' as const, className: "text-[var(--status-cancelled-text)] bg-[var(--status-cancelled-bg)] border-[var(--status-cancelled-border)]" }
     case 'no-show':
       return { label: 'Vắng mặt', variant: 'destructive' as const, className: "" }
     default:

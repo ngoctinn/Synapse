@@ -162,7 +162,7 @@ export function ScheduleGrid({
                             <button
                               onClick={() => onAddClick(staff.user_id, day)}
                               aria-label={`Thêm ca làm việc cho ${staff.user.full_name} vào ngày ${format(day, "dd/MM")}`}
-                              className="h-10 w-10 min-h-[44px] min-w-[44px] rounded-full bg-muted/50 hover:bg-primary/10 hover:text-primary flex items-center justify-center transition-colors cursor-pointer focus:ring-2 focus:ring-primary/50 focus:outline-none focus:bg-primary/10 focus:text-primary"
+                              className="size-10 min-h-[44px] min-w-[44px] rounded-full bg-muted/50 hover:bg-primary/10 hover:text-primary flex items-center justify-center transition-colors cursor-pointer focus:ring-2 focus:ring-primary/50 focus:outline-none focus:bg-primary/10 focus:text-primary focus-visible:ring-2"
                             >
                               <Plus className="h-4 w-4" />
                             </button>

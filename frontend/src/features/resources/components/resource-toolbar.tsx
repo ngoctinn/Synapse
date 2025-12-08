@@ -3,7 +3,7 @@
 import { SearchInput } from "@/shared/ui/custom/search-input";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
-import { ResourceDialog } from "./resource-dialog";
+import { ResourceSheet } from "./resource-sheet";
 
 export function ResourceToolbar() {
   const searchParams = useSearchParams();
@@ -28,7 +28,7 @@ export function ResourceToolbar() {
         defaultValue={searchParams.get("query")?.toString()}
         onChange={(e) => handleSearch(e.target.value)}
       />
-      <ResourceDialog />
+      <ResourceSheet />
     </div>
   );
 }
