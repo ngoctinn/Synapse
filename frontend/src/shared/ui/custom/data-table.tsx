@@ -105,7 +105,7 @@ export function DataTable<T>({
                   <Checkbox
                     checked={isAllSelected}
                     // @ts-expect-error - indeterminate is valid
-                    indeterminate={isPartiallySelected}
+                    indeterminate={isPartiallySelected ? "true" : undefined}
                     onCheckedChange={onToggleAll}
                     aria-label="Chọn tất cả"
                     className="translate-y-[2px]"
