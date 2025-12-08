@@ -70,6 +70,10 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         title: "Thời gian hoạt động",
         href: "/admin/settings/operating-hours",
       },
+      {
+        title: "Thông báo",
+        href: "/admin/settings/notifications",
+      },
     ],
   },
 ]

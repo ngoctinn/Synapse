@@ -214,28 +214,28 @@ export function ExceptionsViewManager({
              setTypeFilter={setTypeFilter}
              dateRange={dateRange}
              setDateRange={setDateRange}
+             startContent={
+               <div className="flex items-center gap-2 p-1 bg-muted/50 rounded-lg border lg:hidden">
+                    <Button
+                        variant={viewMode === 'calendar' ? 'secondary' : 'ghost'}
+                        onClick={() => setViewMode('calendar')}
+                        className="gap-2 h-9"
+                    >
+                        <CalendarIcon className="w-4 h-4" />
+                        Lịch
+                    </Button>
+                    <Button
+                        variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+                        onClick={() => setViewMode('list')}
+                        className="gap-2 h-9"
+                    >
+                        <ListIcon className="w-4 h-4" />
+                        Danh sách
+                    </Button>
+               </div>
+             }
              endContent={
                <div className="flex items-center gap-2">
-                   {/* View Toggles (Mobile Only) */}
-                   <div className="flex items-center gap-2 p-1 bg-muted/50 rounded-lg border lg:hidden">
-                        <Button
-                            variant={viewMode === 'calendar' ? 'secondary' : 'ghost'}
-                            onClick={() => setViewMode('calendar')}
-                            className="gap-2 h-9"
-                        >
-                            <CalendarIcon className="w-4 h-4" />
-                            Lịch
-                        </Button>
-                        <Button
-                            variant={viewMode === 'list' ? 'secondary' : 'ghost'}
-                            onClick={() => setViewMode('list')}
-                            className="gap-2 h-9"
-                        >
-                            <ListIcon className="w-4 h-4" />
-                            Danh sách
-                        </Button>
-                   </div>
-
                    {/* Add Button */}
                    <Button onClick={handleManualAdd} className="bg-primary text-primary-foreground shadow-sm hover:shadow-md transition-all">
                         <Plus className="w-4 h-4 mr-2" /> Thêm ngoại lệ
