@@ -3,7 +3,7 @@ import { Appointment, Resource } from './types';
 
 const today = startOfToday();
 
-import { MOCK_STAFF } from "@/features/staff/data/mocks";
+import { MOCK_STAFF } from "@/features/staff";
 
 // Resources (Derived from Staff Mock Data for consistency)
 // Focusing on Technicians who perform services

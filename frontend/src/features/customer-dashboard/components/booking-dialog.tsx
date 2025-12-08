@@ -53,8 +53,7 @@ import { ScrollArea } from "@/shared/ui/scroll-area"
 import { Separator } from "@/shared/ui/separator"
 
 import { Service } from "@/features/services/types"
-import { MOCK_STAFF } from "@/features/staff/data/mocks"
-import { Staff } from "@/features/staff/types"
+import { MOCK_STAFF, Staff } from "@/features/staff"
 import { useReducedMotion } from "@/shared/hooks"
 import { MOCK_SLOTS } from "../mocks"
 
