@@ -7,6 +7,16 @@ import { Skill } from "../services/types"
 import { staffCreateSchema } from "./schemas"
 import { Schedule, StaffListResponse, StaffUpdate } from "./types"
 
+// Unified Wrapper Action
+export async function manageStaff(prevState: ActionState, formData: FormData): Promise<ActionState> {
+  const mode = formData.get("form_mode")
+  if (mode === "create") {
+    return inviteStaff(prevState, formData)
+  } else {
+    return updateStaffAction(prevState, formData)
+  }
+}
+
 export type ActionState = {
   success?: boolean
   error?: string
@@ -86,9 +96,46 @@ export async function updateStaffSkills(staffId: string, skillIds: string[]): Pr
   return { success: true, message: "Cập nhật kỹ năng thành công (Mock)" }
 }
 
+// Unified Update Action
+export async function updateStaffAction(prevState: ActionState, formData: FormData): Promise<ActionState> {
+  const staffId = formData.get("staff_id") as string
+  if (!staffId) return { success: false, error: "Missing Staff ID" }
+
+  const data = {
+    full_name: formData.get("full_name"),
+    phone_number: formData.get("phone_number"),
+    title: formData.get("title"),
+    bio: formData.get("bio"),
+    color_code: formData.get("color_code"),
+    role: formData.get("role"),
+    skill_ids: formData.get("skill_ids") ? JSON.parse(formData.get("skill_ids") as string) : [],
+  }
+
+  // 1. Update User Info
+  await updateUser(staffId, {
+    full_name: data.full_name as string,
+    phone_number: data.phone_number as string,
+  })
+
+  // 2. Update Staff Details
+  await updateStaff(staffId, {
+    title: data.title as string,
+    bio: data.bio as string,
+    color_code: data.color_code as string,
+  })
+
+  // 3. Update Skills (if technician)
+  if (data.role === "technician") {
+    await updateStaffSkills(staffId, data.skill_ids)
+  }
+
+  revalidatePath("/admin/staff")
+  return { success: true, message: "Cập nhật nhân viên thành công" }
+}
+
 export async function updateUser(userId: string, data: { full_name?: string; phone_number?: string }): Promise<ActionState> {
   await new Promise((resolve) => setTimeout(resolve, 800))
-  revalidatePath("/admin/staff")
+  // Mock logic only
   return { success: true, message: "Cập nhật thông tin thành công (Mock)" }
 }
 
