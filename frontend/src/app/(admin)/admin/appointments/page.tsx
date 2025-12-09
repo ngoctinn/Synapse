@@ -1,4 +1,4 @@
-import { AppointmentPage } from '@/features/appointments';
+import { AppointmentPage, getAppointments, getResources } from '@/features/appointments';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 
@@ -9,10 +9,15 @@ export const metadata: Metadata = {
   description: 'Xem và quản lý lịch hẹn của Spa',
 };
 
-export default function AppointmentsPage() {
+export default async function AppointmentsPage() {
+  const [appointments, resources] = await Promise.all([
+    getAppointments(),
+    getResources()
+  ]);
+
   return (
     <Suspense fallback={<div className="p-4 flex items-center justify-center min-h-screen text-muted-foreground">Đang tải lịch hẹn...</div>}>
-      <AppointmentPage />
+      <AppointmentPage initialAppointments={appointments} initialResources={resources} />
     </Suspense>
   );
 }

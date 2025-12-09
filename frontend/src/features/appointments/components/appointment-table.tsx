@@ -43,17 +43,17 @@ interface AppointmentTableProps {
 const getStatusConfig = (status: AppointmentStatus) => {
   switch (status) {
     case 'pending':
-      return { label: 'Chờ xác nhận', variant: 'outline' as const, className: "text-[var(--status-pending-text)] bg-[var(--status-pending-bg)] border-[var(--status-pending-border)]" }
+      return { label: 'Chờ xác nhận', variant: 'outline' as const, className: "bg-status-pending text-status-pending-foreground border-status-pending-border" }
     case 'confirmed':
-      return { label: 'Đã xác nhận', variant: 'outline' as const, className: "text-[var(--status-confirmed-text)] bg-[var(--status-confirmed-bg)] border-[var(--status-confirmed-border)]" }
+      return { label: 'Đã xác nhận', variant: 'outline' as const, className: "bg-status-confirmed text-status-confirmed-foreground border-status-confirmed-border" }
     case 'serving':
-      return { label: 'Đang phục vụ', variant: 'outline' as const, className: "text-[var(--status-serving-text)] bg-[var(--status-serving-bg)] border-[var(--status-serving-border)] animate-pulse" }
+      return { label: 'Đang phục vụ', variant: 'outline' as const, className: "bg-status-serving text-status-serving-foreground border-status-serving-border animate-pulse" }
     case 'completed':
-      return { label: 'Hoàn thành', variant: 'outline' as const, className: "text-[var(--status-completed-text)] bg-[var(--status-completed-bg)] border-[var(--status-completed-border)]" }
+      return { label: 'Hoàn thành', variant: 'outline' as const, className: "bg-status-completed text-status-completed-foreground border-status-completed-border" }
     case 'cancelled':
-      return { label: 'Đã hủy', variant: 'outline' as const, className: "text-[var(--status-cancelled-text)] bg-[var(--status-cancelled-bg)] border-[var(--status-cancelled-border)]" }
+      return { label: 'Đã hủy', variant: 'outline' as const, className: "bg-status-cancelled text-status-cancelled-foreground border-status-cancelled-border" }
     case 'no-show':
-      return { label: 'Vắng mặt', variant: 'destructive' as const, className: "" }
+      return { label: 'Vắng mặt', variant: 'outline' as const, className: "bg-status-noshow text-status-noshow-foreground border-status-noshow-border" }
     default:
       return { label: status, variant: 'outline' as const, className: "" }
   }

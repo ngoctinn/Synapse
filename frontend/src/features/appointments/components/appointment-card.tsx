@@ -14,21 +14,21 @@ interface AppointmentCardProps {
 
 
 const statusStyles = {
-  pending: 'bg-[var(--status-pending)] border-[var(--status-pending-border)] text-[var(--status-pending-foreground)] hover:brightness-95',
-  confirmed: 'bg-[var(--status-confirmed)] border-[var(--status-confirmed-border)] text-[var(--status-confirmed-foreground)] hover:brightness-95',
-  serving: 'bg-[var(--status-serving)] border-[var(--status-serving-border)] text-[var(--status-serving-foreground)] hover:brightness-95',
-  completed: 'bg-[var(--status-completed)] border-[var(--status-completed-border)] text-[var(--status-completed-foreground)] hover:brightness-95',
-  cancelled: 'bg-[var(--status-cancelled)] border-[var(--status-cancelled-border)] text-[var(--status-cancelled-foreground)] hover:brightness-110 opacity-70 grayscale',
-  'no-show': 'bg-[var(--status-noshow)] border-[var(--status-noshow-border)] text-[var(--status-noshow-foreground)] hover:brightness-110',
+  pending: 'bg-status-pending border-status-pending-border text-status-pending-foreground hover:bg-status-pending/90',
+  confirmed: 'bg-status-confirmed border-status-confirmed-border text-status-confirmed-foreground hover:bg-status-confirmed/90',
+  serving: 'bg-status-serving border-status-serving-border text-status-serving-foreground hover:bg-status-serving/90 shadow-[0_0_10px_rgba(var(--status-serving),0.3)]',
+  completed: 'bg-status-completed border-status-completed-border text-status-completed-foreground hover:bg-status-completed/90',
+  cancelled: 'bg-status-cancelled border-status-cancelled-border text-status-cancelled-foreground hover:bg-status-cancelled/90 opacity-80',
+  'no-show': 'bg-status-noshow border-status-noshow-border text-status-noshow-foreground hover:bg-status-noshow/90',
 };
 
 const statusIndicator = {
-  pending: 'bg-amber-400',
-  confirmed: 'bg-sky-400',
-  serving: 'bg-emerald-400',
-  completed: 'bg-slate-400',
-  cancelled: 'bg-rose-400',
-  'no-show': 'bg-red-500',
+  pending: 'bg-status-pending-foreground',
+  confirmed: 'bg-status-confirmed-foreground',
+  serving: 'bg-status-serving-foreground',
+  completed: 'bg-status-completed-foreground',
+  cancelled: 'bg-status-cancelled-foreground',
+  'no-show': 'bg-status-noshow-foreground',
 };
 
 export function AppointmentCard({ appointment, style, className, onClick }: AppointmentCardProps) {
