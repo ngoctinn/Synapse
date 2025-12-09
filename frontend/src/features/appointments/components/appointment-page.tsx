@@ -10,6 +10,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from "@/shared/ui/alert-dialog"
+import { Button } from "@/shared/ui/button"
+import { SearchInput } from "@/shared/ui/custom/search-input"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { useState, useMemo } from "react"
