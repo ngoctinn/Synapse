@@ -11,7 +11,7 @@ import {
     Search,
     SlidersHorizontal,
     User,
-    CalendarCheck, // Using a more specific icon for status if needed, or stick to simple dots
+    Sparkles,
 } from "lucide-react"
 import { cn } from "@/shared/lib/utils"
 import {
@@ -32,54 +32,34 @@ import { useState, useMemo } from "react"
 import { DateRangeFilter } from "@/shared/ui/custom/date-range-filter"
 import { DateRange } from "react-day-picker"
 import { format } from "date-fns"
+import { APPOINTMENT_STATUSES, API_STAFF_OPTIONS, API_SERVICE_OPTIONS } from "../config"
 
-// --- Configuration ---
+// --- Helper for Dynamic Styles ---
+const getStatusStyles = (color: string) => {
+    // Map abstract colors to specific Tailwind classes
+    // This looks cleaner and allows easy theme adjustments
+    const colors: Record<string, string> = {
+        amber: "data-[state=on]:bg-amber-100 dark:data-[state=on]:bg-amber-900/40 data-[state=on]:text-amber-700 dark:data-[state=on]:text-amber-400 data-[state=on]:border-amber-200 dark:data-[state=on]:border-amber-800",
+        blue: "data-[state=on]:bg-blue-100 dark:data-[state=on]:bg-blue-900/40 data-[state=on]:text-blue-700 dark:data-[state=on]:text-blue-400 data-[state=on]:border-blue-200 dark:data-[state=on]:border-blue-800",
+        indigo: "data-[state=on]:bg-indigo-100 dark:data-[state=on]:bg-indigo-900/40 data-[state=on]:text-indigo-700 dark:data-[state=on]:text-indigo-400 data-[state=on]:border-indigo-200 dark:data-[state=on]:border-indigo-800",
+        emerald: "data-[state=on]:bg-emerald-100 dark:data-[state=on]:bg-emerald-900/40 data-[state=on]:text-emerald-700 dark:data-[state=on]:text-emerald-400 data-[state=on]:border-emerald-200 dark:data-[state=on]:border-emerald-800",
+        slate: "data-[state=on]:bg-slate-100 dark:data-[state=on]:bg-slate-800/50 data-[state=on]:text-slate-700 dark:data-[state=on]:text-slate-400 data-[state=on]:border-slate-200 dark:data-[state=on]:border-slate-700",
+        rose: "data-[state=on]:bg-rose-100 dark:data-[state=on]:bg-rose-900/40 data-[state=on]:text-rose-700 dark:data-[state=on]:text-rose-400 data-[state=on]:border-rose-200 dark:data-[state=on]:border-rose-800",
+    }
+    return colors[color] || ""
+}
 
-// Mock data staff - Should be replaced with API data
-const STAFF_OPTIONS = [
-    { id: "1", name: "Nguyễn Văn A", role: "Senior Stylist" },
-    { id: "2", name: "Trần Thị B", role: "Junior Stylist" },
-    { id: "3", name: "Lê Văn C", role: "Trainee" },
-]
-
-const STATUS_OPTIONS = [
-    {
-        value: "pending",
-        label: "Chờ xác nhận",
-        activeClass: "data-[state=on]:bg-amber-100 dark:data-[state=on]:bg-amber-900/30 data-[state=on]:text-amber-700 dark:data-[state=on]:text-amber-400 data-[state=on]:border-amber-200 border-transparent",
-        dotClass: "bg-amber-500",
-    },
-    {
-        value: "confirmed",
-        label: "Đã xác nhận",
-        activeClass: "data-[state=on]:bg-blue-100 dark:data-[state=on]:bg-blue-900/30 data-[state=on]:text-blue-700 dark:data-[state=on]:text-blue-400 data-[state=on]:border-blue-200 border-transparent",
-        dotClass: "bg-blue-500",
-    },
-    {
-        value: "serving",
-        label: "Đang phục vụ",
-        activeClass: "data-[state=on]:bg-indigo-100 dark:data-[state=on]:bg-indigo-900/30 data-[state=on]:text-indigo-700 dark:data-[state=on]:text-indigo-400 data-[state=on]:border-indigo-200 border-transparent",
-        dotClass: "bg-indigo-500",
-    },
-    {
-        value: "completed",
-        label: "Hoàn thành",
-        activeClass: "data-[state=on]:bg-emerald-100 dark:data-[state=on]:bg-emerald-900/30 data-[state=on]:text-emerald-700 dark:data-[state=on]:text-emerald-400 data-[state=on]:border-emerald-200 border-transparent",
-        dotClass: "bg-emerald-500",
-    },
-    {
-        value: "cancelled",
-        label: "Đã hủy",
-        activeClass: "data-[state=on]:bg-slate-100 dark:data-[state=on]:bg-slate-800/50 data-[state=on]:text-slate-700 dark:data-[state=on]:text-slate-400 data-[state=on]:border-slate-200 border-transparent",
-        dotClass: "bg-slate-500",
-    },
-    {
-        value: "no-show",
-        label: "Không đến",
-        activeClass: "data-[state=on]:bg-rose-100 dark:data-[state=on]:bg-rose-900/30 data-[state=on]:text-rose-700 dark:data-[state=on]:text-rose-400 data-[state=on]:border-rose-200 border-transparent",
-        dotClass: "bg-rose-500",
-    },
-]
+const getDotColor = (color: string) => {
+    const dots: Record<string, string> = {
+        amber: "bg-amber-500",
+        blue: "bg-blue-500",
+        indigo: "bg-indigo-500",
+        emerald: "bg-emerald-500",
+        slate: "bg-slate-500",
+        rose: "bg-rose-500",
+    }
+    return dots[color] || "bg-gray-500"
+}
 
 interface AppointmentFilterProps {
     startContent?: React.ReactNode;
@@ -91,15 +71,17 @@ interface AppointmentFilterProps {
 export function AppointmentFilter({ startContent, endContent, className, viewMode = "list" }: AppointmentFilterProps) {
     const { searchParams, activeCount, updateParam, updateParams, clearFilters } =
         useFilterParams({
-            filterKeys: ["status", "staffId", "q", "from", "to"],
+            filterKeys: ["status", "staffId", "serviceId", "q", "from", "to"],
         })
 
     const statusParam = searchParams.get("status")
     const staffIdParam = searchParams.get("staffId")
+    const serviceIdParam = searchParams.get("serviceId")
     const searchQuery = searchParams.get("q") || ""
     const fromParam = searchParams.get("from")
     const toParam = searchParams.get("to")
     const [openStaff, setOpenStaff] = useState(false)
+    const [openService, setOpenService] = useState(false)
 
     // Parse date params
     const dateRange = useMemo<DateRange | undefined>(() => {
@@ -116,8 +98,6 @@ export function AppointmentFilter({ startContent, endContent, className, viewMod
             return
         }
         
-        // Use format to keep URL simple (YYYY-MM-DD) or ISOString if strict time needed.
-        // For appointments filter, usually YYYY-MM-DD is sufficient.
         updateParams({
             from: range.from ? format(range.from, "yyyy-MM-dd") : null,
             to: range.to ? format(range.to, "yyyy-MM-dd") : null
@@ -127,6 +107,7 @@ export function AppointmentFilter({ startContent, endContent, className, viewMod
     // Parse multi-select values
     const selectedStatuses = statusParam ? statusParam.split(",") : []
     const selectedStaffIds = staffIdParam ? staffIdParam.split(",") : []
+    const selectedServiceIds = serviceIdParam ? serviceIdParam.split(",") : []
 
     // Handlers
     const handleStatusChange = (values: string[]) => {
@@ -151,12 +132,30 @@ export function AppointmentFilter({ startContent, endContent, className, viewMod
         updateParam("staffId", newIds.length > 0 ? newIds.join(",") : null)
     }
 
+    const handleServiceSelect = (value: string | null) => {
+        if (!value) {
+            updateParam("serviceId", null)
+            return
+        }
+
+        const currentIds = new Set(selectedServiceIds)
+        if (currentIds.has(value)) {
+            currentIds.delete(value)
+        } else {
+            currentIds.add(value)
+        }
+
+        const newIds = Array.from(currentIds)
+        updateParam("serviceId", newIds.length > 0 ? newIds.join(",") : null)
+    }
+
     const handleSearch = (term: string) => {
         updateParam("q", term || null)
     }
 
     // Computed
-    const selectedStaffObjects = STAFF_OPTIONS.filter((s) => selectedStaffIds.includes(s.id))
+    const selectedStaffObjects = API_STAFF_OPTIONS.filter((s) => selectedStaffIds.includes(s.id))
+    const selectedServiceObjects = API_SERVICE_OPTIONS.filter((s) => selectedServiceIds.includes(s.id))
 
     const renderStaffLabel = () => {
         if (selectedStaffIds.length === 0) return <span className="text-muted-foreground">Chọn nhân viên...</span>
@@ -185,6 +184,37 @@ export function AppointmentFilter({ startContent, endContent, className, viewMod
             <div className="flex items-center gap-2">
                 <User className="h-4 w-4 shrink-0" />
                 <span className="font-medium">{count} nhân viên</span>
+            </div>
+        )
+    }
+
+    const renderServiceLabel = () => {
+        if (selectedServiceIds.length === 0) return <span className="text-muted-foreground">Chọn dịch vụ...</span>
+        
+        const count = selectedServiceIds.length
+        
+        if (count === 1) {
+            return (
+                <div className="flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 shrink-0" />
+                    <span className="truncate">{selectedServiceObjects[0]?.name}</span>
+                </div>
+            )
+        }
+        
+        if (count <= 2) {
+                return (
+                <div className="flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 shrink-0" />
+                    <span className="truncate">{selectedServiceObjects.map(s => s.name).join(", ")}</span>
+                </div>
+            )
+        }
+
+        return (
+            <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 shrink-0" />
+                <span className="font-medium">{count} dịch vụ</span>
             </div>
         )
     }
@@ -249,25 +279,134 @@ export function AppointmentFilter({ startContent, endContent, className, viewMod
                                 </h4>
                                 <ToggleGroup
                                     type="multiple"
-                                    value={selectedStatuses}
-                                    onValueChange={handleStatusChange}
-                                    className="justify-start gap-2 w-full flex-wrap"
+                                    spacing={2}
+                                    value={selectedStatuses.length === 0 ? ["all"] : selectedStatuses}
+                                    onValueChange={(newValues) => {
+                                        if (newValues.includes("all")) {
+                                             if (selectedStatuses.length > 0) {
+                                                 updateParam("status", null);
+                                                 return;
+                                             }
+                                        }
+                                        const realStatuses = newValues.filter(v => v !== "all");
+                                        updateParam("status", realStatuses.length > 0 ? realStatuses.join(",") : null);
+                                    }}
+                                    className="grid grid-cols-2 gap-2 w-full"
                                 >
-                                    {STATUS_OPTIONS.map((status) => (
+                                    {/* Select All Option - Full Width */}
+                                    <ToggleGroupItem
+                                        value="all"
+                                        size="sm"
+                                        className={cn(
+                                            "col-span-2 w-full justify-start px-2 border rounded-none transition-all duration-200",
+                                            "border-input hover:border-accent-foreground/20 hover:bg-accent/50",
+                                            "data-[state=on]:border-transparent data-[state=on]:bg-primary/10 data-[state=on]:text-primary",
+                                            "active:scale-95"
+                                        )}
+                                    >
+                                        <div className={cn("w-1.5 h-1.5 rounded-full mr-2 shrink-0 bg-primary")} />
+                                        <span className="truncate text-xs font-medium">Tất cả trạng thái</span>
+                                    </ToggleGroupItem>
+
+                                    {APPOINTMENT_STATUSES.map((status) => (
                                         <ToggleGroupItem
                                             key={status.value}
                                             value={status.value}
                                             size="sm"
                                             className={cn(
-                                                "flex-1 min-w-[100px] border border-transparent transition-all",
-                                                status.activeClass
+                                                "w-full justify-start px-2 border rounded-none transition-all duration-200", 
+                                                "border-input hover:border-accent-foreground/20 hover:bg-accent/50",
+                                                "data-[state=on]:border-transparent",
+                                                "active:scale-95",
+                                                getStatusStyles(status.color)
                                             )}
                                         >
-                                            <div className={cn("w-1.5 h-1.5 rounded-full mr-2", status.dotClass)} />
-                                            {status.label}
+                                            <div className={cn("w-1.5 h-1.5 rounded-full mr-2 shrink-0", getDotColor(status.color))} />
+                                            <span className="truncate text-xs">{status.label}</span>
                                         </ToggleGroupItem>
                                     ))}
                                 </ToggleGroup>
+                            </div>
+
+                            <div className="h-px bg-border/50" />
+
+                            {/* Service Section */}
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between px-1">
+                                    <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">
+                                        Dịch vụ
+                                    </h4>
+                                    {selectedServiceIds.length > 0 && (
+                                        <button
+                                            type="button"
+                                            className="text-xs text-muted-foreground hover:text-primary hover:underline transition-colors"
+                                            onClick={() => updateParam("serviceId", null)}
+                                        >
+                                            Xóa ({selectedServiceIds.length})
+                                        </button>
+                                    )}
+                                </div>
+                                <Popover open={openService} onOpenChange={setOpenService}>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            role="combobox"
+                                            aria-expanded={openService}
+                                            className={cn(
+                                                "w-full justify-between font-normal hover:bg-accent hover:text-accent-foreground",
+                                                selectedServiceIds.length > 0 && "border-primary/50 bg-primary/5 text-primary"
+                                            )}
+                                        >
+                                            {renderServiceLabel()}
+                                            <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-[300px] p-0" align="start">
+                                        <Command>
+                                            <CommandInput placeholder="Tìm dịch vụ..." className="h-9" />
+                                            <CommandList>
+                                                <CommandEmpty>Không tìm thấy dịch vụ.</CommandEmpty>
+                                                <CommandGroup>
+                                                    <CommandItem
+                                                        value="all"
+                                                        onSelect={() => handleServiceSelect(null)}
+                                                        className="cursor-pointer"
+                                                    >
+                                                        <div className="flex items-center gap-2 w-full">
+                                                            <Circle className="h-4 w-4 text-muted-foreground" />
+                                                            <span>Tất cả dịch vụ</span>
+                                                        </div>
+                                                        {selectedServiceIds.length === 0 && <Check className="ml-auto h-4 w-4 text-primary" />}
+                                                    </CommandItem>
+                                                    {API_SERVICE_OPTIONS.map((service) => {
+                                                        const isSelected = selectedServiceIds.includes(service.id)
+                                                        return (
+                                                            <CommandItem
+                                                                key={service.id}
+                                                                value={service.name}
+                                                                onSelect={() => handleServiceSelect(service.id)}
+                                                                className="cursor-pointer"
+                                                            >
+                                                                <div className="flex items-center gap-2 w-full">
+                                                                    <Sparkles className={cn("h-4 w-4", isSelected ? "text-primary" : "text-muted-foreground")} />
+                                                                    <div className="flex flex-col text-left">
+                                                                        <span className={cn("text-sm", isSelected && "font-medium text-primary")}>
+                                                                            {service.name}
+                                                                        </span>
+                                                                        <span className="text-xs text-muted-foreground">{service.duration} phút • {service.price.toLocaleString()}đ</span>
+                                                                    </div>
+                                                                </div>
+                                                                {isSelected && (
+                                                                    <Check className="ml-auto h-4 w-4 text-primary" />
+                                                                )}
+                                                            </CommandItem>
+                                                        )
+                                                    })}
+                                                </CommandGroup>
+                                            </CommandList>
+                                        </Command>
+                                    </PopoverContent>
+                                </Popover>
                             </div>
 
                             <div className="h-px bg-border/50" />
@@ -320,7 +459,7 @@ export function AppointmentFilter({ startContent, endContent, className, viewMod
                                                         </div>
                                                         {selectedStaffIds.length === 0 && <Check className="ml-auto h-4 w-4 text-primary" />}
                                                     </CommandItem>
-                                                    {STAFF_OPTIONS.map((staff) => {
+                                                    {API_STAFF_OPTIONS.map((staff) => {
                                                         const isSelected = selectedStaffIds.includes(staff.id)
                                                         return (
                                                             <CommandItem
