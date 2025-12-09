@@ -4,7 +4,7 @@ import { Skill } from "@/features/services"
 import { SearchInput } from "@/shared/ui/custom/search-input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { Suspense, use, useState } from "react"
-import { InviteStaffModal } from "./invite-staff-modal"
+import { InviteStaffTrigger } from "./invite-staff-trigger"
 import { PermissionMatrix } from "./permissions/permission-matrix"
 import { StaffScheduler } from "./scheduling/staff-scheduler"
 import { StaffFilter } from "./staff-filter"
@@ -96,7 +96,7 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
                 <StaffFilter />
               </div>
             )}
-            <InviteStaffModal skills={skills} />
+            <InviteStaffTrigger skills={skills} />
             {/* Additional toolbars for other tabs can be added here if needed */}
           </div>
         </div>

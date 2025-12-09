@@ -6,7 +6,7 @@ import { useState } from "react"
 import { ResourceGroup } from "../types"
 import { ResourceSheet } from "./resource-sheet"
 
-export function AddResourceModal({ groups }: { groups: ResourceGroup[] }) {
+export function AddResourceTrigger({ groups }: { groups: ResourceGroup[] }) {
   const [open, setOpen] = useState(false)
 
   return (
