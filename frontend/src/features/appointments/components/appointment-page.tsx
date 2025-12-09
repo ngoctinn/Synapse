@@ -25,6 +25,7 @@ import { AppointmentFilter } from "./appointment-filter"
 import { AppointmentSheet } from "./appointment-sheet"
 import { AppointmentTable } from "./appointment-table"
 import { AppointmentTimeline } from "./appointment-timeline"
+import { Plus } from "lucide-react"
 
 interface AppointmentPageProps {
     initialData?: boolean; // Reserved for future server data
