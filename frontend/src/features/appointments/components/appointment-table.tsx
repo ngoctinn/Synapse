@@ -3,10 +3,10 @@
 import { format } from "date-fns"
 import { vi } from "date-fns/locale"
 import {
-    Calendar,
-    Clock,
-    MoreHorizontal,
-    Scissors
+  Calendar,
+  Clock,
+  MoreHorizontal,
+  Scissors
 } from "lucide-react"
 import { useMemo } from "react"
 
@@ -14,20 +14,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/shared/ui/table"
 
 import { cn } from "@/shared/lib/utils"
@@ -40,22 +40,14 @@ interface AppointmentTableProps {
   onCancel: (appointment: Appointment) => void
 }
 
+import { APPOINTMENT_STATUS_CONFIG } from "../config"
+
 const getStatusConfig = (status: AppointmentStatus) => {
-  switch (status) {
-    case 'pending':
-      return { label: 'Chờ xác nhận', variant: 'outline' as const, className: "bg-status-pending text-status-pending-foreground border-status-pending-border" }
-    case 'confirmed':
-      return { label: 'Đã xác nhận', variant: 'outline' as const, className: "bg-status-confirmed text-status-confirmed-foreground border-status-confirmed-border" }
-    case 'serving':
-      return { label: 'Đang phục vụ', variant: 'outline' as const, className: "bg-status-serving text-status-serving-foreground border-status-serving-border animate-pulse" }
-    case 'completed':
-      return { label: 'Hoàn thành', variant: 'outline' as const, className: "bg-status-completed text-status-completed-foreground border-status-completed-border" }
-    case 'cancelled':
-      return { label: 'Đã hủy', variant: 'outline' as const, className: "bg-status-cancelled text-status-cancelled-foreground border-status-cancelled-border" }
-    case 'no-show':
-      return { label: 'Vắng mặt', variant: 'outline' as const, className: "bg-status-noshow text-status-noshow-foreground border-status-noshow-border" }
-    default:
-      return { label: status, variant: 'outline' as const, className: "" }
+  const config = APPOINTMENT_STATUS_CONFIG[status] || APPOINTMENT_STATUS_CONFIG['pending']
+  return {
+    label: config.label,
+    variant: 'outline' as const,
+    className: config.styles.badge
   }
 }
 

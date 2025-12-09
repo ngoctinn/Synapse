@@ -34,31 +34,36 @@ import * as React from "react"
 import { useMemo, useState } from "react"
 import { DateRange } from "react-day-picker"
 
-import { API_SERVICE_OPTIONS, API_STAFF_OPTIONS, APPOINTMENT_STATUSES } from "../config"
+import { API_SERVICE_OPTIONS, API_STAFF_OPTIONS, APPOINTMENT_STATUS_CONFIG, APPOINTMENT_STATUSES } from "../config"
 
-// --- Helper for Dynamic Styles ---
-const getStatusStyles = (color: string) => {
-    const colors: Record<string, string> = {
-        amber: "data-[state=on]:bg-status-pending data-[state=on]:text-status-pending-foreground data-[state=on]:border-status-pending-border",
-        blue: "data-[state=on]:bg-status-confirmed data-[state=on]:text-status-confirmed-foreground data-[state=on]:border-status-confirmed-border",
-        indigo: "data-[state=on]:bg-status-serving data-[state=on]:text-status-serving-foreground data-[state=on]:border-status-serving-border", // Fallback if serving is mapped to indigo
-        emerald: "data-[state=on]:bg-status-serving data-[state=on]:text-status-serving-foreground data-[state=on]:border-status-serving-border", // Serving is emerald in config
-        slate: "data-[state=on]:bg-status-completed data-[state=on]:text-status-completed-foreground data-[state=on]:border-status-completed-border",
-        rose: "data-[state=on]:bg-status-cancelled data-[state=on]:text-status-cancelled-foreground data-[state=on]:border-status-cancelled-border", // Cancelled & No-show
-    }
-    return colors[color] || ""
+// --- Constants & Helpers ---
+const TOGGLE_ITEM_BASE_CLASSES = cn(
+    "w-full justify-start px-2 border rounded-none transition-all duration-200",
+    "border-input hover:border-accent-foreground/20 hover:bg-accent/50",
+    "data-[state=on]:border-transparent",
+    "active:scale-[0.98]"
+);
+
+const getSelectTriggerClass = (hasValue: boolean) => cn(
+    "w-full justify-between font-normal hover:bg-accent hover:text-accent-foreground",
+    hasValue && "border-primary/50 bg-primary/5 text-primary"
+);
+
+const getStatusToggleStyles = (statusValue: string) => {
+    const map: Record<string, string> = {
+        pending: "data-[state=on]:bg-status-pending data-[state=on]:text-status-pending-foreground data-[state=on]:border-status-pending-border",
+        confirmed: "data-[state=on]:bg-status-confirmed data-[state=on]:text-status-confirmed-foreground data-[state=on]:border-status-confirmed-border",
+        serving: "data-[state=on]:bg-status-serving data-[state=on]:text-status-serving-foreground data-[state=on]:border-status-serving-border",
+        completed: "data-[state=on]:bg-status-completed data-[state=on]:text-status-completed-foreground data-[state=on]:border-status-completed-border",
+        cancelled: "data-[state=on]:bg-status-cancelled data-[state=on]:text-status-cancelled-foreground data-[state=on]:border-status-cancelled-border",
+        "no-show": "data-[state=on]:bg-status-noshow data-[state=on]:text-status-noshow-foreground data-[state=on]:border-status-noshow-border",
+    };
+    return map[statusValue] || "";
 }
 
-const getDotColor = (color: string) => {
-    const dots: Record<string, string> = {
-        amber: "bg-status-pending-foreground",
-        blue: "bg-status-confirmed-foreground",
-        indigo: "bg-status-serving-foreground",
-        emerald: "bg-status-serving-foreground",
-        slate: "bg-status-completed-foreground",
-        rose: "bg-status-cancelled-foreground",
-    }
-    return dots[color] || "bg-muted-foreground"
+const getStatusDotColor = (statusValue: string) => {
+     const config = APPOINTMENT_STATUS_CONFIG[statusValue];
+     return config ? config.styles.indicator : "bg-muted-foreground";
 }
 
 interface AppointmentFilterProps {
@@ -298,10 +303,8 @@ export function AppointmentFilter({ startContent, endContent, className, viewMod
                                         value="all"
                                         size="sm"
                                         className={cn(
-                                            "col-span-2 w-full justify-start px-2 border rounded-none transition-all duration-200",
-                                            "border-input hover:border-accent-foreground/20 hover:bg-accent/50",
-                                            "data-[state=on]:border-transparent data-[state=on]:bg-primary/10 data-[state=on]:text-primary",
-                                            "active:scale-95"
+                                            "col-span-2 data-[state=on]:bg-primary/10 data-[state=on]:text-primary",
+                                            TOGGLE_ITEM_BASE_CLASSES
                                         )}
                                     >
                                         <div className={cn("w-1.5 h-1.5 rounded-full mr-2 shrink-0 bg-primary")} />
@@ -314,14 +317,11 @@ export function AppointmentFilter({ startContent, endContent, className, viewMod
                                             value={status.value}
                                             size="sm"
                                             className={cn(
-                                                "w-full justify-start px-2 border rounded-none transition-all duration-200",
-                                                "border-input hover:border-accent-foreground/20 hover:bg-accent/50",
-                                                "data-[state=on]:border-transparent",
-                                                "active:scale-95",
-                                                getStatusStyles(status.color)
+                                                TOGGLE_ITEM_BASE_CLASSES,
+                                                getStatusToggleStyles(status.value)
                                             )}
                                         >
-                                            <div className={cn("w-1.5 h-1.5 rounded-full mr-2 shrink-0", getDotColor(status.color))} />
+                                            <div className={cn("w-1.5 h-1.5 rounded-full mr-2 shrink-0", getStatusDotColor(status.value))} />
                                             <span className="truncate text-xs">{status.label}</span>
                                         </ToggleGroupItem>
                                     ))}
@@ -352,10 +352,7 @@ export function AppointmentFilter({ startContent, endContent, className, viewMod
                                             variant="outline"
                                             role="combobox"
                                             aria-expanded={openService}
-                                            className={cn(
-                                                "w-full justify-between font-normal hover:bg-accent hover:text-accent-foreground",
-                                                selectedServiceIds.length > 0 && "border-primary/50 bg-primary/5 text-primary"
-                                            )}
+                                            className={getSelectTriggerClass(selectedServiceIds.length > 0)}
                                         >
                                             {renderServiceLabel()}
                                             <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -433,10 +430,7 @@ export function AppointmentFilter({ startContent, endContent, className, viewMod
                                             variant="outline"
                                             role="combobox"
                                             aria-expanded={openStaff}
-                                            className={cn(
-                                                "w-full justify-between font-normal hover:bg-accent hover:text-accent-foreground",
-                                                selectedStaffIds.length > 0 && "border-primary/50 bg-primary/5 text-primary"
-                                            )}
+                                            className={getSelectTriggerClass(selectedStaffIds.length > 0)}
                                         >
                                             {renderStaffLabel()}
                                             <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />

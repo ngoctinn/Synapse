@@ -13,9 +13,7 @@ import {
 import { Button } from "@/shared/ui/button"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
-import { endOfDay, isWithinInterval, startOfDay } from "date-fns"
-import { useSearchParams } from "next/navigation"
-import { useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
 import { Plus } from "lucide-react"
@@ -57,53 +55,17 @@ export function AppointmentPage({ initialAppointments, initialResources }: Appoi
   const [appointmentToCancel, setAppointmentToCancel] = useState<Appointment | null>(null)
 
 
-  const searchParams = useSearchParams()
+  /*
+    SYNC STATE: Sync local state with server props when they change.
+    This supports Server-Side Filtering (URL changes -> new props -> new state).
+  */
+  useEffect(() => {
+    setAppointments(initialAppointments)
+  }, [initialAppointments])
 
-  const filteredAppointments = useMemo(() => {
-    let result = [...appointments]
+  // Removed client-side filtering (filteredAppointments) to rely on Backend processing.
+  // The 'appointments' state now holds the data to display, either from Server (init) or Client (optimistic).
 
-
-    const statusParam = searchParams.get("status")
-    if (statusParam) {
-      const statuses = statusParam.split(",")
-      result = result.filter(a => statuses.includes(a.status))
-    }
-
-
-    const staffIdParam = searchParams.get("staffId")
-    if (staffIdParam) {
-      const staffIds = staffIdParam.split(",")
-      result = result.filter(a => staffIds.includes(a.resourceId))
-    }
-
-
-    const query = searchParams.get("q")?.toLowerCase()
-    if (query) {
-      result = result.filter(a =>
-        a.customerName.toLowerCase().includes(query) ||
-        a.serviceName.toLowerCase().includes(query) ||
-        a.id.toLowerCase().includes(query)
-      )
-    }
-
-
-    if (activeTab === 'list') {
-       const fromStr = searchParams.get("from")
-       const toStr = searchParams.get("to")
-
-       if (fromStr) {
-         const fromDate = startOfDay(new Date(fromStr))
-         // If 'to' is missing, assume single day selection (end of that day)
-         const toDate = toStr ? endOfDay(new Date(toStr)) : endOfDay(new Date(fromStr))
-
-         result = result.filter(a => {
-            return isWithinInterval(a.startTime, { start: fromDate, end: toDate })
-         })
-       }
-    }
-
-    return result
-  }, [appointments, searchParams, activeTab])
 
 
   const handleSlotClick = (resourceId: string, time: Date) => {
@@ -172,8 +134,8 @@ export function AppointmentPage({ initialAppointments, initialResources }: Appoi
           viewMode={activeTab as "list" | "timeline" | "calendar"}
           startContent={
             <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto justify-start">
-              <TabsTrigger value="timeline" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Lịch biểu</TabsTrigger>
-              <TabsTrigger value="list" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Danh sách</TabsTrigger>
+              <TabsTrigger value="timeline" className="px-4 w-28 flex-1 md:flex-none">Lịch biểu</TabsTrigger>
+              <TabsTrigger value="list" className="px-4 w-28 flex-1 md:flex-none">Danh sách</TabsTrigger>
             </TabsList>
           }
           endContent={
@@ -195,7 +157,7 @@ export function AppointmentPage({ initialAppointments, initialResources }: Appoi
 
 
              <AppointmentTimeline
-               appointments={filteredAppointments}
+               appointments={appointments}
                resources={initialResources}
                onSlotClick={handleSlotClick}
                onAppointmentClick={handleAppointmentClick}
@@ -206,7 +168,7 @@ export function AppointmentPage({ initialAppointments, initialResources }: Appoi
           <TabsContent value="list" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
              <div className="flex-1 p-4 md:p-6 overflow-hidden">
                 <AppointmentTable
-                  appointments={filteredAppointments}
+                  appointments={appointments}
                   resources={initialResources}
                   onEdit={handleEditAppointment}
                   onCancel={handleCreateCancelRequest}

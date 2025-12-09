@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import { Clock } from 'lucide-react';
 import * as React from 'react';
-import { Appointment } from '../types';
+import { Appointment, AppointmentStatus } from '../types';
 
 interface AppointmentCardProps {
   appointment: Appointment;
@@ -13,26 +13,14 @@ interface AppointmentCardProps {
 }
 
 
-const statusStyles = {
-  pending: 'bg-status-pending border-status-pending-border text-status-pending-foreground hover:bg-status-pending/90',
-  confirmed: 'bg-status-confirmed border-status-confirmed-border text-status-confirmed-foreground hover:bg-status-confirmed/90',
-  serving: 'bg-status-serving border-status-serving-border text-status-serving-foreground hover:bg-status-serving/90 shadow-[0_0_10px_rgba(var(--status-serving),0.3)]',
-  completed: 'bg-status-completed border-status-completed-border text-status-completed-foreground hover:bg-status-completed/90',
-  cancelled: 'bg-status-cancelled border-status-cancelled-border text-status-cancelled-foreground hover:bg-status-cancelled/90 opacity-80',
-  'no-show': 'bg-status-noshow border-status-noshow-border text-status-noshow-foreground hover:bg-status-noshow/90',
-};
+import { APPOINTMENT_STATUS_CONFIG } from '../config';
 
-const statusIndicator = {
-  pending: 'bg-status-pending-foreground',
-  confirmed: 'bg-status-confirmed-foreground',
-  serving: 'bg-status-serving-foreground',
-  completed: 'bg-status-completed-foreground',
-  cancelled: 'bg-status-cancelled-foreground',
-  'no-show': 'bg-status-noshow-foreground',
-};
+const getStatusStyles = (status: AppointmentStatus) => {
+    return APPOINTMENT_STATUS_CONFIG[status]?.styles || APPOINTMENT_STATUS_CONFIG['pending'].styles
+}
 
 export function AppointmentCard({ appointment, style, className, onClick }: AppointmentCardProps) {
-
+  const styles = getStatusStyles(appointment.status)
 
   return (
     <motion.div
@@ -44,9 +32,17 @@ export function AppointmentCard({ appointment, style, className, onClick }: Appo
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       style={style}
       onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick?.();
+        }
+      }}
       className={cn(
-        'absolute inset-x-1 rounded-lg border p-2 text-xs font-medium cursor-pointer shadow-sm overflow-hidden group backdrop-blur-[2px]',
-        statusStyles[appointment.status],
+        'absolute inset-x-1 rounded-lg border p-2 text-xs font-medium cursor-pointer shadow-sm overflow-hidden group backdrop-blur-[2px] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        styles.card,
         className
       )}
     >
@@ -54,7 +50,7 @@ export function AppointmentCard({ appointment, style, className, onClick }: Appo
       <div
         className={cn(
           "absolute left-0 top-0 bottom-0 w-1 transition-all group-hover:w-1.5",
-          statusIndicator[appointment.status]
+          styles.indicator
         )}
       />
 

@@ -4,19 +4,19 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/shared/ui/tabs";
-import { 
-  format, 
-  addDays, 
-  subDays, 
-  addWeeks, 
-  subWeeks, 
-  addMonths, 
-  subMonths, 
-  startOfWeek, 
-  endOfWeek, 
-  isSameDay, 
-  isSameWeek, 
-  isSameMonth 
+import {
+  addDays,
+  addMonths,
+  addWeeks,
+  endOfWeek,
+  format,
+  isSameDay,
+  isSameMonth,
+  isSameWeek,
+  startOfWeek,
+  subDays,
+  subMonths,
+  subWeeks
 } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -30,7 +30,7 @@ interface CalendarHeaderProps {
 }
 
 export function CalendarHeader({ date, onDateChange, view, onViewChange }: CalendarHeaderProps) {
-  
+
   // Logic điều hướng dựa trên View
   const handlePrev = () => {
     switch (view) {
@@ -108,7 +108,7 @@ export function CalendarHeader({ date, onDateChange, view, onViewChange }: Calen
     switch (view) {
       case 'month': return isSameMonth(date, now);
       case 'week': return isSameWeek(date, now, { weekStartsOn: 1 });
-      case 'day': 
+      case 'day':
       case 'timeline': return isSameDay(date, now);
       default: return false;
     }
@@ -121,9 +121,9 @@ export function CalendarHeader({ date, onDateChange, view, onViewChange }: Calen
           <Button variant="ghost" size="icon" className="rounded-md" onClick={handlePrev}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <Button 
-            variant="ghost" 
-            className={`font-medium min-w-[80px] ${isCurrent() ? 'text-primary font-bold' : ''}`} 
+          <Button
+            variant="ghost"
+            className={`font-medium min-w-[80px] ${isCurrent() ? 'text-primary font-bold' : ''}`}
             onClick={handleToday}
           >
             {getNavigateLabel()}
@@ -145,25 +145,25 @@ export function CalendarHeader({ date, onDateChange, view, onViewChange }: Calen
           <TabsList className="h-9 bg-muted/50 p-1">
             <TabsTrigger
               value="timeline"
-              className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 transition-all duration-200"
+              className="px-4"
             >
               Timeline (KTV)
             </TabsTrigger>
             <TabsTrigger
               value="day"
-              className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 transition-all duration-200"
+              className="px-4"
             >
               Ngày
             </TabsTrigger>
             <TabsTrigger
               value="week"
-              className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 transition-all duration-200"
+              className="px-4"
             >
               Tuần
             </TabsTrigger>
             <TabsTrigger
               value="month"
-              className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 transition-all duration-200"
+              className="px-4"
             >
               Tháng
             </TabsTrigger>
