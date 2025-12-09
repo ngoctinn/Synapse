@@ -20,9 +20,9 @@ import { isWithinInterval, startOfDay, endOfDay } from "date-fns"
 import { MOCK_APPOINTMENTS, MOCK_RESOURCES } from "../mock-data"
 import { Appointment } from "../types"
 import { AppointmentFilter } from "./appointment-filter"
-import { AppointmentTimeline } from "./appointment-timeline"
-import { AppointmentTable } from "./appointment-table"
 import { AppointmentSheet } from "./appointment-sheet"
+import { AppointmentTable } from "./appointment-table"
+import { AppointmentTimeline } from "./appointment-timeline"
 
 interface AppointmentPageProps {
     initialData?: boolean; // Reserved for future server data
@@ -38,7 +38,7 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
   // In a real SSR app, we would read searchParams here or receive them via props
   // and pass them to use(promise). For now, we simulate "Client Side Filtering" removed
   // and just use MOCK_APPOINTMENTS directly or via state for local mutation simulation.
-  
+
   const [activeTab, setActiveTab] = useState("timeline")
   // Keep raw appointments state for mutations (add/cancel)
   const [appointments, setAppointments] = useState<Appointment[]>(MOCK_APPOINTMENTS)
@@ -47,7 +47,7 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [sheetMode, setSheetMode] = useState<"create" | "update">("create")
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
-  
+
   // Create Pre-fill States
   const [createDefaultDate, setCreateDefaultDate] = useState<Date | undefined>(undefined)
   const [createDefaultResource, setCreateDefaultResource] = useState<string | undefined>(undefined)
@@ -138,7 +138,7 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
       }
       // Toast is handled inside Sheet but we can add extra logic here
   }
-  
+
   const handleEditAppointment = (appointment: Appointment) => {
      handleAppointmentClick(appointment)
   }
@@ -151,12 +151,12 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
   const handleConfirmCancel = () => {
       if (!appointmentToCancel) return
 
-      setAppointments(prev => prev.map(a => 
+      setAppointments(prev => prev.map(a =>
           a.id === appointmentToCancel.id ? { ...a, status: 'cancelled' } : a
       ))
 
       toast.success("Đã hủy lịch hẹn thành công")
-      
+
       setIsCancelAlertOpen(false)
       // If the sheet was open for this appointment, close it
       if (selectedAppointment?.id === appointmentToCancel.id) {
@@ -179,20 +179,21 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
           }
           endContent={
             <div className="hidden md:block">
-                 <button 
+                 <Button
                     onClick={handleCreateButtonClick}
-                    className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
+                    size="sm"
+                    className="gap-2"
                  >
-                     <span className="mr-2 text-lg leading-none">+</span>
+                     <Plus className="h-4 w-4" />
                      Tạo lịch hẹn
-                 </button>
+                 </Button>
             </div>
           }
         />
 
         <div className="flex-1 p-0 animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out flex flex-col">
           <TabsContent value="timeline" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
-             
+
              {/* The Timeline Component */}
              <AppointmentTimeline 
                appointments={filteredAppointments} 

@@ -1,7 +1,7 @@
 import { MaintenanceTask, Resource } from "./types";
 
 export const mockResources: Resource[] = [
-  // Rooms
+
   {
     id: "r1",
     name: "Phòng VIP 1",
@@ -37,7 +37,7 @@ export const mockResources: Resource[] = [
     tags: ["hair", "common"],
     createdAt: "2023-01-03T00:00:00Z",
   },
-  // Equipment
+
   {
     id: "e1",
     name: "Máy Triệt Lông Diode Laser",
@@ -84,7 +84,7 @@ export const mockMaintenanceTasks: MaintenanceTask[] = [
     id: "mt2",
     resourceId: "e1",
     title: "Thay đầu bắn",
-    date: new Date(Date.now() + 86400000 * 2).toISOString(), // +2 days
+    date: new Date(Date.now() + 86400000 * 2).toISOString(),
     status: "scheduled",
   },
   {

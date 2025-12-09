@@ -6,9 +6,9 @@ import { useState } from "react"
 
 import { Button } from "@/shared/ui/button"
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
 } from "@/shared/ui/popover"
 import { toast } from "sonner"
 import { MOCK_SHIFTS } from "../../data/shifts"
@@ -30,7 +30,7 @@ export function StaffScheduler({ initialSchedules, staffList, className }: Staff
       actions: { nextWeek, prevWeek, resetToday, addShift, removeSchedule, removeScheduleBySlot }
   } = useStaffSchedule({ initialSchedules })
 
-  // Dialog State
+
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [selectedCell, setSelectedCell] = useState<{ staffId: string, date: Date } | null>(null)
 
@@ -61,7 +61,7 @@ export function StaffScheduler({ initialSchedules, staffList, className }: Staff
     ? format(selectedCell.date, "dd/MM/yyyy")
     : undefined
 
-  // Paint Mode State
+
   const [selectedTool, setSelectedTool] = useState<Shift | "eraser" | null>(null)
   const [isPaintOpen, setIsPaintOpen] = useState(false)
 
@@ -81,9 +81,9 @@ export function StaffScheduler({ initialSchedules, staffList, className }: Staff
 
   return (
     <div className={`flex flex-col gap-0 ${className}`}>
-      {/* Toolbar */}
+
       <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 px-4 py-3 border-b shrink-0 sticky top-[var(--staff-header-height-mobile)] md:top-[var(--staff-header-height)] z-20 bg-background">
-        {/* Left: Navigation */}
+
         <div className="flex items-center gap-2">
           <Button variant="outline" size="icon" onClick={prevWeek} className="h-8 w-8 active:scale-95 transition-transform" aria-label="Tuần trước">
             <ChevronLeft className="h-4 w-4" />
@@ -99,9 +99,9 @@ export function StaffScheduler({ initialSchedules, staffList, className }: Staff
           </Button>
         </div>
 
-        {/* Right: Actions & Tools */}
+
         <div className="flex items-center gap-2 ml-auto xl:ml-0">
-          {/* Paint Tools */}
+
           <Popover open={isPaintOpen} onOpenChange={setIsPaintOpen}>
             <PopoverTrigger asChild>
               <Button

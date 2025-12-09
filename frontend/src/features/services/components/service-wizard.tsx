@@ -8,44 +8,44 @@ import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { MoneyInput } from "@/shared/ui/custom/money-input";
 import { TagInput } from "@/shared/ui/custom/tag-input";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
 } from "@/shared/ui/dialog";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select";
 import { Switch } from "@/shared/ui/switch";
 import { Textarea } from "@/shared/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  ArrowLeft,
-  Box,
-  Check,
-  ChevronRight,
-  Clock,
-  FileText,
-  Loader2,
-  Palette,
-  Pencil,
-  Settings,
-  Tag,
-  Users,
+    ArrowLeft,
+    Box,
+    Check,
+    ChevronRight,
+    Clock,
+    FileText,
+    Loader2,
+    Palette,
+    Pencil,
+    Settings,
+    Tag,
+    Users,
 } from "lucide-react";
 import * as React from "react";
 import { Resolver, useForm } from "react-hook-form";
@@ -138,7 +138,7 @@ export function ServiceWizard({
   const duration = form.watch("duration");
   const bufferTime = form.watch("buffer_time");
 
-  // Reset form when dialog opens/closes or initialData changes
+
   React.useEffect(() => {
     if (open) {
       form.reset({
@@ -162,7 +162,7 @@ export function ServiceWizard({
     }
   }, [open, initialData, form]);
 
-  // Convert skills for TagInput
+
   const skillOptions = availableSkills.map(s => ({ id: s.id, label: s.name }));
 
   const handleNext = async () => {
@@ -221,7 +221,7 @@ export function ServiceWizard({
             <button
               type="button"
               onClick={() => {
-                // Cho phép click vào step đã hoàn thành
+
                 if (isPast) setStep(s);
               }}
               className={cn(
@@ -256,7 +256,7 @@ export function ServiceWizard({
   const steps = {
     basic: (
       <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-        {/* Active Status (Edit mode) */}
+
         {isEditMode && (
           <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border">
             <div>
@@ -285,7 +285,7 @@ export function ServiceWizard({
         )}
 
         <div className="grid md:grid-cols-[180px_1fr] gap-6">
-          {/* Image Upload */}
+
           <FormField
             control={form.control}
             name="image_url"
@@ -304,7 +304,7 @@ export function ServiceWizard({
             )}
           />
 
-          {/* Basic Info */}
+
           <div className="space-y-4">
             <FormField
               control={form.control}
@@ -327,7 +327,7 @@ export function ServiceWizard({
               )}
             />
 
-            {/* Color Picker */}
+
             <FormField
               control={form.control}
               name="color"
@@ -374,7 +374,7 @@ export function ServiceWizard({
           </div>
         </div>
 
-        {/* Description */}
+
         <FormField
           control={form.control}
           name="description"
@@ -445,14 +445,14 @@ export function ServiceWizard({
           />
         </div>
 
-        {/* Timeline Visualizer */}
+
         <ServiceTimeVisualizer
           duration={duration}
           bufferTime={bufferTime}
           className="bg-muted/20 border-2 border-dashed border-primary/20 rounded-xl p-4"
         />
 
-        {/* Price */}
+
         <FormField
           control={form.control}
           name="price"
@@ -478,7 +478,7 @@ export function ServiceWizard({
 
     resources: (
       <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-        {/* Room Type */}
+
         <FormField
           control={form.control}
           name="resource_requirements.room_type_id"
@@ -507,7 +507,7 @@ export function ServiceWizard({
           )}
         />
 
-        {/* Skills */}
+
         <FormField
           control={form.control}
           name="skill_ids"
@@ -533,7 +533,7 @@ export function ServiceWizard({
           )}
         />
 
-        {/* Equipment Timeline */}
+
         <div className="space-y-3 pt-2 border-t">
           <FormLabel className="text-foreground/80 flex items-center gap-2">
             <Settings className="w-4 h-4 text-primary" />
@@ -564,7 +564,7 @@ export function ServiceWizard({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-hidden flex flex-col p-0 gap-0">
-        {/* Header */}
+
         <div className="p-6 pb-2 border-b bg-muted/10">
           <DialogHeader>
             <DialogTitle className="text-xl font-semibold flex items-center gap-2">
@@ -582,11 +582,11 @@ export function ServiceWizard({
             </DialogDescription>
           </DialogHeader>
 
-          {/* Step Indicator */}
+
           {renderStepIndicator()}
         </div>
 
-        {/* Content */}
+
         <Form {...form}>
           <form onSubmit={(e) => e.preventDefault()} className="flex-1 overflow-y-auto">
             <div className="p-6 min-h-[350px]">
@@ -603,7 +603,7 @@ export function ServiceWizard({
               </AnimatePresence>
             </div>
 
-            {/* Footer Actions */}
+
             <div className="p-6 pt-4 border-t bg-muted/10 flex items-center justify-between">
               {step !== "basic" ? (
                 <Button

@@ -26,7 +26,7 @@ import { Switch } from "@/shared/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Textarea } from "@/shared/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, Box, Clock, Loader2, Save, Tag } from "lucide-react"; // Import icons
+import { ArrowLeft, Box, Clock, Save, Tag } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Resolver, useForm } from "react-hook-form";
@@ -89,10 +89,10 @@ export function ServiceForm({
   const duration = form.watch("duration");
   const bufferTime = form.watch("buffer_time");
 
-  // Chuyển đổi availableSkills cho TagInput
+
   const skillOptions = availableSkills.map(s => ({ id: s.id, label: s.name }));
 
-  // Chuyển đổi availableEquipment cho TagInput
+
   const equipmentOptions = availableEquipment.map(e => ({ id: e.id, label: e.name }));
 
   async function onSubmit(data: ServiceFormValues) {
@@ -125,7 +125,7 @@ export function ServiceForm({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 
-        {/* Top Actions Bar - Page mode: full layout với back button */}
+
         {variant === "page" && (
           <div className="flex items-center justify-between bg-background/50 backdrop-blur pb-4 border-b sticky top-0 z-10">
               <div className="flex items-center gap-4">
@@ -162,15 +162,15 @@ export function ServiceForm({
                   <Button variant="outline" type="button" onClick={() => router.back()} disabled={isPending}>
                       Hủy
                   </Button>
-                  <Button type="submit" disabled={isPending} className="min-w-[120px] shadow-md shadow-primary/20">
-                      {isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                  <Button type="submit" loading={isPending} className="min-w-[120px] shadow-md shadow-primary/20">
+                      {!isPending && <Save className="w-4 h-4 mr-2" />}
                       {initialData ? "Lưu thay đổi" : "Tạo dịch vụ"}
                   </Button>
               </div>
           </div>
         )}
 
-        {/* Dialog mode: No top bar, actions moved to footer */}
+
 
         <Tabs defaultValue="general" className="w-full space-y-6">
             <TabsList className="w-full justify-start h-12 p-1 bg-muted/40 rounded-xl">
@@ -182,10 +182,10 @@ export function ServiceForm({
                  </TabsTrigger>
             </TabsList>
 
-             {/* TAB 1: THÔNG TIN CHUNG */}
+
             <TabsContent value="general" className="motion-safe:animate-fade-in space-y-8">
                 <div className="grid lg:grid-cols-3 gap-8">
-                     {/* Cột trái: Ảnh đại diện */}
+
                      <div className="lg:col-span-1 space-y-6">
                         <div className="flex flex-col gap-4">
                             <h3 className="font-medium text-foreground flex items-center gap-2">
@@ -214,7 +214,7 @@ export function ServiceForm({
                         </div>
                      </div>
 
-                     {/* Cột phải: Form fields */}
+
                      <div className="lg:col-span-2 grid gap-6 content-start bg-card/50 p-6 rounded-2xl border shadow-sm">
                         <div className="grid md:grid-cols-2 gap-6">
                             <FormField
@@ -315,10 +315,10 @@ export function ServiceForm({
                 </div>
             </TabsContent>
 
-            {/* TAB 2: CẤU HÌNH & TÀI NGUYÊN */}
+
             <TabsContent value="settings" className="motion-safe:animate-fade-in">
                 <div className="grid lg:grid-cols-2 gap-8">
-                    {/* Block: Thời gian */}
+
                     <div className="space-y-6">
                         <div className="flex items-center gap-2 pb-2 border-b">
                             <Clock className="w-5 h-5 text-primary" />
@@ -368,12 +368,12 @@ export function ServiceForm({
                                 />
                             </div>
 
-                            {/* Visualizer */}
+
                             <ServiceTimeVisualizer duration={duration} bufferTime={bufferTime} className="bg-muted/20 border-2 border-dashed border-primary/20 rounded-xl p-5" />
                         </div>
                     </div>
 
-                    {/* Block: Tài nguyên */}
+
                     <div className="space-y-6">
                          <div className="flex items-center gap-2 pb-2 border-b">
                             <Tag className="w-5 h-5 text-primary" />
@@ -381,7 +381,7 @@ export function ServiceForm({
                         </div>
 
                          <div className="bg-card/50 p-6 rounded-2xl border shadow-sm space-y-6">
-                             {/* Room Type */}
+
                              <FormField
                                 control={form.control}
                                 name="resource_requirements.room_type_id"
@@ -405,7 +405,7 @@ export function ServiceForm({
                                 )}
                             />
 
-                             {/* Skills */}
+
                              <FormField
                                 control={form.control}
                                 name="skill_ids"
@@ -428,7 +428,7 @@ export function ServiceForm({
                                 )}
                             />
 
-                             {/* Equipment Timeline */}
+
                              <div className="space-y-3 pt-4 border-t">
                                <div className="flex items-center gap-2">
                                  <Box className="w-4 h-4 text-primary" />
@@ -483,8 +483,8 @@ export function ServiceForm({
                <Button variant="outline" type="button" onClick={() => onSuccess?.()} disabled={isPending} className="h-11">
                    Hủy
                </Button>
-               <Button type="submit" disabled={isPending} className="shadow-md shadow-primary/20 h-11 min-w-[140px]">
-                   {isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+               <Button type="submit" loading={isPending} className="shadow-md shadow-primary/20 h-11 min-w-[140px]">
+                   {!isPending && <Save className="w-4 h-4 mr-2" />}
                    {initialData ? "Lưu thay đổi" : "Tạo dịch vụ"}
                </Button>
            </DialogFooter>

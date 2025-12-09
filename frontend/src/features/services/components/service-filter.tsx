@@ -1,20 +1,20 @@
   "use client"
 
   import { Skill } from "@/features/services/types"
-  import { useFilterParams } from "@/shared/lib/hooks/use-filter-params"
-  import { FilterButton } from "@/shared/ui/custom/filter-button"
-  import { MoneyInput } from "@/shared/ui/custom/money-input"
-  import { TagInput } from "@/shared/ui/custom/tag-input"
-  import { Label } from "@/shared/ui/label"
-  import {
-      Select,
-      SelectContent,
-      SelectItem,
-      SelectTrigger,
-      SelectValue,
-  } from "@/shared/ui/select"
-  import { Slider } from "@/shared/ui/slider"
-  import { useEffect, useState } from "react"
+import { useFilterParams } from "@/shared/lib/hooks/use-filter-params"
+import { FilterButton } from "@/shared/ui/custom/filter-button"
+import { MoneyInput } from "@/shared/ui/custom/money-input"
+import { TagInput } from "@/shared/ui/custom/tag-input"
+import { Label } from "@/shared/ui/label"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/shared/ui/select"
+import { Slider } from "@/shared/ui/slider"
+import { useEffect, useState } from "react"
 
   interface ServiceFilterProps {
     availableSkills: Skill[]
@@ -26,27 +26,27 @@
         filterKeys: ["min_price", "max_price", "duration", "skill_ids"],
       })
 
-    // Lấy giá trị hiện tại
+
     const minPrice = Number(searchParams.get("min_price")) || 0
     const maxPrice = Number(searchParams.get("max_price")) || 10000000
     const duration = searchParams.get("duration")
     const skillIds =
       searchParams.get("skill_ids")?.split(",").filter(Boolean) || []
 
-    // Local state cho slider để mượt mà khi kéo
+
     const [localPriceRange, setLocalPriceRange] = useState([minPrice, maxPrice])
 
-    // Đồng bộ local state khi URL params thay đổi
+
     useEffect(() => {
       setLocalPriceRange([minPrice, maxPrice])
     }, [minPrice, maxPrice])
 
-    // Xử lý khi kéo slider (chỉ update UI local)
+
     const handlePriceRangeChange = (value: number[]) => {
       setLocalPriceRange(value)
     }
 
-    // Xử lý khi thả chuột (update URL)
+
     const handlePriceRangeCommit = (value: number[]) => {
       updateParams({
         min_price: value[0] > 0 ? value[0].toString() : null,
@@ -54,22 +54,22 @@
       })
     }
 
-    // Xử lý thay đổi input giá min
+
     const handleMinPriceChange = (value: number) => {
       updateParam("min_price", value > 0 ? value.toString() : null)
     }
 
-    // Xử lý thay đổi input giá max
+
     const handleMaxPriceChange = (value: number) => {
       updateParam("max_price", value > 0 ? value.toString() : null)
     }
 
-    // Xử lý thay đổi thời lượng
+
     const handleDurationChange = (value: string) => {
       updateParam("duration", value === "all" ? null : value)
     }
 
-    // Xử lý thay đổi kỹ năng
+
     const handleSkillsChange = (ids: string[]) => {
       updateParam("skill_ids", ids.length > 0 ? ids.join(",") : null)
     }
@@ -84,7 +84,7 @@
         className="h-9 w-9"
       >
         <div className="grid gap-6 p-1">
-          {/* Lọc theo Giá */}
+
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <Label className="text-sm font-medium">Khoảng giá</Label>
@@ -128,7 +128,7 @@
 
           <div className="h-[1px] bg-border/50" />
 
-          {/* Lọc theo Thời lượng */}
+
           <div className="space-y-3">
             <Label className="text-sm font-medium">Thời lượng</Label>
             <Select value={duration || "all"} onValueChange={handleDurationChange}>
@@ -148,7 +148,7 @@
 
           <div className="h-[1px] bg-border/50" />
 
-          {/* Lọc theo Kỹ năng */}
+
           <div className="space-y-3">
             <Label className="text-sm font-medium">Kỹ năng yêu cầu</Label>
             <TagInput

@@ -36,7 +36,7 @@ export function ResourceFilter() {
       onClear={clearFilters}
     >
       <div className="grid gap-6 p-1">
-        {/* Lọc theo Loại */}
+
         <div className="space-y-3">
           <Label htmlFor="type" className="text-sm font-medium">Loại tài nguyên</Label>
           <Select value={type || "all"} onValueChange={handleTypeChange}>
@@ -63,7 +63,7 @@ export function ResourceFilter() {
 
         <div className="h-[1px] bg-border/50" />
 
-        {/* Lọc theo Trạng thái */}
+
         <div className="space-y-3">
           <Label htmlFor="status" className="text-sm font-medium">Trạng thái</Label>
           <Select value={status || "all"} onValueChange={handleStatusChange}>

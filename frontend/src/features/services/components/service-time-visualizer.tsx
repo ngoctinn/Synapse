@@ -16,7 +16,7 @@ export function ServiceTimeVisualizer({ duration, bufferTime, className }: Servi
   return (
     <div className={cn("rounded-xl border bg-card shadow-sm p-5", className)}>
       <h4 className="text-sm font-medium mb-3 text-foreground">Trực quan hóa thời gian</h4>
-      
+
       <div className="flex items-center gap-4 text-xs text-muted-foreground mb-3">
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-primary shadow-sm"></span>
@@ -34,7 +34,7 @@ export function ServiceTimeVisualizer({ duration, bufferTime, className }: Servi
           style={{ width: `${durationPercent}%` }}
         >
            {duration > 0 && <span>{duration}p</span>}
-           {/* Shine effect */}
+
            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer" />
         </div>
         <div
@@ -48,7 +48,7 @@ export function ServiceTimeVisualizer({ duration, bufferTime, className }: Servi
           {Number(bufferTime) > 0 && `${bufferTime}p`}
         </div>
       </div>
-      
+
       <p className="text-xs text-right mt-2 text-muted-foreground">
         Tổng thời gian khóa lịch: <span className="font-medium text-foreground">{totalTime} phút</span>
       </p>

@@ -1,8 +1,8 @@
 "use client"
 
+import { cn } from "@/shared/lib/utils"
 import { Button } from "@/shared/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover"
-import { cn } from "@/shared/lib/utils"
 import { SlidersHorizontal, X } from "lucide-react"
 import { ReactNode } from "react"
 
@@ -47,11 +47,11 @@ export function FilterButton({
         >
           <Icon className={cn("h-4 w-4", label && "mr-2")} />
           {label}
-          
+
           {count > 0 && (
             <span className={cn(
               "absolute flex h-4 w-4 animate-in zoom-in duration-300 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground shadow-sm ring-2 ring-background",
-              label ? "-right-1 -top-1" : "-right-1 -top-1" // Keep same position or adjust if needed
+              label ? "-right-1 -top-1" : "-right-1 -top-1"
             )}>
               {count}
             </span>

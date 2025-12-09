@@ -55,7 +55,7 @@ export function ResourcePage({ resourcesPromise, tasksPromise }: ResourcePagePro
       "--header-height-mobile": "105px"
     } as React.CSSProperties}>
       <Tabs defaultValue="list" className="flex flex-col flex-1 w-full gap-0" onValueChange={setActiveTab}>
-        {/* Sticky Header with Tabs and Actions */}
+
         <div
           className="sticky top-0 z-40 px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4"
         >

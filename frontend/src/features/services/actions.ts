@@ -17,7 +17,7 @@ export async function getServices(
   search?: string,
   activeOnly = false
 ): Promise<PaginatedResponse<Service>> {
-  // Simulate network delay
+
   await new Promise((resolve) => setTimeout(resolve, 500));
 
   let filtered = services;
@@ -75,7 +75,7 @@ export async function createService(data: ServiceCreateInput): Promise<{ success
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     skills: data.skill_ids ? skills.filter(s => data.skill_ids?.includes(s.id)) : [],
-    image_url: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000", // Default image
+    image_url: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000",
     category: data.category || "Uncategorized",
     is_popular: false
   };

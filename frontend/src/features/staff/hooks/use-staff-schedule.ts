@@ -15,7 +15,7 @@ export function useStaffSchedule({ initialSchedules }: UseStaffScheduleProps) {
   const [schedules, setSchedules] = useState<Schedule[]>(initialSchedules)
   const [isPending, startTransition] = useTransition()
 
-  // Week Navigation
+
   const nextWeek = () => setCurrentDate((d) => addDays(d, 7))
   const prevWeek = () => setCurrentDate((d) => addDays(d, -7))
   const resetToday = () => setCurrentDate(new Date())
@@ -23,7 +23,7 @@ export function useStaffSchedule({ initialSchedules }: UseStaffScheduleProps) {
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 })
   const weekEnd = addDays(weekStart, 6)
 
-  // Actions
+
   const addShift = async (staffId: string, date: Date, shift: Shift) => {
     const dateStr = format(date, "yyyy-MM-dd")
 
@@ -38,7 +38,7 @@ export function useStaffSchedule({ initialSchedules }: UseStaffScheduleProps) {
       date: dateStr,
       shiftId: shift.id,
       status: "DRAFT",
-      shift: shift // Using the properly typed optional property
+      shift: shift
     }
 
     // Optimistic Update
@@ -49,7 +49,7 @@ export function useStaffSchedule({ initialSchedules }: UseStaffScheduleProps) {
       return [...filtered, newSchedule]
     })
 
-    // Server Action
+
     startTransition(async () => {
       const result = await updateSchedule(newSchedule)
       if (result.success) {
@@ -63,10 +63,10 @@ export function useStaffSchedule({ initialSchedules }: UseStaffScheduleProps) {
   }
 
   const removeSchedule = async (scheduleId: string) => {
-    // Optimistic Update
+
     setSchedules((prev) => prev.filter((s) => s.id !== scheduleId))
 
-    // Server Action
+
     startTransition(async () => {
       const result = await deleteSchedule(scheduleId)
       if (result.success) {

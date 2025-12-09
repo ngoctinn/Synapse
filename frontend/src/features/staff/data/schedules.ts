@@ -3,7 +3,7 @@ import { Schedule } from "../types";
 import { MOCK_STAFF } from "./mocks";
 import { MOCK_SHIFTS } from "./shifts";
 
-// Helper to generate dates for the current week
+
 const getCurrentWeekDates = () => {
   const start = startOfWeek(new Date(), { weekStartsOn: 1 }); // Monday start
   return Array.from({ length: 7 }).map((_, i) => format(addDays(start, i), "yyyy-MM-dd"));
@@ -13,7 +13,7 @@ const weekDates = getCurrentWeekDates();
 const staffIds = MOCK_STAFF.map((s) => s.user_id);
 const shiftIds = MOCK_SHIFTS.map((s) => s.id);
 
-// Generate some random schedules
+
 export const MOCK_SCHEDULES: Schedule[] = [
   // Staff 4 (KTV 1) - Full week
   { id: "sch_1", staffId: "4", date: weekDates[0], shiftId: "shift_morning", status: "PUBLISHED" },

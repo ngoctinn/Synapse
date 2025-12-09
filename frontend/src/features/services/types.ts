@@ -31,10 +31,10 @@ export interface Service {
   image_url?: string | null;
   color: string;
   description?: string | null;
-  category?: string | null; // Added for Landing Page
+  category?: string | null;
   resource_requirements?: ResourceRequirements;
   is_active: boolean;
-  is_popular?: boolean; // Added for Landing Page
+  is_popular?: boolean;
   skills: Skill[];
   created_at: string;
   updated_at: string;

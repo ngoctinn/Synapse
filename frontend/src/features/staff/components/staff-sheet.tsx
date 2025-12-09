@@ -1,11 +1,11 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Loader2, Save, Send } from "lucide-react"
+import { Save, Send } from "lucide-react"
 import * as React from "react"
 import { useForm } from "react-hook-form"
 
-// Actions & Schemas
+
 import { Skill } from "@/features/services/types"
 import { manageStaff } from "@/features/staff/actions"
 import {
@@ -16,7 +16,7 @@ import {
 } from "@/features/staff/schemas"
 import { Staff } from "@/features/staff/types"
 
-// Components
+
 import { Button } from "@/shared/ui/button"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { Form } from "@/shared/ui/form"
@@ -47,7 +47,7 @@ const initialState = {
 export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffSheetProps) {
   const [state, dispatch, isPending] = React.useActionState(manageStaff, initialState)
 
-  // Dynamic Schema & Default Values
+
   const schema = mode === "create" ? staffCreateSchema : staffUpdateSchema
 
   const form = useForm<StaffCreateFormValues | StaffUpdateFormValues>({
@@ -61,7 +61,7 @@ export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffShe
     },
   })
 
-  // Toast effect based on Action State
+
   React.useEffect(() => {
     if (state.success && state.message) {
       showToast.success(mode === "create" ? "Đã gửi lời mời" : "Cập nhật thành công", state.message)
@@ -71,7 +71,7 @@ export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffShe
     }
   }, [state, mode, onOpenChange])
 
-  // Reset form when opening/mode changes - optimized
+
   React.useEffect(() => {
     if (open) {
       form.reset(mode === "create" ? {
@@ -97,11 +97,11 @@ export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffShe
 
   function onSubmit(data: any) {
     const formData = new FormData()
-    // Append meta fields
+
     formData.append("form_mode", mode)
     if (staff?.user_id) formData.append("staff_id", staff.user_id)
 
-    // Append data fields
+
     Object.entries(data).forEach(([key, value]) => {
       if (key === 'skill_ids') {
         formData.append(key, JSON.stringify(value))
@@ -153,10 +153,9 @@ export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffShe
                 form="staff-form"
                 disabled={isPending}
                 className="min-w-[140px] shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
+                loading={isPending}
             >
-                {isPending ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : mode === "create" ? (
+                {mode === "create" ? (
                     <>
                         <Send className="mr-2 h-4 w-4" /> Gửi lời mời
                     </>

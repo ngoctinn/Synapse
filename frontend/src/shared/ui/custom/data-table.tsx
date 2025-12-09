@@ -6,11 +6,11 @@ import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row"
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
 import { PaginationControls } from "@/shared/ui/custom/pagination-controls"
 import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/shared/ui/table"
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react"
 import { ReactNode } from "react"
@@ -36,20 +36,12 @@ interface DataTableProps<T> {
   variant?: "default" | "flush"
   isLoading?: boolean
   skeletonCount?: number
-  // Selection props
-  /** Bật chế độ chọn row */
   selectable?: boolean
-  /** Kiểm tra item có được chọn không */
   isSelected?: (id: string | number) => boolean
-  /** Handler toggle selection một row */
   onToggleOne?: (id: string | number) => void
-  /** Handler toggle select all */
   onToggleAll?: () => void
-  /** Tất cả đang được chọn */
   isAllSelected?: boolean
-  /** Một số đang được chọn (indeterminate) */
   isPartiallySelected?: boolean
-  // Sorting & Interaction
   sortColumn?: string
   sortDirection?: "asc" | "desc"
   onSort?: (column: string) => void
@@ -68,14 +60,12 @@ export function DataTable<T>({
   variant = "default",
   isLoading = false,
   skeletonCount = 5,
-  // Selection
   selectable = false,
   isSelected,
   onToggleOne,
   onToggleAll,
   isAllSelected = false,
   isPartiallySelected = false,
-  // Sorting & Interaction
   sortColumn,
   sortDirection,
   onSort,
@@ -87,7 +77,6 @@ export function DataTable<T>({
     className
   )
 
-  // Thêm padding cho skeleton nếu có selection
   const effectiveColumnCount = selectable ? columns.length + 1 : columns.length
 
   if (isLoading) {
@@ -111,7 +100,6 @@ export function DataTable<T>({
         <table className="w-full caption-bottom text-sm min-w-[800px]">
           <TableHeader className="sticky top-[var(--header-height-mobile,109px)] md:top-[var(--header-height,57px)] z-20 backdrop-blur-md bg-background/95 shadow-sm after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-border/50">
             <TableRow className="hover:bg-transparent border-none">
-              {/* Checkbox Header */}
               {selectable && (
                 <TableHead className="w-12 pl-6 bg-transparent">
                   <Checkbox
@@ -133,7 +121,6 @@ export function DataTable<T>({
                     key={index}
                     className={cn(
                       "bg-transparent h-14 font-medium text-muted-foreground transition-colors hover:text-foreground",
-                      // Nếu có selectable thì không cần pl-8 cho cột đầu
                       index === 0 && !selectable ? "pl-8" : "",
                       index === columns.length - 1 ? "pr-8 text-right" : "",
                       col.sortable ? "cursor-pointer select-none" : "",
@@ -205,7 +192,7 @@ export function DataTable<T>({
                     <TableCell
                       key={colIndex}
                       className={cn(
-                        "py-4", // Reduced slightly from 5 for tighter feel
+                        "py-4",
                         colIndex === 0 && !selectable ? "pl-8 font-medium text-foreground" : "",
                         colIndex === 0 && selectable ? "font-medium text-foreground" : "",
                         colIndex === columns.length - 1 ? "pr-8 text-right" : "text-muted-foreground",

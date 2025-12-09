@@ -33,24 +33,19 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
       <div className="relative group w-full">
         <div className={cn(
           "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-200 z-10",
-          props["aria-invalid"] ? "text-destructive" : "text-muted-foreground group-focus-within:text-primary"
+          props["aria-invalid"] ? "text-destructive" : "text-muted-foreground group-focus-within:text-primary/70"
         )}>
           <Icon size={18} {...iconProps} />
         </div>
         <Input
           type={showPassword ? "text" : "password"}
           className={cn(
-            // Base styles - Premium look
             sizeVariants[variant],
             "bg-background border-input/50 rounded-lg",
-            // Padding for icons
             "pl-10 pr-10",
-            // Transitions và shadows
             "transition-all duration-200 shadow-sm",
             "hover:shadow-md hover:border-input",
-            // Focus states - Softer, more elegant
             "focus-visible:shadow-md focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/50",
-            // Error states
             props["aria-invalid"] && "border-destructive/50 focus-visible:ring-destructive/20 focus-visible:border-destructive/50",
             className
           )}
@@ -63,7 +58,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
           size="icon"
           className={cn(
             "absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent transition-colors duration-200 z-10",
-            props["aria-invalid"] ? "text-destructive hover:text-destructive" : "text-muted-foreground hover:text-foreground group-focus-within:text-primary"
+            "text-muted-foreground hover:text-foreground group-focus-within:text-primary/70"
           )}
           onClick={() => setShowPassword((prev) => !prev)}
           tabIndex={-1} // Skip tab index for this button to keep flow natural
@@ -82,3 +77,4 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
 PasswordInput.displayName = "PasswordInput"
 
 export { PasswordInput }
+

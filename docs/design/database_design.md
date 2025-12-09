@@ -1,6 +1,6 @@
-# Thiết Kế Cơ Sở Dữ Liệu Synapse (Database Design) v2.0
+# Thiết Kế Cơ Sở Dữ Liệu Synapse (Database Design) v2.1
 
-Tài liệu này mô tả chi tiết mô hình dữ liệu (Data Model) và cung cấp script SQL khởi tạo cho hệ thống Synapse. **Phiên bản 2.0** đã được tối ưu hóa về bảo mật (RLS), hiệu năng (Index), và toàn vẹn dữ liệu (Constraints).
+Tài liệu này mô tả chi tiết mô hình dữ liệu (Data Model) và cung cấp script SQL khởi tạo cho hệ thống Synapse. **Phiên bản 2.1** đã được tối ưu hóa về bảo mật (RLS), hiệu năng (Index), toàn vẹn dữ liệu (Constraints) và bổ sung cơ chế quản lý Resource Group, Soft Delete.
 
 ## 1. Mô hình Quan hệ Thực thể (ER Diagram)
 
@@ -33,8 +33,12 @@ erDiagram
         uuid user_id PK,FK
         int loyalty_points
         enum membership_tier "SILVER, GOLD, PLATINUM"
+        enum gender "MALE, FEMALE, OTHER"
         date date_of_birth
         text address
+        text allergies
+        text medical_notes
+        uuid preferred_staff_id FK
     }
 
     users ||--o| staff_profiles : "has"
@@ -74,8 +78,8 @@ erDiagram
         decimal price
         text description
         string image_url
-        string color_code
         boolean is_active
+        timestamp deleted_at "Soft Delete"
         timestamp created_at
         timestamp updated_at
     }
@@ -92,25 +96,36 @@ erDiagram
     skills ||--|{ service_required_skills : "needed_by"
 
     %% === RESOURCES ===
-    resources {
+    resource_groups {
         uuid id PK
         string name
-        string code UK
         enum type "ROOM, EQUIPMENT"
+        text description
+        timestamp deleted_at
+    }
+
+    resources {
+        uuid id PK
+        uuid group_id FK
+        string name
+        string code UK
         enum status "ACTIVE, MAINTENANCE, INACTIVE"
         int capacity
         int setup_time_minutes
         text description
         string image_url
+        timestamp deleted_at
     }
 
     service_resource_requirements {
         uuid service_id PK,FK
-        enum resource_type
+        uuid group_id PK,FK
         int quantity
     }
 
+    resource_groups ||--|{ resources : "categorizes"
     services ||--|{ service_resource_requirements : "needs"
+    resource_groups ||--|{ service_resource_requirements : "needed_as"
 
     %% === SCHEDULING ===
     shifts {
@@ -137,6 +152,7 @@ erDiagram
     bookings {
         uuid id PK
         uuid customer_id FK
+        uuid created_by FK "Người tạo booking"
         timestamp start_time
         timestamp end_time
         enum status
@@ -159,6 +175,7 @@ erDiagram
         uuid staff_id FK
         uuid resource_id FK
         uuid treatment_id FK
+        string service_name_snapshot "Snapshot"
         timestamp start_time
         timestamp end_time
         decimal original_price
@@ -185,6 +202,26 @@ erDiagram
     users ||--|{ customer_treatments : "owns"
     booking_items ||--o| customer_treatments : "redeems"
 
+    %% === SERVICE PACKAGES ===
+    service_packages {
+        uuid id PK
+        string name
+        text description
+        decimal price
+        int validity_days
+        boolean is_active
+        timestamp created_at
+    }
+
+    package_services {
+        uuid package_id PK,FK
+        uuid service_id PK,FK
+        int quantity
+    }
+
+    service_packages ||--|{ package_services : "includes"
+    services ||--|{ package_services : "part_of"
+
     %% === BILLING ===
     invoices {
         uuid id PK
@@ -201,6 +238,8 @@ erDiagram
         uuid invoice_id FK
         decimal amount
         enum method "CASH, CARD, TRANSFER"
+        string transaction_ref
+        jsonb gateway_info
         timestamp transaction_time
     }
 
@@ -247,8 +286,8 @@ erDiagram
 
 ```sql
 -- ============================================================
--- SYNAPSE DATABASE v2.0
--- Optimized for: Security (RLS), Performance (Indexes), Integrity
+-- SYNAPSE DATABASE v2.1
+-- Optimized for: Security (RLS), Performance (Indexes), Integrity, Soft Delete
 -- ============================================================
 
 -- Kích hoạt Extensions
@@ -260,6 +299,7 @@ CREATE EXTENSION IF NOT EXISTS "pg_trgm"; -- For text search
 -- ============================================================
 CREATE TYPE user_role AS ENUM ('admin', 'receptionist', 'technician', 'customer');
 CREATE TYPE membership_tier AS ENUM ('SILVER', 'GOLD', 'PLATINUM');
+CREATE TYPE gender AS ENUM ('MALE', 'FEMALE', 'OTHER');
 CREATE TYPE resource_type AS ENUM ('ROOM', 'EQUIPMENT');
 CREATE TYPE resource_status AS ENUM ('ACTIVE', 'MAINTENANCE', 'INACTIVE');
 CREATE TYPE booking_status AS ENUM ('PENDING', 'CONFIRMED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'NO_SHOW');
@@ -347,8 +387,12 @@ CREATE TABLE customer_profiles (
     user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
     loyalty_points INTEGER DEFAULT 0,
     membership_tier membership_tier DEFAULT 'SILVER',
+    gender gender,
     date_of_birth DATE,
     address TEXT,
+    allergies TEXT,                  -- Dị ứng (Tinh dầu, mỹ phẩm...)
+    medical_notes TEXT,              -- Ghi chú y tế (Bệnh nền, có thai...)
+    preferred_staff_id UUID REFERENCES staff_profiles(user_id) ON DELETE SET NULL,
 
     CONSTRAINT chk_loyalty_points CHECK (loyalty_points >= 0)
 );
@@ -393,8 +437,8 @@ CREATE TABLE services (
     price DECIMAL(12, 2) NOT NULL,
     description TEXT,
     image_url TEXT,
-    color_code VARCHAR(7),
     is_active BOOLEAN DEFAULT TRUE NOT NULL,
+    deleted_at TIMESTAMPTZ, -- Soft delete
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
 
@@ -416,16 +460,26 @@ CREATE TABLE service_required_skills (
 -- TABLES: RESOURCES MODULE
 -- ============================================================
 
-CREATE TABLE resources (
+CREATE TABLE resource_groups (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(100) NOT NULL,
+    type resource_type NOT NULL, -- Logical classification
+    description TEXT,
+    deleted_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+CREATE TABLE resources (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    group_id UUID REFERENCES resource_groups(id) ON DELETE SET NULL,
+    name VARCHAR(100) NOT NULL,
     code VARCHAR(50) UNIQUE,
-    type resource_type NOT NULL,
     status resource_status DEFAULT 'ACTIVE' NOT NULL,
     capacity INTEGER DEFAULT 1,
     setup_time_minutes INTEGER DEFAULT 0,
     description TEXT,
     image_url TEXT,
+    deleted_at TIMESTAMPTZ, -- Soft delete
 
     CONSTRAINT chk_capacity CHECK (capacity > 0),
     CONSTRAINT chk_setup_time CHECK (setup_time_minutes >= 0)
@@ -433,9 +487,9 @@ CREATE TABLE resources (
 
 CREATE TABLE service_resource_requirements (
     service_id UUID REFERENCES services(id) ON DELETE CASCADE,
-    resource_type resource_type NOT NULL,
+    group_id UUID REFERENCES resource_groups(id) ON DELETE CASCADE,
     quantity INTEGER DEFAULT 1,
-    PRIMARY KEY (service_id, resource_type),
+    PRIMARY KEY (service_id, group_id),
 
     CONSTRAINT chk_quantity CHECK (quantity > 0)
 );
@@ -472,6 +526,7 @@ CREATE TABLE staff_schedules (
 CREATE TABLE bookings (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     customer_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    created_by UUID REFERENCES users(id) ON DELETE SET NULL, -- Người tạo booking (khách/lễ tân)
     start_time TIMESTAMPTZ NOT NULL,
     end_time TIMESTAMPTZ NOT NULL,
     status booking_status DEFAULT 'PENDING' NOT NULL,
@@ -510,12 +565,39 @@ CREATE TABLE booking_items (
     staff_id UUID REFERENCES staff_profiles(user_id) ON DELETE SET NULL,
     resource_id UUID REFERENCES resources(id) ON DELETE SET NULL,
     treatment_id UUID REFERENCES customer_treatments(id) ON DELETE SET NULL,
+    service_name_snapshot VARCHAR(255), -- Snapshot of service name at booking time
     start_time TIMESTAMPTZ NOT NULL,
     end_time TIMESTAMPTZ NOT NULL,
     original_price DECIMAL(12, 2) NOT NULL,
 
     CONSTRAINT chk_item_time CHECK (end_time > start_time),
     CONSTRAINT chk_item_price CHECK (original_price >= 0)
+);
+
+-- ============================================================
+-- TABLES: SERVICE PACKAGES MODULE
+-- ============================================================
+
+CREATE TABLE service_packages (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    price DECIMAL(12, 2) NOT NULL,
+    validity_days INTEGER,           -- Thời hạn sử dụng (ngày)
+    is_active BOOLEAN DEFAULT TRUE NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+
+    CONSTRAINT chk_package_price CHECK (price >= 0),
+    CONSTRAINT chk_validity CHECK (validity_days IS NULL OR validity_days > 0)
+);
+
+CREATE TABLE package_services (
+    package_id UUID REFERENCES service_packages(id) ON DELETE CASCADE,
+    service_id UUID REFERENCES services(id) ON DELETE CASCADE,
+    quantity INTEGER DEFAULT 1,      -- Số lần dùng dịch vụ trong gói
+    PRIMARY KEY (package_id, service_id),
+
+    CONSTRAINT chk_pkg_quantity CHECK (quantity > 0)
 );
 
 -- ============================================================
@@ -537,6 +619,8 @@ CREATE TABLE payments (
     invoice_id UUID REFERENCES invoices(id) ON DELETE CASCADE NOT NULL,
     amount DECIMAL(12, 2) NOT NULL,
     method payment_method NOT NULL,
+    transaction_ref VARCHAR(100), -- Bank/Gateway ref
+    gateway_info JSONB, -- Full response payload
     transaction_time TIMESTAMPTZ DEFAULT NOW() NOT NULL,
 
     CONSTRAINT chk_payment_amount CHECK (amount > 0)
@@ -603,12 +687,13 @@ CREATE INDEX idx_users_active ON users(is_active) WHERE deleted_at IS NULL;
 CREATE INDEX idx_staff_skills_skill ON staff_skills(skill_id);
 
 -- Services
-CREATE INDEX idx_services_category ON services(category_id) WHERE is_active = TRUE;
+CREATE INDEX idx_services_category ON services(category_id) WHERE is_active = TRUE AND deleted_at IS NULL;
 CREATE INDEX idx_services_active ON services(is_active);
 CREATE INDEX idx_service_skills_skill ON service_required_skills(skill_id);
 
 -- Resources
-CREATE INDEX idx_resources_type_status ON resources(type, status);
+CREATE INDEX idx_resources_status ON resources(status) WHERE deleted_at IS NULL;
+CREATE INDEX idx_resources_group ON resources(group_id);
 
 -- Staff Schedules (CRITICAL for scheduling)
 CREATE INDEX idx_staff_schedules_staff_date ON staff_schedules(staff_id, work_date);
@@ -679,6 +764,7 @@ ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE skills ENABLE ROW LEVEL SECURITY;
 ALTER TABLE service_categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE services ENABLE ROW LEVEL SECURITY;
+ALTER TABLE resource_groups ENABLE ROW LEVEL SECURITY;
 ALTER TABLE resources ENABLE ROW LEVEL SECURITY;
 ALTER TABLE shifts ENABLE ROW LEVEL SECURITY;
 
@@ -740,8 +826,9 @@ CREATE POLICY notifications_own ON notifications
 -- === PUBLIC READ POLICIES ===
 CREATE POLICY skills_public_read ON skills FOR SELECT USING (true);
 CREATE POLICY categories_public_read ON service_categories FOR SELECT USING (true);
-CREATE POLICY services_public_read ON services FOR SELECT USING (is_active = true);
+CREATE POLICY services_public_read ON services FOR SELECT USING (is_active = true AND deleted_at IS NULL);
 CREATE POLICY resources_staff_read ON resources FOR SELECT USING (auth.is_staff());
+CREATE POLICY resource_groups_staff_read ON resource_groups FOR SELECT USING (auth.is_staff());
 CREATE POLICY shifts_staff_read ON shifts FOR SELECT USING (auth.is_staff());
 
 -- === CUSTOMER PROFILES POLICIES ===
@@ -895,7 +982,9 @@ Ghi lại mọi thay đổi quan trọng trong hệ thống.
 | **Helper Functions** | Thêm `auth.is_staff()` để kiểm tra nhân viên (receptionist/technician/admin). |
 | **Triggers** | Tự động cập nhật `updated_at`. |
 | **Audit Logs** | Bảng mới để tracking thay đổi. |
-| **Soft Delete** | Thêm `deleted_at` cho bảng `users`. |
+| **Soft Delete** | Thêm `deleted_at` cho `users`, `services`, `resources`, `resource_groups`. |
+| **Resource Logic** | Chuyển từ ENUM type sang bảng `resource_groups` để phân loại động. |
+| **Audit/Snapshot** | Thêm `service_name_snapshot` (Booking Items) và `transaction_ref` (Payments). |
 | **JSONB** | Chuyển `system_configurations.value` sang JSONB. |
 
 ---

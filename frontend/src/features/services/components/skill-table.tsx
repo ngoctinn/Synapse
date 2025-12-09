@@ -2,14 +2,14 @@
 
 import { useTableSelection } from "@/shared/hooks/use-table-selection";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
 import { Badge } from "@/shared/ui/badge";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
@@ -48,7 +48,7 @@ export function SkillTable({
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  // Selection state
+
   const selection = useTableSelection({
     data: skills,
     keyExtractor: (item) => item.id,
@@ -65,7 +65,7 @@ export function SkillTable({
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  // Bulk delete
+
   const handleBulkDelete = async () => {
     const ids = Array.from(selection.selectedIds) as string[];
     if (ids.length === 0) return;
@@ -141,7 +141,7 @@ export function SkillTable({
         className={className}
         isLoading={isLoading}
         skeletonCount={5}
-        // Selection
+
         selectable
         isSelected={selection.isSelected}
         onToggleOne={selection.toggleOne}
