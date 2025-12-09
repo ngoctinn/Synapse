@@ -4,8 +4,8 @@ export const APPOINTMENT_STATUS_CONFIG: Record<
     {
         label: string;
         color: "amber" | "blue" | "indigo" | "emerald" | "slate" | "rose";
+        badgeVariant: "default" | "secondary" | "destructive" | "outline" | "success" | "warning" | "info";
         styles: {
-            badge: string;
             card: string;
             indicator: string;
         };
@@ -14,8 +14,8 @@ export const APPOINTMENT_STATUS_CONFIG: Record<
     pending: {
         label: "Chờ xác nhận",
         color: "amber",
+        badgeVariant: "warning",
         styles: {
-            badge: "bg-status-pending text-status-pending-foreground border-status-pending-border",
             card: "bg-status-pending border-status-pending-border text-status-pending-foreground hover:bg-status-pending/90",
             indicator: "bg-status-pending-foreground",
         },
@@ -23,8 +23,8 @@ export const APPOINTMENT_STATUS_CONFIG: Record<
     confirmed: {
         label: "Đã xác nhận",
         color: "blue",
+        badgeVariant: "info",
         styles: {
-            badge: "bg-status-confirmed text-status-confirmed-foreground border-status-confirmed-border",
             card: "bg-status-confirmed border-status-confirmed-border text-status-confirmed-foreground hover:bg-status-confirmed/90",
             indicator: "bg-status-confirmed-foreground",
         },
@@ -32,8 +32,8 @@ export const APPOINTMENT_STATUS_CONFIG: Record<
     serving: {
         label: "Đang phục vụ",
         color: "emerald",
+        badgeVariant: "success",
         styles: {
-            badge: "bg-status-serving text-status-serving-foreground border-status-serving-border animate-pulse",
             card: "bg-status-serving border-status-serving-border text-status-serving-foreground hover:bg-status-serving/90 shadow-[0_0_10px_rgba(var(--status-serving),0.3)]",
             indicator: "bg-status-serving-foreground",
         },
@@ -41,8 +41,8 @@ export const APPOINTMENT_STATUS_CONFIG: Record<
     completed: {
         label: "Hoàn thành",
         color: "slate",
+        badgeVariant: "secondary",
         styles: {
-            badge: "bg-status-completed text-status-completed-foreground border-status-completed-border",
             card: "bg-status-completed border-status-completed-border text-status-completed-foreground hover:bg-status-completed/90",
             indicator: "bg-status-completed-foreground",
         },
@@ -50,8 +50,8 @@ export const APPOINTMENT_STATUS_CONFIG: Record<
     cancelled: {
         label: "Đã hủy",
         color: "rose",
+        badgeVariant: "destructive",
         styles: {
-            badge: "bg-status-cancelled text-status-cancelled-foreground border-status-cancelled-border",
             card: "bg-status-cancelled border-status-cancelled-border text-status-cancelled-foreground hover:bg-status-cancelled/90 opacity-80",
             indicator: "bg-status-cancelled-foreground",
         },
@@ -59,8 +59,8 @@ export const APPOINTMENT_STATUS_CONFIG: Record<
     "no-show": {
         label: "Không đến",
         color: "rose",
+        badgeVariant: "destructive",
         styles: {
-            badge: "bg-status-noshow text-status-noshow-foreground border-status-noshow-border",
             card: "bg-status-noshow border-status-noshow-border text-status-noshow-foreground hover:bg-status-noshow/90",
             indicator: "bg-status-noshow-foreground",
         },

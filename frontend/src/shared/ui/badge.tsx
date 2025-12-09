@@ -1,11 +1,11 @@
-import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
+import * as React from "react"
 
 import { cn } from "@/shared/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden",
+  "inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow,background-color] overflow-hidden",
   {
     variants: {
       variant: {
@@ -16,7 +16,23 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
-          "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
+          "text-foreground border-border [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
+        success:
+          "border-alert-success-border bg-alert-success/10 text-alert-success-foreground hover:bg-alert-success/20",
+        warning:
+          "border-alert-warning-border bg-alert-warning/10 text-alert-warning-foreground hover:bg-alert-warning/20",
+        info:
+          "border-alert-info-border bg-alert-info/10 text-alert-info-foreground hover:bg-alert-info/20",
+        // Role-specific Semantic Colors (Mapped to Design System)
+        purple:
+          "border-purple-200 bg-purple-500/10 text-purple-700 dark:border-purple-800 dark:bg-purple-500/20 dark:text-purple-300 hover:bg-purple-500/20",
+        indigo:
+          "border-indigo-200 bg-indigo-500/10 text-indigo-700 dark:border-indigo-800 dark:bg-indigo-500/20 dark:text-indigo-300 hover:bg-indigo-500/20",
+        // Visual Effects
+        glass:
+          "border-white/20 bg-black/40 text-white backdrop-blur-md shadow-sm",
+        "glass-light":
+          "border-white/40 bg-white/30 text-foreground backdrop-blur-md shadow-sm dark:bg-black/30 dark:border-white/10 dark:text-white",
       },
     },
     defaultVariants: {

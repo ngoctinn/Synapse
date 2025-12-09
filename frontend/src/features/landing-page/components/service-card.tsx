@@ -37,14 +37,14 @@ export function ServiceCard({ service, onBook }: ServiceCardProps) {
         {/* Chips/Badges overlay */}
         <div className="absolute top-3 right-3 flex gap-2">
           {service.is_popular && (
-            <Badge variant="secondary" className="bg-yellow-400/90 text-yellow-950 font-medium shadow-sm backdrop-blur-sm border-0">
+            <Badge variant="warning" className="shadow-sm backdrop-blur-sm border-0">
               Phổ biến
             </Badge>
           )}
         </div>
 
-        <div className="absolute bottom-3 left-3 text-white">
-          <Badge variant="outline" className="bg-black/30 backdrop-blur-md border-white/20 text-white">
+        <div className="absolute bottom-3 left-3">
+          <Badge variant="glass">
             {service.category}
           </Badge>
         </div>

@@ -14,10 +14,10 @@ interface AppointmentListProps {
   appointments: Appointment[]
 }
 
-const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
-  PENDING: { label: "Đang chờ", variant: "secondary" },
-  CONFIRMED: { label: "Đã xác nhận", variant: "default" },
-  COMPLETED: { label: "Hoàn thành", variant: "outline" },
+const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" | "success" | "warning" | "info" }> = {
+  PENDING: { label: "Đang chờ", variant: "warning" },
+  CONFIRMED: { label: "Đã xác nhận", variant: "info" },
+  COMPLETED: { label: "Hoàn thành", variant: "secondary" },
   CANCELLED: { label: "Đã hủy", variant: "destructive" },
   NO_SHOW: { label: "Vắng mặt", variant: "destructive" },
 }

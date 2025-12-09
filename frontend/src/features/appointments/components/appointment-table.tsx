@@ -3,10 +3,10 @@
 import { format } from "date-fns"
 import { vi } from "date-fns/locale"
 import {
-  Calendar,
-  Clock,
-  MoreHorizontal,
-  Scissors
+    Calendar,
+    Clock,
+    MoreHorizontal,
+    Scissors
 } from "lucide-react"
 import { useMemo } from "react"
 
@@ -14,20 +14,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/shared/ui/table"
 
 import { cn } from "@/shared/lib/utils"
@@ -46,8 +46,8 @@ const getStatusConfig = (status: AppointmentStatus) => {
   const config = APPOINTMENT_STATUS_CONFIG[status] || APPOINTMENT_STATUS_CONFIG['pending']
   return {
     label: config.label,
-    variant: 'outline' as const,
-    className: config.styles.badge
+    variant: config.badgeVariant,
+    className: status === 'serving' ? 'animate-pulse' : undefined
   }
 }
 

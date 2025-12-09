@@ -4,17 +4,17 @@ import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList
 } from "@/shared/ui/command";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
 } from "@/shared/ui/popover";
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import * as React from "react";
@@ -35,7 +35,7 @@ interface TagInputProps {
   isError?: boolean
 }
 
-import { AnimatePresence, motion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion";
 
 export function TagInput({
   options,
@@ -124,7 +124,7 @@ export function TagInput({
                     exit={{ scale: 0.8, opacity: 0 }}
                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
                   >
-                    <Badge variant="secondary" className="mr-0 mb-0 gap-1 pr-1 pl-2.5 py-1 rounded-full bg-secondary/50 hover:bg-secondary/70 transition-colors border-transparent">
+                    <Badge variant="secondary" className="mr-0 mb-0 gap-1 pr-1 pl-2.5 py-1 rounded-full border-transparent">
                       {opt.label}
                       <div
                         className="rounded-full hover:bg-black/10 dark:hover:bg-white/20 p-0.5 cursor-pointer ml-1 transition-colors"
@@ -152,10 +152,10 @@ export function TagInput({
                     exit={{ scale: 0.8, opacity: 0 }}
                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
                   >
-                    <Badge variant="outline" className="mr-0 mb-0 border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/30 gap-1 pr-1 pl-2.5 py-1 rounded-full">
+                    <Badge variant="info" className="mr-0 mb-0 gap-1 pr-1 pl-2.5 py-1 rounded-full border-transparent">
                       + {tag}
                       <div
-                        className="rounded-full hover:bg-blue-100 dark:hover:bg-blue-900 p-0.5 cursor-pointer ml-1 transition-colors"
+                        className="rounded-full hover:bg-black/10 dark:hover:bg-white/20 p-0.5 cursor-pointer ml-1 transition-colors"
                         onMouseDown={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
@@ -166,7 +166,7 @@ export function TagInput({
                           removeNewTag(tag);
                         }}
                       >
-                        <X className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+                        <X className="h-3 w-3 text-current" />
                       </div>
                     </Badge>
                   </motion.div>
