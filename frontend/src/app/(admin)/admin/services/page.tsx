@@ -15,7 +15,6 @@ export default async function Page({
   const { page: pageParam, search } = await searchParams;
   const page = Number(pageParam) || 1;
 
-  // Parallel data fetching
   // We await skills immediately for initial render (dialogs/filters need it)
   // We pass servicesPromise to be suspended inside the page
   const skillsPromise = getSkills();

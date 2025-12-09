@@ -16,7 +16,6 @@ export default async function Page(props: PageProps) {
   const searchParams = await props.searchParams
   const query = searchParams?.query || ""
 
-  // Parallel data fetching - pass promises to client component
   const resourcesPromise = getResources(query)
   const groupsPromise = getResourceGroups()
   const tasksPromise = getMaintenanceTasks()
