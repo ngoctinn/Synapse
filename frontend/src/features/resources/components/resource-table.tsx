@@ -3,14 +3,14 @@
 import { useTableSelection } from "@/shared/hooks/use-table-selection";
 import { cn } from "@/shared/lib/utils";
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
 import { Badge } from "@/shared/ui/badge";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
@@ -38,13 +38,13 @@ export function ResourceTable({ data, isLoading, className, variant = "default" 
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  // Selection state
+
   const selection = useTableSelection({
     data,
     keyExtractor: (item) => item.id,
   });
 
-  // Xóa một tài nguyên
+
   const handleDelete = async () => {
     if (!deleteId) return;
     try {
@@ -57,7 +57,7 @@ export function ResourceTable({ data, isLoading, className, variant = "default" 
     }
   };
 
-  // Xóa nhiều tài nguyên
+
   const handleBulkDelete = async () => {
     const ids = Array.from(selection.selectedIds) as string[];
     if (ids.length === 0) return;
@@ -210,7 +210,7 @@ export function ResourceTable({ data, isLoading, className, variant = "default" 
         isLoading={isLoading}
         className={cn(className)}
         variant={variant}
-        // Selection props
+
         selectable
         isSelected={selection.isSelected}
         onToggleOne={selection.toggleOne}
@@ -227,7 +227,7 @@ export function ResourceTable({ data, isLoading, className, variant = "default" 
         }
       />
 
-      {/* Floating Action Bar cho bulk actions */}
+
       <TableActionBar
         selectedCount={selection.selectedCount}
         onDelete={() => setShowBulkDeleteDialog(true)}
@@ -235,14 +235,14 @@ export function ResourceTable({ data, isLoading, className, variant = "default" 
         isLoading={isPending}
       />
 
-      {/* Edit Sheet - controlled state */}
+
       <ResourceSheet
         resource={editResource ?? undefined}
         open={!!editResource}
         onOpenChange={(open) => !open && setEditResource(null)}
       />
 
-      {/* Delete Single Confirmation */}
+
       <AlertDialog
         open={!!deleteId}
         onOpenChange={(open) => !open && setDeleteId(null)}
@@ -267,7 +267,7 @@ export function ResourceTable({ data, isLoading, className, variant = "default" 
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Bulk Delete Confirmation */}
+
       <AlertDialog
         open={showBulkDeleteDialog}
         onOpenChange={setShowBulkDeleteDialog}

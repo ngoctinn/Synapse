@@ -52,7 +52,7 @@ export function ResourceForm({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 
-        {/* Image Placeholder */}
+
         <div className="flex items-center gap-4 p-4 border rounded-lg bg-muted/20">
             <div className="size-16 rounded-lg bg-muted flex items-center justify-center border-2 border-background shadow-sm">
                 <Box className="size-8 text-muted-foreground" />

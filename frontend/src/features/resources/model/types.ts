@@ -7,18 +7,18 @@ export interface Resource {
   code: string;
   type: ResourceType;
   status: ResourceStatus;
-  capacity?: number; // Only relevant for rooms
+  capacity?: number;
   description?: string;
   tags?: string[];
   createdAt?: string;
   updatedAt?: string;
-  image?: string; // Added for Avatar/Image support
-  setupTime?: number; // Time in minutes required for setup/cleaning between bookings
+  image?: string;
+  setupTime?: number;
 }
 
 export type RoomType = Resource;
 
-// Maintenance Types
+
 export type MaintenanceStatus = 'scheduled' | 'in_progress' | 'completed' | 'overdue' | 'skipped';
 export type MaintenanceFrequency = 'daily' | 'weekly' | 'monthly' | 'yearly';
 
@@ -26,8 +26,8 @@ export interface MaintenanceTask {
   id: string;
   resourceId: string;
   title: string;
-  date: string; // ISO Date string
+  date: string;
   status: MaintenanceStatus;
-  assignedTo?: string; // Staff ID
+  assignedTo?: string;
   notes?: string;
 }

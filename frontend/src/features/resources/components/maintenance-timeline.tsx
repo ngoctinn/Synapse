@@ -70,7 +70,7 @@ export function MaintenanceTimeline({
 
   return (
     <div className="bg-card rounded-xl border shadow-sm overflow-hidden flex flex-col h-full">
-      {/* Header */}
+
       <div className="flex items-center justify-between p-4 border-b bg-muted/20">
         <div className="flex items-center gap-4">
           <h3 className="font-serif font-semibold text-lg">Lịch Bảo Trì</h3>
@@ -114,10 +114,10 @@ export function MaintenanceTimeline({
         </div>
       </div>
 
-      {/* Timeline Grid */}
+
       <div className="flex-1 overflow-auto">
         <div className="min-w-[800px]">
-          {/* Header Row */}
+
           <div className="grid grid-cols-[250px_repeat(7,1fr)] border-b sticky top-0 bg-card z-10">
             <div className="p-3 font-medium text-muted-foreground bg-muted/10 border-r">
               Tài nguyên
@@ -147,14 +147,14 @@ export function MaintenanceTimeline({
             ))}
           </div>
 
-          {/* Body Rows */}
+
           <div className="divide-y">
             {resources.map((res) => (
               <div
                 key={res.id}
                 className="grid grid-cols-[250px_repeat(7,1fr)] hover:bg-muted/5 transition-colors group"
               >
-                {/* Resource Info */}
+
                 <div className="p-3 border-r flex items-center gap-3">
                   <div className="relative w-10 h-10 rounded-lg bg-muted flex items-center justify-center overflow-hidden border shrink-0">
                     {res.image ? (
@@ -186,7 +186,7 @@ export function MaintenanceTimeline({
                   </div>
                 </div>
 
-                {/* Days Cells */}
+
                 {weekDays.map((day) => {
                   const dayTasks = getTasksForCell(res.id, day);
                   return (

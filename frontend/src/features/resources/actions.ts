@@ -5,12 +5,12 @@ import { mockMaintenanceTasks, mockResources } from "./model/mocks";
 import { ResourceFormValues } from "./model/schema";
 import { MaintenanceTask, Resource } from "./model/types";
 
-// Simulate a database
+
 let resources = [...mockResources];
 let maintenanceTasks = [...mockMaintenanceTasks];
 
 export async function getResources(query?: string): Promise<Resource[]> {
-  // Simulate network delay
+
   await new Promise((resolve) => setTimeout(resolve, 500));
 
   if (!query) return resources;
@@ -35,7 +35,6 @@ export async function createResource(data: ResourceFormValues): Promise<Resource
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     ...data,
-    // Ensure capacity is undefined if not a room, though checking type is better
     capacity: data.type === 'ROOM' ? data.capacity : undefined,
   } as Resource;
 
@@ -68,15 +67,15 @@ export async function deleteResource(id: string): Promise<void> {
   revalidatePath("/resources");
 }
 
-// --- Compatibility Exports (Deprecated) ---
+
 
 export async function getRoomTypes(): Promise<Resource[]> {
-  // Return all resources of type ROOM
+
   return getResources().then(res => res.filter(r => r.type === 'ROOM'));
 }
 
 export async function getEquipmentList(): Promise<Resource[]> {
-  // Return all resources of type EQUIPMENT
+
   return getResources().then(res => res.filter(r => r.type === 'EQUIPMENT'));
 }
 
