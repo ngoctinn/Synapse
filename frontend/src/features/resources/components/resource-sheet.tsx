@@ -1,27 +1,37 @@
 "use client";
 
 import { Button } from "@/shared/ui/button";
+import { showToast } from "@/shared/ui/custom/sonner";
+import { Form } from "@/shared/ui/form";
 import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
 } from "@/shared/ui/sheet";
-import { Edit, Plus } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
-import { createResource, updateResource } from "../actions";
-import { ResourceFormValues } from "../model/schema";
-import { Resource } from "../model/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Edit, Loader2, Plus, Save } from "lucide-react";
+import * as React from "react";
+import { useForm } from "react-hook-form";
+import { manageResource } from "../actions";
+import { ResourceFormValues, resourceSchema } from "../schemas";
+import { Resource } from "../types";
 import { ResourceForm } from "./resource-form";
 
 interface ResourceSheetProps {
-  resource?: Resource; // If provided, existing resource to edit
+  resource?: Resource;
   trigger?: React.ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+}
+
+const initialState = {
+  success: false,
+  message: "",
+  error: "",
 }
 
 export function ResourceSheet({
@@ -30,44 +40,86 @@ export function ResourceSheet({
   open: controlledOpen,
   onOpenChange: controlledOnOpenChange,
 }: ResourceSheetProps) {
-  const [internalOpen, setInternalOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = React.useState(false);
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
   const onOpenChange = isControlled ? controlledOnOpenChange : setInternalOpen;
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [state, dispatch, isPending] = React.useActionState(manageResource, initialState);
 
-  const handleSubmit = async (values: ResourceFormValues) => {
-    setIsLoading(true);
-    try {
-      if (resource) {
-        await updateResource(resource.id, values);
-        toast.success("Cập nhật tài nguyên thành công");
-      } else {
-        await createResource(values);
-        toast.success("Tạo tài nguyên mới thành công");
-      }
-      onOpenChange?.(false);
-    } catch (error) {
-      console.error(error);
-      toast.error("Đã có lỗi xảy ra");
-    } finally {
-      setIsLoading(false);
+  const form = useForm<ResourceFormValues>({
+    resolver: zodResolver(resourceSchema) as any,
+    defaultValues: {
+      name: "",
+      code: "",
+      type: "ROOM",
+      status: "ACTIVE",
+      capacity: 1,
+      setupTime: 0,
+      description: "",
+      tags: [],
+    },
+  });
+
+  // Reset form when opening or when resource changes
+  React.useEffect(() => {
+    if (open) {
+      form.reset(resource ? {
+        ...resource,
+        setupTime: resource.setupTime ?? 0,
+        capacity: resource.capacity ?? 1,
+        tags: resource.tags ?? [],
+      } : {
+        name: "",
+        code: "",
+        type: "ROOM",
+        status: "ACTIVE",
+        capacity: 1,
+        setupTime: 0,
+        description: "",
+        tags: [],
+      });
     }
+  }, [open, resource, form]);
+
+  // Handle server action response
+  React.useEffect(() => {
+    if (state.success && state.message) {
+      showToast.success(resource ? "Cập nhật thành công" : "Tạo mới thành công", state.message);
+      onOpenChange?.(false);
+    } else if (state.error) {
+      showToast.error("Thất bại", state.error);
+    }
+  }, [state, resource, onOpenChange]);
+
+  const onSubmit = (data: ResourceFormValues) => {
+    const formData = new FormData();
+    if (resource?.id) formData.append("id", resource.id);
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (key === 'tags') {
+        formData.append(key, JSON.stringify(value));
+      } else if (value !== undefined && value !== null) {
+        formData.append(key, value.toString());
+      }
+    });
+
+    React.startTransition(() => {
+      dispatch(formData);
+    });
   };
 
   const defaultTrigger = resource ? (
     <Button
       variant="ghost"
       size="icon"
-      className="min-w-[44px] min-h-[44px]"
-      aria-label="Chỉnh sửa tài nguyên"
-      disabled={isLoading}
+      className="h-8 w-8 p-0"
+      aria-label="Chỉnh sửa"
     >
       <Edit className="h-4 w-4" />
     </Button>
   ) : (
-    <Button size="sm" className="text-xs">
+    <Button size="sm" className="text-xs shadow-sm">
       <Plus className="mr-2 h-3.5 w-3.5" />
       Thêm tài nguyên
     </Button>
@@ -91,12 +143,38 @@ export function ResourceSheet({
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto px-6 py-6 [scrollbar-gutter:stable]">
-          <ResourceForm
-            defaultValues={resource}
-            onSubmit={handleSubmit}
-            isLoading={isLoading}
-          />
+          <Form {...form}>
+            <form id="resource-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <ResourceForm />
+            </form>
+          </Form>
         </div>
+
+        <SheetFooter className="px-6 py-4 border-t sm:justify-between flex-row items-center gap-4 bg-background">
+            <Button
+                type="button"
+                variant="ghost"
+                onClick={() => onOpenChange?.(false)}
+                className="text-muted-foreground hover:text-foreground"
+            >
+                Hủy bỏ
+            </Button>
+            <Button
+                type="submit"
+                form="resource-form"
+                disabled={isPending}
+                className="min-w-[140px] shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
+            >
+                {isPending ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                    <>
+                        <Save className="mr-2 h-4 w-4" />
+                        {resource ? "Lưu thay đổi" : "Tạo mới"}
+                    </>
+                )}
+            </Button>
+        </SheetFooter>
       </SheetContent>
     </Sheet>
   );
