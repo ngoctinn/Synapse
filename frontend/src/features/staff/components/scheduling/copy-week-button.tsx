@@ -10,7 +10,7 @@ interface CopyWeekButtonProps {
 
 export function CopyWeekButton({ onCopy }: CopyWeekButtonProps) {
   const handleCopy = () => {
-    // In a real app, this would call an API
+
     onCopy()
     showToast.success("Đã sao chép lịch làm việc từ tuần trước", "Dữ liệu đã được áp dụng cho tuần hiện tại.")
   }
