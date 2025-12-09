@@ -19,15 +19,15 @@ import { useMemo, useState } from "react"
 import { toast } from "sonner"
 
 import { Plus } from "lucide-react"
-import { MOCK_APPOINTMENTS, MOCK_RESOURCES } from "../mock-data"
-import { Appointment } from "../types"
+import { Appointment, Resource } from "../types"
 import { AppointmentFilter } from "./appointment-filter"
 import { AppointmentSheet } from "./appointment-sheet"
 import { AppointmentTable } from "./appointment-table"
 import { AppointmentTimeline } from "./appointment-timeline"
 
 interface AppointmentPageProps {
-    initialData?: boolean; // Reserved for future server data
+    initialAppointments: Appointment[];
+    initialResources: Resource[];
 }
 
 const Footer = () => (
@@ -36,12 +36,12 @@ const Footer = () => (
   </div>
 )
 
-export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
+export function AppointmentPage({ initialAppointments, initialResources }: AppointmentPageProps) {
 
 
   const [activeTab, setActiveTab] = useState("timeline")
 
-  const [appointments, setAppointments] = useState<Appointment[]>(MOCK_APPOINTMENTS)
+  const [appointments, setAppointments] = useState<Appointment[]>(initialAppointments)
 
 
   const [isSheetOpen, setIsSheetOpen] = useState(false)
@@ -196,7 +196,7 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
 
              <AppointmentTimeline
                appointments={filteredAppointments}
-               resources={MOCK_RESOURCES}
+               resources={initialResources}
                onSlotClick={handleSlotClick}
                onAppointmentClick={handleAppointmentClick}
              />
@@ -207,7 +207,7 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
              <div className="flex-1 p-4 md:p-6 overflow-hidden">
                 <AppointmentTable
                   appointments={filteredAppointments}
-                  resources={MOCK_RESOURCES}
+                  resources={initialResources}
                   onEdit={handleEditAppointment}
                   onCancel={handleCreateCancelRequest}
                 />

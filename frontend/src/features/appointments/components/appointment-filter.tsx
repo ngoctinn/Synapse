@@ -38,29 +38,27 @@ import { API_SERVICE_OPTIONS, API_STAFF_OPTIONS, APPOINTMENT_STATUSES } from "..
 
 // --- Helper for Dynamic Styles ---
 const getStatusStyles = (color: string) => {
-    // Map abstract colors to specific Tailwind classes
-    // This looks cleaner and allows easy theme adjustments
     const colors: Record<string, string> = {
-        amber: "data-[state=on]:bg-amber-100 dark:data-[state=on]:bg-amber-900/40 data-[state=on]:text-amber-700 dark:data-[state=on]:text-amber-400 data-[state=on]:border-amber-200 dark:data-[state=on]:border-amber-800",
-        blue: "data-[state=on]:bg-blue-100 dark:data-[state=on]:bg-blue-900/40 data-[state=on]:text-blue-700 dark:data-[state=on]:text-blue-400 data-[state=on]:border-blue-200 dark:data-[state=on]:border-blue-800",
-        indigo: "data-[state=on]:bg-indigo-100 dark:data-[state=on]:bg-indigo-900/40 data-[state=on]:text-indigo-700 dark:data-[state=on]:text-indigo-400 data-[state=on]:border-indigo-200 dark:data-[state=on]:border-indigo-800",
-        emerald: "data-[state=on]:bg-emerald-100 dark:data-[state=on]:bg-emerald-900/40 data-[state=on]:text-emerald-700 dark:data-[state=on]:text-emerald-400 data-[state=on]:border-emerald-200 dark:data-[state=on]:border-emerald-800",
-        slate: "data-[state=on]:bg-slate-100 dark:data-[state=on]:bg-slate-800/50 data-[state=on]:text-slate-700 dark:data-[state=on]:text-slate-400 data-[state=on]:border-slate-200 dark:data-[state=on]:border-slate-700",
-        rose: "data-[state=on]:bg-rose-100 dark:data-[state=on]:bg-rose-900/40 data-[state=on]:text-rose-700 dark:data-[state=on]:text-rose-400 data-[state=on]:border-rose-200 dark:data-[state=on]:border-rose-800",
+        amber: "data-[state=on]:bg-status-pending data-[state=on]:text-status-pending-foreground data-[state=on]:border-status-pending-border",
+        blue: "data-[state=on]:bg-status-confirmed data-[state=on]:text-status-confirmed-foreground data-[state=on]:border-status-confirmed-border",
+        indigo: "data-[state=on]:bg-status-serving data-[state=on]:text-status-serving-foreground data-[state=on]:border-status-serving-border", // Fallback if serving is mapped to indigo
+        emerald: "data-[state=on]:bg-status-serving data-[state=on]:text-status-serving-foreground data-[state=on]:border-status-serving-border", // Serving is emerald in config
+        slate: "data-[state=on]:bg-status-completed data-[state=on]:text-status-completed-foreground data-[state=on]:border-status-completed-border",
+        rose: "data-[state=on]:bg-status-cancelled data-[state=on]:text-status-cancelled-foreground data-[state=on]:border-status-cancelled-border", // Cancelled & No-show
     }
     return colors[color] || ""
 }
 
 const getDotColor = (color: string) => {
     const dots: Record<string, string> = {
-        amber: "bg-amber-500",
-        blue: "bg-blue-500",
-        indigo: "bg-indigo-500",
-        emerald: "bg-emerald-500",
-        slate: "bg-slate-500",
-        rose: "bg-rose-500",
+        amber: "bg-status-pending-foreground",
+        blue: "bg-status-confirmed-foreground",
+        indigo: "bg-status-serving-foreground",
+        emerald: "bg-status-serving-foreground",
+        slate: "bg-status-completed-foreground",
+        rose: "bg-status-cancelled-foreground",
     }
-    return dots[color] || "bg-gray-500"
+    return dots[color] || "bg-muted-foreground"
 }
 
 interface AppointmentFilterProps {

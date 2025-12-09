@@ -5,9 +5,9 @@ export const APPOINTMENT_STATUS_CONFIG: Record<
 > = {
     pending: { label: "Chờ xác nhận", color: "amber" },
     confirmed: { label: "Đã xác nhận", color: "blue" },
-    serving: { label: "Đang phục vụ", color: "indigo" },
-    completed: { label: "Hoàn thành", color: "emerald" },
-    cancelled: { label: "Đã hủy", color: "slate" },
+    serving: { label: "Đang phục vụ", color: "emerald" }, // Was indigo
+    completed: { label: "Hoàn thành", color: "slate" }, // Was emerald
+    cancelled: { label: "Đã hủy", color: "rose" },
     "no-show": { label: "Không đến", color: "rose" },
 };
 
