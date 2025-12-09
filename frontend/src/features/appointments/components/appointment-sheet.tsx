@@ -4,25 +4,26 @@ import { CalendarPlus, Loader2, Save, Send } from "lucide-react"
 import * as React from "react"
 
 
-import { Appointment } from "@/features/appointments/types"
+import { Appointment, Customer, Resource } from "@/features/appointments/types"
 import { Button } from "@/shared/ui/button"
 import { showToast } from "@/shared/ui/custom/sonner"
 import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle
 } from "@/shared/ui/sheet"
 import { AppointmentForm } from "./appointment-form"
 
-const simulateServerAction = async (data: any) => {
-    return new Promise<{ success: boolean; message?: string }>((resolve) => {
-        setTimeout(() => {
-            resolve({ success: true, message: "Thao tác thành công!" })
-        }, 1000)
-    })
+import { Service } from "@/features/services/types"
+import { manageAppointment } from "../actions"
+
+const initialState = {
+  success: false,
+  message: "",
+  error: "",
 }
 
 interface AppointmentSheetProps {
@@ -33,6 +34,9 @@ interface AppointmentSheetProps {
   defaultDate?: Date
   defaultResourceId?: string
   onSubmit?: (data: any) => void
+  services: Service[]
+  customers: Customer[]
+  resources: Resource[]
 }
 
 export function AppointmentSheet({
@@ -42,29 +46,39 @@ export function AppointmentSheet({
     appointment,
     defaultDate,
     defaultResourceId,
-    onSubmit
+    onSubmit,
+    services,
+    customers,
+    resources
 }: AppointmentSheetProps) {
-  const [isPending, startTransition] = React.useTransition()
+  const [state, dispatch, isPending] = React.useActionState(manageAppointment, initialState)
 
-
-
-  const handleSheetSubmit = async (data: any) => {
-      startTransition(async () => {
-          try {
-
-             await simulateServerAction(data)
-
-             if (onSubmit) {
-                 onSubmit(data)
-             }
-
-             showToast.success(mode === "create" ? "Đã tạo lịch hẹn" : "Đã cập nhật lịch hẹn")
-             onOpenChange(false)
-          } catch (error) {
-             showToast.error("Có lỗi xảy ra")
+  const handleSheetSubmit = (data: any) => {
+      const formData = new FormData()
+      Object.entries(data).forEach(([key, value]) => {
+          if (value instanceof Date) {
+              formData.append(key, value.toISOString())
+          } else if (value !== undefined && value !== null) {
+              formData.append(key, String(value))
           }
       })
+
+      React.startTransition(() => {
+          dispatch(formData)
+      })
   }
+
+  React.useEffect(() => {
+      if (state.success && state.data) {
+          showToast.success(state.message || "Thành công")
+          if (onSubmit) {
+              onSubmit(state.data)
+          }
+          onOpenChange(false)
+      } else if (state.error) {
+          showToast.error("Thất bại", state.error)
+      }
+  }, [state, onSubmit, onOpenChange])
 
   const title = mode === "create" ? "Tạo lịch hẹn mới" : "Cập nhật lịch hẹn"
   const description = mode === "create"
@@ -94,9 +108,11 @@ export function AppointmentSheet({
                 defaultDate={defaultDate}
                 defaultResourceId={defaultResourceId}
                 initialData={appointment}
+                services={services || []}
+                customers={customers || []}
+                resources={resources || []}
                 onSuccess={handleSheetSubmit}
                 onCancel={() => onOpenChange(false)}
-                isSheet={true} // New prop to toggle internal layout if needed
             />
         </div>
 

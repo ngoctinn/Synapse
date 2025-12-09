@@ -5,7 +5,6 @@ export { AppointmentPage } from './components/appointment-page';
 export { AppointmentTable } from './components/appointment-table';
 export { AppointmentTimeline } from './components/appointment-timeline';
 export { CalendarHeader } from './components/calendar-header';
-export { CreateAppointmentDialog } from './components/create-appointment-dialog';
 export { ResourceTimeline } from './components/resource-timeline';
 
 export * from './mock-data';

@@ -1,5 +1,18 @@
 import { addDays, setHours, setMinutes, startOfToday } from 'date-fns';
-import { Appointment, Resource } from './types';
+import { Appointment, Customer, Resource } from './types';
+
+export const MOCK_CUSTOMERS: Customer[] = [
+    { id: "c1", name: "Nguyễn Văn A", phone: "0912345678" },
+    { id: "c2", name: "Trần Thị B", phone: "0987654321" },
+    { id: "c3", name: "Lê Văn C", phone: "0909090909" },
+    { id: "c4", name: "Phạm Thu Hương", phone: "0911223344" },
+    { id: "c5", name: "Hoàng Văn Nam", phone: "0966778899" },
+    { id: "c6", name: "Đặng Thị Thảo", phone: "0944556677" },
+    { id: "c7", name: "Võ Thị Hằng", phone: "0922334455" },
+    { id: "c8", name: "Nguyễn Văn Tuấn", phone: "0988990011" },
+    { id: "c9", name: "Trần Thị Bích", phone: "0977889900" },
+    { id: "c10", name: "Lê Văn Khang", phone: "0955667788" },
+];
 
 const today = startOfToday();
 
