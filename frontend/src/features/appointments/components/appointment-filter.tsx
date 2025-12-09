@@ -1,49 +1,40 @@
 "use client"
 
 import { useFilterParams } from "@/shared/lib/hooks/use-filter-params"
-import { FilterButton } from "@/shared/ui/custom/filter-button"
-import { SearchInput } from "@/shared/ui/custom/search-input"
-import { ToggleGroup, ToggleGroupItem } from "@/shared/ui/toggle-group"
-import {
-    Check,
-    Circle,
-    Search,
-    SlidersHorizontal,
-    User,
-    Sparkles,
-} from "lucide-react"
+
 import { cn } from "@/shared/lib/utils"
 import { Button } from "@/shared/ui/button"
 import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
 } from "@/shared/ui/command"
 import { DateRangeFilter } from "@/shared/ui/custom/date-range-filter"
 import { FilterButton } from "@/shared/ui/custom/filter-button"
 import { SearchInput } from "@/shared/ui/custom/search-input"
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/shared/ui/popover"
 import { ToggleGroup, ToggleGroupItem } from "@/shared/ui/toggle-group"
 import { format } from "date-fns"
 import {
-    Check,
-    Circle,
-    Search,
-    SlidersHorizontal,
-    User
+  Check,
+  Circle,
+  Search,
+  SlidersHorizontal,
+  Sparkles,
+  User
 } from "lucide-react"
 import * as React from "react"
 import { useMemo, useState } from "react"
 import { DateRange } from "react-day-picker"
-import { format } from "date-fns"
-import { APPOINTMENT_STATUSES, API_STAFF_OPTIONS, API_SERVICE_OPTIONS } from "../config"
+
+import { API_SERVICE_OPTIONS, API_STAFF_OPTIONS, APPOINTMENT_STATUSES } from "../config"
 
 // --- Helper for Dynamic Styles ---
 const getStatusStyles = (color: string) => {
