@@ -21,7 +21,7 @@ export async function fetchWithAuth(path: string, options: RequestInit = {}) {
   });
 
   if (!response.ok) {
-    // Handle specific error codes if needed
+
     if (response.status === 401) {
       console.error("Unauthorized API call");
     }

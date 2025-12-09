@@ -29,9 +29,7 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  // QUAN TRỌNG: Tránh viết bất kỳ logic nào giữa createServerClient và
-  // supabase.auth.getUser(). Một sai lầm đơn giản có thể làm cho việc gỡ lỗi
-  // các vấn đề về việc người dùng bị đăng xuất ngẫu nhiên trở nên rất khó khăn.
+
 
   const {
     data: { user },
@@ -42,11 +40,9 @@ export async function updateSession(request: NextRequest) {
     !request.nextUrl.pathname.startsWith('/login') &&
     !request.nextUrl.pathname.startsWith('/auth')
   ) {
-    // không có người dùng, có thể phản hồi bằng cách chuyển hướng người dùng đến trang đăng nhập
-    // const url = request.nextUrl.clone()
-    // url.pathname = '/login'
-    // return NextResponse.redirect(url)
+    
   }
+
 
   return supabaseResponse
 }

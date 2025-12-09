@@ -47,7 +47,7 @@ export function useTableSelection<T>({
 }: UseTableSelectionOptions<T>): UseTableSelectionReturn {
   const [selectedIds, setSelectedIds] = useState<Set<SelectableId>>(new Set())
 
-  // Toggle một item
+
   const toggleOne = useCallback((id: SelectableId) => {
     setSelectedIds((prev) => {
       const next = new Set(prev)
@@ -60,7 +60,7 @@ export function useTableSelection<T>({
     })
   }, [])
 
-  // Toggle all: nếu đang chọn tất cả thì deselect, ngược lại select tất cả
+
   const toggleAll = useCallback(() => {
     setSelectedIds((prev) => {
       const allIds = data.map(keyExtractor)
@@ -74,18 +74,18 @@ export function useTableSelection<T>({
     })
   }, [data, keyExtractor])
 
-  // Xóa tất cả selection
+
   const clearAll = useCallback(() => {
     setSelectedIds(new Set())
   }, [])
 
-  // Kiểm tra item có được chọn không
+
   const isSelected = useCallback(
     (id: SelectableId) => selectedIds.has(id),
     [selectedIds]
   )
 
-  // Tính toán các trạng thái
+
   const allIds = useMemo(() => data.map(keyExtractor), [data, keyExtractor])
 
   const isAllSelected = useMemo(
