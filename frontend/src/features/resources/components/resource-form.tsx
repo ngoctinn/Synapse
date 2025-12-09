@@ -1,13 +1,12 @@
 "use client";
 
-import { Activity, Box, Check, Code2, Users } from "lucide-react";
+import { Activity, Box, Code2, Users } from "lucide-react";
+import { useFormContext } from "react-hook-form";
 
-import { Button } from "@/shared/ui/button";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { SelectWithIcon } from "@/shared/ui/custom/select-with-icon";
-import { DialogFooter } from "@/shared/ui/dialog";
+import { TagInput } from "@/shared/ui/custom/tag-input";
 import {
-    Form,
     FormControl,
     FormField,
     FormItem,
@@ -15,44 +14,14 @@ import {
     FormMessage
 } from "@/shared/ui/form";
 import { Textarea } from "@/shared/ui/textarea";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { ResourceFormValues, resourceSchema } from "../model/schema";
-import { Resource } from "../model/types";
 
-interface ResourceFormProps {
-  defaultValues?: Partial<Resource>;
-  onSubmit: (values: ResourceFormValues) => Promise<void>;
-  isLoading?: boolean;
-}
-
-export function ResourceForm({
-  defaultValues,
-  onSubmit,
-  isLoading,
-}: ResourceFormProps) {
-  const form = useForm<ResourceFormValues>({
-    resolver: zodResolver(resourceSchema) as any,
-    defaultValues: {
-      name: "",
-      code: "",
-      type: "ROOM",
-      status: "ACTIVE",
-      capacity: 1,
-      setupTime: 0,
-      description: "",
-      tags: [],
-      ...defaultValues,
-    },
-  });
-
+export function ResourceForm() {
+  const form = useFormContext();
   const resourceType = form.watch("type");
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-
-
+    <>
+        {/* Image Placeholder */}
         <div className="flex items-center gap-4 p-4 border rounded-lg bg-muted/20">
             <div className="size-16 rounded-lg bg-muted flex items-center justify-center border-2 border-background shadow-sm">
                 <Box className="size-8 text-muted-foreground" />
@@ -71,7 +40,7 @@ export function ResourceForm({
               <FormItem>
                 <FormLabel className="text-foreground/80 font-normal">Tên tài nguyên</FormLabel>
                 <FormControl>
-                  <InputWithIcon icon={Box} placeholder="Ví dụ: Phòng VIP 1" className="h-11 rounded-lg bg-background" {...field} />
+                  <InputWithIcon icon={Box} placeholder="Ví dụ: Phòng VIP 1" className="bg-background" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -84,7 +53,7 @@ export function ResourceForm({
               <FormItem>
                 <FormLabel className="text-foreground/80 font-normal">Mã tài nguyên</FormLabel>
                 <FormControl>
-                  <InputWithIcon icon={Code2} placeholder="Ví dụ: R-VIP-01" className="h-11 rounded-lg bg-background" {...field} />
+                  <InputWithIcon icon={Code2} placeholder="Ví dụ: R-VIP-01" className="bg-background" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -142,7 +111,7 @@ export function ResourceForm({
               <FormItem>
                 <FormLabel className="text-foreground/80 font-normal">Thời gian chuẩn bị (phút)</FormLabel>
                 <FormControl>
-                  <InputWithIcon icon={Box} type="number" min={0} placeholder="0" className="h-11 rounded-lg bg-background" {...field} />
+                  <InputWithIcon icon={Box} type="number" min={0} placeholder="0" className="bg-background" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -157,12 +126,35 @@ export function ResourceForm({
               <FormItem>
                 <FormLabel className="text-foreground/80 font-normal">Sức chứa (người)</FormLabel>
                 <FormControl>
-                  <InputWithIcon icon={Users} type="number" min={1} placeholder="1" className="h-11 rounded-lg bg-background" {...field} />
+                  <InputWithIcon icon={Users} type="number" min={1} placeholder="1" className="bg-background" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+        )}
+
+        {resourceType === "EQUIPMENT" && (
+             <FormField
+                control={form.control}
+                name="tags"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel className="text-foreground/80 font-normal">Thẻ / Nhãn</FormLabel>
+                        <FormControl>
+                            <TagInput
+                                options={[]} // Assuming no preset options for now
+                                selectedIds={field.value || []}
+                                newTags={field.value || []}
+                                onSelectedChange={() => {}} // No ID selection implemented for simple text tags
+                                onNewTagsChange={(tags) => field.onChange(tags)}
+                                placeholder="Nhập thẻ..."
+                            />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
         )}
 
         <FormField
@@ -174,7 +166,7 @@ export function ResourceForm({
               <FormControl>
                 <Textarea
                   placeholder="Mô tả chi tiết về tài nguyên này..."
-                  className="min-h-[100px] resize-none rounded-lg bg-background"
+                  className="min-h-[100px] resize-none bg-background"
                   {...field}
                 />
               </FormControl>
@@ -182,18 +174,6 @@ export function ResourceForm({
             </FormItem>
           )}
         />
-
-        <DialogFooter className="pt-4">
-          <Button type="submit" loading={isLoading} className="min-w-[140px]">
-             {isLoading ? "Đang lưu..." : (
-              <>
-                <Check className="w-4 h-4 mr-2" />
-                Lưu tài nguyên
-              </>
-             )}
-          </Button>
-        </DialogFooter>
-      </form>
-    </Form>
+    </>
   );
 }

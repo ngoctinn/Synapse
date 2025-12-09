@@ -2,7 +2,7 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { Suspense, use, useState } from "react"
-import { MaintenanceTask, Resource } from "../model/types"
+import { MaintenanceTask, Resource } from "../types"
 import { MaintenanceTimeline } from "./maintenance-timeline"
 import { ResourceFilter } from "./resource-filter"
 import { ResourceTable, ResourceTableSkeleton } from "./resource-table"

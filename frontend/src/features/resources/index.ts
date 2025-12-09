@@ -6,6 +6,6 @@ export { ResourcePage } from "./components/resource-page";
 export * from "./components/resource-sheet";
 export * from "./components/resource-table";
 export * from "./components/resource-toolbar";
-export * from "./model/schema";
-export * from "./model/types";
+export * from "./schemas";
+export * from "./types";
 

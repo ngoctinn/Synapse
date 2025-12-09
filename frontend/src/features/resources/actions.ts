@@ -1,16 +1,67 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { mockMaintenanceTasks, mockResources } from "./model/mocks";
-import { ResourceFormValues } from "./model/schema";
-import { MaintenanceTask, Resource } from "./model/types";
+import { mockMaintenanceTasks, mockResources } from "./data/mocks";
+import { ResourceFormValues, resourceSchema } from "./schemas";
+import { MaintenanceTask, Resource } from "./types";
 
+export type ActionState = {
+  success?: boolean;
+  error?: string;
+  message?: string;
+};
 
+// Simulate a database
 let resources = [...mockResources];
 let maintenanceTasks = [...mockMaintenanceTasks];
 
-export async function getResources(query?: string): Promise<Resource[]> {
+export async function manageResource(prevState: ActionState, formData: FormData): Promise<ActionState> {
+    const id = formData.get("id") as string;
+    const rawData: any = {};
 
+    // Parse form data
+    formData.forEach((value, key) => {
+        if (key === "tags") {
+            try {
+                rawData[key] = JSON.parse(value as string);
+            } catch {
+                rawData[key] = [];
+            }
+        } else if (key !== "id" && key !== "form_mode") {
+             // Basic casting
+             rawData[key] = value;
+        }
+    });
+
+    // Handle number conversions manually as FormData is string
+    if (rawData.capacity) rawData.capacity = Number(rawData.capacity);
+    if (rawData.setupTime) rawData.setupTime = Number(rawData.setupTime);
+
+    // Validate
+    const validatedFields = resourceSchema.safeParse(rawData);
+
+    if (!validatedFields.success) {
+        return {
+            success: false,
+            error: validatedFields.error.issues[0].message
+        };
+    }
+
+    try {
+        if (id) {
+            await updateResource(id, validatedFields.data);
+            return { success: true, message: "Cập nhật tài nguyên thành công" };
+        } else {
+            await createResource(validatedFields.data);
+            return { success: true, message: "Tạo tài nguyên mới thành công" };
+        }
+    } catch (error) {
+        return { success: false, error: "Đã có lỗi xảy ra" };
+    }
+}
+
+export async function getResources(query?: string): Promise<Resource[]> {
+  // Simulate network delay
   await new Promise((resolve) => setTimeout(resolve, 500));
 
   if (!query) return resources;
@@ -35,6 +86,7 @@ export async function createResource(data: ResourceFormValues): Promise<Resource
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     ...data,
+    // Ensure capacity is undefined if not a room
     capacity: data.type === 'ROOM' ? data.capacity : undefined,
   } as Resource;
 
@@ -53,7 +105,7 @@ export async function updateResource(id: string, data: ResourceFormValues): Prom
     ...resources[index],
     ...data,
     updatedAt: new Date().toISOString(),
-     capacity: data.type === 'ROOM' ? data.capacity : undefined,
+    capacity: data.type === 'ROOM' ? data.capacity : undefined,
   } as Resource;
 
   resources[index] = updatedResource;
@@ -61,21 +113,22 @@ export async function updateResource(id: string, data: ResourceFormValues): Prom
   return updatedResource;
 }
 
-export async function deleteResource(id: string): Promise<void> {
+export async function deleteResource(id: string): Promise<ActionState> {
   await new Promise((resolve) => setTimeout(resolve, 500));
   resources = resources.filter((r) => r.id !== id);
   revalidatePath("/resources");
+  return { success: true, message: "Đã xóa tài nguyên thành công" };
 }
 
-
+// --- Compatibility Exports (Deprecated) ---
 
 export async function getRoomTypes(): Promise<Resource[]> {
-
+  // Return all resources of type ROOM
   return getResources().then(res => res.filter(r => r.type === 'ROOM'));
 }
 
 export async function getEquipmentList(): Promise<Resource[]> {
-
+  // Return all resources of type EQUIPMENT
   return getResources().then(res => res.filter(r => r.type === 'EQUIPMENT'));
 }
 
