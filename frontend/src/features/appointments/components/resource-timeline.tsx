@@ -120,12 +120,12 @@ export function ResourceTimeline({ date, resources, appointments, onSlotClick, o
 
 
           <div
-            className="sticky top-0 z-40 flex border-b border-border bg-background/95 backdrop-blur-sm"
+            className="sticky top-0 z-20 flex border-b border-border bg-background/95 backdrop-blur-sm"
             style={{ height: APPOINTMENT_SETTINGS.HEADER_HEIGHT }}
           >
 
             <div
-              className="sticky left-0 z-50 flex-shrink-0 border-r border-border bg-background flex items-center justify-center font-semibold text-sm"
+              className="sticky left-0 z-30 flex-shrink-0 border-r border-border bg-background flex items-center justify-center font-semibold text-sm"
               style={{ width: APPOINTMENT_SETTINGS.SIDEBAR_WIDTH }}
             >
               Nhân viên
@@ -147,7 +147,7 @@ export function ResourceTimeline({ date, resources, appointments, onSlotClick, o
           <div className="flex relative">
 
             <div
-              className="sticky left-0 z-30 bg-background border-r border-border"
+              className="sticky left-0 z-20 bg-background border-r border-border"
               style={{ width: APPOINTMENT_SETTINGS.SIDEBAR_WIDTH }}
             >
               {resources.map((resource) => (
