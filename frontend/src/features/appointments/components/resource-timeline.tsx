@@ -22,20 +22,18 @@ export function ResourceTimeline({ date, resources, appointments, onSlotClick, o
   const [hoverInfo, setHoverInfo] = React.useState<{ resourceId: string, time: string, left: number } | null>(null);
 
   // ... (lines 22-72)
-  // Generate time slots (columns)
+
   const timeSlots = React.useMemo(() => {
     const slots = [];
     for (let i = APPOINTMENT_SETTINGS.START_HOUR; i <= APPOINTMENT_SETTINGS.END_HOUR; i++) {
-        // 2 slots per hour (30 mins) if needed, sticking to 1 hour based on settings usually
-        // Assuming CELL_WIDTH corresponds to 1 hour for now based on previous code
-      slots.push(setMinutes(setHours(startOfDay(date), i), 0));
+        slots.push(setMinutes(setHours(startOfDay(date), i), 0));
     }
     return slots;
   }, [date]);
 
   const totalWidth = timeSlots.length * APPOINTMENT_SETTINGS.CELL_WIDTH;
 
-  // Current Time Indicator Position
+
   const [currentTimePosition, setCurrentTimePosition] = React.useState<number | null>(null);
 
   React.useEffect(() => {
@@ -62,7 +60,7 @@ export function ResourceTimeline({ date, resources, appointments, onSlotClick, o
     return () => clearInterval(interval);
   }, [date]);
 
-  // Appointment Positioning Helper
+
   const getPosition = (startTime: Date, endTime: Date) => {
     const start = startTime.getHours() + startTime.getMinutes() / 60;
     const end = endTime.getHours() + endTime.getMinutes() / 60;
@@ -88,18 +86,18 @@ export function ResourceTimeline({ date, resources, appointments, onSlotClick, o
       const rect = e.currentTarget.getBoundingClientRect();
       const x = e.clientX - rect.left;
 
-      // Calculate time from x
+
       const hoursFromStart = x / APPOINTMENT_SETTINGS.CELL_WIDTH;
       const totalMinutes = hoursFromStart * 60;
 
-      // Round to nearest 15
+
       const roundedMinutes = Math.round(totalMinutes / 15) * 15;
       const hour = APPOINTMENT_SETTINGS.START_HOUR + Math.floor(roundedMinutes / 60);
       const minute = roundedMinutes % 60;
 
       const timeStr = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
 
-      // Snap highlight to grid
+
       const snapLeft = (roundedMinutes / 60) * APPOINTMENT_SETTINGS.CELL_WIDTH;
 
       setHoverInfo({
@@ -111,7 +109,7 @@ export function ResourceTimeline({ date, resources, appointments, onSlotClick, o
 
   return (
     <div className="flex flex-col w-full h-full relative overflow-hidden select-none bg-background">
-      {/* Scrollable Container */}
+
       <div
         ref={containerRef}
         className="flex-1 overflow-auto relative scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent outline-none cursor-grab touch-pan-y"
@@ -120,12 +118,12 @@ export function ResourceTimeline({ date, resources, appointments, onSlotClick, o
       >
         <div className="min-w-full w-fit flex flex-col">
 
-          {/* Header Row (Time) */}
+
           <div
             className="sticky top-0 z-40 flex border-b border-border bg-background/95 backdrop-blur-sm shadow-sm"
             style={{ height: APPOINTMENT_SETTINGS.HEADER_HEIGHT }}
           >
-            {/* Corner Cell (Sticky) */}
+
             <div
               className="sticky left-0 z-50 flex-shrink-0 border-r border-border bg-background flex items-center justify-center font-semibold text-sm shadow-[4px_0_24px_-12px_rgba(0,0,0,0.1)]"
               style={{ width: APPOINTMENT_SETTINGS.SIDEBAR_WIDTH }}
@@ -133,7 +131,7 @@ export function ResourceTimeline({ date, resources, appointments, onSlotClick, o
               Nhân viên
             </div>
 
-            {/* Time Columns */}
+
             {timeSlots.map((slot, i) => (
               <div
                 key={i}
@@ -145,9 +143,9 @@ export function ResourceTimeline({ date, resources, appointments, onSlotClick, o
             ))}
           </div>
 
-          {/* Body Rows */}
+
           <div className="flex relative">
-            {/* Sidebar (Resources) - Sticky Left */}
+
             <div
               className="sticky left-0 z-30 bg-background border-r border-border shadow-[4px_0_24px_-12px_rgba(0,0,0,0.1)]"
               style={{ width: APPOINTMENT_SETTINGS.SIDEBAR_WIDTH }}
@@ -174,7 +172,7 @@ export function ResourceTimeline({ date, resources, appointments, onSlotClick, o
               ))}
             </div>
 
-            {/* Grid Area */}
+
             <div className="flex-1 min-w-0 bg-muted/5">
               {resources.map((resource) => (
                 <div
@@ -192,7 +190,7 @@ export function ResourceTimeline({ date, resources, appointments, onSlotClick, o
                       handleCellClick(resource.id, hour, minutes);
                   }}
                 >
-                  {/* Grid Lines */}
+
                   {timeSlots.map((_, i) => (
                     <div
                       key={i}
@@ -201,7 +199,7 @@ export function ResourceTimeline({ date, resources, appointments, onSlotClick, o
                     />
                   ))}
 
-                  {/* Hover Indicator */}
+
                   {hoverInfo && hoverInfo.resourceId === resource.id && (
                        <div
                          className="absolute top-0 bottom-0 bg-primary/5 pointer-events-none z-0 border-l border-primary/20 flex flex-col justify-end pb-1 pl-1"
@@ -213,7 +211,7 @@ export function ResourceTimeline({ date, resources, appointments, onSlotClick, o
                        </div>
                   )}
 
-                  {/* Appointments */}
+
                   {appointments
                     .filter((apt) => apt.resourceId === resource.id && isSameDay(apt.startTime, date))
                     .map((apt) => {
@@ -228,9 +226,8 @@ export function ResourceTimeline({ date, resources, appointments, onSlotClick, o
                             top: '4px',
                             bottom: '4px',
                           }}
-                          // Prevent grid click propagation
+
                           onClick={(e) => {
-                              // If e is available (it should be with MouseEventHandler), stop prop
                               e?.stopPropagation();
                               if (onAppointmentClick) {
                                   onAppointmentClick(apt);
@@ -242,7 +239,7 @@ export function ResourceTimeline({ date, resources, appointments, onSlotClick, o
                 </div>
               ))}
 
-              {/* Current Time Indicator (Global across all rows) */}
+
               {currentTimePosition !== null && (
                 <div
                   className="absolute top-0 bottom-0 border-l-2 border-red-500 z-20 pointer-events-none"

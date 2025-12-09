@@ -3,12 +3,12 @@
 import { Appointment } from "@/features/appointments/types";
 import { Button } from "@/shared/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from "@/shared/ui/dialog";
 import { Plus } from "lucide-react";
 import { useState } from "react";
@@ -44,7 +44,7 @@ export function CreateAppointmentDialog({
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {/* Only show trigger if not controlled externally */}
+
         {!controlledOpen && (
             <Button>
             <Plus className="mr-2 h-4 w-4" /> Tạo lịch hẹn

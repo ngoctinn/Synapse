@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 import {
     Briefcase,
     Calendar as CalendarIcon,
@@ -9,28 +10,23 @@ import {
     ChevronsUpDown,
     Clock,
     FileText,
-    MapPin,
     Phone,
     Plus,
     Search,
+    Sparkles,
     User,
-    X,
-    Sparkles
+    X
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { vi } from "date-fns/locale";
 
+import { cn } from "@/shared/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
+import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
+import { Calendar } from "@/shared/ui/calendar";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { TimePicker } from "@/shared/ui/custom/time-picker";
-import { Calendar } from "@/shared/ui/calendar";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/shared/ui/popover";
-import { cn } from "@/shared/lib/utils";
 import {
     Form,
     FormControl,
@@ -39,28 +35,27 @@ import {
     FormLabel,
     FormMessage,
 } from "@/shared/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
-import { Textarea } from "@/shared/ui/textarea";
-import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
-import { Badge } from "@/shared/ui/badge";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/shared/ui/popover";
 import { Separator } from "@/shared/ui/separator";
+import { Textarea } from "@/shared/ui/textarea";
 
 import { Appointment } from "@/features/appointments/types";
 import { MOCK_SERVICES } from "@/features/services/data/mocks";
-import { DialogFooter } from "@/shared/ui/dialog";
-import { MOCK_RESOURCES } from "../mock-data";
 import {
-  Command,
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-  CommandShortcut,
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList
 } from "@/shared/ui/command";
-import { useState, useMemo } from "react";
+import { DialogFooter } from "@/shared/ui/dialog";
+import { useMemo, useState } from "react";
+import { MOCK_RESOURCES } from "../mock-data";
 
 const MOCK_CUSTOMERS = [
     { id: "c1", name: "Nguyễn Văn A", phone: "0912345678" },
@@ -119,12 +114,12 @@ export function AppointmentForm({
         },
     });
 
-    // Calculate end time for display
+
     const selectedServiceId = form.watch("serviceId");
     const startTimeStr = form.watch("startTime");
-    
-    const selectedService = useMemo(() => 
-        MOCK_SERVICES.find(s => s.id === selectedServiceId), 
+
+    const selectedService = useMemo(() =>
+        MOCK_SERVICES.find(s => s.id === selectedServiceId),
     [selectedServiceId]);
 
     const estimatedEndTime = useMemo(() => {
@@ -139,13 +134,13 @@ export function AppointmentForm({
     const handleSubmit = (values: z.infer<typeof formSchema>) => {
         const service = MOCK_SERVICES.find(s => s.id === values.serviceId);
 
-        // Safe Date Parsing
+
         const dateObj = new Date(values.date);
         const [hours, minutes] = values.startTime.split(':').map(Number);
-        
+
         const startTime = new Date(dateObj);
         startTime.setHours(hours, minutes);
-        
+
         const endTime = new Date(startTime.getTime() + (service?.duration || 60) * 60000);
 
         const newAppointment: Partial<Appointment> = {
@@ -168,14 +163,14 @@ export function AppointmentForm({
     return (
         <Form {...form}>
             <form id={id} onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-                
-                {/* SECTION 1: CUSTOMER */}
+
+
                 <div className="space-y-3">
                     <div className="flex items-center gap-2 text-primary font-medium">
                         <User className="w-4 h-4" />
                         <h3 className="text-sm uppercase tracking-wide">Thông tin khách hàng</h3>
                     </div>
-                    
+
                     <div className="bg-muted/30 p-4 rounded-xl border border-border/50 space-y-4 shadow-sm">
                         {!isNewCustomer ? (
                             <FormField
@@ -196,7 +191,7 @@ export function AppointmentForm({
                                                 >
                                                     <div className="flex items-center gap-2 truncate">
                                                         <Search className="h-4 w-4 shrink-0 opacity-50" />
-                                                        {field.value 
+                                                        {field.value
                                                             ? <span className="font-medium">{field.value} {form.watch("phoneNumber") && <span className="text-muted-foreground font-normal">({form.watch("phoneNumber")})</span>}</span>
                                                             : "Tìm kiếm khách hàng (Tên/SĐT)..."}
                                                     </div>
@@ -205,8 +200,8 @@ export function AppointmentForm({
                                             </PopoverTrigger>
                                             <PopoverContent className="w-[340px] p-0" align="start">
                                                 <Command>
-                                                    <CommandInput 
-                                                        placeholder="Nhập tên hoặc số điện thoại..." 
+                                                    <CommandInput
+                                                        placeholder="Nhập tên hoặc số điện thoại..."
                                                         value={searchQuery}
                                                         onValueChange={setSearchQuery}
                                                     />
@@ -215,8 +210,8 @@ export function AppointmentForm({
                                                             <div className="flex flex-col items-center gap-3">
                                                                 <p className="text-muted-foreground">Không tìm thấy khách hàng.</p>
                                                                 {searchQuery && (
-                                                                    <Button 
-                                                                        variant="secondary" 
+                                                                    <Button
+                                                                        variant="secondary"
                                                                         size="sm"
                                                                         onClick={() => {
                                                                             setIsNewCustomer(true);
@@ -262,8 +257,8 @@ export function AppointmentForm({
                                             </PopoverContent>
                                         </Popover>
                                         <div className="flex justify-end">
-                                             <Button 
-                                                variant="link" 
+                                             <Button
+                                                variant="link"
                                                 className="h-auto p-0 text-xs text-primary"
                                                 onClick={() => setIsNewCustomer(true)}
                                                 type="button"
@@ -282,9 +277,9 @@ export function AppointmentForm({
                                     <h4 className="text-sm font-medium flex items-center gap-2 text-primary">
                                         Khách hàng mới
                                     </h4>
-                                    <Button 
-                                        variant="ghost" 
-                                        size="sm" 
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
                                         onClick={() => setIsNewCustomer(false)}
                                         className="h-8 w-8 p-0 rounded-full hover:bg-destructive/10 hover:text-destructive transition-colors"
                                     >
@@ -326,7 +321,7 @@ export function AppointmentForm({
 
                 <Separator />
 
-                {/* SECTION 2: SCHEDULE */}
+
                 <div className="space-y-3">
                     <div className="flex items-center gap-2 text-primary font-medium">
                         <Clock className="w-4 h-4" />
@@ -397,13 +392,13 @@ export function AppointmentForm({
 
                 <Separator />
 
-                {/* SECTION 3: SERVICE & STAFF */}
+
                 <div className="space-y-3">
                     <div className="flex items-center gap-2 text-primary font-medium">
                         <Briefcase className="w-4 h-4" />
                         <h3 className="text-sm uppercase tracking-wide">Dịch vụ & Kỹ thuật viên</h3>
                     </div>
-                    
+
                     <FormField
                         control={form.control}
                         name="serviceId"
@@ -422,7 +417,7 @@ export function AppointmentForm({
                                                     !field.value && "text-muted-foreground"
                                                 )}
                                             >
-                                                {field.value 
+                                                {field.value
                                                     ? (() => {
                                                         const service = MOCK_SERVICES.find(s => s.id === field.value);
                                                         return service ? (
@@ -517,7 +512,7 @@ export function AppointmentForm({
                                                     !field.value && "text-muted-foreground"
                                                 )}
                                             >
-                                                    {field.value 
+                                                    {field.value
                                                     ? (() => {
                                                         const resource = MOCK_RESOURCES.find(r => r.id === field.value);
                                                         return resource ? (
@@ -604,7 +599,7 @@ export function AppointmentForm({
                     )}
                 />
 
-                {/* Estimate Summary */}
+
                 {estimatedEndTime && selectedService && (
                     <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 flex items-start gap-3 text-sm animate-in fade-in slide-in-from-bottom-2">
                         <div className="bg-primary/10 p-1.5 rounded-full mt-0.5">

@@ -1,28 +1,22 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Loader2, Save, Send, CalendarPlus } from "lucide-react"
+import { CalendarPlus, Loader2, Save, Send } from "lucide-react"
 import * as React from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
 
-// Components
+
+import { Appointment } from "@/features/appointments/types"
 import { Button } from "@/shared/ui/button"
 import { showToast } from "@/shared/ui/custom/sonner"
-import { Form } from "@/shared/ui/form"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle
 } from "@/shared/ui/sheet"
 import { AppointmentForm } from "./appointment-form"
-import { Appointment } from "@/features/appointments/types"
-import { format } from "date-fns"
 
-// Since we are mocking, we will just simulate success after a timeout
 const simulateServerAction = async (data: any) => {
     return new Promise<{ success: boolean; message?: string }>((resolve) => {
         setTimeout(() => {
@@ -36,49 +30,34 @@ interface AppointmentSheetProps {
   onOpenChange: (open: boolean) => void
   mode: "create" | "update"
   appointment?: Appointment | null
-  defaultDate?: Date 
+  defaultDate?: Date
   defaultResourceId?: string
   onSubmit?: (data: any) => void
 }
 
-export function AppointmentSheet({ 
-    open, 
-    onOpenChange, 
-    mode, 
-    appointment, 
+export function AppointmentSheet({
+    open,
+    onOpenChange,
+    mode,
+    appointment,
     defaultDate,
     defaultResourceId,
-    onSubmit 
+    onSubmit
 }: AppointmentSheetProps) {
   const [isPending, startTransition] = React.useTransition()
 
-    // Using the same component for form logic but handling submit wrapper here
-    // In a real app, we would lift the form state or use a specialized context
-    // For now, we will pass a submit handler to the AppointmentForm
-    
-  // We need a ref to trigger form submit from the footer button
-  // However, AppointmentForm is currently a controlled component that handles its own form
-  // We will need to refactor AppointmentForm slightly or wrap it effectively.
-  // For this step, let's create a wrapper that renders the form.
-  
-  // NOTE: Ideally AppointmentForm should expose its form methods or be a part of this component.
-  // To avoid massive refactor of AppointmentForm's internal logic right now, we will
-  // modify AppointmentForm to accept an external form ID or Ref, OR we just put the submit button inside the form.
-  
-  // Actually, looking at StaffSheet, the footer button is outside the form.
-  // The form has an ID `staff-form` and the button has `form="staff-form"`.
-  // We should apply the same pattern to AppointmentForm.
+
 
   const handleSheetSubmit = async (data: any) => {
       startTransition(async () => {
           try {
-             // Simulate network request
+
              await simulateServerAction(data)
-             
+
              if (onSubmit) {
                  onSubmit(data)
              }
-             
+
              showToast.success(mode === "create" ? "Đã tạo lịch hẹn" : "Đã cập nhật lịch hẹn")
              onOpenChange(false)
           } catch (error) {
@@ -88,8 +67,8 @@ export function AppointmentSheet({
   }
 
   const title = mode === "create" ? "Tạo lịch hẹn mới" : "Cập nhật lịch hẹn"
-  const description = mode === "create" 
-    ? "Điền thông tin chi tiết để đặt lịch hẹn mới cho khách hàng." 
+  const description = mode === "create"
+    ? "Điền thông tin chi tiết để đặt lịch hẹn mới cho khách hàng."
     : "Chỉnh sửa thông tin lịch hẹn, thời gian hoặc dịch vụ."
 
   return (
@@ -108,12 +87,8 @@ export function AppointmentSheet({
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto px-6 py-6 [scrollbar-gutter:stable]">
-            {/* 
-                We need to pass the submit handler downward. 
-                But AppointmentForm defines its own form. 
-                We will update AppointmentForm to accept an ID and an onSubmit prop that returns the data 
-            */}
-            <AppointmentForm 
+
+            <AppointmentForm
                 id="appointment-form"
                 mode={mode}
                 defaultDate={defaultDate}
@@ -136,7 +111,7 @@ export function AppointmentSheet({
             </Button>
             <Button
                 type="submit"
-                form="appointment-form" // This connects to the form ID inside AppointmentForm
+                form="appointment-form"
                 disabled={isPending}
                 className="min-w-[140px] shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
             >

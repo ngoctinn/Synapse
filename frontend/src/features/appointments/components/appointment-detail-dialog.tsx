@@ -6,12 +6,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
 } from "@/shared/ui/dialog";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -29,8 +29,7 @@ interface AppointmentDetailDialogProps {
 }
 
 /**
- * Status Map sử dụng CSS Variables từ globals.css để đảm bảo tính nhất quán với theme.
- * Các màu được định nghĩa tại :root và .dark trong globals.css
+ * Status Map sử dụng CSS Variables từ globals.css
  */
 const statusMap: Record<string, { label: string; className: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
     pending: {
@@ -73,24 +72,17 @@ export function AppointmentDetailDialog({
     onEdit,
     onCancel
 }: AppointmentDetailDialogProps) {
-    // Respect user's motion preferences
     const prefersReducedMotion = useReducedMotion();
 
     if (!appointment) return null;
 
     const statusInfo = statusMap[appointment.status] || statusMap.pending;
 
-    // Transition class dựa trên reduced motion preference
     const transitionClass = prefersReducedMotion ? "" : "transition-colors duration-200";
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            {/*
-                Responsive & Accessibility improvements:
-                - max-h-[90vh] + overflow-y-auto cho mobile scrollability
-                - Focus trap handled by Radix Dialog
-                - DialogDescription cho screen readers
-            */}
+
             <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle className="flex items-center justify-between gap-2 flex-wrap">
@@ -109,7 +101,7 @@ export function AppointmentDetailDialog({
                 </DialogHeader>
 
                 <div className="grid gap-6 py-4">
-                    {/* Customer Info */}
+
                     <div className="flex items-start gap-4">
                         <div
                             className="p-2.5 bg-primary/10 rounded-full text-primary flex-shrink-0"
@@ -124,7 +116,7 @@ export function AppointmentDetailDialog({
                         </div>
                     </div>
 
-                    {/* Time & Service */}
+
                     <div className="flex items-start gap-4">
                         <div
                             className="p-2.5 bg-[var(--status-confirmed)]/50 rounded-full text-[var(--status-confirmed-foreground)] flex-shrink-0"
@@ -143,7 +135,7 @@ export function AppointmentDetailDialog({
                         </div>
                     </div>
 
-                    {/* Resource / Technician */}
+
                      <div className="flex items-start gap-4">
                         <Avatar className="h-10 w-10 border ring-1 ring-border/20 flex-shrink-0">
                             <AvatarImage src={resource?.avatar} alt={resource?.name || "Kỹ thuật viên"} />
@@ -156,7 +148,7 @@ export function AppointmentDetailDialog({
                         </div>
                     </div>
 
-                    {/* Notes */}
+
                     {appointment.notes && (
                         <div className="flex items-start gap-4">
                             <div
