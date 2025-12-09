@@ -1,6 +1,6 @@
 import { Role } from "./types";
 
-export const ROLE_CONFIG: Record<Role, { label: string; variant: "default" | "secondary" | "destructive" | "outline" | "processing" | "success" | "warning" | "info" | "purple" | "indigo" | "glass" | "glass-light"; className?: string }> = {
+export const ROLE_CONFIG: Record<Role, { label: string; variant: "default" | "secondary" | "destructive" | "outline" | "success" | "warning" | "info" | "purple" | "indigo" | "glass" | "glass-light"; className?: string }> = {
   admin: {
     label: "Quản trị viên",
     variant: "purple",

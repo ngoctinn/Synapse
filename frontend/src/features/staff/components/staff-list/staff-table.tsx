@@ -16,6 +16,7 @@ import {
 } from "@/shared/ui/alert-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
+import { Button } from "@/shared/ui/button"
 import { Column, DataTable } from "@/shared/ui/custom/data-table"
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state"
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
@@ -28,7 +29,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/shared/ui/tooltip"
-import { Users } from "lucide-react"
+import { Calendar, Users } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useState, useTransition } from "react"
 import { ROLE_CONFIG } from "../../constants"
@@ -45,6 +46,23 @@ interface StaffTableProps {
   className?: string
   variant?: "default" | "flush"
   isLoading?: boolean
+}
+
+const GroupActionButtons = ({ staff }: { staff: Staff }) => {
+    return (
+        <TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10">
+                        <Calendar className="h-4 w-4" />
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>Xem lịch làm việc</p>
+                </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
+    )
 }
 
 export function StaffTable({
@@ -207,14 +225,15 @@ export function StaffTable({
     },
     {
       header: "Hành động",
-      className: "pr-6",
+      className: "pr-6 text-right",
       cell: (staff) => (
-        <div onClick={(e) => e.stopPropagation()}>
-          <StaffActions
-            staff={staff}
-            skills={skills}
-            onEdit={() => setEditingStaff(staff)}
-          />
+        <div onClick={(e) => e.stopPropagation()} className="flex items-center justify-end gap-2">
+            <GroupActionButtons staff={staff} />
+            <StaffActions
+                staff={staff}
+                skills={skills}
+                onEdit={() => setEditingStaff(staff)}
+            />
         </div>
       )
     }

@@ -83,11 +83,11 @@ export function AdminHeader({ className, user }: AdminHeaderProps) {
                 <React.Fragment key={href}>
                   <BreadcrumbItem className="hidden md:block">
                     {isLast ? (
-                      <BreadcrumbPage className="font-semibold text-slate-800">
+                      <BreadcrumbPage className="font-semibold text-foreground">
                         {title}
                       </BreadcrumbPage>
                     ) : (
-                      <BreadcrumbLink href={href} className="text-slate-500 hover:text-primary">
+                      <BreadcrumbLink href={href} className="text-muted-foreground hover:text-primary transition-colors">
                         {title}
                       </BreadcrumbLink>
                     )}
@@ -108,20 +108,20 @@ export function AdminHeader({ className, user }: AdminHeaderProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="relative rounded-full w-9 h-9 hover:bg-slate-100 text-slate-600 transition-transform hover:scale-105"
+          className="relative rounded-full w-9 h-9 text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-transform hover:scale-105"
         >
           <Bell className="w-5 h-5" />
-          <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white animate-pulse" />
+          <span className="absolute top-2 right-2 w-2 h-2 bg-destructive rounded-full border border-background animate-pulse" />
           <span className="sr-only">Có thông báo mới</span>
         </Button>
 
-        <div className="h-6 w-px bg-slate-200 mx-1" />
+        <div className="h-6 w-px bg-border mx-1" />
 
         {/* User Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-50 transition-all hover:ring-2 hover:ring-primary/10">
-              <Avatar className="w-8 h-8 border border-slate-200 shadow-sm">
+            <Button variant="ghost" size="icon" className="rounded-full hover:bg-accent transition-all hover:ring-2 hover:ring-ring/10">
+              <Avatar className="w-8 h-8 border border-border shadow-sm">
                 <AvatarImage src={avatarUrl} />
                 <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>
@@ -135,17 +135,17 @@ export function AdminHeader({ className, user }: AdminHeaderProps) {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer group">
+            <DropdownMenuItem className="cursor-pointer group focus:bg-accent focus:text-accent-foreground">
               <User className="mr-2 h-4 w-4 group-hover:text-primary transition-colors" />
               <span>Hồ sơ</span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer group">
+            <DropdownMenuItem className="cursor-pointer group focus:bg-accent focus:text-accent-foreground">
               <Settings className="mr-2 h-4 w-4 group-hover:text-primary transition-colors" />
               <span>Cài đặt</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 group" onSelect={handleLogout}>
-              <LogOut className="mr-2 h-4 w-4 text-red-600 group-hover:translate-x-1 transition-transform" />
+            <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10 group" onSelect={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               <span>Đăng xuất</span>
             </DropdownMenuItem>
           </DropdownMenuContent>

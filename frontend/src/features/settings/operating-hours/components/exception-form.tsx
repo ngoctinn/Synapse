@@ -2,6 +2,7 @@
 
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
+import { BirthdayPicker } from "@/shared/ui/custom/birthday-picker";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { TimeRangeInput } from "@/shared/ui/custom/time-range-input";
 import { Label } from "@/shared/ui/label";
@@ -11,7 +12,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Clock, Plus, X, Calendar as CalendarIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ExceptionDate } from "../model/types";
-import { BirthdayPicker } from "@/shared/ui/custom/birthday-picker";
 
 import { DEFAULT_BUSINESS_HOURS, EXCEPTION_TYPES } from "../model/constants";
 
@@ -35,7 +35,7 @@ export function ExceptionForm({
   secondaryAction,
   id
 }: ExceptionFormProps) {
-  
+
   // --- Form State ---
   const [formData, setFormData] = useState<Partial<ExceptionDate>>({
     type: 'holiday',
@@ -43,7 +43,7 @@ export function ExceptionForm({
     reason: '',
     modifiedHours: []
   });
-  
+
   // Temporary date for input
   const [tempDate, setTempDate] = useState<Date | undefined>(undefined);
 
@@ -66,7 +66,7 @@ export function ExceptionForm({
 
   const handleAddTempDate = () => {
       if (!tempDate) return;
-      
+
       // Check if date already exists
       const exists = selectedDates.some(d => isSameDay(d, tempDate));
       if (exists) {
@@ -115,8 +115,8 @@ export function ExceptionForm({
     if (!formData.reason?.trim()) return;
 
     if (formData.isClosed) {
-        onSubmit({ 
-            ...formData, 
+        onSubmit({
+            ...formData,
             modifiedHours: [] // Clear hours if closed
         });
     } else {
@@ -125,129 +125,133 @@ export function ExceptionForm({
   };
 
   // Expose submit handler via Ref if needed, or Parent controls it.
-  // Ideally parent passes a ref, but here we keep it simple: 
+  // Ideally parent passes a ref, but here we keep it simple:
   // If hideFooter is false, we show our own button.
 
   return (
-    <form 
+    <form
         id={id || (hideFooter ? "exception-form" : undefined)}
         onSubmit={(e) => {
             e.preventDefault();
             handleSubmit();
         }}
-        className="grid gap-6 py-4"
+        className="space-y-6 pt-2"
     >
-      
-      {/* 1. Date Selection Section */}
-      <div className="space-y-3">
-        <Label className="text-sm font-medium">Thời gian áp dụng</Label>
 
-        <div className="w-full flex flex-col sm:flex-row sm:items-end gap-3 border rounded-xl p-4 bg-muted/10">
-            <div className="flex-1 space-y-1.5 w-full">
-                <Label className="text-xs text-muted-foreground">Nhập ngày (DD/MM/YYYY)</Label>
-                <BirthdayPicker
-                    date={tempDate}
-                    setDate={setTempDate}
-                    placeholder="Ví dụ: 25/12/2025"
-                    className="bg-background w-full"
-                />
+      {/* 1. Date Selection Section */}
+      <div className="space-y-4">
+        <div className="flex flex-col gap-2">
+            <Label className="text-foreground/80 font-normal">Thời gian áp dụng</Label>
+
+            <div className="flex gap-3 items-end">
+                 <div className="flex-1">
+                     <BirthdayPicker
+                        date={tempDate}
+                        setDate={setTempDate}
+                        placeholder="Chọn ngày ngoại lệ..."
+                        className="bg-background w-full"
+                    />
+                 </div>
+                 <Button
+                    onClick={handleAddTempDate}
+                    disabled={!tempDate}
+                    type="button"
+                    variant="outline"
+                    className="shrink-0 text-primary border-primary/20 hover:bg-primary/5 hover:text-primary"
+                >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Thêm
+                </Button>
             </div>
-            <Button 
-                onClick={handleAddTempDate} 
-                disabled={!tempDate}
-                type="button"
-                className="h-10 px-4 shrink-0 bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary border-primary/20 w-full sm:w-auto"
-                variant="outline"
-            >
-                <Plus className="w-4 h-4 mr-2" />
-                Thêm ngày
-            </Button>
         </div>
-        
+
         {/* Selected Dates Chips (Hybrid View) */}
-        <div className="border rounded-xl p-3 bg-muted/20 min-h-[60px] flex flex-wrap gap-2 content-start">
-            {selectedDates.length === 0 ? (
-                <span className="text-sm text-muted-foreground w-full text-center py-2 italic opacity-70">
-                    Chưa chọn ngày nào
-                </span>
-            ) : (
-                selectedDates.map((date, idx) => (
-                    <div key={idx} className="flex items-center gap-1 bg-background text-foreground shadow-sm pl-3 pr-1 py-1 rounded-full text-xs font-medium border animate-in fade-in zoom-in-95 duration-200">
+        {selectedDates.length > 0 && (
+            <div className="flex flex-wrap gap-2 pt-1">
+                {selectedDates.map((date, idx) => (
+                    <div key={idx} className="flex items-center gap-1 bg-secondary/50 text-foreground border border-border px-3 py-1.5 rounded-full text-xs font-medium animate-in fade-in zoom-in-95 duration-200 group">
                         {format(date, 'dd/MM/yyyy')}
-                        <button 
-                            onClick={() => handleRemoveDate(date)} 
-                            className="ml-1 p-1 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        <button
+                            onClick={() => handleRemoveDate(date)}
+                            className="ml-1.5 p-0.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                             aria-label={`Xóa ngày ${format(date, 'dd/MM/yyyy')}`}
                         >
-                            <X className="w-3.5 h-3.5" />
+                            <X className="w-3 h-3" />
                         </button>
                     </div>
-                ))
-            )}
-        </div>
-        <p className="text-[11px] text-muted-foreground ml-1">
-            Bạn có thể xóa bớt từng ngày lẻ.
-        </p>
+                ))}
+            </div>
+        )}
+        {selectedDates.length === 0 && (
+            <div className="text-xs text-muted-foreground italic pl-1">
+                Chưa chọn ngày nào.
+            </div>
+        )}
       </div>
+
+      <div className="h-[1px] bg-border/50" />
 
       {/* 2. Reason Input */}
       <div className="space-y-2">
-        <Label htmlFor="reason" className="text-sm font-medium">Lý do / Tên sự kiện</Label>
+        <Label htmlFor="reason" className="text-foreground/80 font-normal">Lý do / Tên sự kiện</Label>
         <InputWithIcon
             id="reason"
             value={formData.reason || ''}
             onChange={e => setFormData({...formData, reason: e.target.value})}
             placeholder="Ví dụ: Tết Nguyên Đán, Bảo trì định kỳ..."
+            className="bg-background"
         />
       </div>
 
       {/* 3. Type Selection */}
       <div className="space-y-3">
-        <Label className="text-sm font-medium">Loại sự kiện</Label>
+        <Label className="text-foreground/80 font-normal">Loại sự kiện</Label>
         <div className="grid grid-cols-3 gap-3">
             {EXCEPTION_TYPES.map((type) => (
             <div
                 key={type.id}
                 onClick={() => setFormData({...formData, type: type.id})}
                 className={cn(
-                "cursor-pointer rounded-xl border-2 p-3 flex flex-col items-center gap-2 transition-all duration-200 hover:bg-muted/50 active:scale-95 relative",
+                "cursor-pointer rounded-lg border p-3 flex flex-col items-center gap-2 transition-all duration-200 hover:bg-accent/50 hover:border-primary/30 active:scale-95 relative",
                 formData.type === type.id
-                    ? cn("bg-muted ring-2 ring-primary ring-offset-2 ring-offset-background", type.border)
-                    : "border-transparent bg-muted/20"
+                    ? cn("bg-primary/5 border-primary shadow-sm", type.border)
+                    : "bg-background border-border"
                 )}
             >
-                <div className={cn("p-2 rounded-full", type.bg)}>
-                <type.icon className={cn("w-5 h-5", type.color)} />
+                <div className={cn("p-2 rounded-full", formData.type === type.id ? "bg-background" : "bg-secondary")}>
+                <type.icon className={cn("w-4 h-4", type.color)} />
                 </div>
-                <span className="text-xs font-semibold">{type.label}</span>
+                <span className={cn("text-xs font-medium", formData.type === type.id && "text-primary")}>{type.label}</span>
             </div>
             ))}
         </div>
       </div>
 
+      <div className="h-[1px] bg-border/50" />
+
       {/* 4. Open/Close Status & Hours */}
-      <div className="space-y-4 pt-2">
-         <Label className="text-sm font-medium flex items-center gap-2">
+      <div className="space-y-4">
+         <Label className="text-foreground/80 font-normal flex items-center gap-2">
              <Clock className="w-4 h-4 text-muted-foreground" />
-             Trạng thái hoạt động
+             Trạng thái & Thời gian
          </Label>
-         
-         <div className="border rounded-2xl p-4 bg-muted/10 space-y-4 transition-colors duration-300">
+
+         <div className="border rounded-xl p-4 space-y-4 bg-background transition-colors duration-300">
             <div className="flex items-center gap-4">
                 <Switch
                     id="closed"
                     checked={formData.isClosed}
                     onCheckedChange={checked => setFormData({...formData, isClosed: checked})}
-                    className="data-[state=checked]:bg-destructive scale-110"
+                    className="data-[state=checked]:bg-destructive"
                 />
                 <div className="flex flex-col">
-                    <Label htmlFor="closed" className={cn("cursor-pointer text-sm font-bold transition-colors", formData.isClosed ? "text-destructive" : "text-foreground")}>
-                        {formData.isClosed ? "Đóng cửa hoàn toàn" : "Mở cửa (Giờ đặc biệt)"}
+                    <Label htmlFor="closed" className={cn("cursor-pointer text-sm font-medium transition-colors", formData.isClosed ? "text-destructive" : "text-foreground")}>
+                        {formData.isClosed ? "Đóng cửa" : "Mở cửa (Giờ đặc biệt)"}
                     </Label>
                     <span className="text-xs text-muted-foreground">
                     {formData.isClosed
-                        ? "Spa sẽ không nhận lịch hẹn vào ngày này"
-                        : "Spa vẫn hoạt động nhưng theo khung giờ bên dưới"}
+                        ? "Không nhận lịch hẹn vào ngày này"
+                        : "Hoạt động theo khung giờ tuỳ chỉnh"}
                     </span>
                 </div>
             </div>
@@ -275,30 +279,21 @@ export function ExceptionForm({
                                     />
                                 ))}
                             </div>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={handleAddSlot}
-                                className="text-xs font-medium text-primary hover:text-primary/80 hover:bg-primary/10 h-8 px-3 rounded-full mt-2"
-                            >
-                                <Plus className="w-3.5 h-3.5 mr-1.5" />
-                                Thêm khung giờ
-                            </Button>
                         </div>
                     </motion.div>
                 )}
             </AnimatePresence>
          </div>
       </div>
-      
+
       {!hideFooter && (
-          <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-4 border-t">
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-4 border-t mt-6">
               {secondaryAction && (
                 <div className="w-full sm:w-auto">
                     {secondaryAction}
                 </div>
               )}
-              <Button type="submit" disabled={!formData.reason || selectedDates.length === 0} className="w-full sm:w-auto h-11 rounded-xl text-base font-medium min-w-[120px]">
+              <Button type="submit" disabled={!formData.reason || selectedDates.length === 0} className="w-full sm:w-auto min-w-[100px]">
                 {initialData ? "Cập nhật" : "Lưu thay đổi"}
               </Button>
           </div>
