@@ -1,20 +1,20 @@
 "use client";
 
-import * as React from "react";
-import { Clock } from "lucide-react";
+import { cn } from "@/shared/lib/utils";
+import { Button } from "@/shared/ui/button";
+import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { Label } from "@/shared/ui/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/ui/popover";
-import { Button } from "@/shared/ui/button";
-import { cn } from "@/shared/lib/utils";
 import { ScrollArea } from "@/shared/ui/scroll-area";
-import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
+import { Clock } from "lucide-react";
+import * as React from "react";
 
 interface TimePickerProps {
-  value?: string; // Format "HH:mm"
+  value?: string; // Định dạng "HH:mm"
   onChange: (value: string) => void;
   className?: string;
 }
@@ -22,7 +22,7 @@ interface TimePickerProps {
 export function TimePicker({ value, onChange, className }: TimePickerProps) {
   const [isOpen, setIsOpen] = React.useState(false);
 
-  // Parse current value (HH:mm) to 12h format
+  // Phân tích giá trị hiện tại (HH:mm) sang định dạng 12h
   const [period, setPeriod] = React.useState<"SA" | "CH">("SA");
   const [displayHour, setDisplayHour] = React.useState<number | null>(null);
   const [displayMinute, setDisplayMinute] = React.useState<number | null>(null);
@@ -55,12 +55,12 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
     if (type === "minute") newMinute = val as number;
     if (type === "period") newPeriod = val as "SA" | "CH";
 
-    // Update local state for immediate UI feedback (optional, but good for UX)
+    // Cập nhật state cục bộ để UI phản hồi ngay lập tức
     if (type === "hour") setDisplayHour(newHour);
     if (type === "minute") setDisplayMinute(newMinute);
     if (type === "period") setPeriod(newPeriod);
 
-    // Convert back to 24h for onChange
+    // Chuyển đổi ngược lại sang 24h cho hàm onChange
     let finalHour = newHour;
     if (newPeriod === "CH" && newHour < 12) finalHour += 12;
     if (newPeriod === "SA" && newHour === 12) finalHour = 0;
@@ -68,7 +68,7 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
     const formattedTime = `${finalHour.toString().padStart(2, "0")}:${newMinute
       .toString()
       .padStart(2, "0")}`;
-    
+
     onChange(formattedTime);
   };
 
@@ -87,7 +87,7 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0 rounded-xl shadow-xl border-border/60" align="start">
         <div className="flex h-[220px] divide-x divide-border/50">
-          {/* Hours Column */}
+          {/* Cột Giờ */}
           <ScrollArea className="w-[60px]">
              <div className="flex flex-col p-2 gap-1 items-center">
               <Label className="mb-2 text-[10px] uppercase font-bold text-muted-foreground">Giờ</Label>
@@ -108,7 +108,7 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
             </div>
           </ScrollArea>
 
-          {/* Minutes Column */}
+          {/* Cột Phút */}
           <ScrollArea className="w-[60px]">
             <div className="flex flex-col p-2 gap-1 items-center">
               <Label className="mb-2 text-[10px] uppercase font-bold text-muted-foreground">Phút</Label>
@@ -129,7 +129,7 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
             </div>
           </ScrollArea>
 
-          {/* Period Column (SA/CH) */}
+          {/* Cột Buổi (SA/CH) */}
           <ScrollArea className="w-[60px]">
             <div className="flex flex-col p-2 gap-1 items-center">
               <Label className="mb-2 text-[10px] uppercase font-bold text-muted-foreground">Buổi</Label>
@@ -154,3 +154,4 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
     </Popover>
   );
 }
+

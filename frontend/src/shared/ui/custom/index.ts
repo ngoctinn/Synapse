@@ -1,5 +1,5 @@
 export * from "./birthday-picker"
-export * from "./date-picker"
+
 export * from "./dialog"
 export * from "./duration-picker"
 export * from "./filter-button"
@@ -8,7 +8,7 @@ export * from "./masked-date-input"
 export * from "./money-input"
 export * from "./password-input"
 export * from "./sonner"
-export * from "./strip-calendar"
+
 export * from "./table-action-bar"
 export * from "./table-row-actions"
 export * from "./tag-input"

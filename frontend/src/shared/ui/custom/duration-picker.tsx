@@ -53,7 +53,7 @@ export function DurationPicker({
     >
       <SelectTrigger className={cn("w-full", className)}>
         <div className="flex items-center gap-2">
-            <Clock className={cn("h-4 w-4 text-muted-foreground", iconClassName)} />
+            <Clock className={cn("h-[18px] w-[18px] text-muted-foreground", iconClassName)} />
             <SelectValue placeholder={placeholder} />
         </div>
       </SelectTrigger>
