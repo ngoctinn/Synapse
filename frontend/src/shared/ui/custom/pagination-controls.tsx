@@ -1,13 +1,13 @@
 "use client"
 
 import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
 } from "@/shared/ui/pagination"
 
 interface PaginationControlsProps {
@@ -21,7 +21,6 @@ export function PaginationControls({
   totalPages,
   onPageChange,
 }: PaginationControlsProps) {
-  // Generate page numbers to display
   const getPageNumbers = () => {
     const pages = []
     const maxVisiblePages = 5
@@ -31,7 +30,6 @@ export function PaginationControls({
         pages.push(i)
       }
     } else {
-      // Always show first page
       pages.push(1)
 
       if (currentPage > 3) {
@@ -49,7 +47,6 @@ export function PaginationControls({
         pages.push("ellipsis-end")
       }
 
-      // Always show last page
       pages.push(totalPages)
     }
 

@@ -6,11 +6,11 @@ import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
 import { SelectWithIcon } from "@/shared/ui/custom/select-with-icon"
 import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { Textarea } from "@/shared/ui/textarea"
@@ -38,7 +38,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
   const form = useFormContext()
   const role = form.watch("role")
 
-  // Sub-components for cleaner render
+
   const GeneralInfo = () => (
     <div className="space-y-4">
       {/* Avatar Placeholder - Future Integration */}
@@ -248,7 +248,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                         <FormLabel className="text-foreground/80 font-normal">Ngày tuyển dụng</FormLabel>
                         <FormControl>
                             <InputWithIcon
-                                icon={Briefcase} // Placeholder icon
+
                                 type="date"
                                 {...field}
                                 className="bg-background"
@@ -266,7 +266,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                         <FormLabel className="text-foreground/80 font-normal">Hoa hồng (%)</FormLabel>
                         <FormControl>
                             <InputWithIcon
-                                icon={Briefcase} // Placeholder icon
+
                                 type="number"
                                 min={0}
                                 max={100}
@@ -285,7 +285,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
   )
 
   if (mode === "create") {
-    // Keep Simple Flow for Create
+
     return (
         <div className={cn("space-y-6", className)}>
             <GeneralInfo />
@@ -295,7 +295,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
     )
   }
 
-  // Tabs for Update Mode
+
   return (
     <div className={cn("w-full", className)}>
         <Tabs defaultValue="general" className="w-full">

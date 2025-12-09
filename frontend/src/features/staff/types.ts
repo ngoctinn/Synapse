@@ -21,7 +21,7 @@ export interface Staff {
   color_code: string;
   commission_rate: number;
 
-  // Nested relationships
+
   user: User;
   skills: Skill[];
 }
@@ -48,7 +48,7 @@ export interface StaffListResponse {
   limit: number;
 }
 
-// Keep existing UI types if needed, or refactor components to use new types
+
 export type ShiftType = 'WORK' | 'OFF';
 
 export interface Shift {

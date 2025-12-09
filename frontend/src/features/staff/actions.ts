@@ -7,7 +7,7 @@ import { Skill } from "../services/types"
 import { staffCreateSchema } from "./schemas"
 import { Schedule, StaffListResponse, StaffUpdate } from "./types"
 
-// Unified Wrapper Action
+
 export async function manageStaff(prevState: ActionState, formData: FormData): Promise<ActionState> {
   const mode = formData.get("form_mode")
   if (mode === "create") {
@@ -23,7 +23,7 @@ export type ActionState = {
   message?: string
 }
 
-// --- MOCK DATA GENERATORS ---
+
 
 import { MOCK_SKILLS } from "@/features/services/data/mocks"
 import { MOCK_STAFF } from "./data/mocks"
@@ -31,7 +31,7 @@ import { MOCK_SCHEDULES } from "./data/schedules"
 
 
 
-// --- ACTIONS ---
+
 
 export async function getStaffList(
   page: number = 1,
@@ -96,7 +96,7 @@ export async function updateStaffSkills(staffId: string, skillIds: string[]): Pr
   return { success: true, message: "Cập nhật kỹ năng thành công (Mock)" }
 }
 
-// Unified Update Action
+
 export async function updateStaffAction(prevState: ActionState, formData: FormData): Promise<ActionState> {
   const staffId = formData.get("staff_id") as string
   if (!staffId) return { success: false, error: "Missing Staff ID" }
@@ -111,20 +111,20 @@ export async function updateStaffAction(prevState: ActionState, formData: FormDa
     skill_ids: formData.get("skill_ids") ? JSON.parse(formData.get("skill_ids") as string) : [],
   }
 
-  // 1. Update User Info
+
   await updateUser(staffId, {
     full_name: data.full_name as string,
     phone_number: data.phone_number as string,
   })
 
-  // 2. Update Staff Details
+
   await updateStaff(staffId, {
     title: data.title as string,
     bio: data.bio as string,
     color_code: data.color_code as string,
   })
 
-  // 3. Update Skills (if technician)
+
   if (data.role === "technician") {
     await updateStaffSkills(staffId, data.skill_ids)
   }

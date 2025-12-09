@@ -19,16 +19,16 @@ export function StaffFilter() {
       filterKeys: ["role", "is_active"],
     })
 
-  // Lấy giá trị hiện tại từ URL
+
   const role = searchParams.get("role")
   const isActive = searchParams.get("is_active")
 
-  // Xử lý thay đổi vai trò
+
   const handleRoleChange = (value: string) => {
     updateParam("role", value === "all" ? null : value)
   }
 
-  // Xử lý thay đổi trạng thái
+
   const handleStatusChange = (value: string) => {
     updateParam("is_active", value === "all" ? null : value)
   }
@@ -40,7 +40,7 @@ export function StaffFilter() {
       onClear={clearFilters}
     >
       <div className="grid gap-6 p-1">
-        {/* Lọc theo Vai trò */}
+
         <div className="space-y-3">
           <Label htmlFor="role" className="text-sm font-medium">Vai trò</Label>
           <Select value={role || "all"} onValueChange={handleRoleChange}>
@@ -63,7 +63,7 @@ export function StaffFilter() {
 
         <div className="h-[1px] bg-border/50" />
 
-        {/* Lọc theo Trạng thái */}
+
         <div className="space-y-3">
           <Label htmlFor="status" className="text-sm font-medium">Trạng thái</Label>
           <Select value={isActive || "all"} onValueChange={handleStatusChange}>
