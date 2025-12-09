@@ -2,11 +2,11 @@
 
 import { cn } from "@/shared/lib/utils";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select";
 import { Clock } from "lucide-react";
 import * as React from "react";
@@ -19,6 +19,7 @@ interface DurationPickerProps {
   step?: number; // Default 15
   placeholder?: string;
   className?: string;
+  iconClassName?: string;
 }
 
 export function DurationPicker({
@@ -29,6 +30,7 @@ export function DurationPicker({
   step = 15,
   placeholder = "Chọn thời gian",
   className,
+  iconClassName,
 }: DurationPickerProps) {
   // Generate time options
   const options = React.useMemo(() => {
@@ -51,7 +53,7 @@ export function DurationPicker({
     >
       <SelectTrigger className={cn("w-full", className)}>
         <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-muted-foreground" />
+            <Clock className={cn("h-4 w-4 text-muted-foreground", iconClassName)} />
             <SelectValue placeholder={placeholder} />
         </div>
       </SelectTrigger>

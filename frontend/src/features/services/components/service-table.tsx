@@ -25,7 +25,7 @@ import { useState, useTransition } from "react"
 import { toast } from "sonner"
 import { deleteService } from "../actions"
 import { Service, Skill } from "../types"
-import { CreateServiceDialog } from "./create-service-dialog"
+import { CreateServiceWizard } from "./create-service-wizard"
 import { ServiceActions } from "./service-actions"
 
 interface ServiceTableProps {
@@ -196,7 +196,7 @@ export function ServiceTable({
             title="Chưa có dịch vụ nào"
             description="Bắt đầu bằng cách tạo dịch vụ đầu tiên của bạn. Dịch vụ sẽ hiển thị trên trang đặt lịch."
             action={
-              <CreateServiceDialog
+              <CreateServiceWizard
                 availableSkills={availableSkills}
                 availableRoomTypes={availableRoomTypes}
                 availableEquipment={availableEquipment}

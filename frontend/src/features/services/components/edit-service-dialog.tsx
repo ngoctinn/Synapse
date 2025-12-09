@@ -2,31 +2,27 @@
 
 import { Resource, RoomType } from "@/features/resources";
 import { Service, Skill } from "../types";
-import { ServiceWizard } from "./service-wizard";
+import { ServiceSheet } from "./service-sheet";
 
 interface EditServiceDialogProps {
+  service: Service;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  service: Service;
   availableSkills: Skill[];
   availableRoomTypes: RoomType[];
   availableEquipment: Resource[];
 }
 
-/**
- * Wrapper component cho ServiceWizard ở chế độ Edit
- * Nhận service data để pre-populate form
- */
 export function EditServiceDialog({
+  service,
   open,
   onOpenChange,
-  service,
   availableSkills,
   availableRoomTypes,
-  availableEquipment
+  availableEquipment,
 }: EditServiceDialogProps) {
   return (
-    <ServiceWizard
+    <ServiceSheet
       mode="edit"
       initialData={service}
       open={open}

@@ -1,0 +1,187 @@
+"use client"
+
+import { Resource, RoomType } from "@/features/resources"
+import { Button } from "@/shared/ui/button"
+import { Form } from "@/shared/ui/form"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from "@/shared/ui/sheet"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Loader2, Save, Send } from "lucide-react"
+import * as React from "react"
+import { Resolver, useForm } from "react-hook-form"
+import { toast } from "sonner"
+import { createService, updateService } from "../actions"
+import { SERVICE_DEFAULT_VALUES } from "../constants"
+import { ServiceFormValues, serviceSchema } from "../schemas"
+import { Service, Skill } from "../types"
+import { ServiceForm } from "./service-form"
+
+interface ServiceSheetProps {
+  mode: "create" | "edit"
+  initialData?: Service
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  availableSkills: Skill[]
+  availableRoomTypes: RoomType[]
+  availableEquipment: Resource[]
+}
+
+export function ServiceSheet({
+  mode,
+  initialData,
+  open,
+  onOpenChange,
+  availableSkills,
+  availableRoomTypes,
+  availableEquipment,
+}: ServiceSheetProps) {
+  const [isPending, startTransition] = React.useTransition()
+  const isEditMode = mode === "edit"
+
+  const form = useForm<ServiceFormValues>({
+    resolver: zodResolver(serviceSchema) as Resolver<ServiceFormValues>,
+    mode: "onChange",
+    defaultValues: {
+      name: initialData?.name || "",
+      duration: initialData?.duration || SERVICE_DEFAULT_VALUES.duration,
+      buffer_time: initialData?.buffer_time || SERVICE_DEFAULT_VALUES.buffer_time,
+      price: initialData?.price || SERVICE_DEFAULT_VALUES.price,
+      is_active: initialData?.is_active ?? true,
+      image_url: initialData?.image_url || "",
+      color: initialData?.color || SERVICE_DEFAULT_VALUES.color,
+      description: initialData?.description || "",
+      resource_requirements: {
+        room_type_id: initialData?.resource_requirements?.room_type_id || undefined,
+        equipment_ids: initialData?.resource_requirements?.equipment_ids || [],
+        equipment_usage: initialData?.resource_requirements?.equipment_usage || [],
+      },
+      skill_ids: initialData?.skills?.map((s) => s.id) || [],
+      new_skills: [],
+    },
+  })
+
+  // Reset form when opening
+  React.useEffect(() => {
+    if (open) {
+      form.reset({
+        name: initialData?.name || "",
+        duration: initialData?.duration || SERVICE_DEFAULT_VALUES.duration,
+        buffer_time: initialData?.buffer_time || SERVICE_DEFAULT_VALUES.buffer_time,
+        price: initialData?.price || SERVICE_DEFAULT_VALUES.price,
+        is_active: initialData?.is_active ?? true,
+        image_url: initialData?.image_url || "",
+        color: initialData?.color || SERVICE_DEFAULT_VALUES.color,
+        description: initialData?.description || "",
+        resource_requirements: {
+          room_type_id: initialData?.resource_requirements?.room_type_id || undefined,
+          equipment_ids: initialData?.resource_requirements?.equipment_ids || [],
+          equipment_usage: initialData?.resource_requirements?.equipment_usage || [],
+        },
+        skill_ids: initialData?.skills?.map((s) => s.id) || [],
+        new_skills: [],
+      })
+    }
+  }, [open, initialData, form])
+
+  const onSubmit = (data: ServiceFormValues) => {
+    startTransition(async () => {
+      try {
+        const result =
+          isEditMode && initialData
+            ? await updateService(initialData.id, data)
+            : await createService(data)
+
+        if (result.success) {
+          toast.success(
+            isEditMode ? "Cập nhật thành công" : "Tạo dịch vụ thành công",
+            {
+              description: `Dịch vụ "${data.name}" đã được ${
+                isEditMode ? "cập nhật" : "thêm vào hệ thống"
+              }.`,
+            }
+          )
+          onOpenChange(false)
+        } else {
+          toast.error("Thất bại", { description: result.message })
+        }
+      } catch (error) {
+        toast.error("Lỗi hệ thống", {
+          description: "Đã có lỗi xảy ra, vui lòng thử lại sau.",
+        })
+      }
+    })
+  }
+
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent className="w-full sm:max-w-xl p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
+        <SheetHeader className="px-6 py-4 border-b">
+          <SheetTitle className="text-xl font-semibold text-foreground">
+            {isEditMode ? "Chỉnh sửa dịch vụ" : "Tạo dịch vụ mới"}
+          </SheetTitle>
+          <SheetDescription className="text-muted-foreground text-sm">
+            {isEditMode
+              ? "Cập nhật thông tin dịch vụ, giá và tài nguyên."
+              : "Thêm dịch vụ mới vào hệ thống của bạn."}
+          </SheetDescription>
+        </SheetHeader>
+
+        <div className="flex-1 overflow-hidden px-6 py-6">
+          <Form {...form}>
+            <form
+              id="service-form"
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="h-full flex flex-col"
+            >
+              <ServiceForm
+                mode={mode}
+                availableSkills={availableSkills}
+                availableRoomTypes={availableRoomTypes}
+                availableEquipment={availableEquipment}
+                className="flex-1"
+              />
+            </form>
+          </Form>
+        </div>
+
+        <SheetFooter className="px-6 py-4 border-t sm:justify-between flex-row items-center gap-4 bg-background">
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => onOpenChange(false)}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            Hủy bỏ
+          </Button>
+          <Button
+            type="submit"
+            form="service-form"
+            disabled={isPending}
+            className="min-w-[140px] shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
+            loading={isPending}
+          >
+            {isPending ? (
+              <>
+                 <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Đang xử lý...
+              </>
+            ) : isEditMode ? (
+              <>
+                <Save className="mr-2 h-4 w-4" /> Lưu thay đổi
+              </>
+            ) : (
+                <>
+                <Send className="mr-2 h-4 w-4" /> Tạo dịch vụ
+              </>
+            )}
+          </Button>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+  )
+}
