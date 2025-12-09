@@ -8,7 +8,6 @@ export default function AuthLayout({
 }) {
   return (
     <div className="flex min-h-screen w-full bg-background">
-      {/* Left Side: Decorative / Brand */}
       <div className="hidden lg:flex w-1/2 relative bg-primary overflow-hidden items-center justify-center">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-40 mix-blend-overlay" />
         <div className="absolute inset-0 bg-gradient-to-br from-primary/80 to-primary/40" />
@@ -28,14 +27,11 @@ export default function AuthLayout({
           </blockquote>
         </div>
 
-        {/* Decorative Circles */}
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-secondary/20 rounded-full blur-3xl" />
       </div>
 
-      {/* Right Side: Form */}
       <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8 lg:p-12 relative">
-        {/* Mobile Logo */}
         <HeaderLogo className="lg:hidden absolute top-8 left-8" textClassName="text-xl font-serif inline-block" />
 
         <div className="w-full max-w-[400px] space-y-6 animate-fade-in">

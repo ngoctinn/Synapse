@@ -13,7 +13,6 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-      {/* Header với nút Đặt lịch */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-serif font-bold">Xin chào, {profile.fullName}!</h1>

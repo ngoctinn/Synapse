@@ -29,7 +29,6 @@ export default async function AdminLayout({
         }
       }
     } catch {
-      // Lỗi đã được xử lý silently - user sẽ thấy UI không authenticated
     }
   }
 
