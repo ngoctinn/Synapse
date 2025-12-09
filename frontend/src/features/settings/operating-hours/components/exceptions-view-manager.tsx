@@ -8,7 +8,7 @@ import { ExceptionsCalendar } from "./exceptions-calendar";
 import { ExceptionsFilterBar } from "./exceptions-filter-bar";
 import { useCalendarSelection } from "../hooks/use-calendar-selection";
 
-import { ExceptionDialog } from "./exception-dialog";
+import { ExceptionSheet } from "./exception-sheet";
 import { YearViewGrid } from "./year-view-grid";
 import { applyExceptionToDates } from "../utils/bulk-operations";
 import { format, startOfYear, endOfYear, setYear } from "date-fns";
@@ -284,7 +284,7 @@ export function ExceptionsViewManager({
            </div>
        </div>
 
-       <ExceptionDialog 
+       <ExceptionSheet 
            isOpen={isDialogOpen} 
            onClose={() => setIsDialogOpen(false)}
            selectedDates={selectedDates}

@@ -23,6 +23,7 @@ interface ExceptionFormProps {
   /** If true, the submit button is rendered by the parent dialog */
   hideFooter?: boolean;
   secondaryAction?: React.ReactNode;
+  id?: string;
 }
 
 export function ExceptionForm({
@@ -31,7 +32,8 @@ export function ExceptionForm({
   onDatesChange,
   onSubmit,
   hideFooter = false,
-  secondaryAction
+  secondaryAction,
+  id
 }: ExceptionFormProps) {
   
   // --- Form State ---
@@ -127,7 +129,14 @@ export function ExceptionForm({
   // If hideFooter is false, we show our own button.
 
   return (
-    <div className="grid gap-6 py-4">
+    <form 
+        id={id || (hideFooter ? "exception-form" : undefined)}
+        onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+        }}
+        className="grid gap-6 py-4"
+    >
       
       {/* 1. Date Selection Section */}
       <div className="space-y-3">
@@ -306,11 +315,11 @@ export function ExceptionForm({
                     {secondaryAction}
                 </div>
               )}
-              <Button onClick={handleSubmit} disabled={!formData.reason || selectedDates.length === 0} className="w-full sm:w-auto h-11 rounded-xl text-base font-medium min-w-[120px]">
+              <Button type="submit" disabled={!formData.reason || selectedDates.length === 0} className="w-full sm:w-auto h-11 rounded-xl text-base font-medium min-w-[120px]">
                 {initialData ? "Cập nhật" : "Lưu thay đổi"}
               </Button>
           </div>
       )}
-    </div>
+    </form>
   );
 }
