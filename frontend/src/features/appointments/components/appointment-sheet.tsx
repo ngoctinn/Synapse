@@ -1,6 +1,6 @@
 "use client"
 
-import { CalendarPlus, Loader2, Save, Send } from "lucide-react"
+import { Loader2, Save, Send } from "lucide-react"
 import * as React from "react"
 
 
@@ -88,13 +88,10 @@ export function AppointmentSheet({
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full sm:max-w-xl p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
-        <SheetHeader className="px-6 py-4 border-b">
-            <div className="flex items-center justify-between">
-                <SheetTitle className="text-xl font-semibold text-foreground flex items-center gap-2">
-                    <CalendarPlus className="w-5 h-5 text-primary" />
-                    {title}
-                </SheetTitle>
-            </div>
+        <SheetHeader className="px-6 py-4 border-b space-y-1">
+            <SheetTitle className="text-xl font-semibold text-foreground">
+                {title}
+            </SheetTitle>
             <SheetDescription className="text-muted-foreground text-sm">
                 {description}
             </SheetDescription>
@@ -116,12 +113,11 @@ export function AppointmentSheet({
             />
         </div>
 
-        <SheetFooter className="px-6 py-4 border-t sm:justify-between flex-row items-center gap-4 bg-background">
+        <SheetFooter className="px-6 py-4 border-t sm:justify-end gap-3 bg-background">
             <Button
                 type="button"
-                variant="ghost"
+                variant="outline"
                 onClick={() => onOpenChange(false)}
-                className="text-muted-foreground hover:text-foreground"
             >
                 Hủy bỏ
             </Button>
@@ -129,7 +125,6 @@ export function AppointmentSheet({
                 type="submit"
                 form="appointment-form"
                 disabled={isPending}
-                className="min-w-[140px] shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
             >
                 {isPending ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

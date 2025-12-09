@@ -14,8 +14,7 @@ import {
   Plus,
   Search,
   Sparkles,
-  User,
-  X
+  User
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -40,7 +39,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/ui/popover";
-import { Separator } from "@/shared/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Textarea } from "@/shared/ui/textarea";
 
 import { Appointment, Customer, Resource } from "@/features/appointments/types";
@@ -93,7 +92,7 @@ export function AppointmentForm({
     const [openCombobox, setOpenCombobox] = useState(false);
     const [openServiceCombobox, setOpenServiceCombobox] = useState(false);
     const [openResourceCombobox, setOpenResourceCombobox] = useState(false);
-    const [isNewCustomer, setIsNewCustomer] = useState(false);
+    const [customerTab, setCustomerTab] = useState<"search" | "new">("search");
     const [searchQuery, setSearchQuery] = useState("");
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -108,7 +107,6 @@ export function AppointmentForm({
             notes: initialData?.notes || "",
         },
     });
-
 
     const selectedServiceId = form.watch("serviceId");
     const startTimeStr = form.watch("startTime");
@@ -128,7 +126,6 @@ export function AppointmentForm({
 
     const handleSubmit = (values: z.infer<typeof formSchema>) => {
         const service = services.find(s => s.id === values.serviceId);
-
 
         const dateObj = new Date(values.date);
         const [hours, minutes] = values.startTime.split(':').map(Number);
@@ -157,18 +154,23 @@ export function AppointmentForm({
 
     return (
         <Form {...form}>
-            <form id={id} onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+            <form id={id} onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
 
-
-                <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-primary font-medium">
-                        <User className="w-4 h-4" />
-                        <h3 className="text-sm uppercase tracking-wide">Thông tin khách hàng</h3>
+                {/* 1. Customer Section */}
+                <div className="space-y-4">
+                    <div className="flex items-center gap-2 pb-1 border-b border-border/50">
+                        <User className="w-4 h-4 text-muted-foreground" />
+                        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Khách hàng</h3>
                     </div>
 
-                    <div className="bg-muted/30 p-4 rounded-xl border border-border/50 space-y-4 shadow-sm">
-                        {!isNewCustomer ? (
-                            <FormField
+                    <Tabs value={customerTab} onValueChange={(v) => setCustomerTab(v as "search" | "new")} className="w-full">
+                        <TabsList className="grid w-full grid-cols-2 mb-4 h-9">
+                            <TabsTrigger value="search" className="text-xs">Tìm khách cũ</TabsTrigger>
+                            <TabsTrigger value="new" className="text-xs">Khách mới</TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="search" className="mt-0 animate-in fade-in slide-in-from-left-1 duration-200">
+                             <FormField
                                 control={form.control}
                                 name="customerName"
                                 render={({ field }) => (
@@ -180,15 +182,15 @@ export function AppointmentForm({
                                                     role="combobox"
                                                     aria-expanded={openCombobox}
                                                     className={cn(
-                                                        "w-full justify-between h-11 rounded-lg bg-background border-input hover:bg-accent/50 hover:border-primary/50 transition-all duration-200",
+                                                        "w-full justify-between h-10 rounded-lg bg-background border-input hover:bg-accent/50 transition-all font-normal",
                                                         !field.value && "text-muted-foreground"
                                                     )}
                                                 >
                                                     <div className="flex items-center gap-2 truncate">
                                                         <Search className="h-4 w-4 shrink-0 opacity-50" />
                                                         {field.value
-                                                            ? <span className="font-medium">{field.value} {form.watch("phoneNumber") && <span className="text-muted-foreground font-normal">({form.watch("phoneNumber")})</span>}</span>
-                                                            : "Tìm kiếm khách hàng (Tên/SĐT)..."}
+                                                            ? <span className="text-foreground">{field.value} {form.watch("phoneNumber") && <span className="text-muted-foreground">({form.watch("phoneNumber")})</span>}</span>
+                                                            : "Tìm kiếm (Tên/SĐT)..."}
                                                     </div>
                                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                 </Button>
@@ -196,33 +198,33 @@ export function AppointmentForm({
                                             <PopoverContent className="w-[340px] p-0" align="start">
                                                 <Command>
                                                     <CommandInput
-                                                        placeholder="Nhập tên hoặc số điện thoại..."
+                                                        placeholder="Nhập từ khóa..."
                                                         value={searchQuery}
                                                         onValueChange={setSearchQuery}
                                                     />
-                                                    <CommandList className="max-h-[300px] overflow-y-auto overflow-x-hidden">
-                                                        <CommandEmpty className="py-6 text-center text-sm">
-                                                            <div className="flex flex-col items-center gap-3">
-                                                                <p className="text-muted-foreground">Không tìm thấy khách hàng.</p>
+                                                    <CommandList className="max-h-[300px] overflow-y-auto">
+                                                        <CommandEmpty className="py-4 text-center text-sm">
+                                                            <div className="flex flex-col items-center gap-2">
+                                                                <p className="text-muted-foreground">Không tìm thấy.</p>
                                                                 {searchQuery && (
                                                                     <Button
                                                                         variant="secondary"
                                                                         size="sm"
                                                                         onClick={() => {
-                                                                            setIsNewCustomer(true);
+                                                                            setCustomerTab("new");
                                                                             form.setValue("phoneNumber", searchQuery);
                                                                             form.setValue("customerName", "");
                                                                             setOpenCombobox(false);
                                                                         }}
-                                                                        className="w-full max-w-[200px]"
+                                                                        className="h-7 text-xs"
                                                                     >
-                                                                        <Plus className="mr-2 h-3.5 w-3.5" />
-                                                                        Thêm mới "{searchQuery}"
+                                                                        <Plus className="mr-1 h-3 w-3" />
+                                                                        Tạo mới "{searchQuery}"
                                                                     </Button>
                                                                 )}
                                                             </div>
                                                         </CommandEmpty>
-                                                        <CommandGroup heading="Khách hàng đã lưu">
+                                                        <CommandGroup heading="Đã lưu">
                                                             {customers.map((customer) => (
                                                                 <CommandItem
                                                                     key={customer.id}
@@ -251,97 +253,72 @@ export function AppointmentForm({
                                                 </Command>
                                             </PopoverContent>
                                         </Popover>
-                                        <div className="flex justify-end">
-                                             <Button
-                                                variant="link"
-                                                className="h-auto p-0 text-xs text-primary"
-                                                onClick={() => setIsNewCustomer(true)}
-                                                type="button"
-                                            >
-                                                <Plus className="w-3 h-3 mr-1" />
-                                                Tạo khách hàng mới
-                                            </Button>
-                                        </div>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
-                        ) : (
-                            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-                                <div className="flex items-center justify-between mb-4">
-                                    <h4 className="text-sm font-medium flex items-center gap-2 text-primary">
-                                        Khách hàng mới
-                                    </h4>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => setIsNewCustomer(false)}
-                                        className="h-8 w-8 p-0 rounded-full hover:bg-destructive/10 hover:text-destructive transition-colors"
-                                    >
-                                        <X className="h-4 w-4" />
-                                    </Button>
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <FormField
-                                        control={form.control}
-                                        name="customerName"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className="text-xs">Họ và tên</FormLabel>
-                                                <FormControl>
-                                                    <InputWithIcon icon={User} placeholder="Nhập tên khách..." {...field} className="bg-background" autoFocus />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="phoneNumber"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className="text-xs">Số điện thoại</FormLabel>
-                                                <FormControl>
-                                                    <InputWithIcon icon={Phone} placeholder="09..." {...field} className="bg-background" />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
+                        </TabsContent>
+
+                        <TabsContent value="new" className="mt-0 animate-in fade-in slide-in-from-right-1 duration-200">
+                             <div className="grid grid-cols-2 gap-4">
+                                <FormField
+                                    control={form.control}
+                                    name="customerName"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="text-foreground/80 font-normal">Họ tên</FormLabel>
+                                            <FormControl>
+                                                <InputWithIcon icon={User} placeholder="Nhập tên..." {...field} className="bg-background" />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="phoneNumber"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="text-foreground/80 font-normal">SĐT</FormLabel>
+                                            <FormControl>
+                                                <InputWithIcon icon={Phone} placeholder="09..." {...field} className="bg-background" />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                             </div>
-                        )}
-                    </div>
+                        </TabsContent>
+                    </Tabs>
                 </div>
 
-                <Separator />
-
-
-                <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-primary font-medium">
-                        <Clock className="w-4 h-4" />
-                        <h3 className="text-sm uppercase tracking-wide">Thời gian hẹn</h3>
+                {/* 2. Date & Time Section */}
+                <div className="space-y-4">
+                     <div className="flex items-center gap-2 pb-1 border-b border-border/50">
+                        <Clock className="w-4 h-4 text-muted-foreground" />
+                        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Thời gian</h3>
                     </div>
+
                     <div className="grid grid-cols-2 gap-4">
                         <FormField
                             control={form.control}
                             name="date"
                             render={({ field }) => (
                                 <FormItem className="flex flex-col">
-                                    <FormLabel>Ngày</FormLabel>
+                                    <FormLabel className="text-foreground/80 font-normal">Ngày hẹn</FormLabel>
                                     <Popover>
                                         <PopoverTrigger asChild>
                                             <FormControl>
                                                 <Button
                                                     variant={"outline"}
                                                     className={cn(
-                                                        "h-11 w-full pl-3 text-left font-normal rounded-lg border-input hover:bg-accent hover:border-primary/50 transition-all",
+                                                        "h-10 w-full pl-3 text-left font-normal rounded-lg border-input hover:bg-accent transition-all",
                                                         !field.value && "text-muted-foreground"
                                                     )}
                                                 >
-                                                    <CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
+                                                    <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />
                                                     {field.value ? (
-                                                        format(new Date(field.value), "PPP", { locale: vi })
+                                                        format(new Date(field.value), "dd/MM/yyyy", { locale: vi })
                                                     ) : (
                                                         <span>Chọn ngày</span>
                                                     )}
@@ -357,7 +334,6 @@ export function AppointmentForm({
                                                     date < new Date("1900-01-01")
                                                 }
                                                 initialFocus
-                                                className="pointer-events-auto"
                                             />
                                         </PopoverContent>
                                     </Popover>
@@ -370,12 +346,12 @@ export function AppointmentForm({
                             name="startTime"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Giờ bắt đầu</FormLabel>
+                                    <FormLabel className="text-foreground/80 font-normal">Giờ bắt đầu</FormLabel>
                                     <FormControl>
                                         <TimePicker
                                             value={field.value}
                                             onChange={field.onChange}
-                                            className="h-11 rounded-lg hover:border-primary/50 transition-all"
+                                            className="h-10 rounded-lg hover:border-primary/50 transition-all font-normal"
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -385,225 +361,225 @@ export function AppointmentForm({
                     </div>
                 </div>
 
-                <Separator />
-
-
-                <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-primary font-medium">
-                        <Briefcase className="w-4 h-4" />
-                        <h3 className="text-sm uppercase tracking-wide">Dịch vụ & Kỹ thuật viên</h3>
+                {/* 3. Service & Resource Section */}
+                <div className="space-y-4">
+                    <div className="flex items-center gap-2 pb-1 border-b border-border/50">
+                        <Briefcase className="w-4 h-4 text-muted-foreground" />
+                        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Dịch vụ & Nhân viên</h3>
                     </div>
 
-                    <FormField
-                        control={form.control}
-                        name="serviceId"
-                        render={({ field }) => (
-                            <FormItem className="flex flex-col">
-                                <FormLabel>Dịch vụ</FormLabel>
-                                <Popover open={openServiceCombobox} onOpenChange={setOpenServiceCombobox}>
-                                    <PopoverTrigger asChild>
-                                        <FormControl>
-                                            <Button
-                                                variant="outline"
-                                                role="combobox"
-                                                aria-expanded={openServiceCombobox}
-                                                className={cn(
-                                                    "w-full justify-between h-auto min-h-[44px] py-2 rounded-lg bg-background px-3 font-normal hover:bg-accent hover:border-primary/50 transition-all text-left",
-                                                    !field.value && "text-muted-foreground"
-                                                )}
-                                            >
-                                                {field.value
-                                                    ? (() => {
-                                                        const service = services.find(s => s.id === field.value);
-                                                        return service ? (
-                                                            <div className="flex items-start gap-3 w-full">
-                                                                <div className="mt-0.5 bg-primary/10 p-1.5 rounded-md shrink-0">
-                                                                    <Sparkles className="w-4 h-4 text-primary" />
-                                                                </div>
-                                                                <div className="flex-1 min-w-0">
-                                                                    <div className="font-medium truncate">{service.name}</div>
-                                                                    <div className="text-xs text-muted-foreground flex items-center gap-2 mt-0.5">
-                                                                        <Badge variant="secondary" className="text-[10px] px-1 h-5">{service.duration} phút</Badge>
-                                                                        <span>•</span>
-                                                                        <span className="font-medium text-primary">
-                                                                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(service.price)}
-                                                                        </span>
+                    <div className="grid gap-4">
+                        <FormField
+                            control={form.control}
+                            name="serviceId"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col">
+                                    <FormLabel className="text-foreground/80 font-normal">Dịch vụ</FormLabel>
+                                    <Popover open={openServiceCombobox} onOpenChange={setOpenServiceCombobox}>
+                                        <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                    variant="outline"
+                                                    role="combobox"
+                                                    aria-expanded={openServiceCombobox}
+                                                    className={cn(
+                                                        "w-full justify-between h-auto min-h-[44px] py-2 rounded-lg bg-background px-3 font-normal hover:bg-accent transition-all text-left",
+                                                        !field.value && "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    {field.value
+                                                        ? (() => {
+                                                            const service = services.find(s => s.id === field.value);
+                                                            return service ? (
+                                                                <div className="flex items-start gap-3 w-full">
+                                                                    <div className="mt-0.5 bg-primary/10 p-1.5 rounded-md shrink-0">
+                                                                        <Sparkles className="w-4 h-4 text-primary" />
+                                                                    </div>
+                                                                    <div className="flex-1 min-w-0">
+                                                                        <div className="font-medium truncate text-sm">{service.name}</div>
+                                                                        <div className="text-xs text-muted-foreground flex items-center gap-2 mt-0.5">
+                                                                            <Badge variant="secondary" className="text-[10px] px-1 h-5 rounded-sm font-normal text-muted-foreground">{service.duration} phút</Badge>
+                                                                            <span>•</span>
+                                                                            <span className="font-medium text-primary">
+                                                                                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(service.price)}
+                                                                            </span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        ) : "Chọn dịch vụ";
-                                                      })()
-                                                    : <span className="flex items-center"><Search className="mr-2 h-4 w-4 opacity-50"/> Chọn dịch vụ...</span>}
-                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                            </Button>
-                                        </FormControl>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-[400px] p-0" align="start">
-                                        <Command>
-                                            <CommandInput placeholder="Tìm tên dịch vụ..." />
-                                            <CommandList className="max-h-[300px] overflow-y-auto overflow-x-hidden">
-                                                <CommandEmpty>Không tìm thấy dịch vụ.</CommandEmpty>
-                                                {Array.from(new Set(services.map(s => s.category))).map(category => (
-                                                    <CommandGroup key={category || "Khác"} heading={category || "Khác"}>
-                                                        {services.filter(s => s.category === category).map((service) => (
+                                                            ) : "Chọn dịch vụ";
+                                                          })()
+                                                        : <span className="flex items-center"><Search className="mr-2 h-4 w-4 opacity-50"/> Tìm dịch vụ...</span>}
+                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-[400px] p-0" align="start">
+                                            <Command>
+                                                <CommandInput placeholder="Tìm tên dịch vụ..." />
+                                                <CommandList className="max-h-[300px] overflow-y-auto">
+                                                    <CommandEmpty>Không tìm thấy.</CommandEmpty>
+                                                    {Array.from(new Set(services.map(s => s.category))).map(category => (
+                                                        <CommandGroup key={category || "Khác"} heading={category || "Khác"}>
+                                                            {services.filter(s => s.category === category).map((service) => (
+                                                                <CommandItem
+                                                                    key={service.id}
+                                                                    value={service.name}
+                                                                    onSelect={() => {
+                                                                        form.setValue("serviceId", service.id);
+                                                                        setOpenServiceCombobox(false);
+                                                                    }}
+                                                                    className="flex items-start gap-2 py-3 px-3 cursor-pointer aria-selected:bg-accent/50"
+                                                                >
+                                                                    <Check
+                                                                        className={cn(
+                                                                            "mt-1 h-4 w-4 text-primary shrink-0",
+                                                                            field.value === service.id ? "opacity-100" : "opacity-0"
+                                                                        )}
+                                                                    />
+                                                                    <div className="flex-1">
+                                                                        <div className="flex items-center justify-between">
+                                                                            <span className="font-medium text-sm">{service.name}</span>
+                                                                            <span className="text-xs font-semibold text-primary">
+                                                                                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(service.price)}
+                                                                            </span>
+                                                                        </div>
+                                                                        <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
+                                                                            <span className="line-clamp-1">{service.description}</span>
+                                                                            <div className="flex items-center shrink-0 ml-2">
+                                                                                <Clock className="w-3 h-3 mr-1" />
+                                                                                {service.duration}p
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </CommandItem>
+                                                            ))}
+                                                        </CommandGroup>
+                                                    ))}
+                                                </CommandList>
+                                            </Command>
+                                        </PopoverContent>
+                                    </Popover>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="resourceId"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col">
+                                    <FormLabel className="text-foreground/80 font-normal">Nhân viên thực hiện</FormLabel>
+                                    <Popover open={openResourceCombobox} onOpenChange={setOpenResourceCombobox}>
+                                        <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                    variant="outline"
+                                                    role="combobox"
+                                                    aria-expanded={openResourceCombobox}
+                                                    className={cn(
+                                                        "w-full justify-between h-10 rounded-lg bg-background px-3 font-normal hover:bg-accent transition-all",
+                                                        !field.value && "text-muted-foreground"
+                                                    )}
+                                                >
+                                                        {field.value
+                                                        ? (() => {
+                                                            const resource = resources.find(r => r.id === field.value);
+                                                            return resource ? (
+                                                                <div className="flex items-center gap-2">
+                                                                    <Avatar className="h-6 w-6">
+                                                                        <AvatarImage src={resource.avatar} alt={resource.name} />
+                                                                        <AvatarFallback className="text-[10px] bg-primary/10 text-primary">
+                                                                            {resource.name.split(' ').pop()?.substring(0, 2).toUpperCase()}
+                                                                        </AvatarFallback>
+                                                                    </Avatar>
+                                                                    <span className="font-medium text-sm">{resource.name}</span>
+                                                                    <span className="text-xs text-muted-foreground">• {resource.role}</span>
+                                                                </div>
+                                                            ) : "Chọn nhân viên";
+                                                            })()
+                                                        : <span className="flex items-center"><Search className="mr-2 h-4 w-4 opacity-50"/> Chọn nhân viên...</span>}
+                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-[300px] p-0" align="start">
+                                            <Command>
+                                                <CommandInput placeholder="Tìm nhân viên..." />
+                                                <CommandList className="max-h-[300px] overflow-y-auto">
+                                                    <CommandEmpty>Không tìm thấy.</CommandEmpty>
+                                                    <CommandGroup>
+                                                        {resources.map((resource) => (
                                                             <CommandItem
-                                                                key={service.id}
-                                                                value={service.name}
+                                                                key={resource.id}
+                                                                value={resource.name}
                                                                 onSelect={() => {
-                                                                    form.setValue("serviceId", service.id);
-                                                                    setOpenServiceCombobox(false);
+                                                                    form.setValue("resourceId", resource.id);
+                                                                    setOpenResourceCombobox(false);
                                                                 }}
-                                                                className="flex items-start gap-2 py-3 px-3 cursor-pointer aria-selected:bg-accent/50"
+                                                                className="flex items-center gap-2 py-2 cursor-pointer"
                                                             >
                                                                 <Check
                                                                     className={cn(
-                                                                        "mt-1 h-4 w-4 text-primary shrink-0",
-                                                                        field.value === service.id ? "opacity-100" : "opacity-0"
+                                                                        "mr-2 h-4 w-4 text-primary",
+                                                                        field.value === resource.id ? "opacity-100" : "opacity-0"
                                                                     )}
                                                                 />
-                                                                <div className="flex-1">
-                                                                    <div className="flex items-center justify-between">
-                                                                        <span className="font-medium text-sm">{service.name}</span>
-                                                                        <span className="text-xs font-semibold text-primary">
-                                                                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(service.price)}
-                                                                        </span>
-                                                                    </div>
-                                                                    <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
-                                                                        <span className="line-clamp-1">{service.description}</span>
-                                                                        <div className="flex items-center shrink-0 ml-2">
-                                                                            <Clock className="w-3 h-3 mr-1" />
-                                                                            {service.duration}p
-                                                                        </div>
-                                                                    </div>
+                                                                <Avatar className="h-7 w-7 border">
+                                                                    <AvatarImage src={resource.avatar} alt={resource.name} />
+                                                                    <AvatarFallback className="text-xs bg-muted">
+                                                                        {resource.name.split(' ').pop()?.substring(0, 2).toUpperCase()}
+                                                                    </AvatarFallback>
+                                                                </Avatar>
+                                                                <div className="flex flex-col">
+                                                                    <span className="font-medium text-sm">{resource.name}</span>
+                                                                    <span className="text-xs text-muted-foreground">{resource.role}</span>
                                                                 </div>
                                                             </CommandItem>
                                                         ))}
                                                     </CommandGroup>
-                                                ))}
-                                            </CommandList>
-                                        </Command>
-                                    </PopoverContent>
-                                </Popover>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                                                </CommandList>
+                                            </Command>
+                                        </PopoverContent>
+                                    </Popover>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                </div>
 
+                {/* 4. Notes Section */}
+                <div className="space-y-4">
+                     <div className="flex items-center gap-2 pb-1 border-b border-border/50">
+                        <FileText className="w-4 h-4 text-muted-foreground" />
+                        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Ghi chú</h3>
+                    </div>
                     <FormField
                         control={form.control}
-                        name="resourceId"
+                        name="notes"
                         render={({ field }) => (
-                            <FormItem className="flex flex-col">
-                                <FormLabel>Nhân viên thực hiện</FormLabel>
-                                <Popover open={openResourceCombobox} onOpenChange={setOpenResourceCombobox}>
-                                    <PopoverTrigger asChild>
-                                        <FormControl>
-                                            <Button
-                                                variant="outline"
-                                                role="combobox"
-                                                aria-expanded={openResourceCombobox}
-                                                className={cn(
-                                                    "w-full justify-between h-11 rounded-lg bg-background px-3 font-normal hover:bg-accent hover:border-primary/50 transition-all",
-                                                    !field.value && "text-muted-foreground"
-                                                )}
-                                            >
-                                                    {field.value
-                                                    ? (() => {
-                                                        const resource = resources.find(r => r.id === field.value);
-                                                        return resource ? (
-                                                            <div className="flex items-center gap-2">
-                                                                <Avatar className="h-6 w-6">
-                                                                    <AvatarImage src={resource.avatar} alt={resource.name} />
-                                                                    <AvatarFallback className="text-[10px] bg-primary/10 text-primary">
-                                                                        {resource.name.split(' ').pop()?.substring(0, 2).toUpperCase()}
-                                                                    </AvatarFallback>
-                                                                </Avatar>
-                                                                <span className="font-medium">{resource.name}</span>
-                                                                <span className="text-xs text-muted-foreground">• {resource.role}</span>
-                                                            </div>
-                                                        ) : "Chọn nhân viên";
-                                                        })()
-                                                    : <span className="flex items-center"><Search className="mr-2 h-4 w-4 opacity-50"/> Chọn nhân viên...</span>}
-                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                            </Button>
-                                        </FormControl>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-[300px] p-0" align="start">
-                                        <Command>
-                                            <CommandInput placeholder="Tìm nhân viên..." />
-                                            <CommandList className="max-h-[300px] overflow-y-auto overflow-x-hidden">
-                                                <CommandEmpty>Không tìm thấy nhân viên.</CommandEmpty>
-                                                <CommandGroup>
-                                                    {resources.map((resource) => (
-                                                        <CommandItem
-                                                            key={resource.id}
-                                                            value={resource.name}
-                                                            onSelect={() => {
-                                                                form.setValue("resourceId", resource.id);
-                                                                setOpenResourceCombobox(false);
-                                                            }}
-                                                            className="flex items-center gap-2 py-2 cursor-pointer"
-                                                        >
-                                                            <Check
-                                                                className={cn(
-                                                                    "mr-2 h-4 w-4 text-primary",
-                                                                    field.value === resource.id ? "opacity-100" : "opacity-0"
-                                                                )}
-                                                            />
-                                                            <Avatar className="h-8 w-8 border">
-                                                                <AvatarImage src={resource.avatar} alt={resource.name} />
-                                                                <AvatarFallback className="text-xs bg-muted">
-                                                                    {resource.name.split(' ').pop()?.substring(0, 2).toUpperCase()}
-                                                                </AvatarFallback>
-                                                            </Avatar>
-                                                            <div className="flex flex-col">
-                                                                <span className="font-medium text-sm">{resource.name}</span>
-                                                                <span className="text-xs text-muted-foreground">{resource.role}</span>
-                                                            </div>
-                                                        </CommandItem>
-                                                    ))}
-                                                </CommandGroup>
-                                            </CommandList>
-                                        </Command>
-                                    </PopoverContent>
-                                </Popover>
+                            <FormItem>
+                                <FormControl>
+                                    <Textarea
+                                        placeholder="Nhập ghi chú hoặc yêu cầu đặc biệt..."
+                                        className="resize-none min-h-[80px] rounded-lg border-input bg-background font-normal"
+                                        {...field}
+                                    />
+                                </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
                 </div>
 
-                <FormField
-                    control={form.control}
-                    name="notes"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Ghi chú</FormLabel>
-                            <FormControl>
-                                <div className="relative group">
-                                    <FileText className="absolute left-3 top-3 w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                                    <Textarea
-                                        placeholder="Nhập ghi chú cho cuộc hẹn..."
-                                        className="resize-none pl-10 min-h-[80px] rounded-lg border-input group-hover:border-primary/50 transition-all font-normal"
-                                        {...field}
-                                    />
-                                </div>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-
                 {estimatedEndTime && selectedService && (
-                    <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 flex items-start gap-3 text-sm animate-in fade-in slide-in-from-bottom-2">
-                        <div className="bg-primary/10 p-1.5 rounded-full mt-0.5">
-                            <Clock className="w-3.5 h-3.5 text-primary" />
-                        </div>
-                        <div className="space-y-1">
-                            <p className="font-medium text-primary">Tóm tắt lịch hẹn</p>
+                    <div className="rounded-lg bg-primary/5 border border-primary/10 p-3 flex items-start gap-3 animate-in fade-in slide-in-from-bottom-2">
+                        <Clock className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                        <div className="text-sm">
+                            <p className="font-medium text-primary mb-0.5">Thời gian dự kiến</p>
                             <p className="text-muted-foreground text-xs leading-relaxed">
-                                Khách sẽ làm <span className="font-medium text-foreground">{selectedService.name}</span> từ <span className="font-medium text-foreground">{startTimeStr}</span> đến dự kiến <span className="font-medium text-foreground">{estimatedEndTime}</span>.
+                                {selectedService.name} ({selectedService.duration}p): <span className="font-medium text-foreground">{startTimeStr}</span> — <span className="font-medium text-foreground">{estimatedEndTime}</span>
                             </p>
                         </div>
                     </div>
