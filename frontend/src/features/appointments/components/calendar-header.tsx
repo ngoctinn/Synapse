@@ -1,10 +1,23 @@
 import { Button } from '@/shared/ui/button';
 import {
-    Tabs,
-    TabsList,
-    TabsTrigger,
+  Tabs,
+  TabsList,
+  TabsTrigger,
 } from "@/shared/ui/tabs";
-import { format } from 'date-fns';
+import { 
+  format, 
+  addDays, 
+  subDays, 
+  addWeeks, 
+  subWeeks, 
+  addMonths, 
+  subMonths, 
+  startOfWeek, 
+  endOfWeek, 
+  isSameDay, 
+  isSameWeek, 
+  isSameMonth 
+} from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { CalendarView } from '../types';
@@ -17,20 +30,88 @@ interface CalendarHeaderProps {
 }
 
 export function CalendarHeader({ date, onDateChange, view, onViewChange }: CalendarHeaderProps) {
+  
+  // Logic điều hướng dựa trên View
   const handlePrev = () => {
-    const newDate = new Date(date);
-    newDate.setDate(date.getDate() - 1);
-    onDateChange(newDate);
+    switch (view) {
+      case 'week':
+        onDateChange(subWeeks(date, 1));
+        break;
+      case 'month':
+        onDateChange(subMonths(date, 1));
+        break;
+      case 'day':
+      case 'timeline':
+      default:
+        onDateChange(subDays(date, 1));
+    }
   };
 
   const handleNext = () => {
-    const newDate = new Date(date);
-    newDate.setDate(date.getDate() + 1);
-    onDateChange(newDate);
+    switch (view) {
+      case 'week':
+        onDateChange(addWeeks(date, 1));
+        break;
+      case 'month':
+        onDateChange(addMonths(date, 1));
+        break;
+      case 'day':
+      case 'timeline':
+      default:
+        onDateChange(addDays(date, 1));
+    }
   };
 
   const handleToday = () => {
     onDateChange(new Date());
+  };
+
+  // Label cho nút "Hôm nay/Tuần này/Tháng này"
+  const getNavigateLabel = () => {
+    switch (view) {
+      case 'week':
+        return 'Tuần này';
+      case 'month':
+        return 'Tháng này';
+      case 'day':
+      case 'timeline':
+      default:
+        return 'Hôm nay';
+    }
+  };
+
+  // Label hiển thị ngày tháng ở giữa
+  const getDateLabel = () => {
+    switch (view) {
+      case 'month':
+        return format(date, 'MMMM yyyy', { locale: vi });
+      case 'week': {
+        const start = startOfWeek(date, { weekStartsOn: 1 });
+        const end = endOfWeek(date, { weekStartsOn: 1 });
+        // Nếu cùng tháng: 09 - 15 Tháng 12, 2025
+        if (isSameMonth(start, end)) {
+           return `${format(start, 'd')} - ${format(end, 'd MMMM, yyyy', { locale: vi })}`;
+        }
+        // Khác tháng: 29 Tháng 11 - 05 Tháng 12, 2025
+        return `${format(start, 'd MMM', { locale: vi })} - ${format(end, 'd MMM, yyyy', { locale: vi })}`;
+      }
+      case 'day':
+      case 'timeline':
+      default:
+        return format(date, 'EEEE, d MMMM, yyyy', { locale: vi });
+    }
+  };
+
+  // Kiểm tra xem có đang ở "Hôm nay/Tuần này/Tháng này" hay không để disable hoặc highlight (optional styling)
+  const isCurrent = () => {
+    const now = new Date();
+    switch (view) {
+      case 'month': return isSameMonth(date, now);
+      case 'week': return isSameWeek(date, now, { weekStartsOn: 1 });
+      case 'day': 
+      case 'timeline': return isSameDay(date, now);
+      default: return false;
+    }
   };
 
   return (
@@ -40,8 +121,12 @@ export function CalendarHeader({ date, onDateChange, view, onViewChange }: Calen
           <Button variant="ghost" size="icon" className="rounded-md" onClick={handlePrev}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" className="font-medium" onClick={handleToday}>
-            Hôm nay
+          <Button 
+            variant="ghost" 
+            className={`font-medium min-w-[80px] ${isCurrent() ? 'text-primary font-bold' : ''}`} 
+            onClick={handleToday}
+          >
+            {getNavigateLabel()}
           </Button>
           <Button variant="ghost" size="icon" className="rounded-md" onClick={handleNext}>
             <ChevronRight className="h-4 w-4" />
@@ -49,8 +134,8 @@ export function CalendarHeader({ date, onDateChange, view, onViewChange }: Calen
         </div>
 
         <div className="ml-2 flex flex-col">
-          <span className="text-lg font-bold text-foreground capitalize">
-            {format(date, 'EEEE, d MMMM, yyyy', { locale: vi })}
+          <span className="text-lg font-bold text-foreground capitalize min-w-[200px]">
+            {getDateLabel()}
           </span>
         </div>
       </div>
