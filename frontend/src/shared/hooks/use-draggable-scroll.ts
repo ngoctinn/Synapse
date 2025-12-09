@@ -10,7 +10,7 @@ export function useDraggableScroll(ref: RefObject<HTMLElement | null>, options: 
   const scrollLeft = useRef(0);
   const scrollTop = useRef(0);
 
-  // Mouse Handlers
+
   const handleMouseDown = (e: MouseEvent) => {
     const container = ref.current;
     if (!container) return;
@@ -42,8 +42,7 @@ export function useDraggableScroll(ref: RefObject<HTMLElement | null>, options: 
     container.classList.remove('cursor-grabbing');
     container.classList.add('cursor-grab');
 
-    // Slight delay to allow onClick to fire and check the ref before we potentially reset it
-    // (Though we reset on MouseDown so it persists until next interaction)
+    
   };
 
   const handleMouseMove = (e: MouseEvent) => {
@@ -57,7 +56,6 @@ export function useDraggableScroll(ref: RefObject<HTMLElement | null>, options: 
     const walkX = (x - startX.current) * speedMultiplier;
     const walkY = (y - startY.current) * speedMultiplier;
 
-    // Only mark as dragging if moved significantly (e.g. 5px)
     if (Math.abs(walkX) > 5 || Math.abs(walkY) > 5) {
         isDragging.current = true;
     }
@@ -66,7 +64,7 @@ export function useDraggableScroll(ref: RefObject<HTMLElement | null>, options: 
     container.scrollTop = scrollTop.current - walkY;
   };
 
-  // Touch Handlers
+
   const handleTouchStart = (e: TouchEvent) => {
     const container = ref.current;
     if (!container) return;
@@ -103,7 +101,7 @@ export function useDraggableScroll(ref: RefObject<HTMLElement | null>, options: 
     container.scrollTop = scrollTop.current - walkY;
   };
 
-  // Initial setup
+
   useEffect(() => {
     const container = ref.current;
     if (container) {
@@ -121,6 +119,6 @@ export function useDraggableScroll(ref: RefObject<HTMLElement | null>, options: 
       onTouchEnd: handleTouchEnd,
       onTouchMove: handleTouchMove,
     },
-    isDragging // Export ref
+    isDragging
   };
 }
