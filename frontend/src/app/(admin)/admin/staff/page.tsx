@@ -15,12 +15,10 @@ export default async function Page({
   const resolvedSearchParams = await searchParams
   const page = Number(resolvedSearchParams?.page) || 1
 
-  // Calculate current week for initial schedule
   const today = new Date()
   const start = format(startOfWeek(today, { weekStartsOn: 1 }), "yyyy-MM-dd")
   const end = format(endOfWeek(today, { weekStartsOn: 1 }), "yyyy-MM-dd")
 
-  // Parallel data fetching
   const skillsPromise = getSkills()
   const staffListPromise = getStaffList(page)
   const permissionsPromise = getPermissions()

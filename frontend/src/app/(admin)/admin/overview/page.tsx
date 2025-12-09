@@ -4,7 +4,6 @@ import { Activity, Users } from "lucide-react"
 export default function AdminOverviewPage() {
   return (
     <div className="flex flex-col h-full gap-3">
-      {/* Stats Grid */}
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4 shrink-0">
         <Card className="relative overflow-hidden rounded-2xl shadow-sm border-none bg-gradient-to-br from-white to-blue-50/50">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
@@ -69,9 +68,7 @@ export default function AdminOverviewPage() {
         </Card>
       </div>
 
-      {/* Charts & Schedule Section */}
       <div className="grid gap-3 md:grid-cols-7 flex-1 min-h-0">
-        {/* Chart (Placeholder) */}
         <Card className="col-span-4 rounded-2xl shadow-sm border-none flex flex-col">
           <CardHeader>
             <CardTitle>Giờ làm việc</CardTitle>
@@ -83,7 +80,6 @@ export default function AdminOverviewPage() {
           </CardContent>
         </Card>
 
-        {/* Schedule (Placeholder) */}
         <Card className="col-span-3 rounded-2xl shadow-sm border-none flex flex-col overflow-hidden">
           <CardHeader>
             <CardTitle>Lịch trình của bạn</CardTitle>
