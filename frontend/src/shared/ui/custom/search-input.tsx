@@ -56,20 +56,16 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
 
     return (
       <div className="relative flex items-center w-full max-w-sm group">
-        <Search className="absolute left-3 h-4 w-4 text-muted-foreground transition-colors duration-200 group-focus-within:text-primary z-10" />
+        <Search className="absolute left-3 h-4 w-4 text-muted-foreground transition-colors duration-200 group-focus-within:text-primary/70 z-10" />
         <Input
           ref={inputRef}
           type="text"
           className={cn(
-            // Base styles - Premium look
             sizeVariants[variant],
             "bg-background border-input/50 rounded-lg",
-            // Padding for icons
             "pl-9 pr-9",
-            // Transitions và shadows
             "transition-all duration-200 shadow-sm",
             "hover:shadow-md hover:border-input",
-            // Focus states - Softer, more elegant
             "focus-visible:shadow-md focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/50",
             className
           )}

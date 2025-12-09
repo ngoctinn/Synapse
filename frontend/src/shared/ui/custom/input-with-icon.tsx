@@ -21,9 +21,9 @@ export interface InputWithIconProps
 }
 
 const sizeVariants = {
-  sm: "h-8 text-xs",
-  default: "h-9",
-  lg: "h-11",
+  sm: "h-9",
+  default: "h-10",
+  lg: "h-12",
 }
 
 const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
@@ -41,32 +41,22 @@ const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
     const isError = error || props["aria-invalid"];
 
     return (
-      <div className={cn("relative w-full", containerClassName)}>
+      <div className={cn("relative w-full group", containerClassName)}>
         {Icon && (
           <div className={cn(
             "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-200 z-10",
-            isError ? "text-destructive" : "text-muted-foreground group-focus-within:text-primary"
+            isError ? "text-destructive" : "text-muted-foreground group-focus-within:text-primary/70"
           )}>
-            <Icon size={16} {...iconProps} />
+            <Icon size={18} {...iconProps} />
           </div>
         )}
         <Input
           className={cn(
             sizeVariants[variant],
-            "bg-background rounded-lg",
-            // Transitions và shadows
-            "transition-all duration-200 shadow-sm",
-            "hover:shadow-md hover:border-input",
-            // Focus states (Global handles invalid state now)
-            "focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary",
-
-            // Icon padding
-            Icon && "pl-9",
-            RightIcon && "pr-9",
-
-            // Error styling (Border only, focus ring handled by globals)
-            isError && "border-destructive/50",
-
+            "bg-background",
+            Icon && "pl-10",
+            RightIcon && "pr-10",
+            isError && "border-destructive focus-visible:ring-destructive/20",
             className
           )}
           ref={ref}
@@ -76,9 +66,9 @@ const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
         {RightIcon && (
           <div className={cn(
             "pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 transition-colors duration-200 z-10",
-            isError ? "text-destructive" : "text-muted-foreground group-focus-within:text-primary"
+            isError ? "text-destructive" : "text-muted-foreground group-focus-within:text-primary/70"
           )}>
-            <RightIcon size={16} {...rightIconProps} />
+            <RightIcon size={18} {...rightIconProps} />
           </div>
         )}
       </div>
