@@ -1,11 +1,11 @@
 "use client"
 
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
 } from "@/shared/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { useState } from "react"
@@ -33,7 +33,7 @@ export function AddShiftDialog({
   const handleAddTemplate = (template: Shift) => {
     onAddShift({
       ...template,
-      id: Math.random().toString(36).substr(2, 9), // New ID for the instance
+      id: window.crypto.randomUUID(), // New ID for the instance
     })
     onOpenChange(false)
   }

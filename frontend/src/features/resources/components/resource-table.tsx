@@ -22,7 +22,7 @@ import { Bed, Box } from "lucide-react";
 import { useState, useTransition } from "react";
 import { deleteResource } from "../actions";
 import { Resource, ResourceGroup } from "../types";
-import { AddResourceModal } from "./add-resource-modal";
+import { AddResourceTrigger } from "./add-resource-trigger";
 import { ResourceActions } from "./resource-actions";
 import { ResourceSheet } from "./resource-sheet";
 
@@ -209,7 +209,7 @@ export function ResourceTable({ data, groups, isLoading, className, variant = "d
             icon={Box}
             title="Chưa có tài nguyên nào"
             description="Tạo tài nguyên đầu tiên để bắt đầu quản lý."
-            action={<AddResourceModal groups={groups} />}
+            action={<AddResourceTrigger groups={groups} />}
           />
         }
       />

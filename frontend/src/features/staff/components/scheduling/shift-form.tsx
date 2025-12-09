@@ -10,12 +10,12 @@ import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
 import { TimeInput } from "@/shared/ui/custom/time-input"
 import { DialogFooter } from "@/shared/ui/dialog"
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form"
 import { Shift } from "../../types"
 
@@ -46,7 +46,7 @@ export function ShiftForm({ onSuccess, onCancel }: ShiftFormProps) {
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
     const newShift: Shift = {
-      id: Math.random().toString(36).substr(2, 9),
+      id: window.crypto.randomUUID(),
       name: values.name,
       startTime: values.startTime,
       endTime: values.endTime,
@@ -86,8 +86,11 @@ export function ShiftForm({ onSuccess, onCancel }: ShiftFormProps) {
               <FormItem>
                 <FormLabel>Bắt đầu</FormLabel>
                 <FormControl>
-                   {/* @ts-ignore: TimeInput variant type issue */}
-                  <TimeInput {...field} className="h-11 rounded-lg" />
+                   <TimeInput
+                    value={field.value}
+                    onChange={field.onChange}
+                    className="h-11 rounded-lg"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -100,8 +103,11 @@ export function ShiftForm({ onSuccess, onCancel }: ShiftFormProps) {
               <FormItem>
                 <FormLabel>Kết thúc</FormLabel>
                 <FormControl>
-                   {/* @ts-ignore: TimeInput variant type issue */}
-                  <TimeInput {...field} className="h-11 rounded-lg" />
+                  <TimeInput
+                    value={field.value}
+                    onChange={field.onChange}
+                    className="h-11 rounded-lg"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

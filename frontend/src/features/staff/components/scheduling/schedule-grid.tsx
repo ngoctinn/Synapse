@@ -93,6 +93,7 @@ export function ScheduleGrid({
 
                 <div className="p-3 border-r flex items-center gap-3 bg-background group-hover:bg-muted/5 transition-colors sticky left-0 z-20 shadow-[1px_0_0_0_rgba(0,0,0,0.05)]">
                   <div className="w-9 h-9 rounded-full bg-muted overflow-hidden border shrink-0">
+                     {/* eslint-disable-next-line @next/next/no-img-element */}
                      <img src={staff.user.avatar_url || ''} alt={staff.user.full_name || ''} className="w-full h-full object-cover" />
                   </div>
                   <div className="flex flex-col overflow-hidden min-w-0">
@@ -157,12 +158,12 @@ export function ScheduleGrid({
                           )}
                         </div>
                       ) : (
-                        <div className="h-full w-full flex items-center justify-center opacity-0 hover:opacity-100 focus-within:opacity-100 transition-opacity">
+                        <div className="h-full w-full flex items-center justify-center transition-opacity">
                           {!selectedTool && (
                             <button
                               onClick={() => onAddClick(staff.user_id, day)}
                               aria-label={`Thêm ca làm việc cho ${staff.user.full_name} vào ngày ${format(day, "dd/MM")}`}
-                              className="size-10 min-h-[44px] min-w-[44px] rounded-full bg-muted/50 hover:bg-primary/10 hover:text-primary flex items-center justify-center transition-colors cursor-pointer focus:ring-2 focus:ring-primary/50 focus:outline-none focus:bg-primary/10 focus:text-primary focus-visible:ring-2"
+                              className="size-10 min-h-[44px] min-w-[44px] rounded-full bg-muted/50 hover:bg-primary/10 hover:text-primary flex items-center justify-center transition-colors cursor-pointer focus:ring-2 focus:ring-primary/50 focus:outline-none focus:bg-primary/10 focus:text-primary focus-visible:ring-2 opacity-100 md:opacity-0 md:group-hover:opacity-100"
                             >
                               <Plus className="h-4 w-4" />
                             </button>
