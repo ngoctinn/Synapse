@@ -6,7 +6,7 @@ import { FilterButton } from "@/shared/ui/custom/filter-button";
 import { ToggleGroup, ToggleGroupItem } from "@/shared/ui/toggle-group";
 import { cn } from "@/shared/lib/utils";
 import { DateRange } from "react-day-picker";
-import { DateRangeFilter } from "./date-range-filter";
+import { DateRangeFilter } from "@/shared/ui/custom/date-range-filter";
 
 interface ExceptionsFilterBarProps {
   statusFilter: string | null;

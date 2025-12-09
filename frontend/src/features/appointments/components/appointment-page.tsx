@@ -10,10 +10,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from "@/shared/ui/alert-dialog"
-import { SearchInput } from "@/shared/ui/custom/search-input"
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { toast } from "sonner"
+import { useSearchParams } from "next/navigation"
+import { isWithinInterval, startOfDay, endOfDay } from "date-fns"
 
 import { MOCK_APPOINTMENTS, MOCK_RESOURCES } from "../mock-data"
 import { Appointment } from "../types"
@@ -53,6 +55,55 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
   // Alert Dialog States
   const [isCancelAlertOpen, setIsCancelAlertOpen] = useState(false)
   const [appointmentToCancel, setAppointmentToCancel] = useState<Appointment | null>(null)
+
+  // --- Filtering Logic ---
+  const searchParams = useSearchParams()
+
+  const filteredAppointments = useMemo(() => {
+    let result = [...appointments]
+
+    // 1. Status Filter
+    const statusParam = searchParams.get("status")
+    if (statusParam) {
+      const statuses = statusParam.split(",")
+      result = result.filter(a => statuses.includes(a.status))
+    }
+
+    // 2. Staff Filter (Using resourceId as staffId)
+    const staffIdParam = searchParams.get("staffId")
+    if (staffIdParam) {
+      const staffIds = staffIdParam.split(",")
+      result = result.filter(a => staffIds.includes(a.resourceId))
+    }
+
+    // 3. Search Filter
+    const query = searchParams.get("q")?.toLowerCase()
+    if (query) {
+      result = result.filter(a => 
+        a.customerName.toLowerCase().includes(query) ||
+        a.serviceName.toLowerCase().includes(query) ||
+        a.id.toLowerCase().includes(query)
+      )
+    }
+
+    // 4. Date Range Filter (Only applies to List View)
+    if (activeTab === 'list') {
+       const fromStr = searchParams.get("from")
+       const toStr = searchParams.get("to")
+       
+       if (fromStr) {
+         const fromDate = startOfDay(new Date(fromStr))
+         // If 'to' is missing, assume single day selection (end of that day)
+         const toDate = toStr ? endOfDay(new Date(toStr)) : endOfDay(new Date(fromStr))
+         
+         result = result.filter(a => {
+            return isWithinInterval(a.startTime, { start: fromDate, end: toDate })
+         })
+       }
+    }
+    
+    return result
+  }, [appointments, searchParams, activeTab])
 
   // Handlers
   const handleSlotClick = (resourceId: string, time: Date) => {
@@ -118,24 +169,15 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
     <div className="min-h-screen flex flex-col w-full">
       <Tabs defaultValue="timeline" className="flex flex-col flex-1 w-full gap-0" onValueChange={setActiveTab}>
         {/* Sticky Header with Tabs and Actions */}
-        <div 
-          className="sticky top-0 z-50 px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4"
-        >
-          <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto justify-start">
-            <TabsTrigger value="timeline" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Lịch biểu</TabsTrigger>
-            <TabsTrigger value="list" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Danh sách</TabsTrigger>
-          </TabsList>
-
-          <div className="flex items-center gap-3 w-full md:w-auto">
-            <div className="flex items-center gap-2 flex-1 md:flex-none">
-              <SearchInput 
-                placeholder="Tìm kiếm lịch hẹn..." 
-                className="w-full md:w-[250px] h-9"
-              />
-              <AppointmentFilter />
-            </div>
-            
-            {/* Replaced CreateDialog with Button that triggers Sheet */}
+        <AppointmentFilter 
+          viewMode={activeTab as "list" | "timeline" | "calendar"}
+          startContent={
+            <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto justify-start">
+              <TabsTrigger value="timeline" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Lịch biểu</TabsTrigger>
+              <TabsTrigger value="list" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Danh sách</TabsTrigger>
+            </TabsList>
+          }
+          endContent={
             <div className="hidden md:block">
                  <button 
                     onClick={handleCreateButtonClick}
@@ -145,16 +187,15 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
                      Tạo lịch hẹn
                  </button>
             </div>
-            {/* Mobile FAB or smaller button could go here */}
-          </div>
-        </div>
+          }
+        />
 
         <div className="flex-1 p-0 animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out flex flex-col">
           <TabsContent value="timeline" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
              
              {/* The Timeline Component */}
              <AppointmentTimeline 
-               appointments={appointments} 
+               appointments={filteredAppointments} 
                resources={MOCK_RESOURCES}
                onSlotClick={handleSlotClick}
                onAppointmentClick={handleAppointmentClick}
@@ -165,7 +206,7 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
           <TabsContent value="list" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
              <div className="flex-1 p-4 md:p-6 overflow-hidden">
                 <AppointmentTable 
-                  appointments={appointments}
+                  appointments={filteredAppointments}
                   resources={MOCK_RESOURCES}
                   onEdit={handleEditAppointment}
                   onCancel={handleCreateCancelRequest}
