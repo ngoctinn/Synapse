@@ -3,9 +3,10 @@
 import { Button } from "@/shared/ui/button"
 import { Plus } from "lucide-react"
 import { useState } from "react"
+import { ResourceGroup } from "../types"
 import { ResourceSheet } from "./resource-sheet"
 
-export function AddResourceModal() {
+export function AddResourceModal({ groups }: { groups: ResourceGroup[] }) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -23,6 +24,7 @@ export function AddResourceModal() {
         open={open}
         onOpenChange={setOpen}
         mode="create"
+        groups={groups}
       />
     </>
   )

@@ -1,11 +1,19 @@
 export type ResourceType = 'ROOM' | 'EQUIPMENT';
 export type ResourceStatus = 'ACTIVE' | 'MAINTENANCE' | 'INACTIVE';
 
-export interface Resource {
+export interface ResourceGroup {
   id: string;
   name: string;
-  code: string;
   type: ResourceType;
+  description?: string;
+}
+
+export interface Resource {
+  id: string;
+  groupId?: string; // Foreign Key to ResourceGroup
+  name: string;
+  code: string;
+  type: ResourceType; // Helper/Derived from group
   status: ResourceStatus;
   capacity?: number;
   description?: string;

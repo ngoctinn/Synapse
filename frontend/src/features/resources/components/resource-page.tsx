@@ -2,7 +2,7 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { Suspense, use, useState } from "react"
-import { MaintenanceTask, Resource } from "../types"
+import { MaintenanceTask, Resource, ResourceGroup } from "../types"
 import { AddResourceModal } from "./add-resource-modal"
 import { MaintenanceTimeline } from "./maintenance-timeline"
 import { ResourceFilter } from "./resource-filter"
@@ -11,22 +11,32 @@ import { ResourceToolbar } from "./resource-toolbar"
 
 interface ResourcePageProps {
   resourcesPromise: Promise<Resource[]>
+  groupsPromise: Promise<ResourceGroup[]>
   tasksPromise: Promise<MaintenanceTask[]>
 }
 
 function ResourceListWrapper({
   resourcesPromise,
+  groupsPromise,
 }: {
   resourcesPromise: Promise<Resource[]>
+  groupsPromise: Promise<ResourceGroup[]>
 }) {
   const resources = use(resourcesPromise)
+  const groups = use(groupsPromise)
   return (
     <ResourceTable
       data={resources}
+      groups={groups}
       variant="flush"
       className="border-t"
     />
   )
+}
+
+function AddResourceWrapper({ groupsPromise }: { groupsPromise: Promise<ResourceGroup[]> }) {
+  const groups = use(groupsPromise)
+  return <AddResourceModal groups={groups} />
 }
 
 function MaintenanceTimelineWrapper({
@@ -47,7 +57,7 @@ const Footer = () => (
   </div>
 )
 
-export function ResourcePage({ resourcesPromise, tasksPromise }: ResourcePageProps) {
+export function ResourcePage({ resourcesPromise, groupsPromise, tasksPromise }: ResourcePageProps) {
   const [activeTab, setActiveTab] = useState("list")
 
   return (
@@ -72,14 +82,19 @@ export function ResourcePage({ resourcesPromise, tasksPromise }: ResourcePagePro
                 <ResourceFilter />
               </div>
             )}
-            <AddResourceModal />
+            <Suspense fallback={<div className="w-[130px] h-9 bg-muted animate-pulse rounded-md" />}>
+              <AddResourceWrapper groupsPromise={groupsPromise} />
+            </Suspense>
           </div>
         </div>
 
         <div className="flex-1 p-0 motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 motion-safe:duration-300 ease-out flex flex-col">
           <TabsContent value="list" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
             <Suspense fallback={<ResourceTableSkeleton />}>
-              <ResourceListWrapper resourcesPromise={resourcesPromise} />
+              <ResourceListWrapper
+                resourcesPromise={resourcesPromise}
+                groupsPromise={groupsPromise}
+              />
             </Suspense>
             <Footer />
           </TabsContent>

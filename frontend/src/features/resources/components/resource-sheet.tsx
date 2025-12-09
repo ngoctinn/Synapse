@@ -17,7 +17,7 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import { manageResource } from "../actions";
 import { ResourceFormValues, resourceSchema } from "../schemas";
-import { Resource } from "../types";
+import { Resource, ResourceGroup } from "../types";
 import { ResourceForm } from "./resource-form";
 
 interface ResourceSheetProps {
@@ -25,6 +25,7 @@ interface ResourceSheetProps {
   onOpenChange: (open: boolean) => void
   mode: "create" | "update"
   resource?: Resource
+  groups: ResourceGroup[]
 }
 
 const initialState = {
@@ -38,6 +39,7 @@ export function ResourceSheet({
   onOpenChange,
   mode,
   resource,
+  groups,
 }: ResourceSheetProps) {
   const [state, dispatch, isPending] = React.useActionState(manageResource, initialState);
 
@@ -46,6 +48,7 @@ export function ResourceSheet({
     defaultValues: {
       name: "",
       code: "",
+      groupId: "", // Default empty
       type: "ROOM",
       status: "ACTIVE",
       capacity: 1,
@@ -62,6 +65,7 @@ export function ResourceSheet({
          form.reset({
             name: "",
             code: "",
+            groupId: "",
             type: "ROOM",
             status: "ACTIVE",
             capacity: 1,
@@ -72,6 +76,7 @@ export function ResourceSheet({
       } else if (resource) {
          form.reset({
             ...resource,
+            groupId: resource.groupId || "",
             setupTime: resource.setupTime ?? 0,
             capacity: resource.capacity ?? 1,
             tags: resource.tags ?? [],
@@ -129,7 +134,7 @@ export function ResourceSheet({
         <div className="flex-1 overflow-y-auto px-6 py-6 [scrollbar-gutter:stable]">
           <Form {...form}>
             <form id="resource-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <ResourceForm />
+              <ResourceForm mode={mode} groups={groups} />
             </form>
           </Form>
         </div>

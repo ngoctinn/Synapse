@@ -1,8 +1,16 @@
-import { MaintenanceTask, Resource } from "../types";
+import { MaintenanceTask, Resource, ResourceGroup } from "../types";
+
+export const mockResourceGroups: ResourceGroup[] = [
+  { id: "g1", name: "Phòng VIP", type: "ROOM", description: "Các phòng tiêu chuẩn cao cấp" },
+  { id: "g2", name: "Phòng Thường", type: "ROOM", description: "Phòng dịch vụ tiêu chuẩn" },
+  { id: "g3", name: "Thiết bị Công nghệ cao", type: "EQUIPMENT", description: "Máy móc laser, Hifu..." },
+  { id: "g4", name: "Giường Spa", type: "ROOM", description: "Giường đơn lẻ trong phòng chung" },
+]
 
 export const mockResources: Resource[] = [
   {
     id: "r1",
+    groupId: "g1",
     name: "Phòng VIP 1",
     code: "VIP-01",
     type: "ROOM",
@@ -15,6 +23,7 @@ export const mockResources: Resource[] = [
   },
   {
     id: "r2",
+    groupId: "g3",
     name: "Máy Laser CO2",
     code: "EQ-LASER-01",
     type: "EQUIPMENT",
@@ -26,6 +35,7 @@ export const mockResources: Resource[] = [
   },
   {
     id: "r3",
+    groupId: "g4",
     name: "Giường Massage 05",
     code: "BED-05",
     type: "ROOM", // Sometime beds are treated as room/slots

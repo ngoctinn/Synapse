@@ -1,9 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { mockMaintenanceTasks, mockResources } from "./data/mocks";
+import { mockMaintenanceTasks, mockResourceGroups, mockResources } from "./data/mocks";
 import { ResourceFormValues, resourceSchema } from "./schemas";
-import { MaintenanceTask, Resource } from "./types";
+import { MaintenanceTask, Resource, ResourceGroup } from "./types";
 
 export type ActionState = {
   success?: boolean;
@@ -13,6 +13,7 @@ export type ActionState = {
 
 // Simulate a database
 let resources = [...mockResources];
+let resourceGroups = [...mockResourceGroups];
 let maintenanceTasks = [...mockMaintenanceTasks];
 
 export async function manageResource(prevState: ActionState, formData: FormData): Promise<ActionState> {
@@ -72,6 +73,11 @@ export async function getResources(query?: string): Promise<Resource[]> {
       r.name.toLowerCase().includes(lowerQuery) ||
       r.code.toLowerCase().includes(lowerQuery)
   );
+}
+
+export async function getResourceGroups(): Promise<ResourceGroup[]> {
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  return resourceGroups;
 }
 
 export async function getResourceById(id: string): Promise<Resource | undefined> {

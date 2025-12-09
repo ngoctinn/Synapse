@@ -1,4 +1,4 @@
-import { getMaintenanceTasks, getResources, ResourcePage } from "@/features/resources";
+import { getMaintenanceTasks, getResourceGroups, getResources, ResourcePage } from "@/features/resources";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -18,11 +18,13 @@ export default async function Page(props: PageProps) {
 
   // Parallel data fetching - pass promises to client component
   const resourcesPromise = getResources(query)
+  const groupsPromise = getResourceGroups()
   const tasksPromise = getMaintenanceTasks()
 
   return (
     <ResourcePage
       resourcesPromise={resourcesPromise}
+      groupsPromise={groupsPromise}
       tasksPromise={tasksPromise}
     />
   )

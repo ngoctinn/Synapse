@@ -21,19 +21,20 @@ import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import { Bed, Box } from "lucide-react";
 import { useState, useTransition } from "react";
 import { deleteResource } from "../actions";
-import { Resource } from "../types";
+import { Resource, ResourceGroup } from "../types";
 import { AddResourceModal } from "./add-resource-modal";
 import { ResourceActions } from "./resource-actions";
 import { ResourceSheet } from "./resource-sheet";
 
 interface ResourceTableProps {
   data: Resource[];
+  groups: ResourceGroup[];
   isLoading?: boolean;
   className?: string;
   variant?: "default" | "flush";
 }
 
-export function ResourceTable({ data, isLoading, className, variant = "default" }: ResourceTableProps) {
+export function ResourceTable({ data, groups, isLoading, className, variant = "default" }: ResourceTableProps) {
   const [editResource, setEditResource] = useState<Resource | null>(null);
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -208,7 +209,7 @@ export function ResourceTable({ data, isLoading, className, variant = "default" 
             icon={Box}
             title="Chưa có tài nguyên nào"
             description="Tạo tài nguyên đầu tiên để bắt đầu quản lý."
-            action={<AddResourceModal />}
+            action={<AddResourceModal groups={groups} />}
           />
         }
       />
@@ -225,6 +226,7 @@ export function ResourceTable({ data, isLoading, className, variant = "default" 
         resource={editResource ?? undefined}
         open={!!editResource}
         onOpenChange={(open) => !open && setEditResource(null)}
+        groups={groups}
       />
 
       <AlertDialog
