@@ -9,9 +9,9 @@ import { cn } from "@/shared/lib/utils"
 import { Button } from "@/shared/ui/button"
 import { Calendar } from "@/shared/ui/calendar"
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/shared/ui/popover"
 import { MaskedDateInput } from "./masked-date-input"
 
@@ -60,11 +60,11 @@ export function DatePicker({
             variant="outline"
             size="icon"
             className={cn(
-              "h-9 w-9 shrink-0 transition-all duration-200",
+              "h-10 w-10 shrink-0 transition-all duration-200",
               isPopoverOpen && "border-primary ring-2 ring-primary/20"
             )}
           >
-            <CalendarIcon className="h-4 w-4" />
+            <CalendarIcon className="h-5 w-5" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0 backdrop-blur-xl bg-background/95" align="end">
@@ -81,24 +81,24 @@ export function DatePicker({
           <div className="p-3 grid grid-cols-2 gap-2 bg-muted/30">
             <Button
               variant="outline"
-              size="sm"
-              className="w-full text-xs h-8 hover:bg-primary/10 hover:text-primary transition-colors"
+              size="default"
+              className="w-full text-xs h-10 hover:bg-primary/10 hover:text-primary transition-colors"
               onClick={handleSelectToday}
             >
               Hôm nay
             </Button>
             <Button
               variant="outline"
-              size="sm"
-              className="w-full text-xs h-8 hover:bg-primary/10 hover:text-primary transition-colors"
+              size="default"
+              className="w-full text-xs h-10 hover:bg-primary/10 hover:text-primary transition-colors"
               onClick={handleSelectTomorrow}
             >
               Ngày mai
             </Button>
             <Button
               variant="ghost"
-              size="sm"
-              className="col-span-2 w-full text-xs h-8 hover:bg-primary/10 hover:text-primary transition-colors"
+              size="default"
+              className="col-span-2 w-full text-xs h-10 hover:bg-primary/10 hover:text-primary transition-colors"
               onClick={handleSelectNextMonday}
             >
               Thứ Hai tới

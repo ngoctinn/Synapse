@@ -6,11 +6,11 @@ import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row"
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
 import { PaginationControls } from "@/shared/ui/custom/pagination-controls"
 import {
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/shared/ui/table"
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react"
 import { ReactNode } from "react"
@@ -97,7 +97,8 @@ export function DataTable<T>({
   return (
     <div className="flex flex-col gap-4">
       <div className={containerClasses}>
-        <table className="w-full caption-bottom text-sm min-w-[800px]">
+        <div className="overflow-x-auto w-full [scrollbar-gutter:stable]">
+          <table className="w-full caption-bottom text-sm min-w-[800px]">
           <TableHeader className="sticky top-[var(--header-height-mobile,109px)] md:top-[var(--header-height,57px)] z-20 backdrop-blur-md bg-background/95 shadow-sm after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-border/50">
             <TableRow className="hover:bg-transparent border-none">
               {selectable && (
@@ -211,6 +212,7 @@ export function DataTable<T>({
             })}
           </TableBody>
         </table>
+        </div>
       </div>
       {totalPages > 1 && (
         <div className="px-1 py-2">
