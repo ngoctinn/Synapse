@@ -4,8 +4,8 @@
 
 | Thuộc tính | Giá trị |
 |:---|:---|
-| Phiên bản | 2.0 |
-| Ngày cập nhật | 07/12/2025 |
+| Phiên bản | 2.1 |
+| Ngày cập nhật | 09/12/2025 |
 | Hệ quản trị CSDL | PostgreSQL 14+ |
 | Nền tảng | Supabase |
 
@@ -13,7 +13,7 @@
 
 ## 1. Tổng quan
 
-Cơ sở dữ liệu Synapse được thiết kế phục vụ hệ thống quản lý khách hàng (CRM) chuyên biệt cho ngành Spa. Hệ thống bao gồm 18 bảng dữ liệu được tổ chức thành 10 module nghiệp vụ.
+Cơ sở dữ liệu Synapse được thiết kế phục vụ hệ thống quản lý khách hàng (CRM) chuyên biệt cho ngành Spa. Hệ thống bao gồm 24 bảng dữ liệu được tổ chức thành 11 module nghiệp vụ.
 
 ### 1.1. Danh sách module
 
@@ -22,13 +22,14 @@ Cơ sở dữ liệu Synapse được thiết kế phục vụ hệ thống qu�
 | 1 | Users | 3 | Quản lý người dùng và hồ sơ |
 | 2 | Skills | 2 | Kỹ năng chuyên môn nhân viên |
 | 3 | Services | 3 | Danh mục dịch vụ |
-| 4 | Resources | 2 | Quản lý phòng và thiết bị |
+| 4 | Resources | 3 | Quản lý nhóm và tài nguyên |
 | 5 | Scheduling | 2 | Lịch làm việc nhân viên |
 | 6 | Bookings | 3 | Đặt lịch hẹn |
-| 7 | Billing | 2 | Hóa đơn và thanh toán |
-| 8 | Reviews | 1 | Đánh giá khách hàng |
-| 9 | Notifications | 1 | Thông báo hệ thống |
-| 10 | System | 2 | Cấu hình và nhật ký |
+| 7 | Packages | 2 | Gói dịch vụ (Combo) |
+| 8 | Billing | 2 | Hóa đơn và thanh toán |
+| 9 | Reviews | 1 | Đánh giá khách hàng |
+| 10 | Notifications | 1 | Thông báo hệ thống |
+| 11 | System | 2 | Cấu hình và nhật ký |
 
 ### 1.2. Quy ước đặt tên
 
@@ -63,6 +64,8 @@ Hạng thành viên khách hàng.
 | PLATINUM | Từ 2000 điểm | Giảm giá 10% |
 
 ### 2.3. resource_type
+
+Phân loại nhóm tài nguyên (Logic).
 
 | Giá trị | Mô tả |
 |:---|:---|
@@ -162,8 +165,12 @@ Thông tin chi tiết khách hàng. Quan hệ 1-1 với bảng users.
 | user_id | UUID | Không | - | Khóa chính, FK users |
 | loyalty_points | INTEGER | Có | 0 | Điểm tích lũy |
 | membership_tier | membership_tier | Có | SILVER | Hạng thành viên |
+| gender | gender | Có | NULL | Giới tính |
 | date_of_birth | DATE | Có | NULL | Ngày sinh |
 | address | TEXT | Có | NULL | Địa chỉ |
+| allergies | TEXT | Có | NULL | Dị ứng (tinh dầu, mỹ phẩm...) |
+| medical_notes | TEXT | Có | NULL | Ghi chú y tế (bệnh nền, có thai...) |
+| preferred_staff_id | UUID | Có | NULL | FK staff_profiles - KTV yêu thích |
 
 ### 3.4. Bảng skills
 
@@ -213,8 +220,8 @@ Danh sách dịch vụ Spa.
 | price | DECIMAL(12,2) | Không | - | Giá niêm yết |
 | description | TEXT | Có | NULL | Mô tả |
 | image_url | TEXT | Có | NULL | Hình ảnh |
-| color_code | VARCHAR(7) | Có | NULL | Mã màu |
 | is_active | BOOLEAN | Không | TRUE | Trạng thái kinh doanh |
+| deleted_at | TIMESTAMPTZ | Có | NULL | Thời điểm xóa mềm |
 | created_at | TIMESTAMPTZ | Không | NOW() | Thời điểm tạo |
 | updated_at | TIMESTAMPTZ | Không | NOW() | Thời điểm cập nhật |
 
@@ -230,35 +237,49 @@ Kỹ năng yêu cầu cho mỗi dịch vụ (N-N).
 
 Khóa chính: (service_id, skill_id)
 
-### 3.9. Bảng resources
+### 3.9. Bảng resource_groups
 
-Quản lý phòng và thiết bị.
+Nhóm tài nguyên (phân loại logic).
 
 | Tên cột | Kiểu dữ liệu | Null | Mặc định | Mô tả |
 |:---|:---|:---:|:---|:---|
 | id | UUID | Không | auto | Khóa chính |
+| name | VARCHAR(100) | Không | - | Tên nhóm |
+| type | resource_type | Không | - | Loại (ROOM/EQUIPMENT) |
+| description | TEXT | Có | NULL | Mô tả |
+| deleted_at | TIMESTAMPTZ | Có | NULL | Thời điểm xóa mềm |
+| created_at | TIMESTAMPTZ | Không | NOW() | Thời điểm tạo |
+
+### 3.10. Bảng resources
+
+Quản lý phòng và thiết bị cụ thể.
+
+| Tên cột | Kiểu dữ liệu | Null | Mặc định | Mô tả |
+|:---|:---|:---:|:---|:---|
+| id | UUID | Không | auto | Khóa chính |
+| group_id | UUID | Có | NULL | FK resource_groups |
 | name | VARCHAR(100) | Không | - | Tên tài nguyên |
 | code | VARCHAR(50) | Có | NULL | Mã định danh (UNIQUE) |
-| type | resource_type | Không | - | Loại tài nguyên |
 | status | resource_status | Không | ACTIVE | Trạng thái |
 | capacity | INTEGER | Có | 1 | Sức chứa |
 | setup_time_minutes | INTEGER | Có | 0 | Thời gian chuẩn bị |
 | description | TEXT | Có | NULL | Mô tả |
 | image_url | TEXT | Có | NULL | Hình ảnh |
+| deleted_at | TIMESTAMPTZ | Có | NULL | Thời điểm xóa mềm |
 
-### 3.10. Bảng service_resource_requirements
+### 3.11. Bảng service_resource_requirements
 
-Yêu cầu tài nguyên cho dịch vụ.
+Yêu cầu nhóm tài nguyên cho dịch vụ.
 
 | Tên cột | Kiểu dữ liệu | Null | Mặc định | Mô tả |
 |:---|:---|:---:|:---|:---|
 | service_id | UUID | Không | - | FK services |
-| resource_type | resource_type | Không | - | Loại cần thiết |
+| group_id | UUID | Không | - | FK resource_groups |
 | quantity | INTEGER | Có | 1 | Số lượng |
 
-Khóa chính: (service_id, resource_type)
+Khóa chính: (service_id, group_id)
 
-### 3.11. Bảng shifts
+### 3.12. Bảng shifts
 
 Định nghĩa ca làm việc.
 
@@ -270,7 +291,7 @@ Khóa chính: (service_id, resource_type)
 | end_time | TIME | Không | - | Giờ kết thúc |
 | color_code | VARCHAR(7) | Có | NULL | Mã màu |
 
-### 3.12. Bảng staff_schedules
+### 3.13. Bảng staff_schedules
 
 Phân công lịch làm việc.
 
@@ -285,14 +306,15 @@ Phân công lịch làm việc.
 
 Ràng buộc UNIQUE: (staff_id, work_date, shift_id)
 
-### 3.13. Bảng bookings
+### 3.14. Bảng bookings
 
 Thông tin lịch hẹn.
 
 | Tên cột | Kiểu dữ liệu | Null | Mặc định | Mô tả |
 |:---|:---|:---:|:---|:---|
 | id | UUID | Không | auto | Khóa chính |
-| customer_id | UUID | Có | NULL | FK users |
+| customer_id | UUID | Có | NULL | FK users - khách hàng |
+| created_by | UUID | Có | NULL | FK users - người tạo booking |
 | start_time | TIMESTAMPTZ | Không | - | Thời gian bắt đầu |
 | end_time | TIMESTAMPTZ | Không | - | Thời gian kết thúc |
 | status | booking_status | Không | PENDING | Trạng thái |
@@ -305,7 +327,7 @@ Thông tin lịch hẹn.
 | created_at | TIMESTAMPTZ | Không | NOW() | Thời điểm tạo |
 | updated_at | TIMESTAMPTZ | Không | NOW() | Thời điểm cập nhật |
 
-### 3.14. Bảng booking_items
+### 3.15. Bảng booking_items
 
 Chi tiết dịch vụ trong lịch hẹn.
 
@@ -317,11 +339,12 @@ Chi tiết dịch vụ trong lịch hẹn.
 | staff_id | UUID | Có | NULL | FK staff_profiles |
 | resource_id | UUID | Có | NULL | FK resources |
 | treatment_id | UUID | Có | NULL | FK customer_treatments |
+| service_name_snapshot | VARCHAR(255) | Có | NULL | Snapshot tên dịch vụ |
 | start_time | TIMESTAMPTZ | Không | - | Thời gian bắt đầu |
 | end_time | TIMESTAMPTZ | Không | - | Thời gian kết thúc |
 | original_price | DECIMAL(12,2) | Không | - | Giá gốc |
 
-### 3.15. Bảng customer_treatments
+### 3.16. Bảng customer_treatments
 
 Gói liệu trình của khách hàng.
 
@@ -337,7 +360,33 @@ Gói liệu trình của khách hàng.
 | status | treatment_status | Không | ACTIVE | Trạng thái |
 | created_at | TIMESTAMPTZ | Không | NOW() | Thời điểm tạo |
 
-### 3.16. Bảng invoices
+### 3.17. Bảng service_packages
+
+Định nghĩa gói dịch vụ (Combo).
+
+| Tên cột | Kiểu dữ liệu | Null | Mặc định | Mô tả |
+|:---|:---|:---:|:---|:---|
+| id | UUID | Không | auto | Khóa chính |
+| name | VARCHAR(255) | Không | - | Tên gói |
+| description | TEXT | Có | NULL | Mô tả |
+| price | DECIMAL(12,2) | Không | - | Giá gói |
+| validity_days | INTEGER | Có | NULL | Thời hạn sử dụng (ngày) |
+| is_active | BOOLEAN | Không | TRUE | Trạng thái kinh doanh |
+| created_at | TIMESTAMPTZ | Không | NOW() | Thời điểm tạo |
+
+### 3.18. Bảng package_services
+
+Liên kết gói với dịch vụ (N-N).
+
+| Tên cột | Kiểu dữ liệu | Null | Mặc định | Mô tả |
+|:---|:---|:---:|:---|:---|
+| package_id | UUID | Không | - | FK service_packages |
+| service_id | UUID | Không | - | FK services |
+| quantity | INTEGER | Có | 1 | Số lần dùng dịch vụ trong gói |
+
+Khóa chính: (package_id, service_id)
+
+### 3.19. Bảng invoices
 
 Hóa đơn thanh toán.
 
@@ -349,7 +398,7 @@ Hóa đơn thanh toán.
 | status | invoice_status | Không | UNPAID | Trạng thái |
 | issued_at | TIMESTAMPTZ | Không | NOW() | Thời điểm xuất |
 
-### 3.17. Bảng payments
+### 3.20. Bảng payments
 
 Giao dịch thanh toán.
 
@@ -359,9 +408,11 @@ Giao dịch thanh toán.
 | invoice_id | UUID | Không | - | FK invoices |
 | amount | DECIMAL(12,2) | Không | - | Số tiền |
 | method | payment_method | Không | - | Phương thức |
+| transaction_ref | VARCHAR(100) | Có | NULL | Mã giao dịch ngân hàng |
+| gateway_info | JSONB | Có | NULL | Dữ liệu từ cổng TT |
 | transaction_time | TIMESTAMPTZ | Không | NOW() | Thời điểm |
 
-### 3.18. Bảng reviews
+### 3.21. Bảng reviews
 
 Đánh giá của khách hàng.
 
@@ -376,7 +427,7 @@ Giao dịch thanh toán.
 
 Ràng buộc UNIQUE: (booking_id, customer_id)
 
-### 3.19. Bảng notifications
+### 3.22. Bảng notifications
 
 Thông báo hệ thống.
 
@@ -390,7 +441,7 @@ Thông báo hệ thống.
 | type | VARCHAR(50) | Có | NULL | Loại thông báo |
 | created_at | TIMESTAMPTZ | Không | NOW() | Thời điểm |
 
-### 3.20. Bảng system_configurations
+### 3.23. Bảng system_configurations
 
 Cấu hình hệ thống.
 
@@ -401,7 +452,7 @@ Cấu hình hệ thống.
 | description | TEXT | Có | NULL | Mô tả |
 | updated_at | TIMESTAMPTZ | Không | NOW() | Cập nhật |
 
-### 3.21. Bảng audit_logs
+### 3.24. Bảng audit_logs
 
 Nhật ký thay đổi.
 
@@ -438,6 +489,7 @@ Nhật ký thay đổi.
 | bookings | booking_items | booking_id |
 | invoices | payments | invoice_id |
 | service_categories | services | category_id |
+| resource_groups | resources | group_id |
 | staff_profiles | staff_schedules | staff_id |
 | shifts | staff_schedules | shift_id |
 
@@ -447,6 +499,7 @@ Nhật ký thay đổi.
 |:---|:---|:---|
 | staff_profiles | skills | staff_skills |
 | services | skills | service_required_skills |
+| services | resource_groups | service_resource_requirements |
 
 ---
 
