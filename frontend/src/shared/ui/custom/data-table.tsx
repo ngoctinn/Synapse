@@ -6,6 +6,7 @@ import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row"
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
 import { PaginationControls } from "@/shared/ui/custom/pagination-controls"
 import {
+  Table,
   TableBody,
   TableCell,
   TableHead,
@@ -72,8 +73,8 @@ export function DataTable<T>({
   onRowClick,
 }: DataTableProps<T>) {
   const containerClasses = cn(
-    "relative bg-background",
-    variant === "default" && "border rounded-xl shadow-sm",
+    "relative w-full overflow-hidden",
+    variant === "default" && "border rounded-xl shadow-sm bg-background",
     className
   )
 
@@ -97,125 +98,123 @@ export function DataTable<T>({
   return (
     <div className="flex flex-col gap-4">
       <div className={containerClasses}>
-        <div className="overflow-x-auto w-full [scrollbar-gutter:stable]">
-          <table className="w-full caption-bottom text-sm min-w-[800px]">
-          <TableHeader className="sticky top-[var(--header-height-mobile,109px)] md:top-[var(--header-height,57px)] z-20 backdrop-blur-md bg-background/95 shadow-sm after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-border/50">
-            <TableRow className="hover:bg-transparent border-none">
-              {selectable && (
-                <TableHead className="w-12 pl-6 bg-transparent">
-                  <Checkbox
-                    checked={isAllSelected}
-                    // @ts-expect-error - indeterminate is valid
-                    indeterminate={isPartiallySelected ? "true" : undefined}
-                    onCheckedChange={onToggleAll}
-                    aria-label="Chọn tất cả"
-                    className="translate-y-[2px] data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                  />
-                </TableHead>
-              )}
+        <div className="w-full overflow-auto">
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent border-b border-border/60">
+                {selectable && (
+                  <TableHead className="w-12 pl-6">
+                    <Checkbox
+                      checked={isAllSelected}
+                      // @ts-expect-error - indeterminate is valid
+                      indeterminate={isPartiallySelected ? "true" : undefined}
+                      onCheckedChange={onToggleAll}
+                      aria-label="Chọn tất cả"
+                      className="translate-y-[2px]"
+                    />
+                  </TableHead>
+                )}
 
-              {columns.map((col, index) => {
-                const isSorted = sortColumn === col.accessorKey?.toString()
+                {columns.map((col, index) => {
+                  const isSorted = sortColumn === col.accessorKey?.toString()
+                  return (
+                    <TableHead
+                      key={index}
+                      className={cn(
+                        "h-12 font-medium text-muted-foreground transition-colors hover:text-foreground/80",
+                        index === 0 && !selectable ? "pl-6" : "",
+                        index === columns.length - 1 ? "pr-6 text-right" : "",
+                        col.sortable ? "cursor-pointer select-none" : "",
+                        col.headerClassName
+                      )}
+                      onClick={() => {
+                        if (col.sortable && onSort && col.accessorKey) {
+                          onSort(col.accessorKey.toString())
+                        }
+                      }}
+                    >
+                      <div className={cn(
+                        "flex items-center gap-2",
+                        index === columns.length - 1 && "justify-end"
+                      )}>
+                        {col.header}
+                        {col.sortable && (
+                          <span className="flex flex-col items-center justify-center w-4 h-4">
+                            {isSorted ? (
+                              sortDirection === "asc" ? (
+                                <ArrowUp className="h-3.5 w-3.5 text-primary animate-in fade-in zoom-in duration-200" />
+                              ) : (
+                                <ArrowDown className="h-3.5 w-3.5 text-primary animate-in fade-in zoom-in duration-200" />
+                              )
+                            ) : (
+                              <ArrowUpDown className="h-3 w-3 text-muted-foreground/30 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            )}
+                          </span>
+                        )}
+                      </div>
+                    </TableHead>
+                  )
+                })}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.map((item, index) => {
+                const itemId = keyExtractor(item)
+                const selected = isSelected?.(itemId) ?? false
+                const isClickable = !!onRowClick
 
                 return (
-                  <TableHead
-                    key={index}
+                  <AnimatedTableRow
+                    key={itemId}
+                    index={index}
                     className={cn(
-                      "bg-transparent h-14 font-medium text-muted-foreground transition-colors hover:text-foreground",
-                      index === 0 && !selectable ? "pl-8" : "",
-                      index === columns.length - 1 ? "pr-8 text-right" : "",
-                      col.sortable ? "cursor-pointer select-none" : "",
-                      col.headerClassName
+                      "group border-b border-border/40 last:border-0 transition-colors",
+                      isClickable && "cursor-pointer hover:bg-muted/50",
+                      selected && "bg-primary/5 hover:bg-primary/10"
                     )}
-                    onClick={() => {
-                      if (col.sortable && onSort && col.accessorKey) {
-                        onSort(col.accessorKey.toString())
-                      }
+                    onClick={(e) => {
+                      if (onRowClick) onRowClick(item)
                     }}
                   >
-                    <div className={cn(
-                      "flex items-center gap-2",
-                      index === columns.length - 1 && "justify-end"
-                    )}>
-                      {col.header}
-                      {col.sortable && (
-                        <span className="flex flex-col items-center justify-center w-4 h-4">
-                          {isSorted ? (
-                            sortDirection === "asc" ? (
-                              <ArrowUp className="h-4 w-4 text-primary animate-in fade-in zoom-in duration-200" />
-                            ) : (
-                              <ArrowDown className="h-4 w-4 text-primary animate-in fade-in zoom-in duration-200" />
-                            )
-                          ) : (
-                            <ArrowUpDown className="h-3 w-3 text-muted-foreground/50 opacity-0 group-hover:opacity-50 transition-opacity" />
-                          )}
-                        </span>
-                      )}
-                    </div>
-                  </TableHead>
+                    {/* Checkbox Cell */}
+                    {selectable && (
+                      <TableCell className="w-12 pl-6" onClick={(e) => e.stopPropagation()}>
+                        <Checkbox
+                          checked={selected}
+                          onCheckedChange={() => onToggleOne?.(itemId)}
+                          aria-label="Chọn hàng"
+                          className="translate-y-[2px]"
+                        />
+                      </TableCell>
+                    )}
+
+                    {columns.map((col, colIndex) => (
+                      <TableCell
+                        key={colIndex}
+                        className={cn(
+                          "py-4",
+                          colIndex === 0 && !selectable ? "pl-6 font-medium text-foreground" : "",
+                          colIndex === 0 && selectable ? "font-medium text-foreground" : "",
+                          colIndex === columns.length - 1 ? "pr-6 text-right" : "text-muted-foreground",
+                          col.className
+                        )}
+                      >
+                        {col.cell
+                          ? col.cell(item)
+                          : col.accessorKey
+                          ? (item[col.accessorKey] as ReactNode)
+                          : null}
+                      </TableCell>
+                    ))}
+                  </AnimatedTableRow>
                 )
               })}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.map((item, index) => {
-              const itemId = keyExtractor(item)
-              const selected = isSelected?.(itemId) ?? false
-
-              return (
-                <AnimatedTableRow
-                  key={itemId}
-                  index={index}
-                  className={cn(
-                    "group transition-all duration-200 border-b border-border/40 last:border-0",
-                    onRowClick ? "cursor-pointer hover:bg-muted/50 active:bg-muted/70" : "hover:bg-muted/30",
-                    selected && "bg-primary/5 hover:bg-primary/10"
-                  )}
-                  onClick={(e) => {
-                    // Prevent row click when clicking specific interactive elements if needed
-                    // But generally good to just fire it
-                    if (onRowClick) onRowClick(item)
-                  }}
-                >
-                  {/* Checkbox Cell */}
-                  {selectable && (
-                    <TableCell className="w-12 pl-6" onClick={(e) => e.stopPropagation()}>
-                      <Checkbox
-                        checked={selected}
-                        onCheckedChange={() => onToggleOne?.(itemId)}
-                        aria-label="Chọn hàng"
-                        className="translate-y-[2px] data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                      />
-                    </TableCell>
-                  )}
-
-                  {columns.map((col, colIndex) => (
-                    <TableCell
-                      key={colIndex}
-                      className={cn(
-                        "py-4",
-                        colIndex === 0 && !selectable ? "pl-8 font-medium text-foreground" : "",
-                        colIndex === 0 && selectable ? "font-medium text-foreground" : "",
-                        colIndex === columns.length - 1 ? "pr-8 text-right" : "text-muted-foreground",
-                        col.className
-                      )}
-                    >
-                      {col.cell
-                        ? col.cell(item)
-                        : col.accessorKey
-                        ? (item[col.accessorKey] as ReactNode)
-                        : null}
-                    </TableCell>
-                  ))}
-                </AnimatedTableRow>
-              )
-            })}
-          </TableBody>
-        </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
       {totalPages > 1 && (
-        <div className="px-1 py-2">
+        <div className="py-2">
           <PaginationControls
             currentPage={page}
             totalPages={totalPages}

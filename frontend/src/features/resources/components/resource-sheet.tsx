@@ -9,11 +9,10 @@ import {
   SheetDescription,
   SheetFooter,
   SheetHeader,
-  SheetTitle,
-  SheetTrigger,
+  SheetTitle
 } from "@/shared/ui/sheet";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Edit, Loader2, Plus, Save } from "lucide-react";
+import { Loader2, Save } from "lucide-react";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { manageResource } from "../actions";
@@ -22,10 +21,10 @@ import { Resource } from "../types";
 import { ResourceForm } from "./resource-form";
 
 interface ResourceSheetProps {
-  resource?: Resource;
-  trigger?: React.ReactNode;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  mode: "create" | "update"
+  resource?: Resource
 }
 
 const initialState = {
@@ -35,16 +34,11 @@ const initialState = {
 }
 
 export function ResourceSheet({
+  open,
+  onOpenChange,
+  mode,
   resource,
-  trigger,
-  open: controlledOpen,
-  onOpenChange: controlledOnOpenChange,
 }: ResourceSheetProps) {
-  const [internalOpen, setInternalOpen] = React.useState(false);
-  const isControlled = controlledOpen !== undefined;
-  const open = isControlled ? controlledOpen : internalOpen;
-  const onOpenChange = isControlled ? controlledOnOpenChange : setInternalOpen;
-
   const [state, dispatch, isPending] = React.useActionState(manageResource, initialState);
 
   const form = useForm<ResourceFormValues>({
@@ -64,37 +58,44 @@ export function ResourceSheet({
   // Reset form when opening or when resource changes
   React.useEffect(() => {
     if (open) {
-      form.reset(resource ? {
-        ...resource,
-        setupTime: resource.setupTime ?? 0,
-        capacity: resource.capacity ?? 1,
-        tags: resource.tags ?? [],
-      } : {
-        name: "",
-        code: "",
-        type: "ROOM",
-        status: "ACTIVE",
-        capacity: 1,
-        setupTime: 0,
-        description: "",
-        tags: [],
-      });
+      if (mode === "create") {
+         form.reset({
+            name: "",
+            code: "",
+            type: "ROOM",
+            status: "ACTIVE",
+            capacity: 1,
+            setupTime: 0,
+            description: "",
+            tags: [],
+         });
+      } else if (resource) {
+         form.reset({
+            ...resource,
+            setupTime: resource.setupTime ?? 0,
+            capacity: resource.capacity ?? 1,
+            tags: resource.tags ?? [],
+         });
+      }
     }
-  }, [open, resource, form]);
+  }, [open, mode, resource, form]);
 
   // Handle server action response
   React.useEffect(() => {
     if (state.success && state.message) {
-      showToast.success(resource ? "Cập nhật thành công" : "Tạo mới thành công", state.message);
-      onOpenChange?.(false);
+      showToast.success(mode === "update" ? "Cập nhật thành công" : "Tạo mới thành công", state.message);
+      onOpenChange(false);
     } else if (state.error) {
       showToast.error("Thất bại", state.error);
     }
-  }, [state, resource, onOpenChange]);
+  }, [state, mode, onOpenChange]);
 
   const onSubmit = (data: ResourceFormValues) => {
     const formData = new FormData();
-    if (resource?.id) formData.append("id", resource.id);
+    // Pass hidden fields for server action to identify mode/ID
+    if (mode === "update" && resource?.id) {
+        formData.append("id", resource.id);
+    }
 
     Object.entries(data).forEach(([key, value]) => {
       if (key === 'tags') {
@@ -109,34 +110,17 @@ export function ResourceSheet({
     });
   };
 
-  const defaultTrigger = resource ? (
-    <Button
-      variant="ghost"
-      size="icon"
-      className="h-8 w-8 p-0"
-      aria-label="Chỉnh sửa"
-    >
-      <Edit className="h-4 w-4" />
-    </Button>
-  ) : (
-    <Button size="sm" className="text-xs shadow-sm">
-      <Plus className="mr-2 h-3.5 w-3.5" />
-      Thêm tài nguyên
-    </Button>
-  );
-
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetTrigger asChild>{trigger || defaultTrigger}</SheetTrigger>
       <SheetContent className="w-full sm:max-w-md p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
         <SheetHeader className="px-6 py-4 border-b">
             <div className="flex items-center justify-between">
                 <SheetTitle className="text-xl font-semibold text-foreground">
-                    {resource ? "Chỉnh sửa tài nguyên" : "Thêm tài nguyên mới"}
+                    {mode === "update" ? "Chỉnh sửa tài nguyên" : "Thêm tài nguyên mới"}
                 </SheetTitle>
             </div>
             <SheetDescription className="text-muted-foreground text-sm">
-              {resource
+              {mode === "update"
                 ? "Cập nhật thông tin chi tiết cho tài nguyên này."
                 : "Điền thông tin để tạo tài nguyên mới vào hệ thống."}
             </SheetDescription>

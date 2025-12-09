@@ -7,11 +7,11 @@ import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { SelectWithIcon } from "@/shared/ui/custom/select-with-icon";
 import { TagInput } from "@/shared/ui/custom/tag-input";
 import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
 } from "@/shared/ui/form";
 import { Textarea } from "@/shared/ui/textarea";
 
@@ -104,6 +104,11 @@ export function ResourceForm() {
           />
         </div>
 
+        <div className="h-[1px] bg-border/50 my-6" />
+
+        <div className="space-y-4">
+          <h3 className="text-sm font-medium text-muted-foreground">Cấu hình vận hành</h3>
+
           <FormField
             control={form.control}
             name="setupTime"
@@ -157,6 +162,7 @@ export function ResourceForm() {
             />
         )}
 
+        </div>
         <FormField
           control={form.control}
           name="description"

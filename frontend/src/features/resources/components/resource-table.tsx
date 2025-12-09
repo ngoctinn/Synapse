@@ -22,6 +22,7 @@ import { Bed, Box } from "lucide-react";
 import { useState, useTransition } from "react";
 import { deleteResource } from "../actions";
 import { Resource } from "../types";
+import { AddResourceModal } from "./add-resource-modal";
 import { ResourceActions } from "./resource-actions";
 import { ResourceSheet } from "./resource-sheet";
 
@@ -207,7 +208,7 @@ export function ResourceTable({ data, isLoading, className, variant = "default" 
             icon={Box}
             title="Chưa có tài nguyên nào"
             description="Tạo tài nguyên đầu tiên để bắt đầu quản lý."
-            action={<ResourceSheet />}
+            action={<AddResourceModal />}
           />
         }
       />
@@ -220,10 +221,10 @@ export function ResourceTable({ data, isLoading, className, variant = "default" 
       />
 
       <ResourceSheet
+        mode="update"
         resource={editResource ?? undefined}
         open={!!editResource}
         onOpenChange={(open) => !open && setEditResource(null)}
-        trigger={<span className="hidden" />}
       />
 
       <AlertDialog

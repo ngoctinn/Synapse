@@ -3,6 +3,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { Suspense, use, useState } from "react"
 import { MaintenanceTask, Resource } from "../types"
+import { AddResourceModal } from "./add-resource-modal"
 import { MaintenanceTimeline } from "./maintenance-timeline"
 import { ResourceFilter } from "./resource-filter"
 import { ResourceTable, ResourceTableSkeleton } from "./resource-table"
@@ -71,6 +72,7 @@ export function ResourcePage({ resourcesPromise, tasksPromise }: ResourcePagePro
                 <ResourceFilter />
               </div>
             )}
+            <AddResourceModal />
           </div>
         </div>
 

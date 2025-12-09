@@ -21,7 +21,7 @@ export function AnimatedTableRow({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.2, delay: index * 0.05 }}
       className={cn(
-        "hover:bg-blue-50/50 transition-colors border-b last:border-0",
+        "transition-colors",
         className
       )}
       {...props}
