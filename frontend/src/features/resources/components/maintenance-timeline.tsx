@@ -4,17 +4,17 @@ import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/shared/ui/tooltip";
 import { addDays, format, isSameDay, startOfWeek } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Bed, Box, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import * as React from "react";
-import { MaintenanceTask, Resource } from "../model/types";
+import { MaintenanceTask, Resource } from "../types";
 
 interface MaintenanceTimelineProps {
   resources: Resource[];

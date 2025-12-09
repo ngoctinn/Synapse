@@ -12,7 +12,7 @@ interface AppointmentCardProps {
   onClick?: (e?: React.MouseEvent) => void;
 }
 
-// Premium Semantic Colors
+
 const statusStyles = {
   pending: 'bg-[var(--status-pending)] border-[var(--status-pending-border)] text-[var(--status-pending-foreground)] hover:brightness-95',
   confirmed: 'bg-[var(--status-confirmed)] border-[var(--status-confirmed-border)] text-[var(--status-confirmed-foreground)] hover:brightness-95',
@@ -23,7 +23,7 @@ const statusStyles = {
 };
 
 const statusIndicator = {
-  pending: 'bg-amber-400', // Keep specific indicator colors or map them too if needed
+  pending: 'bg-amber-400',
   confirmed: 'bg-sky-400',
   serving: 'bg-emerald-400',
   completed: 'bg-slate-400',
@@ -41,9 +41,6 @@ export function AppointmentCard({ appointment, style, className, onClick }: Appo
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       whileHover={{ scale: 1.02, zIndex: 50, transition: { duration: 0.2 } }}
-      // Use standard CSS media query for disabling motion if needed, or rely on global Framer Motion config.
-      // Ideally, we should use 'useReducedMotion' hook, but for now we keep it simple or use className 'motion-safe:...'
-      // Adding a simple transition prop to ensure smoothness.
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       style={style}
       onClick={onClick}
@@ -53,7 +50,7 @@ export function AppointmentCard({ appointment, style, className, onClick }: Appo
         className
       )}
     >
-      {/* Thanh trạng thái (Status Bar) */}
+
       <div
         className={cn(
           "absolute left-0 top-0 bottom-0 w-1 transition-all group-hover:w-1.5",
@@ -62,12 +59,12 @@ export function AppointmentCard({ appointment, style, className, onClick }: Appo
       />
 
       <div className="pl-2.5 h-full flex flex-col justify-center gap-1">
-        {/* Line 1: Customer Name */}
+
         <div className="font-bold truncate text-sm leading-none font-serif tracking-tight text-foreground/90">
           {appointment.customerName}
         </div>
 
-        {/* Line 2: Time */}
+
         <div className="flex items-center gap-1 text-[11px] opacity-85 font-mono leading-none">
            <Clock className="w-3 h-3" />
            <span className="truncate">
@@ -75,7 +72,7 @@ export function AppointmentCard({ appointment, style, className, onClick }: Appo
            </span>
         </div>
 
-        {/* Line 3: Service Name */}
+
         <div className="text-[11px] opacity-90 truncate font-medium leading-none">
           {appointment.serviceName}
         </div>

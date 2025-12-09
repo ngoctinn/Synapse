@@ -19,12 +19,12 @@ export interface Appointment {
   customerName: string;
   serviceId: string;
   serviceName: string;
-  resourceId: string; // ID Nhân viên
+  resourceId: string;
   startTime: Date;
   endTime: Date;
   status: AppointmentStatus;
   notes?: string;
-  color?: string; // Màu tùy chỉnh (nếu có)
+  color?: string;
 }
 
 export type CalendarView = 'timeline' | 'day' | 'week' | 'month';

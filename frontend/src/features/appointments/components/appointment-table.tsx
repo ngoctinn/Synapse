@@ -1,39 +1,37 @@
 "use client"
 
-import { useMemo, useState } from "react"
 import { format } from "date-fns"
 import { vi } from "date-fns/locale"
-import { 
-  MoreHorizontal, 
-  Calendar, 
-  Clock, 
-  User, 
-  Scissors, 
-  AlertCircle 
-} from "lucide-react"
-
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/shared/ui/table"
+    Calendar,
+    Clock,
+    MoreHorizontal,
+    Scissors
+} from "lucide-react"
+import { useMemo } from "react"
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/shared/ui/table"
 
-import { Appointment, Resource, AppointmentStatus } from "../types"
 import { cn } from "@/shared/lib/utils"
+import { Appointment, AppointmentStatus, Resource } from "../types"
 
 interface AppointmentTableProps {
   appointments: Appointment[]
@@ -61,14 +59,14 @@ const getStatusConfig = (status: AppointmentStatus) => {
   }
 }
 
-export function AppointmentTable({ 
-  appointments, 
+export function AppointmentTable({
+  appointments,
   resources,
   onEdit,
-  onCancel 
+  onCancel
 }: AppointmentTableProps) {
-  
-  // Sort appointments by start time desc (newest first)
+
+
   const sortedAppointments = useMemo(() => {
     return [...appointments].sort((a, b) => b.startTime.getTime() - a.startTime.getTime())
   }, [appointments])
@@ -104,13 +102,13 @@ export function AppointmentTable({
           {sortedAppointments.map((appointment) => {
             const statusConfig = getStatusConfig(appointment.status)
             const resource = resources.find(r => r.id === appointment.resourceId)
-            
+
             return (
               <TableRow key={appointment.id} className="group">
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <Avatar className="h-9 w-9 border">
-                       {/* Placeholder avatar logic */}
+
                       <AvatarFallback className="bg-primary/10 text-primary font-medium text-xs">
                         {appointment.customerName.split(' ').pop()?.substring(0, 2).toUpperCase()}
                       </AvatarFallback>
@@ -120,13 +118,13 @@ export function AppointmentTable({
                         {appointment.customerName}
                       </span>
                       <span className="text-xs text-muted-foreground line-clamp-1">
-                        {/* Mock phone or ID could go here */}
+
                         KH-{(appointment.id).toUpperCase()}
                       </span>
                     </div>
                   </div>
                 </TableCell>
-                
+
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <div className="p-1.5 rounded-md bg-purple-50 text-purple-600 shrink-0">
@@ -170,8 +168,8 @@ export function AppointmentTable({
                 </TableCell>
 
                 <TableCell>
-                  <Badge 
-                    variant={statusConfig.variant} 
+                  <Badge
+                    variant={statusConfig.variant}
                     className={cn("whitespace-nowrap font-semibold", statusConfig.className)}
                   >
                     {statusConfig.label}
@@ -192,7 +190,7 @@ export function AppointmentTable({
                         Chỉnh sửa
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         className="text-destructive focus:text-destructive"
                         onClick={() => onCancel(appointment)}
                       >

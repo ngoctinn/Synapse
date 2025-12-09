@@ -5,7 +5,6 @@ const today = startOfToday();
 
 import { MOCK_STAFF } from "@/features/staff";
 
-// Resources (Derived from Staff Mock Data for consistency)
 // Focusing on Technicians who perform services
 export const MOCK_RESOURCES: Resource[] = MOCK_STAFF
   .filter(staff => staff.title === "Kỹ thuật viên")
@@ -16,7 +15,6 @@ export const MOCK_RESOURCES: Resource[] = MOCK_STAFF
     avatar: staff.user.avatar_url || undefined
   }));
 
-// Helper to create date
 const createDate = (hour: number, minute: number, dayOffset: number = 0) => {
   let date = addDays(today, dayOffset);
   date = setHours(date, hour);
