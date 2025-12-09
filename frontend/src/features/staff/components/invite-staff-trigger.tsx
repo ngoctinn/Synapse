@@ -10,7 +10,7 @@ interface InviteStaffModalProps {
   skills: Skill[]
 }
 
-export function InviteStaffModal({ skills }: InviteStaffModalProps) {
+export function InviteStaffTrigger({ skills }: InviteStaffModalProps) {
   const [open, setOpen] = useState(false)
 
   return (

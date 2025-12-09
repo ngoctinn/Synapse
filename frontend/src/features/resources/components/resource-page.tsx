@@ -3,7 +3,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { Suspense, use, useState } from "react"
 import { MaintenanceTask, Resource, ResourceGroup } from "../types"
-import { AddResourceModal } from "./add-resource-modal"
+import { AddResourceTrigger } from "./add-resource-trigger"
 import { MaintenanceTimeline } from "./maintenance-timeline"
 import { ResourceFilter } from "./resource-filter"
 import { ResourceTable, ResourceTableSkeleton } from "./resource-table"
@@ -36,7 +36,7 @@ function ResourceListWrapper({
 
 function AddResourceWrapper({ groupsPromise }: { groupsPromise: Promise<ResourceGroup[]> }) {
   const groups = use(groupsPromise)
-  return <AddResourceModal groups={groups} />
+  return <AddResourceTrigger groups={groups} />
 }
 
 function MaintenanceTimelineWrapper({
