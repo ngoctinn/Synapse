@@ -22,7 +22,7 @@ export function ImageUpload({ value, onChange, disabled, className }: ImageUploa
     if (file) {
       const objectUrl = URL.createObjectURL(file);
       setPreview(objectUrl);
-      onChange(objectUrl); // In a real app, we would upload here and return the URL
+      onChange(objectUrl);
     }
   };
 

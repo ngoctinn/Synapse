@@ -7,17 +7,17 @@ import { Card } from "@/shared/ui/card";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
 } from "@/shared/ui/tooltip";
 import { GripVertical, Plus, Trash2, X } from "lucide-react";
 import { EquipmentUsage } from "../types";
@@ -53,7 +53,7 @@ export function EquipmentTimelineEditor({
   onChange,
   disabled,
 }: EquipmentTimelineEditorProps) {
-  // Thêm thiết bị mới
+
   const handleAdd = () => {
     if (availableEquipment.length === 0) return;
     const firstAvailable = availableEquipment.find(
@@ -71,37 +71,37 @@ export function EquipmentTimelineEditor({
     ]);
   };
 
-  // Cập nhật một item
+
   const handleUpdate = (index: number, updates: Partial<EquipmentUsage>) => {
     const newValue = [...value];
     newValue[index] = { ...newValue[index], ...updates };
     onChange(newValue);
   };
 
-  // Xóa item
+
   const handleRemove = (index: number) => {
     onChange(value.filter((_, i) => i !== index));
   };
 
-  // Tính phần trăm cho timeline visualization
+
   const getPercent = (minutes: number) => {
     if (serviceDuration <= 0) return 0;
     return Math.min(100, (minutes / serviceDuration) * 100);
   };
 
-  // Lấy tên thiết bị từ ID
+
   const getEquipmentName = (id: string) => {
     return availableEquipment.find((eq) => eq.id === id)?.name || "Không xác định";
   };
 
-  // Thiết bị chưa được sử dụng
+
   const unusedEquipment = availableEquipment.filter(
     (eq) => !value.some((v) => v.equipment_id === eq.id)
   );
 
   return (
     <div className="space-y-4">
-      {/* Timeline Visualization */}
+
       <div className="relative bg-muted/30 rounded-xl p-4 border">
         <div className="flex items-center justify-between mb-3">
           <Label className="text-sm font-medium">Timeline sử dụng thiết bị</Label>
@@ -110,7 +110,7 @@ export function EquipmentTimelineEditor({
           </span>
         </div>
 
-        {/* Timeline Header - Time markers */}
+
         <div className="relative h-6 mb-2">
           <div className="absolute inset-x-0 flex justify-between text-[10px] text-muted-foreground">
             <span>0</span>
@@ -121,9 +121,9 @@ export function EquipmentTimelineEditor({
           </div>
         </div>
 
-        {/* Timeline Bars */}
+
         <div className="relative h-auto min-h-[60px] bg-muted/20 rounded-lg overflow-hidden border">
-          {/* Grid lines */}
+
           <div className="absolute inset-0 flex">
             {[0, 25, 50, 75, 100].map((pct) => (
               <div
@@ -134,7 +134,7 @@ export function EquipmentTimelineEditor({
             ))}
           </div>
 
-          {/* Equipment bars */}
+
           <TooltipProvider>
             {value.length === 0 ? (
               <div className="flex items-center justify-center h-[60px] text-sm text-muted-foreground">
@@ -189,12 +189,12 @@ export function EquipmentTimelineEditor({
         </div>
       </div>
 
-      {/* Equipment List Editor */}
+
       <div className="space-y-3">
         {value.map((item, index) => (
           <Card key={index} className="p-3 bg-muted/10">
             <div className="flex items-start gap-3">
-              {/* Color indicator */}
+
               <div
                 className={cn(
                   "w-3 h-3 rounded-full mt-2.5 shrink-0",
@@ -202,7 +202,7 @@ export function EquipmentTimelineEditor({
                 )}
               />
 
-              {/* Equipment Select */}
+
               <div className="flex-1 space-y-2">
                 <Select
                   value={item.equipment_id}
@@ -227,7 +227,7 @@ export function EquipmentTimelineEditor({
                   </SelectContent>
                 </Select>
 
-                {/* Time inputs */}
+
                 <div className="flex items-center gap-2">
                   <div className="flex-1">
                     <Label className="text-[10px] text-muted-foreground uppercase">
@@ -280,7 +280,7 @@ export function EquipmentTimelineEditor({
           </Card>
         ))}
 
-        {/* Add button */}
+
         {unusedEquipment.length > 0 && (
           <Button
             type="button"
@@ -296,7 +296,7 @@ export function EquipmentTimelineEditor({
         )}
       </div>
 
-      {/* Empty state */}
+
       {availableEquipment.length === 0 && (
         <div className="text-center py-6 text-muted-foreground text-sm">
           <Trash2 className="w-8 h-8 mx-auto mb-2 opacity-50" />

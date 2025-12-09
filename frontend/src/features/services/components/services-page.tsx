@@ -61,9 +61,7 @@ export function ServicesPage({ page, skills, roomTypes, equipmentList, servicesP
   const searchParams = useSearchParams()
   const [activeTab, setActiveTab] = useState("list")
 
-  // Sync tab with URL if needed, or just keep local state
-  // ideally we might want to store tab in URL, but start simple with local state
-  // or use the current approach which seems to be client-side tabs.
+
 
   const isServiceTab = activeTab === "list"
 
@@ -78,7 +76,7 @@ export function ServicesPage({ page, skills, roomTypes, equipmentList, servicesP
       }
     >
       <Tabs defaultValue="list" className="flex flex-col flex-1 w-full gap-0" onValueChange={setActiveTab}>
-        {/* Sticky Header with Tabs and Actions */}
+
         <div
           className="sticky top-0 z-40 px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4"
         >
@@ -119,14 +117,8 @@ export function ServicesPage({ page, skills, roomTypes, equipmentList, servicesP
           </TabsContent>
 
           <TabsContent value="skills" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
-             {/* Note: In a real app we might want to fetch skills paginated here too,
-                 but for now we pass all skills as initial data or fetch them similarly.
-                 The current architecture passes 'skills' as an array.
-                 We'll use a SkillTable that accepts this array.
-                 If we need pagination for skills, we might need to adjust the backend/fetching strategy.
-                 For now, assuming 'skills' is the full list or paginated list
-              */}
-              {/* Wait, 'skills' prop is Skill[]. Current SkillTable expects Skill[]. */}
+
+
               <SkillTable
                 skills={skills}
                 className="border-x-0 border-t rounded-none shadow-none"

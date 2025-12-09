@@ -59,7 +59,7 @@ export function ServiceTable({
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false)
   const [isPending, startTransition] = useTransition()
 
-  // Selection state
+
   const selection = useTableSelection({
     data: services,
     keyExtractor: (item) => item.id,
@@ -76,7 +76,7 @@ export function ServiceTable({
     router.push(`${pathname}?${params.toString()}`)
   }
 
-  // Bulk delete
+
   const handleBulkDelete = async () => {
     const ids = Array.from(selection.selectedIds) as string[]
     if (ids.length === 0) return
@@ -183,7 +183,7 @@ export function ServiceTable({
         variant={variant}
         isLoading={isLoading}
         skeletonCount={6}
-        // Selection
+
         selectable
         isSelected={selection.isSelected}
         onToggleOne={selection.toggleOne}

@@ -22,10 +22,10 @@ export const MOCK_SERVICES: Service[] = [
     price: 590000,
     category: "Massage",
     image_url: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=1000",
-    color: "#3b82f6", // Blue
+    color: "#3b82f6",
     is_active: true,
     is_popular: true,
-    skills: [MOCK_SKILLS[1]], // Massage Body
+    skills: [MOCK_SKILLS[1]],
     created_at: "2023-01-01T00:00:00Z",
     updated_at: "2023-01-01T00:00:00Z",
   },
@@ -38,10 +38,10 @@ export const MOCK_SERVICES: Service[] = [
     price: 1200000,
     category: "Facial",
     image_url: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&q=80&w=1000",
-    color: "#ef4444", // Red
+    color: "#ef4444",
     is_active: true,
     is_popular: true,
-    skills: [MOCK_SKILLS[0], MOCK_SKILLS[2]], // Facial, Acne
+    skills: [MOCK_SKILLS[0], MOCK_SKILLS[2]],
     created_at: "2023-01-01T00:00:00Z",
     updated_at: "2023-01-01T00:00:00Z",
   },
@@ -54,9 +54,9 @@ export const MOCK_SERVICES: Service[] = [
     price: 250000,
     category: "Hair Care",
     image_url: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?auto=format&fit=crop&q=80&w=1000",
-    color: "#10b981", // Emerald
+    color: "#10b981",
     is_active: true,
-    skills: [MOCK_SKILLS[3], MOCK_SKILLS[4]], // Shampoo, Neck
+    skills: [MOCK_SKILLS[3], MOCK_SKILLS[4]],
     created_at: "2023-01-01T00:00:00Z",
     updated_at: "2023-01-01T00:00:00Z",
   },
@@ -69,9 +69,9 @@ export const MOCK_SERVICES: Service[] = [
     price: 150000,
     category: "Sauna",
     image_url: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000",
-    color: "#f59e0b", // Amber
+    color: "#f59e0b",
     is_active: true,
-    skills: [], // Sauna might not need specific skill or maybe general
+    skills: [],
     created_at: "2023-01-01T00:00:00Z",
     updated_at: "2023-01-01T00:00:00Z",
   },
@@ -84,9 +84,9 @@ export const MOCK_SERVICES: Service[] = [
     price: 350000,
     category: "Massage",
     image_url: "https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&q=80&w=1000",
-    color: "#8b5cf6", // Violet
+    color: "#8b5cf6",
     is_active: true,
-    skills: [MOCK_SKILLS[1]], // Massage Body (generic for foot too for now)
+    skills: [MOCK_SKILLS[1]],
     created_at: "2023-01-01T00:00:00Z",
     updated_at: "2023-01-01T00:00:00Z",
   },
@@ -99,10 +99,10 @@ export const MOCK_SERVICES: Service[] = [
     price: 2500000,
     category: "Package",
     image_url: "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?auto=format&fit=crop&q=80&w=1000",
-    color: "#ec4899", // Pink
+    color: "#ec4899",
     is_active: true,
     is_popular: true,
-    skills: [MOCK_SKILLS[0], MOCK_SKILLS[1]], // Facial, Body
+    skills: [MOCK_SKILLS[0], MOCK_SKILLS[1]],
     created_at: "2023-01-01T00:00:00Z",
     updated_at: "2023-01-01T00:00:00Z",
   },
