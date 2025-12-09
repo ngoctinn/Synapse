@@ -8,25 +8,25 @@ import { MoneyInput } from "@/shared/ui/custom/money-input";
 import { TagInput } from "@/shared/ui/custom/tag-input";
 import { DialogFooter } from "@/shared/ui/dialog";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/shared/ui/select";
 import { Switch } from "@/shared/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Textarea } from "@/shared/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, Box, Clock, Loader2, Save, Tag } from "lucide-react";
+import { ArrowLeft, Box, Clock, Save, Tag } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Resolver, useForm } from "react-hook-form";
@@ -162,8 +162,8 @@ export function ServiceForm({
                   <Button variant="outline" type="button" onClick={() => router.back()} disabled={isPending}>
                       Hủy
                   </Button>
-                  <Button type="submit" disabled={isPending} className="min-w-[120px] shadow-md shadow-primary/20">
-                      {isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                  <Button type="submit" loading={isPending} className="min-w-[120px] shadow-md shadow-primary/20">
+                      {!isPending && <Save className="w-4 h-4 mr-2" />}
                       {initialData ? "Lưu thay đổi" : "Tạo dịch vụ"}
                   </Button>
               </div>
@@ -483,8 +483,8 @@ export function ServiceForm({
                <Button variant="outline" type="button" onClick={() => onSuccess?.()} disabled={isPending} className="h-11">
                    Hủy
                </Button>
-               <Button type="submit" disabled={isPending} className="shadow-md shadow-primary/20 h-11 min-w-[140px]">
-                   {isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+               <Button type="submit" loading={isPending} className="shadow-md shadow-primary/20 h-11 min-w-[140px]">
+                   {!isPending && <Save className="w-4 h-4 mr-2" />}
                    {initialData ? "Lưu thay đổi" : "Tạo dịch vụ"}
                </Button>
            </DialogFooter>

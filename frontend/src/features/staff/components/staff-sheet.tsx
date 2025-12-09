@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Loader2, Save, Send } from "lucide-react"
+import { Save, Send } from "lucide-react"
 import * as React from "react"
 import { useForm } from "react-hook-form"
 
@@ -9,10 +9,10 @@ import { useForm } from "react-hook-form"
 import { Skill } from "@/features/services/types"
 import { manageStaff } from "@/features/staff/actions"
 import {
-    StaffCreateFormValues,
-    StaffUpdateFormValues,
-    staffCreateSchema,
-    staffUpdateSchema
+  StaffCreateFormValues,
+  StaffUpdateFormValues,
+  staffCreateSchema,
+  staffUpdateSchema
 } from "@/features/staff/schemas"
 import { Staff } from "@/features/staff/types"
 
@@ -21,12 +21,12 @@ import { Button } from "@/shared/ui/button"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { Form } from "@/shared/ui/form"
 import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle
 } from "@/shared/ui/sheet"
 import { StaffForm } from "./staff-form"
 
@@ -153,10 +153,9 @@ export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffShe
                 form="staff-form"
                 disabled={isPending}
                 className="min-w-[140px] shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
+                loading={isPending}
             >
-                {isPending ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : mode === "create" ? (
+                {mode === "create" ? (
                     <>
                         <Send className="mr-2 h-4 w-4" /> Gửi lời mời
                     </>

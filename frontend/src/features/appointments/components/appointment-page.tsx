@@ -10,17 +10,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from "@/shared/ui/alert-dialog"
+import { Button } from "@/shared/ui/button"
 import { SearchInput } from "@/shared/ui/custom/search-input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
+import { Plus } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
 import { MOCK_APPOINTMENTS, MOCK_RESOURCES } from "../mock-data"
 import { Appointment } from "../types"
 import { AppointmentFilter } from "./appointment-filter"
-import { AppointmentTimeline } from "./appointment-timeline"
-import { AppointmentTable } from "./appointment-table"
 import { AppointmentSheet } from "./appointment-sheet"
+import { AppointmentTable } from "./appointment-table"
+import { AppointmentTimeline } from "./appointment-timeline"
 
 interface AppointmentPageProps {
     initialData?: boolean; // Reserved for future server data
@@ -36,7 +38,7 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
   // In a real SSR app, we would read searchParams here or receive them via props
   // and pass them to use(promise). For now, we simulate "Client Side Filtering" removed
   // and just use MOCK_APPOINTMENTS directly or via state for local mutation simulation.
-  
+
   const [activeTab, setActiveTab] = useState("timeline")
   // Keep raw appointments state for mutations (add/cancel)
   const [appointments, setAppointments] = useState<Appointment[]>(MOCK_APPOINTMENTS)
@@ -45,7 +47,7 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [sheetMode, setSheetMode] = useState<"create" | "update">("create")
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
-  
+
   // Create Pre-fill States
   const [createDefaultDate, setCreateDefaultDate] = useState<Date | undefined>(undefined)
   const [createDefaultResource, setCreateDefaultResource] = useState<string | undefined>(undefined)
@@ -87,7 +89,7 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
       }
       // Toast is handled inside Sheet but we can add extra logic here
   }
-  
+
   const handleEditAppointment = (appointment: Appointment) => {
      handleAppointmentClick(appointment)
   }
@@ -100,12 +102,12 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
   const handleConfirmCancel = () => {
       if (!appointmentToCancel) return
 
-      setAppointments(prev => prev.map(a => 
+      setAppointments(prev => prev.map(a =>
           a.id === appointmentToCancel.id ? { ...a, status: 'cancelled' } : a
       ))
 
       toast.success("Đã hủy lịch hẹn thành công")
-      
+
       setIsCancelAlertOpen(false)
       // If the sheet was open for this appointment, close it
       if (selectedAppointment?.id === appointmentToCancel.id) {
@@ -118,7 +120,7 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
     <div className="min-h-screen flex flex-col w-full">
       <Tabs defaultValue="timeline" className="flex flex-col flex-1 w-full gap-0" onValueChange={setActiveTab}>
         {/* Sticky Header with Tabs and Actions */}
-        <div 
+        <div
           className="sticky top-0 z-50 px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4"
         >
           <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto justify-start">
@@ -128,22 +130,23 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
 
           <div className="flex items-center gap-3 w-full md:w-auto">
             <div className="flex items-center gap-2 flex-1 md:flex-none">
-              <SearchInput 
-                placeholder="Tìm kiếm lịch hẹn..." 
+              <SearchInput
+                placeholder="Tìm kiếm lịch hẹn..."
                 className="w-full md:w-[250px] h-9"
               />
               <AppointmentFilter />
             </div>
-            
+
             {/* Replaced CreateDialog with Button that triggers Sheet */}
             <div className="hidden md:block">
-                 <button 
+                 <Button
                     onClick={handleCreateButtonClick}
-                    className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
+                    size="sm"
+                    className="gap-2"
                  >
-                     <span className="mr-2 text-lg leading-none">+</span>
+                     <Plus className="h-4 w-4" />
                      Tạo lịch hẹn
-                 </button>
+                 </Button>
             </div>
             {/* Mobile FAB or smaller button could go here */}
           </div>
@@ -151,10 +154,10 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
 
         <div className="flex-1 p-0 animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out flex flex-col">
           <TabsContent value="timeline" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
-             
+
              {/* The Timeline Component */}
-             <AppointmentTimeline 
-               appointments={appointments} 
+             <AppointmentTimeline
+               appointments={appointments}
                resources={MOCK_RESOURCES}
                onSlotClick={handleSlotClick}
                onAppointmentClick={handleAppointmentClick}
@@ -164,7 +167,7 @@ export function AppointmentPage({ initialData = true }: AppointmentPageProps) {
 
           <TabsContent value="list" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
              <div className="flex-1 p-4 md:p-6 overflow-hidden">
-                <AppointmentTable 
+                <AppointmentTable
                   appointments={appointments}
                   resources={MOCK_RESOURCES}
                   onEdit={handleEditAppointment}

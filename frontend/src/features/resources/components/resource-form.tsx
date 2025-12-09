@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, Box, Check, Code2, Loader2, Users } from "lucide-react";
+import { Activity, Box, Check, Code2, Users } from "lucide-react";
 
 import { Button } from "@/shared/ui/button";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
@@ -184,18 +184,13 @@ export function ResourceForm({
         />
 
         <DialogFooter className="pt-4">
-          <Button type="submit" disabled={isLoading} className="min-w-[140px]">
-            {isLoading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Đang lưu...
-              </>
-            ) : (
+          <Button type="submit" loading={isLoading} className="min-w-[140px]">
+             {isLoading ? "Đang lưu..." : (
               <>
                 <Check className="w-4 h-4 mr-2" />
                 Lưu tài nguyên
               </>
-            )}
+             )}
           </Button>
         </DialogFooter>
       </form>
