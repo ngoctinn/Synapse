@@ -3,12 +3,12 @@
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
-import { TimePicker } from "@/shared/ui/custom/time-picker";
+import { TimeRangeInput } from "@/shared/ui/custom/time-range-input";
 import { Label } from "@/shared/ui/label";
 import { Switch } from "@/shared/ui/switch";
 import { format, isSameDay } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, Clock, Plus, Trash2, X, Calendar as CalendarIcon } from "lucide-react";
+import { Clock, Plus, X, Calendar as CalendarIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ExceptionDate } from "../model/types";
 import { BirthdayPicker } from "@/shared/ui/custom/birthday-picker";
@@ -262,34 +262,17 @@ export function ExceptionForm({
                     >
                         <div className="pt-4 pl-1 border-t border-border/50 mt-2 space-y-3">
                             <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Khung giờ hoạt động</Label>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
-                                {(formData.modifiedHours || []).map((slot, index) => (
-                                    <div key={index} className="flex items-center justify-between gap-2 bg-background/80 backdrop-blur-sm p-1.5 pl-3 rounded-xl border border-transparent hover:border-border/80 hover:shadow-sm transition-all duration-200 group/slot w-full">
-                                        <div className="flex items-center gap-2">
-                                            <TimePicker
-                                                value={slot.start}
-                                                onChange={val => handleTimeChange(index, 'start', val)}
-                                                className="w-20 xs:w-24 border-none shadow-none bg-transparent focus:ring-0 text-sm font-medium p-0"
-                                            />
-                                            <ArrowRight className="w-3 h-3 text-muted-foreground/50 shrink-0" />
-                                            <TimePicker
-                                                value={slot.end}
-                                                onChange={val => handleTimeChange(index, 'end', val)}
-                                                className="w-20 xs:w-24 border-none shadow-none bg-transparent focus:ring-0 text-right text-sm font-medium p-0"
-                                            />
-                                        </div>
-
-                                        {(formData.modifiedHours?.length || 0) > 1 && (
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => handleRemoveSlot(index)}
-                                                className="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-100 sm:opacity-50 sm:group-hover/slot:opacity-100 transition-all duration-200 rounded-full"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </Button>
-                                        )}
-                                    </div>
+                            <div className="flex flex-wrap gap-3 w-full justify-end items-center">                                {(formData.modifiedHours || []).map((slot, index) => (
+                                    <TimeRangeInput
+                                        key={index}
+                                        startTime={slot.start}
+                                        endTime={slot.end}
+                                        onStartTimeChange={(val) => handleTimeChange(index, 'start', val)}
+                                        onEndTimeChange={(val) => handleTimeChange(index, 'end', val)}
+                                        onRemove={() => handleRemoveSlot(index)}
+                                        showRemoveButton={(formData.modifiedHours?.length || 0) > 1}
+                                        className="w-full"
+                                    />
                                 ))}
                             </div>
                             <Button
