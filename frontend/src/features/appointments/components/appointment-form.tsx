@@ -4,18 +4,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import {
-    Briefcase,
-    Calendar as CalendarIcon,
-    Check,
-    ChevronsUpDown,
-    Clock,
-    FileText,
-    Phone,
-    Plus,
-    Search,
-    Sparkles,
-    User,
-    X
+  Briefcase,
+  Calendar as CalendarIcon,
+  Check,
+  ChevronsUpDown,
+  Clock,
+  FileText,
+  Phone,
+  Plus,
+  Search,
+  Sparkles,
+  User,
+  X
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -28,41 +28,32 @@ import { Calendar } from "@/shared/ui/calendar";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { TimePicker } from "@/shared/ui/custom/time-picker";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/shared/ui/popover";
 import { Separator } from "@/shared/ui/separator";
 import { Textarea } from "@/shared/ui/textarea";
 
-import { Appointment } from "@/features/appointments/types";
-import { MOCK_SERVICES } from "@/features/services/data/mocks";
+import { Appointment, Customer, Resource } from "@/features/appointments/types";
+import { Service } from "@/features/services/types";
 import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList
 } from "@/shared/ui/command";
-import { DialogFooter } from "@/shared/ui/dialog";
 import { useMemo, useState } from "react";
-import { MOCK_RESOURCES } from "../mock-data";
-
-const MOCK_CUSTOMERS = [
-    { id: "c1", name: "Nguyễn Văn A", phone: "0912345678" },
-    { id: "c2", name: "Trần Thị B", phone: "0987654321" },
-    { id: "c3", name: "Lê Văn C", phone: "0909090909" },
-    { id: "c4", name: "Phạm Thu Hương", phone: "0911223344" },
-];
 
 const formSchema = z.object({
   customerName: z.string().min(2, "Tên khách hàng phải có ít nhất 2 ký tự"),
@@ -80,9 +71,11 @@ interface AppointmentFormProps {
     defaultDate?: Date;
     defaultResourceId?: string;
     initialData?: Appointment | null;
+    services: Service[];
+    customers: Customer[];
+    resources: Resource[];
     onSuccess: (appointment: Partial<Appointment>) => void;
     onCancel: () => void;
-    isSheet?: boolean;
 }
 
 export function AppointmentForm({
@@ -91,9 +84,11 @@ export function AppointmentForm({
     defaultDate,
     defaultResourceId,
     initialData,
+    services,
+    customers,
+    resources,
     onSuccess,
     onCancel,
-    isSheet = false
 }: AppointmentFormProps) {
     const [openCombobox, setOpenCombobox] = useState(false);
     const [openServiceCombobox, setOpenServiceCombobox] = useState(false);
@@ -105,7 +100,7 @@ export function AppointmentForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
             customerName: initialData?.customerName || "",
-            phoneNumber: initialData?.customerId ? (MOCK_CUSTOMERS.find(c => c.id === initialData.customerId)?.phone || "") : "",
+            phoneNumber: initialData?.customerId ? (customers.find(c => c.id === initialData.customerId)?.phone || "") : "",
             serviceId: initialData?.serviceId || "",
             resourceId: initialData?.resourceId || defaultResourceId || "",
             date: initialData ? format(initialData.startTime, 'yyyy-MM-dd') : (defaultDate ? format(defaultDate, 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd')),
@@ -119,7 +114,7 @@ export function AppointmentForm({
     const startTimeStr = form.watch("startTime");
 
     const selectedService = useMemo(() =>
-        MOCK_SERVICES.find(s => s.id === selectedServiceId),
+        services.find(s => s.id === selectedServiceId),
     [selectedServiceId]);
 
     const estimatedEndTime = useMemo(() => {
@@ -132,7 +127,7 @@ export function AppointmentForm({
     }, [selectedService, startTimeStr]);
 
     const handleSubmit = (values: z.infer<typeof formSchema>) => {
-        const service = MOCK_SERVICES.find(s => s.id === values.serviceId);
+        const service = services.find(s => s.id === values.serviceId);
 
 
         const dateObj = new Date(values.date);
@@ -228,7 +223,7 @@ export function AppointmentForm({
                                                             </div>
                                                         </CommandEmpty>
                                                         <CommandGroup heading="Khách hàng đã lưu">
-                                                            {MOCK_CUSTOMERS.map((customer) => (
+                                                            {customers.map((customer) => (
                                                                 <CommandItem
                                                                     key={customer.id}
                                                                     value={`${customer.name} ${customer.phone}`}
@@ -419,7 +414,7 @@ export function AppointmentForm({
                                             >
                                                 {field.value
                                                     ? (() => {
-                                                        const service = MOCK_SERVICES.find(s => s.id === field.value);
+                                                        const service = services.find(s => s.id === field.value);
                                                         return service ? (
                                                             <div className="flex items-start gap-3 w-full">
                                                                 <div className="mt-0.5 bg-primary/10 p-1.5 rounded-md shrink-0">
@@ -448,9 +443,9 @@ export function AppointmentForm({
                                             <CommandInput placeholder="Tìm tên dịch vụ..." />
                                             <CommandList className="max-h-[300px] overflow-y-auto overflow-x-hidden">
                                                 <CommandEmpty>Không tìm thấy dịch vụ.</CommandEmpty>
-                                                {Array.from(new Set(MOCK_SERVICES.map(s => s.category))).map(category => (
-                                                    <CommandGroup key={category} heading={category}>
-                                                        {MOCK_SERVICES.filter(s => s.category === category).map((service) => (
+                                                {Array.from(new Set(services.map(s => s.category))).map(category => (
+                                                    <CommandGroup key={category || "Khác"} heading={category || "Khác"}>
+                                                        {services.filter(s => s.category === category).map((service) => (
                                                             <CommandItem
                                                                 key={service.id}
                                                                 value={service.name}
@@ -514,7 +509,7 @@ export function AppointmentForm({
                                             >
                                                     {field.value
                                                     ? (() => {
-                                                        const resource = MOCK_RESOURCES.find(r => r.id === field.value);
+                                                        const resource = resources.find(r => r.id === field.value);
                                                         return resource ? (
                                                             <div className="flex items-center gap-2">
                                                                 <Avatar className="h-6 w-6">
@@ -539,7 +534,7 @@ export function AppointmentForm({
                                             <CommandList className="max-h-[300px] overflow-y-auto overflow-x-hidden">
                                                 <CommandEmpty>Không tìm thấy nhân viên.</CommandEmpty>
                                                 <CommandGroup>
-                                                    {MOCK_RESOURCES.map((resource) => (
+                                                    {resources.map((resource) => (
                                                         <CommandItem
                                                             key={resource.id}
                                                             value={resource.name}
@@ -612,18 +607,6 @@ export function AppointmentForm({
                             </p>
                         </div>
                     </div>
-                )}
-
-                {!isSheet && (
-                    <DialogFooter className="pt-4 border-t sticky bottom-0 bg-background/95 backdrop-blur z-10 pb-2">
-                        <Button type="button" variant="ghost" onClick={onCancel} className="h-11 hover:bg-muted">
-                            Hủy bỏ
-                        </Button>
-                        <Button type="submit" className="h-11 min-w-[140px] shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-200">
-                            <Check className="w-4 h-4 mr-2" />
-                            {mode === "create" ? "Xác nhận đặt lịch" : "Lưu thay đổi"}
-                        </Button>
-                    </DialogFooter>
                 )}
             </form>
         </Form>

@@ -1,4 +1,5 @@
-import { AppointmentPage, getAppointments, getResources } from '@/features/appointments';
+import { AppointmentPage, getAppointments, getCustomers, getResources } from '@/features/appointments';
+import { getServices } from '@/features/services';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 
@@ -10,14 +11,21 @@ export const metadata: Metadata = {
 };
 
 export default async function AppointmentsPage() {
-  const [appointments, resources] = await Promise.all([
+  const [appointments, resources, servicesResponse, customers] = await Promise.all([
     getAppointments(),
-    getResources()
+    getResources(),
+    getServices(1, 100, undefined, true), // Get active services, up to 100
+    getCustomers()
   ]);
 
   return (
     <Suspense fallback={<div className="p-4 flex items-center justify-center min-h-screen text-muted-foreground">Đang tải lịch hẹn...</div>}>
-      <AppointmentPage initialAppointments={appointments} initialResources={resources} />
+      <AppointmentPage
+        initialAppointments={appointments}
+        initialResources={resources}
+        initialServices={servicesResponse.data}
+        initialCustomers={customers}
+      />
     </Suspense>
   );
 }

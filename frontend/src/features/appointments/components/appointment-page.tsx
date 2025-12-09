@@ -1,14 +1,14 @@
 "use client"
 
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle
 } from "@/shared/ui/alert-dialog"
 import { Button } from "@/shared/ui/button"
 
@@ -16,8 +16,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
+import { Appointment, Customer, Resource } from "@/features/appointments/types"
+import { Service } from "@/features/services/types"
 import { Plus } from "lucide-react"
-import { Appointment, Resource } from "../types"
 import { AppointmentFilter } from "./appointment-filter"
 import { AppointmentSheet } from "./appointment-sheet"
 import { AppointmentTable } from "./appointment-table"
@@ -26,6 +27,8 @@ import { AppointmentTimeline } from "./appointment-timeline"
 interface AppointmentPageProps {
     initialAppointments: Appointment[];
     initialResources: Resource[];
+    initialServices: Service[];
+    initialCustomers: Customer[];
 }
 
 const Footer = () => (
@@ -34,7 +37,12 @@ const Footer = () => (
   </div>
 )
 
-export function AppointmentPage({ initialAppointments, initialResources }: AppointmentPageProps) {
+export function AppointmentPage({
+    initialAppointments,
+    initialResources,
+    initialServices,
+    initialCustomers
+}: AppointmentPageProps) {
 
 
   const [activeTab, setActiveTab] = useState("timeline")
@@ -187,6 +195,9 @@ export function AppointmentPage({ initialAppointments, initialResources }: Appoi
         defaultDate={createDefaultDate}
         defaultResourceId={createDefaultResource}
         onSubmit={handleSheetSubmit}
+        services={initialServices}
+        customers={initialCustomers}
+        resources={initialResources}
       />
 
       <AlertDialog open={isCancelAlertOpen} onOpenChange={setIsCancelAlertOpen}>

@@ -32,11 +32,6 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
   const selectedGroup = groups.find(g => g.id === groupId);
   const resourceType = selectedGroup?.type;
 
-  // Sync type to form state for schema consistency (optional but good for debugging)
-  // useEffect(() => {
-  //   if (resourceType) form.setValue("type", resourceType);
-  // }, [resourceType, form]);
-
   const GeneralInfo = () => (
     <div className="space-y-6">
          {/* Image Placeholder */}
@@ -124,7 +119,6 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                     <SelectWithIcon
                         onValueChange={(val) => {
                             field.onChange(val);
-                            // Auto-set type for form state consistency if needed by schema
                              const group = groups.find(g => g.id === val);
                              if (group) form.setValue("type", group.type);
                         }}
@@ -225,7 +219,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                                 <FormControl>
                                     <TagInput
                                         options={[]}
-                                        selectedIds={field.value || []}
+                                        selectedIds={[]}
                                         newTags={field.value || []}
                                         onSelectedChange={() => {}}
                                         onNewTagsChange={(tags) => field.onChange(tags)}

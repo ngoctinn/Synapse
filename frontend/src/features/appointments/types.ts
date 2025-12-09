@@ -27,4 +27,10 @@ export interface Appointment {
   color?: string;
 }
 
+export interface Customer {
+  id: string;
+  name: string;
+  phone: string;
+}
+
 export type CalendarView = 'timeline' | 'day' | 'week' | 'month';
