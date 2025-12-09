@@ -11,3 +11,5 @@ export { ResourceTimeline } from './components/resource-timeline';
 export * from './mock-data';
 export * from './types';
 
+
+export * from './actions';

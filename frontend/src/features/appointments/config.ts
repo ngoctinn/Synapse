@@ -1,14 +1,70 @@
 
 export const APPOINTMENT_STATUS_CONFIG: Record<
     string,
-    { label: string; color: "amber" | "blue" | "indigo" | "emerald" | "slate" | "rose" }
+    {
+        label: string;
+        color: "amber" | "blue" | "indigo" | "emerald" | "slate" | "rose";
+        styles: {
+            badge: string;
+            card: string;
+            indicator: string;
+        };
+    }
 > = {
-    pending: { label: "Chờ xác nhận", color: "amber" },
-    confirmed: { label: "Đã xác nhận", color: "blue" },
-    serving: { label: "Đang phục vụ", color: "indigo" },
-    completed: { label: "Hoàn thành", color: "emerald" },
-    cancelled: { label: "Đã hủy", color: "slate" },
-    "no-show": { label: "Không đến", color: "rose" },
+    pending: {
+        label: "Chờ xác nhận",
+        color: "amber",
+        styles: {
+            badge: "bg-status-pending text-status-pending-foreground border-status-pending-border",
+            card: "bg-status-pending border-status-pending-border text-status-pending-foreground hover:bg-status-pending/90",
+            indicator: "bg-status-pending-foreground",
+        },
+    },
+    confirmed: {
+        label: "Đã xác nhận",
+        color: "blue",
+        styles: {
+            badge: "bg-status-confirmed text-status-confirmed-foreground border-status-confirmed-border",
+            card: "bg-status-confirmed border-status-confirmed-border text-status-confirmed-foreground hover:bg-status-confirmed/90",
+            indicator: "bg-status-confirmed-foreground",
+        },
+    },
+    serving: {
+        label: "Đang phục vụ",
+        color: "emerald",
+        styles: {
+            badge: "bg-status-serving text-status-serving-foreground border-status-serving-border animate-pulse",
+            card: "bg-status-serving border-status-serving-border text-status-serving-foreground hover:bg-status-serving/90 shadow-[0_0_10px_rgba(var(--status-serving),0.3)]",
+            indicator: "bg-status-serving-foreground",
+        },
+    },
+    completed: {
+        label: "Hoàn thành",
+        color: "slate",
+        styles: {
+            badge: "bg-status-completed text-status-completed-foreground border-status-completed-border",
+            card: "bg-status-completed border-status-completed-border text-status-completed-foreground hover:bg-status-completed/90",
+            indicator: "bg-status-completed-foreground",
+        },
+    },
+    cancelled: {
+        label: "Đã hủy",
+        color: "rose",
+        styles: {
+            badge: "bg-status-cancelled text-status-cancelled-foreground border-status-cancelled-border",
+            card: "bg-status-cancelled border-status-cancelled-border text-status-cancelled-foreground hover:bg-status-cancelled/90 opacity-80",
+            indicator: "bg-status-cancelled-foreground",
+        },
+    },
+    "no-show": {
+        label: "Không đến",
+        color: "rose",
+        styles: {
+            badge: "bg-status-noshow text-status-noshow-foreground border-status-noshow-border",
+            card: "bg-status-noshow border-status-noshow-border text-status-noshow-foreground hover:bg-status-noshow/90",
+            indicator: "bg-status-noshow-foreground",
+        },
+    },
 };
 
 export const APPOINTMENT_STATUSES = Object.entries(APPOINTMENT_STATUS_CONFIG).map(([value, config]) => ({
