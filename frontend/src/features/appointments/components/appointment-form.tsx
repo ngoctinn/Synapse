@@ -4,17 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import {
-  Briefcase,
   Calendar as CalendarIcon,
   Check,
   ChevronsUpDown,
   Clock,
-  FileText,
-  Phone,
-  Plus,
   Search,
-  Sparkles,
-  User
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -24,7 +18,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import { Calendar } from "@/shared/ui/calendar";
-import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { TimePicker } from "@/shared/ui/custom/time-picker";
 import {
   Form,
@@ -34,6 +27,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/shared/ui/form";
+import { Input } from "@/shared/ui/input";
 import {
   Popover,
   PopoverContent,
@@ -158,9 +152,8 @@ export function AppointmentForm({
 
                 {/* 1. Customer Section */}
                 <div className="space-y-4">
-                    <div className="flex items-center gap-2 pb-1 border-b border-border/50">
-                        <User className="w-4 h-4 text-muted-foreground" />
-                        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Khách hàng</h3>
+                    <div className="flex items-center gap-2 pb-2">
+                        <h3 className="text-sm font-semibold text-foreground">Khách hàng</h3>
                     </div>
 
                     <Tabs value={customerTab} onValueChange={(v) => setCustomerTab(v as "search" | "new")} className="w-full">
@@ -182,7 +175,7 @@ export function AppointmentForm({
                                                     role="combobox"
                                                     aria-expanded={openCombobox}
                                                     className={cn(
-                                                        "w-full justify-between h-10 rounded-lg bg-background border-input hover:bg-accent/50 transition-all font-normal",
+                                                        "w-full justify-between h-10 rounded-lg bg-background border-input transition-all font-normal shadow-sm hover:shadow-md hover:border-input focus-premium",
                                                         !field.value && "text-muted-foreground"
                                                     )}
                                                 >
@@ -218,7 +211,6 @@ export function AppointmentForm({
                                                                         }}
                                                                         className="h-7 text-xs"
                                                                     >
-                                                                        <Plus className="mr-1 h-3 w-3" />
                                                                         Tạo mới "{searchQuery}"
                                                                     </Button>
                                                                 )}
@@ -268,7 +260,7 @@ export function AppointmentForm({
                                         <FormItem>
                                             <FormLabel className="text-foreground/80 font-normal">Họ tên</FormLabel>
                                             <FormControl>
-                                                <InputWithIcon icon={User} placeholder="Nhập tên..." {...field} className="bg-background" />
+                                                <Input placeholder="Nhập tên..." {...field} className="bg-background h-10 shadow-sm hover:shadow-md focus-premium" />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -281,7 +273,7 @@ export function AppointmentForm({
                                         <FormItem>
                                             <FormLabel className="text-foreground/80 font-normal">SĐT</FormLabel>
                                             <FormControl>
-                                                <InputWithIcon icon={Phone} placeholder="09..." {...field} className="bg-background" />
+                                                <Input placeholder="09..." {...field} className="bg-background h-10 shadow-sm hover:shadow-md focus-premium" />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -294,9 +286,8 @@ export function AppointmentForm({
 
                 {/* 2. Date & Time Section */}
                 <div className="space-y-4">
-                     <div className="flex items-center gap-2 pb-1 border-b border-border/50">
-                        <Clock className="w-4 h-4 text-muted-foreground" />
-                        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Thời gian</h3>
+                     <div className="flex items-center gap-2 pb-2">
+                        <h3 className="text-sm font-semibold text-foreground">Thời gian</h3>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
@@ -312,7 +303,7 @@ export function AppointmentForm({
                                                 <Button
                                                     variant={"outline"}
                                                     className={cn(
-                                                        "h-10 w-full pl-3 text-left font-normal rounded-lg border-input hover:bg-accent transition-all",
+                                                        "h-10 w-full pl-3 text-left font-normal rounded-lg border-input bg-background transition-all shadow-sm hover:shadow-md hover:border-input focus-premium",
                                                         !field.value && "text-muted-foreground"
                                                     )}
                                                 >
@@ -351,7 +342,7 @@ export function AppointmentForm({
                                         <TimePicker
                                             value={field.value}
                                             onChange={field.onChange}
-                                            className="h-10 rounded-lg hover:border-primary/50 transition-all font-normal"
+                                            className="h-10 rounded-lg shadow-sm hover:shadow-md hover:border-input transition-all font-normal focus-premium"
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -361,11 +352,9 @@ export function AppointmentForm({
                     </div>
                 </div>
 
-                {/* 3. Service & Resource Section */}
                 <div className="space-y-4">
-                    <div className="flex items-center gap-2 pb-1 border-b border-border/50">
-                        <Briefcase className="w-4 h-4 text-muted-foreground" />
-                        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Dịch vụ & Nhân viên</h3>
+                    <div className="flex items-center gap-2 pb-2">
+                        <h3 className="text-sm font-semibold text-foreground">Dịch vụ & Nhân viên</h3>
                     </div>
 
                     <div className="grid gap-4">
@@ -383,7 +372,7 @@ export function AppointmentForm({
                                                     role="combobox"
                                                     aria-expanded={openServiceCombobox}
                                                     className={cn(
-                                                        "w-full justify-between h-auto min-h-[44px] py-2 rounded-lg bg-background px-3 font-normal hover:bg-accent transition-all text-left",
+                                                        "w-full justify-between h-auto min-h-[40px] py-2 rounded-lg bg-background px-3 font-normal transition-all text-left shadow-sm hover:shadow-md hover:border-input focus-premium",
                                                         !field.value && "text-muted-foreground"
                                                     )}
                                                 >
@@ -392,9 +381,6 @@ export function AppointmentForm({
                                                             const service = services.find(s => s.id === field.value);
                                                             return service ? (
                                                                 <div className="flex items-start gap-3 w-full">
-                                                                    <div className="mt-0.5 bg-primary/10 p-1.5 rounded-md shrink-0">
-                                                                        <Sparkles className="w-4 h-4 text-primary" />
-                                                                    </div>
                                                                     <div className="flex-1 min-w-0">
                                                                         <div className="font-medium truncate text-sm">{service.name}</div>
                                                                         <div className="text-xs text-muted-foreground flex items-center gap-2 mt-0.5">
@@ -478,7 +464,7 @@ export function AppointmentForm({
                                                     role="combobox"
                                                     aria-expanded={openResourceCombobox}
                                                     className={cn(
-                                                        "w-full justify-between h-10 rounded-lg bg-background px-3 font-normal hover:bg-accent transition-all",
+                                                        "w-full justify-between h-10 rounded-lg bg-background px-3 font-normal transition-all shadow-sm hover:shadow-md hover:border-input focus-premium",
                                                         !field.value && "text-muted-foreground"
                                                     )}
                                                 >
@@ -549,11 +535,9 @@ export function AppointmentForm({
                     </div>
                 </div>
 
-                {/* 4. Notes Section */}
                 <div className="space-y-4">
-                     <div className="flex items-center gap-2 pb-1 border-b border-border/50">
-                        <FileText className="w-4 h-4 text-muted-foreground" />
-                        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Ghi chú</h3>
+                     <div className="flex items-center gap-2 pb-2">
+                        <h3 className="text-sm font-semibold text-foreground">Ghi chú</h3>
                     </div>
                     <FormField
                         control={form.control}
@@ -563,7 +547,7 @@ export function AppointmentForm({
                                 <FormControl>
                                     <Textarea
                                         placeholder="Nhập ghi chú hoặc yêu cầu đặc biệt..."
-                                        className="resize-none min-h-[80px] rounded-lg border-input bg-background font-normal"
+                                        className="resize-none min-h-[80px] rounded-lg border-input bg-background font-normal shadow-sm hover:shadow-md hover:border-input focus-premium"
                                         {...field}
                                     />
                                 </FormControl>

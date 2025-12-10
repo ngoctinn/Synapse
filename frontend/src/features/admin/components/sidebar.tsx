@@ -53,7 +53,7 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
             <SidebarMenuButton
               tooltip="Hỗ trợ"
               aria-label="Hỗ trợ"
-              className="h-11 min-h-[44px] font-medium text-muted-foreground hover:text-foreground hover:bg-sidebar-accent transition-all duration-200 ease-out motion-safe:hover:translate-x-1 focus-visible:ring-2 focus-visible:ring-sidebar-ring active:scale-[0.98] active:bg-sidebar-accent/80 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:hover:translate-x-0 group-data-[collapsible=icon]:!size-11 group-data-[collapsible=icon]:!min-h-[44px] rounded-xl"
+              className="h-11 min-h-[44px] font-medium text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-all duration-200 ease-out motion-safe:hover:translate-x-1 focus-visible:ring-2 focus-visible:ring-sidebar-ring active:scale-[0.98] active:bg-sidebar-accent/80 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:hover:translate-x-0 group-data-[collapsible=icon]:!size-11 group-data-[collapsible=icon]:!min-h-[44px] rounded-xl"
             >
               <HelpCircle className="size-5" aria-hidden="true" />
               <span className="group-data-[collapsible=icon]:hidden">Hỗ trợ</span>
