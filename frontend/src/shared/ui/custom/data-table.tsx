@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@/shared/ui/table"
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react"
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
+import { ReactNode } from "react"
 
 export interface Column<T> {
   header: string | ReactNode
@@ -48,8 +48,7 @@ interface DataTableProps<T> {
   onToggleAll?: () => void
   isAllSelected?: boolean
   isPartiallySelected?: boolean
-  /** Uncontrolled: Callback when selection changes (receives Set of selected IDs) */
-  onSelectionChange?: (selectedIds: Set<string | number>) => void
+
   sortColumn?: string
   sortDirection?: "asc" | "desc"
   onSort?: (column: string) => void
@@ -74,57 +73,18 @@ export function DataTable<T>({
   onToggleAll: onToggleAllProp,
   isAllSelected: isAllSelectedProp,
   isPartiallySelected: isPartiallySelectedProp,
-  onSelectionChange,
+
   sortColumn,
   sortDirection,
   onSort,
   onRowClick,
 }: DataTableProps<T>) {
-  // ─────────────────────────────────────────────────────────────────────────
-  // Internal selection logic (used when external props not provided)
-  // ─────────────────────────────────────────────────────────────────────────
-  const [internalSelectedIds, setInternalSelectedIds] = useState<Set<string | number>>(new Set())
-  const isControlled = isSelectedProp !== undefined
-
-  const allIds = useMemo(() => data.map(keyExtractor), [data, keyExtractor])
-  const internalIsAllSelected = useMemo(
-    () => allIds.length > 0 && allIds.every(id => internalSelectedIds.has(id)),
-    [allIds, internalSelectedIds]
-  )
-  const internalIsPartiallySelected = useMemo(
-    () => internalSelectedIds.size > 0 && !internalIsAllSelected,
-    [internalSelectedIds.size, internalIsAllSelected]
-  )
-
-  const internalToggleOne = useCallback((id: string | number) => {
-    setInternalSelectedIds(prev => {
-      const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
-  }, [])
-
-  const internalToggleAll = useCallback(() => {
-    setInternalSelectedIds(prev => {
-      const allSelected = allIds.every(id => prev.has(id))
-      return allSelected ? new Set() : new Set(allIds)
-    })
-  }, [allIds])
-
-  // Fire onSelectionChange callback when internal selection changes
-  useEffect(() => {
-    if (!isControlled && onSelectionChange) {
-      onSelectionChange(internalSelectedIds)
-    }
-  }, [internalSelectedIds, isControlled, onSelectionChange])
-
-  // Effective selection handlers: prefer external (controlled), fallback to internal
-  const isSelected = isControlled ? isSelectedProp : (id: string | number) => internalSelectedIds.has(id)
-  const onToggleOne = onToggleOneProp ?? internalToggleOne
-  const onToggleAll = onToggleAllProp ?? internalToggleAll
-  const isAllSelected = isAllSelectedProp ?? internalIsAllSelected
-  const isPartiallySelected = isPartiallySelectedProp ?? internalIsPartiallySelected
+  // Selection handlers (pure controlled - no internal state)
+  const isSelected = isSelectedProp ?? (() => false)
+  const onToggleOne = onToggleOneProp
+  const onToggleAll = onToggleAllProp
+  const isAllSelected = isAllSelectedProp ?? false
+  const isPartiallySelected = isPartiallySelectedProp ?? false
 
   // ─────────────────────────────────────────────────────────────────────────
   const containerClasses = cn(
@@ -268,12 +228,12 @@ export function DataTable<T>({
           </Table>
         </div>
       </div>
-      {totalPages > 1 && (
+      {totalPages > 1 && onPageChange && (
         <div className="py-2">
           <PaginationControls
             currentPage={page}
             totalPages={totalPages}
-            onPageChange={onPageChange || (() => {})}
+            onPageChange={onPageChange}
           />
         </div>
       )}

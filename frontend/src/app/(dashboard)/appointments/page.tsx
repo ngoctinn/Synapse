@@ -10,7 +10,7 @@ export default function AppointmentsPage() {
         </p>
       </div>
       <Separator />
-      <div className="flex items-center justify-center h-[400px] border rounded-lg border-dashed">
+      <div className="flex items-center justify-center min-h-[40vh] border rounded-lg border-dashed">
          <p className="text-muted-foreground">Tính năng đang được cập nhật.</p>
       </div>
     </div>

@@ -153,7 +153,7 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
                 form="customer-form"
                 disabled={isPending}
                 className="min-w-[140px]"
-                loading={isPending}
+                isLoading={isPending}
             >
                 {mode === "create" ? (
                     <>
