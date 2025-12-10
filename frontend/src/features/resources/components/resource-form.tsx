@@ -4,16 +4,22 @@ import { Activity, Barcode, Box, Clock, Tags, Type, Users } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 
 import { cn } from "@/shared/lib/utils";
-import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
-import { SelectWithIcon } from "@/shared/ui/custom/select-with-icon";
 import { TagInput } from "@/shared/ui/custom/tag-input";
 import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
 } from "@/shared/ui/form";
+import { Input } from "@/shared/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Textarea } from "@/shared/ui/textarea";
 
@@ -67,8 +73,8 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                 <FormItem>
                     <FormLabel className="text-foreground/80 font-normal">Tên tài nguyên <span className="text-destructive">*</span></FormLabel>
                     <FormControl>
-                    <InputWithIcon
-                        icon={Type}
+                    <Input
+                        startContent={<Type className="size-4 text-muted-foreground" />}
                         placeholder="Ví dụ: Phòng VIP 1"
                         {...field}
                         className="bg-background h-10"
@@ -87,8 +93,8 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                     <FormItem>
                         <FormLabel className="text-foreground/80 font-normal">Mã định danh <span className="text-destructive">*</span></FormLabel>
                         <FormControl>
-                        <InputWithIcon
-                            icon={Barcode}
+                        <Input
+                            startContent={<Barcode className="size-4 text-muted-foreground" />}
                             placeholder="Ví dụ: R-VIP-01"
                             {...field}
                             className="bg-background h-10"
@@ -105,22 +111,31 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                     render={({ field }) => (
                     <FormItem>
                         <FormLabel className="text-foreground/80 font-normal">Nhóm tài nguyên <span className="text-destructive">*</span></FormLabel>
-                        <SelectWithIcon
+                        <Select
                             onValueChange={(val) => {
                                 field.onChange(val);
                                  const group = groups.find(g => g.id === val);
                                  if (group) form.setValue("type", group.type);
                             }}
                             defaultValue={field.value}
-                            icon={Box}
-                            placeholder="Chọn phân loại"
-                            options={groups.map(g => ({
-                                label: g.name,
-                                value: g.id
-                            }))}
                             disabled={mode === "update"}
-                             className="bg-background h-10"
-                        />
+                        >
+                            <FormControl>
+                                <SelectTrigger
+                                    className="bg-background h-10"
+                                    startContent={<Box className="size-4 text-muted-foreground" />}
+                                >
+                                    <SelectValue placeholder="Chọn phân loại" />
+                                </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                {groups.map(g => (
+                                    <SelectItem key={g.id} value={g.id}>
+                                        {g.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                         <FormMessage />
                     </FormItem>
                     )}
@@ -162,18 +177,24 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                 render={({ field }) => (
                 <FormItem>
                     <FormLabel className="text-foreground/80 font-normal">Trạng thái hiện tại <span className="text-destructive">*</span></FormLabel>
-                    <SelectWithIcon
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    icon={Activity}
-                    placeholder="Chọn trạng thái"
-                    options={[
-                        { label: "Hoạt động", value: "ACTIVE" },
-                        { label: "Đang bảo trì", value: "MAINTENANCE" },
-                        { label: "Ngưng hoạt động", value: "INACTIVE" },
-                    ]}
-                    className="bg-background h-10"
-                    />
+                    <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                    >
+                         <FormControl>
+                            <SelectTrigger
+                                className="bg-background h-10"
+                                startContent={<Activity className="size-4 text-muted-foreground" />}
+                            >
+                                <SelectValue placeholder="Chọn trạng thái" />
+                            </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                             <SelectItem value="ACTIVE">Hoạt động</SelectItem>
+                             <SelectItem value="MAINTENANCE">Đang bảo trì</SelectItem>
+                             <SelectItem value="INACTIVE">Ngưng hoạt động</SelectItem>
+                        </SelectContent>
+                    </Select>
                     <FormMessage />
                 </FormItem>
                 )}
@@ -186,8 +207,8 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                 <FormItem>
                     <FormLabel className="text-foreground/80 font-normal">Thời gian Setup (phút)</FormLabel>
                     <FormControl>
-                    <InputWithIcon
-                        icon={Clock}
+                    <Input
+                        startContent={<Clock className="size-4 text-muted-foreground" />}
                         type="number"
                         min={0}
                         placeholder="0"
@@ -209,8 +230,8 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                     <FormItem>
                         <FormLabel className="text-foreground/80 font-normal">Sức chứa tối đa (người)</FormLabel>
                         <FormControl>
-                        <InputWithIcon
-                            icon={Users}
+                        <Input
+                            startContent={<Users className="size-4 text-muted-foreground" />}
                             type="number"
                             min={1}
                             placeholder="1"

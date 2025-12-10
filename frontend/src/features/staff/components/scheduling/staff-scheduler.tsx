@@ -6,7 +6,7 @@ import { toast } from "sonner"
 
 import { useSchedulerTools } from "../../hooks/use-scheduler-tools"
 import { useStaffSchedule } from "../../hooks/use-staff-schedule"
-import { Schedule, Shift, Staff } from "../../types"
+import { Schedule, Shift, Staff } from "../../model/types"
 import { AddShiftDialog } from "./add-shift-dialog"
 import { ScheduleGrid } from "./schedule-grid"
 import { SchedulerToolbar } from "./scheduler-toolbar"

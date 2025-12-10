@@ -4,8 +4,8 @@ import "server-only"
 
 import { revalidatePath } from "next/cache"
 import { Skill } from "../services/types"
-import { staffCreateSchema } from "./schemas"
-import { Schedule, StaffListResponse, StaffUpdate } from "./types"
+import { staffCreateSchema } from "./model/schemas"
+import { Schedule, StaffListResponse, StaffUpdate } from "./model/types"
 
 
 export async function manageStaff(prevState: ActionState, formData: FormData): Promise<ActionState> {
@@ -26,8 +26,8 @@ export type ActionState = {
 
 
 import { MOCK_SKILLS } from "@/features/services/data/mocks"
-import { MOCK_STAFF } from "./data/mocks"
-import { MOCK_SCHEDULES } from "./data/schedules"
+import { MOCK_STAFF } from "./model/mocks"
+import { MOCK_SCHEDULES } from "./model/schedules"
 
 
 

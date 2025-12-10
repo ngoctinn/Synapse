@@ -10,18 +10,22 @@ import { updatePasswordAction } from "../actions";
 import { updatePasswordSchema, type UpdatePasswordInput } from "../schemas";
 
 import { Button } from "@/shared/ui/button";
-import { PasswordInput } from "@/shared/ui/custom/password-input";
 import { showToast } from "@/shared/ui/custom/sonner";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form";
+import { Input } from "@/shared/ui/input";
+import { Eye, EyeOff, Lock } from "lucide-react";
+import { useState } from "react";
 
 export function UpdatePasswordForm() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [state, action, isPending] = useActionState(updatePasswordAction, undefined);
 
@@ -77,10 +81,20 @@ export function UpdatePasswordForm() {
               <FormItem>
                 <FormLabel className="text-foreground/80 font-medium">Mật khẩu mới</FormLabel>
                 <FormControl>
-                  <PasswordInput
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    startContent={<Lock className="size-4 text-muted-foreground" />}
+                    endContent={
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="text-muted-foreground hover:text-foreground focus:outline-none"
+                      >
+                        {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                      </button>
+                    }
                     placeholder="Nhập mật khẩu mới"
-                    variant="lg"
-                    className="bg-background/50"
+                    className="bg-background/50 h-10"
                     {...field}
                   />
                 </FormControl>
@@ -95,10 +109,20 @@ export function UpdatePasswordForm() {
               <FormItem>
                 <FormLabel className="text-foreground/80 font-medium">Xác nhận mật khẩu mới</FormLabel>
                 <FormControl>
-                  <PasswordInput
+                  <Input
+                    type={showConfirmPassword ? "text" : "password"}
+                    startContent={<Lock className="size-4 text-muted-foreground" />}
+                    endContent={
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="text-muted-foreground hover:text-foreground focus:outline-none"
+                      >
+                        {showConfirmPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                      </button>
+                    }
                     placeholder="Nhập lại mật khẩu mới"
-                    variant="lg"
-                    className="bg-background/50"
+                    className="bg-background/50 h-10"
                     {...field}
                   />
                 </FormControl>

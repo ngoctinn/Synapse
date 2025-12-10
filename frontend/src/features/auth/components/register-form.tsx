@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { Mail, User } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import Link from "next/link";
 import { startTransition, useActionState, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -12,20 +12,21 @@ import { registerSchema, type RegisterInput } from "../schemas";
 
 import { Button } from "@/shared/ui/button";
 import { CustomDialog } from "@/shared/ui/custom/dialog";
-import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
-import { PasswordInput } from "@/shared/ui/custom/password-input";
 import { showToast } from "@/shared/ui/custom/sonner";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form";
+import { Input } from "@/shared/ui/input";
 
 export function RegisterForm() {
   const [showCheckEmailDialog, setShowCheckEmailDialog] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
 
   const [state, action, isPending] = useActionState(registerAction, undefined);
@@ -87,11 +88,10 @@ export function RegisterForm() {
               <FormItem>
                 <FormLabel className="text-foreground/80 font-medium">Họ và tên</FormLabel>
                 <FormControl>
-                  <InputWithIcon
-                    icon={User}
+                  <Input
+                    startContent={<User className="size-4 text-muted-foreground" />}
                     placeholder="Nhập họ và tên của bạn"
-                    variant="lg"
-                    className="bg-background/50"
+                    className="bg-background/50 h-10"
                     {...field}
                   />
                 </FormControl>
@@ -106,11 +106,10 @@ export function RegisterForm() {
               <FormItem>
                 <FormLabel className="text-foreground/80 font-medium">Email</FormLabel>
                 <FormControl>
-                  <InputWithIcon
-                    icon={Mail}
+                  <Input
+                    startContent={<Mail className="size-4 text-muted-foreground" />}
                     placeholder="name@example.com"
-                    variant="lg"
-                    className="bg-background/50"
+                    className="bg-background/50 h-10"
                     {...field}
                   />
                 </FormControl>
@@ -125,10 +124,20 @@ export function RegisterForm() {
               <FormItem>
                 <FormLabel className="text-foreground/80 font-medium">Mật khẩu</FormLabel>
                 <FormControl>
-                  <PasswordInput
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    startContent={<Lock className="size-4 text-muted-foreground" />}
+                    endContent={
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="text-muted-foreground hover:text-foreground focus:outline-none"
+                      >
+                        {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                      </button>
+                    }
                     placeholder="Tạo mật khẩu (tối thiểu 8 ký tự)"
-                    variant="lg"
-                    className="bg-background/50"
+                    className="bg-background/50 h-10"
                     {...field}
                   />
                 </FormControl>
@@ -143,10 +152,20 @@ export function RegisterForm() {
               <FormItem>
                 <FormLabel className="text-foreground/80 font-medium">Xác nhận mật khẩu</FormLabel>
                 <FormControl>
-                  <PasswordInput
+                  <Input
+                    type={showConfirmPassword ? "text" : "password"}
+                    startContent={<Lock className="size-4 text-muted-foreground" />}
+                    endContent={
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="text-muted-foreground hover:text-foreground focus:outline-none"
+                      >
+                        {showConfirmPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                      </button>
+                    }
                     placeholder="Nhập lại mật khẩu"
-                    variant="lg"
-                    className="bg-background/50"
+                    className="bg-background/50 h-10"
                     {...field}
                   />
                 </FormControl>

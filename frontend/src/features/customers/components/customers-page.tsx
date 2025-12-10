@@ -1,7 +1,8 @@
 "use client"
 
-import { SearchInput } from "@/shared/ui/custom/search-input"
+import { Input } from "@/shared/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
+import { Search } from "lucide-react"
 import { Suspense, use, useState } from "react"
 import { CustomerListResponse } from "../actions"
 import { CreateCustomerTrigger } from "./create-customer-trigger"
@@ -60,10 +61,13 @@ export function CustomersPage({ page, customerListPromise }: CustomersPageProps)
           <div className="flex items-center gap-3 w-full md:w-auto">
             {activeTab === "list" && (
                 <div className="flex items-center gap-2 flex-1 md:flex-none">
-                <SearchInput
-                    placeholder="Tìm kiếm khách hàng..."
-                    className="w-full md:w-[250px] h-9"
-                />
+                <div className="relative w-full md:w-[250px]">
+                    <Input
+                        placeholder="Tìm kiếm khách hàng..."
+                        startContent={<Search className="size-4 text-muted-foreground" />}
+                        className="h-9 bg-background pr-8"
+                    />
+                </div>
                 <CustomerFilter />
                 </div>
             )}

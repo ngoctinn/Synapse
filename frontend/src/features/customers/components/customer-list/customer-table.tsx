@@ -29,7 +29,7 @@ import {
 import { Activity, AlertCircle } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useState, useTransition } from "react"
-import { Customer } from "../../types"
+import { Customer } from "../../model/types"
 import { CreateCustomerTrigger } from "../create-customer-trigger"
 import { CustomerActions } from "../customer-actions"
 import { CustomerSheet } from "../customer-sheet"

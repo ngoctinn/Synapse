@@ -3,8 +3,8 @@
   import { Skill } from "@/features/services/types"
 import { useFilterParams } from "@/shared/lib/hooks/use-filter-params"
 import { FilterButton } from "@/shared/ui/custom/filter-button"
-import { MoneyInput } from "@/shared/ui/custom/money-input"
 import { TagInput } from "@/shared/ui/custom/tag-input"
+import { Input } from "@/shared/ui/input"
 import { Label } from "@/shared/ui/label"
 import {
     Select,
@@ -107,20 +107,26 @@ import { useEffect, useState } from "react"
             <div className="flex items-center gap-3">
               <div className="flex-1 space-y-1.5">
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider">Từ</span>
-                <MoneyInput
+                <Input
+                  type="number"
+                  min={0}
                   value={minPrice}
-                  onChange={handleMinPriceChange}
+                  onChange={(e) => handleMinPriceChange(Number(e.target.value))}
                   placeholder="0"
-                  className="h-9 text-sm bg-background"
+                  endContent={<span className="text-xs text-muted-foreground">VNĐ</span>}
+                  className="h-9 text-sm bg-background pr-10"
                 />
               </div>
               <div className="flex-1 space-y-1.5">
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider">Đến</span>
-                <MoneyInput
+                <Input
+                  type="number"
+                  min={0}
                   value={maxPrice || undefined}
-                  onChange={handleMaxPriceChange}
+                  onChange={(e) => handleMaxPriceChange(Number(e.target.value))}
                   placeholder="Max"
-                  className="h-9 text-sm bg-background"
+                  endContent={<span className="text-xs text-muted-foreground">VNĐ</span>}
+                  className="h-9 text-sm bg-background pr-10"
                 />
               </div>
             </div>

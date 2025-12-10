@@ -1,9 +1,9 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { MOCK_CUSTOMERS } from "./data/mocks"
-import { customerSchema, customerUpdateSchema } from "./schemas"
-import { Customer } from "./types"
+import { MOCK_CUSTOMERS } from "./model/mocks"
+import { customerSchema, customerUpdateSchema } from "./model/schemas"
+import { Customer } from "./model/types"
 
 export type ActionState = {
   success?: boolean

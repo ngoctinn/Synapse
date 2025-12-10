@@ -1,7 +1,7 @@
 "use client"
 
 import { deleteCustomer } from "@/features/customers/actions"
-import { Customer } from "@/features/customers/types"
+import { Customer } from "@/features/customers/model/types"
 import { Button } from "@/shared/ui/button"
 import { showToast } from "@/shared/ui/custom/sonner"
 import {

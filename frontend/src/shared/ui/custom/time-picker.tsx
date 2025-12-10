@@ -2,12 +2,12 @@
 
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
-import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
+import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/shared/ui/popover";
 import { ScrollArea } from "@/shared/ui/scroll-area";
 import { Clock } from "lucide-react";
@@ -76,8 +76,8 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <div className="cursor-pointer">
-          <InputWithIcon
-            icon={Clock}
+          <Input
+            startContent={<Clock className="w-4 h-4 text-muted-foreground" />}
             value={value ? `${displayHour?.toString().padStart(2, "0")}:${displayMinute?.toString().padStart(2, "0")} ${period}` : ""}
             placeholder="Chọn giờ"
             readOnly

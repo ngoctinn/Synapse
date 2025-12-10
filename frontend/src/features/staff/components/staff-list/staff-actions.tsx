@@ -10,7 +10,7 @@ import {
 } from "@/shared/ui/dropdown-menu"
 import { KeyRound } from "lucide-react"
 import { startTransition, useState } from "react"
-import { Staff } from "../../types"
+import { Staff } from "../../model/types"
 import { DeleteStaffDialog } from "./delete-staff-dialog"
 
 interface StaffActionsProps {

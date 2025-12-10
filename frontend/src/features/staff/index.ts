@@ -1,7 +1,7 @@
 export * from "./actions"
 export { StaffPage } from "./components/staff-page"
-export * from "./constants"
-export { MOCK_STAFF } from "./data/mocks"
-export * from "./schemas"
-export * from "./types"
+export * from "./model/constants"
+export { MOCK_STAFF } from "./model/mocks"
+export * from "./model/schemas"
+export * from "./model/types"
 

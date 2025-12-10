@@ -2,8 +2,6 @@
 
 import { cn } from "@/shared/lib/utils"
 import { DatePicker } from "@/shared/ui/custom/date-picker"
-import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
-import { SelectWithIcon } from "@/shared/ui/custom/select-with-icon"
 import {
   FormControl,
   FormField,
@@ -11,6 +9,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/shared/ui/form"
+import { Input } from "@/shared/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/ui/select"
 import { Textarea } from "@/shared/ui/textarea"
 import { Activity, AlertCircle, Mail, MapPin, Phone, User } from "lucide-react"
 import { useFormContext } from "react-hook-form"
@@ -73,8 +79,8 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                     <FormItem>
                     <FormLabel className="text-foreground/80 font-normal">Họ và tên</FormLabel>
                     <FormControl>
-                        <InputWithIcon
-                        icon={User}
+                        <Input
+                        startContent={<User size={18} />}
                         placeholder="Nguyễn Văn A"
                         {...field}
                         className="bg-background h-10"
@@ -92,8 +98,8 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                 <FormItem>
                     <FormLabel className="text-foreground/80 font-normal">Số điện thoại</FormLabel>
                     <FormControl>
-                    <InputWithIcon
-                        icon={Phone}
+                    <Input
+                        startContent={<Phone size={18} />}
                         type="tel"
                         placeholder="0912 345 678"
                         {...field}
@@ -113,8 +119,8 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                 <FormItem>
                     <FormLabel className="text-foreground/80 font-normal">Email</FormLabel>
                     <FormControl>
-                    <InputWithIcon
-                        icon={Mail}
+                    <Input
+                        startContent={<Mail size={18} />}
                         type="email"
                         placeholder="email@example.com"
                         {...field}
@@ -133,18 +139,19 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground/80 font-normal">Giới tính</FormLabel>
-                      <SelectWithIcon
+                      <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
-                        icon={User}
-                        placeholder="Chọn giới tính"
-                        options={[
-                          { label: "Nam", value: "MALE" },
-                          { label: "Nữ", value: "FEMALE" },
-                          { label: "Khác", value: "OTHER" },
-                        ]}
-                         className="bg-background h-10"
-                      />
+                      >
+                        <SelectTrigger className="bg-background h-10" startContent={<User size={18} />}>
+                          <SelectValue placeholder="Chọn giới tính" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="MALE">Nam</SelectItem>
+                          <SelectItem value="FEMALE">Nữ</SelectItem>
+                          <SelectItem value="OTHER">Khác</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -186,8 +193,8 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                 <FormItem>
                     <FormLabel className="text-foreground/80 font-normal">Địa chỉ</FormLabel>
                     <FormControl>
-                    <InputWithIcon
-                        icon={MapPin}
+                    <Input
+                        startContent={<MapPin size={18} />}
                         placeholder="Số nhà, đường..."
                         {...field}
                         className="bg-background h-10"

@@ -1,6 +1,6 @@
 "use client"
 
-import { ROLES } from "@/features/staff/constants"
+import { ROLES } from "@/features/staff/model/constants"
 import { useFilterParams } from "@/shared/lib/hooks/use-filter-params"
 import { FilterButton } from "@/shared/ui/custom/filter-button"
 import { Label } from "@/shared/ui/label"

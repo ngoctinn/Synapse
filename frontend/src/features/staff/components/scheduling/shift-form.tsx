@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { Button } from "@/shared/ui/button"
-import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
 import { TimeInput } from "@/shared/ui/custom/time-input"
 import { DialogFooter } from "@/shared/ui/dialog"
 import {
@@ -17,7 +16,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/shared/ui/form"
-import { Shift } from "../../types"
+import { Input } from "@/shared/ui/input"
+import { Shift } from "../../model/types"
 
 const formSchema = z.object({
   name: z.string().min(1, "Vui lòng nhập tên ca"),
@@ -66,8 +66,8 @@ export function ShiftForm({ onSuccess, onCancel }: ShiftFormProps) {
             <FormItem>
               <FormLabel>Tên ca</FormLabel>
               <FormControl>
-                <InputWithIcon
-                  icon={Tag}
+                <Input
+                  startContent={<Tag size={18} />}
                   placeholder="Ví dụ: Ca gãy, Tăng ca..."
                   className="h-11 rounded-lg"
                   {...field}

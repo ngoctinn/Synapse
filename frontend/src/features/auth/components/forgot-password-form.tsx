@@ -9,7 +9,6 @@ import { useForm } from "react-hook-form";
 
 import { Button } from "@/shared/ui/button";
 import { CustomDialog } from "@/shared/ui/custom/dialog";
-import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { showToast } from "@/shared/ui/custom/sonner";
 import {
   Form,
@@ -19,6 +18,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/shared/ui/form";
+import { Input } from "@/shared/ui/input";
 import { forgotPasswordAction } from "../actions";
 import { forgotPasswordSchema, type ForgotPasswordInput } from "../schemas";
 
@@ -90,11 +90,10 @@ export function ForgotPasswordForm() {
               <FormItem>
                 <FormLabel className="text-foreground/80 font-medium">Email</FormLabel>
                 <FormControl>
-                  <InputWithIcon
-                    icon={Mail}
+                  <Input
+                    startContent={<Mail size={18} />}
                     placeholder="name@example.com"
-                    variant="lg"
-                    className="bg-background/50"
+                    className="bg-background/50 h-12"
                     {...field}
                   />
                 </FormControl>

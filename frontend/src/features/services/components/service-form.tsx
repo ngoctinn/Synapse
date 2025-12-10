@@ -3,17 +3,16 @@
 import { Resource, RoomType } from "@/features/resources"
 import { cn } from "@/shared/lib/utils"
 import { DurationPicker } from "@/shared/ui/custom/duration-picker"
-import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
-import { MoneyInput } from "@/shared/ui/custom/money-input"
-import { SelectWithIcon } from "@/shared/ui/custom/select-with-icon"
 import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form"
+import { Input } from "@/shared/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select"
 import { Switch } from "@/shared/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { Textarea } from "@/shared/ui/textarea"
@@ -100,8 +99,8 @@ function ServiceBasicInfo() {
                   Tên dịch vụ <span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
-                  <InputWithIcon
-                    icon={Tag}
+                  <Input
+                    startContent={<Tag className="size-4 text-muted-foreground" />}
                     placeholder="VD: Massage Body"
                     className="h-10 text-sm"
                     {...field}
@@ -231,9 +230,16 @@ function ServiceTimePriceInfo({ duration, bufferTime }: { duration: number; buff
               Giá niêm yết
             </FormLabel>
             <FormControl>
-              <MoneyInput
+              <Input
+                type="number"
+                min={0}
                 value={field.value}
-                onChange={field.onChange}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+                endContent={
+                  <div className="flex items-center justify-center h-full px-3 text-sm text-muted-foreground font-medium bg-muted/50 border-l">
+                    VNĐ
+                  </div>
+                }
                 className="h-10 text-sm"
               />
             </FormControl>
@@ -268,14 +274,26 @@ function ServiceResourcesInfo({
               Loại phòng yêu cầu
             </FormLabel>
             <FormControl>
-              <SelectWithIcon
+              <Select
                 value={field.value}
                 onValueChange={field.onChange}
-                options={availableRoomTypes.map(t => ({ label: t.name, value: t.id }))}
-                placeholder="-- Chọn loại phòng --"
-                icon={Box}
-                className="bg-background"
-              />
+              >
+                <FormControl>
+                  <SelectTrigger
+                    className="bg-background h-10"
+                    startContent={<Box className="size-4 text-muted-foreground" />}
+                  >
+                    <SelectValue placeholder="-- Chọn loại phòng --" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {availableRoomTypes.map((t) => (
+                    <SelectItem key={t.id} value={t.id}>
+                      {t.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </FormControl>
             <FormMessage />
           </FormItem>

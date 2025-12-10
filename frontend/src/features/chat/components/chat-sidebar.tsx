@@ -1,7 +1,7 @@
 import { cn } from "@/shared/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { Badge } from "@/shared/ui/badge";
-import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
+import { Input } from "@/shared/ui/input";
 import { ScrollArea } from "@/shared/ui/scroll-area";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -20,8 +20,8 @@ export function ChatSidebar({ conversations, selectedId, onSelect, className }: 
     <div className={cn("flex flex-col w-96 h-full border-r border-border/50 bg-white/50 dark:bg-card/50 backdrop-blur-sm rounded-2xl md:rounded-r-none md:rounded-l-2xl glass-card", className)}>
       <div className="p-4 border-b border-border/50">
         <h2 className="text-lg font-serif font-semibold mb-4 text-primary">Tin nhắn</h2>
-        <InputWithIcon
-          icon={Search}
+        <Input
+          startContent={<Search className="w-4 h-4 text-muted-foreground" />}
           placeholder="Tìm kiếm khách hàng..."
         />
       </div>

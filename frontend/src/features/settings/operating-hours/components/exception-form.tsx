@@ -3,18 +3,18 @@
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { BirthdayPicker } from "@/shared/ui/custom/birthday-picker";
-import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { TimeRangeInput } from "@/shared/ui/custom/time-range-input";
+import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import { Switch } from "@/shared/ui/switch";
 import { format, isSameDay } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
-import { Clock, Plus, X, Calendar as CalendarIcon, Ban, CheckCircle2, FileText } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Ban, CheckCircle2, Clock, FileText, Plus, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { ExceptionDate } from "../model/types";
 
-import { DEFAULT_BUSINESS_HOURS, EXCEPTION_TYPES } from "../model/constants";
 import { useTimeSlots } from "../hooks/use-time-slots";
+import { DEFAULT_BUSINESS_HOURS, EXCEPTION_TYPES } from "../model/constants";
 
 interface ExceptionFormProps {
   initialData?: Partial<ExceptionDate> | null;
@@ -88,11 +88,11 @@ export function ExceptionForm({
   // --- Form Logic ---
 
   // --- Form Auto-Fill Logic ---
-  const { 
-    slots: currentSlots, 
-    addSlot, 
-    updateSlot, 
-    removeSlot 
+  const {
+    slots: currentSlots,
+    addSlot,
+    updateSlot,
+    removeSlot
   } = useTimeSlots(
     formData.modifiedHours,
     (newSlots) => setFormData(prev => ({ ...prev, modifiedHours: newSlots }))
@@ -189,13 +189,13 @@ export function ExceptionForm({
       {/* 2. Reason Input */}
       <div className="space-y-2">
         <Label htmlFor="reason" className="text-foreground/80 font-normal">Lý do / Tên sự kiện</Label>
-        <InputWithIcon
+        <Input
             id="reason"
             value={formData.reason || ''}
             onChange={e => setFormData({...formData, reason: e.target.value})}
             placeholder="Ví dụ: Tết Nguyên Đán, Bảo trì định kỳ..."
             className="bg-background"
-            icon={FileText}
+            startContent={<FileText className="w-4 h-4 text-muted-foreground" />}
         />
       </div>
 
@@ -296,11 +296,11 @@ export function ExceptionForm({
                                     Thêm khung giờ
                                 </Button>
                             </div>
-                            
+
                             <div className="grid grid-cols-[repeat(auto-fit,minmax(290px,1fr))] gap-3">
                                 {currentSlots.map((slot, index) => (
-                                    <div 
-                                        key={index} 
+                                    <div
+                                        key={index}
                                         className="w-full animate-in slide-in-from-left-1 fade-in duration-300 fill-mode-forwards"
                                         style={{ animationDelay: `${index * 50}ms` }}
                                     >
@@ -316,7 +316,7 @@ export function ExceptionForm({
                                     </div>
                                 ))}
                             </div>
-                            
+
                             {currentSlots.length === 0 && (
                                 <div className="text-center py-4 border-2 border-dashed border-muted rounded-lg bg-muted/20">
                                     <span className="text-xs text-muted-foreground block mb-2">Chưa có khung giờ nào</span>

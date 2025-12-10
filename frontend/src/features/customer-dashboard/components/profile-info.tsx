@@ -4,8 +4,8 @@ import { PROFILE_LABELS } from "@/features/customer-dashboard/constants"
 import { ProfileInput } from "@/features/customer-dashboard/schemas"
 import { Button } from "@/shared/ui/button"
 import { BirthdayPicker } from "@/shared/ui/custom/birthday-picker"
-import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/ui/form"
+import { Input } from "@/shared/ui/input"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip"
 import { format } from "date-fns"
 import { motion } from "framer-motion"
@@ -30,10 +30,10 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
             <FormItem>
               <FormLabel className="text-sm font-semibold text-foreground/80">{PROFILE_LABELS.FULL_NAME}</FormLabel>
               <FormControl>
-                <InputWithIcon
-                  icon={User}
+                <Input
+                  startContent={<User className="w-4 h-4 text-muted-foreground" />}
                   placeholder={PROFILE_LABELS.FULL_NAME_PLACEHOLDER}
-                  error={!!form.formState.errors.fullName}
+                  aria-invalid={!!form.formState.errors.fullName}
                   className=""
                   {...field}
                 />
@@ -78,11 +78,11 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
               <FormItem>
                 <FormLabel className="text-sm font-semibold text-foreground/80">{PROFILE_LABELS.PHONE}</FormLabel>
                 <FormControl>
-                  <InputWithIcon
+                  <Input
                     type="tel"
-                    icon={Phone}
+                    startContent={<Phone className="w-4 h-4 text-muted-foreground" />}
                     placeholder={PROFILE_LABELS.PHONE_PLACEHOLDER}
-                    error={!!form.formState.errors.phone}
+                    aria-invalid={!!form.formState.errors.phone}
                     className=""
                     {...field}
                   />
@@ -104,14 +104,14 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
                   <Tooltip delayDuration={200}>
                     <TooltipTrigger asChild>
                       <div className="relative">
-                         <InputWithIcon
+                         <Input
                           type="email"
                           readOnly
                           disabled
-                          icon={Lock}
+                          startContent={<Lock className="w-4 h-4 text-muted-foreground" />}
                           placeholder={PROFILE_LABELS.EMAIL_PLACEHOLDER}
                           className="h-10 bg-muted/30 text-muted-foreground cursor-not-allowed border-dashed focus-visible:ring-0 focus-visible:ring-offset-0"
-                          error={!!form.formState.errors.email}
+                          aria-invalid={!!form.formState.errors.email}
                           {...field}
                         />
                       </div>
@@ -134,10 +134,10 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
             <FormItem>
               <FormLabel className="text-sm font-semibold text-foreground/80">{PROFILE_LABELS.ADDRESS}</FormLabel>
               <FormControl>
-                <InputWithIcon
-                  icon={MapPin}
+                <Input
+                  startContent={<MapPin className="w-4 h-4 text-muted-foreground" />}
                   placeholder={PROFILE_LABELS.ADDRESS_PLACEHOLDER}
-                  error={!!form.formState.errors.address}
+                  aria-invalid={!!form.formState.errors.address}
                   className=""
                   {...field}
                 />

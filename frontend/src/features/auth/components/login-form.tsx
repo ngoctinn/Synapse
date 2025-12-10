@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { Mail } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { startTransition, useActionState, useEffect } from "react";
@@ -12,20 +12,21 @@ import { loginAction } from "../actions";
 import { loginSchema, type LoginInput } from "../schemas";
 
 import { Button } from "@/shared/ui/button";
-import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
-import { PasswordInput } from "@/shared/ui/custom/password-input";
 import { showToast } from "@/shared/ui/custom/sonner";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form";
+import { Input } from "@/shared/ui/input";
+import { useState } from "react";
 
 export function LoginForm() {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
 
 
   const [state, action, isPending] = useActionState(loginAction, undefined);
@@ -84,11 +85,10 @@ export function LoginForm() {
               <FormItem>
                 <FormLabel className="text-foreground/80 font-medium">Email</FormLabel>
                 <FormControl>
-                  <InputWithIcon
-                    icon={Mail}
+                  <Input
+                    startContent={<Mail className="size-4 text-muted-foreground" />}
                     placeholder="name@example.com"
-                    variant="lg"
-                    className="bg-background/50"
+                    className="bg-background/50 h-10"
                     {...field}
                   />
                 </FormControl>
@@ -103,10 +103,20 @@ export function LoginForm() {
               <FormItem className="relative">
                 <FormLabel className="text-foreground/80 font-medium">Mật khẩu</FormLabel>
                 <FormControl>
-                  <PasswordInput
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    startContent={<Lock className="size-4 text-muted-foreground" />}
+                    endContent={
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="text-muted-foreground hover:text-foreground focus:outline-none"
+                      >
+                        {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                      </button>
+                    }
                     placeholder="Nhập mật khẩu của bạn"
-                    variant="lg"
-                    className="bg-background/50"
+                    className="bg-background/50 h-10"
                     {...field}
                   />
                 </FormControl>

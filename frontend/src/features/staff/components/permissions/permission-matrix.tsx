@@ -5,17 +5,17 @@ import { Badge } from "@/shared/ui/badge"
 import { Checkbox } from "@/shared/ui/checkbox"
 import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row"
 import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow
 } from "@/shared/ui/table"
 import { Lock } from "lucide-react"
 import { useState, useTransition } from "react"
 import { toast } from "sonner"
 import { updatePermissions } from "../../actions"
-import { MODULES, ROLES, STAFF_HEADER_OFFSET_CLASS } from "../../constants"
+import { MODULES, ROLES, STAFF_HEADER_OFFSET_CLASS } from "../../model/constants"
 import { BulkSaveBar } from "./bulk-save-bar"
 
 interface PermissionMatrixProps {

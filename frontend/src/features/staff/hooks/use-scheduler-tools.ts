@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Shift } from "../types"
+import { Shift } from "../model/types"
 
 export function useSchedulerTools() {
   const [selectedTool, setSelectedTool] = useState<Shift | "eraser" | null>(null)

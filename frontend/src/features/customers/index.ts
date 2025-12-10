@@ -1,5 +1,5 @@
 export * from "./actions"
 export * from "./components/customers-page"
-export * from "./schemas"
-export * from "./types"
+export * from "./model/schemas"
+export * from "./model/types"
 

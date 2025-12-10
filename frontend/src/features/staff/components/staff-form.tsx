@@ -2,16 +2,22 @@
 
 import { Skill } from "@/features/services/types"
 import { cn } from "@/shared/lib/utils"
-import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
-import { SelectWithIcon } from "@/shared/ui/custom/select-with-icon"
 import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form"
+import { Input } from "@/shared/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { Textarea } from "@/shared/ui/textarea"
 import { Briefcase, Check, Mail, Phone, User } from "lucide-react"
@@ -81,8 +87,8 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                 <FormItem>
                 <FormLabel className="text-foreground/80 font-normal">Họ và tên</FormLabel>
                 <FormControl>
-                    <InputWithIcon
-                    icon={User}
+                    <Input
+                    startContent={<User size={18} />}
                     placeholder="Nguyễn Văn A"
                     {...field}
                     className="bg-background h-10"
@@ -101,8 +107,8 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                 <FormItem>
                     <FormLabel className="text-foreground/80 font-normal">Email</FormLabel>
                     <FormControl>
-                    <InputWithIcon
-                        icon={Mail}
+                    <Input
+                        startContent={<Mail size={18} />}
                         type="email"
                         placeholder="email@example.com"
                         {...field}
@@ -121,8 +127,8 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                 <FormItem>
                     <FormLabel className="text-foreground/80 font-normal">Số điện thoại</FormLabel>
                     <FormControl>
-                    <InputWithIcon
-                        icon={Phone}
+                    <Input
+                        startContent={<Phone size={18} />}
                         type="tel"
                         placeholder="0912 345 678"
                         {...field}
@@ -165,20 +171,20 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-foreground/80 font-normal">Vai trò</FormLabel>
-                  <SelectWithIcon
+                  <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    disabled={mode === "update"} // Role change usually restricted
-                    icon={Briefcase}
-                    placeholder="Chọn vai trò"
-                    options={[
-                      { label: "Quản trị viên", value: "admin" },
-                      { label: "Lễ tân", value: "receptionist" },
-                      { label: "Kỹ thuật viên", value: "technician" },
-                    ]}
-                    isError={!!form.formState.errors.role}
-                    className="h-10"
-                  />
+                    disabled={mode === "update"}
+                  >
+                    <SelectTrigger className="h-10" startContent={<Briefcase size={18} />}>
+                      <SelectValue placeholder="Chọn vai trò" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="admin">Quản trị viên</SelectItem>
+                      <SelectItem value="receptionist">Lễ tân</SelectItem>
+                      <SelectItem value="technician">Kỹ thuật viên</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -191,8 +197,8 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                 <FormItem>
                   <FormLabel className="text-foreground/80 font-normal">Chức danh</FormLabel>
                   <FormControl>
-                    <InputWithIcon
-                      icon={Briefcase}
+                    <Input
+                      startContent={<Briefcase size={18} />}
                       placeholder="VD: Senior Tech"
                       {...field}
                       className="bg-background h-10"
@@ -279,8 +285,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                     <FormItem>
                         <FormLabel className="text-foreground/80 font-normal">Ngày tuyển dụng</FormLabel>
                         <FormControl>
-                            <InputWithIcon
-
+                            <Input
                                 type="date"
                                 {...field}
                                 className="bg-background"
@@ -297,8 +302,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                     <FormItem>
                         <FormLabel className="text-foreground/80 font-normal">Hoa hồng (%)</FormLabel>
                         <FormControl>
-                            <InputWithIcon
-
+                            <Input
                                 type="number"
                                 min={0}
                                 max={100}

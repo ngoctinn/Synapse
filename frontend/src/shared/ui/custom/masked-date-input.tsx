@@ -1,7 +1,7 @@
 "use client"
 
 import { cn } from "@/shared/lib/utils"
-import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
+import { Input } from "@/shared/ui/input"
 import { LucideIcon, LucideProps } from "lucide-react"
 import * as React from "react"
 
@@ -18,7 +18,7 @@ interface MaskedDateInputProps
 }
 
 export const MaskedDateInput = React.forwardRef<HTMLInputElement, MaskedDateInputProps>(
-  ({ value, onChange, className, onInvalidInput, minDate, maxDate, ...props }, ref) => {
+  ({ value, onChange, className, onInvalidInput, minDate, maxDate, icon: Icon, iconProps, ...props }, ref) => {
     const [inputValue, setInputValue] = React.useState("")
     const inputRef = React.useRef<HTMLInputElement>(null)
 
@@ -171,7 +171,8 @@ export const MaskedDateInput = React.forwardRef<HTMLInputElement, MaskedDateInpu
 
     return (
       <div className={cn("relative", isShaking && "animate-shake")}>
-        <InputWithIcon
+        <Input
+          startContent={Icon ? <Icon className="w-4 h-4 text-muted-foreground" {...iconProps} /> : null}
           ref={inputRef}
           type="text"
           placeholder="DD/MM/YYYY"
@@ -183,7 +184,7 @@ export const MaskedDateInput = React.forwardRef<HTMLInputElement, MaskedDateInpu
             "font-medium",
             className
           )}
-          error={props.error}
+          aria-invalid={!!props.error}
           {...props}
         />
       </div>

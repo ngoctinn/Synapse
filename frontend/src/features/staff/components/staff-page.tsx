@@ -1,8 +1,9 @@
 "use client"
 
 import { Skill } from "@/features/services"
-import { SearchInput } from "@/shared/ui/custom/search-input"
+import { Input } from "@/shared/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
+import { Search } from "lucide-react"
 import { Suspense, use, useState } from "react"
 import { InviteStaffTrigger } from "./invite-staff-trigger"
 import { PermissionMatrix } from "./permissions/permission-matrix"
@@ -10,7 +11,7 @@ import { StaffScheduler } from "./scheduling/staff-scheduler"
 import { StaffFilter } from "./staff-filter"
 import { StaffTable, StaffTableSkeleton } from "./staff-list/staff-table"
 
-import { Schedule } from "../types"
+import { Schedule } from "../model/types"
 
 interface StaffPageProps {
   page: number
@@ -83,10 +84,13 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
           <div className="flex items-center gap-3 w-full md:w-auto">
             {activeTab === "list" && (
               <div className="flex items-center gap-2 flex-1 md:flex-none">
-                <SearchInput
-                  placeholder="Tìm kiếm nhân viên..."
-                  className="w-full md:w-[250px] h-9"
-                />
+                <div className="relative w-full md:w-[250px]">
+                  <Input
+                    placeholder="Tìm kiếm nhân viên..."
+                    startContent={<Search className="size-4 text-muted-foreground" />}
+                    className="h-9 bg-background pr-8"
+                  />
+                </div>
                 <StaffFilter />
               </div>
             )}

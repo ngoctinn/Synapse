@@ -1,17 +1,17 @@
 "use client";
-import * as React from "react";
-import { SlidersHorizontal, Settings2, Wrench, PartyPopper } from "lucide-react";
-import { SearchInput } from "@/shared/ui/custom/search-input";
-import { FilterButton } from "@/shared/ui/custom/filter-button";
-import { ToggleGroup, ToggleGroupItem } from "@/shared/ui/toggle-group";
 import { cn } from "@/shared/lib/utils";
-import { DateRange } from "react-day-picker";
 import { DateRangeFilter } from "@/shared/ui/custom/date-range-filter";
+import { FilterButton } from "@/shared/ui/custom/filter-button";
+import { Input } from "@/shared/ui/input";
+import { ToggleGroup, ToggleGroupItem } from "@/shared/ui/toggle-group";
+import { PartyPopper, Search, Settings2, SlidersHorizontal, Wrench, X } from "lucide-react";
+import * as React from "react";
+import { DateRange } from "react-day-picker";
 
 interface ExceptionsFilterBarProps {
   statusFilter: string | null;
   setStatusFilter: (status: string | null) => void;
-  
+
   typeFilter: string[];
   setTypeFilter: (types: string[] | null) => void;
 
@@ -20,12 +20,12 @@ interface ExceptionsFilterBarProps {
 
   onClearFilters: () => void;
   activeCount: number;
-  
+
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  
+
   startContent?: React.ReactNode;
-  endContent?: React.ReactNode; 
+  endContent?: React.ReactNode;
 }
 
 const FILTER_TYPES = [
@@ -63,7 +63,7 @@ export function ExceptionsFilterBar({
   startContent,
   endContent
 }: ExceptionsFilterBarProps) {
-  
+
   // Calculate count for the combined filter button (Type + Status + Date)
   const paramCount = (typeFilter?.length || 0) + (statusFilter ? 1 : 0) + (dateRange?.from ? 1 : 0);
 
@@ -77,14 +77,27 @@ export function ExceptionsFilterBar({
       {/* RIGHT: Search + Filters + Actions */}
       <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto order-1 md:order-2">
         <div className="flex items-center gap-2 w-full sm:w-auto flex-1 md:flex-none">
-            <SearchInput
-                placeholder="Tìm kiếm..."
-                value={searchQuery}
-                onSearch={setSearchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full sm:w-[200px] lg:w-[250px]"
-                variant="sm"
-            />
+            <div className="relative w-full sm:w-[200px] lg:w-[250px]">
+                <Input
+                    placeholder="Tìm kiếm..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    startContent={<Search className="size-4 text-muted-foreground" />}
+                    endContent={
+                        searchQuery ? (
+                            <button
+                                type="button"
+                                onClick={() => setSearchQuery("")}
+                                className="p-0.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                                <X className="h-3 w-3" />
+                                <span className="sr-only">Clear</span>
+                            </button>
+                        ) : null
+                    }
+                    className="h-9 bg-background"
+                />
+            </div>
 
             {/* Combined Filter Button */}
             <FilterButton
@@ -100,9 +113,9 @@ export function ExceptionsFilterBar({
                    <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider px-1">
                      Thời gian
                    </h4>
-                   <DateRangeFilter 
-                        dateRange={dateRange} 
-                        setDateRange={setDateRange} 
+                   <DateRangeFilter
+                        dateRange={dateRange}
+                        setDateRange={setDateRange}
                         className="w-full shadow-sm"
                     />
                 </div>
@@ -113,23 +126,23 @@ export function ExceptionsFilterBar({
                   <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider px-1">
                     Trạng thái
                   </h4>
-                  <ToggleGroup 
-                      type="single" 
+                  <ToggleGroup
+                      type="single"
                       value={statusFilter || ""}
                       onValueChange={(val) => setStatusFilter(val || null)}
                       className="justify-start gap-2 w-full"
                   >
-                      <ToggleGroupItem 
-                        value="open" 
-                        size="sm" 
+                      <ToggleGroupItem
+                        value="open"
+                        size="sm"
                         className="flex-1 data-[state=on]:bg-emerald-100 dark:data-[state=on]:bg-emerald-900/30 data-[state=on]:text-emerald-700 dark:data-[state=on]:text-emerald-400 data-[state=on]:border-emerald-200 border border-transparent"
                       >
                          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2" />
                          Mở cửa
                       </ToggleGroupItem>
-                      <ToggleGroupItem 
-                        value="closed" 
-                        size="sm" 
+                      <ToggleGroupItem
+                        value="closed"
+                        size="sm"
                         className="flex-1 data-[state=on]:bg-rose-100 dark:data-[state=on]:bg-rose-900/30 data-[state=on]:text-rose-700 dark:data-[state=on]:text-rose-400 data-[state=on]:border-rose-200 border border-transparent"
                       >
                          <div className="w-1.5 h-1.5 rounded-full bg-rose-500 mr-2" />
@@ -145,18 +158,18 @@ export function ExceptionsFilterBar({
                   <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider px-1">
                     Loại ngoại lệ
                   </h4>
-                   <ToggleGroup 
-                      type="multiple" 
-                      value={typeFilter} 
+                   <ToggleGroup
+                      type="multiple"
+                      value={typeFilter}
                       onValueChange={(val) => setTypeFilter(val.length ? val : null)}
                       className="flex w-full gap-2"
                   >
                       {FILTER_TYPES.map((type) => {
                           const Icon = type.icon;
                           return (
-                              <ToggleGroupItem 
-                                  key={type.id} 
-                                  value={type.id} 
+                              <ToggleGroupItem
+                                  key={type.id}
+                                  value={type.id}
                                   aria-label={type.label}
                                   size="sm"
                                   className={cn(

@@ -3,8 +3,8 @@ import { addDays, format, isSameDay, startOfWeek } from "date-fns"
 import { vi } from "date-fns/locale"
 import { Plus, X } from "lucide-react"
 import { useEffect, useState } from "react"
-import { MOCK_SHIFTS } from "../../data/shifts"
-import { Schedule, Shift, Staff } from "../../types"
+import { MOCK_SHIFTS } from "../../model/shifts"
+import { Schedule, Shift, Staff } from "../../model/types"
 
 interface ScheduleGridProps {
   staffList: Staff[]

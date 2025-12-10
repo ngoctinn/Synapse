@@ -14,7 +14,8 @@ import {
 } from "@/shared/ui/command"
 import { DateRangeFilter } from "@/shared/ui/custom/date-range-filter"
 import { FilterButton } from "@/shared/ui/custom/filter-button"
-import { SearchInput } from "@/shared/ui/custom/search-input"
+import { Input } from "@/shared/ui/input"
+
 import {
   Popover,
   PopoverContent,
@@ -234,13 +235,42 @@ export function AppointmentFilter({ startContent, endContent, className, viewMod
 
             <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto order-1 md:order-2">
                 <div className="flex items-center gap-2 w-full sm:w-auto flex-1 md:flex-none">
-                    <SearchInput
-                        placeholder="Tìm kiếm lịch hẹn..."
-                        value={searchQuery}
-                        onSearch={handleSearch}
-                        className="w-full sm:w-[200px] lg:w-[250px]"
-                        variant="sm"
-                    />
+                    <div className="relative w-full sm:w-[200px] lg:w-[250px]">
+                        <Input
+                            placeholder="Tìm kiếm lịch hẹn..."
+                            value={searchQuery}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearch(e.target.value)}
+                            startContent={<Search className="h-4 w-4 text-muted-foreground" />}
+                            endContent={
+                                searchQuery ? (
+                                    <button
+                                        type="button"
+                                        onClick={() => handleSearch("")}
+                                        className="p-0.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        <div className="sr-only">Clear</div>
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth={2}
+                                            stroke="currentColor"
+                                            className="size-3"
+                                        >
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                ) : (
+                                    <div className="hidden sm:flex items-center gap-1 pointer-events-none opacity-50">
+                                         <kbd className="inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 dark:shadow-none">
+                                           <span className="text-xs">⌘</span>K
+                                         </kbd>
+                                    </div>
+                                )
+                            }
+                            className="h-9 bg-background border-input/50 focus-visible:ring-primary/20"
+                        />
+                    </div>
 
 
                     {viewMode === "list" && (

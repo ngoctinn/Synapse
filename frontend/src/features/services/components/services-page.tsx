@@ -1,8 +1,9 @@
 "use client"
 
 import { Resource, RoomType } from "@/features/resources"
-import { SearchInput } from "@/shared/ui/custom/search-input"
+import { Input } from "@/shared/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
+import { Search } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import { Suspense, use, useState } from "react"
 import { Service, Skill } from "../types"
@@ -87,10 +88,13 @@ export function ServicesPage({ page, skills, roomTypes, equipmentList, servicesP
 
           <div className="flex items-center gap-3 w-full md:w-auto">
             <div className="flex items-center gap-2 flex-1 md:flex-none">
-              <SearchInput
-                placeholder={isServiceTab ? "Tìm kiếm dịch vụ..." : "Tìm kiếm kỹ năng..."}
-                className="w-full md:w-[250px] h-9"
-              />
+              <div className="relative w-full md:w-[250px]">
+                <Input
+                  placeholder={isServiceTab ? "Tìm kiếm dịch vụ..." : "Tìm kiếm kỹ năng..."}
+                  startContent={<Search className="size-4 text-muted-foreground" />}
+                  className="h-9 bg-background pr-8"
+                />
+              </div>
               {isServiceTab && <ServiceFilter availableSkills={skills} />}
             </div>
 

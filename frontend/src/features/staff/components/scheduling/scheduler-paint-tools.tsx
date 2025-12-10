@@ -3,9 +3,9 @@
 import { Button } from "@/shared/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover"
 import { Eraser, Paintbrush, X } from "lucide-react"
-import { SCHEDULER_UI } from "../../constants"
-import { MOCK_SHIFTS } from "../../data/shifts"
 import { useSchedulerTools } from "../../hooks/use-scheduler-tools"
+import { SCHEDULER_UI } from "../../model/constants"
+import { MOCK_SHIFTS } from "../../model/shifts"
 
 interface SchedulerPaintToolsProps {
   toolState: ReturnType<typeof useSchedulerTools>

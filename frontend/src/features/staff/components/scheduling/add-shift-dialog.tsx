@@ -9,8 +9,8 @@ import {
 } from "@/shared/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { useState } from "react"
-import { MOCK_SHIFTS } from "../../data/shifts"
-import { Shift } from "../../types"
+import { MOCK_SHIFTS } from "../../model/shifts"
+import { Shift } from "../../model/types"
 import { ShiftForm } from "./shift-form"
 
 interface AddShiftDialogProps {
