@@ -7,6 +7,7 @@ import {
     MessageSquare,
     Palette,
     Settings,
+    Users,
     Wrench
 } from "lucide-react"
 
@@ -30,6 +31,11 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     title: "Lịch hẹn",
     href: "/admin/appointments",
     icon: Calendar,
+  },
+  {
+    title: "Khách hàng",
+    href: "/admin/customers",
+    icon: Users,
   },
   {
     title: "Nhân sự",

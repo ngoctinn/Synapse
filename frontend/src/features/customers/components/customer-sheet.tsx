@@ -40,6 +40,8 @@ const initialState = {
     error: "",
 }
 
+
+
 export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSheetProps) {
   const [state, dispatch, isPending] = React.useActionState(manageCustomer, initialState)
 
@@ -100,7 +102,6 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
   const onSubmit = (data: any) => {
     const formData = new FormData()
     formData.append("form_mode", mode)
-    // Flatten data for FormData
     Object.entries(data).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
         formData.append(key, value as string)
@@ -112,9 +113,11 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
     })
   }
 
+
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-md p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
+      <SheetContent className="w-full sm:max-w-xl p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
         <SheetHeader className="px-6 py-4 border-b">
             <div className="flex items-center justify-between">
                 <SheetTitle className="text-xl font-semibold text-foreground">
@@ -124,7 +127,7 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
             <SheetDescription className="text-muted-foreground text-sm">
                 {mode === "create"
                     ? "Tạo hồ sơ khách hàng mới để bắt đầu đặt lịch và theo dõi liệu trình."
-                    : "Cập nhật thông tin cá nhân và hồ sơ sức khỏe."}
+                    : "Quản lý thông tin cá nhân và hồ sơ sức khỏe."}
             </SheetDescription>
         </SheetHeader>
 
@@ -136,7 +139,7 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
             </Form>
         </div>
 
-        <SheetFooter className="px-6 py-4 border-t sm:justify-between flex-row items-center gap-4 bg-background">
+        <SheetFooter className="px-6 py-4 border-t sm:justify-between flex-row items-center gap-4 bg-background z-30">
             <Button
                 type="button"
                 variant="ghost"

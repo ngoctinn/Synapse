@@ -3,14 +3,14 @@
 import { useTableSelection } from "@/shared/hooks/use-table-selection"
 import { cn } from "@/shared/lib/utils"
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/shared/ui/alert-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
@@ -21,10 +21,10 @@ import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar"
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/shared/ui/tooltip"
 import { Activity, AlertCircle } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
@@ -45,9 +45,9 @@ interface CustomerTableProps {
 }
 
 const TIER_STYLES: Record<string, string> = {
-    SILVER: "bg-gray-100 text-gray-700 border-gray-200",
-    GOLD: "bg-yellow-100 text-yellow-700 border-yellow-200",
-    PLATINUM: "bg-slate-800 text-white border-slate-700",
+    SILVER: "bg-gradient-to-r from-slate-100 to-slate-200 text-slate-700 border-slate-200",
+    GOLD: "bg-gradient-to-r from-amber-100 to-amber-200 text-amber-700 border-amber-200",
+    PLATINUM: "bg-gradient-to-r from-slate-700 to-slate-900 text-white border-slate-700",
 }
 
 export function CustomerTable({
