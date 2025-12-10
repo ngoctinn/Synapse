@@ -3,6 +3,11 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { Loader2 } from "lucide-react"
 import * as React from "react"
 
+import {
+  type ButtonVariant,
+  type ComponentSize,
+  warnDeprecated,
+} from "@/shared/lib/design-system.types"
 import { cn } from "@/shared/lib/utils"
 
 const buttonVariants = cva(
@@ -42,9 +47,23 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
+  /** Trạng thái loading của button */
   isLoading?: boolean
+  /** Icon hoặc content hiển thị bên trái */
+  startContent?: React.ReactNode
+  /** Icon hoặc content hiển thị bên phải */
+  endContent?: React.ReactNode
+  /**
+   * @deprecated Sử dụng `isLoading` thay thế
+   */
   loading?: boolean
+  /**
+   * @deprecated Sử dụng `startContent` thay thế
+   */
   leftIcon?: React.ReactNode
+  /**
+   * @deprecated Sử dụng `endContent` thay thế
+   */
   rightIcon?: React.ReactNode
 }
 
@@ -57,6 +76,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       asChild = false,
       isLoading = false,
       loading = false,
+      startContent,
+      endContent,
       leftIcon,
       rightIcon,
       children,
@@ -65,8 +86,23 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
+    // Deprecation warnings
+    if (loading) {
+      warnDeprecated("Button", "loading", "isLoading")
+    }
+    if (leftIcon) {
+      warnDeprecated("Button", "leftIcon", "startContent")
+    }
+    if (rightIcon) {
+      warnDeprecated("Button", "rightIcon", "endContent")
+    }
+
     const Comp = asChild ? Slot : "button"
     const isRunning = isLoading || loading
+
+    // Backward compat: fallback to deprecated props if new ones not provided
+    const leftContent = startContent ?? leftIcon
+    const rightContent = endContent ?? rightIcon
 
     return (
       <Comp
@@ -76,9 +112,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {isRunning && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        {!isRunning && leftIcon && <span className="mr-1">{leftIcon}</span>}
+        {!isRunning && leftContent && <span className="mr-1">{leftContent}</span>}
         {children}
-        {!isRunning && rightIcon && <span className="ml-1">{rightIcon}</span>}
+        {!isRunning && rightContent && <span className="ml-1">{rightContent}</span>}
       </Comp>
     )
   }
@@ -86,4 +122,5 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button"
 
 export { Button, buttonVariants }
-  
+export type { ButtonVariant, ComponentSize }
+

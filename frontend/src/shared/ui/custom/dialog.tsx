@@ -1,14 +1,15 @@
 "use client"
 
+import { type ButtonVariant } from "@/shared/lib/design-system.types"
 import { cn } from "@/shared/lib/utils"
 import { Button } from "@/shared/ui/button"
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/shared/ui/dialog"
 import { AlertTriangle, CheckCircle2, Info, LucideIcon, XCircle } from "lucide-react"
 
@@ -24,7 +25,8 @@ interface CustomDialogProps {
   primaryAction?: {
     label: string
     onClick: () => void
-    variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
+    /** Variant của button - sử dụng shared ButtonVariant type */
+    variant?: ButtonVariant
   }
   secondaryAction?: {
     label: string

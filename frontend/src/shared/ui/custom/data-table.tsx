@@ -1,5 +1,9 @@
 "use client"
 
+import {
+  type SelectionConfig,
+  type SortConfig,
+} from "@/shared/lib/design-system.types"
 import { getNestedValue } from "@/shared/lib/object-utils"
 import { cn } from "@/shared/lib/utils"
 import { Checkbox } from "@/shared/ui/checkbox"
@@ -39,21 +43,47 @@ interface DataTableProps<T> {
   variant?: "default" | "flush"
   isLoading?: boolean
   skeletonCount?: number
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Selection - Grouped config (recommended)
+  // ─────────────────────────────────────────────────────────────────────────
+  /** Grouped selection config - sử dụng thay vì flat props */
+  selection?: SelectionConfig
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Selection - Flat props (backward compat, deprecated)
+  // ─────────────────────────────────────────────────────────────────────────
   selectable?: boolean
-  /** Controlled selection: checker function */
+  /** @deprecated Sử dụng selection.isSelected thay thế */
   isSelected?: (id: string | number) => boolean
-  /** Controlled selection: toggle one row */
+  /** @deprecated Sử dụng selection.onToggleOne thay thế */
   onToggleOne?: (id: string | number) => void
-  /** Controlled selection: toggle all rows */
+  /** @deprecated Sử dụng selection.onToggleAll thay thế */
   onToggleAll?: () => void
+  /** @deprecated Sử dụng selection.isAllSelected thay thế */
   isAllSelected?: boolean
+  /** @deprecated Sử dụng selection.isPartiallySelected thay thế */
   isPartiallySelected?: boolean
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // Sorting - Grouped config (recommended)
+  // ─────────────────────────────────────────────────────────────────────────
+  /** Grouped sort config - sử dụng thay vì flat props */
+  sort?: SortConfig
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Sorting - Flat props (backward compat, deprecated)
+  // ─────────────────────────────────────────────────────────────────────────
+  /** @deprecated Sử dụng sort.column thay thế */
   sortColumn?: string
+  /** @deprecated Sử dụng sort.direction thay thế */
   sortDirection?: "asc" | "desc"
+  /** @deprecated Sử dụng sort.onSort thay thế */
   onSort?: (column: string) => void
+
   onRowClick?: (item: T) => void
 }
+
 
 export function DataTable<T>({
   data,
@@ -67,24 +97,37 @@ export function DataTable<T>({
   variant = "default",
   isLoading = false,
   skeletonCount = 5,
+
+  // Grouped configs (recommended)
+  selection,
+  sort,
+
+  // Flat props (backward compat)
   selectable = false,
   isSelected: isSelectedProp,
   onToggleOne: onToggleOneProp,
   onToggleAll: onToggleAllProp,
   isAllSelected: isAllSelectedProp,
   isPartiallySelected: isPartiallySelectedProp,
+  sortColumn: sortColumnProp,
+  sortDirection: sortDirectionProp,
+  onSort: onSortProp,
 
-  sortColumn,
-  sortDirection,
-  onSort,
   onRowClick,
 }: DataTableProps<T>) {
-  // Selection handlers (pure controlled - no internal state)
-  const isSelected = isSelectedProp ?? (() => false)
-  const onToggleOne = onToggleOneProp
-  const onToggleAll = onToggleAllProp
-  const isAllSelected = isAllSelectedProp ?? false
-  const isPartiallySelected = isPartiallySelectedProp ?? false
+  // Merge selection config: grouped takes priority, fallback to flat props
+  const isSelected = selection?.isSelected ?? isSelectedProp ?? (() => false)
+  const onToggleOne = selection?.onToggleOne ?? onToggleOneProp
+  const onToggleAll = selection?.onToggleAll ?? onToggleAllProp
+  const isAllSelected = selection?.isAllSelected ?? isAllSelectedProp ?? false
+  const isPartiallySelected = selection?.isPartiallySelected ?? isPartiallySelectedProp ?? false
+  const isSelectable = !!selection || selectable
+
+  // Merge sort config: grouped takes priority, fallback to flat props
+  const sortColumn = sort?.column ?? sortColumnProp
+  const sortDirection = sort?.direction ?? sortDirectionProp
+  const onSort = sort?.onSort ?? onSortProp
+
 
   // ─────────────────────────────────────────────────────────────────────────
   const containerClasses = cn(
@@ -93,7 +136,7 @@ export function DataTable<T>({
     className
   )
 
-  const effectiveColumnCount = selectable ? columns.length + 1 : columns.length
+  const effectiveColumnCount = isSelectable ? columns.length + 1 : columns.length
 
   if (isLoading) {
     return (
@@ -117,7 +160,7 @@ export function DataTable<T>({
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent border-b border-border/60">
-                {selectable && (
+                {isSelectable && (
                   <TableHead className="w-12 pl-6">
                     <Checkbox
                       checked={isAllSelected}
@@ -192,7 +235,7 @@ export function DataTable<T>({
                     }}
                   >
                     {/* Checkbox Cell */}
-                    {selectable && (
+                    {isSelectable && (
                       <TableCell className="w-12 pl-6" onClick={(e) => e.stopPropagation()}>
                         <Checkbox
                           checked={selected}
@@ -208,8 +251,8 @@ export function DataTable<T>({
                         key={colIndex}
                         className={cn(
                           "py-4",
-                          colIndex === 0 && !selectable ? "pl-6 font-medium text-foreground" : "",
-                          colIndex === 0 && selectable ? "font-medium text-foreground" : "",
+                          colIndex === 0 && !isSelectable ? "pl-6 font-medium text-foreground" : "",
+                          colIndex === 0 && isSelectable ? "font-medium text-foreground" : "",
                           colIndex === columns.length - 1 ? "pr-6 text-right" : "text-muted-foreground",
                           col.className
                         )}
