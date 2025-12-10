@@ -11,12 +11,12 @@ import { Button } from "@/shared/ui/button";
 import { CustomDialog } from "@/shared/ui/custom/dialog";
 import { showToast } from "@/shared/ui/custom/sonner";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
 import { forgotPasswordAction } from "../actions";
@@ -88,7 +88,7 @@ export function ForgotPasswordForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80 font-medium">Email</FormLabel>
+                <FormLabel className="text-foreground/80 font-normal">Email</FormLabel>
                 <FormControl>
                   <Input
                     startContent={<Mail size={18} />}

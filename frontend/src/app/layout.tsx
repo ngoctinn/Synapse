@@ -23,6 +23,7 @@ export default function RootLayout({
     <html lang="vi" suppressHydrationWarning>
       <body
         className={`${beVietnamPro.variable} antialiased font-sans`}
+        suppressHydrationWarning
       >
         {children}
         <Toaster />

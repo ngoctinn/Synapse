@@ -4,12 +4,12 @@ import { Resource, RoomType } from "@/features/resources"
 import { Button } from "@/shared/ui/button"
 import { Form } from "@/shared/ui/form"
 import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle,
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
 } from "@/shared/ui/sheet"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save, Send } from "lucide-react"
@@ -164,7 +164,7 @@ export function ServiceSheet({
             form="service-form"
             isLoading={isPending}
             className="min-w-[140px] shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
-            leftIcon={isEditMode ? <Save className="h-4 w-4" /> : <Send className="h-4 w-4" />}
+            startContent={isEditMode ? <Save className="h-4 w-4" /> : <Send className="h-4 w-4" />}
           >
             {isEditMode ? "Lưu thay đổi" : "Tạo dịch vụ"}
           </Button>

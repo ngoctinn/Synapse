@@ -86,7 +86,7 @@ export function RegisterForm() {
             name="fullName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80 font-medium">Họ và tên</FormLabel>
+                <FormLabel className="text-foreground/80 font-normal">Họ và tên</FormLabel>
                 <FormControl>
                   <Input
                     startContent={<User className="size-4 text-muted-foreground" />}
@@ -104,7 +104,7 @@ export function RegisterForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80 font-medium">Email</FormLabel>
+                <FormLabel className="text-foreground/80 font-normal">Email</FormLabel>
                 <FormControl>
                   <Input
                     startContent={<Mail className="size-4 text-muted-foreground" />}
@@ -122,7 +122,7 @@ export function RegisterForm() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80 font-medium">Mật khẩu</FormLabel>
+                <FormLabel className="text-foreground/80 font-normal">Mật khẩu</FormLabel>
                 <FormControl>
                   <Input
                     type={showPassword ? "text" : "password"}
@@ -150,7 +150,7 @@ export function RegisterForm() {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80 font-medium">Xác nhận mật khẩu</FormLabel>
+                <FormLabel className="text-foreground/80 font-normal">Xác nhận mật khẩu</FormLabel>
                 <FormControl>
                   <Input
                     type={showConfirmPassword ? "text" : "password"}

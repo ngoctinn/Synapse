@@ -83,7 +83,7 @@ export function LoginForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80 font-medium">Email</FormLabel>
+                <FormLabel className="text-foreground/80 font-normal">Email</FormLabel>
                 <FormControl>
                   <Input
                     startContent={<Mail className="size-4 text-muted-foreground" />}
@@ -101,7 +101,7 @@ export function LoginForm() {
             name="password"
             render={({ field }) => (
               <FormItem className="relative">
-                <FormLabel className="text-foreground/80 font-medium">Mật khẩu</FormLabel>
+                <FormLabel className="text-foreground/80 font-normal">Mật khẩu</FormLabel>
                 <FormControl>
                   <Input
                     type={showPassword ? "text" : "password"}

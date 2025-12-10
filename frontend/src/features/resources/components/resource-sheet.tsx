@@ -153,7 +153,7 @@ export function ResourceSheet({
                 form="resource-form"
                 isLoading={isPending}
                 className="min-w-[140px] shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
-                leftIcon={<Save className="h-4 w-4" />}
+                startContent={<Save className="h-4 w-4" />}
             >
                 {resource ? "Lưu thay đổi" : "Tạo mới"}
             </Button>

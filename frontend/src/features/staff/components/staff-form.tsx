@@ -4,29 +4,28 @@ import { Skill } from "@/features/services/types"
 import { cn } from "@/shared/lib/utils"
 import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form"
 import { Input } from "@/shared/ui/input"
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/shared/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { Textarea } from "@/shared/ui/textarea"
 import { Briefcase, Check, Mail, Phone, User } from "lucide-react"
-import { Control, useWatch } from "react-hook-form"
+import { useFormContext, useWatch } from "react-hook-form"
 
 interface StaffFormProps {
   mode: "create" | "update"
   skills: Skill[]
-  control: Control<any>
   className?: string
 }
 
@@ -41,7 +40,9 @@ const COLOR_PRESETS = [
     "#14B8A6", // Teal
 ]
 
-export function StaffForm({ mode, skills, control, className }: StaffFormProps) {
+export function StaffForm({ mode, skills, className }: StaffFormProps) {
+  const form = useFormContext()
+  const control = form.control
   const role = useWatch({ control, name: "role" })
 
 
