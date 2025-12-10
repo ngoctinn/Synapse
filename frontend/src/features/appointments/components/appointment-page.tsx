@@ -198,6 +198,7 @@ export function AppointmentPage({
         services={initialServices}
         customers={initialCustomers}
         resources={initialResources}
+        existingAppointments={appointments}
       />
 
       <AlertDialog open={isCancelAlertOpen} onOpenChange={setIsCancelAlertOpen}>

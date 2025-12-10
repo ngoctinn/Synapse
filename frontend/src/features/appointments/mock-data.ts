@@ -49,6 +49,8 @@ export const MOCK_APPOINTMENTS: Appointment[] = [
     status: 'completed',
     notes: 'Khách da nhạy cảm, sử dụng sản phẩm dòng A.',
     color: '#10B981', // Emerald
+    price: 500000,
+    bufferTime: 15,
   },
   {
     id: 'apt-2',
@@ -61,6 +63,8 @@ export const MOCK_APPOINTMENTS: Appointment[] = [
     endTime: createDate(11, 0),
     status: 'serving',
     color: '#3B82F6', // Blue
+    price: 350000,
+    bufferTime: 15,
   },
   {
     id: 'apt-3',
@@ -74,6 +78,8 @@ export const MOCK_APPOINTMENTS: Appointment[] = [
     status: 'confirmed',
     notes: 'Khách hẹn trễ 15p đã báo trước.',
     color: '#8B5CF6', // Violet
+    price: 800000,
+    bufferTime: 30,
   },
   {
     id: 'apt-4',
@@ -86,6 +92,8 @@ export const MOCK_APPOINTMENTS: Appointment[] = [
     endTime: createDate(12, 30),
     status: 'pending',
     color: '#F59E0B', // Amber
+    price: 1200000,
+    bufferTime: 0,
   },
   {
     id: 'apt-5',
@@ -98,6 +106,8 @@ export const MOCK_APPOINTMENTS: Appointment[] = [
     endTime: createDate(14, 0),
     status: 'confirmed',
     color: '#6366F1', // Indigo
+    price: 250000,
+    bufferTime: 10,
   },
   {
     id: 'apt-6',
@@ -110,6 +120,8 @@ export const MOCK_APPOINTMENTS: Appointment[] = [
     endTime: createDate(15, 30),
     status: 'no-show', // Khách không đến
     color: '#EF4444', // Red
+    price: 600000,
+    bufferTime: 15,
   },
    {
     id: 'apt-7',
@@ -122,6 +134,8 @@ export const MOCK_APPOINTMENTS: Appointment[] = [
     endTime: createDate(16, 0),
     status: 'confirmed',
     color: '#EC4899', // Pink
+    price: 150000,
+    bufferTime: 15,
   },
 
   // Future Appointments (Tomorrow)
@@ -135,6 +149,8 @@ export const MOCK_APPOINTMENTS: Appointment[] = [
     startTime: createDate(10, 0, 1),
     endTime: createDate(11, 30, 1),
     status: 'confirmed',
+    price: 400000,
+    bufferTime: 15,
   },
 
   // Cancelled Appointment
@@ -150,6 +166,8 @@ export const MOCK_APPOINTMENTS: Appointment[] = [
     status: 'cancelled',
     notes: 'Khách bận đột xuất xin hủy.',
     color: '#9CA3AF', // Gray
+    price: 900000,
+    bufferTime: 0,
   },
 
   // Overlapping/Busy Slot Scenario
@@ -163,5 +181,7 @@ export const MOCK_APPOINTMENTS: Appointment[] = [
     startTime: createDate(13, 30),
     endTime: createDate(14, 30),
     status: 'confirmed',
+    price: 250000,
+    bufferTime: 10,
   },
 ];
