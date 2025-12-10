@@ -1,25 +1,23 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
-import { ExceptionDate } from "../model/types";
 import { useFilterParams } from "@/shared/lib/hooks/use-filter-params";
-import { 
-    isWithinInterval, 
-    startOfDay, 
-    endOfDay, 
-    parseISO, 
-    startOfYear, 
+import {
+    endOfDay,
+    endOfMonth,
+    endOfWeek,
     endOfYear,
     isSameDay,
-    startOfWeek,
-    endOfWeek,
+    isWithinInterval,
+    parseISO,
+    startOfDay,
     startOfMonth,
-    endOfMonth,
-    isSameMonth,
-    isSameYear
+    startOfWeek,
+    startOfYear
 } from "date-fns";
-import { FilterUnit } from "./use-exception-filters";
+import { useEffect, useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
+import { ExceptionDate } from "../model/types";
+import { FilterUnit } from "./use-exception-filters";
 
 interface UseExceptionViewLogicProps {
   exceptions: ExceptionDate[];
@@ -32,7 +30,7 @@ export function useExceptionViewLogic({ exceptions }: UseExceptionViewLogicProps
   });
 
   const [initialized, setInitialized] = useState(false);
-  
+
   // Derived Values from URL
   const statusFilter = searchParams.get('status');
   const typeFilter = searchParams.get('type')?.split(',') || [];
@@ -40,7 +38,7 @@ export function useExceptionViewLogic({ exceptions }: UseExceptionViewLogicProps
   const fromDate = searchParams.get('from') ? parseISO(searchParams.get('from')!) : undefined;
   const toDate = searchParams.get('to') ? parseISO(searchParams.get('to')!) : undefined;
 
-  const dateRange: DateRange | undefined = useMemo(() => 
+  const dateRange: DateRange | undefined = useMemo(() =>
     fromDate && toDate ? { from: fromDate, to: toDate } : undefined,
   [fromDate, toDate]);
 
@@ -63,7 +61,7 @@ export function useExceptionViewLogic({ exceptions }: UseExceptionViewLogicProps
       }
 
       // Check if it matches a full week (Mon-Sun)
-      if (isSameDay(start, startOfWeek(start, { weekStartsOn: 1 })) && 
+      if (isSameDay(start, startOfWeek(start, { weekStartsOn: 1 })) &&
           isSameDay(end, endOfWeek(end, { weekStartsOn: 1 }))) {
           return 'week';
       }
@@ -109,9 +107,9 @@ export function useExceptionViewLogic({ exceptions }: UseExceptionViewLogicProps
 
        // 3. Date
        if (dateRange?.from && dateRange?.to) {
-           const inRange = isWithinInterval(ex.date, { 
-             start: startOfDay(dateRange.from), 
-             end: endOfDay(dateRange.to) 
+           const inRange = isWithinInterval(ex.date, {
+             start: startOfDay(dateRange.from),
+             end: endOfDay(dateRange.to)
            });
            if (!inRange) return false;
        }
@@ -139,7 +137,7 @@ export function useExceptionViewLogic({ exceptions }: UseExceptionViewLogicProps
 
           const start = startOfYear(new Date(targetYear, 0, 1));
           const end = endOfYear(new Date(targetYear, 0, 1));
-          
+
           updateParams({
             from: start.toISOString(),
             to: end.toISOString()
@@ -155,18 +153,18 @@ export function useExceptionViewLogic({ exceptions }: UseExceptionViewLogicProps
       if (filterUnit === 'year') return true;
       if (dateRange?.from && dateRange?.to) {
           const days = Math.abs(dateRange.to.getTime() - dateRange.from.getTime()) / (1000 * 60 * 60 * 24);
-          return days > 35; 
+          return days > 35;
       }
       return false; // Default to Month view
   }, [filterUnit, dateRange, viewMode]);
 
-  // Handlers
+
   const setDateRangeParam = (range: DateRange | undefined) => {
       const updates: Record<string, string | null> = {};
-      
+
       if (range?.from) updates['from'] = range.from.toISOString();
       else updates['from'] = null;
-      
+
       if (range?.to) updates['to'] = range.to.toISOString();
       else updates['to'] = null;
 
@@ -188,8 +186,8 @@ export function useExceptionViewLogic({ exceptions }: UseExceptionViewLogicProps
     searchQuery,
     activeCount,
     filterUnit,
-    
-    // Setters
+
+
     setViewMode: handleViewModeChange,
     setFilterUnit,
     setDateRange: setDateRangeParam,

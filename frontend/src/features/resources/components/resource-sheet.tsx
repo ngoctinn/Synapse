@@ -4,12 +4,12 @@ import { Button } from "@/shared/ui/button";
 import { showToast } from "@/shared/ui/custom/sonner";
 import { Form } from "@/shared/ui/form";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle
 } from "@/shared/ui/sheet";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Save } from "lucide-react";
@@ -85,7 +85,7 @@ export function ResourceSheet({
     }
   }, [open, mode, resource, form]);
 
-  // Handle server action response
+
   React.useEffect(() => {
     if (state.success && state.message) {
       showToast.success(mode === "update" ? "Cập nhật thành công" : "Tạo mới thành công", state.message);

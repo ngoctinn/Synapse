@@ -185,7 +185,7 @@ export function AppointmentTimeline({
   const [currentTime, setCurrentTime] = React.useState(new Date())
   const [hoverTime, setHoverTime] = React.useState<string | null>(null)
 
-  // Update current time every minute
+
   React.useEffect(() => {
     const interval = setInterval(() => setCurrentTime(new Date()), 60000)
     return () => clearInterval(interval)
@@ -206,7 +206,7 @@ export function AppointmentTimeline({
     return { top: `${(minutesFromStart / totalMinutes) * 100}%` }
   }, [currentTime, finalConfig])
 
-  // Handlers
+
   const handleGridClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current || !onSlotClick) return
     const rect = containerRef.current.getBoundingClientRect()

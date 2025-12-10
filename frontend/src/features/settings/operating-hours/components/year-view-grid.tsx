@@ -1,17 +1,17 @@
 
 "use client";
 
-import { useMemo, useRef } from "react";
-import { format, eachMonthOfInterval, startOfYear, endOfYear, startOfMonth, endOfMonth, eachDayOfInterval, getDay, startOfDay, endOfDay, isWithinInterval } from "date-fns";
-import { vi } from "date-fns/locale";
 import { cn } from "@/shared/lib/utils";
-import { ExceptionDate } from "../model/types";
-import { SmartTooltip } from "./smart-tooltip";
-import { getStatusStyles } from "../utils/style-helpers";
 import { Button } from "@/shared/ui/button";
-import { ChevronLeft, ChevronRight, Info, ChevronDown } from "lucide-react";
-import { YearPicker } from "@/shared/ui/custom/year-picker";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/shared/ui/collapsible";
+import { YearPicker } from "@/shared/ui/custom/year-picker";
+import { eachDayOfInterval, eachMonthOfInterval, endOfDay, endOfMonth, endOfYear, format, getDay, startOfDay, startOfMonth, startOfYear } from "date-fns";
+import { vi } from "date-fns/locale";
+import { ChevronDown, ChevronLeft, ChevronRight, Info } from "lucide-react";
+import { useMemo, useRef } from "react";
+import { ExceptionDate } from "../model/types";
+import { getStatusStyles } from "../utils/style-helpers";
+import { SmartTooltip } from "./smart-tooltip";
 
 import { DateRange } from "react-day-picker";
 
@@ -35,7 +35,7 @@ export function YearViewGrid({ year, exceptions, matchedDateKeys, selectedDates,
     const isDragging = useRef(false);
     const dragStartDate = useRef<Date | null>(null);
     const dragAction = useRef<'select' | 'deselect'>('select');
-    
+
     // Performance: Map for fast lookup
     const exceptionMap = useMemo(() => {
         const map = new Map<string, ExceptionDate>();
@@ -49,12 +49,12 @@ export function YearViewGrid({ year, exceptions, matchedDateKeys, selectedDates,
         return set;
     }, [selectedDates]);
 
-    // Handlers
+
     const toggleDate = (date: Date) => {
         const id = format(date, 'yyyy-MM-dd');
         const isSelected = selectedSet.has(id);
-        
-        const newDates = isSelected 
+
+        const newDates = isSelected
             ? selectedDates.filter(d => format(d, 'yyyy-MM-dd') !== id)
             : [...selectedDates, date];
 
@@ -83,16 +83,16 @@ export function YearViewGrid({ year, exceptions, matchedDateKeys, selectedDates,
 
     const handleMouseEnter = (date: Date) => {
         if (!isDragging.current || !dragStartDate.current) return;
-        
+
         const start = dragStartDate.current;
         const end = date;
-        
+
         // Calculate range
         const range = eachDayOfInterval({
             start: start < end ? start : end,
             end: end > start ? end : start
         });
-        
+
         const rangeIds = new Set(range.map(d => format(d, 'yyyy-MM-dd')));
 
         let newDates: Date[];
@@ -105,7 +105,7 @@ export function YearViewGrid({ year, exceptions, matchedDateKeys, selectedDates,
              newDates = selectedDates.filter(d => !rangeIds.has(format(d, 'yyyy-MM-dd')));
              if (newDates.length === selectedDates.length) return;
         }
-        
+
         onSelectDates(newDates);
     };
 
@@ -141,7 +141,7 @@ export function YearViewGrid({ year, exceptions, matchedDateKeys, selectedDates,
                     </Button>
 
                     <div className="flex items-center gap-2 px-2">
-                        <YearPicker 
+                        <YearPicker
                             date={currentDateForPicker}
                             onSelect={handleYearSelect}
                             className="w-[100px] h-9 border-none bg-transparent hover:bg-accent/50 text-center justify-center font-bold text-base"
@@ -184,12 +184,12 @@ export function YearViewGrid({ year, exceptions, matchedDateKeys, selectedDates,
                     </div>
                 </div>
             </div>
-            
+
             {/* Main Grid - Auto-fill for responsiveness (No Media Queries needed) */}
             <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-6 p-4 select-none">
                 {months.map(month => (
-                    <MonthCard 
-                        key={month.toISOString()} 
+                    <MonthCard
+                        key={month.toISOString()}
                         month={month}
                         exceptionMap={exceptionMap}
                         matchedDateKeys={matchedDateKeys}
@@ -299,10 +299,10 @@ function MonthCard({ month, exceptionMap, matchedDateKeys, selectedSet, activeDa
     const startDayOfWeek = getDay(startOfMonth(month)); // 0 = Sunday
     // Adjust for Monday start: (startDayOfWeek + 6) % 7
     const offset = (startDayOfWeek + 6) % 7;
-    
+
     // Creating blanks
-    const blanks = Array(offset).fill(null); 
-    
+    const blanks = Array(offset).fill(null);
+
     return (
          <div className="space-y-2">
              <div className="text-sm font-bold text-muted-foreground capitalize">
@@ -312,15 +312,15 @@ function MonthCard({ month, exceptionMap, matchedDateKeys, selectedSet, activeDa
                  {['T2','T3','T4','T5','T6','T7','CN'].map(d => (
                      <div key={d} className="text-center text-muted-foreground/50 text-[10px]">{d}</div>
                  ))}
-                 
+
                  {blanks.map((_, i) => <div key={`blank-${i}`} />)}
-                 
+
                  {days.map(date => {
                      const id = format(date, 'yyyy-MM-dd');
                      const exception = exceptionMap.get(id);
                      const isSelected = selectedSet.has(id);
-                     const isMatched = matchedDateKeys?.has(id) ?? true; 
-                     
+                     const isMatched = matchedDateKeys?.has(id) ?? true;
+
                      // Check if date is within active view/filter range
                      // If activeDateRange is undefined, we assume full year/all valid
                      let isInRange = true;
@@ -333,7 +333,7 @@ function MonthCard({ month, exceptionMap, matchedDateKeys, selectedSet, activeDa
                      }
 
                      let bgClass = "bg-muted/30 hover:bg-muted";
-                     
+
                      // Dimming Styles (Unified)
                      const dimClasses = "opacity-40 scale-75 hover:opacity-100 hover:scale-100 hover:shadow-sm hover:z-10 hover:ring-1 hover:ring-ring/50 transition-all duration-200 ease-out";
 
@@ -343,7 +343,7 @@ function MonthCard({ month, exceptionMap, matchedDateKeys, selectedSet, activeDa
                          const styles = getStatusStyles(exception.type, exception.isClosed);
                          if (isMatched) {
                              // Matched Exception -> Bold & Eye-catching
-                             bgClass = cn(styles.calendarItem, "shadow-sm ring-1 ring-ring/30 saturate-125 brightness-105 font-bold z-10"); 
+                             bgClass = cn(styles.calendarItem, "shadow-sm ring-1 ring-ring/30 saturate-125 brightness-105 font-bold z-10");
                          } else {
                              // Unmatched Exception -> Dimmed
                              bgClass = cn(styles.calendarItem, dimClasses);

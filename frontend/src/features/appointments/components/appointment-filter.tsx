@@ -5,31 +5,31 @@ import { useFilterParams } from "@/shared/lib/hooks/use-filter-params"
 import { cn } from "@/shared/lib/utils"
 import { Button } from "@/shared/ui/button"
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
 } from "@/shared/ui/command"
 import { DateRangeFilter } from "@/shared/ui/custom/date-range-filter"
 import { FilterButton } from "@/shared/ui/custom/filter-button"
 import { Input } from "@/shared/ui/input"
 
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
 } from "@/shared/ui/popover"
 import { ToggleGroup, ToggleGroupItem } from "@/shared/ui/toggle-group"
 import { format } from "date-fns"
 import {
-  Check,
-  Circle,
-  Search,
-  SlidersHorizontal,
-  Sparkles,
-  User
+    Check,
+    Circle,
+    Search,
+    SlidersHorizontal,
+    Sparkles,
+    User
 } from "lucide-react"
 import * as React from "react"
 import { useMemo, useState } from "react"
@@ -115,7 +115,7 @@ export function AppointmentFilter({ startContent, endContent, className, viewMod
     const selectedStaffIds = staffIdParam ? staffIdParam.split(",") : []
     const selectedServiceIds = serviceIdParam ? serviceIdParam.split(",") : []
 
-    // Handlers
+
     const handleStatusChange = (values: string[]) => {
         const uniqueValues = Array.from(new Set(values))
         updateParam("status", uniqueValues.length > 0 ? uniqueValues.join(",") : null)

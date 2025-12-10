@@ -38,7 +38,7 @@ export async function manageResource(prevState: ActionState, formData: FormData)
     if (rawData.capacity) rawData.capacity = Number(rawData.capacity);
     if (rawData.setupTime) rawData.setupTime = Number(rawData.setupTime);
 
-    // Validate
+
     const validatedFields = resourceSchema.safeParse(rawData);
 
     if (!validatedFields.success) {
@@ -129,12 +129,10 @@ export async function deleteResource(id: string): Promise<ActionState> {
 // --- Compatibility Exports (Deprecated) ---
 
 export async function getRoomTypes(): Promise<Resource[]> {
-  // Return all resources of type ROOM
   return getResources().then(res => res.filter(r => r.type === 'ROOM'));
 }
 
 export async function getEquipmentList(): Promise<Resource[]> {
-  // Return all resources of type EQUIPMENT
   return getResources().then(res => res.filter(r => r.type === 'EQUIPMENT'));
 }
 
