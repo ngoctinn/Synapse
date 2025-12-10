@@ -7,10 +7,10 @@ import { useForm } from "react-hook-form"
 
 import { manageCustomer } from "@/features/customers/actions"
 import {
-  CustomerFormValues,
-  customerSchema,
-  CustomerUpdateFormValues,
-  customerUpdateSchema
+    CustomerFormValues,
+    customerSchema,
+    CustomerUpdateFormValues,
+    customerUpdateSchema
 } from "@/features/customers/schemas"
 import { Customer } from "@/features/customers/types"
 
@@ -18,12 +18,12 @@ import { Button } from "@/shared/ui/button"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { Form } from "@/shared/ui/form"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle
 } from "@/shared/ui/sheet"
 import { CustomerForm } from "./customer-form"
 
@@ -131,7 +131,7 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
             </SheetDescription>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto px-6 py-6 [scrollbar-gutter:stable]">
+        <div className="flex-1 overflow-y-auto px-6 py-6" id="sheet-scroll-container">
             <Form {...form}>
                 <form id="customer-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     <CustomerForm mode={mode} />

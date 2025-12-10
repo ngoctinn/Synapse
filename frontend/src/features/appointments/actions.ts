@@ -50,12 +50,35 @@ export async function manageAppointment(prevState: ActionState, formData: FormDa
         });
 
         // Mock ID generation if not present
-        if (!rawData.id) {
-            rawData.id = `apt-${Date.now()}`;
-            rawData.status = 'pending';
+        if (!rawData.id || rawData.id.startsWith('apt-')) { // In case client sent temp ID
+             // If update existing without ID change, keep it. But for mock we accept client ID or gen new.
+        }
+
+        // --- NEW CUSTOMER LOGIC ---
+        // Check if we need to create a new customer first
+        if (rawData.isNewCustomer === 'true' || (rawData.customerId === '' && rawData.customerName)) {
+            // Simulate Creating Customer
+            const newCustomerId = `cust-${crypto.randomUUID()}`;
+            const newCustomer: Customer = {
+                id: newCustomerId,
+                name: rawData.customerName,
+                phone: rawData.customerPhone || ""
+            };
+
+            // In real app: await db.customers.create(newCustomer);
+            console.log("Creating new customer:", newCustomer);
+
+            // Assign real ID
+            rawData.customerId = newCustomerId;
+            // Remove flag
+            delete rawData.isNewCustomer;
         }
 
         // Mock saving (in reality, validate and save to DB)
+        // Ensure ID is set if empty (though client sends one usually)
+        if (!rawData.id) rawData.id = `apt-${crypto.randomUUID()}`;
+
+        console.log("Saving appointment:", rawData);
 
         // Return success
         return {

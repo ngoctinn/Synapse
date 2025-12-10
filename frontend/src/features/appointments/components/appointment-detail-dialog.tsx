@@ -6,16 +6,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/shared/ui/dialog";
+import { Separator } from "@/shared/ui/separator";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { Calendar, Clock, Edit, FileText, User } from "lucide-react";
 import { Appointment, Resource } from "../types";
 
 interface AppointmentDetailDialogProps {
@@ -82,114 +82,117 @@ export function AppointmentDetailDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-
-            <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+            <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle className="flex items-center justify-between gap-2 flex-wrap">
-                        <span>Chi tiết lịch hẹn</span>
+                    <div className="flex items-center justify-between pr-8">
+                        <DialogTitle>Chi tiết lịch hẹn</DialogTitle>
                         <Badge
-                            variant={statusInfo.variant}
-                            className={statusInfo.className}
-                            aria-label={`Trạng thái: ${statusInfo.label}`}
+                             variant={statusInfo.variant}
+                             className={cn("px-2.5 py-0.5 font-medium border", statusInfo.className)}
                         >
                             {statusInfo.label}
                         </Badge>
-                    </DialogTitle>
-                    <DialogDescription>
-                        Thông tin chi tiết về lịch hẹn của khách hàng, bao gồm thời gian, dịch vụ và kỹ thuật viên phụ trách.
-                    </DialogDescription>
+                    </div>
                 </DialogHeader>
 
                 <div className="grid gap-6 py-4">
-
+                    {/* Header Info */}
                     <div className="flex items-start gap-4">
-                        <div
-                            className="p-2.5 bg-primary/10 rounded-full text-primary flex-shrink-0"
-                            aria-hidden="true"
-                        >
-                            <User className="h-5 w-5" />
-                        </div>
-                        <div className="space-y-1 min-w-0">
-                            <h4 className="text-sm font-medium leading-none text-muted-foreground">Khách hàng</h4>
-                            <p className="font-semibold text-base truncate">{appointment.customerName}</p>
-                            <p className="text-xs text-muted-foreground">Mã KH: {appointment.customerId}</p>
-                        </div>
-                    </div>
-
-
-                    <div className="flex items-start gap-4">
-                        <div
-                            className="p-2.5 bg-[var(--status-confirmed)]/50 rounded-full text-[var(--status-confirmed-foreground)] flex-shrink-0"
-                            aria-hidden="true"
-                        >
-                             <Calendar className="h-5 w-5" />
-                        </div>
-                         <div className="space-y-1 min-w-0">
-                            <h4 className="text-sm font-medium leading-none text-muted-foreground">Thời gian & Dịch vụ</h4>
-                            <p className="font-medium">{format(appointment.startTime, "EEEE, dd 'tháng' MM, yyyy", { locale: vi })}</p>
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-                                <span>{format(appointment.startTime, "HH:mm")} - {format(appointment.endTime, "HH:mm")}</span>
-                            </div>
-                            <p className="text-sm font-medium text-primary mt-1">{appointment.serviceName}</p>
-                        </div>
-                    </div>
-
-
-                     <div className="flex items-start gap-4">
-                        <Avatar className="h-10 w-10 border ring-1 ring-border/20 flex-shrink-0">
-                            <AvatarImage src={resource?.avatar} alt={resource?.name || "Kỹ thuật viên"} />
-                            <AvatarFallback className="text-xs">{resource?.name?.[0] || "?"}</AvatarFallback>
+                        <Avatar className="h-12 w-12 border">
+                            <AvatarFallback className="text-lg">
+                                {appointment.customerName.charAt(0).toUpperCase()}
+                            </AvatarFallback>
                         </Avatar>
-                        <div className="space-y-1 min-w-0">
-                            <h4 className="text-sm font-medium leading-none text-muted-foreground">Kỹ thuật viên</h4>
-                            <p className="font-medium truncate">{resource?.name || "Chưa phân công"}</p>
-                            <p className="text-xs text-muted-foreground">{resource?.role || "—"}</p>
+                        <div className="space-y-1">
+                            <h2 className="text-base font-semibold leading-none">{appointment.customerName}</h2>
+                            {appointment.customerPhone && (
+                                <p className="text-sm text-muted-foreground">{appointment.customerPhone}</p>
+                            )}
                         </div>
                     </div>
 
+                    <Separator />
 
-                    {appointment.notes && (
-                        <div className="flex items-start gap-4">
-                            <div
-                                className="p-2.5 bg-muted rounded-full text-muted-foreground flex-shrink-0"
-                                aria-hidden="true"
-                            >
-                                <FileText className="h-5 w-5" />
-                            </div>
-                            <div className="space-y-1 min-w-0">
-                                <h4 className="text-sm font-medium leading-none text-muted-foreground">Ghi chú</h4>
-                                <p className="text-sm italic text-foreground/80">{appointment.notes}</p>
+                    {/* Main Content Grid */}
+                    <div className="grid grid-cols-2 gap-4">
+                        {/* Time Column */}
+                        <div className="space-y-3">
+                            <div>
+                                <p className="text-xs font-medium text-muted-foreground uppercase">Thời gian</p>
+                                <p className="text-sm font-medium mt-1">
+                                    {format(appointment.startTime, "EEEE, dd/MM", { locale: vi })}
+                                </p>
+                                <p className="text-sm text-muted-foreground">
+                                    {format(appointment.startTime, "HH:mm")} - {format(appointment.endTime, "HH:mm")}
+                                </p>
                             </div>
                         </div>
-                    )}
+
+                         {/* Service Column */}
+                        <div className="space-y-3">
+                            <div>
+                                <p className="text-xs font-medium text-muted-foreground uppercase">Dịch vụ</p>
+                                <p className="text-sm font-medium mt-1">{appointment.serviceName}</p>
+                                <p className="text-xs text-muted-foreground">
+                                    {appointment.price ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(appointment.price) : "Chưa báo giá"}
+                                </p>
+                            </div>
+                        </div>
+
+                         {/* Resource Column */}
+                        <div className="col-span-2 space-y-3 pt-2">
+                             <div>
+                                <p className="text-xs font-medium text-muted-foreground uppercase">Kỹ thuật viên</p>
+                                <div className="flex items-center gap-2 mt-1 p-2 bg-muted/40 rounded-md border border-border/50">
+                                     <Avatar className="h-6 w-6 border">
+                                        <AvatarImage src={resource?.avatar} />
+                                        <AvatarFallback className="text-[10px]">{resource?.name?.[0]}</AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex flex-col">
+                                        <span className="text-sm font-medium leading-none">{resource?.name || "Chưa chọn"}</span>
+                                        <span className="text-xs text-muted-foreground mt-0.5">{resource?.role || "—"}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Notes Section */}
+                         {appointment.notes && (
+                             <div className="col-span-2 mt-2">
+                                <div className="bg-muted/30 p-3 rounded-md border border-border/50">
+                                    <p className="text-xs font-medium text-muted-foreground uppercase mb-1">Ghi chú</p>
+                                    <p className="text-sm text-foreground/80 italic">
+                                        "{appointment.notes}"
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
-                <DialogFooter className="gap-2 sm:gap-0 pt-2">
-                     <Button
-                        variant="outline"
-                        onClick={() => onCancel?.(appointment)}
-                        className={cn(
-                            "text-destructive hover:text-destructive hover:bg-destructive/10",
-                            "focus-visible:ring-2 focus-visible:ring-destructive/50 focus-visible:ring-offset-2",
-                            "active:scale-[0.98]",
-                            transitionClass
-                        )}
-                        aria-label="Hủy lịch hẹn này"
-                     >
-                        Hủy hẹn
-                    </Button>
+                <DialogFooter className="flex flex-row justify-between sm:justify-between items-center gap-2 pt-2 border-t mt-2">
                     <Button
-                        onClick={() => onEdit?.(appointment)}
-                        className={cn(
-                            "focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2",
-                            "active:scale-[0.98]",
-                            transitionClass
-                        )}
-                        aria-label="Chỉnh sửa lịch hẹn"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onCancel?.(appointment)}
+                        className="text-destructive hover:text-destructive hover:bg-destructive/10 -ml-2 h-8 px-3"
+                        aria-label="Hủy lịch hẹn"
                     >
-                        <Edit className="h-4 w-4 mr-2" aria-hidden="true" /> Chỉnh sửa
+                        Hủy lịch hẹn
                     </Button>
+                    <div className="flex gap-2">
+                        <DialogClose asChild>
+                            <Button variant="outline" size="sm" className="h-8">Đóng</Button>
+                        </DialogClose>
+                        <Button
+                            onClick={() => onEdit?.(appointment)}
+                            size="sm"
+                            className={cn("h-8 bg-primary hover:bg-primary/90", transitionClass)}
+                            aria-label="Chỉnh sửa lịch hẹn"
+                        >
+                            Chỉnh sửa
+                        </Button>
+                    </div>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

@@ -1,14 +1,14 @@
 "use client"
 
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
 } from "@/shared/ui/alert-dialog"
 import { Button } from "@/shared/ui/button"
 
@@ -19,6 +19,7 @@ import { toast } from "sonner"
 import { Appointment, Customer, Resource } from "@/features/appointments/types"
 import { Service } from "@/features/services/types"
 import { Plus } from "lucide-react"
+import { AppointmentDetailDialog } from "./appointment-detail-dialog"; // Import Detail Dialog
 import { AppointmentFilter } from "./appointment-filter"
 import { AppointmentSheet } from "./appointment-sheet"
 import { AppointmentTable } from "./appointment-table"
@@ -62,6 +63,9 @@ export function AppointmentPage({
   const [isCancelAlertOpen, setIsCancelAlertOpen] = useState(false)
   const [appointmentToCancel, setAppointmentToCancel] = useState<Appointment | null>(null)
 
+  // NEW: State for Detail Dialog
+  const [isDetailOpen, setIsDetailOpen] = useState(false)
+
 
   /*
     SYNC STATE: Sync local state with server props when they change.
@@ -85,9 +89,8 @@ export function AppointmentPage({
   }
 
   const handleAppointmentClick = (appointment: Appointment) => {
-      setSheetMode("update")
       setSelectedAppointment(appointment)
-      setIsSheetOpen(true)
+      setIsDetailOpen(true) // Open Detail Dialog instead of Sheet
   }
 
   const handleCreateButtonClick = () => {
@@ -96,6 +99,13 @@ export function AppointmentPage({
       setCreateDefaultResource(undefined)
       setSelectedAppointment(null)
       setIsSheetOpen(true)
+  }
+
+  const handleStatusChange = (id: string, status: any) => {
+      setAppointments(prev => prev.map(a =>
+          a.id === id ? { ...a, status: status } : a
+      ));
+      // TODO: Call Server Action updateStatus(id, status)
   }
 
   const handleSheetSubmit = (data: any) => {
@@ -109,7 +119,10 @@ export function AppointmentPage({
   }
 
   const handleEditAppointment = (appointment: Appointment) => {
-     handleAppointmentClick(appointment)
+     setIsDetailOpen(false) // Close Detail
+     setSheetMode("update")
+     setSelectedAppointment(appointment)
+     setIsSheetOpen(true) // Open Edit Sheet
   }
 
   const handleCreateCancelRequest = (appointment: Appointment) => {
@@ -179,6 +192,7 @@ export function AppointmentPage({
                   appointments={appointments}
                   resources={initialResources}
                   onEdit={handleEditAppointment}
+                  onStatusChange={handleStatusChange}
                   onCancel={handleCreateCancelRequest}
                 />
              </div>
@@ -198,6 +212,17 @@ export function AppointmentPage({
         services={initialServices}
         customers={initialCustomers}
         resources={initialResources}
+        existingAppointments={appointments}
+      />
+
+      {/* NEW: Detail Dialog Component */}
+      <AppointmentDetailDialog
+        open={isDetailOpen}
+        onOpenChange={setIsDetailOpen}
+        appointment={selectedAppointment}
+        resource={initialResources.find(r => r.id === selectedAppointment?.resourceId)}
+        onEdit={handleEditAppointment}
+        onCancel={handleCreateCancelRequest}
       />
 
       <AlertDialog open={isCancelAlertOpen} onOpenChange={setIsCancelAlertOpen}>

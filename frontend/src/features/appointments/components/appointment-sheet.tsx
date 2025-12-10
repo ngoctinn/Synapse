@@ -36,6 +36,7 @@ interface AppointmentSheetProps {
   services: Service[]
   customers: Customer[]
   resources: Resource[]
+  existingAppointments?: Appointment[]
 }
 
 export function AppointmentSheet({
@@ -48,7 +49,8 @@ export function AppointmentSheet({
     onSubmit,
     services,
     customers,
-    resources
+    resources,
+    existingAppointments = [], // Add prop with default value
 }: AppointmentSheetProps) {
   const [state, dispatch, isPending] = React.useActionState(manageAppointment, initialState)
 
@@ -96,7 +98,7 @@ export function AppointmentSheet({
             </SheetDescription>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto px-6 py-6 [scrollbar-gutter:stable]">
+        <div className="flex-1 overflow-y-auto px-6 py-6" id="sheet-scroll-container">
 
             <AppointmentForm
                 id="appointment-form"
@@ -107,6 +109,7 @@ export function AppointmentSheet({
                 services={services || []}
                 customers={customers || []}
                 resources={resources || []}
+                existingAppointments={existingAppointments}
                 onSuccess={handleSheetSubmit}
                 onCancel={() => onOpenChange(false)}
             />

@@ -1,19 +1,22 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
+import { areIntervalsOverlapping, format, isSameDay } from "date-fns";
 import { vi } from "date-fns/locale";
 import {
+  AlertCircle,
   Calendar as CalendarIcon,
   Check,
   ChevronsUpDown,
   Clock,
   Search,
 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { cn } from "@/shared/lib/utils";
+import { Alert, AlertDescription, AlertTitle } from "@/shared/ui/alert"; // Import Alert components
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
@@ -46,7 +49,6 @@ import {
   CommandItem,
   CommandList
 } from "@/shared/ui/command";
-import { useMemo, useState } from "react";
 
 const formSchema = z.object({
   customerName: z.string().min(2, "Tên khách hàng phải có ít nhất 2 ký tự"),
@@ -67,6 +69,7 @@ interface AppointmentFormProps {
     services: Service[];
     customers: Customer[];
     resources: Resource[];
+    existingAppointments?: Appointment[]; // Add this prop
     onSuccess: (appointment: Partial<Appointment>) => void;
     onCancel: () => void;
 }
@@ -80,6 +83,7 @@ export function AppointmentForm({
     services,
     customers,
     resources,
+    existingAppointments = [],
     onSuccess,
     onCancel,
 }: AppointmentFormProps) {
@@ -96,7 +100,7 @@ export function AppointmentForm({
             phoneNumber: initialData?.customerId ? (customers.find(c => c.id === initialData.customerId)?.phone || "") : "",
             serviceId: initialData?.serviceId || "",
             resourceId: initialData?.resourceId || defaultResourceId || "",
-            date: initialData ? format(initialData.startTime, 'yyyy-MM-dd') : (defaultDate ? format(defaultDate, 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd')),
+            date: initialData ? format(initialData.startTime, 'yyyy-MM-dd') : (defaultDate ? format(defaultDate, 'yyyy-MM-dd') : ""),
             startTime: initialData ? format(initialData.startTime, 'HH:mm') : (defaultDate ? format(defaultDate, 'HH:mm') : "09:00"),
             notes: initialData?.notes || "",
         },
@@ -104,6 +108,13 @@ export function AppointmentForm({
 
     const selectedServiceId = form.watch("serviceId");
     const startTimeStr = form.watch("startTime");
+
+    // Fix Hydration Mismatch: Set default date on client side
+    useEffect(() => {
+        if (!form.getValues("date")) {
+            form.setValue("date", format(new Date(), 'yyyy-MM-dd'));
+        }
+    }, []);
 
     const selectedService = useMemo(() =>
         services.find(s => s.id === selectedServiceId),
@@ -118,7 +129,51 @@ export function AppointmentForm({
         return format(endDate, 'HH:mm');
     }, [selectedService, startTimeStr]);
 
+    // --- Conflict Detection Logic ---
+    const conflictWarning = useMemo(() => {
+        if (!selectedService || !startTimeStr || !form.watch("resourceId") || !form.watch("date")) return null;
+
+        const dateObj = new Date(form.watch("date"));
+        const [hours, minutes] = startTimeStr.split(':').map(Number);
+        const startTime = new Date(dateObj);
+        startTime.setHours(hours, minutes);
+        const duration = selectedService.duration;
+        const buffer = selectedService.buffer_time || 0;
+        const endTime = new Date(startTime.getTime() + (duration + buffer) * 60000);
+        const resourceId = form.watch("resourceId");
+
+        const hasConflict = existingAppointments.some(apt => {
+            // 1. First Pass: Filter by Day (Fastest Check)
+            if (!isSameDay(startTime, apt.startTime)) return false;
+
+            // 2. Skip current appointment if updating
+            if (initialData && apt.id === initialData.id) return false;
+
+            // 3. Skip different resources
+            if (apt.resourceId !== resourceId) return false;
+
+            // 4. Skip cancelled
+            if (apt.status === 'cancelled') return false;
+
+            // 5. Expensive Interval Check
+            return areIntervalsOverlapping(
+                { start: startTime, end: endTime },
+                { start: apt.startTime, end: apt.endTime }
+            );
+        });
+
+        if (hasConflict) {
+            return "Nhân viên này đã có lịch hẹn trong khung giờ bạn chọn!";
+        }
+        return null;
+    }, [selectedService, startTimeStr, form.watch("resourceId"), form.watch("date"), existingAppointments, initialData]);
+
     const handleSubmit = (values: z.infer<typeof formSchema>) => {
+        if (conflictWarning) {
+            form.setError("startTime", { message: "Vui lòng chọn giờ khác do trùng lịch." });
+            return;
+        }
+
         const service = services.find(s => s.id === values.serviceId);
 
         const dateObj = new Date(values.date);
@@ -127,17 +182,47 @@ export function AppointmentForm({
         const startTime = new Date(dateObj);
         startTime.setHours(hours, minutes);
 
-        const endTime = new Date(startTime.getTime() + (service?.duration || 60) * 60000);
+        // Calculate End Time INCLUDING buffer time
+        const duration = service?.duration || 60;
+        const buffer = service?.buffer_time || 0;
+        const endTime = new Date(startTime.getTime() + (duration + buffer) * 60000);
 
-        const newAppointment: Partial<Appointment> = {
-            id: initialData?.id || `apt-${Date.now()}`,
-            customerId: initialData?.customerId || `cust-${Date.now()}`,
+        // Logic xử lý Khách hàng
+        let customerId = initialData?.customerId; // Mặc định giữ ID cũ nếu có
+
+        if (customerTab === 'new') {
+            // Nếu Tab là 'new', XÓA customerId để báo hiệu Backend cần tạo mới
+            customerId = undefined;
+        } else {
+             // Nếu Tab là 'search', tìm customerId tương ứng với tên/sđt (nếu User chọn từ list)
+             // Lưu ý: Logic tìm kiếm hiện tại chỉ fill text vào form.
+             // Cần cải tiến: Khi chọn từ Combo box, nên lưu hidden field 'customerId'.
+             // Tạm thời: Logic này giả định User đã chọn đúng.
+             // Trong thực tế: Cần lưu customerId vào state hoặc hidden form field.
+             const matchedCustomer = customers.find(c => c.name === values.customerName && c.phone === values.phoneNumber);
+             if (matchedCustomer) {
+                 customerId = matchedCustomer.id;
+             }
+             // Nếu không match (user gõ tay vào ô search mà ko chọn), coi như khách mới hoặc lỗi?
+             // Hiện tại xử lý an toàn: Nếu không tìm thấy ID, coi như khách mới (undefined)
+             if (!customerId && !initialData) {
+                 customerId = undefined; // Sẽ kích hoạt tạo mới
+             }
+        }
+
+        const newAppointment: Partial<Appointment> & { isNewCustomer?: boolean } = {
+            id: initialData?.id || `apt-${crypto.randomUUID()}`,
+            customerId: customerId || "", // Empty string if undefined to satisfy type, logic backend will check
+            isNewCustomer: !customerId, // Flag explicitly
             customerName: values.customerName,
+            customerPhone: values.phoneNumber, // Add phone number to transfer object
             serviceId: values.serviceId,
             serviceName: service?.name || "Dịch vụ",
             resourceId: values.resourceId,
             startTime: startTime,
             endTime: endTime,
+            price: service?.price || 0,
+            bufferTime: buffer,
             status: initialData?.status || 'pending',
             notes: values.notes,
             color: initialData?.color || '#3B82F6',
@@ -350,6 +435,16 @@ export function AppointmentForm({
                             )}
                         />
                     </div>
+
+                    {conflictWarning && (
+                        <Alert variant="destructive" className="mt-2 animate-in fade-in slide-in-from-top-1">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertTitle>Trùng lịch!</AlertTitle>
+                            <AlertDescription>
+                                {conflictWarning}
+                            </AlertDescription>
+                        </Alert>
+                    )}
                 </div>
 
                 <div className="space-y-4">

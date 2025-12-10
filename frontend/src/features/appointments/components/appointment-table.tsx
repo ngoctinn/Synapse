@@ -37,7 +37,9 @@ interface AppointmentTableProps {
   appointments: Appointment[]
   resources: Resource[]
   onEdit: (appointment: Appointment) => void
+
   onCancel: (appointment: Appointment) => void
+  onStatusChange?: (id: string, status: AppointmentStatus) => void // Add new prop
 }
 
 import { APPOINTMENT_STATUS_CONFIG } from "../config"
@@ -55,7 +57,9 @@ export function AppointmentTable({
   appointments,
   resources,
   onEdit,
-  onCancel
+
+  onCancel,
+  onStatusChange
 }: AppointmentTableProps) {
 
 
@@ -178,6 +182,27 @@ export function AppointmentTable({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
+
+                      {/* Quick Actions */}
+                      {onStatusChange && appointment.status === 'pending' && (
+                          <DropdownMenuItem onClick={() => onStatusChange(appointment.id, 'confirmed')}>
+                             Xác nhận lịch hẹn
+                          </DropdownMenuItem>
+                      )}
+
+                      {onStatusChange && appointment.status === 'confirmed' && (
+                          <DropdownMenuItem onClick={() => onStatusChange(appointment.id, 'serving')}>
+                             Check-in khách
+                          </DropdownMenuItem>
+                      )}
+
+                      {onStatusChange && appointment.status === 'serving' && (
+                          <DropdownMenuItem onClick={() => onStatusChange(appointment.id, 'completed')}>
+                             Hoàn thành
+                          </DropdownMenuItem>
+                      )}
+
+                      <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => onEdit(appointment)}>
                         Chỉnh sửa
                       </DropdownMenuItem>

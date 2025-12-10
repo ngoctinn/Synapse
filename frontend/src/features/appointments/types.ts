@@ -17,6 +17,7 @@ export interface Appointment {
   id: string;
   customerId: string;
   customerName: string;
+  customerPhone?: string;
   serviceId: string;
   serviceName: string;
   resourceId: string;
@@ -25,6 +26,8 @@ export interface Appointment {
   status: AppointmentStatus;
   notes?: string;
   color?: string;
+  price?: number;
+  bufferTime?: number;
 }
 
 export interface Customer {
