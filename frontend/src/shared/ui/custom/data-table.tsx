@@ -1,5 +1,6 @@
 "use client"
 
+import { getNestedValue } from "@/shared/lib/object-utils"
 import { cn } from "@/shared/lib/utils"
 import { Checkbox } from "@/shared/ui/checkbox"
 import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row"
@@ -18,7 +19,8 @@ import { ReactNode } from "react"
 
 export interface Column<T> {
   header: string | ReactNode
-  accessorKey?: keyof T
+  accessorKey?: keyof T | string // Allow string for nested keys
+  id?: string // For sorting/identifying when accessorKey is nested
   cell?: (item: T) => ReactNode
   className?: string
   headerClassName?: string
@@ -202,7 +204,7 @@ export function DataTable<T>({
                         {col.cell
                           ? col.cell(item)
                           : col.accessorKey
-                          ? (item[col.accessorKey] as ReactNode)
+                          ? (getNestedValue(item, col.accessorKey) as ReactNode)
                           : null}
                       </TableCell>
                     ))}

@@ -1,8 +1,8 @@
 "use client"
 
-import { format } from "date-fns"
+import { format, getHours, parse } from "date-fns"
 import { vi } from "date-fns/locale"
-import { Clock, Info, Moon, Sun, Sunrise } from "lucide-react"
+import { Clock, Info, LucideIcon, Moon, Sun, Sunrise } from "lucide-react"
 import * as React from "react"
 
 import { cn } from "@/shared/lib/utils"
@@ -15,6 +15,17 @@ import { Skeleton } from "@/shared/ui/skeleton"
 import { MOCK_SLOTS } from "../../../mocks"
 import { TimeSlot } from "../../../types"
 import { BookingStepProps } from "../types"
+
+const TIME_SECTIONS: {
+    key: 'morning' | 'afternoon' | 'evening';
+    label: string;
+    icon: LucideIcon;
+    range: [number, number]; // [startHour, endHour)
+}[] = [
+    { key: 'morning', label: 'Buổi sáng', icon: Sunrise, range: [0, 12] },
+    { key: 'afternoon', label: 'Buổi chiều', icon: Sun, range: [12, 17] },
+    { key: 'evening', label: 'Buổi tối', icon: Moon, range: [17, 24] },
+];
 
 export function StepTime({ state, updateState }: BookingStepProps) {
     const { selectedDate, selectedTime, preference } = state
@@ -29,15 +40,29 @@ export function StepTime({ state, updateState }: BookingStepProps) {
         }
     }, [selectedDate])
 
-    const timeSlots = React.useMemo(() => {
-        const morning = MOCK_SLOTS.filter((s: TimeSlot) => parseInt(s.time.split(':')[0]) < 12)
-        const afternoon = MOCK_SLOTS.filter((s: TimeSlot) => {
-            const h = parseInt(s.time.split(':')[0])
-            return h >= 12 && h < 17
-        })
-        const evening = MOCK_SLOTS.filter((s: TimeSlot) => parseInt(s.time.split(':')[0]) >= 17)
-        return { morning, afternoon, evening }
-    }, [])
+    const groupedSlots = React.useMemo(() => {
+        const groups: Record<string, TimeSlot[]> = {
+            morning: [],
+            afternoon: [],
+            evening: []
+        };
+
+        MOCK_SLOTS.forEach((slot: TimeSlot) => {
+            // Safe parsing using date-fns
+            const date = parse(slot.time, 'HH:mm', new Date());
+            const hour = getHours(date);
+
+            const section = TIME_SECTIONS.find(
+                s => hour >= s.range[0] && hour < s.range[1]
+            );
+
+            if (section) {
+                groups[section.key].push(slot);
+            }
+        });
+
+        return groups;
+    }, []);
 
     return (
         <div className="flex flex-col md:flex-row h-full gap-6 animate-in fade-in slide-in-from-right-4 duration-300">
@@ -90,71 +115,36 @@ export function StepTime({ state, updateState }: BookingStepProps) {
                                     <Skeleton className="h-5 w-24" />
                                     <div className="grid grid-cols-4 gap-2">
                                         <Skeleton className="h-10 w-full rounded-md" />
-                                        <Skeleton className="h-10 w-full rounded-md" />
-                                        <Skeleton className="h-10 w-full rounded-md" />
-                                        <Skeleton className="h-10 w-full rounded-md" />
                                     </div>
                                 </div>
                             ))}
                         </div>
                     ) : (
                         <div className="space-y-6 pb-4">
-                            {/* Morning */}
-                            {timeSlots.morning.length > 0 && (
-                                <div className="space-y-3">
-                                    <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
-                                        <Sunrise className="h-4 w-4" /> Buổi sáng
-                                    </div>
-                                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                                        {timeSlots.morning.map((slot: TimeSlot) => (
-                                            <TimeSlotButton
-                                                key={slot.time}
-                                                slot={slot}
-                                                selectedTime={selectedTime}
-                                                onClick={() => updateState({ selectedTime: slot.time })}
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
+                            {TIME_SECTIONS.map((section) => {
+                                const slots = groupedSlots[section.key];
+                                if (slots.length === 0) return null;
 
-                            {/* Afternoon */}
-                            {timeSlots.afternoon.length > 0 && (
-                                <div className="space-y-3">
-                                    <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
-                                        <Sun className="h-4 w-4" /> Buổi chiều
-                                    </div>
-                                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                                        {timeSlots.afternoon.map((slot: TimeSlot) => (
-                                            <TimeSlotButton
-                                                key={slot.time}
-                                                slot={slot}
-                                                selectedTime={selectedTime}
-                                                onClick={() => updateState({ selectedTime: slot.time })}
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
+                                const Icon = section.icon;
 
-                            {/* Evening */}
-                            {timeSlots.evening.length > 0 && (
-                                <div className="space-y-3">
-                                    <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
-                                        <Moon className="h-4 w-4" /> Buổi tối
+                                return (
+                                    <div key={section.key} className="space-y-3">
+                                        <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
+                                            <Icon className="h-4 w-4" /> {section.label}
+                                        </div>
+                                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                                            {slots.map((slot: TimeSlot) => (
+                                                <TimeSlotButton
+                                                    key={slot.time}
+                                                    slot={slot}
+                                                    selectedTime={selectedTime}
+                                                    onClick={() => updateState({ selectedTime: slot.time })}
+                                                />
+                                            ))}
+                                        </div>
                                     </div>
-                                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                                        {timeSlots.evening.map((slot: TimeSlot) => (
-                                            <TimeSlotButton
-                                                key={slot.time}
-                                                slot={slot}
-                                                selectedTime={selectedTime}
-                                                onClick={() => updateState({ selectedTime: slot.time })}
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
+                                );
+                            })}
                         </div>
                     )}
                 </ScrollArea>

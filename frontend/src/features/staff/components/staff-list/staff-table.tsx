@@ -1,18 +1,18 @@
 "use client"
 
 import { Skill } from "@/features/services/types"
-import { deleteStaff } from "@/features/staff/actions"
+import { useStaffActions } from "@/features/staff/hooks/use-staff-actions"
 import { useTableSelection } from "@/shared/hooks/use-table-selection"
 import { cn } from "@/shared/lib/utils"
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/shared/ui/alert-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
@@ -21,23 +21,23 @@ import { AnimatedUsersIcon } from "@/shared/ui/custom/animated-icon"
 import { Column, DataTable } from "@/shared/ui/custom/data-table"
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state"
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
-import { showToast } from "@/shared/ui/custom/sonner"
 import { StatusBadge } from "@/shared/ui/custom/status-badge"
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar"
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/shared/ui/tooltip"
 import { Calendar } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useState, useTransition } from "react"
+import { useState } from "react"
 import { ROLE_CONFIG } from "../../constants"
 import { Staff } from "../../types"
 import { InviteStaffTrigger } from "../invite-staff-trigger"
 import { StaffSheet } from "../staff-sheet"
 import { StaffActions } from "./staff-actions"
+
 
 interface StaffTableProps {
   data: Staff[]
@@ -80,9 +80,8 @@ export function StaffTable({
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false)
   const [editingStaff, setEditingStaff] = useState<Staff | null>(null)
-  const [isPending, startTransition] = useTransition()
+
 
 
   const sortColumn = searchParams.get("sort_by") || "created_at"
@@ -93,6 +92,13 @@ export function StaffTable({
     data,
     keyExtractor: (item) => item.user_id,
   })
+
+  const {
+      isPending,
+      showBulkDeleteDialog,
+      setShowBulkDeleteDialog,
+      handleBulkDelete
+  } = useStaffActions()
 
   const handlePageChange = (newPage: number) => {
     if (onPageChange) {
@@ -116,45 +122,19 @@ export function StaffTable({
     router.push(`${pathname}?${params.toString()}`)
   }
 
-
-  const handleBulkDelete = async () => {
-    const ids = Array.from(selection.selectedIds) as string[]
-    if (ids.length === 0) return
-
-    startTransition(async () => {
-      try {
-        let successCount = 0
-        for (const id of ids) {
-          try {
-            const result = await deleteStaff(id)
-            if (result.success) successCount++
-          } catch (e) {
-            console.error(`Failed to delete ${id}:`, e)
-          }
-        }
-
-        if (successCount > 0) {
-          showToast.success("Thành công", `Đã xóa ${successCount} nhân viên`)
-          selection.clearAll()
-        }
-        if (successCount < ids.length) {
-          showToast.error("Lỗi", `Không thể xóa ${ids.length - successCount} nhân viên`)
-        }
-      } catch (error) {
-        console.error(error)
-        showToast.error("Lỗi", "Không thể xóa nhân viên")
-      } finally {
-        setShowBulkDeleteDialog(false)
-      }
-    })
+  const onBulkDelete = () => {
+      const ids = Array.from(selection.selectedIds) as string[]
+      handleBulkDelete(ids, selection.clearAll)
   }
 
   const columns: Column<Staff>[] = [
     {
       header: "Nhân viên",
-      accessorKey: "user.full_name" as any, // Cast to avoid TS error with nested keys if generic is simple
+      accessorKey: "user.full_name",
+      id: "user.full_name",
       sortable: true,
       cell: (staff) => (
+
         <div className="flex items-center gap-4">
           <Avatar className="h-11 w-11 border">
             <AvatarImage src={staff.user.avatar_url || undefined} alt={staff.user.full_name || ""} />
@@ -174,9 +154,11 @@ export function StaffTable({
     },
     {
       header: "Vai trò",
-      accessorKey: "user.role" as any,
+      accessorKey: "user.role",
+      id: "user.role",
       sortable: true,
       cell: (staff) => (
+
         <Badge
           variant={ROLE_CONFIG[staff.user.role]?.variant || "outline"}
           className={cn(
@@ -302,7 +284,8 @@ export function StaffTable({
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isPending}>Hủy</AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleBulkDelete}
+              onClick={onBulkDelete}
+
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               disabled={isPending}
             >
