@@ -18,11 +18,11 @@ const badgeVariants = cva(
         outline:
           "text-foreground border-border [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
         success:
-          "border-alert-success-border bg-alert-success/10 text-alert-success-foreground hover:bg-alert-success/20",
+          "border-transparent bg-success/15 text-success hover:bg-success/25",
         warning:
-          "border-alert-warning-border bg-alert-warning/10 text-alert-warning-foreground hover:bg-alert-warning/20",
+          "border-transparent bg-warning/15 text-warning hover:bg-warning/25",
         info:
-          "border-alert-info-border bg-alert-info/10 text-alert-info-foreground hover:bg-alert-info/20",
+          "border-transparent bg-info/15 text-info hover:bg-info/25",
         // Role-specific Semantic Colors (Mapped to Design System)
         purple:
           "border-purple-200 bg-purple-500/10 text-purple-700 dark:border-purple-800 dark:bg-purple-500/20 dark:text-purple-300 hover:bg-purple-500/20",

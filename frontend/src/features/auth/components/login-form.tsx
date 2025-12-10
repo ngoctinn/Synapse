@@ -27,7 +27,7 @@ import {
 export function LoginForm() {
   const router = useRouter();
 
-  // Sử dụng hook useActionState để quản lý trạng thái form server action
+
   const [state, action, isPending] = useActionState(loginAction, undefined);
 
   const form = useForm<LoginInput>({
@@ -38,7 +38,7 @@ export function LoginForm() {
     },
   });
 
-  // Effect để xử lý phản hồi từ server
+
   useEffect(() => {
     if (state?.success) {
       showToast.success("Đăng nhập thành công", "Chào mừng bạn quay trở lại hệ thống.");
@@ -48,7 +48,7 @@ export function LoginForm() {
     }
   }, [state, router]);
 
-  // Hàm xử lý submit form
+
   function onSubmit(values: LoginInput) {
     const formData = new FormData();
     formData.append("email", values.email);

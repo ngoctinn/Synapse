@@ -28,7 +28,7 @@ import { Service } from "@/features/services/types"
 import { MOCK_STAFF } from "@/features/staff"
 import { useReducedMotion } from "@/shared/hooks"
 import { Button } from "@/shared/ui/button"
-import { Dialog, DialogContent } from "@/shared/ui/dialog"
+import { Dialog, DialogContent, DialogTitle } from "@/shared/ui/dialog"
 import { Progress } from "@/shared/ui/progress"
 
 // Bookings Sub-components
@@ -155,6 +155,7 @@ export function BookingDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[95vw] sm:max-w-[480px] md:max-w-4xl p-0 gap-0 overflow-hidden h-[90vh] md:h-[600px] flex flex-col md:flex-row bg-background/95 backdrop-blur-3xl border-none shadow-2xl">
+        <DialogTitle className="sr-only">{stepTitle}</DialogTitle>
 
         {/* SIDEBAR (Desktop Only - except success) */}
         {state.step !== "success" && (

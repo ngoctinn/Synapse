@@ -75,11 +75,13 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        Root: ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
+        Root: ({ className, ...props }: React.ComponentProps<"div"> & { rootRef?: React.Ref<HTMLDivElement> }) => {
+          const { rootRef, ...rest } = props
           return (
             <div
               className={cn(className)}
-              {...props}
+              ref={rootRef}
+              {...rest}
             />
           )
         },
@@ -108,7 +110,10 @@ function CalendarDayButton({
   day,
   modifiers,
   ...props
-}: any) {
+}: React.ComponentProps<typeof Button> & {
+  day: { date: Date }
+  modifiers: Record<string, boolean | undefined>
+}) {
 
 
   const ref = React.useRef<HTMLButtonElement>(null)
@@ -138,3 +143,4 @@ function CalendarDayButton({
 }
 
 export { Calendar, CalendarDayButton }
+
