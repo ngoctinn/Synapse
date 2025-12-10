@@ -34,3 +34,6 @@ export const ROLES = [
   { id: "receptionist", name: "Lễ tân", variant: "info" },
   { id: "technician", name: "Kỹ thuật viên", variant: "warning" },
 ] as const
+
+export const STAFF_HEADER_OFFSET_CLASS = "top-[105px] md:top-[53px]"
+

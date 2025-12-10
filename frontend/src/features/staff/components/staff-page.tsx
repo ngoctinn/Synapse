@@ -68,12 +68,6 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
   return (
     <div
       className="min-h-screen flex flex-col w-full"
-      style={
-        {
-          "--staff-header-height": "53px",
-          "--staff-header-height-mobile": "105px",
-        } as React.CSSProperties
-      }
     >
       <Tabs defaultValue="list" className="flex flex-col flex-1 w-full gap-0" onValueChange={setActiveTab}>
 

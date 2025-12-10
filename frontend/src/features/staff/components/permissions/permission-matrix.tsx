@@ -1,20 +1,21 @@
 "use client"
 
+import { cn } from "@/shared/lib/utils"
 import { Badge } from "@/shared/ui/badge"
 import { Checkbox } from "@/shared/ui/checkbox"
 import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row"
 import {
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from "@/shared/ui/table"
 import { Lock } from "lucide-react"
 import { useState, useTransition } from "react"
 import { toast } from "sonner"
 import { updatePermissions } from "../../actions"
-import { MODULES, ROLES } from "../../constants"
+import { MODULES, ROLES, STAFF_HEADER_OFFSET_CLASS } from "../../constants"
 import { BulkSaveBar } from "./bulk-save-bar"
 
 interface PermissionMatrixProps {
@@ -68,7 +69,7 @@ export function PermissionMatrix({ initialPermissions, className }: PermissionMa
       <div className="">
         <div className="relative w-full">
           <table className="w-full caption-bottom text-sm">
-            <TableHeader className="sticky top-[var(--staff-header-height-mobile)] md:top-[var(--staff-header-height)] z-30 bg-background shadow-[0_1px_0_0_rgba(0,0,0,0.05)]">
+            <TableHeader className={cn("sticky z-30 bg-background shadow-[0_1px_0_0_rgba(0,0,0,0.05)]", STAFF_HEADER_OFFSET_CLASS)}>
               <TableRow className="hover:bg-transparent border-b-0">
                 <TableHead className="w-[250px] font-semibold pl-8 bg-background">Chức năng (Module)</TableHead>
                 {ROLES.map((role) => (

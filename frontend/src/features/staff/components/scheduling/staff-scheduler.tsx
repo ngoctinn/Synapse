@@ -1,16 +1,18 @@
 "use client"
 
+import { cn } from "@/shared/lib/utils"
 import { format } from "date-fns"
 import { ChevronLeft, ChevronRight, Eraser, Paintbrush, X } from "lucide-react"
 import { useState } from "react"
 
 import { Button } from "@/shared/ui/button"
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/shared/ui/popover"
 import { toast } from "sonner"
+import { STAFF_HEADER_OFFSET_CLASS } from "../../constants"
 import { MOCK_SHIFTS } from "../../data/shifts"
 import { useStaffSchedule } from "../../hooks/use-staff-schedule"
 import { Schedule, Shift, Staff } from "../../types"
@@ -81,9 +83,7 @@ export function StaffScheduler({ initialSchedules, staffList, className }: Staff
 
   return (
     <div className={`flex flex-col gap-0 ${className}`}>
-
-      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 px-4 py-3 border-b shrink-0 sticky top-[var(--staff-header-height-mobile)] md:top-[var(--staff-header-height)] z-20 bg-background">
-
+      <div className={cn("flex flex-col xl:flex-row xl:items-center justify-between gap-4 px-4 py-3 border-b shrink-0 sticky z-20 bg-background", STAFF_HEADER_OFFSET_CLASS)}>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="icon" onClick={prevWeek} className="h-8 w-8 active:scale-95 transition-transform" aria-label="Tuần trước">
             <ChevronLeft className="h-4 w-4" />
