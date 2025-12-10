@@ -5,11 +5,11 @@ import { DatePicker } from "@/shared/ui/custom/date-picker"
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
 import { SelectWithIcon } from "@/shared/ui/custom/select-with-icon"
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { Textarea } from "@/shared/ui/textarea"
@@ -26,6 +26,38 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
 
   const PersonalInfo = () => (
     <div className="space-y-4">
+      {/* Premium Avatar Upload UI - Consistent with StaffForm */}
+      <div className="flex items-start gap-6 p-4 border rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors group">
+         <div className="relative">
+             <div className="size-20 rounded-full bg-background flex items-center justify-center border-2 border-dashed border-muted-foreground/30 group-hover:border-primary/50 transition-all shadow-sm overflow-hidden">
+                 {mode === "update" ? (
+                     <User className="size-8 text-muted-foreground/50" />
+                 ) : (
+                     <div className="text-center">
+                         <User className="size-8 text-muted-foreground/50 mx-auto" />
+                     </div>
+                 )}
+             </div>
+             <button
+                type="button"
+                className="absolute bottom-0 right-0 p-1.5 rounded-full bg-primary text-primary-foreground shadow-md hover:scale-110 transition-transform"
+                title="Tải ảnh lên"
+             >
+                 <User className="size-3" />
+             </button>
+         </div>
+         <div className="flex-1 space-y-1">
+             <div className="flex items-center justify-between">
+                 <p className="text-sm font-medium text-foreground">Ảnh đại diện</p>
+                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 font-medium">Sắp ra mắt</span>
+             </div>
+             <p className="text-xs text-muted-foreground leading-relaxed">
+                 Hỗ trợ định dạng JPG, PNG. Kích thước tối đa 5MB.<br/>
+                 Tải lên ảnh chân dung rõ nét để nhận diện khách hàng.
+             </p>
+         </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField
             control={form.control}

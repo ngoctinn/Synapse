@@ -70,8 +70,8 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
       className="min-h-screen flex flex-col w-full"
       style={
         {
-          "--header-height": "53px",
-          "--header-height-mobile": "105px",
+          "--staff-header-height": "53px",
+          "--staff-header-height-mobile": "105px",
         } as React.CSSProperties
       }
     >
@@ -114,12 +114,26 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
           </TabsContent>
 
           <TabsContent value="permissions" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
-            <PermissionMatrix initialPermissions={initialPermissions} className="border-t" />
+            <Suspense fallback={<div className="p-8 space-y-4">
+              <div className="h-8 w-1/3 bg-muted animate-pulse rounded" />
+              <div className="h-64 w-full bg-muted animate-pulse rounded-lg" />
+            </div>}>
+              <PermissionMatrix initialPermissions={initialPermissions} className="border-t" />
+            </Suspense>
             <Footer />
           </TabsContent>
 
           <TabsContent value="scheduling" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
-            <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Đang tải lịch làm việc...</div>}>
+            <Suspense fallback={<div className="flex-1 flex flex-col p-4 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="h-10 w-48 bg-muted animate-pulse rounded" />
+                <div className="flex gap-2">
+                   <div className="h-9 w-24 bg-muted animate-pulse rounded" />
+                   <div className="h-9 w-24 bg-muted animate-pulse rounded" />
+                </div>
+              </div>
+              <div className="flex-1 w-full bg-muted/20 animate-pulse rounded-lg border border-dashed border-muted" />
+            </div>}>
               <StaffSchedulerWrapper
                 staffListPromise={staffListPromise}
                 initialSchedules={initialSchedules}

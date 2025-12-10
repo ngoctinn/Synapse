@@ -219,8 +219,11 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                   key={color}
                   type="button"
                   onClick={() => field.onChange(color)}
+                  onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && field.onChange(color)}
+                  aria-label={`Chọn màu ${color}`}
+                  aria-pressed={field.value === color}
                   className={cn(
-                    "size-8 rounded-full transition-all flex items-center justify-center relative",
+                    "size-8 rounded-full transition-all flex items-center justify-center relative focus-premium",
                     field.value === color
                       ? "ring-2 ring-offset-2 ring-primary scale-110 shadow-sm"
                       : "hover:scale-110 hover:shadow-sm opacity-80 hover:opacity-100"

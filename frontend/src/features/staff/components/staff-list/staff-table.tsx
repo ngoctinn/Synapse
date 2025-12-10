@@ -5,18 +5,19 @@ import { deleteStaff } from "@/features/staff/actions"
 import { useTableSelection } from "@/shared/hooks/use-table-selection"
 import { cn } from "@/shared/lib/utils"
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/shared/ui/alert-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
+import { AnimatedUsersIcon } from "@/shared/ui/custom/animated-icon"
 import { Column, DataTable } from "@/shared/ui/custom/data-table"
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state"
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
@@ -24,12 +25,12 @@ import { showToast } from "@/shared/ui/custom/sonner"
 import { StatusBadge } from "@/shared/ui/custom/status-badge"
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar"
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/shared/ui/tooltip"
-import { Calendar, Users } from "lucide-react"
+import { Calendar } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useState, useTransition } from "react"
 import { ROLE_CONFIG } from "../../constants"
@@ -266,7 +267,7 @@ export function StaffTable({
         onSort={handleSort}
         emptyState={
           <DataTableEmptyState
-            icon={Users}
+            icon={AnimatedUsersIcon}
             title="Chưa có nhân viên nào"
             description="Danh sách nhân viên hiện đang trống."
           />

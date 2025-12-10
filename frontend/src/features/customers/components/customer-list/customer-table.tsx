@@ -16,6 +16,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
+import { AnimatedUsersIcon } from "@/shared/ui/custom/animated-icon"
 import { Column, DataTable } from "@/shared/ui/custom/data-table"
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state"
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
@@ -35,7 +36,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/shared/ui/tooltip"
-import { Activity, AlertCircle, Edit, MoreHorizontal, Trash2, Users } from "lucide-react"
+import { Activity, AlertCircle, Edit, MoreHorizontal, Trash2 } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useState, useTransition } from "react"
 import { deleteCustomer } from "../../actions"
@@ -243,7 +244,7 @@ export function CustomerTable({
         onSort={handleSort}
         emptyState={
           <DataTableEmptyState
-            icon={Users}
+            icon={AnimatedUsersIcon}
             title="Chưa có khách hàng"
             description="Danh sách khách hàng hiện đang trống."
           />

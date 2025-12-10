@@ -26,6 +26,9 @@
   --timeline-header-offset: calc(var(--appointment-header-height) + var(--calendar-header-height));
   --timeline-header-offset-mobile: calc(var(--appointment-header-height-mobile) + var(--calendar-header-height-mobile));
 
+  --staff-header-height: 53px;
+  --staff-header-height-mobile: 105px;
+
   /* Primary: Deep Teal/Ocean (Sophisticated, Calming) */
   --primary: oklch(0.48 0.14 200);
   --primary-foreground: oklch(0.98 0.01 200);
