@@ -95,6 +95,12 @@
   --alert-info-foreground: oklch(0.40 0.12 240);
   --alert-info-border: oklch(0.88 0.08 240);
 
+  /* Vibrant Alert Colors (Mid-tone for UI Elements like Sonner) */
+  /* Mimics Destructive behavior: High Chroma, Mid Lightness */
+  --alert-warning-vibrant: oklch(0.75 0.16 70);
+  --alert-success-vibrant: oklch(0.65 0.20 150);
+  --alert-info-vibrant: oklch(0.60 0.18 240);
+
   /* --- Appointment Status Colors (Premium Pastel) --- */
   /* Pending: Amber-like */
   --status-pending: oklch(0.96 0.08 85);
@@ -269,6 +275,14 @@
   --color-alert-info: var(--alert-info);
   --color-alert-info-foreground: var(--alert-info-foreground);
   --color-alert-info-border: var(--alert-info-border);
+
+  /* Short aliases for convenience - Mapping to VIBRANT for shared UI components */
+  --color-warning: var(--alert-warning-vibrant);
+  --color-warning-foreground: var(--alert-warning-foreground);
+  --color-success: var(--alert-success-vibrant);
+  --color-success-foreground: var(--alert-success-foreground);
+  --color-info: var(--alert-info-vibrant);
+  --color-info-foreground: var(--alert-info-foreground);
 
   /* Status Colors - Export cho Tailwind utilities */
   --color-status-pending: var(--status-pending);
