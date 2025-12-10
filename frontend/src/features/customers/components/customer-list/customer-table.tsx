@@ -1,21 +1,19 @@
 "use client"
 
-import { CustomerSheet } from "@/features/customers/components/customer-sheet"
 import { useTableSelection } from "@/shared/hooks/use-table-selection"
 import { cn } from "@/shared/lib/utils"
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
 } from "@/shared/ui/alert-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
-import { Button } from "@/shared/ui/button"
 import { AnimatedUsersIcon } from "@/shared/ui/custom/animated-icon"
 import { Column, DataTable } from "@/shared/ui/custom/data-table"
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state"
@@ -23,24 +21,18 @@ import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/shared/ui/dropdown-menu"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
 } from "@/shared/ui/tooltip"
-import { Activity, AlertCircle, Edit, MoreHorizontal, Trash2 } from "lucide-react"
+import { Activity, AlertCircle } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useState, useTransition } from "react"
-import { deleteCustomer } from "../../actions"
 import { Customer } from "../../types"
+import { CreateCustomerTrigger } from "../create-customer-trigger"
+import { CustomerActions } from "../customer-actions"
+import { CustomerSheet } from "../customer-sheet"
 
 interface CustomerTableProps {
   data: Customer[]
@@ -48,8 +40,8 @@ interface CustomerTableProps {
   totalPages?: number
   onPageChange?: (page: number) => void
   className?: string
-  variant?: "default" | "flush"
   isLoading?: boolean
+  variant?: "default" | "flush"
 }
 
 const TIER_STYLES: Record<string, string> = {
@@ -64,7 +56,8 @@ export function CustomerTable({
   totalPages = 1,
   onPageChange,
   className,
-  isLoading
+  isLoading,
+  variant = "default"
 }: CustomerTableProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -81,7 +74,6 @@ export function CustomerTable({
     keyExtractor: (item) => item.user_id,
   })
 
-  // ... (Identical pagination/sorting logic to StaffTable)
   const handlePageChange = (newPage: number) => {
     if (onPageChange) {
       onPageChange(newPage)
@@ -192,27 +184,7 @@ export function CustomerTable({
       className: "pr-6 text-right",
       cell: (customer) => (
         <div onClick={(e) => e.stopPropagation()} className="flex items-center justify-end">
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                        <span className="sr-only">Open menu</span>
-                        <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Tác vụ</DropdownMenuLabel>
-                    <DropdownMenuItem onClick={() => navigator.clipboard.writeText(customer.user_id)}>
-                        Sao chép ID
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => setEditingCustomer(customer)}>
-                        <Edit className="mr-2 h-4 w-4" /> Chỉnh sửa
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => startTransition(async () => { await deleteCustomer(customer.user_id) })}>
-                        <Trash2 className="mr-2 h-4 w-4" /> Xóa
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+            <CustomerActions customer={customer} onEdit={() => setEditingCustomer(customer)} />
         </div>
       )
     }
@@ -230,6 +202,7 @@ export function CustomerTable({
         className={className}
         isLoading={isLoading}
         skeletonCount={5}
+        variant={variant}
 
         selectable
         isSelected={selection.isSelected}
@@ -246,7 +219,8 @@ export function CustomerTable({
           <DataTableEmptyState
             icon={AnimatedUsersIcon}
             title="Chưa có khách hàng"
-            description="Danh sách khách hàng hiện đang trống."
+            description="Tạo khách hàng mới để bắt đầu quản lý hồ sơ và lịch sử."
+            action={<CreateCustomerTrigger />}
           />
         }
       />

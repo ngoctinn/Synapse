@@ -35,6 +35,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useState, useTransition } from "react"
 import { ROLE_CONFIG } from "../../constants"
 import { Staff } from "../../types"
+import { InviteStaffTrigger } from "../invite-staff-trigger"
 import { StaffSheet } from "../staff-sheet"
 import { StaffActions } from "./staff-actions"
 
@@ -270,6 +271,7 @@ export function StaffTable({
             icon={AnimatedUsersIcon}
             title="Chưa có nhân viên nào"
             description="Danh sách nhân viên hiện đang trống."
+            action={<InviteStaffTrigger skills={skills} />}
           />
         }
       />

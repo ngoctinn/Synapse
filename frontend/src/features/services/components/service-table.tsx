@@ -4,14 +4,14 @@ import { Resource, RoomType } from "@/features/resources"
 import { useTableSelection } from "@/shared/hooks/use-table-selection"
 import { formatCurrency } from "@/shared/lib/utils"
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/shared/ui/alert-dialog"
 import { Badge } from "@/shared/ui/badge"
 import { Column, DataTable } from "@/shared/ui/custom/data-table"
@@ -27,6 +27,7 @@ import { deleteService } from "../actions"
 import { Service, Skill } from "../types"
 import { CreateServiceWizard } from "./create-service-wizard"
 import { ServiceActions } from "./service-actions"
+import { ServiceSheet } from "./service-sheet"
 
 interface ServiceTableProps {
   services: Service[]
@@ -57,6 +58,7 @@ export function ServiceTable({
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false)
+  const [editingService, setEditingService] = useState<Service | null>(null)
   const [isPending, startTransition] = useTransition()
 
 
@@ -159,13 +161,16 @@ export function ServiceTable({
     },
     {
       header: "Thao tác",
+      className: "pr-6",
       cell: (service) => (
-        <ServiceActions
-          service={service}
-          availableSkills={availableSkills}
-          availableRoomTypes={availableRoomTypes}
-          availableEquipment={availableEquipment}
-        />
+        <div onClick={(e) => e.stopPropagation()}>
+            <ServiceActions
+            service={service}
+            availableSkills={availableSkills}
+            availableRoomTypes={availableRoomTypes}
+            availableEquipment={availableEquipment}
+            />
+        </div>
       )
     }
   ]
@@ -190,6 +195,8 @@ export function ServiceTable({
         onToggleAll={selection.toggleAll}
         isAllSelected={selection.isAllSelected}
         isPartiallySelected={selection.isPartiallySelected}
+
+        onRowClick={(service) => setEditingService(service)}
         emptyState={
           <DataTableEmptyState
             icon={Plus}
@@ -212,6 +219,18 @@ export function ServiceTable({
         onDeselectAll={selection.clearAll}
         isLoading={isPending}
       />
+
+      {editingService && (
+        <ServiceSheet
+            mode="edit"
+            initialData={editingService}
+            open={!!editingService}
+            onOpenChange={(open) => !open && setEditingService(null)}
+            availableSkills={availableSkills}
+            availableRoomTypes={availableRoomTypes}
+            availableEquipment={availableEquipment}
+        />
+      )}
 
       <AlertDialog
         open={showBulkDeleteDialog}

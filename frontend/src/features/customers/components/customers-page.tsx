@@ -1,7 +1,8 @@
 "use client"
 
 import { SearchInput } from "@/shared/ui/custom/search-input"
-import { Suspense, use } from "react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
+import { Suspense, use, useState } from "react"
 import { CustomerListResponse } from "../actions"
 import { CreateCustomerTrigger } from "./create-customer-trigger"
 import { CustomerFilter } from "./customer-filter"
@@ -33,42 +34,62 @@ function CustomerListWrapper({
   )
 }
 
+const Footer = () => (
+  <div className="text-center text-sm text-muted-foreground py-6 mt-auto">
+    © 2025 Synapse. All rights reserved.
+  </div>
+)
+
 export function CustomersPage({ page, customerListPromise }: CustomersPageProps) {
+  const [activeTab, setActiveTab] = useState("list")
+
   return (
     <div
       className="min-h-screen flex flex-col w-full"
     >
+      <Tabs defaultValue="list" className="flex flex-col flex-1 w-full gap-0" onValueChange={setActiveTab}>
+
         <div
-          className="sticky top-0 z-40 px-4 py-3 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4"
+          className="sticky top-0 z-40 px-4 py-2 bg-background border-b flex flex-col md:flex-row items-center justify-between gap-4"
         >
-          <div className="flex flex-col gap-1">
-             <h1 className="text-xl font-semibold tracking-tight">Khách hàng</h1>
-             <p className="text-sm text-muted-foreground">Quản lý và theo dõi thông tin khách hàng</p>
-          </div>
+          <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto justify-start">
+            <TabsTrigger value="list" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Danh sách</TabsTrigger>
+            <TabsTrigger value="insights" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Thông tin</TabsTrigger>
+          </TabsList>
 
           <div className="flex items-center gap-3 w-full md:w-auto">
-              <div className="flex items-center gap-2 flex-1 md:flex-none">
+            {activeTab === "list" && (
+                <div className="flex items-center gap-2 flex-1 md:flex-none">
                 <SearchInput
-                  placeholder="Tìm kiếm khách hàng..."
-                  className="w-full md:w-[250px] h-9"
+                    placeholder="Tìm kiếm khách hàng..."
+                    className="w-full md:w-[250px] h-9"
                 />
                 <CustomerFilter />
-              </div>
+                </div>
+            )}
             <CreateCustomerTrigger />
           </div>
         </div>
 
-        <div className="flex-1 p-0 flex flex-col">
-            <Suspense fallback={<CustomerTableSkeleton />}>
-              <CustomerListWrapper
-                customerListPromise={customerListPromise}
-                page={page}
-              />
-            </Suspense>
-            <div className="text-center text-sm text-muted-foreground py-6 mt-auto">
-                 © 2025 Synapse. All rights reserved.
-            </div>
+        <div className="flex-1 p-0 motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 duration-300 ease-out flex flex-col">
+            <TabsContent value="list" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
+                <Suspense fallback={<CustomerTableSkeleton />}>
+                <CustomerListWrapper
+                    customerListPromise={customerListPromise}
+                    page={page}
+                />
+                </Suspense>
+                <Footer />
+            </TabsContent>
+
+            <TabsContent value="insights" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
+                <div className="p-8 text-center text-muted-foreground">
+                    <p>Tính năng báo cáo và thông tin chi tiết khách hàng đang được phát triển.</p>
+                </div>
+                <Footer />
+            </TabsContent>
         </div>
+      </Tabs>
     </div>
   )
 }
