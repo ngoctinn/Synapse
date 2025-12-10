@@ -9,11 +9,12 @@ import { Label } from "@/shared/ui/label";
 import { Switch } from "@/shared/ui/switch";
 import { format, isSameDay } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
-import { Clock, Plus, X, Calendar as CalendarIcon } from "lucide-react";
+import { Clock, Plus, X, Calendar as CalendarIcon, Ban, CheckCircle2, FileText } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ExceptionDate } from "../model/types";
 
 import { DEFAULT_BUSINESS_HOURS, EXCEPTION_TYPES } from "../model/constants";
+import { useTimeSlots } from "../hooks/use-time-slots";
 
 interface ExceptionFormProps {
   initialData?: Partial<ExceptionDate> | null;
@@ -86,22 +87,16 @@ export function ExceptionForm({
 
   // --- Form Logic ---
 
-  const handleTimeChange = (index: number, field: 'start' | 'end', value: string) => {
-      const newSlots = [...(formData.modifiedHours || [])];
-      if (!newSlots[index]) return;
-      newSlots[index] = { ...newSlots[index], [field]: value };
-      setFormData({ ...formData, modifiedHours: newSlots });
-  };
-
-  const handleAddSlot = () => {
-      const newSlots = [...(formData.modifiedHours || []), { ...DEFAULT_BUSINESS_HOURS[0] }];
-      setFormData({ ...formData, modifiedHours: newSlots });
-  };
-
-  const handleRemoveSlot = (index: number) => {
-      const newSlots = (formData.modifiedHours || []).filter((_, i) => i !== index);
-      setFormData({ ...formData, modifiedHours: newSlots });
-  };
+  // --- Form Auto-Fill Logic ---
+  const { 
+    slots: currentSlots, 
+    addSlot, 
+    updateSlot, 
+    removeSlot 
+  } = useTimeSlots(
+    formData.modifiedHours,
+    (newSlots) => setFormData(prev => ({ ...prev, modifiedHours: newSlots }))
+  );
 
   // Auto-fill slots when switching to "Open"
   useEffect(() => {
@@ -200,6 +195,7 @@ export function ExceptionForm({
             onChange={e => setFormData({...formData, reason: e.target.value})}
             placeholder="Ví dụ: Tết Nguyên Đán, Bảo trì định kỳ..."
             className="bg-background"
+            icon={FileText}
         />
       </div>
 
@@ -236,23 +232,42 @@ export function ExceptionForm({
              Trạng thái & Thời gian
          </Label>
 
-         <div className="border rounded-xl p-4 space-y-4 bg-background transition-colors duration-300">
-            <div className="flex items-center gap-4">
-                <Switch
-                    id="closed"
-                    checked={formData.isClosed}
-                    onCheckedChange={checked => setFormData({...formData, isClosed: checked})}
-                    className="data-[state=checked]:bg-destructive"
-                />
-                <div className="flex flex-col">
-                    <Label htmlFor="closed" className={cn("cursor-pointer text-sm font-medium transition-colors", formData.isClosed ? "text-destructive" : "text-foreground")}>
-                        {formData.isClosed ? "Đóng cửa" : "Mở cửa (Giờ đặc biệt)"}
-                    </Label>
-                    <span className="text-xs text-muted-foreground">
-                    {formData.isClosed
-                        ? "Không nhận lịch hẹn vào ngày này"
-                        : "Hoạt động theo khung giờ tuỳ chỉnh"}
-                    </span>
+         <div className={cn(
+             "border rounded-xl p-5 transition-all duration-300",
+             formData.isClosed
+                 ? "bg-destructive/5 border-destructive/20"
+                 : "bg-background border-primary/20 shadow-sm"
+         )}>
+            <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                    <div className={cn(
+                        "w-10 h-10 rounded-full flex items-center justify-center transition-colors shrink-0",
+                        formData.isClosed ? "bg-destructive/10 text-destructive" : "bg-primary/10 text-primary"
+                    )}>
+                        {formData.isClosed ? <Ban className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />}
+                    </div>
+                    <div className="flex flex-col">
+                        <Label htmlFor="closed" className={cn("cursor-pointer text-sm font-semibold transition-colors", formData.isClosed ? "text-destructive" : "text-foreground")}>
+                            {formData.isClosed ? "Đóng cửa (Nghỉ)" : "Mở cửa"}
+                        </Label>
+                        <span className="text-xs text-muted-foreground">
+                        {formData.isClosed
+                            ? "Sẽ không nhận lịch hẹn vào ngày này"
+                            : "Hoạt động theo khung giờ tuỳ chỉnh"}
+                        </span>
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                     <span className={cn("text-xs font-medium mr-2", formData.isClosed ? "text-destructive" : "text-muted-foreground")}>
+                        {formData.isClosed ? "Đóng" : "Mở"}
+                     </span>
+                     <Switch
+                        id="closed"
+                        checked={formData.isClosed}
+                        onCheckedChange={checked => setFormData({...formData, isClosed: checked})}
+                        className="data-[state=checked]:bg-destructive"
+                    />
                 </div>
             </div>
 
@@ -262,23 +277,54 @@ export function ExceptionForm({
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
                         className="overflow-hidden"
                     >
-                        <div className="pt-4 pl-1 border-t border-border/50 mt-2 space-y-3">
-                            <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Khung giờ hoạt động</Label>
-                            <div className="flex flex-wrap gap-3 w-full justify-end items-center">                                {(formData.modifiedHours || []).map((slot, index) => (
-                                    <TimeRangeInput
-                                        key={index}
-                                        startTime={slot.start}
-                                        endTime={slot.end}
-                                        onStartTimeChange={(val) => handleTimeChange(index, 'start', val)}
-                                        onEndTimeChange={(val) => handleTimeChange(index, 'end', val)}
-                                        onRemove={() => handleRemoveSlot(index)}
-                                        showRemoveButton={(formData.modifiedHours?.length || 0) > 1}
-                                        className="w-full"
-                                    />
+                        <div className="pt-6 border-t border-border/50 mt-4 space-y-4">
+                            <div className="flex items-center justify-between">
+                                <Label className="text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                                    Khung giờ hoạt động
+                                </Label>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={addSlot}
+                                    className="text-xs font-medium text-primary hover:text-primary/80 hover:bg-primary/10 h-7 px-2.5 rounded-full transition-colors ml-auto"
+                                >
+                                    <Plus className="w-3.5 h-3.5 mr-1.5" />
+                                    Thêm khung giờ
+                                </Button>
+                            </div>
+                            
+                            <div className="grid grid-cols-[repeat(auto-fit,minmax(290px,1fr))] gap-3">
+                                {currentSlots.map((slot, index) => (
+                                    <div 
+                                        key={index} 
+                                        className="w-full animate-in slide-in-from-left-1 fade-in duration-300 fill-mode-forwards"
+                                        style={{ animationDelay: `${index * 50}ms` }}
+                                    >
+                                        <TimeRangeInput
+                                            startTime={slot.start}
+                                            endTime={slot.end}
+                                            onStartTimeChange={(val) => updateSlot(index, 'start', val)}
+                                            onEndTimeChange={(val) => updateSlot(index, 'end', val)}
+                                            onRemove={() => removeSlot(index)}
+                                            showRemoveButton={currentSlots.length > 1}
+                                            className="w-full bg-background/50 hover:bg-background transition-colors justify-start [&>button]:ml-auto pl-4 pr-3 py-2"
+                                        />
+                                    </div>
                                 ))}
                             </div>
+                            
+                            {currentSlots.length === 0 && (
+                                <div className="text-center py-4 border-2 border-dashed border-muted rounded-lg bg-muted/20">
+                                    <span className="text-xs text-muted-foreground block mb-2">Chưa có khung giờ nào</span>
+                                    <Button type="button" variant="outline" size="sm" onClick={addSlot} className="text-xs h-8">
+                                        Thêm khung giờ
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     </motion.div>
                 )}
