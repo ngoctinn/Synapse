@@ -26,9 +26,11 @@ export default async function Page({
 
   // We await skills here because it's needed for the modal in the header immediately,
   // but we pass the promise for the list to be suspended inside StaffPage
-  const skills = await skillsPromise
-  const permissions = await permissionsPromise
-  const schedules = await schedulesPromise
+  const [skills, permissions, schedules] = await Promise.all([
+    skillsPromise,
+    permissionsPromise,
+    schedulesPromise
+  ])
 
   return (
     <StaffPage

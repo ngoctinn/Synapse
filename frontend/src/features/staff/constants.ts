@@ -37,3 +37,22 @@ export const ROLES = [
 
 export const STAFF_HEADER_OFFSET_CLASS = "top-[105px] md:top-[53px]"
 
+
+export const SCHEDULER_UI = {
+  PREV_WEEK: "Tuần trước",
+  NEXT_WEEK: "Tuần sau",
+  TODAY: "Hôm nay",
+  UNSAVED_CHANGES: "Có thay đổi chưa lưu",
+  CANCEL: "Hủy",
+  SAVE: "Lưu thay đổi",
+  SAVING: "Đang lưu...",
+  PAINT_MODE: "Chế độ tô",
+  ERASING: "Đang xóa",
+  ERASER_TOOL: "Xóa lịch",
+  TURN_OFF_PAINT: "Tắt chế độ tô",
+  SELECT_TOOL_LABEL: "Chọn công cụ để tô",
+  ERASER: "Tẩy",
+  DRAG_TIP: "Nhấp hoặc kéo thả để áp dụng",
+  DONE: "Xong",
+  COPY_WEEK: "Sao chép tuần",
+} as const;
