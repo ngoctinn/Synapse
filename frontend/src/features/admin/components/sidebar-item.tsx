@@ -2,23 +2,23 @@
 
 import { cn } from "@/shared/lib/utils"
 import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
 } from "@/shared/ui/collapsible"
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
 import {
-    SidebarMenuButton,
-    SidebarMenuItem,
-    SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem,
-    useSidebar,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  useSidebar,
 } from "@/shared/ui/sidebar"
 import { ChevronRight } from "lucide-react"
 import Link from "next/link"
@@ -113,29 +113,26 @@ export function SidebarItem({ item }: SidebarItemProps) {
             </SidebarMenuButton>
           </CollapsibleTrigger>
           <CollapsibleContent>
-            <SidebarMenuSub className="mr-0 ml-[1.15rem] translate-x-0 border-l border-sidebar-border px-0 py-1">
+            <SidebarMenuSub className="mr-0 border-l border-sidebar-border/50 px-0 py-1 ml-5">
               {item.items.map((subItem) => (
                 <SidebarMenuSubItem key={subItem.title}>
                   <SidebarMenuSubButton
                     asChild
                     isActive={isSubItemActive(subItem.href)}
                     className={cn(
-                      "h-9 min-h-[36px] pl-9 rounded-lg transition-all duration-200 ease-out",
+                      "h-9 min-h-[36px] rounded-lg transition-all duration-200 ease-out",
+                      // Update hover/active states: No background change, only text color
                       "hover:bg-transparent hover:text-primary",
-                      "active:bg-transparent focus:bg-transparent",
                       "data-[active=true]:bg-transparent data-[active=true]:text-primary data-[active=true]:font-medium",
-                      "relative overflow-visible",
-                      // Tree branch line (vertical + curve)
-                      "before:absolute before:left-[-1px] before:top-0 before:h-[calc(50%)] before:w-5",
-                      "before:border-b before:border-l before:border-sidebar-border before:rounded-bl-md",
-                      "data-[active=true]:before:border-primary",
-                      // Active dot
-                      "after:absolute after:left-[19px] after:top-1/2 after:-translate-y-1/2",
-                      "after:h-1.5 after:w-1.5 after:rounded-full after:bg-primary",
-                      "after:opacity-0 data-[active=true]:after:opacity-100"
+                      // Default text color for inactive items
+                      !isSubItemActive(subItem.href) && "text-muted-foreground"
                     )}
                   >
                     <Link href={subItem.href}>
+                      <div className={cn(
+                        "h-1.5 w-1.5 rounded-full transition-all shrink-0",
+                        isSubItemActive(subItem.href) ? "bg-primary" : "bg-muted-foreground/40 group-hover:bg-primary/60"
+                      )} />
                       <span className="truncate">{subItem.title}</span>
                     </Link>
                   </SidebarMenuSubButton>
