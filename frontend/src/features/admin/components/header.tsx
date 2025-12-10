@@ -26,6 +26,8 @@ import { SidebarTrigger } from "@/shared/ui/sidebar"
 import { Bell, LogOut, Settings, User } from "lucide-react"
 import { usePathname } from "next/navigation"
 import React from "react"
+import { NotificationPopover } from "@/features/notifications/components/notification-popover"
+import { NotificationBell } from "@/features/notifications/components/notification-bell"
 
 // Mapping đường dẫn sang tên hiển thị Tiếng Việt
 const BREADCRUMB_MAP: Record<string, string> = {
@@ -106,15 +108,9 @@ export function AdminHeader({ className, user }: AdminHeaderProps) {
       {/* Actions Section */}
       <div className="ml-auto flex items-center gap-3 px-4">
         {/* Notification Button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative rounded-full w-9 h-9 hover:bg-slate-100 text-slate-600 transition-transform hover:scale-105"
-        >
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white animate-pulse" />
-          <span className="sr-only">Có thông báo mới</span>
-        </Button>
+        <NotificationPopover>
+          <NotificationBell unreadCount={3} />
+        </NotificationPopover>
 
         <div className="h-6 w-px bg-slate-200 mx-1" />
 
