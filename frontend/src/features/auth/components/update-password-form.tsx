@@ -22,7 +22,7 @@ import {
 } from "@/shared/ui/form";
 
 export function UpdatePasswordForm() {
-  // Sử dụng hook useActionState để quản lý trạng thái form server action
+
   const [state, action, isPending] = useActionState(updatePasswordAction, undefined);
 
   const form = useForm<UpdatePasswordInput>({
@@ -33,7 +33,7 @@ export function UpdatePasswordForm() {
     },
   });
 
-  // Effect để xử lý phản hồi từ server
+
   useEffect(() => {
     if (state?.success) {
       showToast.success("Cập nhật thành công", state.message);

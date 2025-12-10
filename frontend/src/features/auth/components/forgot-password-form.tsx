@@ -12,28 +12,27 @@ import { CustomDialog } from "@/shared/ui/custom/dialog";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { showToast } from "@/shared/ui/custom/sonner";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form";
 import { forgotPasswordAction } from "../actions";
 import { forgotPasswordSchema, type ForgotPasswordInput } from "../schemas";
 
 export function ForgotPasswordForm() {
-  // Quản lý trạng thái dialog kiểm tra email
+
   const [showCheckEmailDialog, setShowCheckEmailDialog] = useState(false);
 
-  // Sử dụng useActionState để quản lý trạng thái của Server Action
-  // initialState là { success: false, message: "" }
+
   const [state, action, isPending] = useActionState(forgotPasswordAction, {
     success: false,
     message: "",
   });
 
-  // Khởi tạo form với React Hook Form và Zod Resolver
+
   const form = useForm<ForgotPasswordInput>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
@@ -41,7 +40,7 @@ export function ForgotPasswordForm() {
     },
   });
 
-  // Xử lý side-effects khi state thay đổi (thành công hoặc thất bại)
+
   useEffect(() => {
     if (state?.message) {
       if (state.success) {
@@ -54,13 +53,12 @@ export function ForgotPasswordForm() {
     }
   }, [state, form]);
 
-  // Hàm xử lý submit form
-  // Chuyển đổi dữ liệu từ RHF sang FormData để gửi lên Server Action
+
   const onSubmit = (values: ForgotPasswordInput) => {
     const formData = new FormData();
     formData.append("email", values.email);
 
-    // Gọi action (đã được wrap bởi useActionState)
+
     startTransition(() => {
       action(formData);
     });

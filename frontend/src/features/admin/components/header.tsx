@@ -5,21 +5,21 @@ import { UserProfile } from "@/shared/components/layout/components/header/types"
 import { cn } from "@/shared/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
 } from "@/shared/ui/breadcrumb"
 import { Button } from "@/shared/ui/button"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
 import { Separator } from "@/shared/ui/separator"
 import { SidebarTrigger } from "@/shared/ui/sidebar"
@@ -27,7 +27,7 @@ import { Bell, LogOut, Settings, User } from "lucide-react"
 import { usePathname } from "next/navigation"
 import React from "react"
 
-// Mapping đường dẫn sang tên hiển thị Tiếng Việt
+
 const BREADCRUMB_MAP: Record<string, string> = {
   admin: "Quản trị",
   overview: "Tổng quan",
@@ -53,7 +53,7 @@ interface AdminHeaderProps {
 export function AdminHeader({ className, user }: AdminHeaderProps) {
   const pathname = usePathname()
 
-  // Tạo breadcrumbs từ pathname
+
   const pathSegments = pathname.split("/").filter(Boolean)
 
   const handleLogout = async () => {
@@ -103,9 +103,9 @@ export function AdminHeader({ className, user }: AdminHeaderProps) {
 
 
 
-      {/* Actions Section */}
+
       <div className="ml-auto flex items-center gap-3 px-4">
-        {/* Notification Button */}
+
         <Button
           variant="ghost"
           size="icon"
@@ -118,7 +118,7 @@ export function AdminHeader({ className, user }: AdminHeaderProps) {
 
         <div className="h-6 w-px bg-slate-200 mx-1" />
 
-        {/* User Dropdown */}
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-50 transition-all hover:ring-2 hover:ring-primary/10">
