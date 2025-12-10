@@ -2,23 +2,23 @@
 
 import { cn } from "@/shared/lib/utils"
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
 } from "@/shared/ui/collapsible"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
 import {
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-  useSidebar,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubButton,
+    SidebarMenuSubItem,
+    useSidebar,
 } from "@/shared/ui/sidebar"
 import { ChevronRight } from "lucide-react"
 import Link from "next/link"
@@ -41,9 +41,9 @@ export function SidebarItem({ item }: SidebarItemProps) {
   // Helper to check if a sub-item is active (Exact match)
   const isSubItemActive = (href: string) => pathname === href
 
-  // Items with Submenu
+
   if (item.items) {
-    // Collapsed State: Dropdown Menu
+
     if (state === "collapsed") {
       return (
         <SidebarMenuItem>
@@ -85,7 +85,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
       )
     }
 
-    // Expanded State: Collapsible
+
     return (
       <Collapsible
         asChild
@@ -148,7 +148,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
     )
   }
 
-  // Single Item (No Submenu)
+
   return (
     <SidebarMenuItem>
       <SidebarMenuButton

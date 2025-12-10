@@ -27,7 +27,7 @@ import {
 export function RegisterForm() {
   const [showCheckEmailDialog, setShowCheckEmailDialog] = useState(false);
 
-  // Sử dụng hook useActionState để quản lý trạng thái form server action
+
   const [state, action, isPending] = useActionState(registerAction, undefined);
 
   const form = useForm<RegisterInput>({
@@ -40,7 +40,7 @@ export function RegisterForm() {
     },
   });
 
-  // Effect để xử lý phản hồi từ server
+
   useEffect(() => {
     if (state?.success) {
       showToast.success("Đăng ký thành công", state.message);
