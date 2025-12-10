@@ -5,14 +5,14 @@ import { deleteStaff } from "@/features/staff/actions"
 import { useTableSelection } from "@/shared/hooks/use-table-selection"
 import { cn } from "@/shared/lib/utils"
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
 } from "@/shared/ui/alert-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
@@ -25,10 +25,10 @@ import { showToast } from "@/shared/ui/custom/sonner"
 import { StatusBadge } from "@/shared/ui/custom/status-badge"
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar"
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
 } from "@/shared/ui/tooltip"
 import { Calendar } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
@@ -158,7 +158,10 @@ export function StaffTable({
         <div className="flex items-center gap-4">
           <Avatar className="h-11 w-11 border">
             <AvatarImage src={staff.user.avatar_url || undefined} alt={staff.user.full_name || ""} />
-            <AvatarFallback className="bg-primary/20 text-primary font-medium">
+            <AvatarFallback
+              className="font-medium text-white shadow-sm"
+              style={{ backgroundColor: staff.color_code || "hsl(var(--primary))" }}
+            >
               {(staff.user.full_name || staff.user.email || "?").charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>

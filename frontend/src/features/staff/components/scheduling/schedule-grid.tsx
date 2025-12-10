@@ -55,9 +55,28 @@ export function ScheduleGrid({
   }, [])
 
   return (
-    <div className="flex flex-col select-none">
+    <div
+      className={cn(
+        "flex flex-col select-none transition-colors",
+        selectedTool ? "cursor-crosshair" : ""
+      )}
+    >
       <div className="relative group/scroll-container overflow-hidden">
 
+        {staffList.length === 0 && (
+            <div className="flex flex-col items-center justify-center p-12 text-center border rounded-lg bg-muted/10 border-dashed m-4">
+                <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+                    <span className="text-2xl">👥</span>
+                </div>
+                <h3 className="text-lg font-medium text-foreground">Chưa có nhân viên</h3>
+                <p className="text-sm text-muted-foreground max-w-sm mt-1 mb-4">
+                    Thêm nhân viên vào hệ thống để bắt đầu xếp lịch làm việc.
+                </p>
+            </div>
+        )}
+
+        {staffList.length > 0 && (
+            <>
         <div className="absolute top-0 bottom-0 left-[220px] w-4 bg-gradient-to-r from-background to-transparent z-40 pointer-events-none md:hidden" />
         <div className="absolute top-0 bottom-0 right-0 w-4 bg-gradient-to-l from-background to-transparent z-40 pointer-events-none md:hidden" />
 
@@ -109,10 +128,11 @@ export function ScheduleGrid({
                     (s) => s.staffId === staff.user_id && s.date === dateStr
                   )
 
-                  let shift = schedule ? MOCK_SHIFTS.find((s) => s.id === schedule.shiftId) : null
-                  if (schedule && !shift) {
-                      shift = (schedule as any).customShift
-                  }
+                  // Priority:
+                  // 1. Direct shift object in schedule (from local draft)
+                  // 2. Lookup by id in MOCK_SHIFTS (from server mock)
+                  // 3. customShift prop (legacy/fallback)
+                  let shift = schedule?.shift || MOCK_SHIFTS.find((s) => s.id === schedule?.shiftId) || schedule?.customShift
 
                   const isToday = isSameDay(day, today)
 
@@ -177,6 +197,8 @@ export function ScheduleGrid({
             ))}
           </div>
         </div>
+        </>
+        )}
       </div>
 
 
