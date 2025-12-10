@@ -2,16 +2,16 @@
 
 import { HeaderLogo } from "@/shared/ui/branding/header-logo"
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarRail,
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    SidebarRail,
 } from "@/shared/ui/sidebar"
 import { HelpCircle } from "lucide-react"
 import { SIDEBAR_ITEMS } from "../constants"

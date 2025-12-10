@@ -12,7 +12,7 @@ import {
   SheetTitle,
 } from "@/shared/ui/sheet"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Loader2, Save, Send } from "lucide-react"
+import { Save, Send } from "lucide-react"
 import * as React from "react"
 import { Resolver, useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -162,23 +162,11 @@ export function ServiceSheet({
           <Button
             type="submit"
             form="service-form"
-            disabled={isPending}
+            isLoading={isPending}
             className="min-w-[140px] shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
-            loading={isPending}
+            leftIcon={isEditMode ? <Save className="h-4 w-4" /> : <Send className="h-4 w-4" />}
           >
-            {isPending ? (
-              <>
-                 <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Đang xử lý...
-              </>
-            ) : isEditMode ? (
-              <>
-                <Save className="mr-2 h-4 w-4" /> Lưu thay đổi
-              </>
-            ) : (
-                <>
-                <Send className="mr-2 h-4 w-4" /> Tạo dịch vụ
-              </>
-            )}
+            {isEditMode ? "Lưu thay đổi" : "Tạo dịch vụ"}
           </Button>
         </SheetFooter>
       </SheetContent>

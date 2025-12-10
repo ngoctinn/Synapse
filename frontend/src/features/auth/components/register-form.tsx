@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { Loader2, Mail, User } from "lucide-react";
+import { Mail, User } from "lucide-react";
 import Link from "next/link";
 import { startTransition, useActionState, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -16,12 +16,12 @@ import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { PasswordInput } from "@/shared/ui/custom/password-input";
 import { showToast } from "@/shared/ui/custom/sonner";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form";
 
 export function RegisterForm() {
@@ -157,12 +157,19 @@ export function RegisterForm() {
 
           <Button
             type="submit"
+<<<<<<< HEAD
             size="lg"
             className="w-full text-base font-medium shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-[1.01]"
             disabled={isPending}
           >
             {isPending && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
             {isPending ? "Đang xử lý..." : "Đăng ký"}
+=======
+            className="w-full h-12 text-base font-medium shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-[1.01]"
+            isLoading={isPending}
+          >
+            Đăng ký
+>>>>>>> 128138c9e24b579949211f7015f656135b6c6809
           </Button>
         </form>
       </Form>

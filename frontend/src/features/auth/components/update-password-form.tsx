@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -69,6 +68,7 @@ export function UpdatePasswordForm() {
         </p>
       </div>
 
+<<<<<<< HEAD
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
@@ -125,6 +125,22 @@ export function UpdatePasswordForm() {
           Quay lại đăng nhập
         </Link>
       </div>
+=======
+              <Button type="submit" className="w-full h-11 font-medium transition-all hover:scale-[1.02]" isLoading={isPending}>
+                Cập nhật mật khẩu
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+        <CardFooter className="justify-center">
+          <div className="text-sm text-muted-foreground">
+            <Link href="/login" className="text-primary font-medium hover:underline underline-offset-4 transition-colors">
+              Quay lại đăng nhập
+            </Link>
+          </div>
+        </CardFooter>
+      </Card>
+>>>>>>> 128138c9e24b579949211f7015f656135b6c6809
     </motion.div>
   );
 }

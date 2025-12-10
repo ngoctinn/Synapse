@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { Loader2, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import Link from "next/link";
 import { startTransition, useActionState, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -107,12 +107,19 @@ export function ForgotPasswordForm() {
 
           <Button
             type="submit"
+<<<<<<< HEAD
             size="lg"
             className="w-full text-base font-medium shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-[1.01]"
             disabled={isPending}
           >
             {isPending && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
             {isPending ? "Đang xử lý..." : "Gửi yêu cầu"}
+=======
+            className="w-full h-12 text-base font-medium shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-[1.01]"
+            isLoading={isPending}
+          >
+            Gửi yêu cầu
+>>>>>>> 128138c9e24b579949211f7015f656135b6c6809
           </Button>
         </form>
       </Form>

@@ -1,25 +1,44 @@
 "use client"
 
-import * as React from "react"
-import { AnimatePresence, motion } from "framer-motion"
-import { ArrowLeft, ChevronRight, Loader2 } from "lucide-react"
+/**
+ * BookingDialog - Multi-step đặt lịch hẹn cho khách hàng
+ *
+ * Theme Tokens Used:
+ * - --primary, --primary-foreground: Màu chính cho buttons và highlights
+ * - --status-serving: Màu xanh lá cho "Giờ vàng" recommendations
+ * - --alert-warning: Màu cảnh báo cho policy notice
+ * - --alert-success: Màu thành công cho success state
+ * - --muted, --muted-foreground: Màu phụ cho text và borders
+ *
+ * UX Guidelines Applied:
+ * - Clickable step indicators with visual feedback
+ * - Motion-safe animations for step transitions
+ * - Touch target size ≥44px for interactive elements
+ * - Focus-visible states for accessibility
+ * - font-serif for headings following Premium Spa theme
+ *
+ * AI Note: Resolved conflict by keeping JSDoc and removing duplicate imports
+ */
 
-import { cn } from "@/shared/lib/utils"
+import { AnimatePresence, motion } from "framer-motion"
+import { ArrowLeft, ChevronRight } from "lucide-react"
+import * as React from "react"
+
+import { Service } from "@/features/services/types"
+import { MOCK_STAFF } from "@/features/staff"
+import { useReducedMotion } from "@/shared/hooks"
 import { Button } from "@/shared/ui/button"
 import { Dialog, DialogContent } from "@/shared/ui/dialog"
 import { Progress } from "@/shared/ui/progress"
-import { useReducedMotion } from "@/shared/hooks"
-import { Service } from "@/features/services/types"
-import { MOCK_STAFF } from "@/features/staff"
 
 // Bookings Sub-components
 import { BookingSidebar } from "./booking/booking-sidebar"
-import { BookingState, BookingStep } from "./booking/types"
+import { StepConfirm } from "./booking/steps/step-confirm"
 import { StepPreference } from "./booking/steps/step-preference"
 import { StepStaff } from "./booking/steps/step-staff"
-import { StepTime } from "./booking/steps/step-time"
-import { StepConfirm } from "./booking/steps/step-confirm"
 import { StepSuccess } from "./booking/steps/step-success"
+import { StepTime } from "./booking/steps/step-time"
+import { BookingState } from "./booking/types"
 
 interface BookingDialogProps {
   open: boolean
@@ -203,7 +222,8 @@ export function BookingDialog({
 
                     <Button
                         onClick={handleNext}
-                        className="shadow-lg min-w-[140px]"
+                        className="shadow-lg min-w-[140px] h-12 text-base"
+                        isLoading={isSubmitting}
                         disabled={
                             isSubmitting ||
                             (state.step === "staff-select" && !state.selectedStaff) ||
@@ -211,10 +231,7 @@ export function BookingDialog({
                         }
                     >
                         {isSubmitting ? (
-                            <>
-                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                Đang xử lý...
-                            </>
+                            "Đang xử lý..."
                         ) : state.step === "confirm" ? (
                             "Xác nhận đặt"
                         ) : (

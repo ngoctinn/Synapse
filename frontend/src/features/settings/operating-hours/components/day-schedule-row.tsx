@@ -1,13 +1,14 @@
 import { Switch } from "@/shared/ui/switch";
 import { Label } from "@/shared/ui/label";
-import { TimePicker } from "@/shared/ui/custom/time-picker";
+import { TimeRangeInput } from "@/shared/ui/custom/time-range-input";
 import { DaySchedule } from "../model/types";
 import { DAY_LABELS } from "../model/mocks";
 import { cn } from "@/shared/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, Clock, Plus, Trash2 } from "lucide-react";
+import { Clock, Plus } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
+import { useTimeSlots } from "../hooks/use-time-slots";
 
 interface DayScheduleRowProps {
   schedule: DaySchedule;
@@ -28,24 +29,13 @@ export function DayScheduleRow({
   isCopying,
   isPasteTarget
 }: DayScheduleRowProps) {
+  const { updateSlot, addSlot, removeSlot } = useTimeSlots(
+    schedule.timeSlots,
+    (newSlots) => onChange({ ...schedule, timeSlots: newSlots })
+  );
+
   const handleToggleOpen = (checked: boolean) => {
     onChange({ ...schedule, isOpen: checked });
-  };
-
-  const handleTimeChange = (index: number, field: 'start' | 'end', value: string) => {
-    const newTimeSlots = [...schedule.timeSlots];
-    newTimeSlots[index] = { ...newTimeSlots[index], [field]: value };
-    onChange({ ...schedule, timeSlots: newTimeSlots });
-  };
-
-  const handleAddSlot = () => {
-    const newTimeSlots = [...schedule.timeSlots, { start: "08:00", end: "17:00" }];
-    onChange({ ...schedule, timeSlots: newTimeSlots });
-  };
-
-  const handleRemoveSlot = (index: number) => {
-    const newTimeSlots = schedule.timeSlots.filter((_, i) => i !== index);
-    onChange({ ...schedule, timeSlots: newTimeSlots });
   };
 
   return (
@@ -88,37 +78,15 @@ export function DayScheduleRow({
             >
               <div className="flex flex-wrap gap-3 w-full justify-end items-center">
                 {schedule.timeSlots.map((slot, index) => (
-                  <div key={index} className="flex items-center gap-2 bg-background/80 backdrop-blur-sm p-1.5 rounded-xl border border-transparent hover:border-border/80 hover:shadow-sm transition-all duration-200 group/slot">
-                    <TimePicker 
-                      value={slot.start}
-                      onChange={(val) => handleTimeChange(index, 'start', val)}
-                      className="w-24 xs:w-28 border-none shadow-none bg-transparent focus:ring-0 text-sm font-medium"
-                    />
-                    <ArrowRight className="w-3 h-3 text-muted-foreground/50" />
-                    <TimePicker 
-                       value={slot.end}
-                       onChange={(val) => handleTimeChange(index, 'end', val)}
-                       className="w-24 xs:w-28 border-none shadow-none bg-transparent focus:ring-0 text-right text-sm font-medium"
-                    />
-                    
-                    {schedule.timeSlots.length > 1 && (
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleRemoveSlot(index)}
-                              className="h-6 w-6 text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-100 sm:opacity-0 sm:group-hover/slot:opacity-100 transition-all duration-200 rounded-full ml-1"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Xóa khung giờ</TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    )}
-                  </div>
+                  <TimeRangeInput
+                    key={index}
+                    startTime={slot.start}
+                    endTime={slot.end}
+                    onStartTimeChange={(val) => updateSlot(index, 'start', val)}
+                    onEndTimeChange={(val) => updateSlot(index, 'end', val)}
+                    onRemove={() => removeSlot(index)}
+                    showRemoveButton={schedule.timeSlots.length > 1}
+                  />
                 ))}
               </div>
               
@@ -129,7 +97,7 @@ export function DayScheduleRow({
                        <Button
                         variant="ghost"
                         size="sm"
-                        onClick={handleAddSlot}
+                        onClick={addSlot}
                         className="text-xs font-medium text-primary hover:text-primary/80 hover:bg-primary/10 h-8 px-3 rounded-full transition-colors"
                       >
                         <Plus className="w-3.5 h-3.5 mr-1.5" />

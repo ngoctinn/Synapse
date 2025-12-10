@@ -8,12 +8,13 @@ import { DayScheduleRow } from "./day-schedule-row";
 import { ExceptionsViewManager } from "./exceptions-view-manager";
 import { DAY_LABELS } from "../model/mocks";
 import { OperatingHoursConfig, DaySchedule, ExceptionDate, DayOfWeek } from "../model/types";
-import { Save, RotateCcw, Copy, Loader2 } from "lucide-react";
+import { Copy } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/shared/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
 import { motion } from "framer-motion";
 import { updateOperatingHours } from "../actions";
+import { SettingsHeader } from "@/shared/ui/custom/settings-header";
 
 interface OperatingHoursFormProps {
   initialConfig: OperatingHoursConfig;
@@ -151,67 +152,17 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
 
   return (
     <Tabs defaultValue="schedule" className="flex flex-col flex-1 w-full gap-0 h-full overflow-hidden">
-      <div className="sticky top-0 z-40 px-4 py-3 bg-background/95 backdrop-blur-sm border-b flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300 support-[backdrop-filter]:bg-background/60">
+      <SettingsHeader 
+        isDirty={isDirty} 
+        isPending={isPending} 
+        onSave={handleSave} 
+        onReset={handleReset}
+      >
         <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto grid grid-cols-2 md:flex md:justify-start">
           <TabsTrigger value="schedule" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 transition-all duration-200">Tiêu chuẩn</TabsTrigger>
           <TabsTrigger value="exceptions" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 transition-all duration-200">Ngoại lệ</TabsTrigger>
         </TabsList>
-
-        <div className="flex items-center gap-3">
-          <div className={cn(
-            "px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-300 flex items-center gap-2",
-            isDirty 
-              ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800" 
-              : "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800"
-          )}>
-            <span className="relative flex h-2 w-2">
-              <span className={cn("animate-ping absolute inline-flex h-full w-full rounded-full opacity-75", isDirty ? "bg-amber-500" : "bg-green-500")}></span>
-              <span className={cn("relative inline-flex rounded-full h-2 w-2", isDirty ? "bg-amber-500" : "bg-green-500")}></span>
-            </span>
-            {isDirty ? "Chưa lưu thay đổi" : "Đã đồng bộ"}
-          </div>
-          
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  onClick={handleReset} 
-                  disabled={!isDirty || isPending} 
-                  className="h-9 px-4"
-                >
-                  <RotateCcw className="w-4 h-4 mr-2" />
-                  Khôi phục
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Khôi phục về cài đặt gốc</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  onClick={handleSave} 
-                  disabled={!isDirty || isPending} 
-                  className={cn(
-                    "h-9 px-6 transition-all duration-300",
-                    isDirty && "animate-pulse-subtle"
-                  )}
-                >
-                  {isPending ? (
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  ) : (
-                    <Save className="w-4 h-4 mr-2" />
-                  )}
-                  {isPending ? "Đang lưu..." : "Lưu thay đổi"}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Lưu cấu hình (Ctrl+S)</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-      </div>
+      </SettingsHeader>
       
       <TabsContent value="schedule" className="space-y-6 animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out p-4 sm:p-6 overflow-y-auto">
         <div className="space-y-6">          
