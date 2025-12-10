@@ -6,7 +6,9 @@ import { format } from "date-fns"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useSchedulerTools } from "../../hooks/use-scheduler-tools"
 import { SCHEDULER_UI, STAFF_HEADER_OFFSET_CLASS } from "../../model/constants"
-import { CopyWeekButton } from "./copy-week-button"
+// import { CopyWeekButton } from "./copy-week-button"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip"
+import { HelpCircle } from "lucide-react"
 import { SchedulerPaintTools } from "./scheduler-paint-tools"
 
 interface SchedulerToolbarProps {
@@ -37,55 +39,72 @@ export function SchedulerToolbar({
   toolState
 }: SchedulerToolbarProps) {
   return (
-    <div className={cn("flex flex-col xl:flex-row xl:items-center justify-between gap-4 px-4 py-3 border-b shrink-0 sticky z-50 bg-background", STAFF_HEADER_OFFSET_CLASS)}>
-      <div className="flex items-center gap-2">
-        <Button variant="outline" size="icon" onClick={onPrevWeek} className="h-8 w-8 active:scale-95 transition-transform" aria-label={SCHEDULER_UI.PREV_WEEK}>
+    <div className={cn("flex flex-col xl:flex-row xl:items-center justify-between gap-4 px-4 py-3 border-b shrink-0 sticky z-50 bg-background shadow-xs", STAFF_HEADER_OFFSET_CLASS)}>
+      {/* Group 1: Navigation */}
+      <div className="flex items-center gap-2 bg-muted/30 p-1 rounded-lg border">
+        <Button variant="ghost" size="icon" onClick={onPrevWeek} className="h-7 w-7" aria-label={SCHEDULER_UI.PREV_WEEK}>
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        <div className="text-sm font-medium w-[180px] text-center">
+        <div className="text-sm font-medium w-[140px] text-center tabular-nums">
           {format(weekStart, "dd/MM")} - {format(weekEnd, "dd/MM/yyyy")}
         </div>
-        <Button variant="outline" size="icon" onClick={onNextWeek} className="h-8 w-8 active:scale-95 transition-transform" aria-label={SCHEDULER_UI.NEXT_WEEK}>
+        <Button variant="ghost" size="icon" onClick={onNextWeek} className="h-7 w-7" aria-label={SCHEDULER_UI.NEXT_WEEK}>
           <ChevronRight className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="sm" onClick={onResetToday} className="h-8 text-xs active:scale-95 transition-transform">
+        <div className="w-px h-4 bg-border mx-1" />
+        <Button variant="ghost" size="sm" onClick={onResetToday} className="h-7 text-xs px-2">
           {SCHEDULER_UI.TODAY}
         </Button>
       </div>
 
-      <div className="flex items-center gap-2 ml-auto xl:ml-0">
-        {/* Unsaved Changes Toolbar */}
+      <div className="flex items-center gap-4 ml-auto xl:ml-0">
+        {/* Group 2: Tools */}
+        <div className="flex items-center gap-2">
+           <TooltipProvider>
+             <Tooltip>
+               <TooltipTrigger asChild>
+                 <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+               </TooltipTrigger>
+               <TooltipContent>
+                 <p>Chọn loại ca làm việc và click vào ô lịch để xếp ca</p>
+               </TooltipContent>
+             </Tooltip>
+           </TooltipProvider>
+           <SchedulerPaintTools toolState={toolState} />
+        </div>
+
+        {/* Group 3: Actions */}
         {isDirty && (
-          <div className="flex items-center gap-2 mr-2 animate-in fade-in slide-in-from-top-2 duration-200">
-            <span className="text-xs text-muted-foreground hidden sm:inline-block">
-              {SCHEDULER_UI.UNSAVED_CHANGES}
-            </span>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onCancelChanges}
-              disabled={isPending}
-              className="h-8 text-xs hover:bg-destructive/10 hover:text-destructive"
-            >
-              {SCHEDULER_UI.CANCEL}
-            </Button>
-            <Button
-              size="sm"
-              onClick={onSaveChanges}
-              disabled={isPending}
-              className="h-8 text-xs bg-primary text-primary-foreground hover:bg-primary/90 min-w-[80px]"
-            >
-              {isPending ? SCHEDULER_UI.SAVING : SCHEDULER_UI.SAVE}
-            </Button>
-            <div className="h-4 w-px bg-border mx-1" />
-          </div>
+             <div className="flex items-center gap-2 pl-4 border-l">
+                {isDirty && (
+                  <>
+                    <span className="text-xs text-muted-foreground hidden sm:inline-block mr-2">
+                       {SCHEDULER_UI.UNSAVED_CHANGES}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={onCancelChanges}
+                      disabled={isPending}
+                      className="h-8 text-xs hover:bg-destructive/10 hover:text-destructive"
+                    >
+                      {SCHEDULER_UI.CANCEL}
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={onSaveChanges}
+                      disabled={isPending}
+                      className="h-8 text-xs bg-primary text-primary-foreground min-w-[80px]"
+                    >
+                      {isPending ? SCHEDULER_UI.SAVING : SCHEDULER_UI.SAVE}
+                    </Button>
+                  </>
+                )}
+
+                {/* Dead feature hidden temporarily */}
+                {/* <CopyWeekButton onCopy={onCopyWeek} /> */}
+             </div>
         )}
-
-        <SchedulerPaintTools toolState={toolState} />
-
-        <div className="w-px h-4 bg-border mx-1" />
-
-        <CopyWeekButton onCopy={onCopyWeek} />
       </div>
     </div>
   )

@@ -15,7 +15,7 @@ import { Lock } from "lucide-react"
 import { useState, useTransition } from "react"
 import { toast } from "sonner"
 import { updatePermissions } from "../../actions"
-import { MODULES, ROLES, STAFF_HEADER_OFFSET_CLASS } from "../../model/constants"
+import { MODULES, ROLES } from "../../model/constants"
 import { BulkSaveBar } from "./bulk-save-bar"
 
 interface PermissionMatrixProps {
@@ -69,7 +69,8 @@ export function PermissionMatrix({ initialPermissions, className }: PermissionMa
       <div className="">
         <div className="relative w-full">
           <table className="w-full caption-bottom text-sm">
-            <TableHeader className={cn("sticky z-30 bg-background shadow-[0_1px_0_0_rgba(0,0,0,0.05)]", STAFF_HEADER_OFFSET_CLASS)}>
+            {/* Sticky Header fixed top-0 because it's inside a relative container or we trust the container scroll */}
+            <TableHeader className={cn("sticky z-30 bg-background shadow-[0_1px_0_0_rgba(0,0,0,0.05)] top-0")}>
               <TableRow className="hover:bg-transparent border-b-0">
                 <TableHead className="w-[250px] font-semibold pl-8 bg-background">Chức năng (Module)</TableHead>
                 {ROLES.map((role) => (
@@ -91,7 +92,13 @@ export function PermissionMatrix({ initialPermissions, className }: PermissionMa
                       <TableCell
                         key={role.id}
                         className="text-center p-0 cursor-pointer hover:bg-muted/10 transition-colors"
-                        onClick={() => !isDisabled && handleToggle(module.id, role.id)}
+                        onClick={() => {
+                            if (isDisabled) {
+                                toast.info("Quyền Quản trị viên (Admin) được mặc định cấp toàn quyền.")
+                            } else {
+                                handleToggle(module.id, role.id)
+                            }
+                        }}
                       >
                         <div className="flex justify-center items-center h-full w-full py-2">
                           {isDisabled ? (

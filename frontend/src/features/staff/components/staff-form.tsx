@@ -4,28 +4,29 @@ import { Skill } from "@/features/services/types"
 import { cn } from "@/shared/lib/utils"
 import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form"
 import { Input } from "@/shared/ui/input"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { Textarea } from "@/shared/ui/textarea"
 import { Briefcase, Check, Mail, Phone, User } from "lucide-react"
-import { useFormContext } from "react-hook-form"
+import { Control, useWatch } from "react-hook-form"
 
 interface StaffFormProps {
   mode: "create" | "update"
   skills: Skill[]
+  control: Control<any>
   className?: string
 }
 
@@ -40,48 +41,27 @@ const COLOR_PRESETS = [
     "#14B8A6", // Teal
 ]
 
-export function StaffForm({ mode, skills, className }: StaffFormProps) {
-  const form = useFormContext()
-  const role = form.watch("role")
+export function StaffForm({ mode, skills, control, className }: StaffFormProps) {
+  const role = useWatch({ control, name: "role" })
 
 
   const GeneralInfo = () => (
     <div className="space-y-4">
       {/* Premium Avatar Upload UI */}
-      <div className="flex items-start gap-6 p-4 border rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors group">
-         <div className="relative">
-             <div className="size-20 rounded-full bg-background flex items-center justify-center border-2 border-dashed border-muted-foreground/30 group-hover:border-primary/50 transition-all shadow-sm overflow-hidden">
-                 {mode === "update" ? (
-                     <User className="size-8 text-muted-foreground/50" />
-                 ) : (
-                     <div className="text-center">
-                         <User className="size-8 text-muted-foreground/50 mx-auto" />
-                     </div>
-                 )}
-             </div>
-             <button
-                type="button"
-                className="absolute bottom-0 right-0 p-1.5 rounded-full bg-primary text-primary-foreground shadow-md hover:scale-110 transition-transform"
-                title="Tải ảnh lên"
-             >
-                 <Check className="size-3" />
-             </button>
+      {/* Avatar Upload - Simplified / Hidden for now as per feedback */}
+      <div className="flex items-center gap-4 p-4 border rounded-xl bg-muted/20">
+         <div className="size-12 rounded-full bg-background flex items-center justify-center border border-dashed border-muted-foreground/30">
+             <User className="size-6 text-muted-foreground/50" />
          </div>
-         <div className="flex-1 space-y-1">
-             <div className="flex items-center justify-between">
-                 <p className="text-sm font-medium text-foreground">Ảnh đại diện</p>
-                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 font-medium">Sắp ra mắt</span>
-             </div>
-             <p className="text-xs text-muted-foreground leading-relaxed">
-                 Hỗ trợ định dạng JPG, PNG. Kích thước tối đa 5MB.<br/>
-                 Tải lên ảnh chân dung rõ nét để hiển thị tốt nhất trên lịch.
-             </p>
+         <div className="flex-1">
+             <p className="text-sm font-medium text-foreground">Ảnh đại diện</p>
+             <p className="text-xs text-muted-foreground">Tính năng đang được phát triển.</p>
          </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField
-            control={form.control}
+            control={control}
             name="full_name"
             render={({ field }) => (
                 <FormItem>
@@ -101,7 +81,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
 
         {mode === "create" ? (
             <FormField
-                control={form.control}
+                control={control}
                 name="email"
                 render={({ field }) => (
                 <FormItem>
@@ -121,7 +101,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
             />
         ) : (
             <FormField
-                control={form.control}
+                control={control}
                 name="phone_number"
                 render={({ field }) => (
                 <FormItem>
@@ -143,7 +123,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
       </div>
 
       <FormField
-        control={form.control}
+        control={control}
         name="bio"
         render={({ field }) => (
           <FormItem>
@@ -166,7 +146,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
-              control={form.control}
+              control={control}
               name="role"
               render={({ field }) => (
                 <FormItem>
@@ -191,7 +171,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
             />
 
             <FormField
-              control={form.control}
+              control={control}
               name="title"
               render={({ field }) => (
                 <FormItem>
@@ -211,7 +191,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
       </div>
 
       <FormField
-        control={form.control}
+        control={control}
         name="color_code"
         render={({ field }) => (
           <FormItem>
@@ -251,9 +231,9 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
       {(role === "technician") && (
         <div className="space-y-2 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-2 duration-300 pt-2">
             <FormField
-                control={form.control}
+                control={control}
                 name="skill_ids"
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                     <FormItem>
                         <FormLabel className="text-foreground/80 font-normal">Kỹ năng chuyên môn</FormLabel>
                         <FormControl>
@@ -264,7 +244,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                                 onSelectedChange={(ids) => field.onChange(ids)}
                                 onNewTagsChange={() => {}}
                                 placeholder="Chọn kỹ năng..."
-                                isError={!!form.formState.errors.skill_ids}
+                                isError={fieldState.invalid}
                             />
                         </FormControl>
                         <FormMessage />
@@ -279,7 +259,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
   const HRInfo = () => (
     <div className="space-y-4">
              <FormField
-                control={form.control}
+                control={control}
                 name="hired_at"
                 render={({ field }) => (
                     <FormItem>
@@ -296,7 +276,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                 )}
             />
              <FormField
-                control={form.control}
+                control={control}
                 name="commission_rate"
                 render={({ field }) => (
                     <FormItem>
