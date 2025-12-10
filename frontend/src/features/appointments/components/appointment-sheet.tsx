@@ -1,6 +1,5 @@
 "use client"
 
-import { Loader2 } from "lucide-react"
 import * as React from "react"
 
 
@@ -124,15 +123,9 @@ export function AppointmentSheet({
             <Button
                 type="submit"
                 form="appointment-form"
-                disabled={isPending}
+                isLoading={isPending}
             >
-                {isPending ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : mode === "create" ? (
-                    "Tạo lịch hẹn"
-                ) : (
-                    "Lưu thay đổi"
-                )}
+                {mode === "create" ? "Tạo lịch hẹn" : "Lưu thay đổi"}
             </Button>
         </SheetFooter>
       </SheetContent>

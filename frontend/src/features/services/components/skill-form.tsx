@@ -3,17 +3,17 @@
 import { Button } from "@/shared/ui/button";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form";
 import { Textarea } from "@/shared/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Code, Loader2, Tag } from "lucide-react";
+import { Code, Tag } from "lucide-react";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -116,8 +116,7 @@ export function SkillForm({ skill, onSuccess }: SkillFormProps) {
         />
 
         <div className="flex justify-end gap-4 pt-4 border-t">
-          <Button type="submit" disabled={isPending}>
-            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          <Button type="submit" isLoading={isPending}>
             {skill ? "Cập nhật" : "Tạo mới"}
           </Button>
         </div>

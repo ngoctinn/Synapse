@@ -22,17 +22,16 @@ import { format } from "date-fns"
 import { vi } from "date-fns/locale"
 import { AnimatePresence, motion } from "framer-motion"
 import {
-    ArrowLeft,
-    CalendarIcon,
-    Check,
-    CheckCircle2,
-    ChevronRight,
-    Clock,
-    Info,
-    Loader2,
-    Star,
-    User,
-    Users
+  ArrowLeft,
+  CalendarIcon,
+  Check,
+  CheckCircle2,
+  ChevronRight,
+  Clock,
+  Info,
+  Star,
+  User,
+  Users
 } from "lucide-react"
 import * as React from "react"
 
@@ -43,10 +42,10 @@ import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
 import { Calendar } from "@/shared/ui/calendar"
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle
 } from "@/shared/ui/dialog"
 import { Progress } from "@/shared/ui/progress"
 import { ScrollArea } from "@/shared/ui/scroll-area"
@@ -570,6 +569,7 @@ export function BookingDialog({
                 onClick={handleNext}
                 className={cn("min-w-[140px] min-h-[44px] shadow-sm", step === "preference" && "w-full")}
                 aria-label={step === "confirm" ? "Xác nhận đặt lịch" : "Tiếp tục bước tiếp theo"}
+                isLoading={isSubmitting}
                 disabled={
                   isSubmitting ||
                   (step === "staff-select" && !selectedStaff) ||
@@ -577,10 +577,7 @@ export function BookingDialog({
                 }
               >
                 {isSubmitting ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Đang xử lý...
-                  </>
+                    "Đang xử lý..."
                 ) : step === "confirm" ? (
                   "Xác nhận đặt"
                 ) : (

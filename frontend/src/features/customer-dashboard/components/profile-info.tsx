@@ -9,7 +9,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shar
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip"
 import { format } from "date-fns"
 import { motion } from "framer-motion"
-import { Cake, Loader2, Lock, MapPin, Phone, User } from "lucide-react"
+import { Cake, Lock, MapPin, Phone, User } from "lucide-react"
 import { UseFormReturn } from "react-hook-form"
 
 interface ProfileInfoProps {
@@ -152,18 +152,12 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
         <motion.div whileTap={{ scale: 0.98 }}>
           <Button
             type="submit"
-            disabled={isPending || !form.formState.isDirty}
+            disabled={!form.formState.isDirty}
+            isLoading={isPending}
             size="default"
             className="min-w-[140px] font-semibold shadow-lg shadow-primary/20 transition-all duration-300 hover:shadow-primary/40 hover:-translate-y-0.5"
           >
-            {isPending ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {PROFILE_LABELS.SUBMITTING}
-              </>
-            ) : (
-              PROFILE_LABELS.SUBMIT_BUTTON
-            )}
+            {PROFILE_LABELS.SUBMIT_BUTTON}
           </Button>
         </motion.div>
       </div>
