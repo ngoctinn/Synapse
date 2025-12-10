@@ -35,7 +35,7 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="px-3 py-4 group-data-[collapsible=icon]:px-1">
+      <SidebarContent className="px-2 py-4 group-data-[collapsible=icon]:px-1">
         <SidebarGroup className="group-data-[collapsible=icon]:items-center">
           <SidebarGroupContent>
             <SidebarMenu className="gap-2">
