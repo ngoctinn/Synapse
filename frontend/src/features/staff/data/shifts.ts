@@ -4,7 +4,7 @@ export const MOCK_SHIFTS: Shift[] = [
   {
     id: "shift_morning",
     name: "Ca Sáng",
-    color: "#F59E0B",
+    color: "#D97706", // Amber-600 (Better contrast)
     startTime: "08:00",
     endTime: "12:00",
     type: "WORK",
@@ -12,7 +12,7 @@ export const MOCK_SHIFTS: Shift[] = [
   {
     id: "shift_afternoon",
     name: "Ca Chiều",
-    color: "#3B82F6",
+    color: "#2563EB", // Blue-600
     startTime: "13:00",
     endTime: "17:00",
     type: "WORK",
@@ -20,7 +20,7 @@ export const MOCK_SHIFTS: Shift[] = [
   {
     id: "shift_evening",
     name: "Ca Tối",
-    color: "#8B5CF6",
+    color: "#7C3AED", // Violet-600
     startTime: "17:00",
     endTime: "21:00",
     type: "WORK",
@@ -28,7 +28,7 @@ export const MOCK_SHIFTS: Shift[] = [
   {
     id: "shift_off",
     name: "Nghỉ Phép",
-    color: "#9CA3AF",
+    color: "#6B7280", // Gray-500
     startTime: "00:00",
     endTime: "23:59",
     type: "OFF",

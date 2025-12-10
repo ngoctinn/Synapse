@@ -28,8 +28,8 @@ interface StaffSchedulerProps {
 
 export function StaffScheduler({ initialSchedules, staffList, className }: StaffSchedulerProps) {
   const {
-      state: { currentDate, weekStart, weekEnd, schedules },
-      actions: { nextWeek, prevWeek, resetToday, addShift, removeSchedule, removeScheduleBySlot }
+      state: { currentDate, weekStart, weekEnd, schedules, isPending, isDirty },
+      actions: { nextWeek, prevWeek, resetToday, addShift, removeSchedule, removeScheduleBySlot, saveChanges, cancelChanges }
   } = useStaffSchedule({ initialSchedules })
 
 
@@ -83,7 +83,7 @@ export function StaffScheduler({ initialSchedules, staffList, className }: Staff
 
   return (
     <div className={`flex flex-col gap-0 ${className}`}>
-      <div className={cn("flex flex-col xl:flex-row xl:items-center justify-between gap-4 px-4 py-3 border-b shrink-0 sticky z-20 bg-background", STAFF_HEADER_OFFSET_CLASS)}>
+      <div className={cn("flex flex-col xl:flex-row xl:items-center justify-between gap-4 px-4 py-3 border-b shrink-0 sticky z-50 bg-background", STAFF_HEADER_OFFSET_CLASS)}>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="icon" onClick={prevWeek} className="h-8 w-8 active:scale-95 transition-transform" aria-label="Tuần trước">
             <ChevronLeft className="h-4 w-4" />
@@ -101,6 +101,33 @@ export function StaffScheduler({ initialSchedules, staffList, className }: Staff
 
 
         <div className="flex items-center gap-2 ml-auto xl:ml-0">
+
+          {/* Unsaved Changes Toolbar */}
+          {isDirty && (
+              <div className="flex items-center gap-2 mr-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <span className="text-xs text-muted-foreground hidden sm:inline-block">
+                      Có thay đổi chưa lưu
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={cancelChanges}
+                    disabled={isPending}
+                    className="h-8 text-xs hover:bg-destructive/10 hover:text-destructive"
+                  >
+                    Hủy
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={saveChanges}
+                    disabled={isPending}
+                    className="h-8 text-xs bg-primary text-primary-foreground hover:bg-primary/90 min-w-[80px]"
+                  >
+                    {isPending ? "Đang lưu..." : "Lưu thay đổi"}
+                  </Button>
+                  <div className="h-4 w-px bg-border mx-1" />
+              </div>
+          )}
 
           <Popover open={isPaintOpen} onOpenChange={setIsPaintOpen}>
             <PopoverTrigger asChild>
@@ -227,6 +254,36 @@ export function StaffScheduler({ initialSchedules, staffList, className }: Staff
         staffName={selectedStaffName}
         dateStr={selectedDateStr}
       />
+
+      {selectedTool && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-background border rounded-full shadow-lg p-1.5 pr-4 flex items-center gap-3 z-[60] animate-in fade-in slide-in-from-bottom-4 duration-200">
+           <div
+             className="w-8 h-8 rounded-full flex items-center justify-center text-primary-foreground shadow-sm"
+             style={{
+               backgroundColor: typeof selectedTool === 'object' ? selectedTool.color : 'hsl(var(--destructive))'
+             }}
+           >
+             {typeof selectedTool === 'object' ? <Paintbrush className="w-4 h-4" /> : <Eraser className="w-4 h-4" />}
+           </div>
+           <div className="flex flex-col">
+             <span className="text-sm font-medium">
+               {typeof selectedTool === 'object' ? `Đang tô: ${selectedTool.name}` : 'Chế độ Xóa'}
+             </span>
+             <span className="text-[10px] text-muted-foreground">
+               Nhấp hoặc kéo thả để áp dụng
+             </span>
+           </div>
+           <div className="h-4 w-px bg-border mx-1" />
+           <Button
+             variant="ghost"
+             size="sm"
+             onClick={() => setSelectedTool(null)}
+             className="h-7 text-xs hover:bg-muted font-medium"
+           >
+             Xong
+           </Button>
+        </div>
+      )}
     </div>
   )
 }

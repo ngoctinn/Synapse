@@ -6,11 +6,11 @@ import { InputWithIcon } from "@/shared/ui/custom/input-with-icon"
 import { SelectWithIcon } from "@/shared/ui/custom/select-with-icon"
 import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { Textarea } from "@/shared/ui/textarea"
@@ -323,6 +323,8 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
             <GeneralInfo />
             <div className="h-[1px] bg-border/50" />
             <ProfessionalInfo />
+            <div className="h-[1px] bg-border/50" />
+            <HRInfo />
         </div>
     )
   }

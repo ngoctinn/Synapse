@@ -69,6 +69,7 @@ export interface Schedule {
   shiftId: string;
   status: ScheduleStatus;
   shift?: Shift;
+  customShift?: Shift; // For optimistic UI when shift doesn't exist in DB yet
 }
 
 export interface Permission {

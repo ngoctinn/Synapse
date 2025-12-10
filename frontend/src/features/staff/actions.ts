@@ -62,6 +62,8 @@ export async function inviteStaff(prevState: ActionState, formData: FormData): P
     bio: formData.get("bio") || undefined,
     color_code: formData.get("color_code") || undefined,
     skill_ids: formData.get("skill_ids") ? JSON.parse(formData.get("skill_ids") as string) : undefined,
+    hired_at: formData.get("hired_at") || undefined,
+    commission_rate: formData.get("commission_rate") ? Number(formData.get("commission_rate")) : undefined,
   }
 
   const validatedFields = staffCreateSchema.safeParse(rawData)
@@ -172,4 +174,19 @@ export async function deleteSchedule(scheduleId: string): Promise<ActionState> {
   await new Promise((resolve) => setTimeout(resolve, 500))
   revalidatePath("/admin/staff")
   return { success: true, message: "Đã xóa lịch làm việc thành công (Mock)" }
+}
+
+export async function batchUpdateSchedule(creates: Schedule[], deletes: string[]): Promise<ActionState> {
+  await new Promise((resolve) => setTimeout(resolve, 800))
+
+  // In a real app, this would be a database transaction
+  // await db.transaction(async (tx) => {
+  //   if (deletes.length > 0) await tx.delete(schedules).where(inArray(schedules.id, deletes))
+  //   if (creates.length > 0) await tx.insert(schedules).values(creates)
+  // })
+
+  console.log(`[Batch Update] Created ${creates.length} schedules, Deleted ${deletes.length} schedules`)
+
+  revalidatePath("/admin/staff")
+  return { success: true, message: `Đã lưu ${creates.length + deletes.length} thay đổi` }
 }
