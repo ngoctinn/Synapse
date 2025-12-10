@@ -1,4 +1,3 @@
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,46 +7,38 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+
+import { loginAction } from "../actions";
+import { loginSchema, type LoginInput } from "../schemas";
 
 import { Button } from "@/shared/ui/button";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { PasswordInput } from "@/shared/ui/custom/password-input";
 import { showToast } from "@/shared/ui/custom/sonner";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form";
-import { loginAction } from "../actions";
-
-const formSchema = z.object({
-  email: z.string().email({
-    message: "Email không hợp lệ.",
-  }),
-  password: z.string().min(8, {
-    message: "Mật khẩu phải có ít nhất 8 ký tự.",
-  }),
-});
 
 export function LoginForm() {
   const router = useRouter();
 
-  // Sử dụng hook useActionState để quản lý trạng thái form server action (Next.js 16)
+  // Sử dụng hook useActionState để quản lý trạng thái form server action
   const [state, action, isPending] = useActionState(loginAction, undefined);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  // Effect để xử lý phản hồi từ server (Toast & Redirect)
+  // Effect để xử lý phản hồi từ server
   useEffect(() => {
     if (state?.success) {
       showToast.success("Đăng nhập thành công", "Chào mừng bạn quay trở lại hệ thống.");
@@ -58,12 +49,11 @@ export function LoginForm() {
   }, [state, router]);
 
   // Hàm xử lý submit form
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: LoginInput) {
     const formData = new FormData();
     formData.append("email", values.email);
     formData.append("password", values.password);
 
-    // Gọi server action thông qua startTransition để cập nhật isPending
     startTransition(() => {
       action(formData);
     });
@@ -92,12 +82,13 @@ export function LoginForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80">Email</FormLabel>
+                <FormLabel className="text-foreground/80 font-medium">Email</FormLabel>
                 <FormControl>
                   <InputWithIcon
                     icon={Mail}
                     placeholder="name@example.com"
                     variant="lg"
+                    className="bg-background/50"
                     {...field}
                   />
                 </FormControl>
@@ -110,11 +101,12 @@ export function LoginForm() {
             name="password"
             render={({ field }) => (
               <FormItem className="relative">
-                <FormLabel className="text-foreground/80">Mật khẩu</FormLabel>
+                <FormLabel className="text-foreground/80 font-medium">Mật khẩu</FormLabel>
                 <FormControl>
                   <PasswordInput
                     placeholder="Nhập mật khẩu của bạn"
                     variant="lg"
+                    className="bg-background/50"
                     {...field}
                   />
                 </FormControl>
@@ -131,17 +123,12 @@ export function LoginForm() {
 
           <Button
             type="submit"
-            className="w-full h-12 text-base font-medium shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-[1.01]"
+            size="lg"
+            className="w-full text-base font-medium shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-[1.01]"
             disabled={isPending}
           >
-            {isPending ? (
-              <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Đang xử lý...
-              </>
-            ) : (
-              "Đăng nhập"
-            )}
+            {isPending && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+            {isPending ? "Đang xử lý..." : "Đăng nhập"}
           </Button>
         </form>
       </Form>

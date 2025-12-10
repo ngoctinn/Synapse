@@ -56,14 +56,16 @@ export function Features() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: index * 0.1 }}
             viewport={{ once: true }}
-            className="relative overflow-hidden rounded-2xl border bg-background/50 p-2 hover:shadow-lg transition-shadow duration-300"
+            className="group relative overflow-hidden rounded-2xl border bg-background/50 p-2 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
           >
-            <div className="flex h-full flex-col justify-between rounded-xl p-6 hover:bg-muted/50 transition-colors">
-              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+            <div className="relative flex h-full flex-col justify-between rounded-xl p-6 bg-card/50 backdrop-blur-sm">
+              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 shadow-sm group-hover:shadow-md group-hover:scale-110">
                 <feature.icon className="h-6 w-6" />
               </div>
               <div className="space-y-2">
-                <h3 className="font-bold text-xl">{feature.title}</h3>
+                <h3 className="font-bold text-xl group-hover:text-primary transition-colors duration-300">{feature.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {feature.description}
                 </p>

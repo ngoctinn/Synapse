@@ -20,26 +20,28 @@ export function ServiceFilter({
   onSearch
 }: ServiceFilterProps) {
   return (
-    <div className="space-y-4 mb-8">
+    <div className="space-y-6 mb-12">
       {/* Search Bar */}
-      <div className="relative max-w-lg mx-auto">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <div className="relative max-w-lg mx-auto group">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors duration-300" />
         <Input
-          placeholder="Tìm kiếm dịch vụ..."
-          className="pl-9 h-12 rounded-xl bg-background border-muted hover:border-primary/50 focus:border-primary transition-all shadow-sm"
+          placeholder="Tìm kiếm liệu trình..."
+          className="pl-10 h-12 rounded-xl bg-background/50 backdrop-blur-sm border-muted hover:border-primary/50 focus:border-primary transition-all shadow-sm text-base"
           onChange={(e) => onSearch(e.target.value)}
         />
       </div>
 
       {/* Category Pills */}
-      <div className="flex justify-center overflow-x-auto pb-2 gap-2 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
+      <div className="flex justify-center flex-wrap gap-2">
         <Button
           variant={selectedCategory === "All" ? "default" : "outline"}
           size="sm"
           onClick={() => onSelectCategory("All")}
           className={cn(
-            "rounded-full whitespace-nowrap transition-all",
-            selectedCategory === "All" ? "shadow-md" : "border-dashed opacity-70 hover:opacity-100"
+            "rounded-full px-6 h-9 transition-all duration-300",
+            selectedCategory === "All"
+              ? "shadow-md bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105"
+              : "bg-background/50 backdrop-blur-sm border-dashed hover:border-solid hover:bg-muted/50"
           )}
         >
           Tất cả
@@ -51,8 +53,10 @@ export function ServiceFilter({
             size="sm"
             onClick={() => onSelectCategory(cat)}
             className={cn(
-              "rounded-full whitespace-nowrap transition-all",
-              selectedCategory === cat ? "shadow-md" : "border-dashed opacity-70 hover:opacity-100"
+              "rounded-full px-6 h-9 transition-all duration-300",
+              selectedCategory === cat
+                ? "shadow-md bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105"
+                : "bg-background/50 backdrop-blur-sm border-dashed hover:border-solid hover:bg-muted/50"
             )}
           >
             {cat}

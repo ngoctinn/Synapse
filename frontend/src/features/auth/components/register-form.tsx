@@ -1,4 +1,3 @@
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,7 +6,9 @@ import { Loader2, Mail, User } from "lucide-react";
 import Link from "next/link";
 import { startTransition, useActionState, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+
+import { registerAction } from "../actions";
+import { registerSchema, type RegisterInput } from "../schemas";
 
 import { Button } from "@/shared/ui/button";
 import { CustomDialog } from "@/shared/ui/custom/dialog";
@@ -22,25 +23,6 @@ import {
     FormLabel,
     FormMessage,
 } from "@/shared/ui/form";
-import { registerAction } from "../actions";
-
-const formSchema = z
-  .object({
-    fullName: z.string().min(2, {
-      message: "Họ tên phải có ít nhất 2 ký tự.",
-    }),
-    email: z.string().email({
-      message: "Email không hợp lệ.",
-    }),
-    password: z.string().min(8, {
-      message: "Mật khẩu phải có ít nhất 8 ký tự.",
-    }),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Mật khẩu xác nhận không khớp.",
-    path: ["confirmPassword"],
-  });
 
 export function RegisterForm() {
   const [showCheckEmailDialog, setShowCheckEmailDialog] = useState(false);
@@ -48,8 +30,8 @@ export function RegisterForm() {
   // Sử dụng hook useActionState để quản lý trạng thái form server action
   const [state, action, isPending] = useActionState(registerAction, undefined);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<RegisterInput>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       fullName: "",
       email: "",
@@ -69,7 +51,7 @@ export function RegisterForm() {
     }
   }, [state, form]);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: RegisterInput) {
     const formData = new FormData();
     formData.append("fullName", values.fullName);
     formData.append("email", values.email);
@@ -103,12 +85,13 @@ export function RegisterForm() {
             name="fullName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80">Họ và tên</FormLabel>
+                <FormLabel className="text-foreground/80 font-medium">Họ và tên</FormLabel>
                 <FormControl>
                   <InputWithIcon
                     icon={User}
                     placeholder="Nhập họ và tên của bạn"
                     variant="lg"
+                    className="bg-background/50"
                     {...field}
                   />
                 </FormControl>
@@ -121,12 +104,13 @@ export function RegisterForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80">Email</FormLabel>
+                <FormLabel className="text-foreground/80 font-medium">Email</FormLabel>
                 <FormControl>
                   <InputWithIcon
                     icon={Mail}
                     placeholder="name@example.com"
                     variant="lg"
+                    className="bg-background/50"
                     {...field}
                   />
                 </FormControl>
@@ -139,11 +123,12 @@ export function RegisterForm() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80">Mật khẩu</FormLabel>
+                <FormLabel className="text-foreground/80 font-medium">Mật khẩu</FormLabel>
                 <FormControl>
                   <PasswordInput
                     placeholder="Tạo mật khẩu (tối thiểu 8 ký tự)"
                     variant="lg"
+                    className="bg-background/50"
                     {...field}
                   />
                 </FormControl>
@@ -156,11 +141,12 @@ export function RegisterForm() {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80">Xác nhận mật khẩu</FormLabel>
+                <FormLabel className="text-foreground/80 font-medium">Xác nhận mật khẩu</FormLabel>
                 <FormControl>
                   <PasswordInput
                     placeholder="Nhập lại mật khẩu"
                     variant="lg"
+                    className="bg-background/50"
                     {...field}
                   />
                 </FormControl>
@@ -171,17 +157,12 @@ export function RegisterForm() {
 
           <Button
             type="submit"
-            className="w-full h-12 text-base font-medium shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-[1.01]"
+            size="lg"
+            className="w-full text-base font-medium shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-[1.01]"
             disabled={isPending}
           >
-            {isPending ? (
-              <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Đang xử lý...
-              </>
-            ) : (
-              "Đăng ký"
-            )}
+            {isPending && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+            {isPending ? "Đang xử lý..." : "Đăng ký"}
           </Button>
         </form>
       </Form>

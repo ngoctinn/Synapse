@@ -31,7 +31,10 @@ const testimonials = [
 
 export function Testimonials() {
   return (
-    <section id="testimonials" className="container mx-auto px-4 py-16 md:py-24 bg-muted/30 dark:bg-transparent">
+    <section id="testimonials" className="container mx-auto px-4 py-16 md:py-24 relative">
+       {/* Background gradient for depth */}
+      <div className="absolute inset-0 bg-gradient-to-b from-muted/30 to-background -z-10" />
+
       <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center mb-16">
         <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-5xl font-bold">
           Khách hàng nói gì về chúng tôi
@@ -50,19 +53,19 @@ export function Testimonials() {
             transition={{ duration: 0.5, delay: index * 0.1 }}
             viewport={{ once: true }}
           >
-            <Card className="h-full border-none shadow-md bg-background">
+            <Card className="h-full border bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
               <CardContent className="p-8 flex flex-col gap-6 h-full">
-                <Quote className="h-10 w-10 text-primary/20" />
-                <p className="text-muted-foreground leading-relaxed flex-1">
+                <Quote className="h-10 w-10 text-primary/40" />
+                <p className="text-muted-foreground leading-relaxed flex-1 italic relative z-10">
                   "{testimonial.content}"
                 </p>
-                <div className="flex items-center gap-4 pt-4 border-t">
-                  <Avatar>
+                <div className="flex items-center gap-4 pt-4 border-t border-border/50">
+                  <Avatar className="h-10 w-10 border">
                     <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
                     <AvatarFallback>{testimonial.initials}</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-semibold text-sm">{testimonial.name}</p>
+                    <p className="font-semibold text-sm text-foreground">{testimonial.name}</p>
                     <p className="text-xs text-muted-foreground">{testimonial.role}</p>
                   </div>
                 </div>

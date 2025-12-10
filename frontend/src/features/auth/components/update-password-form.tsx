@@ -6,47 +6,28 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+
+import { updatePasswordAction } from "../actions";
+import { updatePasswordSchema, type UpdatePasswordInput } from "../schemas";
 
 import { Button } from "@/shared/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/shared/ui/card";
 import { PasswordInput } from "@/shared/ui/custom/password-input";
 import { showToast } from "@/shared/ui/custom/sonner";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form";
-import { updatePasswordAction } from "../actions";
-
-const formSchema = z
-  .object({
-    password: z.string().min(8, {
-      message: "Mật khẩu phải có ít nhất 8 ký tự.",
-    }),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Mật khẩu xác nhận không khớp.",
-    path: ["confirmPassword"],
-  });
 
 export function UpdatePasswordForm() {
   // Sử dụng hook useActionState để quản lý trạng thái form server action
   const [state, action, isPending] = useActionState(updatePasswordAction, undefined);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<UpdatePasswordInput>({
+    resolver: zodResolver(updatePasswordSchema),
     defaultValues: {
       password: "",
       confirmPassword: "",
@@ -63,7 +44,7 @@ export function UpdatePasswordForm() {
     }
   }, [state, form]);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: UpdatePasswordInput) {
     const formData = new FormData();
     formData.append("password", values.password);
 
@@ -79,72 +60,71 @@ export function UpdatePasswordForm() {
       transition={{ duration: 0.5 }}
       className="w-full"
     >
-      <Card className="w-full shadow-lg border-none bg-card/50 backdrop-blur-sm">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold tracking-tight">Cập nhật mật khẩu</CardTitle>
-          <CardDescription>
-            Nhập mật khẩu mới cho tài khoản của bạn.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Mật khẩu mới</FormLabel>
-                    <FormControl>
-                      <PasswordInput
-                        placeholder="Nhập mật khẩu mới"
-                        className="h-11"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Xác nhận mật khẩu mới</FormLabel>
-                    <FormControl>
-                      <PasswordInput
-                        placeholder="Nhập lại mật khẩu mới"
-                        className="h-11"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+      <div className="flex flex-col space-y-2 text-center mb-8">
+        <h1 className="text-3xl font-serif font-bold tracking-tight text-primary">
+          Cập nhật mật khẩu
+        </h1>
+        <p className="text-muted-foreground">
+          Nhập mật khẩu mới cho tài khoản của bạn.
+        </p>
+      </div>
 
-              <Button type="submit" className="w-full h-11 font-medium transition-all hover:scale-[1.02]" disabled={isPending}>
-                {isPending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Đang xử lý...
-                  </>
-                ) : (
-                  "Cập nhật mật khẩu"
-                )}
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-        <CardFooter className="justify-center">
-          <div className="text-sm text-muted-foreground">
-            <Link href="/login" className="text-primary font-medium hover:underline underline-offset-4 transition-colors">
-              Quay lại đăng nhập
-            </Link>
-          </div>
-        </CardFooter>
-      </Card>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-foreground/80 font-medium">Mật khẩu mới</FormLabel>
+                <FormControl>
+                  <PasswordInput
+                    placeholder="Nhập mật khẩu mới"
+                    variant="lg"
+                    className="bg-background/50"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-foreground/80 font-medium">Xác nhận mật khẩu mới</FormLabel>
+                <FormControl>
+                  <PasswordInput
+                    placeholder="Nhập lại mật khẩu mới"
+                    variant="lg"
+                    className="bg-background/50"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button
+            type="submit"
+            size="lg"
+            className="w-full text-base font-medium shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-[1.01]"
+            disabled={isPending}
+          >
+            {isPending && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+            {isPending ? "Đang xử lý..." : "Cập nhật mật khẩu"}
+          </Button>
+        </form>
+      </Form>
+
+      <div className="mt-8 text-center text-sm text-muted-foreground">
+        <Link href="/login" className="text-primary font-medium hover:underline underline-offset-4 transition-colors">
+          Quay lại đăng nhập
+        </Link>
+      </div>
     </motion.div>
   );
 }

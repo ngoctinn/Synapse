@@ -24,13 +24,13 @@ export function CTASection() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
             <Link href="/register">
-              <Button size="lg" variant="secondary" className="h-12 px-8 text-lg rounded-full w-full sm:w-auto font-semibold">
+              <Button size="lg" variant="secondary" className="h-12 px-8 text-lg rounded-full w-full sm:w-auto font-semibold transform transition-transform hover:scale-105 shadow-lg">
                 Bắt đầu dùng thử miễn phí
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
             <Link href="/contact">
-              <Button size="lg" variant="outline" className="h-12 px-8 text-lg rounded-full w-full sm:w-auto bg-transparent text-primary-foreground border-primary-foreground hover:bg-primary-foreground/10">
+              <Button size="lg" variant="outline" className="h-12 px-8 text-lg rounded-full w-full sm:w-auto bg-transparent text-primary-foreground border-primary-foreground hover:bg-primary-foreground/10 transform transition-transform hover:scale-105">
                 Liên hệ tư vấn
               </Button>
             </Link>

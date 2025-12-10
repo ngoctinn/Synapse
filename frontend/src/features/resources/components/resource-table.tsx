@@ -3,14 +3,14 @@
 import { useTableSelection } from "@/shared/hooks/use-table-selection";
 import { cn } from "@/shared/lib/utils";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
 import { Badge } from "@/shared/ui/badge";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
@@ -91,11 +91,14 @@ export function ResourceTable({ data, groups, isLoading, className, variant = "d
     {
       header: "Loại",
       cell: (row) => (
-        <Badge variant="outline" className="gap-1 font-normal bg-muted/50">
+        <Badge
+            variant={row.type === "ROOM" ? "purple" : "indigo"}
+            className="gap-1.5 font-medium border shadow-sm"
+        >
           {row.type === "ROOM" ? (
-            <Bed className="h-3 w-3" />
+            <Bed className="size-3.5" />
           ) : (
-            <Box className="h-3 w-3" />
+            <Box className="size-3.5" />
           )}
           {row.type === "ROOM" ? "Phòng" : "Thiết bị"}
         </Badge>
@@ -103,26 +106,20 @@ export function ResourceTable({ data, groups, isLoading, className, variant = "d
     },
     {
       header: "Trạng thái",
-      cell: (row) => (
-        <Badge
-          variant={
-            row.status === "ACTIVE"
-              ? "default"
-              : "secondary"
-          }
-          className={
-            row.status === "MAINTENANCE"
-              ? "bg-yellow-500/10 text-yellow-700 hover:bg-yellow-500/20 border-yellow-200"
-              : ""
-          }
-        >
-          {row.status === "ACTIVE"
-            ? "Hoạt động"
-            : row.status === "MAINTENANCE"
-            ? "Bảo trì"
-            : "Ngưng hoạt động"}
-        </Badge>
-      ),
+      cell: (row) => {
+        const statusMap = {
+            ACTIVE: { label: "Hoạt động", variant: "success" as const },
+            MAINTENANCE: { label: "Bảo trì", variant: "warning" as const },
+            INACTIVE: { label: "Ngưng hoạt động", variant: "secondary" as const },
+        };
+        const status = statusMap[row.status] || statusMap.INACTIVE;
+
+        return (
+            <Badge variant={status.variant} className="shadow-sm">
+                {status.label}
+            </Badge>
+        );
+      },
     },
     {
       header: "Chi tiết",

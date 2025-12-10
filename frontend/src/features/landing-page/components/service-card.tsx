@@ -21,7 +21,7 @@ export function ServiceCard({ service, onBook }: ServiceCardProps) {
       viewport={{ once: true }}
       whileHover={{ y: -5 }}
       transition={{ duration: 0.3 }}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border bg-card text-card-foreground shadow-sm hover:shadow-lg hover:ring-1 hover:ring-primary/20 transition-all dark:bg-card/40 dark:backdrop-blur-sm"
+      className="group relative flex flex-col overflow-hidden rounded-2xl border bg-card/50 backdrop-blur-sm text-card-foreground shadow-sm hover:shadow-xl hover:ring-1 hover:ring-primary/50 transition-all duration-300"
     >
       {/* Image Container */}
       <div className="relative aspect-[4/3] w-full overflow-hidden">
@@ -32,19 +32,19 @@ export function ServiceCard({ service, onBook }: ServiceCardProps) {
           className="object-cover transition-transform duration-500 group-hover:scale-110"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80" />
 
         {/* Chips/Badges overlay */}
         <div className="absolute top-3 right-3 flex gap-2">
           {service.is_popular && (
-            <Badge variant="warning" className="shadow-sm backdrop-blur-sm border-0">
+            <Badge variant="warning" className="shadow-sm backdrop-blur-md border animate-pulse">
               Phổ biến
             </Badge>
           )}
         </div>
 
         <div className="absolute bottom-3 left-3">
-          <Badge variant="glass">
+          <Badge variant="glass" className="backdrop-blur-md bg-black/40 text-white border-white/20">
             {service.category}
           </Badge>
         </div>
@@ -62,13 +62,13 @@ export function ServiceCard({ service, onBook }: ServiceCardProps) {
           {service.description}
         </p>
 
-        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
+        <div className="flex items-center justify-between text-sm text-muted-foreground mb-4 pt-4 border-t border-border/50">
           <div className="flex items-center gap-1.5">
             <Clock className="h-4 w-4 text-primary" />
             <span>{service.duration} phút</span>
           </div>
-          <div className="flex items-center gap-1.5 font-medium text-foreground">
-            <Tag className="h-4 w-4 text-primary" />
+          <div className="flex items-center gap-1.5 font-bold text-primary text-base">
+            <Tag className="h-4 w-4" />
             <span>
               {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(service.price)}
             </span>
@@ -77,7 +77,7 @@ export function ServiceCard({ service, onBook }: ServiceCardProps) {
 
         <Button
           onClick={() => onBook?.(service.id)}
-          className="w-full rounded-xl shadow-md hover:shadow-primary/25 bg-primary hover:bg-primary/90 transition-all"
+          className="w-full rounded-xl shadow-md hover:shadow-primary/25 bg-primary hover:bg-primary/90 transition-all font-semibold"
         >
           Đặt lịch ngay
         </Button>
