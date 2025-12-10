@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -124,15 +123,8 @@ export function UpdatePasswordForm() {
                 )}
               />
 
-              <Button type="submit" className="w-full h-11 font-medium transition-all hover:scale-[1.02]" disabled={isPending}>
-                {isPending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Đang xử lý...
-                  </>
-                ) : (
-                  "Cập nhật mật khẩu"
-                )}
+              <Button type="submit" className="w-full h-11 font-medium transition-all hover:scale-[1.02]" isLoading={isPending}>
+                Cập nhật mật khẩu
               </Button>
             </form>
           </Form>

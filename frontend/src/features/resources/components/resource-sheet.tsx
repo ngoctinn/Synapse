@@ -12,7 +12,7 @@ import {
   SheetTitle
 } from "@/shared/ui/sheet";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Save } from "lucide-react";
+import { Save } from "lucide-react";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { manageResource } from "../actions";
@@ -151,17 +151,11 @@ export function ResourceSheet({
             <Button
                 type="submit"
                 form="resource-form"
-                disabled={isPending}
+                isLoading={isPending}
                 className="min-w-[140px] shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
+                leftIcon={<Save className="h-4 w-4" />}
             >
-                {isPending ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                    <>
-                        <Save className="mr-2 h-4 w-4" />
-                        {resource ? "Lưu thay đổi" : "Tạo mới"}
-                    </>
-                )}
+                {resource ? "Lưu thay đổi" : "Tạo mới"}
             </Button>
         </SheetFooter>
       </SheetContent>

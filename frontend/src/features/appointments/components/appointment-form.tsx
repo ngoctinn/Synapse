@@ -320,8 +320,8 @@ export function AppointmentForm({
                                             <Calendar
                                                 mode="single"
                                                 selected={field.value ? new Date(field.value) : undefined}
-                                                onSelect={(date) => field.onChange(date ? format(date, 'yyyy-MM-dd') : "")}
-                                                disabled={(date) =>
+                                                onSelect={(date: Date | undefined) => field.onChange(date ? format(date, 'yyyy-MM-dd') : "")}
+                                                disabled={(date: Date) =>
                                                     date < new Date("1900-01-01")
                                                 }
                                                 initialFocus
