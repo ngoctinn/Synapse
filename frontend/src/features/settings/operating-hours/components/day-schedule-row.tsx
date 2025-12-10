@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Clock, Plus } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
+import { useTimeSlots } from "../hooks/use-time-slots";
 
 interface DayScheduleRowProps {
   schedule: DaySchedule;
@@ -28,24 +29,13 @@ export function DayScheduleRow({
   isCopying,
   isPasteTarget
 }: DayScheduleRowProps) {
+  const { updateSlot, addSlot, removeSlot } = useTimeSlots(
+    schedule.timeSlots,
+    (newSlots) => onChange({ ...schedule, timeSlots: newSlots })
+  );
+
   const handleToggleOpen = (checked: boolean) => {
     onChange({ ...schedule, isOpen: checked });
-  };
-
-  const handleTimeChange = (index: number, field: 'start' | 'end', value: string) => {
-    const newTimeSlots = [...schedule.timeSlots];
-    newTimeSlots[index] = { ...newTimeSlots[index], [field]: value };
-    onChange({ ...schedule, timeSlots: newTimeSlots });
-  };
-
-  const handleAddSlot = () => {
-    const newTimeSlots = [...schedule.timeSlots, { start: "08:00", end: "17:00" }];
-    onChange({ ...schedule, timeSlots: newTimeSlots });
-  };
-
-  const handleRemoveSlot = (index: number) => {
-    const newTimeSlots = schedule.timeSlots.filter((_, i) => i !== index);
-    onChange({ ...schedule, timeSlots: newTimeSlots });
   };
 
   return (
@@ -92,9 +82,9 @@ export function DayScheduleRow({
                     key={index}
                     startTime={slot.start}
                     endTime={slot.end}
-                    onStartTimeChange={(val) => handleTimeChange(index, 'start', val)}
-                    onEndTimeChange={(val) => handleTimeChange(index, 'end', val)}
-                    onRemove={() => handleRemoveSlot(index)}
+                    onStartTimeChange={(val) => updateSlot(index, 'start', val)}
+                    onEndTimeChange={(val) => updateSlot(index, 'end', val)}
+                    onRemove={() => removeSlot(index)}
                     showRemoveButton={schedule.timeSlots.length > 1}
                   />
                 ))}
@@ -107,7 +97,7 @@ export function DayScheduleRow({
                        <Button
                         variant="ghost"
                         size="sm"
-                        onClick={handleAddSlot}
+                        onClick={addSlot}
                         className="text-xs font-medium text-primary hover:text-primary/80 hover:bg-primary/10 h-8 px-3 rounded-full transition-colors"
                       >
                         <Plus className="w-3.5 h-3.5 mr-1.5" />
