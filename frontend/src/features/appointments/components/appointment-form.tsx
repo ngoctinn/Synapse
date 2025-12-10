@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { areIntervalsOverlapping, format } from "date-fns";
+import { areIntervalsOverlapping, format, isSameDay } from "date-fns";
 import { vi } from "date-fns/locale";
 import {
   AlertCircle,
@@ -143,13 +143,19 @@ export function AppointmentForm({
         const resourceId = form.watch("resourceId");
 
         const hasConflict = existingAppointments.some(apt => {
-            // Skip current appointment if updating
+            // 1. First Pass: Filter by Day (Fastest Check)
+            if (!isSameDay(startTime, apt.startTime)) return false;
+
+            // 2. Skip current appointment if updating
             if (initialData && apt.id === initialData.id) return false;
-            // Skip different resources
+
+            // 3. Skip different resources
             if (apt.resourceId !== resourceId) return false;
-            // Skip cancelled
+
+            // 4. Skip cancelled
             if (apt.status === 'cancelled') return false;
 
+            // 5. Expensive Interval Check
             return areIntervalsOverlapping(
                 { start: startTime, end: endTime },
                 { start: apt.startTime, end: apt.endTime }

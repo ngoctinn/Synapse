@@ -9,10 +9,10 @@ import { useForm } from "react-hook-form"
 import { Skill } from "@/features/services/types"
 import { manageStaff } from "@/features/staff/actions"
 import {
-  StaffCreateFormValues,
-  StaffUpdateFormValues,
-  staffCreateSchema,
-  staffUpdateSchema
+    StaffCreateFormValues,
+    StaffUpdateFormValues,
+    staffCreateSchema,
+    staffUpdateSchema
 } from "@/features/staff/schemas"
 import { Staff } from "@/features/staff/types"
 
@@ -21,12 +21,12 @@ import { Button } from "@/shared/ui/button"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { Form } from "@/shared/ui/form"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle
 } from "@/shared/ui/sheet"
 import { StaffForm } from "./staff-form"
 
@@ -131,7 +131,7 @@ export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffShe
             </SheetDescription>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto px-6 py-6 [scrollbar-gutter:stable]">
+        <div className="flex-1 overflow-y-auto px-6 py-6" id="sheet-scroll-container">
             <Form {...form}>
                 <form id="staff-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     <StaffForm mode={mode} skills={skills} />

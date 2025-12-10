@@ -5,9 +5,9 @@ import { Button } from "@/shared/ui/button";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
 import { Label } from "@/shared/ui/label";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
 } from "@/shared/ui/popover";
 import { ScrollArea } from "@/shared/ui/scroll-area";
 import { Clock } from "lucide-react";
@@ -88,7 +88,7 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
       <PopoverContent className="w-auto p-0 rounded-xl shadow-xl border-border/60" align="start">
         <div className="flex h-[220px] divide-x divide-border/50">
           {/* Cột Giờ */}
-          <ScrollArea className="w-[60px]">
+          <ScrollArea className="h-full w-[60px]">
              <div className="flex flex-col p-2 gap-1 items-center">
               <Label className="mb-2 text-[10px] uppercase font-bold text-muted-foreground">Giờ</Label>
               {hoursList.map((h) => (
@@ -109,7 +109,7 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
           </ScrollArea>
 
           {/* Cột Phút */}
-          <ScrollArea className="w-[60px]">
+          <ScrollArea className="h-full w-[60px]">
             <div className="flex flex-col p-2 gap-1 items-center">
               <Label className="mb-2 text-[10px] uppercase font-bold text-muted-foreground">Phút</Label>
               {minutesList.map((m) => (
@@ -130,7 +130,7 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
           </ScrollArea>
 
           {/* Cột Buổi (SA/CH) */}
-          <ScrollArea className="w-[60px]">
+          <ScrollArea className="h-full w-[60px]">
             <div className="flex flex-col p-2 gap-1 items-center">
               <Label className="mb-2 text-[10px] uppercase font-bold text-muted-foreground">Buổi</Label>
               {["SA", "CH"].map((p) => (

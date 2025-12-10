@@ -98,7 +98,7 @@ export function AppointmentSheet({
             </SheetDescription>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto px-6 py-6 [scrollbar-gutter:stable]">
+        <div className="flex-1 overflow-y-auto px-6 py-6" id="sheet-scroll-container">
 
             <AppointmentForm
                 id="appointment-form"

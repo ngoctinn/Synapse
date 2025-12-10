@@ -4,12 +4,12 @@ import { Resource, RoomType } from "@/features/resources"
 import { Button } from "@/shared/ui/button"
 import { Form } from "@/shared/ui/form"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
 } from "@/shared/ui/sheet"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save, Send } from "lucide-react"
@@ -132,7 +132,7 @@ export function ServiceSheet({
           </SheetDescription>
         </SheetHeader>
 
-        <div className="flex-1 overflow-hidden px-6 py-6">
+        <div className="flex-1 overflow-y-auto px-6 py-6">
           <Form {...form}>
             <form
               id="service-form"
