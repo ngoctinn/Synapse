@@ -1,9 +1,9 @@
 "use client"
 
 import {
-    ChevronDownIcon,
-    ChevronLeftIcon,
-    ChevronRightIcon,
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
 } from "lucide-react"
 import * as React from "react"
 import { DayPicker } from "react-day-picker"
@@ -75,7 +75,7 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        Root: ({ className, ...props }: any) => {
+        Root: ({ className, ...props }: React.ComponentProps<"div"> & { rootRef?: React.Ref<HTMLDivElement> }) => {
           const { rootRef, ...rest } = props
           return (
             <div
@@ -110,7 +110,10 @@ function CalendarDayButton({
   day,
   modifiers,
   ...props
-}: any) {
+}: React.ComponentProps<typeof Button> & {
+  day: { date: Date }
+  modifiers: Record<string, boolean | undefined>
+}) {
 
 
   const ref = React.useRef<HTMLButtonElement>(null)
