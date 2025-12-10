@@ -8,20 +8,29 @@ import { Checkbox } from "@/shared/ui/checkbox"
 
 import { showToast } from "@/shared/ui/custom/sonner"
 
+import { BirthdayPicker } from "@/shared/ui/custom/birthday-picker"
+import { DatePicker } from "@/shared/ui/custom/date-picker"
+import { DateRangeFilter } from "@/shared/ui/custom/date-range-filter"
 import { DurationPicker } from "@/shared/ui/custom/duration-picker"
+import { MaskedDateInput } from "@/shared/ui/custom/masked-date-input"
+import { TimeInput } from "@/shared/ui/custom/time-input"
 import { TimePicker } from "@/shared/ui/custom/time-picker"
+import { TimeRangeInput } from "@/shared/ui/custom/time-range-input"
+import { YearPicker } from "@/shared/ui/custom/year-picker"
+
 import { Input } from "@/shared/ui/input"
 import { Label } from "@/shared/ui/label"
 import { Separator } from "@/shared/ui/separator"
 import { Switch } from "@/shared/ui/switch"
 import { Mail, User } from "lucide-react"
 import { useState } from "react"
+import { DateRange } from "react-day-picker"
 
 export default function ComponentsPage() {
   return (
     <div className="space-y-8 pb-10">
       <div className="space-y-2">
-
+        <h2 className="text-3xl font-bold tracking-tight">Components Gallery</h2>
         <p className="text-muted-foreground">
           Trang kiểm thử các component giao diện được sử dụng trong hệ thống.
         </p>
@@ -129,28 +138,76 @@ export default function ComponentsPage() {
           </CardContent>
         </Card>
 
-        {/* Appointment Components */}
-        <Card>
+        {/* Time & Date Components */}
+        <Card className="col-span-2">
           <CardHeader>
-            <CardTitle>Appointment Components</CardTitle>
-            <CardDescription>Các component chọn ngày giờ (Localized).</CardDescription>
+            <CardTitle>Time & Date Components</CardTitle>
+            <CardDescription>Bộ công cụ xử lý thời gian (Date/Time Pickers) đã được tối ưu cho người Việt.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
 
-            <div className="grid w-full max-w-sm items-center gap-1.5">
-              <Label>Chọn giờ (24h)</Label>
-              <TimePickerDemo />
+            <div className="space-y-2">
+              <Label>Date Picker (Single)</Label>
+              <DatePickerDemo />
+              <p className="text-[0.8rem] text-muted-foreground">Chọn một ngày cụ thể.</p>
             </div>
-            <div className="grid w-full max-w-sm items-center gap-1.5">
-              <Label>Chọn thời lượng (Phút)</Label>
+
+            <div className="space-y-2">
+              <Label>Date Range Filter</Label>
+              <DateRangeFilterDemo />
+              <p className="text-[0.8rem] text-muted-foreground">Lọc theo khoảng thời gian (có Preset).</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Masked Date Input</Label>
+              <MaskedDateInputDemo />
+              <p className="text-[0.8rem] text-muted-foreground">Nhập ngày thủ công (DD/MM/YYYY).</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Time Picker (Dropdown)</Label>
+              <TimePickerDemo />
+              <p className="text-[0.8rem] text-muted-foreground">Chọn giờ chi tiết (tách cột).</p>
+            </div>
+
+             <div className="space-y-2">
+              <Label>Time Input (Native)</Label>
+              <div className="flex flex-col gap-2">
+                 <TimeInput variant="sm" />
+                 <TimeInput variant="default" />
+              </div>
+              <p className="text-[0.8rem] text-muted-foreground">Input giờ native của trình duyệt.</p>
+            </div>
+
+             <div className="space-y-2">
+              <Label>Time Range Input</Label>
+              <TimeRangeInputDemo />
+              <p className="text-[0.8rem] text-muted-foreground">Chọn khoảng giờ bắt đầu - kết thúc.</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Duration Picker</Label>
               <DurationPickerDemo />
+              <p className="text-[0.8rem] text-muted-foreground">Chọn thời lượng (Phút/Giờ).</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Year Picker</Label>
+              <YearPickerDemo />
+              <p className="text-[0.8rem] text-muted-foreground">Chọn năm nhanh chóng.</p>
+            </div>
+
+             <div className="space-y-2">
+              <Label>Birthday Picker</Label>
+              <BirthdayPickerDemo />
+              <p className="text-[0.8rem] text-muted-foreground">Chọn ngày sinh (giới hạn năm).</p>
             </div>
 
           </CardContent>
         </Card>
 
         {/* Sonner Toasts */}
-        <Card>
+        <Card className="col-span-2">
           <CardHeader>
             <CardTitle>Sonner Toasts</CardTitle>
             <CardDescription>Thông báo Toast với giao diện Premium.</CardDescription>
@@ -190,14 +247,29 @@ export default function ComponentsPage() {
         </Card>
       </div>
       {/* Spacer for scrolling */}
-      <div className="h-[500px] flex items-center justify-center text-muted-foreground border-t border-dashed">
+      <div className="h-[200px] flex items-center justify-center text-muted-foreground border-t border-dashed mt-10">
         Khu vực cuộn để test vị trí Popover
       </div>
     </div>
   )
 }
 
+// --- Demos ---
 
+function DatePickerDemo() {
+  const [date, setDate] = useState<Date | undefined>(new Date())
+  return <DatePicker value={date} onChange={setDate} />
+}
+
+function DateRangeFilterDemo() {
+  const [dateRange, setDateRange] = useState<DateRange | undefined>()
+  return <DateRangeFilter dateRange={dateRange} setDateRange={setDateRange} />
+}
+
+function MaskedDateInputDemo() {
+  const [date, setDate] = useState<Date | undefined>()
+  return <MaskedDateInput value={date} onChange={setDate} />
+}
 
 function DurationPickerDemo() {
   const [duration, setDuration] = useState<number>(60)
@@ -207,6 +279,34 @@ function DurationPickerDemo() {
 function TimePickerDemo() {
   const [time, setTime] = useState<string>("09:00")
   return <TimePicker value={time} onChange={setTime} />
+}
+
+function TimeRangeInputDemo() {
+  const [start, setStart] = useState("09:00")
+  const [end, setEnd] = useState("17:00")
+  return (
+    <TimeRangeInput
+      startTime={start}
+      endTime={end}
+      onStartTimeChange={setStart}
+      onEndTimeChange={setEnd}
+      onRemove={() => {}}
+    />
+  )
+}
+
+function YearPickerDemo() {
+    const [date, setDate] = useState<Date | undefined>(new Date())
+    return (
+        <YearPicker date={date} onSelect={setDate} />
+    )
+}
+
+function BirthdayPickerDemo() {
+    const [date, setDate] = useState<Date | undefined>()
+    return (
+        <BirthdayPicker date={date} setDate={setDate} />
+    )
 }
 
 

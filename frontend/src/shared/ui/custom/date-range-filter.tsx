@@ -1,29 +1,32 @@
 "use client";
 
-import * as React from "react";
-import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/shared/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/shared/ui/popover";
-import { Calendar } from "@/shared/ui/calendar";
 import { cn } from "@/shared/lib/utils";
-import { DateRange } from "react-day-picker";
+import { Button } from "@/shared/ui/button";
+import { Calendar } from "@/shared/ui/calendar";
 import {
-  startOfWeek,
-  endOfWeek,
-  startOfMonth,
-  endOfMonth,
-  startOfYear,
-  endOfYear,
-  addWeeks,
-  addMonths,
-  isSameDay,
-  format,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/shared/ui/popover";
+import {
+    addMonths,
+    addWeeks,
+    endOfDay,
+    endOfMonth,
+    endOfWeek,
+    endOfYear,
+    format,
+    isSameDay,
+    startOfDay,
+    startOfMonth,
+    startOfWeek,
+    startOfYear,
+    subDays,
 } from "date-fns";
 import { vi } from "date-fns/locale";
+import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import * as React from "react";
+import { DateRange } from "react-day-picker";
 
 interface DateRangeFilterProps {
   dateRange: DateRange | undefined;
@@ -58,6 +61,15 @@ export function DateRangeFilter({
     let to: Date | undefined;
 
     switch (value) {
+      case "today":
+        from = startOfDay(now);
+        to = endOfDay(now);
+        break;
+      case "yesterday":
+        const yesterday = subDays(now, 1);
+        from = startOfDay(yesterday);
+        to = endOfDay(yesterday);
+        break;
       case "this_week":
         from = startOfWeek(now, { locale: vi });
         to = endOfWeek(now, { locale: vi });
@@ -98,6 +110,10 @@ export function DateRangeFilter({
     const isRange = (start: Date, end: Date) =>
       isSameDay(from, start) && isSameDay(to, end);
 
+    if (isRange(startOfDay(now), endOfDay(now))) return "today";
+    if (isRange(startOfDay(subDays(now, 1)), endOfDay(subDays(now, 1))))
+      return "yesterday";
+
     if (
       isRange(
         startOfWeek(now, { locale: vi }),
@@ -130,6 +146,10 @@ export function DateRangeFilter({
     switch (preset) {
       case "all":
         return "Toàn thời gian";
+      case "today":
+        return "Hôm nay";
+      case "yesterday":
+        return "Hôm qua";
       case "this_week":
         return "Tuần này";
       case "next_week":
@@ -180,6 +200,20 @@ export function DateRangeFilter({
               Toàn thời gian
             </Button>
             <div className="h-[1px] bg-border/50 my-1 mx-2" />
+            <Button
+              variant="ghost"
+              className="justify-start font-normal h-8 px-2"
+              onClick={() => handlePresetChange("today")}
+            >
+              Hôm nay
+            </Button>
+            <Button
+              variant="ghost"
+              className="justify-start font-normal h-8 px-2"
+              onClick={() => handlePresetChange("yesterday")}
+            >
+              Hôm qua
+            </Button>
             <Button
               variant="ghost"
               className="justify-start font-normal h-8 px-2"

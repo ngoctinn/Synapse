@@ -2,11 +2,11 @@
 
 import { cn } from "@/shared/lib/utils";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/shared/ui/select";
 import { Clock } from "lucide-react";
 import * as React from "react";
@@ -43,7 +43,11 @@ export function DurationPicker({
   }, [min, max, step]);
 
   const formatTime = (minutes: number) => {
-    return `${minutes} phút`;
+    if (minutes < 60) return `${minutes} phút`;
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    if (mins === 0) return `${minutes} phút (${hours} giờ)`;
+    return `${minutes} phút (${hours} giờ ${mins} phút)`;
   };
 
   return (
