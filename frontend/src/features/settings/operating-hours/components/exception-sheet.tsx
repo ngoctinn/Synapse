@@ -1,7 +1,6 @@
 "use client";
 
-import { CalendarDays, Loader2, Plus, Save, Send, Trash2 } from "lucide-react";
-import * as React from "react";
+import { CalendarDays, Plus, Save, Send, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 
 import { Button } from "@/shared/ui/button";
@@ -71,11 +70,6 @@ export function ExceptionSheet({
         <SheetHeader className="px-6 py-4 border-b">
             <div className="flex items-center justify-between">
                 <SheetTitle className="text-xl font-semibold text-foreground flex items-center gap-2">
-                    {isEditing ? (
-                        <CalendarDays className="w-5 h-5 text-primary" />
-                    ) : (
-                        <Plus className="w-5 h-5 text-primary" />
-                    )}
                     {title}
                 </SheetTitle>
             </div>
