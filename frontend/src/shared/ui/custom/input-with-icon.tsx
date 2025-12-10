@@ -53,10 +53,13 @@ const InputWithIcon = React.forwardRef<HTMLInputElement, InputWithIconProps>(
         <Input
           className={cn(
             sizeVariants[variant],
-            "bg-background",
+            "bg-background border-input/50 rounded-lg",
             Icon && "pl-10",
             RightIcon && "pr-10",
-            isError && "border-destructive focus-visible:ring-destructive/20",
+            "transition-all duration-200 shadow-sm",
+            "hover:shadow-md hover:border-input",
+            "focus-visible:shadow-md focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/50",
+            isError && "border-destructive/50 focus-visible:ring-destructive/20 focus-visible:border-destructive/50",
             className
           )}
           ref={ref}

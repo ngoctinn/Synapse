@@ -26,23 +26,25 @@ const sizeVariants = {
 }
 
 const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
-  ({ className, icon: Icon = Lock, iconProps, variant = "default", ...props }, ref) => {
+  ({ className, icon, iconProps, variant = "default", ...props }, ref) => {
     const [showPassword, setShowPassword] = React.useState(false)
+    const Icon = icon || Lock
 
     return (
       <div className="relative group w-full">
-        <div className={cn(
-          "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-200 z-10",
-          props["aria-invalid"] ? "text-destructive" : "text-muted-foreground group-focus-within:text-primary/70"
-        )}>
-          <Icon size={18} {...iconProps} />
-        </div>
+          <div className={cn(
+            "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-200 z-10",
+            props["aria-invalid"] ? "text-destructive" : "text-muted-foreground group-focus-within:text-primary/70"
+          )}>
+            <Icon size={18} {...iconProps} />
+          </div>
         <Input
           type={showPassword ? "text" : "password"}
           className={cn(
             sizeVariants[variant],
             "bg-background border-input/50 rounded-lg",
-            "pl-10 pr-10",
+            "pl-10",
+            "pr-10",
             "transition-all duration-200 shadow-sm",
             "hover:shadow-md hover:border-input",
             "focus-visible:shadow-md focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/50",
@@ -58,10 +60,11 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
           size="icon"
           className={cn(
             "absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent transition-colors duration-200 z-10",
-            "text-muted-foreground hover:text-foreground group-focus-within:text-primary/70"
+            "text-muted-foreground hover:text-foreground focus-visible:text-foreground",
+            "focus-visible:ring-2 focus-visible:ring-primary/20",
+            props["aria-invalid"] ? "text-destructive/70 hover:text-destructive" : ""
           )}
           onClick={() => setShowPassword((prev) => !prev)}
-          tabIndex={-1} // Skip tab index for this button to keep flow natural
           aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
         >
           {showPassword ? (

@@ -15,34 +15,47 @@ interface CustomToastProps {
 }
 
 // Sử dụng CSS variables trực tiếp vì Tailwind class utilities chưa nhận diện đầy đủ
+// Map variants to Tailwind classes correctly
 const variantStyles = {
   success: {
     icon: CheckCircle2,
-    colorVar: "var(--alert-success-foreground)",
-    bgVar: "var(--alert-success)",
-    borderVar: "var(--alert-success-border)",
+    container: "border-success/20 bg-success/10",
+    iconBg: "bg-success/20",
+    iconColor: "text-success",
+    title: "text-foreground",
+    desc: "text-muted-foreground",
     srLabel: "Thành công",
+    gradient: "from-success/10 to-transparent",
   },
   info: {
     icon: Info,
-    colorVar: "var(--alert-info-foreground)",
-    bgVar: "var(--alert-info)",
-    borderVar: "var(--alert-info-border)",
+    container: "border-info/20 bg-info/10",
+    iconBg: "bg-info/20",
+    iconColor: "text-info",
+    title: "text-foreground",
+    desc: "text-muted-foreground",
     srLabel: "Thông tin",
+    gradient: "from-info/10 to-transparent",
   },
   warning: {
     icon: AlertTriangle,
-    colorVar: "var(--alert-warning-foreground)",
-    bgVar: "var(--alert-warning)",
-    borderVar: "var(--alert-warning-border)",
+    container: "border-warning/20 bg-warning/10",
+    iconBg: "bg-warning/20",
+    iconColor: "text-warning",
+    title: "text-foreground",
+    desc: "text-muted-foreground",
     srLabel: "Cảnh báo",
+    gradient: "from-warning/10 to-transparent",
   },
   error: {
     icon: XCircle,
-    colorVar: "var(--destructive)",
-    bgVar: "oklch(0.65 0.22 25 / 0.1)",
-    borderVar: "oklch(0.65 0.22 25 / 0.2)",
+    container: "border-destructive/20 bg-destructive/5",
+    iconBg: "bg-destructive/10",
+    iconColor: "text-destructive",
+    title: "text-foreground",
+    desc: "text-muted-foreground",
     srLabel: "Lỗi",
+    gradient: "from-destructive/10 to-transparent",
   },
 }
 
@@ -53,63 +66,53 @@ export function CustomToast({ variant, title, description, t }: CustomToastProps
   return (
     <div
       className={cn(
-        "relative flex w-full overflow-hidden rounded-xl border bg-background/80 p-4 shadow-lg backdrop-blur-xl",
+        "relative flex w-full overflow-hidden rounded-xl border p-4 shadow-lg backdrop-blur-xl",
         "motion-safe:transition-all motion-safe:duration-300 motion-safe:hover:shadow-md",
-        "dark:bg-zinc-900/80"
+        "dark:bg-zinc-900/90 bg-background/95 supports-[backdrop-filter]:bg-background/60",
+        style.container
       )}
-      style={{ borderColor: style.borderVar }}
       role="alert"
       aria-live={variant === "error" ? "assertive" : "polite"}
-      aria-atomic="true"
     >
-      {/* Screen reader only - đọc loại thông báo */}
       <span className="sr-only">{style.srLabel}: </span>
 
-      {/* Gradient Background Effect */}
       <div
-        className="absolute inset-0 bg-gradient-to-br opacity-40 pointer-events-none"
-        style={{
-          background: `linear-gradient(to bottom right, ${style.bgVar}, transparent)`
-        }}
+        className={cn("absolute inset-0 bg-gradient-to-br opacity-40 pointer-events-none", style.gradient)}
         aria-hidden="true"
       />
 
-      <div className="relative flex w-full items-start gap-3">
-        {/* Icon */}
+      <div className="relative flex w-full items-start gap-4">
         <div
-          className="flex-shrink-0 rounded-full p-1.5"
-          style={{ backgroundColor: style.bgVar }}
+          className={cn("flex-shrink-0 rounded-full p-2", style.iconBg)}
         >
           <Icon
             size={18}
-            style={{ color: style.colorVar }}
+            className={style.iconColor}
             strokeWidth={2.5}
             aria-hidden="true"
           />
         </div>
 
-        {/* Content */}
         <div className="flex-1 grid gap-1 pt-0.5">
-          <h3 className="font-semibold text-sm leading-none tracking-tight text-foreground">
+          <h3 className={cn("font-semibold text-sm leading-none tracking-tight", style.title)}>
             {title}
           </h3>
           {description && (
-            <p className="text-xs text-muted-foreground leading-relaxed opacity-90">
+            <p className={cn("text-xs leading-relaxed opacity-90", style.desc)}>
               {description}
             </p>
           )}
         </div>
 
-        {/* Close Button - Touch target 44x44px */}
         <button
           onClick={() => toast.dismiss(t)}
           className={cn(
             "flex-shrink-0 flex items-center justify-center",
-            "min-w-[44px] min-h-[44px] -mr-3 -mt-3",
+            "w-8 h-8 -mr-2 -mt-2",
             "rounded-full text-muted-foreground/60",
-            "hover:text-foreground hover:bg-muted/50",
+            "hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10",
             "focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
-            "motion-safe:transition-colors"
+            "transition-colors"
           )}
           aria-label="Đóng thông báo"
         >
