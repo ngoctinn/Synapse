@@ -4,13 +4,13 @@ import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { BirthdayPicker } from "@/shared/ui/custom/birthday-picker";
 import { InputWithIcon } from "@/shared/ui/custom/input-with-icon";
-import { TimePicker } from "@/shared/ui/custom/time-picker";
+import { TimeRangeInput } from "@/shared/ui/custom/time-range-input";
 import { Label } from "@/shared/ui/label";
 import { Switch } from "@/shared/ui/switch";
 import { format, isSameDay } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, Clock, Plus, Trash2, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Clock, Plus, X, Calendar as CalendarIcon } from "lucide-react";
+import { useState, useEffect } from "react";
 import { ExceptionDate } from "../model/types";
 
 import { DEFAULT_BUSINESS_HOURS, EXCEPTION_TYPES } from "../model/constants";
@@ -264,48 +264,19 @@ export function ExceptionForm({
                         exit={{ opacity: 0, height: 0 }}
                         className="overflow-hidden"
                     >
-                        <div className="pt-4 border-t border-dashed mt-2 space-y-3">
-                            <div className="flex items-center justify-between">
-                                <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Khung giờ</Label>
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={handleAddSlot}
-                                    className="text-xs font-medium text-primary hover:text-primary/80 hover:bg-primary/10 h-7 px-2 rounded-md"
-                                >
-                                    <Plus className="w-3 h-3 mr-1.5" />
-                                    Thêm khung giờ
-                                </Button>
-                            </div>
-
-                            <div className="grid grid-cols-1 gap-2 w-full">
-                                {(formData.modifiedHours || []).map((slot, index) => (
-                                    <div key={index} className="flex items-center justify-between gap-3 bg-secondary/20 p-2 rounded-lg border hover:border-primary/20 transition-all duration-200 group/slot w-full">
-                                        <div className="flex items-center gap-3 flex-1">
-                                            <TimePicker
-                                                value={slot.start}
-                                                onChange={val => handleTimeChange(index, 'start', val)}
-                                                className="w-24 h-9 bg-background border-transparent hover:border-border focus:bg-background shadow-none text-sm font-medium"
-                                            />
-                                            <ArrowRight className="w-3 h-3 text-muted-foreground/50 shrink-0" />
-                                            <TimePicker
-                                                value={slot.end}
-                                                onChange={val => handleTimeChange(index, 'end', val)}
-                                                className="w-24 h-9 bg-background border-transparent hover:border-border focus:bg-background shadow-none text-right text-sm font-medium"
-                                            />
-                                        </div>
-
-                                        {(formData.modifiedHours?.length || 0) > 1 && (
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => handleRemoveSlot(index)}
-                                                className="h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-70 group-hover/slot:opacity-100 transition-all duration-200 rounded-full"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </Button>
-                                        )}
-                                    </div>
+                        <div className="pt-4 pl-1 border-t border-border/50 mt-2 space-y-3">
+                            <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Khung giờ hoạt động</Label>
+                            <div className="flex flex-wrap gap-3 w-full justify-end items-center">                                {(formData.modifiedHours || []).map((slot, index) => (
+                                    <TimeRangeInput
+                                        key={index}
+                                        startTime={slot.start}
+                                        endTime={slot.end}
+                                        onStartTimeChange={(val) => handleTimeChange(index, 'start', val)}
+                                        onEndTimeChange={(val) => handleTimeChange(index, 'end', val)}
+                                        onRemove={() => handleRemoveSlot(index)}
+                                        showRemoveButton={(formData.modifiedHours?.length || 0) > 1}
+                                        className="w-full"
+                                    />
                                 ))}
                             </div>
                         </div>
