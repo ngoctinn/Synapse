@@ -1,11 +1,12 @@
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
-import { Badge } from "@/shared/ui/badge";
+
 import { Button } from "@/shared/ui/button";
-import { MessageCircle, Smartphone, Mail, Settings2, CheckCircle, XCircle } from "lucide-react";
+import { MessageCircle, Smartphone, Mail, Settings2 } from "lucide-react";
 import { NotificationChannel } from "../types";
 import { cn } from "@/shared/lib/utils";
+import { ChannelStatusBadge } from "./channel-status-badge";
 
 interface NotificationChannelsProps {
   channels: NotificationChannel[];
@@ -30,27 +31,7 @@ export function NotificationChannels({ channels, onConfigure }: NotificationChan
               </span>
               {channel.name}
             </CardTitle>
-            <Badge 
-              variant={channel.isConnected ? "outline" : "secondary"} 
-              className={cn(
-                "transition-colors duration-300",
-                channel.isConnected 
-                  ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" 
-                  : "text-muted-foreground"
-              )}
-            >
-               {channel.isConnected ? (
-                 <>
-                   <CheckCircle className="w-3 h-3 mr-1" />
-                   Đã kết nối
-                 </>
-               ) : (
-                 <>
-                   <XCircle className="w-3 h-3 mr-1" />
-                   Chưa kết nối
-                 </>
-               )}
-            </Badge>
+            <ChannelStatusBadge isConnected={channel.isConnected} />
           </CardHeader>
           <CardContent>
             <CardDescription className="min-h-[40px] mb-4 text-sm leading-relaxed">

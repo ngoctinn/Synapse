@@ -13,12 +13,12 @@ import { Button } from "@/shared/ui/button";
 import { PasswordInput } from "@/shared/ui/custom/password-input";
 import { showToast } from "@/shared/ui/custom/sonner";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form";
 
 export function UpdatePasswordForm() {
@@ -68,7 +68,6 @@ export function UpdatePasswordForm() {
         </p>
       </div>
 
-<<<<<<< HEAD
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
@@ -112,10 +111,9 @@ export function UpdatePasswordForm() {
             type="submit"
             size="lg"
             className="w-full text-base font-medium shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-[1.01]"
-            disabled={isPending}
+            isLoading={isPending}
           >
-            {isPending && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
-            {isPending ? "Đang xử lý..." : "Cập nhật mật khẩu"}
+            Cập nhật mật khẩu
           </Button>
         </form>
       </Form>
@@ -125,22 +123,6 @@ export function UpdatePasswordForm() {
           Quay lại đăng nhập
         </Link>
       </div>
-=======
-              <Button type="submit" className="w-full h-11 font-medium transition-all hover:scale-[1.02]" isLoading={isPending}>
-                Cập nhật mật khẩu
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-        <CardFooter className="justify-center">
-          <div className="text-sm text-muted-foreground">
-            <Link href="/login" className="text-primary font-medium hover:underline underline-offset-4 transition-colors">
-              Quay lại đăng nhập
-            </Link>
-          </div>
-        </CardFooter>
-      </Card>
->>>>>>> 128138c9e24b579949211f7015f656135b6c6809
     </motion.div>
   );
 }
