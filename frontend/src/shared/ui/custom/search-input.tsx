@@ -83,9 +83,9 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
             <span className="sr-only">Clear search</span>
           </button>
         )}
-        {!internalValue && (
+       {!internalValue && (
            <div className="absolute right-3 pointer-events-none hidden sm:flex items-center gap-1">
-             <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+             <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 shadow-[0px_1px_0px_0px_rgba(0,0,0,0.05)] dark:shadow-none">
                <span className="text-xs">⌘</span>K
              </kbd>
            </div>
