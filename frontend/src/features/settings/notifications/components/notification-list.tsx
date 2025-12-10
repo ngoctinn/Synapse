@@ -8,12 +8,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/ui/table";
-import { Switch } from "@/shared/ui/switch";
-import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
-import { Edit2 } from "lucide-react";
 import { NotificationEvent } from "../types";
-import { cn } from "@/shared/lib/utils";
+import { ChannelControl } from "./channel-control";
 
 interface NotificationListProps {
   events: NotificationEvent[];
@@ -64,26 +61,15 @@ export function NotificationList({ events, onToggleChannel, onEditTemplate }: No
                   {channels.map((channelId) => (
                     <div key={channelId} className="flex items-center justify-between p-2 rounded-md bg-muted/50">
                       <span className="text-sm font-medium capitalize">{channelId}</span>
-                      <div className="flex items-center gap-2">
-                         {event.channels[channelId] && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8 text-muted-foreground hover:text-primary"
-                              onClick={() => onEditTemplate(event.id, channelId)}
-                              aria-label={`Edit ${channelId} template for ${event.name}`}
-                            >
-                              <Edit2 className="h-4 w-4" />
-                            </Button>
-                          )}
-                        <Switch
-                          checked={event.channels[channelId]}
-                          onCheckedChange={(checked) =>
-                            onToggleChannel(event.id, channelId, checked)
-                          }
-                          aria-label={`Toggle ${channelId} for ${event.name}`}
-                        />
-                      </div>
+                      <ChannelControl
+                        variant="mobile"
+                        checked={event.channels[channelId]}
+                        onCheckedChange={(checked) =>
+                          onToggleChannel(event.id, channelId, checked)
+                        }
+                        onEdit={() => onEditTemplate(event.id, channelId)}
+                        ariaLabel={`${channelId} for ${event.name}`}
+                      />
                     </div>
                   ))}
                 </div>
@@ -115,28 +101,14 @@ export function NotificationList({ events, onToggleChannel, onEditTemplate }: No
                     </TableCell>
                     {channels.map((channelId) => (
                       <TableCell key={channelId} className="text-center">
-                        <div className="flex flex-col items-center gap-2 min-h-[60px] justify-center">
-                          <Switch
-                            checked={event.channels[channelId]}
-                            onCheckedChange={(checked) =>
-                              onToggleChannel(event.id, channelId, checked)
-                            }
-                            aria-label={`Toggle ${channelId} for ${event.name}`}
-                          />
-                          <div className="h-6">
-                          {event.channels[channelId] && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 text-xs text-muted-foreground hover:text-primary animate-in fade-in zoom-in duration-200"
-                              onClick={() => onEditTemplate(event.id, channelId)}
-                            >
-                              <Edit2 className="h-3 w-3 mr-1" />
-                              Mẫu tin
-                            </Button>
-                          )}
-                          </div>
-                        </div>
+                        <ChannelControl
+                          checked={event.channels[channelId]}
+                          onCheckedChange={(checked) =>
+                            onToggleChannel(event.id, channelId, checked)
+                          }
+                          onEdit={() => onEditTemplate(event.id, channelId)}
+                          ariaLabel={`${channelId} for ${event.name}`}
+                        />
                       </TableCell>
                     ))}
                   </TableRow>
