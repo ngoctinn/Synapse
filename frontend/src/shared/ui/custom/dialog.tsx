@@ -3,12 +3,12 @@
 import { cn } from "@/shared/lib/utils"
 import { Button } from "@/shared/ui/button"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
 } from "@/shared/ui/dialog"
 import { AlertTriangle, CheckCircle2, Info, LucideIcon, XCircle } from "lucide-react"
 
@@ -35,23 +35,23 @@ interface CustomDialogProps {
 const variantStyles = {
   success: {
     icon: CheckCircle2,
-    color: "text-emerald-600 dark:text-emerald-500",
-    bg: "bg-emerald-100/50 dark:bg-emerald-500/10",
+    color: "text-success",
+    bg: "bg-alert-success",
   },
   info: {
     icon: Info,
-    color: "text-blue-600 dark:text-blue-500",
-    bg: "bg-blue-100/50 dark:bg-blue-500/10",
+    color: "text-info",
+    bg: "bg-alert-info",
   },
   warning: {
     icon: AlertTriangle,
-    color: "text-amber-600 dark:text-amber-500",
-    bg: "bg-amber-100/50 dark:bg-amber-500/10",
+    color: "text-warning",
+    bg: "bg-alert-warning",
   },
   error: {
     icon: XCircle,
-    color: "text-red-600 dark:text-red-500",
-    bg: "bg-red-100/50 dark:bg-red-500/10",
+    color: "text-destructive",
+    bg: "bg-destructive/10",
   },
 }
 

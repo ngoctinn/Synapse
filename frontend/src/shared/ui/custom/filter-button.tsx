@@ -36,12 +36,11 @@ export function FilterButton({
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant={isActive ? "secondary" : "outline"}
           size={label ? "default" : "icon"}
           className={cn(
             "relative shrink-0 transition-all duration-300",
             !label && "h-10 w-10",
-            isActive && "border-primary/50 bg-primary/5 text-primary ring-2 ring-primary/20",
             className
           )}
         >

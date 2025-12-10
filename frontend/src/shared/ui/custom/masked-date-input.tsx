@@ -18,7 +18,7 @@ interface MaskedDateInputProps
 }
 
 export const MaskedDateInput = React.forwardRef<HTMLInputElement, MaskedDateInputProps>(
-  ({ value, onChange, className, onInvalidInput, minDate, maxDate, icon: Icon, iconProps, ...props }, ref) => {
+  ({ value, onChange, className, onInvalidInput, minDate, maxDate, icon: Icon, iconProps, error, ...props }, ref) => {
     const [inputValue, setInputValue] = React.useState("")
     const inputRef = React.useRef<HTMLInputElement>(null)
 
@@ -184,7 +184,7 @@ export const MaskedDateInput = React.forwardRef<HTMLInputElement, MaskedDateInpu
             "font-medium",
             className
           )}
-          aria-invalid={!!props.error}
+          aria-invalid={!!error}
           {...props}
         />
       </div>

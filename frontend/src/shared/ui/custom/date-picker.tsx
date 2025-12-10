@@ -2,7 +2,7 @@
 
 import { format, isValid, parse } from "date-fns"
 import { vi } from "date-fns/locale"
-import { Calendar as CalendarIcon } from "lucide-react"
+import { Calendar as CalendarIcon, LucideIcon, LucideProps } from "lucide-react"
 import * as React from "react"
 
 import { cn } from "@/shared/lib/utils"
@@ -14,6 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/ui/popover"
+import { MaskedDateInput } from "./masked-date-input"
 
 interface DatePickerProps {
   value?: Date
@@ -21,6 +22,21 @@ interface DatePickerProps {
   placeholder?: string
   className?: string
   disabled?: boolean
+  /**
+   * Mode hiển thị:
+   * - `calendar`: Input readonly + Popover Calendar (Mặc định)
+   * - `input`: Masked Input cho phép nhập tay (DD/MM/YYYY)
+   */
+  mode?: "calendar" | "input"
+  /** Icon tùy chỉnh (chỉ dùng cho mode input hoặc trigger button) */
+  icon?: LucideIcon
+  iconProps?: LucideProps
+  /** Trạng thái lỗi (chỉ dùng cho mode input) */
+  error?: boolean | string
+  /** Callback khi input không hợp lệ (chỉ dùng cho mode input) */
+  onInvalidInput?: (isInvalid: boolean) => void
+  minDate?: Date
+  maxDate?: Date
 }
 
 export function DatePicker({
@@ -28,11 +44,39 @@ export function DatePicker({
   onChange,
   placeholder = "DD/MM/YYYY",
   className,
-  disabled
+  disabled,
+  mode = "calendar",
+  icon: Icon = CalendarIcon,
+  iconProps,
+  error,
+  onInvalidInput,
+  minDate,
+  maxDate
 }: DatePickerProps) {
   const [open, setOpen] = React.useState(false)
   const [inputValue, setInputValue] = React.useState("")
 
+  // --- MODE: INPUT (Masked) ---
+  if (mode === "input") {
+    return (
+      <div className={cn("w-full", className)}>
+        <MaskedDateInput
+          value={value}
+          onChange={onChange}
+          icon={Icon}
+          iconProps={iconProps}
+          placeholder={placeholder}
+          error={error}
+          onInvalidInput={onInvalidInput}
+          minDate={minDate}
+          maxDate={maxDate}
+          disabled={disabled}
+        />
+      </div>
+    )
+  }
+
+  // --- MODE: CALENDAR (Popover) ---
   // Sync input value when date prop changes
   React.useEffect(() => {
     if (value && isValid(value)) {
@@ -76,7 +120,12 @@ export function DatePicker({
             onChange={handleInputChange}
             placeholder={placeholder}
             disabled={disabled}
-            className={cn("pr-10", className)} // Add padding for icon
+            className={cn("pr-10 cursor-pointer", className)} // Add padding for icon
+            onClick={() => !disabled && setOpen(true)} // Open on click inputs
+            readOnly // Make it readonly to force picker usage preference in 'calendar' mode, or allow typing if desired (but handleInputChange handles it)
+                     // Based on request, 'calendar' usually implies popup preference. Keeping it editable for now but triggering popup.
+                     // Actually, user compliant might prefer strict one or the other.
+                     // Current implementation allows typing.
         />
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
@@ -87,7 +136,7 @@ export function DatePicker({
             className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground hover:text-foreground"
             disabled={disabled}
           >
-            <CalendarIcon className="h-4 w-4" />
+            <Icon className="h-4 w-4" {...iconProps} />
             <span className="sr-only">Open calendar</span>
           </Button>
         </PopoverTrigger>
@@ -100,7 +149,7 @@ export function DatePicker({
             initialFocus
             captionLayout="dropdown"
             fromYear={1900}
-            toYear={new Date().getFullYear()}
+            toYear={new Date().getFullYear() + 5}
             classNames={{
                 caption_dropdowns: "flex gap-2",
             }}

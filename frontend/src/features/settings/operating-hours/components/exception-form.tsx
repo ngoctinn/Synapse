@@ -2,7 +2,7 @@
 
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
-import { BirthdayPicker } from "@/shared/ui/custom/birthday-picker";
+import { DatePicker } from "@/shared/ui/custom/date-picker";
 import { TimeRangeInput } from "@/shared/ui/custom/time-range-input";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
@@ -140,9 +140,10 @@ export function ExceptionForm({
 
             <div className="flex gap-3 items-end">
                  <div className="flex-1">
-                     <BirthdayPicker
-                        date={tempDate}
-                        setDate={setTempDate}
+                     <DatePicker
+                        mode="input"
+                        value={tempDate}
+                        onChange={setTempDate}
                         placeholder="Chọn ngày ngoại lệ..."
                         className="bg-background w-full"
                     />

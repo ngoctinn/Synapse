@@ -3,7 +3,7 @@
 import { PROFILE_LABELS } from "@/features/customer-dashboard/constants"
 import { ProfileInput } from "@/features/customer-dashboard/schemas"
 import { Button } from "@/shared/ui/button"
-import { BirthdayPicker } from "@/shared/ui/custom/birthday-picker"
+import { DatePicker } from "@/shared/ui/custom/date-picker"
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/ui/form"
 import { Input } from "@/shared/ui/input"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip"
@@ -51,9 +51,10 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
               <FormItem>
                 <FormLabel className="text-sm font-semibold text-foreground/80">{PROFILE_LABELS.DATE_OF_BIRTH}</FormLabel>
                 <FormControl>
-                  <BirthdayPicker
-                    date={field.value ? new Date(field.value) : undefined}
-                    setDate={(date) => {
+                  <DatePicker
+                    mode="input"
+                    value={field.value ? new Date(field.value) : undefined}
+                    onChange={(date) => {
                       // Handle date selection: valid date -> format string, invalid -> error code, null -> empty
                       const newValue = date
                         ? (isNaN(date.getTime()) ? "INVALID_DATE" : format(date, "yyyy-MM-dd"))
