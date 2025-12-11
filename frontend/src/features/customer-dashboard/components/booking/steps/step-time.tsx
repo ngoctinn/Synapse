@@ -75,7 +75,7 @@ export function StepTime({ state, updateState }: BookingStepProps) {
                         onSelect={(date) => updateState({ selectedDate: date, selectedTime: null })}
                         className="w-full"
                         classNames={{
-                            head_cell: "text-muted-foreground font-normal text-[0.8rem] w-10",
+                            head_cell: "text-muted-foreground font-normal text-xs w-10",
                             cell: "h-10 w-10 text-center text-sm p-0 relative",
                             day: "h-10 w-10 p-0 font-normal aria-selected:opacity-100 hover:bg-accent hover:text-accent-foreground rounded-lg transition-all focus-visible:bg-accent focus-visible:text-accent-foreground",
                             day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground shadow-md",
@@ -101,7 +101,7 @@ export function StepTime({ state, updateState }: BookingStepProps) {
                         Giờ trống {selectedDate && format(selectedDate, "dd/MM", { locale: vi })}
                     </h3>
                     {preference === "any" && !isLoading && (
-                        <Badge variant="outline" className="text-[10px] bg-alert-success text-alert-success-foreground border-alert-success-border">
+                        <Badge variant="outline" className="text-xs bg-alert-success text-alert-success-foreground border-alert-success-border">
                             Giờ vàng (Giảm 10%)
                         </Badge>
                     )}

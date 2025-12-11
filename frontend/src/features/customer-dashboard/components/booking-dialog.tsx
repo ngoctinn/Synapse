@@ -154,7 +154,7 @@ export function BookingDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[95vw] sm:max-w-[480px] md:max-w-4xl p-0 gap-0 overflow-hidden h-[90vh] md:h-[600px] flex flex-col md:flex-row bg-background/95 backdrop-blur-3xl border-none shadow-2xl">
+      <DialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-lg md:max-w-4xl p-0 gap-0 overflow-hidden h-[85vh] md:h-auto md:max-h-[600px] flex flex-col md:flex-row bg-background/95 backdrop-blur-3xl border-none shadow-2xl">
         <DialogTitle className="sr-only">{stepTitle}</DialogTitle>
 
         {/* SIDEBAR (Desktop Only - except success) */}
