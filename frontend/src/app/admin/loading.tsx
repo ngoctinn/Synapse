@@ -1,22 +1,13 @@
-import { Skeleton } from "@/shared/ui/skeleton"
+import { Loader2 } from "lucide-react"
 
 export default function AdminLoading() {
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <Skeleton className="h-8 w-32" />
-        <Skeleton className="h-10 w-24" />
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Skeleton className="h-32 rounded-xl" />
-        <Skeleton className="h-32 rounded-xl" />
-        <Skeleton className="h-32 rounded-xl" />
-        <Skeleton className="h-32 rounded-xl" />
-      </div>
-
-      <div className="space-y-4 pt-4">
-        <Skeleton className="h-[400px] w-full rounded-xl" />
+    <div className="flex h-[calc(100vh-64px)] items-center justify-center px-6">
+      <div className="surface-card w-full max-w-2xl rounded-xl border bg-background/80 px-6 py-5 shadow-sm">
+        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin text-primary" />
+          <span>Đang tải trang quản trị...</span>
+        </div>
       </div>
     </div>
   )
