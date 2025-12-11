@@ -1,17 +1,67 @@
+import { cva, type VariantProps } from "class-variance-authority"
 import * as React from "react"
 
 import { cn } from "@/shared/lib/utils"
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+const inputVariants = cva(
+  "flex w-full min-w-0 rounded-lg border bg-transparent text-base transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+  {
+    variants: {
+      variant: {
+        default:
+          "border-input shadow-xs hover:border-input hover:shadow-md focus-premium dark:bg-input/30",
+        glass:
+          "bg-background/60 backdrop-blur-xl border-white/10 shadow-none focus-premium",
+        flat: "bg-secondary/50 border-transparent shadow-none hover:bg-secondary/80 focus-premium focus-visible:bg-background",
+      },
+      size: {
+        default: "h-9 px-3 py-1",
+        sm: "h-8 px-2 text-xs",
+        lg: "h-10 px-4",
+        xl: "h-12 px-4 text-base",
+        icon: "h-9 w-9 p-0 text-center", // Just in case
+      },
+      isError: {
+        true: "ring-destructive/20 border-destructive dark:ring-destructive/40 focus-visible:ring-destructive",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+)
+
+export interface InputProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
+    VariantProps<typeof inputVariants> {
   startContent?: React.ReactNode
   endContent?: React.ReactNode
   containerClassName?: string
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, containerClassName, type, startContent, endContent, ...props }, ref) => {
+  (
+    {
+      className,
+      containerClassName,
+      type,
+      startContent,
+      endContent,
+      variant,
+      size,
+      isError,
+      ...props
+    },
+    ref
+  ) => {
     return (
-      <div className={cn("relative flex items-center w-full", containerClassName)}>
+      <div
+        className={cn(
+          "relative flex items-center w-full",
+          containerClassName
+        )}
+      >
         {startContent && (
           <div className="absolute left-3 flex items-center pointer-events-none text-muted-foreground z-10">
             {startContent}
@@ -21,12 +71,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           type={type}
           data-slot="input"
           className={cn(
-            "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-lg border bg-transparent px-3 py-1 text-base shadow-xs transition-all duration-200 file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm hover:shadow-md hover:border-input",
-            "focus-premium",
-            "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+            inputVariants({ variant, size, isError, className }),
             startContent && "pl-10",
-            endContent && "pr-10",
-            className
+            endContent && "pr-10"
           )}
           ref={ref}
           {...props}
@@ -42,4 +89,4 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 )
 Input.displayName = "Input"
 
-export { Input }
+export { Input, inputVariants }

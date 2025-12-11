@@ -1,7 +1,7 @@
 "use client"
 
-import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
+import * as React from "react"
 
 import { cn } from "@/shared/lib/utils"
 import { Button } from "@/shared/ui/button"
@@ -84,15 +84,18 @@ const inputGroupButtonVariants = cva(
   {
     variants: {
       size: {
+        default: "h-9 px-3 gap-2",
+        sm: "h-8 px-2.5 gap-1.5",
         xs: "h-6 gap-1 px-2 rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-3.5 has-[>svg]:px-2",
-        sm: "h-8 px-2.5 gap-1.5 rounded-md has-[>svg]:px-2.5",
+        lg: "h-10 px-4",
         "icon-xs":
           "size-6 rounded-[calc(var(--radius)-5px)] p-0 has-[>svg]:p-0",
         "icon-sm": "size-8 p-0 has-[>svg]:p-0",
+        icon: "size-9 p-0",
       },
     },
     defaultVariants: {
-      size: "xs",
+      size: "default",
     },
   }
 )
@@ -101,7 +104,7 @@ function InputGroupButton({
   className,
   type = "button",
   variant = "ghost",
-  size = "xs",
+  size = "default",
   ...props
 }: Omit<React.ComponentProps<typeof Button>, "size"> &
   VariantProps<typeof inputGroupButtonVariants>) {
@@ -131,7 +134,7 @@ function InputGroupText({ className, ...props }: React.ComponentProps<"span">) {
 function InputGroupInput({
   className,
   ...props
-}: React.ComponentProps<"input">) {
+}: React.ComponentProps<typeof Input>) {
   return (
     <Input
       data-slot="input-group-control"
@@ -161,10 +164,8 @@ function InputGroupTextarea({
 }
 
 export {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupText,
-  InputGroupInput,
-  InputGroupTextarea,
+    InputGroup,
+    InputGroupAddon,
+    InputGroupButton, InputGroupInput, InputGroupText, InputGroupTextarea
 }
+

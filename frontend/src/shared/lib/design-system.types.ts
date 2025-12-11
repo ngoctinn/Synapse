@@ -13,7 +13,7 @@
  * Kích thước component chuẩn hóa
  * Sử dụng cho Button, Input, Select, và các form elements khác
  */
-export type ComponentSize = "sm" | "default" | "lg" | "icon"
+export type ComponentSize = "sm" | "default" | "lg" | "xl" | "icon"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Button Variants
@@ -31,6 +31,15 @@ export type ButtonVariant =
   | "link"
   | "soft"
   | "ghost-destructive"
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Input Variants
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Input variants - Standardize styles for inputs
+ */
+export type InputVariant = "default" | "glass" | "flat"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DataTable Configs

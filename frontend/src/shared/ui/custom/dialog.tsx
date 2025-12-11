@@ -4,12 +4,12 @@ import { type ButtonVariant } from "@/shared/lib/design-system.types"
 import { cn } from "@/shared/lib/utils"
 import { Button } from "@/shared/ui/button"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
 } from "@/shared/ui/dialog"
 import { AlertTriangle, CheckCircle2, Info, LucideIcon, XCircle } from "lucide-react"
 
@@ -37,18 +37,18 @@ interface CustomDialogProps {
 const variantStyles = {
   success: {
     icon: CheckCircle2,
-    color: "text-success",
-    bg: "bg-alert-success",
+    color: "text-green-600 dark:text-green-500",
+    bg: "bg-green-100 dark:bg-green-500/10",
   },
   info: {
     icon: Info,
-    color: "text-info",
-    bg: "bg-alert-info",
+    color: "text-blue-600 dark:text-blue-500",
+    bg: "bg-blue-100 dark:bg-blue-500/10",
   },
   warning: {
     icon: AlertTriangle,
-    color: "text-warning",
-    bg: "bg-alert-warning",
+    color: "text-amber-600 dark:text-amber-500",
+    bg: "bg-amber-100 dark:bg-amber-500/10",
   },
   error: {
     icon: XCircle,
