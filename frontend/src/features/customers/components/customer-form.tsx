@@ -25,10 +25,11 @@ import { useFormContext } from "react-hook-form"
 interface CustomerFormProps {
   mode: "create" | "update"
   className?: string
+  disabled?: boolean
 }
 
 
-export function CustomerForm({ mode, className }: CustomerFormProps) {
+export function CustomerForm({ mode, className, disabled }: CustomerFormProps) {
   const form = useFormContext()
 
   return (
@@ -62,29 +63,19 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
         {/* TAB 1: GENERAL INFO */}
         <TabsContent value="general" className="space-y-6 animate-in fade-in-50 duration-300 border rounded-lg bg-card p-4">
            {/* Premium Avatar Upload UI */}
-           <div className="flex items-start gap-5 p-4 border rounded-xl bg-card hover:bg-accent/5 transition-colors group">
+           <div className="flex items-start gap-4 p-4 border rounded-xl bg-muted/30">
              <div className="relative">
-                 <div className="size-16 rounded-full bg-background flex items-center justify-center border-2 border-dashed border-muted-foreground/20 group-hover:border-primary/50 transition-all shadow-sm overflow-hidden">
-                     {mode === "update" ? (
-                         <User className="size-8 text-muted-foreground/40" />
-                     ) : (
-                         <User className="size-8 text-muted-foreground/40" />
-                     )}
+                 <div className="size-14 rounded-full bg-background flex items-center justify-center border-2 border-dashed border-muted-foreground/20 shadow-sm overflow-hidden">
+                     <User className="size-7 text-muted-foreground/40" />
                  </div>
-                 <button
-                    type="button"
-                    className="absolute -bottom-1 -right-1 p-1.5 rounded-full bg-primary text-primary-foreground shadow-md hover:scale-110 transition-transform"
-                    title="Tải ảnh lên"
-                 >
-                     <User className="size-3" />
-                 </button>
              </div>
-             <div className="flex-1 space-y-1 py-1">
+             <div className="flex-1 space-y-1 py-0.5">
                  <div className="flex items-center justify-between">
                      <p className="text-sm font-medium text-foreground">Ảnh đại diện</p>
+                     <p className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground">Sắp ra mắt</p>
                  </div>
                  <p className="text-xs text-muted-foreground leading-relaxed">
-                     Tải lên ảnh chân dung rõ nét để nhận diện khách hàng.
+                     Tính năng tải ảnh đại diện đang được phát triển.
                  </p>
              </div>
           </div>
@@ -104,6 +95,7 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                         type="tel"
                         placeholder="0912 345 678"
                         autoFocus={mode === "create"}
+                        disabled={disabled}
                         {...field}
                         className="h-10 bg-background font-medium"
                     />
@@ -125,6 +117,7 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                         <Input
                         startContent={<User size={18} />}
                         placeholder="Nguyễn Văn A"
+                        disabled={disabled}
                         {...field}
                         className="bg-background h-10"
                         />
@@ -145,6 +138,7 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
+                        disabled={disabled}
                       >
                         <SelectTrigger className="bg-background h-10" startContent={<User size={18} />}>
                           <SelectValue placeholder="Chọn giới tính" />
@@ -181,6 +175,7 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                                     }}
                                     className="h-10"
                                     placeholder="DD/MM/YYYY"
+                                    disabled={disabled}
                                 />
                             </FormControl>
                             <FormMessage />
@@ -202,6 +197,7 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                         startContent={<Mail size={18} />}
                         type="email"
                         placeholder="email@example.com"
+                        disabled={disabled}
                         {...field}
                         className="bg-background h-10"
                     />
@@ -221,6 +217,7 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                     <Input
                         startContent={<MapPin size={18} />}
                         placeholder="Số nhà, đường..."
+                        disabled={disabled}
                         {...field}
                         className="bg-background h-10"
                     />
@@ -254,11 +251,13 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                     <FormLabel className="text-destructive font-semibold flex items-center gap-2">
                         <AlertCircle className="w-4 h-4" />
                         Tiền sử dị ứng
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-destructive/10 text-destructive border border-destructive/20 ml-auto">QUAN TRỌNG</span>
                     </FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Liệt kê: Hải sản, Phấn hoa, Thuốc kháng sinh..."
-                        className="resize-none min-h-[100px] border-destructive/30 focus:border-destructive focus:ring-destructive/20"
+                        disabled={disabled}
+                        className="resize-none min-h-[100px] border-destructive/30 focus:border-destructive focus:ring-destructive/20 disabled:opacity-50"
                         {...field}
                       />
                     </FormControl>
@@ -279,6 +278,7 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                 <FormControl>
                     <Textarea
                     placeholder="Bệnh nền, tình trạng sức khỏe, đang mang thai (tháng thứ mấy)..."
+                    disabled={disabled}
                     className="resize-none min-h-[120px]"
                     {...field}
                     />
@@ -313,7 +313,7 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value || "SILVER"}
-                        disabled={mode === "create"} // Disable on create if needed
+                        disabled={disabled || mode === "create"}
                       >
                         <SelectTrigger className="bg-background h-10" startContent={<Crown size={18} className="text-accent-foreground"/>}>
                           <SelectValue placeholder="Chọn hạng thẻ" />
@@ -342,6 +342,7 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                             type="number"
                             min="0"
                             placeholder="0"
+                            disabled={disabled}
                             {...field}
                             className="bg-background h-10"
                             />
@@ -361,6 +362,7 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value || undefined}
+                        disabled={disabled}
                       >
                         <SelectTrigger className="bg-background h-10" startContent={<Heart size={18} className="text-destructive/70"/>}>
                           <SelectValue placeholder="Chọn nhân viên yêu thích" />

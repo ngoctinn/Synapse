@@ -1,4 +1,5 @@
-"use client"
+
+import { cn } from "@/shared/lib/utils"
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { AlertCircle, Crown, Save, UserPlus } from "lucide-react"
@@ -27,7 +28,9 @@ import {
   SheetHeader,
   SheetTitle
 } from "@/shared/ui/sheet"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { CustomerForm } from "./customer-form"
+import { CustomerHistory } from "./customer-history"
 
 interface CustomerSheetProps {
   open: boolean
@@ -60,8 +63,8 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
       gender: undefined,
       date_of_birth: "",
       address: "",
-      allergies: "",
-      medical_notes: "",
+      membership_tier: "SILVER",
+      loyalty_points: 0,
     },
   })
 
@@ -86,7 +89,10 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
               date_of_birth: customer.date_of_birth || "",
               address: customer.address || "",
               allergies: customer.allergies || "",
-              medical_notes: customer.medical_notes || ""
+              medical_notes: customer.medical_notes || "",
+              membership_tier: customer.membership_tier || "SILVER",
+              loyalty_points: customer.loyalty_points || 0,
+              preferred_staff_id: customer.preferred_staff_id || undefined,
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } as any)
       } else {
@@ -99,6 +105,8 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
               address: "",
               allergies: "",
               medical_notes: "",
+              membership_tier: "SILVER",
+              loyalty_points: 0,
            })
       }
     }
@@ -123,7 +131,10 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-xl p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
+      <SheetContent className={cn(
+          "w-full p-0 gap-0 flex flex-col bg-background border-l shadow-2xl transition-all duration-300",
+          mode === "update" ? "sm:max-w-3xl" : "sm:max-w-xl"
+      )}>
         <SheetHeader className="px-6 py-4 border-b">
             <div className="flex items-center justify-between">
                 <SheetTitle className="text-xl font-semibold text-foreground flex items-center gap-3">
@@ -154,12 +165,27 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
         <div className="flex-1 overflow-y-auto px-6 py-6" id="sheet-scroll-container">
             <Form {...form}>
                 <form id="customer-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                    <CustomerForm mode={mode} />
+                    {mode === "create" ? (
+                         <CustomerForm mode={mode} disabled={isPending} />
+                    ) : (
+                        <Tabs defaultValue="info" className="w-full">
+                            <TabsList className="grid w-full grid-cols-2 mb-6">
+                                <TabsTrigger value="info">Thông tin</TabsTrigger>
+                                <TabsTrigger value="history">Lịch sử & Thống kê</TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="info" className="mt-0 space-y-6">
+                                <CustomerForm mode={mode} disabled={isPending} />
+                            </TabsContent>
+                            <TabsContent value="history" className="mt-0">
+                                <CustomerHistory />
+                            </TabsContent>
+                        </Tabs>
+                    )}
                 </form>
             </Form>
         </div>
 
-        <SheetFooter className="px-6 py-4 border-t sm:justify-between flex-row items-center gap-4 bg-background">
+        <SheetFooter className="px-6 py-4 border-t sm:justify-between flex-row items-center gap-4 bg-background z-20">
             <Button
                 type="button"
                 variant="ghost"
@@ -168,6 +194,11 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
             >
                 Hủy bỏ
             </Button>
+            {/* Display save button only if not in History tab? Actually we can keep it, but it submits the form.
+                If user is in History tab, they might still want to save form changes.
+                However, to avoid confusion, maybe we should only show specific actions.
+                For now, keep simple: Save always saves the Info form.
+            */}
             <Button
                 type="submit"
                 form="customer-form"

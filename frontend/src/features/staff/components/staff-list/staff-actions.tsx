@@ -9,6 +9,7 @@ import {
     DropdownMenuLabel
 } from "@/shared/ui/dropdown-menu"
 import { KeyRound } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { startTransition, useState } from "react"
 import { Staff } from "../../model/types"
 import { DeleteStaffDialog } from "./delete-staff-dialog"
@@ -20,6 +21,7 @@ interface StaffActionsProps {
 }
 
 export function StaffActions({ staff, skills, onEdit }: StaffActionsProps) {
+  const router = useRouter()
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
@@ -31,6 +33,7 @@ export function StaffActions({ staff, skills, onEdit }: StaffActionsProps) {
       if (result.success) {
         setShowDeleteDialog(false)
         showToast.success("Thành công", result.message)
+        router.refresh()
       } else {
         showToast.error("Lỗi", result.error)
       }
@@ -63,4 +66,3 @@ export function StaffActions({ staff, skills, onEdit }: StaffActionsProps) {
     </>
   )
 }
-

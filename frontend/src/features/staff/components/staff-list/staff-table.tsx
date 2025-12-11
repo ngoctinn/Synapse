@@ -29,7 +29,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/shared/ui/tooltip"
-import { Calendar } from "lucide-react"
+import { Calendar, Loader2 } from "lucide-react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useState, useTransition } from "react"
 import { ROLE_CONFIG } from "../../model/constants"
 import { Staff } from "../../model/types"
@@ -50,11 +51,28 @@ interface StaffTableProps {
 }
 
 const GroupActionButtons = ({ staff }: { staff: Staff }) => {
+    const router = useRouter()
+    const pathname = usePathname()
+    const searchParams = useSearchParams()
+
+    const handleViewSchedule = () => {
+        const params = new URLSearchParams(searchParams)
+        params.set("view", "scheduling")
+        // Optionally pass staff_id to focus in scheduler (if supported)
+        // params.set("staff_id", staff.user_id)
+        router.push(`${pathname}?${params.toString()}`)
+    }
+
     return (
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                        onClick={handleViewSchedule}
+                    >
                         <Calendar className="h-4 w-4" />
                     </Button>
                 </TooltipTrigger>
@@ -76,6 +94,7 @@ export function StaffTable({
   variant = "default",
   isLoading
 }: StaffTableProps) {
+  const router = useRouter()
   const [editingStaff, setEditingStaff] = useState<Staff | null>(null)
 
   // Use custom hook for URL state management
@@ -110,6 +129,7 @@ export function StaffTable({
         if (successCount > 0) {
           showToast.success("Thành công", `Đã xóa ${successCount} nhân viên`)
           selection.clearAll()
+          router.refresh()
         }
 
         if (failures.length > 0) {
@@ -269,8 +289,9 @@ export function StaffTable({
         }
       />
       {isPending && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/50 backdrop-blur-[1px]">
-            {/* Blocking interaction */}
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-background/50 backdrop-blur-[2px]">
+            <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
+            <p className="text-sm font-medium text-muted-foreground animate-pulse">Đang xử lý...</p>
         </div>
       )}
 

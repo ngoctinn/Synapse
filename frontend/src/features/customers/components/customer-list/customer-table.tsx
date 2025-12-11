@@ -26,8 +26,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/shared/ui/tooltip"
-import { Activity, AlertCircle } from "lucide-react"
+import { Activity, AlertCircle, Loader2 } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { useState, useTransition } from "react"
+import { deleteCustomer } from "../../actions"
 import { Customer } from "../../model/types"
 import { CreateCustomerTrigger } from "../create-customer-trigger"
 import { CustomerActions } from "../customer-actions"
@@ -58,6 +60,7 @@ export function CustomerTable({
   isLoading,
   variant = "default"
 }: CustomerTableProps) {
+  const router = useRouter()
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false)
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null)
   const [isPending, startTransition] = useTransition()
@@ -78,10 +81,35 @@ export function CustomerTable({
   })
 
   const handleBulkDelete = async () => {
-      // Mock implementation
-      showToast.success("Đã xóa (Mock)", "Chức năng đang phát triển")
-      setShowBulkDeleteDialog(false)
-      selection.clearAll()
+    startTransition(async () => {
+        const selectedIds = Array.from(selection.selectedIds)
+        let successCount = 0
+        const failures: string[] = []
+
+        const results = await Promise.allSettled(
+            selectedIds.map((id) => deleteCustomer(id.toString()))
+        )
+
+        results.forEach((result, index) => {
+            if (result.status === "fulfilled") {
+                successCount++
+            } else {
+                failures.push(selectedIds[index].toString())
+            }
+        })
+
+        if (successCount > 0) {
+            showToast.success("Thành công", `Đã xóa ${successCount} khách hàng`)
+            selection.clearAll()
+            router.refresh()
+        }
+
+        if (failures.length > 0) {
+            showToast.error("Có lỗi xảy ra", `Không thể xóa ${failures.length} khách hàng`)
+        }
+
+        setShowBulkDeleteDialog(false)
+    })
   }
 
   const columns: Column<Customer>[] = [
@@ -237,6 +265,12 @@ export function CustomerTable({
           open={!!editingCustomer}
           onOpenChange={(open: boolean) => !open && setEditingCustomer(null)}
         />
+      )}
+      {isPending && (
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-background/50 backdrop-blur-[2px]">
+            <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
+            <p className="text-sm font-medium text-muted-foreground animate-pulse">Đang xử lý...</p>
+        </div>
       )}
     </>
   )

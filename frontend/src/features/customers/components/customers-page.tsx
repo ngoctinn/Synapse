@@ -4,7 +4,9 @@ import { FilterBar } from "@/shared/ui/custom/filter-bar"
 import { Input } from "@/shared/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { Search } from "lucide-react"
-import { Suspense, use, useState } from "react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { Suspense, use, useTransition } from "react"
+import { useDebouncedCallback } from "use-debounce"
 import { CustomerListResponse } from "../actions"
 import { CreateCustomerTrigger } from "./create-customer-trigger"
 import { CustomerFilter } from "./customer-filter"
@@ -43,13 +45,45 @@ const Footer = () => (
 )
 
 export function CustomersPage({ page, customerListPromise }: CustomersPageProps) {
-  const [activeTab, setActiveTab] = useState("list")
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const [isPending, startTransition] = useTransition()
+
+  // Get active tab from URL or default to 'list'
+  const activeTab = searchParams.get("view") || "list"
+
+  // Get initial search query
+  const initialSearch = searchParams.get("search")?.toString() || ""
+
+  const handleTabChange = (value: string) => {
+    const params = new URLSearchParams(searchParams)
+    params.set("view", value)
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`)
+    })
+  }
+
+  const handleSearch = useDebouncedCallback((term: string) => {
+    const params = new URLSearchParams(searchParams)
+    if (term) {
+      params.set("search", term)
+    } else {
+      params.delete("search")
+    }
+    // Reset page to 1 when searching
+    params.set("page", "1")
+
+    startTransition(() => {
+      router.replace(`${pathname}?${params.toString()}`)
+    })
+  }, 300)
 
   return (
     <div
       className="min-h-screen flex flex-col w-full"
     >
-      <Tabs defaultValue="list" className="flex flex-col flex-1 w-full gap-0" onValueChange={setActiveTab}>
+      <Tabs value={activeTab} className="flex flex-col flex-1 w-full gap-0" onValueChange={handleTabChange}>
 
         <div className="sticky top-0 z-40 px-4 py-2 bg-card/95 backdrop-blur-sm border-b flex flex-col md:flex-row items-center justify-between gap-4">
           <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto justify-start">
@@ -61,11 +95,15 @@ export function CustomersPage({ page, customerListPromise }: CustomersPageProps)
             {activeTab === "list" && (
                 <FilterBar
                     startContent={
-                        <Input
-                            placeholder="Tìm kiếm khách hàng..."
-                            startContent={<Search className="size-4 text-muted-foreground" />}
-                            className="h-9 bg-background pr-8"
-                        />
+                        <div className="relative">
+                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
+                            <Input
+                                placeholder="Tìm kiếm khách hàng..."
+                                defaultValue={initialSearch}
+                                onChange={(e) => handleSearch(e.target.value)}
+                                className="h-9 bg-background pl-9 pr-4 w-full md:w-[250px]"
+                            />
+                        </div>
                     }
                     endContent={<CustomerFilter />}
                 />
