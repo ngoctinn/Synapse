@@ -21,7 +21,6 @@ import { AnimatedUsersIcon } from "@/shared/ui/custom/animated-icon"
 import { Column, DataTable } from "@/shared/ui/custom/data-table"
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state"
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
-import { StatusBadge } from "@/shared/ui/custom/status-badge"
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar"
 import {
   Tooltip,
@@ -187,7 +186,15 @@ export function StaffTable({
     },
     {
       header: "Trạng thái",
-      cell: (staff) => <StatusBadge isActive={staff.user.is_active} />
+      cell: (staff) => (
+        <Badge
+          variant={staff.user.is_active ? "status-active" : "status-inactive"}
+          withIndicator
+          indicatorPulse={staff.user.is_active}
+        >
+          {staff.user.is_active ? "Hoạt động" : "Ẩn"}
+        </Badge>
+      )
     },
     {
       header: "Hành động",

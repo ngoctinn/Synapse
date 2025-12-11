@@ -33,6 +33,11 @@ const badgeVariants = cva(
           "border-white/20 bg-black/40 text-white backdrop-blur-md shadow-sm",
         "glass-light":
           "border-white/40 bg-white/30 text-foreground backdrop-blur-md shadow-sm dark:bg-black/30 dark:border-white/10 dark:text-white",
+        // Status variants (mới thêm để thay thế StatusBadge)
+        "status-active":
+          "border-primary/20 bg-primary/5 text-primary shadow-[0_0_10px_rgba(var(--primary),0.1)]",
+        "status-inactive":
+          "border-border/50 bg-muted/50 text-muted-foreground",
       },
     },
     defaultVariants: {
@@ -41,21 +46,62 @@ const badgeVariants = cva(
   }
 )
 
+interface BadgeProps extends React.ComponentProps<"span">, VariantProps<typeof badgeVariants> {
+  asChild?: boolean
+  /** Hiển thị indicator dot phía trước text */
+  withIndicator?: boolean
+  /** Animation pulse cho indicator (chỉ khi withIndicator=true) */
+  indicatorPulse?: boolean
+  /** Màu của indicator - mặc định theo variant */
+  indicatorColor?: "primary" | "success" | "warning" | "destructive" | "muted"
+}
+
 function Badge({
   className,
   variant,
   asChild = false,
+  withIndicator = false,
+  indicatorPulse = false,
+  indicatorColor,
+  children,
   ...props
-}: React.ComponentProps<"span"> &
-  VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
+}: BadgeProps) {
   const Comp = asChild ? Slot : "span"
+
+  // Xác định màu indicator dựa trên variant hoặc prop indicatorColor
+  const getIndicatorColorClass = () => {
+    if (indicatorColor) {
+      const colorMap = {
+        primary: "bg-primary",
+        success: "bg-success",
+        warning: "bg-warning",
+        destructive: "bg-destructive",
+        muted: "bg-muted-foreground/40",
+      }
+      return colorMap[indicatorColor]
+    }
+    // Mặc định theo variant
+    if (variant === "status-active" || variant === "success") return "bg-primary"
+    if (variant === "status-inactive") return "bg-muted-foreground/40"
+    return "bg-current"
+  }
 
   return (
     <Comp
       data-slot="badge"
       className={cn(badgeVariants({ variant }), className)}
       {...props}
-    />
+    >
+      {withIndicator && (
+        <span className="relative flex h-2 w-2 shrink-0">
+          {indicatorPulse && (
+            <span className={cn("absolute inline-flex h-full w-full rounded-full opacity-20 animate-pulse", getIndicatorColorClass())} />
+          )}
+          <span className={cn("relative inline-flex rounded-full h-2 w-2", getIndicatorColorClass())} />
+        </span>
+      )}
+      {children}
+    </Comp>
   )
 }
 

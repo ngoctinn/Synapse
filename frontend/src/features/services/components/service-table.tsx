@@ -17,7 +17,6 @@ import { Badge } from "@/shared/ui/badge"
 import { Column, DataTable } from "@/shared/ui/custom/data-table"
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state"
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
-import { StatusBadge } from "@/shared/ui/custom/status-badge"
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar"
 import { Plus } from "lucide-react"
 import { useState } from "react"
@@ -126,7 +125,15 @@ export function ServiceTable({
     },
     {
       header: "Trạng thái",
-      cell: (service) => <StatusBadge isActive={service.is_active} />
+      cell: (service) => (
+        <Badge
+          variant={service.is_active ? "status-active" : "status-inactive"}
+          withIndicator
+          indicatorPulse={service.is_active}
+        >
+          {service.is_active ? "Hoạt động" : "Ẩn"}
+        </Badge>
+      )
     },
     {
       header: "Thao tác",
