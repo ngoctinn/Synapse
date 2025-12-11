@@ -406,25 +406,25 @@ export function CalendarDnDContext({ children, onEventMove }: CalendarDnDContext
 | 4.5 useDnD Hook | ✅ Hoàn thành | useCalendarDnd + conflict check |
 | 4.6 Resize | ⏳ P2 - Bỏ qua | Stretch goal |
 
-### Giai đoạn 5: Forms & Sheets
+### Giai đoạn 5: Forms & Sheets ✅
 | Task | Status | Notes |
 |------|--------|-------|
-| 5.1 Event Popover | ⏳ Chưa bắt đầu | |
-| 5.2 Appointment Sheet | ⏳ Chưa bắt đầu | |
-| 5.3 Appointment Form | ⏳ Chưa bắt đầu | |
-| 5.4 Recurrence Builder | ⏳ Chưa bắt đầu | P2 |
-| 5.5 Conflict Hook | ⏳ Chưa bắt đầu | |
-| 5.6 Conflict UI | ⏳ Chưa bắt đầu | |
+| 5.1 Event Popover | ✅ Hoàn thành | event-popover.tsx với quick actions |
+| 5.2 Appointment Sheet | ✅ Hoàn thành | View/Edit/Create modes |
+| 5.3 Appointment Form | ✅ Hoàn thành | Zod validation + customer search |
+| 5.4 Recurrence Builder | ⏳ P2 - Bỏ qua | Stretch goal |
+| 5.5 Conflict Hook | ✅ Hoàn thành | Tích hợp trong useCalendarDnd |
+| 5.6 Conflict UI | ✅ Hoàn thành | ConflictWarning component |
 
-### Giai đoạn 6: Polish
+### Giai đoạn 6: Polish ✅
 | Task | Status | Notes |
 |------|--------|-------|
-| 6.1 Metrics Cards | ⏳ Chưa bắt đầu | |
-| 6.2 Filter Bar | ⏳ Chưa bắt đầu | |
-| 6.3 Empty States | ⏳ Chưa bắt đầu | |
-| 6.4 Mobile | ⏳ Chưa bắt đầu | |
-| 6.5 Keyboard | ⏳ Chưa bắt đầu | P2 |
-| 6.6 Integration | ⏳ Chưa bắt đầu | |
+| 6.1 Metrics Cards | ✅ Hoàn thành | Animated numbers, 4 cards |
+| 6.2 Filter Bar | ✅ Hoàn thành | Multi-select, search, chips |
+| 6.3 Empty States | ✅ Hoàn thành | 4 variants |
+| 6.4 Mobile | ⏳ P2 - Bỏ qua | |
+| 6.5 Keyboard | ⏳ P2 - Bỏ qua | |
+| 6.6 Integration | ✅ Hoàn thành | Main exports updated |
 
 ---
 

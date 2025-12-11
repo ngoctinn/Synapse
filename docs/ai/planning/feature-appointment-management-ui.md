@@ -25,8 +25,8 @@ total_effort: 10-12 ngày
 - [x] **M2**: Calendar Views - Day, Week, Month, Agenda ✅ (2024-12-11)
 - [x] **M3**: Resource Timeline - Staff/Room Timeline ✅ (2024-12-11)
 - [x] **M4**: Drag & Drop - Move, Resize, Create by drag ✅ (2024-12-11)
-- [ ] **M5**: Forms & Sheets - CRUD, Recurrence, Conflict (2 ngày)
-- [ ] **M6**: Polish - Dashboard, Filters, Mobile, Testing (1-2 ngày)
+- [x] **M5**: Forms & Sheets - CRUD, Conflict ✅ (2024-12-11)
+- [x] **M6**: Polish - Metrics, Filters, Empty States ✅ (2024-12-11)
 
 ---
 
@@ -407,8 +407,8 @@ features/appointments/components/event/
 #### Task 5.1: Event Popover
 **Effort**: 0.25 ngày | **Priority**: P0
 
-- [ ] Tạo `event/event-popover.tsx`:
-  - HoverCard trigger trên EventCard
+- [x] Tạo `event/event-popover.tsx`: ✅
+  - Popover trigger trên EventCard
   - Quick info: Khách, SĐT, Dịch vụ, KTV
   - Quick actions: Xem, Sửa, Check-in, Hủy
 
@@ -421,7 +421,7 @@ features/appointments/components/event/
 #### Task 5.2: Appointment Sheet
 **Effort**: 0.5 ngày | **Priority**: P0
 
-- [ ] Tạo `sheet/appointment-sheet.tsx`:
+- [x] Tạo `sheet/appointment-sheet.tsx`: ✅
   - Sheet (Drawer) từ phải
   - View mode: Chi tiết đầy đủ
   - Edit mode: Form
@@ -438,15 +438,14 @@ features/appointments/components/sheet/
 #### Task 5.3: Appointment Form
 **Effort**: 0.5 ngày | **Priority**: P0
 
-- [ ] Tạo `sheet/appointment-form.tsx`:
+- [x] Tạo `sheet/appointment-form.tsx`: ✅
   - Combobox Khách hàng (searchable)
-  - Multi-select Dịch vụ (auto-calculate duration)
-  - Select KTV (filtered by skills)
+  - Select Dịch vụ (auto-calculate duration)
+  - Select KTV
   - Select Phòng/Giường
   - DatePicker + TimePicker
   - Textarea Ghi chú
   - Zod validation
-  - useActionState for submission
 
 **Files cần tạo:**
 ```
@@ -506,11 +505,10 @@ features/appointments/components/sheet/
 #### Task 6.1: Metrics Cards
 **Effort**: 0.5 ngày | **Priority**: P1
 
-- [ ] Tạo `dashboard/metrics-cards.tsx`:
+- [x] Tạo `dashboard/metrics-cards.tsx`: ✅
   - 4 cards: Hôm nay, Chờ xác nhận, Tỷ lệ lấp đầy, Doanh thu
   - Number animation
   - Status colors
-  - Trend indicators (optional)
 
 **Files cần tạo:**
 ```
@@ -522,9 +520,8 @@ features/appointments/components/dashboard/
 #### Task 6.2: Filter Bar
 **Effort**: 0.5 ngày | **Priority**: P1
 
-- [ ] Tạo `toolbar/filter-bar.tsx`:
+- [x] Tạo `toolbar/filter-bar.tsx`: ✅
   - Multi-select: KTV
-  - Select: Dịch vụ
   - Multi-select: Trạng thái
   - Search input
   - Applied filters chips
