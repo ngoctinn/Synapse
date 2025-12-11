@@ -4,6 +4,7 @@ import { Skill } from "@/features/services"
 import { FilterBar } from "@/shared/ui/custom/filter-bar"
 import { Input } from "@/shared/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
+import { PAGE_TABS_LIST_CLASS, PAGE_TABS_TRIGGER_CLASS } from "@/shared/ui/tabs-styles"
 import { Search } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Suspense, use, useTransition } from "react"
@@ -110,10 +111,10 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
         <div
           className="sticky top-0 z-40 px-4 py-2 bg-card/95 backdrop-blur-sm border-b flex flex-col md:flex-row items-center justify-between gap-4"
         >
-          <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto justify-start">
-            <TabsTrigger value="list" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 min-w-[100px] transition-all duration-200 flex-1 md:flex-none">Danh sách</TabsTrigger>
-            <TabsTrigger value="permissions" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 min-w-[100px] transition-all duration-200 flex-1 md:flex-none">Phân quyền</TabsTrigger>
-            <TabsTrigger value="scheduling" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 min-w-[100px] transition-all duration-200 flex-1 md:flex-none">Lịch làm việc</TabsTrigger>
+          <TabsList className={PAGE_TABS_LIST_CLASS}>
+            <TabsTrigger value="list" className={PAGE_TABS_TRIGGER_CLASS}>Danh sách</TabsTrigger>
+            <TabsTrigger value="permissions" className={PAGE_TABS_TRIGGER_CLASS}>Phân quyền</TabsTrigger>
+            <TabsTrigger value="scheduling" className={PAGE_TABS_TRIGGER_CLASS}>Lịch làm việc</TabsTrigger>
           </TabsList>
 
           <div className="flex items-center gap-3 w-full md:w-auto">

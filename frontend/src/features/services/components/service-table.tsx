@@ -160,10 +160,8 @@ export function ServiceTable({
       cell: (service) => (
         <div onClick={(e) => e.stopPropagation()}>
             <ServiceActions
-            service={service}
-            availableSkills={availableSkills}
-            availableRoomTypes={availableRoomTypes}
-            availableEquipment={availableEquipment}
+              service={service}
+              onEdit={() => setEditingService(service)}
             />
         </div>
       )

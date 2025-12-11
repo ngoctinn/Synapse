@@ -53,6 +53,22 @@ export async function getSkills(): Promise<Skill[]> {
   return MOCK_SKILLS
 }
 
+// Lấy danh sách KTV đang hoạt động để hiển thị trong dropdown "Chuyên viên ưu tiên"
+export type TechnicianOption = {
+  id: string
+  name: string
+}
+
+export async function getTechnicians(): Promise<TechnicianOption[]> {
+  await new Promise((resolve) => setTimeout(resolve, 200))
+  return MOCK_STAFF
+    .filter(staff => staff.user.role === "technician" && staff.user.is_active)
+    .map(staff => ({
+      id: staff.user_id,
+      name: staff.user.full_name ?? "Không có tên"
+    }))
+}
+
 export async function inviteStaff(prevState: ActionState, formData: FormData): Promise<ActionState> {
   const rawData = {
     email: formData.get("email"),

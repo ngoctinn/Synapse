@@ -5,21 +5,22 @@ import { cn } from "@/shared/lib/utils"
 import { DatePicker } from "@/shared/ui/custom/date-picker"
 import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form"
 import { Input } from "@/shared/ui/input"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
+import { FORM_TABS_LIST_CLASS, FORM_TABS_TRIGGER_CLASS, getFormTabsGridCols } from "@/shared/ui/tabs-styles"
 import { Textarea } from "@/shared/ui/textarea"
 import { format, parse } from "date-fns"
 import { Briefcase, Check, Mail, Phone, User } from "lucide-react"
@@ -60,10 +61,10 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
              </div>
         ) : (
             <Tabs defaultValue="general" className="w-full">
-                <TabsList className="grid w-full grid-cols-3 bg-muted/60 rounded-lg p-1 mb-6 h-11">
-                    <TabsTrigger value="general" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">Thông tin chung</TabsTrigger>
-                    <TabsTrigger value="professional" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">Nghiệp vụ</TabsTrigger>
-                    <TabsTrigger value="hr" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">Nhân sự</TabsTrigger>
+                <TabsList className={`${FORM_TABS_LIST_CLASS} ${getFormTabsGridCols(3)}`}>
+                    <TabsTrigger value="general" className={FORM_TABS_TRIGGER_CLASS}>Thông tin chung</TabsTrigger>
+                    <TabsTrigger value="professional" className={FORM_TABS_TRIGGER_CLASS}>Nghiệp vụ</TabsTrigger>
+                    <TabsTrigger value="hr" className={FORM_TABS_TRIGGER_CLASS}>Nhân sự</TabsTrigger>
                 </TabsList>
                 <TabsContent value="general" className="space-y-4 border rounded-lg bg-card p-4">
                     {renderGeneralInfo()}
