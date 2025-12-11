@@ -23,6 +23,8 @@ const badgeVariants = cva(
           "border-transparent bg-warning/15 text-warning hover:bg-warning/25",
         info:
           "border-transparent bg-info/15 text-info hover:bg-info/25",
+        soft:
+          "border-transparent bg-primary/10 text-primary hover:bg-primary/20",
         // Role-specific Semantic Colors (Mapped to Design System)
         purple:
           "border-purple-200 bg-purple-500/10 text-purple-700 dark:border-purple-800 dark:bg-purple-500/20 dark:text-purple-300 hover:bg-purple-500/20",
@@ -106,3 +108,4 @@ function Badge({
 }
 
 export { Badge, badgeVariants }
+

@@ -43,6 +43,7 @@ interface DataTableProps<T> {
   variant?: "default" | "flush"
   isLoading?: boolean
   skeletonCount?: number
+  disabled?: boolean
 
   // ─────────────────────────────────────────────────────────────────────────
   // Selection - Grouped config (recommended)
@@ -97,6 +98,7 @@ export function DataTable<T>({
   variant = "default",
   isLoading = false,
   skeletonCount = 5,
+  disabled = false,
 
   // Grouped configs (recommended)
   selection,
@@ -132,6 +134,8 @@ export function DataTable<T>({
   // ─────────────────────────────────────────────────────────────────────────
   const containerClasses = cn(
     "relative w-full overflow-hidden",
+    "relative w-full overflow-hidden",
+    disabled && "pointer-events-none opacity-60 grayscale",
     variant === "default" && "border rounded-xl shadow-sm bg-background",
     className
   )

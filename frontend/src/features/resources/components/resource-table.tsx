@@ -92,7 +92,7 @@ export function ResourceTable({ data, groups, isLoading, className, variant = "d
       header: "Loại",
       cell: (row) => (
         <Badge
-            variant={row.type === "ROOM" ? "purple" : "indigo"}
+            variant={row.type === "ROOM" ? "soft" : "outline"}
             className="gap-1.5 font-medium border shadow-sm"
         >
           {row.type === "ROOM" ? (
@@ -209,7 +209,15 @@ export function ResourceTable({ data, groups, isLoading, className, variant = "d
             action={<AddResourceTrigger groups={groups} />}
           />
         }
+        disabled={isPending}
       />
+
+       {/* Loading Overlay */}
+       {isPending && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/50 backdrop-blur-[1px]">
+             {/* Optional spinner or just blocking */}
+          </div>
+       )}
 
       <TableActionBar
         selectedCount={selection.selectedCount}

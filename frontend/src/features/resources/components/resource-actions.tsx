@@ -1,23 +1,23 @@
 "use client"
 
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/shared/ui/alert-dialog"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { TableRowActions } from "@/shared/ui/custom/table-row-actions"
 import {
-    DropdownMenuItem,
-    DropdownMenuLabel
+  DropdownMenuItem,
+  DropdownMenuLabel
 } from "@/shared/ui/dropdown-menu"
 import { History } from "lucide-react"
-import { startTransition, useState } from "react"
+import { useState, useTransition } from "react"
 import { deleteResource } from "../actions"
 import { Resource } from "../types"
 
@@ -28,6 +28,7 @@ interface ResourceActionsProps {
 
 export function ResourceActions({ resource, onEdit }: ResourceActionsProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
   const handleDelete = () => {
     startTransition(async () => {
@@ -66,7 +67,7 @@ export function ResourceActions({ resource, onEdit }: ResourceActionsProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>Bạn có chắc chắn muốn xóa?</AlertDialogTitle>
             <AlertDialogDescription>
-              Hành động này không thể hoàn tác. Tài nguyên sẽ bị xóa vĩnh viễn
+              Hành động này không thể hoàn tác. Tài nguyên <span className="font-semibold text-foreground">{resource.name}</span> ({resource.code}) sẽ bị xóa vĩnh viễn
               khỏi hệ thống.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -76,7 +77,14 @@ export function ResourceActions({ resource, onEdit }: ResourceActionsProps) {
               onClick={handleDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Xóa
+              {showDeleteDialog && isPending ? (
+                  <>
+                    <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-r-transparent" />
+                    Đang xóa...
+                  </>
+              ) : (
+                  "Xóa"
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

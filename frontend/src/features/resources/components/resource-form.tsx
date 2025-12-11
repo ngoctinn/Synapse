@@ -95,7 +95,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                         startContent={<Type className="size-4 text-muted-foreground" />}
                         placeholder="Ví dụ: Phòng VIP 1"
                         {...field}
-                        className="bg-background h-10"
+                        className="bg-background"
                     />
                     </FormControl>
                     <FormMessage />
@@ -115,7 +115,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                             startContent={<Barcode className="size-4 text-muted-foreground" />}
                             placeholder="Ví dụ: R-VIP-01"
                             {...field}
-                            className="bg-background h-10"
+                            className="bg-background"
                         />
                         </FormControl>
                         <FormMessage />
@@ -140,7 +140,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                         >
                             <FormControl>
                                 <SelectTrigger
-                                    className="bg-background h-10"
+                                    className="bg-background"
                                     startContent={<Box className="size-4 text-muted-foreground" />}
                                 >
                                     <SelectValue placeholder="Chọn phân loại" />
@@ -203,7 +203,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                     >
                          <FormControl>
                             <SelectTrigger
-                                className="bg-background h-10"
+                                className="bg-background"
                                 startContent={<Activity className="size-4 text-muted-foreground" />}
                             >
                                 <SelectValue placeholder="Chọn trạng thái" />
@@ -233,7 +233,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                         min={0}
                         placeholder="0"
                         {...field}
-                         className="bg-background h-10"
+                         className="bg-background"
                     />
                     </FormControl>
                     <FormMessage />
@@ -256,7 +256,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                             min={1}
                             placeholder="1"
                             {...field}
-                             className="bg-background h-10"
+                             className="bg-background"
                         />
                         </FormControl>
                         <FormMessage />
@@ -282,12 +282,12 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                                     newTags={field.value || []}
                                     onSelectedChange={() => {}}
                                     onNewTagsChange={(tags) => field.onChange(tags)}
-                                    placeholder="Nhập thẻ và nhấn Enter..."
+                                    placeholder="Nhập tên thẻ rồi nhấn Enter..."
                                 />
                             </FormControl>
                             <div className="text-[0.8rem] text-muted-foreground mt-2 flex items-center gap-1.5">
                                 <Tags className="size-3.5" />
-                                <span>Dùng để lọc thiết bị nhanh chóng (VD: #may-cong-nghe-cao, #hang-moi...)</span>
+                                <span>Nhấn Enter để thêm thẻ mới. Dùng để lọc thiết bị (VD: #may-cong-nghe-cao)</span>
                             </div>
                             <FormMessage />
                         </FormItem>
