@@ -3,8 +3,8 @@ phase: implementation
 title: Ghi chú Triển khai Giao diện Quản lý Lịch hẹn
 description: Ghi chú kỹ thuật, code patterns, và tiến độ triển khai
 feature: appointment-management-ui
-status: not-started
-created: 2024-12-11
+status: in-progress
+started: 2024-12-11
 ---
 
 # Ghi chú Triển khai: Giao diện Quản lý Lịch hẹn
@@ -367,44 +367,44 @@ export function CalendarDnDContext({ children, onEventMove }: CalendarDnDContext
 
 ## 📝 Tiến độ Triển khai
 
-### Giai đoạn 1: Foundation
+### Giai đoạn 1: Foundation ✅
 | Task | Status | Notes |
 |------|--------|-------|
-| 1.1 Module structure & Types | ⏳ Chưa bắt đầu | |
-| 1.2 Schemas & Validation | ⏳ Chưa bắt đầu | |
-| 1.3 Mock Data | ⏳ Chưa bắt đầu | |
-| 1.4 Server Actions | ⏳ Chưa bắt đầu | |
-| 1.5 Basic Layout | ⏳ Chưa bắt đầu | |
+| 1.1 Module structure & Types | ✅ Hoàn thành | `types.ts`, `constants.ts` |
+| 1.2 Schemas & Validation | ✅ Hoàn thành | `schemas.ts` với Zod v4 |
+| 1.3 Mock Data | ✅ Hoàn thành | 23 appointments, 5 staff, 8 services |
+| 1.4 Server Actions | ✅ Hoàn thành | Mock CRUD + Conflict detection |
+| 1.5 Basic Layout | ✅ Hoàn thành | ViewSwitcher, MetricCards placeholders |
 
-### Giai đoạn 2: Calendar Views
+### Giai đoạn 2: Calendar Views ✅
 | Task | Status | Notes |
 |------|--------|-------|
-| 2.1 useCalendarState | ⏳ Chưa bắt đầu | |
-| 2.2 Navigator & Switcher | ⏳ Chưa bắt đầu | |
-| 2.3 Time Grid | ⏳ Chưa bắt đầu | |
-| 2.4 Day View | ⏳ Chưa bắt đầu | |
-| 2.5 Week View | ⏳ Chưa bắt đầu | |
-| 2.6 Month View | ⏳ Chưa bắt đầu | |
-| 2.7 Agenda View | ⏳ Chưa bắt đầu | |
-| 2.8 View Router | ⏳ Chưa bắt đầu | |
+| 2.1 useCalendarState | ✅ Hoàn thành | State, dateRange, navigation |
+| 2.2 Navigator & Switcher | ✅ Hoàn thành | DateNavigator, ViewSwitcher |
+| 2.3 Time Grid | ✅ Hoàn thành | Time labels, current time indicator |
+| 2.4 Day View | ✅ Hoàn thành | Single column, overlap handling |
+| 2.5 Week View | ✅ Hoàn thành | 7 columns, responsive |
+| 2.6 Month View | ✅ Hoàn thành | Grid, +X more popover |
+| 2.7 Agenda View | ✅ Hoàn thành | List view, sticky headers |
+| 2.8 View Router | ✅ Hoàn thành | CalendarView switch + EventCard |
 
-### Giai đoạn 3: Timeline
+### Giai đoạn 3: Timeline ✅
 | Task | Status | Notes |
 |------|--------|-------|
-| 3.1 Timeline Layout | ⏳ Chưa bắt đầu | |
-| 3.2 Timeline Row | ⏳ Chưa bắt đầu | |
-| 3.3 Zoom Control | ⏳ Chưa bắt đầu | |
-| 3.4 Integration | ⏳ Chưa bắt đầu | |
+| 3.1 Timeline Layout | ✅ Hoàn thành | resource-timeline.tsx, timeline-header.tsx |
+| 3.2 Timeline Row | ✅ Hoàn thành | timeline-row.tsx, avatar, events |
+| 3.3 Zoom Control | ✅ Hoàn thành | Tích hợp trong ResourceTimeline |
+| 3.4 Integration | ✅ Hoàn thành | CalendarView router, staffList/roomList |
 
-### Giai đoạn 4: Drag & Drop
+### Giai đoạn 4: Drag & Drop ✅
 | Task | Status | Notes |
 |------|--------|-------|
-| 4.1 DnD Context | ⏳ Chưa bắt đầu | |
-| 4.2 Draggable Card | ⏳ Chưa bắt đầu | |
-| 4.3 Drag Overlay | ⏳ Chưa bắt đầu | |
-| 4.4 Drop Zones | ⏳ Chưa bắt đầu | |
-| 4.5 useDnD Hook | ⏳ Chưa bắt đầu | |
-| 4.6 Resize | ⏳ Chưa bắt đầu | P2 |
+| 4.1 DnD Context | ✅ Hoàn thành | CalendarDndContext + sensors |
+| 4.2 Draggable Card | ✅ Hoàn thành | DraggableEventCard wrapper |
+| 4.3 Drag Overlay | ✅ Hoàn thành | Tích hợp trong DndContext |
+| 4.4 Drop Zones | ✅ Hoàn thành | DroppableSlot component |
+| 4.5 useDnD Hook | ✅ Hoàn thành | useCalendarDnd + conflict check |
+| 4.6 Resize | ⏳ P2 - Bỏ qua | Stretch goal |
 
 ### Giai đoạn 5: Forms & Sheets
 | Task | Status | Notes |

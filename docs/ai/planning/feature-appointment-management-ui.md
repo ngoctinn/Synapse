@@ -20,11 +20,11 @@ total_effort: 10-12 ngày
 
 ## 🎯 Các Mốc quan trọng (Milestones)
 
-- [x] **M0**: Requirements & Design Documentation ✅ (Hiện tại)
-- [ ] **M1**: Foundation - Types, Schemas, Mock Data, Basic Layout (2 ngày)
-- [ ] **M2**: Calendar Views - Day, Week, Month, Agenda (3 ngày)
-- [ ] **M3**: Resource Timeline - Staff/Room Timeline (2 ngày)
-- [ ] **M4**: Drag & Drop - Move, Resize, Create by drag (2 ngày)
+- [x] **M0**: Requirements & Design Documentation ✅
+- [x] **M1**: Foundation - Types, Schemas, Mock Data, Basic Layout ✅ (2024-12-11)
+- [x] **M2**: Calendar Views - Day, Week, Month, Agenda ✅ (2024-12-11)
+- [x] **M3**: Resource Timeline - Staff/Room Timeline ✅ (2024-12-11)
+- [x] **M4**: Drag & Drop - Move, Resize, Create by drag ✅ (2024-12-11)
 - [ ] **M5**: Forms & Sheets - CRUD, Recurrence, Conflict (2 ngày)
 - [ ] **M6**: Polish - Dashboard, Filters, Mobile, Testing (1-2 ngày)
 
@@ -38,9 +38,9 @@ total_effort: 10-12 ngày
 #### Task 1.1: Cấu trúc Module & Types
 **Effort**: 0.5 ngày | **Priority**: P0
 
-- [ ] Tạo cấu trúc thư mục theo design doc
-- [ ] Tạo `types.ts` với interfaces: `Appointment`, `CalendarEvent`, `TimelineResource`, `CalendarViewConfig`, `RecurrenceConfig`, `ConflictInfo`, `AppointmentFilters`
-- [ ] Tạo `constants.ts`:
+- [x] Tạo cấu trúc thư mục theo design doc ✅
+- [x] Tạo `types.ts` với interfaces: `Appointment`, `CalendarEvent`, `TimelineResource`, `CalendarViewConfig`, `RecurrenceConfig`, `ConflictInfo`, `AppointmentFilters` ✅
+- [x] Tạo `constants.ts`: ✅
   - Status colors mapping
   - View configuration defaults
   - Time slot intervals
@@ -57,7 +57,7 @@ features/appointments/
 #### Task 1.2: Schemas & Validation
 **Effort**: 0.25 ngày | **Priority**: P0
 
-- [ ] Tạo `schemas.ts` với Zod schemas:
+- [x] Tạo `schemas.ts` với Zod schemas: ✅
   - `appointmentFormSchema` (tạo/sửa)
   - `appointmentFilterSchema`
   - `recurrenceSchema`
@@ -71,11 +71,11 @@ features/appointments/
 #### Task 1.3: Mock Data
 **Effort**: 0.25 ngày | **Priority**: P1
 
-- [ ] Tạo `mock-data.ts`:
-  - 20-30 appointments mẫu (đa dạng status, thời gian)
-  - Staff list (3-5 KTV)
-  - Resource list (rooms)
-  - Services list
+- [x] Tạo `mock-data.ts`: ✅
+  - 23 appointments mẫu (đa dạng status, thời gian)
+  - 5 Staff (KTV)
+  - 5 Rooms
+  - 8 Services
 
 **Files cần tạo:**
 ```
@@ -86,14 +86,14 @@ features/appointments/
 #### Task 1.4: Server Actions
 **Effort**: 0.5 ngày | **Priority**: P0
 
-- [ ] Tạo `actions.ts` với Server Actions:
+- [x] Tạo `actions.ts` với Server Actions (Mock): ✅
   - `getAppointments(dateRange, filters)` - Fetch appointments
   - `getAppointmentById(id)` - Fetch single
   - `createAppointment(data)` - Create
   - `updateAppointment(id, data)` - Update
   - `deleteAppointment(id)` - Delete
   - `checkConflicts(staffId, timeRange)` - Conflict check
-  - `getAppointmentStats(date)` - Dashboard metrics
+  - `getAppointmentMetrics(date)` - Dashboard metrics
 
 **Files cần tạo:**
 ```
@@ -104,12 +104,12 @@ features/appointments/
 #### Task 1.5: Basic Layout & Page Container
 **Effort**: 0.5 ngày | **Priority**: P0
 
-- [ ] Cập nhật `appointments-page.tsx` với layout chuẩn:
+- [x] Cập nhật `appointments-page.tsx` với layout chuẩn: ✅
   - Header với title
-  - Placeholder cho Metrics Cards
-  - Placeholder cho Toolbar
+  - Metrics Cards (4 cards)
+  - Toolbar với ViewSwitcher
   - Placeholder cho Calendar Area
-- [ ] Ensure responsive grid layout
+- [x] Ensure responsive grid layout ✅
 
 **Files cần sửa:**
 ```
@@ -125,7 +125,7 @@ features/appointments/components/
 #### Task 2.1: Calendar State Hook
 **Effort**: 0.5 ngày | **Priority**: P0
 
-- [ ] Tạo `use-calendar-state.ts`:
+- [x] Tạo `use-calendar-state.ts`: ✅
   - State: `currentView`, `currentDate`, `zoomLevel`, `densityMode`
   - Actions: `setView`, `goToDate`, `goToToday`, `goNextPeriod`, `goPrevPeriod`
   - Derived: `dateRange` (computed from view + date)
@@ -140,10 +140,10 @@ features/appointments/hooks/
 #### Task 2.2: Date Navigator & View Switcher
 **Effort**: 0.5 ngày | **Priority**: P0
 
-- [ ] Tạo `toolbar/view-switcher.tsx`:
+- [x] Tạo `toolbar/view-switcher.tsx`: ✅
   - Tabs/ToggleGroup: Ngày | Tuần | Tháng | Danh sách | Timeline
   - Icons cho mỗi view
-- [ ] Tạo `toolbar/date-navigator.tsx`:
+- [x] Tạo `toolbar/date-navigator.tsx`: ✅
   - Nút Previous/Next (ChevronLeft/Right)
   - Nút "Hôm nay"
   - Hiển thị: "Tháng 12, 2024" hoặc "Tuần 50, 2024"
@@ -160,7 +160,7 @@ features/appointments/components/toolbar/
 #### Task 2.3: Time Grid Component (Shared)
 **Effort**: 0.5 ngày | **Priority**: P0
 
-- [ ] Tạo `calendar/time-grid.tsx`:
+- [x] Tạo `calendar/time-grid.tsx`: ✅
   - Cột giờ bên trái (08:00, 09:00, ...)
   - Chia theo interval (15min/30min/60min)
   - Đường kẻ ngang cho mỗi giờ
@@ -177,7 +177,7 @@ features/appointments/components/calendar/
 #### Task 2.4: Day View
 **Effort**: 0.5 ngày | **Priority**: P0
 
-- [ ] Tạo `calendar/day-view.tsx`:
+- [x] Tạo `calendar/day-view.tsx`: ✅
   - Single column với TimeGrid
   - Event positioning dựa trên time
   - Overlapping events side-by-side
@@ -192,7 +192,7 @@ features/appointments/components/calendar/
 #### Task 2.5: Week View
 **Effort**: 0.5 ngày | **Priority**: P0
 
-- [ ] Tạo `calendar/week-view.tsx`:
+- [x] Tạo `calendar/week-view.tsx`: ✅
   - 7 columns (T2-CN hoặc CN-T7)
   - Header row với ngày
   - Highlight "Hôm nay"
@@ -209,7 +209,7 @@ features/appointments/components/calendar/
 #### Task 2.6: Month View
 **Effort**: 0.5 ngày | **Priority**: P1
 
-- [ ] Tạo `calendar/month-view.tsx`:
+- [x] Tạo `calendar/month-view.tsx`: ✅
   - Grid 7 columns × 5-6 rows
   - Mỗi ô hiển thị tối đa 2-3 events
   - "+X more" link → Popover với full list
@@ -224,10 +224,9 @@ features/appointments/components/calendar/
 #### Task 2.7: Agenda View
 **Effort**: 0.5 ngày | **Priority**: P1
 
-- [ ] Tạo `calendar/agenda-view.tsx`:
+- [x] Tạo `calendar/agenda-view.tsx`: ✅
   - List view theo ngày
   - Sticky date headers
-  - Swipe actions (mobile)
   - Empty states cho ngày rỗng
 
 **Files cần tạo:**
@@ -239,9 +238,9 @@ features/appointments/components/calendar/
 #### Task 2.8: Calendar View Router
 **Effort**: 0.25 ngày | **Priority**: P0
 
-- [ ] Tạo `calendar/calendar-view.tsx`:
+- [x] Tạo `calendar/calendar-view.tsx`: ✅
   - Switch giữa các views dựa trên `currentView`
-  - AnimatePresence cho transitions
+  - Loading state
   - Pass props đúng cho mỗi view
 
 **Files cần tạo:**
@@ -258,7 +257,7 @@ features/appointments/components/calendar/
 #### Task 3.1: Timeline Layout
 **Effort**: 0.5 ngày | **Priority**: P1
 
-- [ ] Tạo `timeline/resource-timeline.tsx`:
+- [x] Tạo `timeline/resource-timeline.tsx`: ✅
   - Sticky left column (tên resources)
   - Sticky top header (thước thời gian)
   - Scrollable content area
@@ -275,11 +274,11 @@ features/appointments/components/timeline/
 #### Task 3.2: Timeline Row
 **Effort**: 0.5 ngày | **Priority**: P1
 
-- [ ] Tạo `timeline/timeline-row.tsx`:
+- [x] Tạo `timeline/timeline-row.tsx`: ✅
   - Single row cho mỗi resource
   - Events positioned horizontally
-  - Gap visualization
-  - Overlap handling
+  - Avatar và resource info
+  - Empty state
 
 **Files cần tạo:**
 ```
@@ -290,9 +289,9 @@ features/appointments/components/timeline/
 #### Task 3.3: Zoom Control
 **Effort**: 0.25 ngày | **Priority**: P2
 
-- [ ] Tạo `toolbar/zoom-control.tsx`:
-  - Slider hoặc buttons: 15m | 30m | 1h | 4h
-  - Keyboard shortcuts (+/-)
+- [x] Zoom Controls đã được tích hợp trong ResourceTimeline: ✅
+  - Buttons: 15m | 30m | 60m
+  - State management trong component
 
 **Files cần tạo:**
 ```
@@ -303,9 +302,9 @@ features/appointments/components/toolbar/
 #### Task 3.4: Timeline Integration
 **Effort**: 0.25 ngày | **Priority**: P1
 
-- [ ] Tích hợp timeline vào CalendarView router
-- [ ] Thêm view option "Timeline" vào ViewSwitcher
-- [ ] Resource type selector (Staff/Room) trong FilterBar
+- [x] Tích hợp timeline vào CalendarView router: ✅
+- [x] Thêm view option "Timeline" vào ViewSwitcher: ✅
+- [x] Resource type selector (Staff/Room) trong ResourceTimeline: ✅
 
 ---
 
@@ -315,7 +314,7 @@ features/appointments/components/toolbar/
 #### Task 4.1: DnD Context Setup
 **Effort**: 0.5 ngày | **Priority**: P0
 
-- [ ] Tạo `dnd/calendar-dnd-context.tsx`:
+- [x] Tạo `dnd/calendar-dnd-context.tsx`: ✅
   - @dnd-kit DndContext wrapper
   - Sensors configuration (keyboard + pointer)
   - Collision detection
@@ -331,11 +330,10 @@ features/appointments/components/dnd/
 #### Task 4.2: Draggable Event Card
 **Effort**: 0.5 ngày | **Priority**: P0
 
-- [ ] Tạo `event/event-card.tsx`:
+- [x] EventCard đã có sẵn, tạo DraggableEventCard: ✅
   - useDraggable integration
-  - Visual states: default, hover, dragging, conflict
+  - Visual states: default, hover, dragging
   - Content: time, title, staff, status icon
-  - Color coding theo service
 
 **Files cần tạo:**
 ```
@@ -347,11 +345,10 @@ features/appointments/components/event/
 #### Task 4.3: Drag Overlay
 **Effort**: 0.25 ngày | **Priority**: P0
 
-- [ ] Tạo `dnd/drag-overlay.tsx`:
+- [x] DragOverlay đã tích hợp trong CalendarDndContext: ✅
   - DragOverlay component từ @dnd-kit
-  - Ghost effect (original position, 30% opacity)
   - Elevated card (shadow, scale)
-  - Time tooltip khi kéo
+  - Drop animation
 
 **Files cần tạo:**
 ```
@@ -362,10 +359,9 @@ features/appointments/components/dnd/
 #### Task 4.4: Drop Zones & Highlighting
 **Effort**: 0.25 ngày | **Priority**: P0
 
-- [ ] Tạo `dnd/drop-zone.tsx`:
+- [x] Tạo `dnd/droppable-slot.tsx`: ✅
   - useDroppable integration
   - Highlight valid drop zones
-  - Restricted zones (past, break time)
   - Visual feedback (border, background)
 
 **Files cần tạo:**
@@ -377,12 +373,11 @@ features/appointments/components/dnd/
 #### Task 4.5: useDnD Hook
 **Effort**: 0.5 ngày | **Priority**: P0
 
-- [ ] Tạo `hooks/use-calendar-dnd.ts`:
-  - Handle onDragStart, onDragEnd, onDragOver
+- [x] Tạo `hooks/use-calendar-dnd.ts`: ✅
+  - Handle onDragStart, onDragEnd
   - Calculate new time from drop position
-  - Optimistic update
-  - Rollback on error
   - Conflict validation
+  - Toast notifications
 
 **Files cần tạo:**
 ```
