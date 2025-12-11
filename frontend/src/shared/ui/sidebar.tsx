@@ -606,13 +606,8 @@ function SidebarMenuSkeleton({
 }: React.ComponentProps<"div"> & {
   showIcon?: boolean
 }) {
-  // Random width between 50 to 90%.
-  // Random width between 50 to 90%.
-  const [width, setWidth] = React.useState("50%")
-  React.useEffect(() => {
-    setWidth(`${Math.floor(Math.random() * 40) + 50}%`)
-  }, [])
-
+  // Deterministic skeleton widths - no useEffect/useState to avoid hydration mismatch
+  // Uses CSS variable that can be customized per-instance if needed
   return (
     <div
       data-slot="sidebar-menu-skeleton"
@@ -624,16 +619,13 @@ function SidebarMenuSkeleton({
         <Skeleton
           className="size-4 rounded-md"
           data-sidebar="menu-skeleton-icon"
+          aria-hidden="true"
         />
       )}
       <Skeleton
-        className="h-4 max-w-(--skeleton-width) flex-1"
+        className="h-4 flex-1"
         data-sidebar="menu-skeleton-text"
-        style={
-          {
-            "--skeleton-width": width,
-          } as React.CSSProperties
-        }
+        aria-hidden="true"
       />
     </div>
   )
