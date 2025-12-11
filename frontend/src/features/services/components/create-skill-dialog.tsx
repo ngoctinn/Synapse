@@ -19,7 +19,7 @@ export function CreateSkillDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="text-xs">
+        <Button size="sm" className="text-xs transition-all hover:scale-[1.02] shadow-sm">
           <Plus className="mr-2 h-3.5 w-3.5" /> Thêm kỹ năng
         </Button>
       </DialogTrigger>

@@ -71,8 +71,8 @@ export function ResourcePage({ resourcesPromise, groupsPromise, tasksPromise }: 
           className="sticky top-0 z-40 px-4 py-3 bg-background/95 backdrop-blur-sm border-b flex flex-col md:flex-row items-center justify-between gap-4"
         >
           <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto justify-start">
-            <TabsTrigger value="list" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Danh sách</TabsTrigger>
-            <TabsTrigger value="maintenance" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 w-28 transition-all duration-200 flex-1 md:flex-none">Lịch bảo trì</TabsTrigger>
+            <TabsTrigger value="list" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 min-w-[100px] transition-all duration-200 flex-1 md:flex-none">Danh sách</TabsTrigger>
+            <TabsTrigger value="maintenance" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 min-w-[100px] transition-all duration-200 flex-1 md:flex-none">Lịch bảo trì</TabsTrigger>
           </TabsList>
 
           <div className="flex items-center gap-3 w-full md:w-auto">

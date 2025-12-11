@@ -22,7 +22,7 @@ export function CreateServiceWizard({
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} startContent={<Plus className="h-4 w-4" />}>
+      <Button size="sm" className="text-xs transition-all hover:scale-[1.02] shadow-sm" onClick={() => setOpen(true)} startContent={<Plus className="mr-2 h-3.5 w-3.5" />}>
         Tạo dịch vụ
       </Button>
 
