@@ -20,6 +20,7 @@ export default async function Page({
     getSchedules(start, end)
   ])
 
+  // Truyền Promise để Suspense hiển thị skeleton
   const staffListPromise = getStaffList(pageNumber)
 
   return (

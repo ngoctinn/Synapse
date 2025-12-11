@@ -70,7 +70,7 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const [isPending, startTransition] = useTransition()
+  const [, startTransition] = useTransition()
 
   // Get active tab from URL or default to 'list'
   const activeTab = searchParams.get("view") || "list"
@@ -155,12 +155,7 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
           <TabsContent value="permissions" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
             <div className="p-4 flex-1 flex flex-col gap-4">
               <div className="surface-card overflow-hidden flex-1">
-                <Suspense fallback={<div className="p-8 space-y-4">
-                  <div className="h-8 w-1/3 bg-muted animate-pulse rounded" />
-                  <div className="h-64 w-full bg-muted animate-pulse rounded-lg" />
-                </div>}>
-                  <PermissionMatrix initialPermissions={initialPermissions} className="border-none" />
-                </Suspense>
+                <PermissionMatrix initialPermissions={initialPermissions} className="border-none" />
               </div>
               <Footer />
             </div>
@@ -177,7 +172,7 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
                       <div className="h-9 w-24 bg-muted animate-pulse rounded" />
                     </div>
                   </div>
-                  <div className="flex-1 w-full bg-muted/20 animate-pulse rounded-lg border border-dashed border-muted" />
+                  <div className="flex-1 w-full bg-muted/20 animate-pulse rounded-lg border border-dashed border-muted min-h-[300px]" />
                 </div>}>
                   <StaffSchedulerWrapper
                     staffListPromise={staffListPromise}
