@@ -1,56 +1,32 @@
-"use client"
+"use client";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/shared/ui/alert-dialog"
-import { showToast } from "@/shared/ui/custom/sonner"
-import { TableRowActions } from "@/shared/ui/custom/table-row-actions"
-import {
-  DropdownMenuItem,
-  DropdownMenuLabel
-} from "@/shared/ui/dropdown-menu"
-import { History } from "lucide-react"
-import { useState, useTransition } from "react"
-import { deleteResource } from "../actions"
-import { Resource } from "../types"
+import { useDeleteAction } from "@/shared/hooks";
+import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
+import { TableRowActions } from "@/shared/ui/custom/table-row-actions";
+import { DropdownMenuItem, DropdownMenuLabel } from "@/shared/ui/dropdown-menu";
+import { History } from "lucide-react";
+import { deleteResource } from "../actions";
+import { Resource } from "../types";
 
 interface ResourceActionsProps {
-  resource: Resource
-  onEdit: () => void
+  resource: Resource;
+  onEdit: () => void;
 }
 
 export function ResourceActions({ resource, onEdit }: ResourceActionsProps) {
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
-  const [isPending, startTransition] = useTransition()
-
-  const handleDelete = () => {
-    startTransition(async () => {
-      try {
-        const result = await deleteResource(resource.id);
-        if (result.success) {
-            setShowDeleteDialog(false);
-            showToast.success("Thành công", result.message);
-        } else {
-            showToast.error("Lỗi", result.error || "Không thể xóa");
-        }
-      } catch (error) {
-        showToast.error("Lỗi", "Đã có lỗi xảy ra");
-      }
-    })
-  }
+  const { handleDelete, dialogProps, openDeleteDialog, isPending } =
+    useDeleteAction({
+      deleteAction: deleteResource,
+      entityName: "tài nguyên",
+      refreshOnSuccess: true,
+    });
 
   return (
     <>
       <TableRowActions
         onEdit={onEdit}
-        onDelete={() => setShowDeleteDialog(true)}
+        onDelete={openDeleteDialog}
+        disabled={isPending}
         extraActions={
           <>
             <DropdownMenuLabel>Thao tác khác</DropdownMenuLabel>
@@ -62,33 +38,12 @@ export function ResourceActions({ resource, onEdit }: ResourceActionsProps) {
         }
       />
 
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Bạn có chắc chắn muốn xóa?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Hành động này không thể hoàn tác. Tài nguyên <span className="font-semibold text-foreground">{resource.name}</span> ({resource.code}) sẽ bị xóa vĩnh viễn
-              khỏi hệ thống.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Hủy</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              {showDeleteDialog && isPending ? (
-                  <>
-                    <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-r-transparent" />
-                    Đang xóa...
-                  </>
-              ) : (
-                  "Xóa"
-              )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteConfirmDialog
+        {...dialogProps}
+        onConfirm={() => handleDelete(resource.id)}
+        entityName="tài nguyên"
+        entityLabel={`${resource.name} (${resource.code})`}
+      />
     </>
-  )
+  );
 }

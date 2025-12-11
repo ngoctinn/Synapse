@@ -1,50 +1,30 @@
-"use client"
+"use client";
 
-import { Skill } from "@/features/services/types"
-import { deleteStaff } from "@/features/staff/actions"
-import { showToast } from "@/shared/ui/custom/sonner"
-import { TableRowActions } from "@/shared/ui/custom/table-row-actions"
-import {
-    DropdownMenuItem,
-    DropdownMenuLabel
-} from "@/shared/ui/dropdown-menu"
-import { KeyRound } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { startTransition, useState } from "react"
-import { Staff } from "../../model/types"
-import { DeleteStaffDialog } from "./delete-staff-dialog"
+import { deleteStaff } from "@/features/staff/actions";
+import { useDeleteAction } from "@/shared/hooks";
+import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
+import { TableRowActions } from "@/shared/ui/custom/table-row-actions";
+import { DropdownMenuItem, DropdownMenuLabel } from "@/shared/ui/dropdown-menu";
+import { KeyRound } from "lucide-react";
+import { Staff } from "../../model/types";
 
 interface StaffActionsProps {
-  staff: Staff
-  skills: Skill[]
-  onEdit: () => void
+  staff: Staff;
+  onEdit: () => void;
 }
 
-export function StaffActions({ staff, skills, onEdit }: StaffActionsProps) {
-  const router = useRouter()
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
-
-  const handleDelete = () => {
-    setIsDeleting(true)
-    startTransition(async () => {
-      const result = await deleteStaff(staff.user_id)
-      setIsDeleting(false)
-      if (result.success) {
-        setShowDeleteDialog(false)
-        showToast.success("Thành công", result.message)
-        router.refresh()
-      } else {
-        showToast.error("Lỗi", result.error)
-      }
-    })
-  }
+export function StaffActions({ staff, onEdit }: StaffActionsProps) {
+  const { handleDelete, dialogProps, openDeleteDialog } = useDeleteAction({
+    deleteAction: deleteStaff,
+    entityName: "nhân viên",
+    refreshOnSuccess: true,
+  });
 
   return (
     <>
       <TableRowActions
         onEdit={onEdit}
-        onDelete={() => setShowDeleteDialog(true)}
+        onDelete={openDeleteDialog}
         extraActions={
           <>
             <DropdownMenuLabel>Thao tác khác</DropdownMenuLabel>
@@ -56,13 +36,13 @@ export function StaffActions({ staff, skills, onEdit }: StaffActionsProps) {
         }
       />
 
-      <DeleteStaffDialog
-        staff={staff}
-        open={showDeleteDialog}
-        onOpenChange={setShowDeleteDialog}
-        onConfirm={handleDelete}
-        isDeleting={isDeleting}
+      <DeleteConfirmDialog
+        {...dialogProps}
+        onConfirm={() => handleDelete(staff.user_id)}
+        entityName="nhân viên"
+        entityLabel={staff.user.full_name ?? undefined}
+        additionalWarning="Lưu ý: Các lịch làm việc đã phân công cho nhân viên này trong tương lai cũng sẽ bị hủy bỏ."
       />
     </>
-  )
+  );
 }

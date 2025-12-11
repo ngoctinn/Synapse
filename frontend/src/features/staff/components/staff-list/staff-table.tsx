@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { Skill } from "@/features/services/types"
-import { deleteStaff } from "@/features/staff/actions"
-import { useTableParams, useTableSelection } from "@/shared/hooks"
-import { cn } from "@/shared/lib/utils"
+import { Skill } from "@/features/services/types";
+import { deleteStaff } from "@/features/staff/actions";
+import { useTableParams, useTableSelection } from "@/shared/hooks";
+import { cn } from "@/shared/lib/utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,76 +13,75 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/shared/ui/alert-dialog"
-import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
-import { Badge } from "@/shared/ui/badge"
-import { Button } from "@/shared/ui/button"
-import { AnimatedUsersIcon } from "@/shared/ui/custom/animated-icon"
-import { Column, DataTable } from "@/shared/ui/custom/data-table"
-import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state"
-import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
-import { showToast } from "@/shared/ui/custom/sonner"
-import { TableActionBar } from "@/shared/ui/custom/table-action-bar"
+} from "@/shared/ui/alert-dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
+import { Badge } from "@/shared/ui/badge";
+import { Button } from "@/shared/ui/button";
+import { AnimatedUsersIcon } from "@/shared/ui/custom/animated-icon";
+import { Column, DataTable } from "@/shared/ui/custom/data-table";
+import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
+import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
+import { showToast } from "@/shared/ui/custom/sonner";
+import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/shared/ui/tooltip"
-import { Calendar, Loader2 } from "lucide-react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useState, useTransition } from "react"
-import { ROLE_CONFIG } from "../../model/constants"
-import { Staff } from "../../model/types"
-import { InviteStaffTrigger } from "../invite-staff-trigger"
-import { StaffSheet } from "../staff-sheet"
-import { StaffActions } from "./staff-actions"
-
+} from "@/shared/ui/tooltip";
+import { Calendar, Loader2 } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState, useTransition } from "react";
+import { ROLE_CONFIG } from "../../model/constants";
+import { Staff } from "../../model/types";
+import { InviteStaffTrigger } from "../invite-staff-trigger";
+import { StaffSheet } from "../staff-sheet";
+import { StaffActions } from "./staff-actions";
 
 interface StaffTableProps {
-  data: Staff[]
-  skills: Skill[]
-  page?: number
-  totalPages?: number
-  onPageChange?: (page: number) => void
-  className?: string
-  variant?: "default" | "flush"
-  isLoading?: boolean
+  data: Staff[];
+  skills: Skill[];
+  page?: number;
+  totalPages?: number;
+  onPageChange?: (page: number) => void;
+  className?: string;
+  variant?: "default" | "flush";
+  isLoading?: boolean;
 }
 
 const GroupActionButtons = ({ staff }: { staff: Staff }) => {
-    const router = useRouter()
-    const pathname = usePathname()
-    const searchParams = useSearchParams()
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-    const handleViewSchedule = () => {
-        const params = new URLSearchParams(searchParams)
-        params.set("view", "scheduling")
-        // Optionally pass staff_id to focus in scheduler (if supported)
-        // params.set("staff_id", staff.user_id)
-        router.push(`${pathname}?${params.toString()}`)
-    }
+  const handleViewSchedule = () => {
+    const params = new URLSearchParams(searchParams);
+    params.set("view", "scheduling");
+    // Optionally pass staff_id to focus in scheduler (if supported)
+    // params.set("staff_id", staff.user_id)
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
-    return (
-        <TooltipProvider>
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
-                        onClick={handleViewSchedule}
-                    >
-                        <Calendar className="h-4 w-4" />
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                    <p>Xem lịch làm việc</p>
-                </TooltipContent>
-            </Tooltip>
-        </TooltipProvider>
-    )
-}
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
+            onClick={handleViewSchedule}
+          >
+            <Calendar className="h-4 w-4" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Xem lịch làm việc</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+};
 
 export function StaffTable({
   data,
@@ -92,58 +91,71 @@ export function StaffTable({
   onPageChange: onPageChangeProp,
   className,
   variant = "default",
-  isLoading
+  isLoading,
 }: StaffTableProps) {
-  const router = useRouter()
-  const [editingStaff, setEditingStaff] = useState<Staff | null>(null)
+  const router = useRouter();
+  const [editingStaff, setEditingStaff] = useState<Staff | null>(null);
 
   // Use custom hook for URL state management
-  const { page: urlPage, sortBy, order, handlePageChange: urlPageChange, handleSort } = useTableParams({
+  const {
+    page: urlPage,
+    sortBy,
+    order,
+    handlePageChange: urlPageChange,
+    handleSort,
+  } = useTableParams({
     defaultSortBy: "created_at",
-    defaultOrder: "desc"
-  })
+    defaultOrder: "desc",
+  });
 
   // Support both controlled and uncontrolled modes
-  const page = pageProp ?? urlPage
-  const handlePageChange = onPageChangeProp ?? urlPageChange
+  const page = pageProp ?? urlPage;
+  const handlePageChange = onPageChangeProp ?? urlPageChange;
 
   const selection = useTableSelection({
     data,
     keyExtractor: (item) => item.user_id,
-  })
+  });
 
-  const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false)
-  const [isPending, startTransition] = useTransition()
+  const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const handleBulkDelete = () => {
-    const ids = Array.from(selection.selectedIds) as string[]
-    if (ids.length === 0) return
+    const ids = Array.from(selection.selectedIds) as string[];
+    if (ids.length === 0) return;
 
     startTransition(async () => {
       try {
-        const results = await Promise.allSettled(ids.map((id) => deleteStaff(id)))
+        const results = await Promise.allSettled(
+          ids.map((id) => deleteStaff(id))
+        );
 
-        const successCount = results.filter((r) => r.status === "fulfilled" && r.value.success).length
-        const failures = results.filter((r) => r.status === "rejected" || (r.status === "fulfilled" && !r.value.success))
+        const successCount = results.filter(
+          (r) => r.status === "fulfilled" && r.value.success
+        ).length;
+        const failures = results.filter(
+          (r) =>
+            r.status === "rejected" ||
+            (r.status === "fulfilled" && !r.value.success)
+        );
 
         if (successCount > 0) {
-          showToast.success("Thành công", `Đã xóa ${successCount} nhân viên`)
-          selection.clearAll()
-          router.refresh()
+          showToast.success("Thành công", `Đã xóa ${successCount} nhân viên`);
+          selection.clearAll();
+          router.refresh();
         }
 
         if (failures.length > 0) {
-          showToast.error("Lỗi", `Không thể xóa ${failures.length} nhân viên`)
+          showToast.error("Lỗi", `Không thể xóa ${failures.length} nhân viên`);
         }
       } catch (error) {
-        console.error(error)
-        showToast.error("Lỗi", "Không thể xóa nhân viên")
+        console.error(error);
+        showToast.error("Lỗi", "Không thể xóa nhân viên");
       } finally {
-        setShowBulkDeleteDialog(false)
+        setShowBulkDeleteDialog(false);
       }
-    })
-  }
-
+    });
+  };
 
   const columns: Column<Staff>[] = [
     {
@@ -152,23 +164,33 @@ export function StaffTable({
       id: "user.full_name",
       sortable: true,
       cell: (staff) => (
-
         <div className="flex items-center gap-4">
           <Avatar className="h-10 w-10 border">
-            <AvatarImage src={staff.user.avatar_url || undefined} alt={staff.user.full_name || ""} />
+            <AvatarImage
+              src={staff.user.avatar_url || undefined}
+              alt={staff.user.full_name || ""}
+            />
             <AvatarFallback
               className="font-medium text-white shadow-sm"
-              style={{ backgroundColor: staff.color_code || "hsl(var(--primary))" }}
+              style={{
+                backgroundColor: staff.color_code || "hsl(var(--primary))",
+              }}
             >
-              {(staff.user.full_name || staff.user.email || "?").charAt(0).toUpperCase()}
+              {(staff.user.full_name || staff.user.email || "?")
+                .charAt(0)
+                .toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <span className="text-lg font-serif text-foreground group-hover:text-primary transition-colors tracking-tight">{staff.user.full_name || "Chưa cập nhật tên"}</span>
-            <span className="text-xs text-muted-foreground">{staff.user.email}</span>
+            <span className="text-lg font-serif text-foreground group-hover:text-primary transition-colors tracking-tight">
+              {staff.user.full_name || "Chưa cập nhật tên"}
+            </span>
+            <span className="text-xs text-muted-foreground">
+              {staff.user.email}
+            </span>
           </div>
         </div>
-      )
+      ),
     },
     {
       header: "Vai trò",
@@ -176,17 +198,17 @@ export function StaffTable({
       id: "user.role",
       sortable: true,
       cell: (staff) => (
-
         <Badge
           variant={ROLE_CONFIG[staff.user.role]?.variant || "outline"}
           className={cn(
             "rounded-md px-2.5 py-1 font-medium border-transparent text-xs",
-            ROLE_CONFIG[staff.user.role]?.className || "bg-muted text-muted-foreground"
+            ROLE_CONFIG[staff.user.role]?.className ||
+              "bg-muted text-muted-foreground"
           )}
         >
           {ROLE_CONFIG[staff.user.role]?.label || staff.user.role}
         </Badge>
-      )
+      ),
     },
     {
       header: "Kỹ năng",
@@ -195,7 +217,11 @@ export function StaffTable({
           {staff.skills.length > 0 ? (
             <>
               {staff.skills.slice(0, 2).map((skill) => (
-                <Badge key={skill.id} variant="secondary" className="text-xs px-2.5 py-1 bg-secondary/50 hover:bg-secondary/70 text-secondary-foreground border-transparent rounded-md transition-colors">
+                <Badge
+                  key={skill.id}
+                  variant="secondary"
+                  className="text-xs px-2.5 py-1 bg-secondary/50 hover:bg-secondary/70 text-secondary-foreground border-transparent rounded-md transition-colors"
+                >
                   {skill.name}
                 </Badge>
               ))}
@@ -203,7 +229,10 @@ export function StaffTable({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Badge variant="secondary" className="text-xs px-2.5 py-1 bg-secondary/50 hover:bg-secondary/70 text-secondary-foreground border-transparent cursor-help rounded-md">
+                      <Badge
+                        variant="secondary"
+                        className="text-xs px-2.5 py-1 bg-secondary/50 hover:bg-secondary/70 text-secondary-foreground border-transparent cursor-help rounded-md"
+                      >
                         +{staff.skills.length - 2} nữa
                       </Badge>
                     </TooltipTrigger>
@@ -219,10 +248,12 @@ export function StaffTable({
               )}
             </>
           ) : (
-            <span className="text-xs text-muted-foreground italic pl-1">--</span>
+            <span className="text-xs text-muted-foreground italic pl-1">
+              --
+            </span>
           )}
         </div>
-      )
+      ),
     },
     {
       header: "Trạng thái",
@@ -234,24 +265,22 @@ export function StaffTable({
         >
           {staff.user.is_active ? "Hoạt động" : "Ẩn"}
         </Badge>
-      )
+      ),
     },
     {
       header: "Hành động",
       className: "pr-6 text-right",
       cell: (staff) => (
-        <div onClick={(e) => e.stopPropagation()} className="flex items-center justify-end gap-2">
-            <GroupActionButtons staff={staff} />
-            <StaffActions
-                staff={staff}
-                skills={skills}
-                onEdit={() => setEditingStaff(staff)}
-            />
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="flex items-center justify-end gap-2"
+        >
+          <GroupActionButtons staff={staff} />
+          <StaffActions staff={staff} onEdit={() => setEditingStaff(staff)} />
         </div>
-      )
-    }
-  ]
-
+      ),
+    },
+  ];
 
   return (
     <>
@@ -267,14 +296,12 @@ export function StaffTable({
         isLoading={isLoading}
         skeletonCount={5}
         disabled={isPending}
-
         selectable
         isSelected={selection.isSelected}
         onToggleOne={selection.toggleOne}
         onToggleAll={selection.toggleAll}
         isAllSelected={selection.isAllSelected}
         isPartiallySelected={selection.isPartiallySelected}
-
         onRowClick={(staff) => setEditingStaff(staff)}
         sortColumn={sortBy}
         sortDirection={order}
@@ -290,8 +317,10 @@ export function StaffTable({
       />
       {isPending && (
         <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-background/50 backdrop-blur-[2px]">
-            <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
-            <p className="text-sm font-medium text-muted-foreground animate-pulse">Đang xử lý...</p>
+          <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
+          <p className="text-sm font-medium text-muted-foreground animate-pulse">
+            Đang xử lý...
+          </p>
         </div>
       )}
 
@@ -312,25 +341,28 @@ export function StaffTable({
               Xóa {selection.selectedCount} nhân viên?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Hành động này không thể hoàn tác. <span className="font-semibold text-foreground">{selection.selectedCount}</span> nhân viên đã chọn sẽ bị xóa vĩnh viễn khỏi hệ thống.
+              Hành động này không thể hoàn tác.{" "}
+              <span className="font-semibold text-foreground">
+                {selection.selectedCount}
+              </span>{" "}
+              nhân viên đã chọn sẽ bị xóa vĩnh viễn khỏi hệ thống.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isPending}>Hủy</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleBulkDelete}
-
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               disabled={isPending}
             >
               {isPending ? (
-                  <>
-                      <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-r-transparent" />
-                      Đang xóa...
-                  </>
-               ) : (
-                  `Xóa ${selection.selectedCount} mục`
-               )}
+                <>
+                  <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-r-transparent" />
+                  Đang xóa...
+                </>
+              ) : (
+                `Xóa ${selection.selectedCount} mục`
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -346,7 +378,7 @@ export function StaffTable({
         />
       )}
     </>
-  )
+  );
 }
 
 export function StaffTableSkeleton() {
@@ -359,6 +391,5 @@ export function StaffTableSkeleton() {
       showAction={false}
       variant="flush"
     />
-  )
+  );
 }
-
