@@ -54,6 +54,26 @@ export const appointmentFormSchema = z.object({
 
 export type AppointmentFormValues = z.infer<typeof appointmentFormSchema>;
 
+/** Schema đơn giản cho form (không có recurrence) */
+export const quickAppointmentFormSchema = z.object({
+  customerId: z.string().min(1, "Vui lòng chọn khách hàng"),
+  serviceIds: z
+    .array(z.string())
+    .min(1, "Vui lòng chọn ít nhất một dịch vụ"),
+  staffId: z.string().min(1, "Vui lòng chọn kỹ thuật viên"),
+  resourceId: z.string().optional(),
+  date: z.date({ message: "Ngày không hợp lệ" }),
+  startTime: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Giờ không hợp lệ (HH:mm)"),
+  notes: z
+    .string()
+    .max(500, "Ghi chú tối đa 500 ký tự")
+    .optional(),
+});
+
+export type QuickAppointmentFormValues = z.infer<typeof quickAppointmentFormSchema>;
+
 /** Schema cho form chỉnh sửa nhanh (khi drag-drop) */
 export const updateAppointmentTimeSchema = z.object({
   id: z.string().min(1),

@@ -5,5 +5,6 @@
  */
 
 export { DateNavigator } from "./date-navigator";
+export { FilterBar } from "./filter-bar";
 export { ViewSwitcher } from "./view-switcher";
 

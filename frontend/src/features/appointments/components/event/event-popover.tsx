@@ -1,0 +1,229 @@
+"use client";
+
+/**
+ * EventPopover - Popover hiển thị thông tin nhanh khi hover/click event
+ *
+ * Quick info: Khách, SĐT, Dịch vụ, KTV
+ * Quick actions: Xem, Sửa, Check-in, Hủy
+ */
+
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
+import {
+  Calendar,
+  CheckCircle2,
+  Clock,
+  Edit,
+  MoreHorizontal,
+  Phone,
+  Trash2,
+  User,
+  XCircle,
+} from "lucide-react";
+
+import { cn } from "@/shared/lib/utils";
+import {
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Separator,
+} from "@/shared/ui";
+
+import { APPOINTMENT_STATUS_CONFIG } from "../../constants";
+import type { CalendarEvent } from "../../types";
+
+// ============================================
+// TYPES
+// ============================================
+
+interface EventPopoverProps {
+  event: CalendarEvent;
+  children: React.ReactNode;
+  /** Callback xem chi tiết */
+  onView?: () => void;
+  /** Callback sửa */
+  onEdit?: () => void;
+  /** Callback check-in */
+  onCheckIn?: () => void;
+  /** Callback hủy */
+  onCancel?: () => void;
+  /** Callback xóa */
+  onDelete?: () => void;
+  /** Có mở popover không */
+  open?: boolean;
+  /** Callback khi đổi trạng thái mở */
+  onOpenChange?: (open: boolean) => void;
+}
+
+// ============================================
+// COMPONENT
+// ============================================
+
+export function EventPopover({
+  event,
+  children,
+  onView,
+  onEdit,
+  onCheckIn,
+  onCancel,
+  onDelete,
+  open,
+  onOpenChange,
+}: EventPopoverProps) {
+  const statusConfig = APPOINTMENT_STATUS_CONFIG[event.status];
+  const timeRange = `${format(event.start, "HH:mm")} - ${format(event.end, "HH:mm")}`;
+  const dateStr = format(event.start, "EEEE, d MMMM yyyy", { locale: vi });
+
+  const canCheckIn = event.status === "confirmed";
+  const canCancel = event.status === "pending" || event.status === "confirmed";
+
+  return (
+    <Popover open={open} onOpenChange={onOpenChange}>
+      <PopoverTrigger asChild>{children}</PopoverTrigger>
+      <PopoverContent
+        className="w-80 p-0"
+        align="start"
+        sideOffset={8}
+      >
+        {/* Header với màu dịch vụ */}
+        <div
+          className="p-4 rounded-t-lg"
+          style={{ backgroundColor: event.color + "15" }}
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1 min-w-0">
+              {/* Service Name */}
+              <h4
+                className="font-semibold text-base leading-tight"
+                style={{ color: event.color }}
+              >
+                {event.appointment.serviceName}
+              </h4>
+
+              {/* Status Badge */}
+              <div
+                className={cn(
+                  "inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-xs",
+                  statusConfig.bgColor,
+                  statusConfig.color
+                )}
+              >
+                <span
+                  className="w-1.5 h-1.5 rounded-full"
+                  style={{ backgroundColor: "currentColor" }}
+                />
+                {statusConfig.label}
+              </div>
+            </div>
+
+            {/* More Actions */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={onView}>
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Xem chi tiết
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onEdit}>
+                  <Edit className="h-4 w-4 mr-2" />
+                  Chỉnh sửa
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                {canCheckIn && (
+                  <DropdownMenuItem onClick={onCheckIn}>
+                    <CheckCircle2 className="h-4 w-4 mr-2 text-green-600" />
+                    Check-in
+                  </DropdownMenuItem>
+                )}
+                {canCancel && (
+                  <DropdownMenuItem onClick={onCancel} className="text-amber-600">
+                    <XCircle className="h-4 w-4 mr-2" />
+                    Hủy lịch hẹn
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={onDelete} className="text-red-600">
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Xóa
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-4 space-y-3">
+          {/* Time */}
+          <div className="flex items-center gap-3 text-sm">
+            <Clock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <div>
+              <div className="font-medium">{timeRange}</div>
+              <div className="text-xs text-muted-foreground">{dateStr}</div>
+            </div>
+          </div>
+
+          {/* Customer */}
+          <div className="flex items-start gap-3 text-sm">
+            <User className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
+            <div>
+              <div className="font-medium">{event.appointment.customerName}</div>
+              {event.appointment.customerPhone && (
+                <a
+                  href={`tel:${event.appointment.customerPhone}`}
+                  className="text-xs text-primary hover:underline flex items-center gap-1"
+                >
+                  <Phone className="h-3 w-3" />
+                  {event.appointment.customerPhone}
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* Staff */}
+          <div className="flex items-center gap-3 text-sm">
+            <div
+              className="w-4 h-4 rounded-full flex-shrink-0"
+              style={{ backgroundColor: event.color }}
+            />
+            <span>{event.staffName}</span>
+          </div>
+
+          {/* Resource (if any) */}
+          {event.appointment.resourceName && (
+            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              <span className="text-base">📍</span>
+              <span>{event.appointment.resourceName}</span>
+            </div>
+          )}
+        </div>
+
+        <Separator />
+
+        {/* Footer Actions */}
+        <div className="p-3 flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex-1"
+            onClick={onView}
+          >
+            Xem chi tiết
+          </Button>
+          <Button size="sm" className="flex-1" onClick={onEdit}>
+            Chỉnh sửa
+          </Button>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}

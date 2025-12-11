@@ -13,12 +13,21 @@ export { AppointmentsPage } from "./components/appointments-page";
 
 // Calendar Components
 export {
-  AgendaView, CalendarView, DateHeader,
-  DayView, MonthView, TimeGrid, WeekView
+  AgendaView,
+  CalendarView,
+  DateHeader,
+  DayView,
+  EmptyState,
+  MonthView,
+  TimeGrid,
+  WeekView
 } from "./components/calendar";
 
 // Toolbar Components
-export { DateNavigator, ViewSwitcher } from "./components/toolbar";
+export { DateNavigator, FilterBar, ViewSwitcher } from "./components/toolbar";
+
+// Dashboard Components
+export { MetricsCards } from "./components/dashboard";
 
 // Timeline Components
 export {
@@ -28,7 +37,12 @@ export {
 } from "./components/timeline";
 
 // Event Components
-export { EventCard } from "./components/event";
+export { EventCard, EventPopover } from "./components/event";
+
+// Sheet Components
+export {
+  AppointmentForm, AppointmentSheet, ConflictWarning
+} from "./components/sheet";
 
 // DnD Components
 export {
