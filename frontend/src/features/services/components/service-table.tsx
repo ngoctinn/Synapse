@@ -18,6 +18,12 @@ import { Column, DataTable } from "@/shared/ui/custom/data-table"
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state"
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/shared/ui/tooltip"
 import { Plus } from "lucide-react"
 import { useState } from "react"
 import { deleteService } from "../actions"
@@ -126,13 +132,26 @@ export function ServiceTable({
     {
       header: "Trạng thái",
       cell: (service) => (
-        <Badge
-          variant={service.is_active ? "status-active" : "status-inactive"}
-          withIndicator
-          indicatorPulse={service.is_active}
-        >
-          {service.is_active ? "Hoạt động" : "Ẩn"}
-        </Badge>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span>
+                <Badge
+                  variant={service.is_active ? "status-active" : "status-inactive"}
+                  withIndicator
+                  indicatorPulse={service.is_active}
+                >
+                  {service.is_active ? "Hoạt động" : "Ẩn"}
+                </Badge>
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              {service.is_active
+                ? "Dịch vụ đang hiển thị trên app khách hàng"
+                : "Dịch vụ đang ẩn, khách hàng không thể đặt"}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       )
     },
     {
@@ -167,8 +186,8 @@ export function ServiceTable({
 
         selectable
         isSelected={selection.isSelected}
-        onToggleOne={selection.toggleOne}
-        onToggleAll={selection.toggleAll}
+        onToggleOne={(id) => !isPending && selection.toggleOne(id)}
+        onToggleAll={() => !isPending && selection.toggleAll()}
         isAllSelected={selection.isAllSelected}
         isPartiallySelected={selection.isPartiallySelected}
 
@@ -218,7 +237,14 @@ export function ServiceTable({
               Xóa {selection.selectedCount} dịch vụ?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Hành động này không thể hoàn tác. Tất cả dịch vụ đã chọn sẽ bị xóa.
+              {(() => {
+                const selectedItems = services.filter(s => selection.isSelected(s.id))
+                const firstName = selectedItems[0]?.name || "Dịch vụ"
+                if (selection.selectedCount === 1) {
+                  return `"${firstName}" sẽ bị xóa vĩnh viễn. Hành động này không thể hoàn tác.`
+                }
+                return `"${firstName}" và ${selection.selectedCount - 1} dịch vụ khác sẽ bị xóa vĩnh viễn. Hành động này không thể hoàn tác.`
+              })()}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

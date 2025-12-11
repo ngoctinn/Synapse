@@ -60,12 +60,14 @@ import { useEffect, useState } from "react"
 
 
     const handleMinPriceChange = (value: number) => {
-      updateParam("min_price", value > 0 ? value.toString() : null)
+      const corrected = Math.min(value, maxPrice)
+      updateParam("min_price", corrected > 0 ? corrected.toString() : null)
     }
 
 
     const handleMaxPriceChange = (value: number) => {
-      updateParam("max_price", value > 0 ? value.toString() : null)
+      const corrected = Math.max(value, minPrice)
+      updateParam("max_price", corrected > 0 && corrected < 10000000 ? corrected.toString() : null)
     }
 
 
@@ -105,7 +107,7 @@ import { useEffect, useState } from "react"
                 minStepsBetweenThumbs={1}
                 onValueChange={handlePriceRangeChange}
                 onValueCommit={handlePriceRangeCommit}
-                className="py-2"
+                className="py-2 focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
             <div className="flex items-center gap-3">

@@ -39,7 +39,7 @@ interface ServiceFormProps {
 function ServiceBasicInfo() {
   const form = useFormContext()
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300 motion-reduce:animate-none">
       {/* Active Toggle */}
       <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border">
         <div>
@@ -83,6 +83,9 @@ function ServiceBasicInfo() {
                       className="aspect-video w-full h-[200px] object-cover rounded-md"
                     />
                   </FormControl>
+                  <p className="text-[11px] text-muted-foreground mt-1.5">
+                    Khuyến nghị: Tỷ lệ 16:9, tối đa 2MB (JPG, PNG)
+                  </p>
                   <FormMessage />
                 </FormItem>
               )}
@@ -124,7 +127,7 @@ function ServiceBasicInfo() {
                             key={color}
                             type="button"
                             className={cn(
-                              "w-8 h-8 rounded-full border transition-all flex-shrink-0 cursor-pointer",
+                              "w-8 h-8 rounded-full border transition-all flex-shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                               field.value === color
                                 ? "ring-2 ring-primary ring-offset-1 scale-110"
                                 : "hover:scale-110 hover:shadow-sm opacity-70 hover:opacity-100"
@@ -166,7 +169,7 @@ function ServiceBasicInfo() {
 function ServiceTimePriceInfo({ duration, bufferTime }: { duration: number; bufferTime: number }) {
   const form = useFormContext()
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300 motion-reduce:animate-none">
       <div className="grid grid-cols-2 gap-4">
         <FormField
           control={form.control}
@@ -233,8 +236,15 @@ function ServiceTimePriceInfo({ duration, bufferTime }: { duration: number; buff
               <Input
                 type="number"
                 min={0}
-                value={field.value}
-                onChange={(e) => field.onChange(Number(e.target.value))}
+                value={field.value ?? ""}
+                onChange={(e) => {
+                  const val = e.target.valueAsNumber
+                  field.onChange(isNaN(val) ? 0 : val)
+                }}
+                onBlur={(e) => {
+                  // Ensure value is not negative on blur
+                  if (field.value < 0) field.onChange(0)
+                }}
                 endContent={
                   <div className="flex items-center justify-center h-full px-3 text-sm text-muted-foreground font-medium bg-muted/50 border-l">
                     VNĐ
@@ -264,7 +274,7 @@ function ServiceResourcesInfo({
 }) {
   const form = useFormContext()
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300 motion-reduce:animate-none">
       <FormField
         control={form.control}
         name="resource_requirements.room_type_id"
