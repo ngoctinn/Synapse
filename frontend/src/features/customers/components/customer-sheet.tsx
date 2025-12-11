@@ -30,7 +30,7 @@ import {
     SheetTitle
 } from "@/shared/ui/sheet"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
-import { getFormTabsGridCols, SHEET_TABS_LIST_CLASS, SHEET_TABS_TRIGGER_CLASS } from "@/shared/ui/tabs-styles"
+
 import { CustomerForm } from "./customer-form"
 import { CustomerHistory } from "./customer-history"
 
@@ -179,9 +179,9 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
                          <CustomerForm mode={mode} disabled={isPending} technicians={technicians} />
                     ) : (
                         <Tabs defaultValue="info" className="w-full">
-                            <TabsList className={`${SHEET_TABS_LIST_CLASS} ${getFormTabsGridCols(2)}`}>
-                                <TabsTrigger value="info" className={SHEET_TABS_TRIGGER_CLASS}>Thông tin</TabsTrigger>
-                                <TabsTrigger value="history" className={SHEET_TABS_TRIGGER_CLASS}>Lịch sử & Thống kê</TabsTrigger>
+                            <TabsList variant="default" fullWidth gridCols={2} className="mb-6 h-10">
+                                <TabsTrigger value="info" variant="default">Thông tin</TabsTrigger>
+                                <TabsTrigger value="history" variant="default">Lịch sử & Thống kê</TabsTrigger>
                             </TabsList>
                             <TabsContent value="info" className="mt-0 space-y-6">
                                 <CustomerForm mode={mode} disabled={isPending} technicians={technicians} />

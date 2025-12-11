@@ -1,14 +1,14 @@
 import {
-  Bell,
-  Box,
-  Calendar,
-  Home,
-  Layers,
-  Mail,
-  Scissors,
-  Settings,
-  User,
-  Users
+    Bell,
+    Box,
+    Calendar,
+    Home,
+    Layers,
+    Mail,
+    Scissors,
+    Settings,
+    User,
+    Users
 } from "lucide-react"
 
 export type SidebarItem = {
@@ -71,15 +71,5 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     title: "Cài đặt",
     href: "/admin/settings",
     icon: Settings,
-    items: [
-      {
-        title: "Thời gian hoạt động",
-        href: "/admin/settings/operating-hours",
-      },
-      {
-        title: "Thông báo",
-        href: "/admin/settings/notifications",
-      },
-    ],
   },
 ]

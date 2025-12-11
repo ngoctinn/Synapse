@@ -1,14 +1,14 @@
-import { Switch } from "@/shared/ui/switch";
-import { Label } from "@/shared/ui/label";
-import { TimeRangeInput } from "@/shared/ui/custom/time-range-input";
-import { DaySchedule } from "../model/types";
-import { DAY_LABELS } from "../model/mocks";
 import { cn } from "@/shared/lib/utils";
+import { Button } from "@/shared/ui/button";
+import { TimeRangeInput } from "@/shared/ui/custom/time-range-input";
+import { Label } from "@/shared/ui/label";
+import { Switch } from "@/shared/ui/switch";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
 import { AnimatePresence, motion } from "framer-motion";
 import { Clock, Plus } from "lucide-react";
-import { Button } from "@/shared/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
 import { useTimeSlots } from "../hooks/use-time-slots";
+import { DAY_LABELS } from "../model/mocks";
+import { DaySchedule } from "../model/types";
 
 interface DayScheduleRowProps {
   schedule: DaySchedule;
@@ -20,8 +20,8 @@ interface DayScheduleRowProps {
   isPasteTarget?: boolean;
 }
 
-export function DayScheduleRow({ 
-  schedule, 
+export function DayScheduleRow({
+  schedule,
   onChange,
   onCopy,
   onPaste,
@@ -41,20 +41,20 @@ export function DayScheduleRow({
   return (
     <div className={cn(
       "flex flex-col sm:flex-row items-start sm:items-baseline justify-between p-5 rounded-2xl border transition-all duration-300 group relative gap-4 sm:gap-0",
-      schedule.isOpen 
-        ? "bg-card border-border/60 shadow-sm hover:shadow-md hover:border-primary/30" 
+      schedule.isOpen
+        ? "bg-card border-border/60 shadow-sm hover:shadow-md hover:border-primary/30"
         : "bg-muted/20 border-transparent opacity-70 hover:opacity-90",
       isCopying && "ring-2 ring-primary border-primary bg-primary/5 shadow-[0_0_15px_rgba(var(--primary),0.1)]",
-      isPasteTarget && "ring-2 ring-dashed ring-green-500/50 border-green-500/50 bg-green-50/50 cursor-pointer scale-[1.01]"
+      isPasteTarget && "ring-2 ring-dashed ring-success/50 border-success/50 bg-success/5 cursor-pointer scale-[1.01]"
     )}>
       <div className="flex items-center gap-5 w-full sm:w-56">
-        <Switch 
-          checked={schedule.isOpen} 
+        <Switch
+          checked={schedule.isOpen}
           onCheckedChange={handleToggleOpen}
           id={`switch-${schedule.day}`}
           className="data-[state=checked]:bg-primary scale-110"
         />
-        <Label 
+        <Label
           htmlFor={`switch-${schedule.day}`}
           className={cn(
             "font-semibold cursor-pointer text-base capitalize transition-colors select-none",
@@ -68,7 +68,7 @@ export function DayScheduleRow({
       <div className="flex-1 flex flex-col items-end gap-3 overflow-hidden min-h-[44px] w-full">
         <AnimatePresence mode="wait">
           {schedule.isOpen ? (
-            <motion.div 
+            <motion.div
               key="open"
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
@@ -89,7 +89,7 @@ export function DayScheduleRow({
                   />
                 ))}
               </div>
-              
+
               <div className="flex items-center gap-3 mt-1 mr-1">
                  <TooltipProvider>
                    <Tooltip>
@@ -107,7 +107,7 @@ export function DayScheduleRow({
                      <TooltipContent>Thêm khung giờ hoạt động mới</TooltipContent>
                    </Tooltip>
                  </TooltipProvider>
-                
+
                 {/* Copy/Paste Buttons */}
                 {isCopying ? (
                    <Button
@@ -126,7 +126,7 @@ export function DayScheduleRow({
                           variant="outline"
                           size="sm"
                           onClick={onPaste}
-                          className="text-xs font-medium text-green-600 border-green-200 hover:bg-green-50 hover:text-green-700 h-8 px-3 rounded-full animate-pulse"
+                          className="text-xs font-medium text-success border-success/30 hover:bg-success/10 hover:text-success h-8 px-3 rounded-full animate-pulse"
                         >
                           📋 Dán cấu hình
                         </Button>
@@ -155,7 +155,7 @@ export function DayScheduleRow({
             </motion.div>
           ) : (
             <div className="flex items-center justify-between w-full h-full">
-               <motion.div 
+               <motion.div
                 key="closed"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -171,7 +171,7 @@ export function DayScheduleRow({
                   <span className="text-xs opacity-70">Không nhận lịch hẹn vào ngày này</span>
                 </div>
               </motion.div>
-               
+
                {/* Copy/Paste Buttons for Closed State */}
                <div className="ml-4 flex items-center">
                 {isCopying ? (
@@ -191,7 +191,7 @@ export function DayScheduleRow({
                           variant="outline"
                           size="sm"
                           onClick={onPaste}
-                          className="text-xs font-medium text-green-600 border-green-200 hover:bg-green-50 hover:text-green-700 h-8 px-3 rounded-full animate-pulse"
+                          className="text-xs font-medium text-success border-success/30 hover:bg-success/10 hover:text-success h-8 px-3 rounded-full animate-pulse"
                         >
                           📋 Dán
                         </Button>

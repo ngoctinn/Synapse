@@ -18,7 +18,7 @@ import {
     SelectValue,
 } from "@/shared/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
-import { FORM_TABS_LIST_CLASS, FORM_TABS_TRIGGER_CLASS, getFormTabsGridCols } from "@/shared/ui/tabs-styles"
+
 import { Textarea } from "@/shared/ui/textarea"
 import { Activity, AlertCircle, Crown, Heart, Mail, MapPin, Phone, Star, User } from "lucide-react"
 import { useFormContext } from "react-hook-form"
@@ -54,16 +54,16 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
        )}
 
       <Tabs defaultValue="general" className="w-full">
-        <TabsList className={`${FORM_TABS_LIST_CLASS} ${getFormTabsGridCols(3)}`}>
-          <TabsTrigger value="general" className={`flex items-center gap-2 ${FORM_TABS_TRIGGER_CLASS}`}>
+        <TabsList variant="form" size="lg" fullWidth gridCols={3}>
+          <TabsTrigger value="general" variant="form" className="flex items-center gap-2">
             <User className="h-4 w-4" />
             Hồ sơ
           </TabsTrigger>
-          <TabsTrigger value="health" className={`flex items-center gap-2 ${FORM_TABS_TRIGGER_CLASS}`}>
+          <TabsTrigger value="health" variant="form" className="flex items-center gap-2">
             <Activity className="h-4 w-4" />
             Sức khỏe
           </TabsTrigger>
-          <TabsTrigger value="membership" className={`flex items-center gap-2 ${FORM_TABS_TRIGGER_CLASS}`}>
+          <TabsTrigger value="membership" variant="form" className="flex items-center gap-2">
             <Crown className="h-4 w-4" />
             Thành viên
           </TabsTrigger>
