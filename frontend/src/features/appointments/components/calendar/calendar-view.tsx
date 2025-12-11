@@ -6,16 +6,17 @@
  * Switch giữa: Day, Week, Month, Agenda, Timeline
  */
 
-
 import { cn } from "@/shared/lib/utils";
 
 import type {
-    CalendarEvent,
-    CalendarViewType,
-    DateRange,
-    DensityMode,
+  CalendarEvent,
+  CalendarViewType,
+  DateRange,
+  DensityMode,
+  TimelineResource,
 } from "../../types";
 
+import { ResourceTimeline } from "../timeline";
 import { AgendaView } from "./agenda-view";
 import { DayView } from "./day-view";
 import { MonthView } from "./month-view";
@@ -36,6 +37,10 @@ interface CalendarViewProps {
   events: CalendarEvent[];
   /** Chế độ density */
   densityMode?: DensityMode;
+  /** Danh sách nhân viên (cho Timeline) */
+  staffList?: TimelineResource[];
+  /** Danh sách phòng (cho Timeline) */
+  roomList?: TimelineResource[];
   /** Callback khi click event */
   onEventClick?: (event: CalendarEvent) => void;
   /** Callback khi click slot trống */
@@ -57,6 +62,8 @@ export function CalendarView({
   dateRange,
   events,
   densityMode = "comfortable",
+  staffList = [],
+  roomList = [],
   onEventClick,
   onSlotClick,
   onDayClick,
@@ -124,33 +131,15 @@ export function CalendarView({
       );
 
     case "timeline":
-      // Timeline sẽ được implement ở Giai đoạn 3
       return (
-        <div className={cn("flex items-center justify-center h-full", className)}>
-          <div className="text-center space-y-3 max-w-sm p-6">
-            <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-              <svg
-                className="w-7 h-7 text-primary"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                />
-              </svg>
-            </div>
-            <div>
-              <h3 className="font-semibold">Timeline View</h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                Xem lịch theo nhân viên và phòng. Đang phát triển...
-              </p>
-            </div>
-          </div>
-        </div>
+        <ResourceTimeline
+          date={date}
+          events={events}
+          staffList={staffList}
+          roomList={roomList}
+          onEventClick={onEventClick}
+          className={className}
+        />
       );
 
     default:

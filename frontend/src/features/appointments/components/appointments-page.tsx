@@ -12,16 +12,16 @@ import { useEffect, useState, useTransition } from "react";
 
 import { cn } from "@/shared/lib/utils";
 import {
-    Button,
-    Separator,
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
+  Button,
+  Separator,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
 } from "@/shared/ui";
 
-import { getAppointmentMetrics, getAppointments } from "../actions";
+import { getAppointmentMetrics, getAppointments, getResourceList, getStaffList } from "../actions";
 import { useCalendarState } from "../hooks/use-calendar-state";
-import type { AppointmentMetrics, CalendarEvent } from "../types";
+import type { AppointmentMetrics, CalendarEvent, TimelineResource } from "../types";
 import { CalendarView } from "./calendar";
 import { DateNavigator, ViewSwitcher } from "./toolbar";
 
@@ -48,14 +48,18 @@ export function AppointmentsPage() {
   // Data state
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [metrics, setMetrics] = useState<AppointmentMetrics | null>(null);
+  const [staffList, setStaffList] = useState<TimelineResource[]>([]);
+  const [roomList, setRoomList] = useState<TimelineResource[]>([]);
   const [isPending, startTransition] = useTransition();
 
   // Fetch data when date range changes
   useEffect(() => {
     startTransition(async () => {
-      const [eventsResult, metricsResult] = await Promise.all([
+      const [eventsResult, metricsResult, staffResult, roomResult] = await Promise.all([
         getAppointments(dateRange),
         getAppointmentMetrics(date),
+        getStaffList(),
+        getResourceList(),
       ]);
 
       if (eventsResult.status === "success" && eventsResult.data) {
@@ -64,6 +68,14 @@ export function AppointmentsPage() {
 
       if (metricsResult.status === "success" && metricsResult.data) {
         setMetrics(metricsResult.data);
+      }
+
+      if (staffResult.status === "success" && staffResult.data) {
+        setStaffList(staffResult.data);
+      }
+
+      if (roomResult.status === "success" && roomResult.data) {
+        setRoomList(roomResult.data);
       }
     });
   }, [dateRange, date]);
@@ -219,6 +231,8 @@ export function AppointmentsPage() {
             dateRange={dateRange}
             events={events}
             densityMode={densityMode}
+            staffList={staffList}
+            roomList={roomList}
             onEventClick={handleEventClick}
             isLoading={isPending && events.length === 0}
           />

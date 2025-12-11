@@ -20,6 +20,13 @@ export {
 // Toolbar Components
 export { DateNavigator, ViewSwitcher } from "./components/toolbar";
 
+// Timeline Components
+export {
+  ResourceTimeline,
+  TimelineHeader,
+  TimelineRow
+} from "./components/timeline";
+
 // Event Components
 export { EventCard } from "./components/event";
 

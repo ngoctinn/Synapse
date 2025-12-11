@@ -376,25 +376,25 @@ export function CalendarDnDContext({ children, onEventMove }: CalendarDnDContext
 | 1.4 Server Actions | ✅ Hoàn thành | Mock CRUD + Conflict detection |
 | 1.5 Basic Layout | ✅ Hoàn thành | ViewSwitcher, MetricCards placeholders |
 
-### Giai đoạn 2: Calendar Views
+### Giai đoạn 2: Calendar Views ✅
 | Task | Status | Notes |
 |------|--------|-------|
-| 2.1 useCalendarState | ⏳ Chưa bắt đầu | |
-| 2.2 Navigator & Switcher | ⏳ Chưa bắt đầu | |
-| 2.3 Time Grid | ⏳ Chưa bắt đầu | |
-| 2.4 Day View | ⏳ Chưa bắt đầu | |
-| 2.5 Week View | ⏳ Chưa bắt đầu | |
-| 2.6 Month View | ⏳ Chưa bắt đầu | |
-| 2.7 Agenda View | ⏳ Chưa bắt đầu | |
-| 2.8 View Router | ⏳ Chưa bắt đầu | |
+| 2.1 useCalendarState | ✅ Hoàn thành | State, dateRange, navigation |
+| 2.2 Navigator & Switcher | ✅ Hoàn thành | DateNavigator, ViewSwitcher |
+| 2.3 Time Grid | ✅ Hoàn thành | Time labels, current time indicator |
+| 2.4 Day View | ✅ Hoàn thành | Single column, overlap handling |
+| 2.5 Week View | ✅ Hoàn thành | 7 columns, responsive |
+| 2.6 Month View | ✅ Hoàn thành | Grid, +X more popover |
+| 2.7 Agenda View | ✅ Hoàn thành | List view, sticky headers |
+| 2.8 View Router | ✅ Hoàn thành | CalendarView switch + EventCard |
 
-### Giai đoạn 3: Timeline
+### Giai đoạn 3: Timeline ✅
 | Task | Status | Notes |
 |------|--------|-------|
-| 3.1 Timeline Layout | ⏳ Chưa bắt đầu | |
-| 3.2 Timeline Row | ⏳ Chưa bắt đầu | |
-| 3.3 Zoom Control | ⏳ Chưa bắt đầu | |
-| 3.4 Integration | ⏳ Chưa bắt đầu | |
+| 3.1 Timeline Layout | ✅ Hoàn thành | resource-timeline.tsx, timeline-header.tsx |
+| 3.2 Timeline Row | ✅ Hoàn thành | timeline-row.tsx, avatar, events |
+| 3.3 Zoom Control | ✅ Hoàn thành | Tích hợp trong ResourceTimeline |
+| 3.4 Integration | ✅ Hoàn thành | CalendarView router, staffList/roomList |
 
 ### Giai đoạn 4: Drag & Drop
 | Task | Status | Notes |
