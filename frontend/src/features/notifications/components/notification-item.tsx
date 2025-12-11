@@ -4,10 +4,10 @@ import { cn } from "@/shared/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 import {
-    AlertCircle,
-    Calendar,
-    Info,
-    MessageSquare
+  AlertCircle,
+  Calendar,
+  Info,
+  MessageSquare
 } from "lucide-react";
 import { Notification } from "../model/types";
 
@@ -31,8 +31,8 @@ export function NotificationItem({ notification, onClick }: NotificationItemProp
     <div
       onClick={() => onClick?.(notification.id)}
       className={cn(
-        "flex items-start gap-4 p-4 border-b last:border-0 hover:bg-slate-50 transition-colors cursor-pointer group relative",
-        !notification.read && "bg-blue-50/40 hover:bg-blue-50/60"
+        "flex items-start gap-4 p-4 border-b last:border-0 hover:bg-muted/50 transition-colors cursor-pointer group relative",
+        !notification.read && "bg-alert-info/40 hover:bg-alert-info/60"
       )}
     >
       <div className={cn("mt-1 p-2 rounded-full shrink-0", iconColor)}>
@@ -41,11 +41,11 @@ export function NotificationItem({ notification, onClick }: NotificationItemProp
 
       <div className="flex-1 space-y-1">
         <div className="flex items-center justify-between">
-            <p className={cn("text-sm font-medium leading-none", !notification.read && "text-blue-700")}>
+            <p className={cn("text-sm font-medium leading-none", !notification.read && "text-alert-info-foreground")}>
             {notification.title}
             </p>
             {!notification.read && (
-                <span className="w-2 h-2 rounded-full bg-blue-500 absolute top-4 right-4" />
+                <span className="w-2 h-2 rounded-full bg-info absolute top-4 right-4" />
             )}
         </div>
 
@@ -53,7 +53,7 @@ export function NotificationItem({ notification, onClick }: NotificationItemProp
           {notification.description}
         </p>
 
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-muted-foreground">
           {formatDistanceToNow(new Date(notification.createdAt), {
             addSuffix: true,
             locale: vi
@@ -76,10 +76,10 @@ function getIcon(type: Notification['type']) {
 
 function getIconColor(type: Notification['type']) {
   switch (type) {
-    case 'booking': return "bg-blue-100 text-blue-600";
-    case 'alert': return "bg-red-100 text-red-600";
-    case 'system': return "bg-slate-100 text-slate-600";
-    case 'staff': return "bg-purple-100 text-purple-600";
-    default: return "bg-slate-100 text-slate-600";
+    case 'booking': return "bg-alert-info text-alert-info-foreground";
+    case 'alert': return "bg-destructive/10 text-destructive";
+    case 'system': return "bg-muted text-muted-foreground";
+    case 'staff': return "bg-secondary text-secondary-foreground";
+    default: return "bg-muted text-muted-foreground";
   }
 }

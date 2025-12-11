@@ -1,32 +1,32 @@
-import { PartyPopper, Wrench, Settings2 } from "lucide-react";
+import { PartyPopper, Settings2, Wrench } from "lucide-react";
 import { ExceptionDate } from "../model/types";
 
 export type EventStatus = 'holiday' | 'maintenance' | 'custom' | 'open';
 
 export const EVENT_TYPES = [
-    { 
-        id: 'holiday', 
-        label: 'Nghỉ lễ', 
-        icon: PartyPopper, 
-        color: 'text-destructive', 
-        bg: 'bg-destructive/10', 
-        border: 'border-destructive/20' 
+    {
+        id: 'holiday',
+        label: 'Nghỉ lễ',
+        icon: PartyPopper,
+        color: 'text-destructive',
+        bg: 'bg-destructive/10',
+        border: 'border-destructive/20'
     },
-    { 
-        id: 'maintenance', 
-        label: 'Bảo trì', 
-        icon: Wrench, 
-        color: 'text-amber-600', 
-        bg: 'bg-amber-500/10', 
-        border: 'border-amber-500/20' 
+    {
+        id: 'maintenance',
+        label: 'Bảo trì',
+        icon: Wrench,
+        color: 'text-alert-warning-foreground',
+        bg: 'bg-alert-warning',
+        border: 'border-alert-warning-border'
     },
-    { 
-        id: 'custom', 
-        label: 'Tùy chỉnh', 
-        icon: Settings2, 
-        color: 'text-primary', 
-        bg: 'bg-primary/10', 
-        border: 'border-primary/20' 
+    {
+        id: 'custom',
+        label: 'Tùy chỉnh',
+        icon: Settings2,
+        color: 'text-primary',
+        bg: 'bg-primary/10',
+        border: 'border-primary/20'
     }
 ] as const;
 
@@ -40,22 +40,22 @@ export const getStatusColor = (type: string, isClosed: boolean) => {
 export const getStatusStyles = (type: string, isClosed: boolean) => {
   // 1. Determine Background based on Type
   let bgClass = "bg-muted/30"; // Default
-  if (type === 'holiday') bgClass = "bg-red-100 dark:bg-red-900/30";
-  else if (type === 'maintenance') bgClass = "bg-amber-100 dark:bg-amber-900/30";
-  else if (type === 'custom') bgClass = "bg-blue-100 dark:bg-blue-900/30";
+  if (type === 'holiday') bgClass = "bg-destructive/10 dark:bg-destructive/20";
+  else if (type === 'maintenance') bgClass = "bg-alert-warning dark:bg-alert-warning";
+  else if (type === 'custom') bgClass = "bg-alert-info dark:bg-alert-info";
 
   // 2. Determine Border & Text based on Status
   let borderClass = "";
   let textClass = "";
 
   if (isClosed) {
-      // Closed: Red Border & Text
-      borderClass = "border border-rose-500/50";
-      textClass = "text-rose-700 dark:text-rose-400";
+      // Closed: Destructive (Red) Border & Text
+      borderClass = "border border-destructive/50";
+      textClass = "text-destructive dark:text-destructive";
   } else {
-      // Open: Green Border & Text
-      borderClass = "border border-emerald-500/50";
-      textClass = "text-emerald-700 dark:text-emerald-400";
+      // Open: Success (Green) Border & Text
+      borderClass = "border border-alert-success-border";
+      textClass = "text-alert-success-foreground dark:text-alert-success-foreground";
   }
 
   // Hover Effect Base

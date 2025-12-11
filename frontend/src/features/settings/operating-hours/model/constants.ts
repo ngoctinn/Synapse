@@ -1,4 +1,4 @@
-import { PartyPopper, Wrench, Settings2 } from "lucide-react";
+import { PartyPopper, Settings2, Wrench } from "lucide-react";
 import { ExceptionDate } from "./types";
 
 export const EXCEPTION_TYPES: {
@@ -9,29 +9,29 @@ export const EXCEPTION_TYPES: {
   bg: string;
   border: string;
 }[] = [
-  { 
-    id: 'holiday', 
-    label: 'Ngày lễ', 
-    icon: PartyPopper, 
-    color: 'text-destructive', 
-    bg: 'bg-destructive/10', 
-    border: 'border-destructive/20' 
+  {
+    id: 'holiday',
+    label: 'Ngày lễ',
+    icon: PartyPopper,
+    color: 'text-destructive',
+    bg: 'bg-destructive/10',
+    border: 'border-destructive/20'
   },
-  { 
-    id: 'maintenance', 
-    label: 'Bảo trì', 
-    icon: Wrench, 
-    color: 'text-amber-600', 
-    bg: 'bg-amber-500/10', 
-    border: 'border-amber-500/20' 
+  {
+    id: 'maintenance',
+    label: 'Bảo trì',
+    icon: Wrench,
+    color: 'text-alert-warning-foreground',
+    bg: 'bg-alert-warning',
+    border: 'border-alert-warning-border'
   },
-  { 
-    id: 'custom', 
-    label: 'Khác', 
-    icon: Settings2, 
-    color: 'text-primary', 
-    bg: 'bg-primary/10', 
-    border: 'border-primary/20' 
+  {
+    id: 'custom',
+    label: 'Khác',
+    icon: Settings2,
+    color: 'text-primary',
+    bg: 'bg-primary/10',
+    border: 'border-primary/20'
   }
 ];
 

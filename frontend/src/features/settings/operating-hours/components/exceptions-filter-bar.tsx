@@ -33,19 +33,19 @@ const FILTER_TYPES = [
     id: 'holiday',
     label: 'Ngày lễ',
     icon: PartyPopper,
-    activeClass: "data-[state=on]:bg-red-100 dark:data-[state=on]:bg-red-900/30 data-[state=on]:text-red-900 dark:data-[state=on]:text-red-200 data-[state=on]:border-red-200 dark:data-[state=on]:border-red-800"
+    activeClass: "data-[state=on]:bg-destructive/10 dark:data-[state=on]:bg-destructive/20 data-[state=on]:text-destructive dark:data-[state=on]:text-destructive data-[state=on]:border-destructive/30 dark:data-[state=on]:border-destructive/30"
   },
   {
     id: 'custom',
     label: 'Tùy chỉnh',
     icon: Settings2,
-    activeClass: "data-[state=on]:bg-blue-100 dark:data-[state=on]:bg-blue-900/30 data-[state=on]:text-blue-900 dark:data-[state=on]:text-blue-200 data-[state=on]:border-blue-200 dark:data-[state=on]:border-blue-800"
+    activeClass: "data-[state=on]:bg-alert-info dark:data-[state=on]:bg-alert-info data-[state=on]:text-alert-info-foreground dark:data-[state=on]:text-alert-info-foreground data-[state=on]:border-alert-info-border dark:data-[state=on]:border-alert-info-border"
   },
   {
     id: 'maintenance',
     label: 'Bảo trì',
     icon: Wrench,
-    activeClass: "data-[state=on]:bg-amber-100 dark:data-[state=on]:bg-amber-900/30 data-[state=on]:text-amber-900 dark:data-[state=on]:text-amber-200 data-[state=on]:border-amber-200 dark:data-[state=on]:border-amber-800"
+    activeClass: "data-[state=on]:bg-alert-warning dark:data-[state=on]:bg-alert-warning data-[state=on]:text-alert-warning-foreground dark:data-[state=on]:text-alert-warning-foreground data-[state=on]:border-alert-warning-border dark:data-[state=on]:border-alert-warning-border"
   }
 ];
 
@@ -135,17 +135,17 @@ export function ExceptionsFilterBar({
                       <ToggleGroupItem
                         value="open"
                         size="sm"
-                        className="flex-1 data-[state=on]:bg-emerald-100 dark:data-[state=on]:bg-emerald-900/30 data-[state=on]:text-emerald-700 dark:data-[state=on]:text-emerald-400 data-[state=on]:border-emerald-200 border border-transparent"
+                        className="flex-1 data-[state=on]:bg-alert-success dark:data-[state=on]:bg-alert-success data-[state=on]:text-alert-success-foreground dark:data-[state=on]:text-alert-success-foreground data-[state=on]:border-alert-success-border border border-transparent"
                       >
-                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2" />
+                         <div className="w-1.5 h-1.5 rounded-full bg-alert-success-foreground mr-2" />
                          Mở cửa
                       </ToggleGroupItem>
                       <ToggleGroupItem
                         value="closed"
                         size="sm"
-                        className="flex-1 data-[state=on]:bg-rose-100 dark:data-[state=on]:bg-rose-900/30 data-[state=on]:text-rose-700 dark:data-[state=on]:text-rose-400 data-[state=on]:border-rose-200 border border-transparent"
+                        className="flex-1 data-[state=on]:bg-destructive/10 dark:data-[state=on]:bg-destructive/20 data-[state=on]:text-destructive dark:data-[state=on]:text-destructive data-[state=on]:border-destructive/30 border border-transparent"
                       >
-                         <div className="w-1.5 h-1.5 rounded-full bg-rose-500 mr-2" />
+                         <div className="w-1.5 h-1.5 rounded-full bg-destructive mr-2" />
                          Đóng cửa
                       </ToggleGroupItem>
                   </ToggleGroup>

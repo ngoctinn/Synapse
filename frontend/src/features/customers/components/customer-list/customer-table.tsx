@@ -3,14 +3,14 @@
 import { useTableParams, useTableSelection } from "@/shared/hooks"
 import { cn } from "@/shared/lib/utils"
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
 } from "@/shared/ui/alert-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
@@ -21,10 +21,10 @@ import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar"
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
 } from "@/shared/ui/tooltip"
 import { Activity, AlertCircle } from "lucide-react"
 import { useState, useTransition } from "react"
@@ -44,9 +44,9 @@ interface CustomerTableProps {
 }
 
 const TIER_STYLES: Record<string, string> = {
-    SILVER: "bg-gradient-to-r from-slate-100 to-slate-200 text-slate-700 border-slate-200",
-    GOLD: "bg-gradient-to-r from-amber-100 to-amber-200 text-amber-700 border-amber-200",
-    PLATINUM: "bg-gradient-to-r from-slate-700 to-slate-900 text-white border-slate-700",
+    SILVER: "bg-gradient-to-r from-muted to-muted/80 text-muted-foreground border-border",
+    GOLD: "bg-gradient-to-r from-accent to-accent/80 text-accent-foreground border-accent",
+    PLATINUM: "bg-gradient-to-r from-card-foreground to-card-foreground/90 text-card border-card-foreground",
 }
 
 export function CustomerTable({
@@ -136,10 +136,10 @@ export function CustomerTable({
                      <TooltipProvider>
                      <Tooltip>
                          <TooltipTrigger>
-                            <AlertCircle className="h-4 w-4 text-red-500" />
+                            <AlertCircle className="h-4 w-4 text-destructive" />
                          </TooltipTrigger>
                          <TooltipContent>
-                             <p className="font-semibold text-red-500">Dị ứng:</p>
+                             <p className="font-semibold text-destructive">Dị ứng:</p>
                              <p>{c.allergies}</p>
                          </TooltipContent>
                      </Tooltip>
@@ -149,10 +149,10 @@ export function CustomerTable({
                      <TooltipProvider>
                      <Tooltip>
                          <TooltipTrigger>
-                            <Activity className="h-4 w-4 text-blue-500" />
+                            <Activity className="h-4 w-4 text-info" />
                          </TooltipTrigger>
                          <TooltipContent>
-                             <p className="font-semibold text-blue-500">Ghi chú y tế:</p>
+                             <p className="font-semibold text-info">Ghi chú y tế:</p>
                              <p>{c.medical_notes}</p>
                          </TooltipContent>
                      </Tooltip>

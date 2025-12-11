@@ -49,11 +49,11 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
             <User className="h-4 w-4" />
             Hồ sơ
           </TabsTrigger>
-          <TabsTrigger value="health" className="flex items-center gap-2 data-[state=active]:text-red-600 data-[state=active]:bg-red-50">
+          <TabsTrigger value="health" className="flex items-center gap-2 data-[state=active]:text-destructive data-[state=active]:bg-destructive/10">
             <Activity className="h-4 w-4" />
             Sức khỏe
           </TabsTrigger>
-          <TabsTrigger value="membership" className="flex items-center gap-2 data-[state=active]:text-amber-600 data-[state=active]:bg-amber-50">
+          <TabsTrigger value="membership" className="flex items-center gap-2 data-[state=active]:text-accent-foreground data-[state=active]:bg-accent">
             <Crown className="h-4 w-4" />
             Thành viên
           </TabsTrigger>
@@ -96,7 +96,7 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                 render={({ field }) => (
                 <FormItem>
                     <FormLabel className="text-foreground/80 font-normal">
-                        Số điện thoại <span className="text-red-500 ml-0.5">*</span>
+                        Số điện thoại <span className="text-destructive ml-0.5">*</span>
                     </FormLabel>
                     <FormControl>
                     <Input
@@ -119,7 +119,7 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                 render={({ field }) => (
                     <FormItem>
                     <FormLabel className="text-foreground/80 font-normal">
-                        Họ và tên <span className="text-red-500 ml-0.5">*</span>
+                        Họ và tên <span className="text-destructive ml-0.5">*</span>
                     </FormLabel>
                     <FormControl>
                         <Input
@@ -233,13 +233,13 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
 
         {/* TAB 2: HEALTH */}
         <TabsContent value="health" className="space-y-6 animate-in fade-in-50 duration-300">
-           <div className="bg-red-50/50 border border-red-100 rounded-xl p-4 flex gap-4">
-              <div className="p-2 bg-red-100 rounded-full h-fit text-red-600">
+           <div className="bg-destructive/5 border border-destructive/20 rounded-xl p-4 flex gap-4">
+              <div className="p-2 bg-destructive/10 rounded-full h-fit text-destructive">
                 <AlertCircle className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-red-900">Lưu ý Sức khỏe</h4>
-                <p className="text-xs text-red-700 mt-1">
+                <h4 className="text-sm font-semibold text-destructive">Lưu ý Sức khỏe</h4>
+                <p className="text-xs text-destructive/80 mt-1">
                   Thông tin này rất quan trọng để đảm bảo an toàn cho khách hàng trong quá trình sử dụng dịch vụ.
                   Vui lòng kiểm tra kỹ tiền sử dị ứng.
                 </p>
@@ -251,14 +251,14 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                 name="allergies"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-foreground/80 font-normal flex items-center gap-2 text-red-600 font-semibold">
+                    <FormLabel className="text-destructive font-semibold flex items-center gap-2">
                         <AlertCircle className="w-4 h-4" />
                         Tiền sử dị ứng
                     </FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Liệt kê: Hải sản, Phấn hoa, Thuốc kháng sinh..."
-                        className="resize-none min-h-[100px] border-red-200 focus:border-red-400 focus:ring-red-100"
+                        className="resize-none min-h-[100px] border-destructive/30 focus:border-destructive focus:ring-destructive/20"
                         {...field}
                       />
                     </FormControl>
@@ -273,7 +273,7 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
             render={({ field }) => (
                 <FormItem>
                 <FormLabel className="text-foreground/80 font-normal flex items-center gap-2">
-                    <Activity className="w-4 h-4 text-blue-500" />
+                    <Activity className="w-4 h-4 text-info" />
                     Ghi chú y tế & Thai sản
                 </FormLabel>
                 <FormControl>
@@ -291,13 +291,13 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
 
         {/* TAB 3: MEMBERSHIP & POINTS */}
         <TabsContent value="membership" className="space-y-6 animate-in fade-in-50 duration-300">
-             <div className="bg-amber-50/50 border border-amber-100 rounded-xl p-4 flex gap-4">
-                <div className="p-2 bg-amber-100 rounded-full h-fit text-amber-600">
+             <div className="bg-accent border border-accent-foreground/20 rounded-xl p-4 flex gap-4">
+                <div className="p-2 bg-accent-foreground/10 rounded-full h-fit text-accent-foreground">
                   <Crown className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold text-amber-900">Hạng thành viên & Tích lũy</h4>
-                  <p className="text-xs text-amber-700 mt-1">
+                  <h4 className="text-sm font-semibold text-accent-foreground">Hạng thành viên & Tích lũy</h4>
+                  <p className="text-xs text-accent-foreground/80 mt-1">
                     Quản lý hạng thẻ và điểm thưởng của khách hàng.
                   </p>
                 </div>
@@ -315,7 +315,7 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                         defaultValue={field.value || "SILVER"}
                         disabled={mode === "create"} // Disable on create if needed
                       >
-                        <SelectTrigger className="bg-background h-10" startContent={<Crown size={18} className="text-amber-500"/>}>
+                        <SelectTrigger className="bg-background h-10" startContent={<Crown size={18} className="text-accent-foreground"/>}>
                           <SelectValue placeholder="Chọn hạng thẻ" />
                         </SelectTrigger>
                         <SelectContent>
@@ -338,7 +338,7 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                         <FormLabel className="text-foreground/80 font-normal">Điểm tích lũy</FormLabel>
                         <FormControl>
                             <Input
-                            startContent={<Star size={18} className="text-yellow-500" />}
+                            startContent={<Star size={18} className="text-accent-foreground" />}
                             type="number"
                             min="0"
                             placeholder="0"
@@ -362,7 +362,7 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
                         onValueChange={field.onChange}
                         defaultValue={field.value || undefined}
                       >
-                        <SelectTrigger className="bg-background h-10" startContent={<Heart size={18} className="text-rose-400"/>}>
+                        <SelectTrigger className="bg-background h-10" startContent={<Heart size={18} className="text-destructive/70"/>}>
                           <SelectValue placeholder="Chọn nhân viên yêu thích" />
                         </SelectTrigger>
                         <SelectContent>

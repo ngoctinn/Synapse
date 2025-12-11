@@ -1,8 +1,8 @@
 "use client";
 
-import { Bell } from "lucide-react";
-import { Button, ButtonProps } from "@/shared/ui/button";
 import { cn } from "@/shared/lib/utils";
+import { Button, ButtonProps } from "@/shared/ui/button";
+import { Bell } from "lucide-react";
 import React from "react";
 
 interface NotificationBellProps extends ButtonProps {
@@ -17,7 +17,7 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Notification
         variant="ghost"
         size="icon"
         className={cn(
-            "relative rounded-full w-9 h-9 hover:bg-slate-100 text-slate-600 transition-transform hover:scale-105",
+            "relative rounded-full w-9 h-9 hover:bg-muted text-muted-foreground transition-transform hover:scale-105",
             className
         )}
         {...props}
@@ -25,7 +25,7 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Notification
         <Bell className="w-5 h-5" />
         {unreadCount > 0 && (
           <>
-              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white animate-pulse" />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-destructive rounded-full border border-white animate-pulse" />
               <span className="sr-only">{unreadCount} thông báo mới</span>
           </>
         )}
