@@ -51,6 +51,7 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
 
 
   const form = useForm<CustomerFormValues | CustomerUpdateFormValues>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(schema) as any,
     defaultValues: {
       full_name: "",
@@ -86,6 +87,7 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
               address: customer.address || "",
               allergies: customer.allergies || "",
               medical_notes: customer.medical_notes || ""
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } as any)
       } else {
            form.reset({
@@ -102,6 +104,7 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
     }
   }, [open, mode, customer, form])
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = (data: any) => {
     const formData = new FormData()
     formData.append("form_mode", mode)

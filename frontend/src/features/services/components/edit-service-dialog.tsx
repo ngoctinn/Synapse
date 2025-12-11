@@ -23,7 +23,7 @@ export function EditServiceDialog({
 }: EditServiceDialogProps) {
   return (
     <ServiceSheet
-      mode="edit"
+      mode="update"
       initialData={service}
       open={open}
       onOpenChange={onOpenChange}

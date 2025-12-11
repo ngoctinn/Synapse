@@ -44,14 +44,17 @@ export function ForgotPasswordForm() {
   useEffect(() => {
     if (state?.message) {
       if (state.success) {
-        showToast.success("Đã gửi yêu cầu", state.message);
-        setShowCheckEmailDialog(true);
-        form.reset();
+        if (!showCheckEmailDialog) {
+            showToast.success("Đã gửi yêu cầu", state.message);
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setShowCheckEmailDialog(true);
+            form.reset();
+        }
       } else {
         showToast.error("Gửi yêu cầu thất bại", state.message);
       }
     }
-  }, [state, form]);
+  }, [state, form, showCheckEmailDialog]);
 
 
   const onSubmit = (values: ForgotPasswordInput) => {

@@ -193,7 +193,7 @@ export function TagInput({
               <CommandEmpty>
                 {inputValue.trim() ? (
                     <div className="p-2 cursor-pointer hover:bg-slate-100" onClick={handleCreateNew}>
-                        <span className="text-sm text-muted-foreground">Tạo mới:</span> <span className="font-medium text-blue-600">"{inputValue}"</span>
+                        <span className="text-sm text-muted-foreground">Tạo mới:</span> <span className="font-medium text-blue-600">&quot;{inputValue}&quot;</span>
                     </div>
                 ) : "Không tìm thấy kết quả."}
               </CommandEmpty>

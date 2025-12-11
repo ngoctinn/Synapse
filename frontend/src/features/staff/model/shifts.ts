@@ -1,4 +1,4 @@
-import { Shift } from "../types";
+import { Shift } from "./types";
 
 export const MOCK_SHIFTS: Shift[] = [
   {

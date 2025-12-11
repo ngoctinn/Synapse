@@ -11,9 +11,9 @@ import { format, isSameDay } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
 import { Ban, CheckCircle2, Clock, FileText, Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTimeSlots } from "../hooks/use-time-slots";
 import { ExceptionDate } from "../model/types";
 
-import { useTimeSlots } from "../hooks/use-time-slots";
 import { DEFAULT_BUSINESS_HOURS, EXCEPTION_TYPES } from "../model/constants";
 
 interface ExceptionFormProps {
@@ -49,22 +49,34 @@ export function ExceptionForm({
   const [tempDate, setTempDate] = useState<Date | undefined>(undefined);
 
   // Load initial data
+  // Auto-fill slots when switching to "Open" - MOVED to Switch onChange
+  // useEffect(() => {
+  //    if (!formData.isClosed && (!formData.modifiedHours || formData.modifiedHours.length === 0)) {
+  //        setFormData(prev => ({ ...prev, modifiedHours: [...DEFAULT_BUSINESS_HOURS] }));
+  //    }
+  // }, [formData.isClosed]);
+
+  // Load initial data with check
   useEffect(() => {
     if (initialData) {
-      setFormData({
+      // JSON stringify is a cheap way to check for deep equality for small objects
+      const newData = {
         reason: initialData.reason || '',
         type: initialData.type || 'holiday',
         isClosed: initialData.isClosed ?? true,
         modifiedHours: initialData.modifiedHours || []
+      };
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setFormData(prev => {
+          if (JSON.stringify(prev) !== JSON.stringify(newData)) {
+              return newData;
+          }
+          return prev;
       });
     }
   }, [initialData]);
 
-  // --- Date Logic (Hybrid: Range + Disjoint) ---
-
-
   // --- Date Logic (Multiple Selection) ---
-
   const handleAddTempDate = () => {
       if (!tempDate) return;
 
@@ -80,12 +92,9 @@ export function ExceptionForm({
       setTempDate(undefined);
   };
 
-
   const handleRemoveDate = (dateToRemove: Date) => {
       onDatesChange(selectedDates.filter(d => !isSameDay(d, dateToRemove)));
   };
-
-  // --- Form Logic ---
 
   // --- Form Auto-Fill Logic ---
   const {
@@ -97,13 +106,6 @@ export function ExceptionForm({
     formData.modifiedHours,
     (newSlots) => setFormData(prev => ({ ...prev, modifiedHours: newSlots }))
   );
-
-  // Auto-fill slots when switching to "Open"
-  useEffect(() => {
-     if (!formData.isClosed && (!formData.modifiedHours || formData.modifiedHours.length === 0)) {
-         setFormData(prev => ({ ...prev, modifiedHours: [...DEFAULT_BUSINESS_HOURS] }));
-     }
-  }, [formData.isClosed]);
 
   const handleSubmit = () => {
     // Basic validation
@@ -266,7 +268,15 @@ export function ExceptionForm({
                      <Switch
                         id="closed"
                         checked={formData.isClosed}
-                        onCheckedChange={checked => setFormData({...formData, isClosed: checked})}
+                        onCheckedChange={checked => {
+                            setFormData(prev => {
+                                const newData = { ...prev, isClosed: checked };
+                                if (!checked && (!newData.modifiedHours || newData.modifiedHours.length === 0)) {
+                                    newData.modifiedHours = [...DEFAULT_BUSINESS_HOURS];
+                                }
+                                return newData;
+                            });
+                        }}
                         className="data-[state=checked]:bg-destructive"
                     />
                 </div>

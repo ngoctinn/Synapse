@@ -1,6 +1,6 @@
 
-import { useState, useCallback } from "react";
-import { format, eachDayOfInterval, isSameDay, startOfDay } from "date-fns";
+import { eachDayOfInterval, format } from "date-fns";
+import { useCallback, useState } from "react";
 
 export type SelectionMode = 'select' | 'paint';
 export type CalendarViewMode = 'year' | 'month' | 'list';
@@ -10,11 +10,12 @@ interface UseCalendarSelectionProps {
     initialViewMode?: CalendarViewMode;
 }
 
-export function useCalendarSelection({ 
-    initialSelectedDates = [], 
-    initialViewMode = 'calendar' as any // Fallback mapping 
+export function useCalendarSelection({
+    initialSelectedDates = [],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    initialViewMode = 'calendar' as any // Fallback mapping
 }: UseCalendarSelectionProps = {}) {
-    
+
     // Convert initial dates to Set<string>
     const [selectedDateIds, setSelectedDateIds] = useState<Set<string>>(() => {
         const set = new Set<string>();
@@ -26,9 +27,10 @@ export function useCalendarSelection({
 
     const [mode, setMode] = useState<SelectionMode>('select');
     const [view, setView] = useState<CalendarViewMode>(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (initialViewMode as any) === 'calendar' ? 'month' : (initialViewMode || 'month')
     );
-    
+
     const [lastClickedDate, setLastClickedDate] = useState<Date | null>(null);
 
     // Helpers
@@ -40,7 +42,7 @@ export function useCalendarSelection({
 
     const toggleDate = useCallback((date: Date, multiple: boolean = true) => {
         const id = getDateId(date);
-        
+
         setSelectedDateIds(prev => {
             const next = new Set(multiple ? prev : []);
             if (next.has(id)) {
@@ -86,7 +88,7 @@ export function useCalendarSelection({
         // This is expensive O(N), use sparingly or memoize if needed outside
         // But since Set contains strings, we just map back to Date?
         // Actually, creating Dates from strings 'YYYY-MM-DD' might have timezone issues if not careful.
-        // Better to store Date objects map if we need strict Date return, 
+        // Better to store Date objects map if we need strict Date return,
         // OR just parse YYYY-MM-DD and set to noon/startOfDay to be safe.
         // For UI display, ID is enough. For form submission, we need Date.
         return Array.from(selectedDateIds).map(id => new Date(id));

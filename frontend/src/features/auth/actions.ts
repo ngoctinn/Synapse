@@ -12,7 +12,7 @@ import { forgotPasswordSchema, loginSchema, registerSchema, updatePasswordSchema
  * @param prevState Trạng thái trước đó của form (từ useActionState)
  * @param formData Dữ liệu form gửi lên
  */
-export async function loginAction(prevState: any, formData: FormData) {
+export async function loginAction(prevState: unknown, formData: FormData) {
   const rawData = {
     email: formData.get("email"),
     password: formData.get("password"),
@@ -47,7 +47,7 @@ export async function loginAction(prevState: any, formData: FormData) {
  * Xử lý đăng ký tài khoản mới
  * @param formData Dữ liệu form gửi lên
  */
-export async function registerAction(prevState: any, formData: FormData) {
+export async function registerAction(prevState: unknown, formData: FormData) {
   const rawData = {
     email: formData.get("email"),
     password: formData.get("password"),
@@ -100,7 +100,7 @@ export async function logoutAction() {
  * @param prevState Trạng thái trước đó
  * @param formData Dữ liệu form
  */
-export async function forgotPasswordAction(prevState: any, formData: FormData) {
+export async function forgotPasswordAction(prevState: unknown, formData: FormData) {
   const rawData = {
     email: formData.get("email"),
   };
@@ -135,7 +135,7 @@ export async function forgotPasswordAction(prevState: any, formData: FormData) {
  * Xử lý cập nhật mật khẩu mới
  * @param formData Dữ liệu form
  */
-export async function updatePasswordAction(prevState: any, formData: FormData) {
+export async function updatePasswordAction(prevState: unknown, formData: FormData) {
   const rawData = {
     password: formData.get("password"),
   };

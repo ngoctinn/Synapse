@@ -13,12 +13,12 @@ export type ActionState = {
 
 // Simulate a database
 let resources = [...mockResources];
-let resourceGroups = [...mockResourceGroups];
-let maintenanceTasks = [...mockMaintenanceTasks];
+const resourceGroups = [...mockResourceGroups];
+const maintenanceTasks = [...mockMaintenanceTasks];
 
 export async function manageResource(prevState: ActionState, formData: FormData): Promise<ActionState> {
     const id = formData.get("id") as string;
-    const rawData: any = {};
+    const rawData: Record<string, unknown> = {};
 
     // Parse form data
     formData.forEach((value, key) => {

@@ -1,13 +1,13 @@
 "use client";
 
-import { useMemo, useRef, useCallback, useEffect } from "react";
 import { Calendar, CalendarDayButton } from "@/shared/ui/calendar";
 import { Card, CardContent } from "@/shared/ui/card";
-import { ExceptionDate } from "../model/types";
 import { vi } from "date-fns/locale";
 import { motion } from "framer-motion";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import { ExceptionDate } from "../model/types";
+import { getCalendarModifierClassNames, getCalendarModifiers } from "../utils/style-helpers";
 import { SmartTooltip } from "./smart-tooltip";
-import { getCalendarModifiers, getCalendarModifierClassNames } from "../utils/style-helpers";
 
 interface ExceptionsCalendarProps {
   exceptions: ExceptionDate[];
@@ -17,14 +17,14 @@ interface ExceptionsCalendarProps {
   onEdit: (exception: ExceptionDate) => void;
 }
 
-export function ExceptionsCalendar({ 
-  exceptions, 
-  selectedDates = [], 
+export function ExceptionsCalendar({
+  exceptions,
+  selectedDates = [],
   displayDate,
   onSelectDates,
-  onEdit 
+  onEdit
 }: ExceptionsCalendarProps) {
-  
+
   // Drag selection state
   const isDragging = useRef(false);
   const dragAction = useRef<'select' | 'deselect'>('select');
@@ -34,9 +34,9 @@ export function ExceptionsCalendar({
   const modifiersClassNames = useMemo(() => getCalendarModifierClassNames(), []);
 
   const handleDayDoubleClick = (day: Date) => {
-    const existing = exceptions.find(e => 
-      e.date.getDate() === day.getDate() && 
-      e.date.getMonth() === day.getMonth() && 
+    const existing = exceptions.find(e =>
+      e.date.getDate() === day.getDate() &&
+      e.date.getMonth() === day.getMonth() &&
       e.date.getFullYear() === day.getFullYear()
     );
 
@@ -51,10 +51,10 @@ export function ExceptionsCalendar({
     const isSelected = selectedDates.some(d => d.getTime() === day.getTime());
     dragAction.current = isSelected ? 'deselect' : 'select';
 
-    const newDates = isSelected 
+    const newDates = isSelected
         ? selectedDates.filter(d => d.getTime() !== day.getTime())
         : [...selectedDates, day];
-    
+
     onSelectDates(newDates);
   }, [selectedDates, onSelectDates]);
 
@@ -62,7 +62,7 @@ export function ExceptionsCalendar({
     if (!isDragging.current) return;
 
     const isSelected = selectedDates.some(d => d.getTime() === day.getTime());
-    
+
     if (dragAction.current === 'select' && !isSelected) {
        onSelectDates([...selectedDates, day]);
     } else if (dragAction.current === 'deselect' && isSelected) {
@@ -107,8 +107,8 @@ export function ExceptionsCalendar({
   return (
     <div className="w-full" onMouseMove={handleMouseMove}>
         {/* Cursor Follower Tooltip */}
-        <div 
-            ref={tooltipRef} 
+        <div
+            ref={tooltipRef}
             className="hidden sm:flex fixed top-0 left-0 z-50 pointer-events-none opacity-0 transition-opacity duration-150 bg-primary/90 text-primary-foreground px-3 py-1.5 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm items-center gap-1.5"
             style={{ willChange: 'transform, opacity' }}
         >
@@ -118,7 +118,7 @@ export function ExceptionsCalendar({
 
         <Card className="h-full border-none shadow-none bg-transparent">
           <CardContent className="p-0">
-             <motion.div 
+             <motion.div
                initial={{ opacity: 0, scale: 0.95 }}
                animate={{ opacity: 1, scale: 1 }}
                className="border rounded-3xl p-4 sm:p-6 bg-card/40 backdrop-blur-xl shadow-2xl ring-1 ring-white/20 dark:ring-white/5 select-none"
@@ -128,13 +128,13 @@ export function ExceptionsCalendar({
                   selected={selectedDates}
                   onSelect={(dates) => onSelectDates(dates || [])}
                   required={false}
-                  
+
                   // Controlled mode
-                  month={displayDate || new Date()} 
-                  
+                  month={displayDate || new Date()}
+
                   modifiers={modifiers}
                   modifiersClassNames={modifiersClassNames}
-                  className="rounded-md w-full flex justify-center p-2 text-foreground" 
+                  className="rounded-md w-full flex justify-center p-2 text-foreground"
 
                 locale={vi}
                 classNames={{
@@ -143,16 +143,17 @@ export function ExceptionsCalendar({
                   day: "h-9 w-9 sm:h-10 sm:w-10 p-0 font-normal aria-selected:opacity-100 transition-all duration-200 hover:scale-105",
                 }}
                 components={{
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   DayButton: (props: any) => {
                       const { day } = props;
                       const date = day.date;
-                      
-                      const existing = exceptions.find(e => 
-                        e.date.getDate() === date.getDate() && 
-                        e.date.getMonth() === date.getMonth() && 
+
+                      const existing = exceptions.find(e =>
+                        e.date.getDate() === date.getDate() &&
+                        e.date.getMonth() === date.getMonth() &&
                         e.date.getFullYear() === date.getFullYear()
                       );
-                      
+
                       return (
                         <SmartTooltip exception={existing} date={date}>
                              <CalendarDayButton

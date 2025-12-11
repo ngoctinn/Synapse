@@ -9,10 +9,10 @@ import { useForm } from "react-hook-form"
 import { Skill } from "@/features/services/types"
 import { manageStaff } from "@/features/staff/actions"
 import {
-  StaffCreateFormValues,
-  StaffUpdateFormValues,
-  staffCreateSchema,
-  staffUpdateSchema
+    StaffCreateFormValues,
+    StaffUpdateFormValues,
+    staffCreateSchema,
+    staffUpdateSchema
 } from "@/features/staff/model/schemas"
 import { Staff } from "@/features/staff/model/types"
 
@@ -21,12 +21,12 @@ import { Button } from "@/shared/ui/button"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { Form } from "@/shared/ui/form"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle
 } from "@/shared/ui/sheet"
 import { StaffForm } from "./staff-form"
 
@@ -83,6 +83,7 @@ export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffShe
       } : {
         full_name: staff?.user.full_name || "",
         phone_number: staff?.user.phone_number || "",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         role: staff?.user.role as any,
         title: staff?.title || "",
         bio: staff?.bio || "",
@@ -95,6 +96,7 @@ export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffShe
   }, [open, mode, staff, form])
 
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function onSubmit(data: any) {
     const formData = new FormData()
 

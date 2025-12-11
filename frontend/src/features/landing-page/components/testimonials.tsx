@@ -57,7 +57,7 @@ export function Testimonials() {
               <CardContent className="p-8 flex flex-col gap-6 h-full">
                 <Quote className="h-10 w-10 text-primary/40" />
                 <p className="text-muted-foreground leading-relaxed flex-1 italic relative z-10">
-                  "{testimonial.content}"
+                  &quot;{testimonial.content}&quot;
                 </p>
                 <div className="flex items-center gap-4 pt-4 border-t border-border/50">
                   <Avatar className="h-10 w-10 border">

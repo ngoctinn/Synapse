@@ -38,6 +38,7 @@ export function NotificationsSettings({ initialChannels, initialEvents }: Notifi
     toast.success("Đã cập nhật cấu hình thông báo");
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSaveChannelConfig = (channelId: string, config: any) => {
     setChannels(prev => prev.map(ch => {
       if (ch.id === channelId) {
@@ -49,6 +50,7 @@ export function NotificationsSettings({ initialChannels, initialEvents }: Notifi
     toast.success("Đã lưu cấu hình kênh thông báo");
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSaveTemplate = (eventId: string, channelId: string, template: any) => {
     setEvents(prev => prev.map(event => {
       if (event.id === eventId) {

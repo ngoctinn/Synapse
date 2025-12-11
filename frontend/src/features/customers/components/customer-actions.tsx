@@ -26,7 +26,7 @@ export function CustomerActions({ customer, onEdit }: CustomerActionsProps) {
   const handleDelete = () => {
     startTransition(async () => {
       try {
-        await deleteCustomer(customer.user_id)
+        await deleteCustomer(customer.id)
         showToast.success("Đã xóa khách hàng")
       } catch (error) {
         showToast.error("Không thể xóa khách hàng")
@@ -44,7 +44,7 @@ export function CustomerActions({ customer, onEdit }: CustomerActionsProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Tác vụ</DropdownMenuLabel>
-        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(customer.user_id)}>
+        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(customer.id)}>
           Sao chép ID
         </DropdownMenuItem>
         <DropdownMenuSeparator />

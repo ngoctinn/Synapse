@@ -4,12 +4,12 @@ import { Button } from "@/shared/ui/button";
 import { showToast } from "@/shared/ui/custom/sonner";
 import { Form } from "@/shared/ui/form";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle
 } from "@/shared/ui/sheet";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Save } from "lucide-react";
@@ -44,6 +44,7 @@ export function ResourceSheet({
   const [state, dispatch, isPending] = React.useActionState(manageResource, initialState);
 
   const form = useForm<ResourceFormValues>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(resourceSchema) as any,
     defaultValues: {
       name: "",

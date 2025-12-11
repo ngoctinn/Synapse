@@ -85,10 +85,13 @@ export function useExceptionViewLogic({ exceptions }: UseExceptionViewLogicProps
               const now = new Date();
               updateParam('from', startOfYear(now).toISOString());
               updateParam('to', endOfYear(now).toISOString());
-              setFilterUnit('year');
+              // eslint-disable-next-line react-hooks/set-state-in-effect
+              setFilterUnit(prev => prev !== 'year' ? 'year' : prev);
           } else if (dateRange) {
               // If params exist, detect unit once
-              setFilterUnit(detectFilterUnit(dateRange));
+              const unit = detectFilterUnit(dateRange);
+              // eslint-disable-next-line react-hooks/set-state-in-effect
+              setFilterUnit(prev => prev !== unit ? unit : prev);
           }
           setInitialized(true);
       }

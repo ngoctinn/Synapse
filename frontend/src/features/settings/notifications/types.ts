@@ -7,7 +7,7 @@ export interface NotificationChannel {
   description: string;
   isConnected: boolean;
   icon: string; // Tên icon để render
-  config: Record<string, any>;
+  config: Record<string, unknown>;
 }
 
 export interface NotificationTemplate {

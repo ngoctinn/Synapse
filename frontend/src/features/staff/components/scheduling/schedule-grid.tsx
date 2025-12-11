@@ -132,7 +132,7 @@ export function ScheduleGrid({
                   // 1. Direct shift object in schedule (from local draft)
                   // 2. Lookup by id in MOCK_SHIFTS (from server mock)
                   // 3. customShift prop (legacy/fallback)
-                  let shift = schedule?.shift || MOCK_SHIFTS.find((s) => s.id === schedule?.shiftId) || schedule?.customShift
+                  const shift = schedule?.shift || MOCK_SHIFTS.find((s) => s.id === schedule?.shiftId) || schedule?.customShift
 
                   const isToday = isSameDay(day, today)
 

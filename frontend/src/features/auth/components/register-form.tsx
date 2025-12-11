@@ -14,12 +14,12 @@ import { Button } from "@/shared/ui/button";
 import { CustomDialog } from "@/shared/ui/custom/dialog";
 import { showToast } from "@/shared/ui/custom/sonner";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
 
@@ -44,13 +44,17 @@ export function RegisterForm() {
 
   useEffect(() => {
     if (state?.success) {
-      showToast.success("Đăng ký thành công", state.message);
-      setShowCheckEmailDialog(true);
-      form.reset();
+      // Only trigger if not already shown to avoid loops
+      if (!showCheckEmailDialog) {
+          showToast.success("Đăng ký thành công", state.message);
+          // eslint-disable-next-line react-hooks/set-state-in-effect
+          setShowCheckEmailDialog(true);
+          form.reset();
+      }
     } else if (state?.success === false) {
       showToast.error("Đăng ký thất bại", state.message);
     }
-  }, [state, form]);
+  }, [state, form, showCheckEmailDialog]);
 
   function onSubmit(values: RegisterInput) {
     const formData = new FormData();

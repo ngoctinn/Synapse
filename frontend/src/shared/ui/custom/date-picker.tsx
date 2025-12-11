@@ -10,9 +10,9 @@ import { Button } from "@/shared/ui/button"
 import { Calendar } from "@/shared/ui/calendar"
 import { Input } from "@/shared/ui/input"
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
 } from "@/shared/ui/popover"
 import { MaskedDateInput } from "./masked-date-input"
 
@@ -56,6 +56,16 @@ export function DatePicker({
   const [open, setOpen] = React.useState(false)
   const [inputValue, setInputValue] = React.useState("")
 
+  // Sync input value when date prop changes - valid for both modes effectively,
+  // though mostly useful for calendar mode logic.
+  React.useEffect(() => {
+    if (value && isValid(value)) {
+      setInputValue(format(value, "dd/MM/yyyy", { locale: vi }))
+    } else {
+      setInputValue("")
+    }
+  }, [value])
+
   // --- MODE: INPUT (Masked) ---
   if (mode === "input") {
     return (
@@ -77,56 +87,42 @@ export function DatePicker({
   }
 
   // --- MODE: CALENDAR (Popover) ---
-  // Sync input value when date prop changes
-  React.useEffect(() => {
-    if (value && isValid(value)) {
-      setInputValue(format(value, "dd/MM/yyyy", { locale: vi }))
-    } else {
-        setInputValue("")
-    }
-  }, [value])
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value
     setInputValue(newValue)
 
     // Allow clearing
     if (newValue === "") {
-        onChange?.(undefined)
-        return
+      onChange?.(undefined)
+      return
     }
 
-    // Attempt partial validation/masking could be done here,
-    // but strict parsing is safer for logic
     const parsedDate = parse(newValue, "dd/MM/yyyy", new Date(), { locale: vi })
 
     if (isValid(parsedDate) && newValue.length === 10) {
-        onChange?.(parsedDate)
+      onChange?.(parsedDate)
     }
   }
 
   const handleSelect = (selectedDate: Date | undefined) => {
-      if (onChange) {
-          onChange(selectedDate)
-      }
-      setOpen(false) // Close popover after selection
+    if (onChange) {
+      onChange(selectedDate)
+    }
+    setOpen(false) // Close popover after selection
   }
 
   return (
     <div className={cn("relative w-full", className)}>
-        <Input
-            type="text"
-            value={inputValue}
-            onChange={handleInputChange}
-            placeholder={placeholder}
-            disabled={disabled}
-            className={cn("pr-10 cursor-pointer", className)} // Add padding for icon
-            onClick={() => !disabled && setOpen(true)} // Open on click inputs
-            readOnly // Make it readonly to force picker usage preference in 'calendar' mode, or allow typing if desired (but handleInputChange handles it)
-                     // Based on request, 'calendar' usually implies popup preference. Keeping it editable for now but triggering popup.
-                     // Actually, user compliant might prefer strict one or the other.
-                     // Current implementation allows typing.
-        />
+      <Input
+        type="text"
+        value={inputValue}
+        onChange={handleInputChange}
+        placeholder={placeholder}
+        disabled={disabled}
+        className={cn("pr-10 cursor-pointer", className)} // Add padding for icon
+        onClick={() => !disabled && setOpen(true)} // Open on click inputs
+        readOnly // Make it readonly to force picker usage preference in 'calendar' mode
+      />
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -151,7 +147,7 @@ export function DatePicker({
             fromYear={1900}
             toYear={new Date().getFullYear() + 5}
             classNames={{
-                caption_dropdowns: "flex gap-2",
+              caption_dropdowns: "flex gap-2",
             }}
           />
         </PopoverContent>

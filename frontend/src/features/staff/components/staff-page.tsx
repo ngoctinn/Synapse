@@ -11,12 +11,12 @@ import { StaffScheduler } from "./scheduling/staff-scheduler"
 import { StaffFilter } from "./staff-filter"
 import { StaffTable, StaffTableSkeleton } from "./staff-list/staff-table"
 
-import { Schedule } from "../model/types"
+import { Schedule, Staff } from "../model/types"
 
 interface StaffPageProps {
   page: number
   skills: Skill[]
-  staffListPromise: Promise<any>
+  staffListPromise: Promise<{ data: Staff[]; total: number }>
   initialPermissions: Record<string, Record<string, boolean>>
   initialSchedules: Schedule[]
 }
@@ -26,7 +26,7 @@ function StaffListWrapper({
   skills,
   page,
 }: {
-  staffListPromise: Promise<any>
+  staffListPromise: Promise<{ data: Staff[]; total: number }>
   skills: Skill[]
   page: number
 }) {
@@ -50,7 +50,7 @@ function StaffSchedulerWrapper({
   staffListPromise,
   initialSchedules,
 }: {
-  staffListPromise: Promise<any>
+  staffListPromise: Promise<{ data: Staff[] }>
   initialSchedules: Schedule[]
 }) {
   const { data } = use(staffListPromise)

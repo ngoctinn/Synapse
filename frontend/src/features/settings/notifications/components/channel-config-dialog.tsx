@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/shared/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,17 +9,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/shared/ui/dialog";
-import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
+import { useEffect, useState } from "react";
 import { NotificationChannel } from "../types";
-import { useState, useEffect } from "react";
 
 interface ChannelConfigDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   channel?: NotificationChannel;
-  onSave: (channelId: string, config: any) => void;
+  onSave: (channelId: string, config: unknown) => void;
 }
 
 export function ChannelConfigDialog({
@@ -27,11 +27,18 @@ export function ChannelConfigDialog({
   channel,
   onSave,
 }: ChannelConfigDialogProps) {
-  const [localConfig, setLocalConfig] = useState<Record<string, any>>({});
+  const [localConfig, setLocalConfig] = useState<Record<string, unknown>>({});
 
   useEffect(() => {
     if (channel) {
-      setLocalConfig(channel.config || {});
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLocalConfig((prev) => {
+        const newConfig = channel.config || {};
+        if (JSON.stringify(prev) !== JSON.stringify(newConfig)) {
+            return newConfig;
+        }
+        return prev;
+      });
     }
   }, [channel]);
 
@@ -66,7 +73,7 @@ export function ChannelConfigDialog({
                 </Label>
                 <Input
                   id={key}
-                  value={localConfig[key] || ""}
+                  value={(localConfig[key] as string) || ""}
                   onChange={(e) => handleChange(key, e.target.value)}
                   className="col-span-1 sm:col-span-3"
                   type={key.toLowerCase().includes("password") || key.toLowerCase().includes("token") ? "password" : "text"}

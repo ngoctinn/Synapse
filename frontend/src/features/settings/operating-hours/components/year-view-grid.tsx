@@ -8,7 +8,7 @@ import { YearPicker } from "@/shared/ui/custom/year-picker";
 import { eachDayOfInterval, eachMonthOfInterval, endOfDay, endOfMonth, endOfYear, format, getDay, startOfDay, startOfMonth, startOfYear } from "date-fns";
 import { vi } from "date-fns/locale";
 import { ChevronDown, ChevronLeft, ChevronRight, Info } from "lucide-react";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { ExceptionDate } from "../model/types";
 import { getStatusStyles } from "../utils/style-helpers";
 import { SmartTooltip } from "./smart-tooltip";
@@ -115,7 +115,7 @@ export function YearViewGrid({ year, exceptions, matchedDateKeys, selectedDates,
     };
 
     // Global Mouse Up to catch release outside grid
-    useMemo(() => {
+    useEffect(() => {
         if (typeof window !== 'undefined') {
             window.addEventListener('mouseup', handleMouseUp);
             return () => window.removeEventListener('mouseup', handleMouseUp);

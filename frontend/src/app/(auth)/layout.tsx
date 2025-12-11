@@ -19,7 +19,7 @@ export default function AuthLayout({
 
           <blockquote className="space-y-6">
             <p className="text-2xl font-serif leading-relaxed">
-              "Nâng tầm trải nghiệm quản lý Spa của bạn với sự tinh tế và hiệu quả tuyệt đối."
+              &quot;Nâng tầm trải nghiệm quản lý Spa của bạn với sự tinh tế và hiệu quả tuyệt đối.&quot;
             </p>
             <footer className="text-sm opacity-80 font-sans">
               — Hệ thống quản lý Spa chuyên nghiệp

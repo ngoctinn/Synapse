@@ -38,7 +38,25 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
   const selectedGroup = groups.find(g => g.id === groupId);
   const resourceType = selectedGroup?.type;
 
-  const GeneralInfo = () => (
+  return (
+    <div className={cn("w-full", className)}>
+        <Tabs defaultValue="general" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+                <TabsTrigger value="general">Thông tin chung</TabsTrigger>
+                <TabsTrigger value="config">Cấu hình vận hành</TabsTrigger>
+            </TabsList>
+            <TabsContent value="general" className="space-y-4">
+                {renderGeneralInfo()}
+            </TabsContent>
+            <TabsContent value="config" className="space-y-4">
+                {renderConfigInfo()}
+            </TabsContent>
+        </Tabs>
+    </div>
+  );
+
+  function renderGeneralInfo() {
+    return (
     <div className="space-y-6">
         {/* Image Upload Pattern matching StaffForm */}
         <div className="flex items-start gap-6 p-4 border rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors group">
@@ -161,9 +179,11 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
             />
         </div>
     </div>
-  )
+    )
+  }
 
-  const ConfigInfo = () => (
+  function renderConfigInfo() {
+    return (
     <div className="space-y-6">
          <div className="flex items-center gap-3 p-3 bg-blue-50 text-blue-700 rounded-lg text-sm mb-4 border border-blue-100">
             <Activity className="size-4 shrink-0" />
@@ -276,22 +296,6 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
             </div>
         )}
     </div>
-  )
-
-  return (
-    <div className={cn("w-full", className)}>
-        <Tabs defaultValue="general" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="general">Thông tin chung</TabsTrigger>
-                <TabsTrigger value="config">Cấu hình vận hành</TabsTrigger>
-            </TabsList>
-            <TabsContent value="general" className="space-y-4">
-                 <GeneralInfo />
-            </TabsContent>
-            <TabsContent value="config" className="space-y-4">
-                 <ConfigInfo />
-            </TabsContent>
-        </Tabs>
-    </div>
-  );
+    )
+  }
 }

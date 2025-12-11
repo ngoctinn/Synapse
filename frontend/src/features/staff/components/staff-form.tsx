@@ -48,7 +48,39 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
   const role = useWatch({ control, name: "role" })
 
 
-  const GeneralInfo = () => (
+  return (
+    <div className={cn("w-full", className)}>
+        {mode === "create" ? (
+             <div className="space-y-6">
+                 {renderGeneralInfo()}
+                 <div className="h-px bg-border/50" />
+                 {renderProfessionalInfo()}
+                 <div className="h-px bg-border/50" />
+                 {renderHRInfo()}
+             </div>
+        ) : (
+            <Tabs defaultValue="general" className="w-full">
+                <TabsList className="grid w-full grid-cols-3 mb-6">
+                    <TabsTrigger value="general">Thông tin chung</TabsTrigger>
+                    <TabsTrigger value="professional">Nghiệp vụ</TabsTrigger>
+                    <TabsTrigger value="hr">Nhân sự</TabsTrigger>
+                </TabsList>
+                <TabsContent value="general" className="space-y-4">
+                    {renderGeneralInfo()}
+                </TabsContent>
+                <TabsContent value="professional" className="space-y-4">
+                    {renderProfessionalInfo()}
+                </TabsContent>
+                 <TabsContent value="hr" className="space-y-4">
+                    {renderHRInfo()}
+                </TabsContent>
+            </Tabs>
+        )}
+    </div>
+  )
+
+  function renderGeneralInfo() {
+    return (
     <div className="space-y-4">
       {/* Premium Avatar Upload UI */}
       {/* Avatar Upload - Simplified / Hidden for now as per feedback */}
@@ -143,9 +175,11 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
         )}
       />
     </div>
-  )
+    )
+  }
 
-  const ProfessionalInfo = () => (
+  function renderProfessionalInfo() {
+    return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
@@ -257,9 +291,11 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
         </div>
       )}
     </div>
-  )
+    )
+  }
 
-  const HRInfo = () => (
+  function renderHRInfo() {
+    return (
     <div className="space-y-4">
              <FormField
                 control={control}
@@ -302,40 +338,6 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
             />
         {/* Placeholder for future active status toggle if needed in UI, or keep simple */}
     </div>
-  )
-
-  if (mode === "create") {
-
-    return (
-        <div className={cn("space-y-6", className)}>
-            <GeneralInfo />
-            <div className="h-px bg-border/50" />
-            <ProfessionalInfo />
-            <div className="h-px bg-border/50" />
-            <HRInfo />
-        </div>
     )
   }
-
-
-  return (
-    <div className={cn("w-full", className)}>
-        <Tabs defaultValue="general" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-6">
-                <TabsTrigger value="general">Thông tin chung</TabsTrigger>
-                <TabsTrigger value="professional">Nghiệp vụ</TabsTrigger>
-                <TabsTrigger value="hr">Nhân sự</TabsTrigger>
-            </TabsList>
-            <TabsContent value="general" className="space-y-4">
-                <GeneralInfo />
-            </TabsContent>
-            <TabsContent value="professional" className="space-y-4">
-                <ProfessionalInfo />
-            </TabsContent>
-             <TabsContent value="hr" className="space-y-4">
-                <HRInfo />
-            </TabsContent>
-        </Tabs>
-    </div>
-  )
 }

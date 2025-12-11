@@ -1,20 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/shared/ui/dialog";
+import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
-import { Textarea } from "@/shared/ui/textarea";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/shared/ui/dialog";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
-import { Badge } from "@/shared/ui/badge";
 import { ScrollArea } from "@/shared/ui/scroll-area";
+import { Textarea } from "@/shared/ui/textarea";
+import { useEffect, useState } from "react";
 import { NotificationTemplate } from "../types";
 
 interface TemplateEditorProps {
@@ -34,15 +34,19 @@ export function TemplateEditor({
 }: TemplateEditorProps) {
   const [content, setContent] = useState("");
   const [subject, setSubject] = useState("");
-  
+
   // Reset state when template changes or dialog opens
   useEffect(() => {
     if (template) {
-      setContent(template.content);
-      setSubject(template.subject || "");
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setContent(prev => prev !== template.content ? template.content : prev);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSubject(prev => prev !== (template.subject || "") ? (template.subject || "") : prev);
     } else {
-      setContent("");
-      setSubject("");
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setContent(prev => prev !== "" ? "" : prev);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSubject(prev => prev !== "" ? "" : prev);
     }
   }, [template, isOpen]);
 

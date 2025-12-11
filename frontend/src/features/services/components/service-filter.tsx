@@ -38,8 +38,12 @@ import { useEffect, useState } from "react"
 
 
     useEffect(() => {
-      setLocalPriceRange([minPrice, maxPrice])
-    }, [minPrice, maxPrice])
+      // Avoid unnecessary updates
+      if (localPriceRange[0] !== minPrice || localPriceRange[1] !== maxPrice) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setLocalPriceRange([minPrice, maxPrice])
+      }
+    }, [minPrice, maxPrice, localPriceRange])
 
 
     const handlePriceRangeChange = (value: number[]) => {
