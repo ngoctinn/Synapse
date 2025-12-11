@@ -3,8 +3,8 @@ phase: implementation
 title: Ghi chú Triển khai Giao diện Quản lý Lịch hẹn
 description: Ghi chú kỹ thuật, code patterns, và tiến độ triển khai
 feature: appointment-management-ui
-status: not-started
-created: 2024-12-11
+status: in-progress
+started: 2024-12-11
 ---
 
 # Ghi chú Triển khai: Giao diện Quản lý Lịch hẹn
@@ -367,14 +367,14 @@ export function CalendarDnDContext({ children, onEventMove }: CalendarDnDContext
 
 ## 📝 Tiến độ Triển khai
 
-### Giai đoạn 1: Foundation
+### Giai đoạn 1: Foundation ✅
 | Task | Status | Notes |
 |------|--------|-------|
-| 1.1 Module structure & Types | ⏳ Chưa bắt đầu | |
-| 1.2 Schemas & Validation | ⏳ Chưa bắt đầu | |
-| 1.3 Mock Data | ⏳ Chưa bắt đầu | |
-| 1.4 Server Actions | ⏳ Chưa bắt đầu | |
-| 1.5 Basic Layout | ⏳ Chưa bắt đầu | |
+| 1.1 Module structure & Types | ✅ Hoàn thành | `types.ts`, `constants.ts` |
+| 1.2 Schemas & Validation | ✅ Hoàn thành | `schemas.ts` với Zod v4 |
+| 1.3 Mock Data | ✅ Hoàn thành | 23 appointments, 5 staff, 8 services |
+| 1.4 Server Actions | ✅ Hoàn thành | Mock CRUD + Conflict detection |
+| 1.5 Basic Layout | ✅ Hoàn thành | ViewSwitcher, MetricCards placeholders |
 
 ### Giai đoạn 2: Calendar Views
 | Task | Status | Notes |

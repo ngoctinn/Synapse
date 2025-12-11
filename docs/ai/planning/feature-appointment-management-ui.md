@@ -20,8 +20,8 @@ total_effort: 10-12 ngày
 
 ## 🎯 Các Mốc quan trọng (Milestones)
 
-- [x] **M0**: Requirements & Design Documentation ✅ (Hiện tại)
-- [ ] **M1**: Foundation - Types, Schemas, Mock Data, Basic Layout (2 ngày)
+- [x] **M0**: Requirements & Design Documentation ✅
+- [x] **M1**: Foundation - Types, Schemas, Mock Data, Basic Layout ✅ (2024-12-11)
 - [ ] **M2**: Calendar Views - Day, Week, Month, Agenda (3 ngày)
 - [ ] **M3**: Resource Timeline - Staff/Room Timeline (2 ngày)
 - [ ] **M4**: Drag & Drop - Move, Resize, Create by drag (2 ngày)
@@ -38,9 +38,9 @@ total_effort: 10-12 ngày
 #### Task 1.1: Cấu trúc Module & Types
 **Effort**: 0.5 ngày | **Priority**: P0
 
-- [ ] Tạo cấu trúc thư mục theo design doc
-- [ ] Tạo `types.ts` với interfaces: `Appointment`, `CalendarEvent`, `TimelineResource`, `CalendarViewConfig`, `RecurrenceConfig`, `ConflictInfo`, `AppointmentFilters`
-- [ ] Tạo `constants.ts`:
+- [x] Tạo cấu trúc thư mục theo design doc ✅
+- [x] Tạo `types.ts` với interfaces: `Appointment`, `CalendarEvent`, `TimelineResource`, `CalendarViewConfig`, `RecurrenceConfig`, `ConflictInfo`, `AppointmentFilters` ✅
+- [x] Tạo `constants.ts`: ✅
   - Status colors mapping
   - View configuration defaults
   - Time slot intervals
@@ -57,7 +57,7 @@ features/appointments/
 #### Task 1.2: Schemas & Validation
 **Effort**: 0.25 ngày | **Priority**: P0
 
-- [ ] Tạo `schemas.ts` với Zod schemas:
+- [x] Tạo `schemas.ts` với Zod schemas: ✅
   - `appointmentFormSchema` (tạo/sửa)
   - `appointmentFilterSchema`
   - `recurrenceSchema`
@@ -71,11 +71,11 @@ features/appointments/
 #### Task 1.3: Mock Data
 **Effort**: 0.25 ngày | **Priority**: P1
 
-- [ ] Tạo `mock-data.ts`:
-  - 20-30 appointments mẫu (đa dạng status, thời gian)
-  - Staff list (3-5 KTV)
-  - Resource list (rooms)
-  - Services list
+- [x] Tạo `mock-data.ts`: ✅
+  - 23 appointments mẫu (đa dạng status, thời gian)
+  - 5 Staff (KTV)
+  - 5 Rooms
+  - 8 Services
 
 **Files cần tạo:**
 ```
@@ -86,14 +86,14 @@ features/appointments/
 #### Task 1.4: Server Actions
 **Effort**: 0.5 ngày | **Priority**: P0
 
-- [ ] Tạo `actions.ts` với Server Actions:
+- [x] Tạo `actions.ts` với Server Actions (Mock): ✅
   - `getAppointments(dateRange, filters)` - Fetch appointments
   - `getAppointmentById(id)` - Fetch single
   - `createAppointment(data)` - Create
   - `updateAppointment(id, data)` - Update
   - `deleteAppointment(id)` - Delete
   - `checkConflicts(staffId, timeRange)` - Conflict check
-  - `getAppointmentStats(date)` - Dashboard metrics
+  - `getAppointmentMetrics(date)` - Dashboard metrics
 
 **Files cần tạo:**
 ```
@@ -104,12 +104,12 @@ features/appointments/
 #### Task 1.5: Basic Layout & Page Container
 **Effort**: 0.5 ngày | **Priority**: P0
 
-- [ ] Cập nhật `appointments-page.tsx` với layout chuẩn:
+- [x] Cập nhật `appointments-page.tsx` với layout chuẩn: ✅
   - Header với title
-  - Placeholder cho Metrics Cards
-  - Placeholder cho Toolbar
+  - Metrics Cards (4 cards)
+  - Toolbar với ViewSwitcher
   - Placeholder cho Calendar Area
-- [ ] Ensure responsive grid layout
+- [x] Ensure responsive grid layout ✅
 
 **Files cần sửa:**
 ```
