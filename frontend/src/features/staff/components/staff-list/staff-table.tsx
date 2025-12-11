@@ -115,7 +115,7 @@ export function StaffTable({
       cell: (staff) => (
 
         <div className="flex items-center gap-4">
-          <Avatar className="h-11 w-11 border">
+          <Avatar className="h-10 w-10 border">
             <AvatarImage src={staff.user.avatar_url || undefined} alt={staff.user.full_name || ""} />
             <AvatarFallback
               className="font-medium text-white shadow-sm"
@@ -142,7 +142,7 @@ export function StaffTable({
           variant={ROLE_CONFIG[staff.user.role]?.variant || "outline"}
           className={cn(
             "rounded-md px-2.5 py-1 font-medium border-transparent text-xs",
-            ROLE_CONFIG[staff.user.role]?.className || "bg-gray-100 text-gray-600"
+            ROLE_CONFIG[staff.user.role]?.className || "bg-muted text-muted-foreground"
           )}
         >
           {ROLE_CONFIG[staff.user.role]?.label || staff.user.role}

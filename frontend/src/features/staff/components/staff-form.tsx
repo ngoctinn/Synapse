@@ -4,19 +4,19 @@ import { Skill } from "@/features/services/types"
 import { cn } from "@/shared/lib/utils"
 import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form"
 import { Input } from "@/shared/ui/input"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { Textarea } from "@/shared/ui/textarea"
@@ -132,7 +132,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
             <FormControl>
               <Textarea
                 placeholder="Mô tả kinh nghiệm, thế mạnh chuyên môn..."
-                className="resize-none min-h-[100px] bg-background focus:ring-1"
+                className="resize-none min-h-24 bg-background focus:ring-1"
                 {...field}
               />
             </FormControl>
@@ -306,9 +306,9 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
     return (
         <div className={cn("space-y-6", className)}>
             <GeneralInfo />
-            <div className="h-[1px] bg-border/50" />
+            <div className="h-px bg-border/50" />
             <ProfessionalInfo />
-            <div className="h-[1px] bg-border/50" />
+            <div className="h-px bg-border/50" />
             <HRInfo />
         </div>
     )
