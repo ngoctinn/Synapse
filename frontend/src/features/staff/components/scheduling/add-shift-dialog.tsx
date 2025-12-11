@@ -50,9 +50,9 @@ export function AddShiftDialog({
 
         <div className="flex-1 overflow-y-auto p-6">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="template">Ca mẫu</TabsTrigger>
-              <TabsTrigger value="custom">Tùy chỉnh</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 bg-muted/60 rounded-lg p-1 mb-6 h-11">
+              <TabsTrigger value="template" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">Ca mẫu</TabsTrigger>
+              <TabsTrigger value="custom" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">Tùy chỉnh</TabsTrigger>
             </TabsList>
 
             <TabsContent value="template" className="mt-0">

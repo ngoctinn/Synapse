@@ -54,7 +54,7 @@ function StaffSchedulerWrapper({
   initialSchedules: Schedule[]
 }) {
   const { data } = use(staffListPromise)
-  return <StaffScheduler initialSchedules={initialSchedules} staffList={data} className="border-t" />
+  return <StaffScheduler initialSchedules={initialSchedules} staffList={data} />
 }
 
 const Footer = () => (
@@ -116,32 +116,40 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
           </TabsContent>
 
           <TabsContent value="permissions" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
-            <Suspense fallback={<div className="p-8 space-y-4">
-              <div className="h-8 w-1/3 bg-muted animate-pulse rounded" />
-              <div className="h-64 w-full bg-muted animate-pulse rounded-lg" />
-            </div>}>
-              <PermissionMatrix initialPermissions={initialPermissions} className="border-t" />
-            </Suspense>
-            <Footer />
+            <div className="p-4 flex-1 flex flex-col gap-4">
+              <div className="surface-card overflow-hidden flex-1">
+                <Suspense fallback={<div className="p-8 space-y-4">
+                  <div className="h-8 w-1/3 bg-muted animate-pulse rounded" />
+                  <div className="h-64 w-full bg-muted animate-pulse rounded-lg" />
+                </div>}>
+                  <PermissionMatrix initialPermissions={initialPermissions} className="border-none" />
+                </Suspense>
+              </div>
+              <Footer />
+            </div>
           </TabsContent>
 
           <TabsContent value="scheduling" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
-            <Suspense fallback={<div className="flex-1 flex flex-col p-4 space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="h-10 w-48 bg-muted animate-pulse rounded" />
-                <div className="flex gap-2">
-                   <div className="h-9 w-24 bg-muted animate-pulse rounded" />
-                   <div className="h-9 w-24 bg-muted animate-pulse rounded" />
-                </div>
+            <div className="p-4 flex-1 flex flex-col gap-4">
+              <div className="surface-card overflow-hidden flex-1">
+                <Suspense fallback={<div className="flex-1 flex flex-col p-4 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="h-10 w-48 bg-muted animate-pulse rounded" />
+                    <div className="flex gap-2">
+                      <div className="h-9 w-24 bg-muted animate-pulse rounded" />
+                      <div className="h-9 w-24 bg-muted animate-pulse rounded" />
+                    </div>
+                  </div>
+                  <div className="flex-1 w-full bg-muted/20 animate-pulse rounded-lg border border-dashed border-muted" />
+                </div>}>
+                  <StaffSchedulerWrapper
+                    staffListPromise={staffListPromise}
+                    initialSchedules={initialSchedules}
+                  />
+                </Suspense>
               </div>
-              <div className="flex-1 w-full bg-muted/20 animate-pulse rounded-lg border border-dashed border-muted" />
-            </div>}>
-              <StaffSchedulerWrapper
-                staffListPromise={staffListPromise}
-                initialSchedules={initialSchedules}
-              />
-            </Suspense>
-            <Footer />
+              <Footer />
+            </div>
           </TabsContent>
         </div>
       </Tabs>

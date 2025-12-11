@@ -370,10 +370,10 @@ export function ServiceForm({
   return (
     <div className={cn("w-full h-full", className)}>
         <Tabs defaultValue="basic" className="w-full h-full flex flex-col">
-          <TabsList className="grid w-full grid-cols-3 mb-4 shrink-0">
-            <TabsTrigger value="basic">Thông tin</TabsTrigger>
-            <TabsTrigger value="time">Giá & Thời gian</TabsTrigger>
-            <TabsTrigger value="resources">Tài nguyên</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 bg-muted/60 rounded-lg p-1 mb-4 h-11 shrink-0">
+            <TabsTrigger value="basic" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">Thông tin</TabsTrigger>
+            <TabsTrigger value="time" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">Giá & Thời gian</TabsTrigger>
+            <TabsTrigger value="resources" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">Tài nguyên</TabsTrigger>
           </TabsList>
 
           <div className="flex-1 overflow-y-auto px-1 pb-4 [scrollbar-gutter:stable]">

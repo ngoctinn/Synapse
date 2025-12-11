@@ -60,18 +60,18 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
              </div>
         ) : (
             <Tabs defaultValue="general" className="w-full">
-                <TabsList className="grid w-full grid-cols-3 mb-6">
-                    <TabsTrigger value="general">Thông tin chung</TabsTrigger>
-                    <TabsTrigger value="professional">Nghiệp vụ</TabsTrigger>
-                    <TabsTrigger value="hr">Nhân sự</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-3 bg-muted/60 rounded-lg p-1 mb-6 h-11">
+                    <TabsTrigger value="general" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">Thông tin chung</TabsTrigger>
+                    <TabsTrigger value="professional" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">Nghiệp vụ</TabsTrigger>
+                    <TabsTrigger value="hr" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">Nhân sự</TabsTrigger>
                 </TabsList>
-                <TabsContent value="general" className="space-y-4">
+                <TabsContent value="general" className="space-y-4 border rounded-lg bg-card p-4">
                     {renderGeneralInfo()}
                 </TabsContent>
-                <TabsContent value="professional" className="space-y-4">
+                <TabsContent value="professional" className="space-y-4 border rounded-lg bg-card p-4">
                     {renderProfessionalInfo()}
                 </TabsContent>
-                 <TabsContent value="hr" className="space-y-4">
+                 <TabsContent value="hr" className="space-y-4 border rounded-lg bg-card p-4">
                     {renderHRInfo()}
                 </TabsContent>
             </Tabs>

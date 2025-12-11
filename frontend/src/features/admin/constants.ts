@@ -1,14 +1,14 @@
 import {
-    Bell,
-    Briefcase,
-    Calendar,
-    CreditCard,
-    LayoutDashboard,
-    MessageSquare,
-    Palette,
-    Settings,
-    Users,
-    Wrench
+  Bell,
+  Box,
+  Calendar,
+  Home,
+  Layers,
+  Mail,
+  Scissors,
+  Settings,
+  User,
+  Users
 } from "lucide-react"
 
 export type SidebarItem = {
@@ -25,7 +25,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
   {
     title: "Tổng quan",
     href: "/admin/overview",
-    icon: LayoutDashboard,
+    icon: Home,
   },
   {
     title: "Lịch hẹn",
@@ -40,22 +40,22 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
   {
     title: "Nhân sự",
     href: "/admin/staff",
-    icon: Briefcase,
+    icon: User,
   },
   {
     title: "Dịch vụ",
     href: "/admin/services",
-    icon: CreditCard,
+    icon: Scissors,
   },
   {
     title: "Tài nguyên",
     href: "/admin/resources",
-    icon: Wrench,
+    icon: Box,
   },
   {
     title: "Tin nhắn",
     href: "/admin/messages",
-    icon: MessageSquare,
+    icon: Mail,
   },
   {
     title: "Thông báo",
@@ -65,7 +65,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
   {
     title: "Thành phần",
     href: "/admin/components",
-    icon: Palette,
+    icon: Layers,
   },
   {
     title: "Cài đặt",

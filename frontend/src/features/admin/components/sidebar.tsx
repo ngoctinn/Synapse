@@ -26,10 +26,10 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
       className="border-r-0 bg-background shadow-none z-30"
       {...props}
     >
-      <SidebarHeader className="h-16 justify-center px-4 group-data-[collapsible=icon]:px-0">
-        <div className="flex items-center w-full transition-all duration-200 ease-out group-data-[collapsible=icon]:justify-center">
+      <SidebarHeader className="h-16 justify-center px-3 group-data-[collapsible=icon]:px-0">
+        <div className="flex items-center justify-center w-full transition-all duration-200 ease-out">
           <HeaderLogo
-            className="w-full group-data-[collapsible=icon]:w-auto"
+            className="w-full group-data-[collapsible=icon]:w-auto group-data-[collapsible=icon]:justify-center"
             textClassName="group-data-[collapsible=icon]:hidden transition-all duration-200"
           />
         </div>

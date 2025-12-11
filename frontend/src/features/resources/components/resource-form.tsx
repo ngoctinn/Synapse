@@ -41,9 +41,9 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
   return (
     <div className={cn("w-full", className)}>
         <Tabs defaultValue="general" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="general">Thông tin chung</TabsTrigger>
-                <TabsTrigger value="config">Cấu hình vận hành</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 bg-muted/60 rounded-lg p-1 mb-6 h-11">
+                <TabsTrigger value="general" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">Thông tin chung</TabsTrigger>
+                <TabsTrigger value="config" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">Cấu hình vận hành</TabsTrigger>
             </TabsList>
             <TabsContent value="general" className="space-y-4">
                 {renderGeneralInfo()}

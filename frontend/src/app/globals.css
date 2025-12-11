@@ -6,7 +6,7 @@
 :root {
   /* --- Premium Spa Palette (Light) --- */
   /* Background: Pure Neutral White/Gray */
-  --background: oklch(0.985 0 0);
+  --background: oklch(1.0 0 0);
   /* Foreground: Deep Slate for readability */
   --foreground: oklch(0.25 0.02 260);
 
@@ -62,7 +62,7 @@
   --chart-5: oklch(0.65 0.20 25);  /* Coral */
 
   /* Sidebar: Glassy White */
-  --sidebar: oklch(0.985 0 0); /* Match global background */
+  --sidebar: oklch(1.0 0 0); /* Match global background */
   --sidebar-foreground: oklch(0.25 0.02 260);
   --sidebar-primary: oklch(0.48 0.14 200);
   --sidebar-primary-foreground: oklch(1.0 0 0);

@@ -44,23 +44,23 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
        )}
 
       <Tabs defaultValue="general" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-6">
-          <TabsTrigger value="general" className="flex items-center gap-2">
+        <TabsList className="grid w-full grid-cols-3 bg-muted/60 rounded-lg p-1 mb-6 h-11">
+          <TabsTrigger value="general" className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
             <User className="h-4 w-4" />
             Hồ sơ
           </TabsTrigger>
-          <TabsTrigger value="health" className="flex items-center gap-2 data-[state=active]:text-destructive data-[state=active]:bg-destructive/10">
+          <TabsTrigger value="health" className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
             <Activity className="h-4 w-4" />
             Sức khỏe
           </TabsTrigger>
-          <TabsTrigger value="membership" className="flex items-center gap-2 data-[state=active]:text-accent-foreground data-[state=active]:bg-accent">
+          <TabsTrigger value="membership" className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
             <Crown className="h-4 w-4" />
             Thành viên
           </TabsTrigger>
         </TabsList>
 
         {/* TAB 1: GENERAL INFO */}
-        <TabsContent value="general" className="space-y-6 animate-in fade-in-50 duration-300">
+        <TabsContent value="general" className="space-y-6 animate-in fade-in-50 duration-300 border rounded-lg bg-card p-4">
            {/* Premium Avatar Upload UI */}
            <div className="flex items-start gap-5 p-4 border rounded-xl bg-card hover:bg-accent/5 transition-colors group">
              <div className="relative">
@@ -232,7 +232,7 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
         </TabsContent>
 
         {/* TAB 2: HEALTH */}
-        <TabsContent value="health" className="space-y-6 animate-in fade-in-50 duration-300">
+        <TabsContent value="health" className="space-y-6 animate-in fade-in-50 duration-300 border rounded-lg bg-card p-4">
            <div className="bg-destructive/5 border border-destructive/20 rounded-xl p-4 flex gap-4">
               <div className="p-2 bg-destructive/10 rounded-full h-fit text-destructive">
                 <AlertCircle className="w-5 h-5" />
@@ -290,7 +290,7 @@ export function CustomerForm({ mode, className }: CustomerFormProps) {
         </TabsContent>
 
         {/* TAB 3: MEMBERSHIP & POINTS */}
-        <TabsContent value="membership" className="space-y-6 animate-in fade-in-50 duration-300">
+        <TabsContent value="membership" className="space-y-6 animate-in fade-in-50 duration-300 border rounded-lg bg-card p-4">
              <div className="bg-accent border border-accent-foreground/20 rounded-xl p-4 flex gap-4">
                 <div className="p-2 bg-accent-foreground/10 rounded-full h-fit text-accent-foreground">
                   <Crown className="w-5 h-5" />

@@ -125,13 +125,15 @@ export function ServicesPage({ page, skills, roomTypes, equipmentList, servicesP
           </TabsContent>
 
           <TabsContent value="skills" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
-
-
-              <SkillTable
-                skills={skills}
-                className="border-x-0 border-t rounded-none shadow-none"
-              />
-            <Footer />
+            <div className="p-4 flex-1 flex flex-col gap-4">
+              <div className="surface-card overflow-hidden flex-1">
+                <SkillTable
+                  skills={skills}
+                  className="border-none"
+                />
+              </div>
+              <Footer />
+            </div>
           </TabsContent>
         </div>
       </Tabs>

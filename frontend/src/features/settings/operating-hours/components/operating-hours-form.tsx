@@ -1,14 +1,14 @@
 'use client';
 
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardDescription, CardHeader } from "@/shared/ui/card";
@@ -233,12 +233,14 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
         </div>
       </TabsContent>
 
-      <TabsContent value="exceptions" className="flex flex-col flex-1 min-h-0 overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out">
-        <ExceptionsViewManager
-          exceptions={config.exceptions}
-          onAddExceptions={handleAddExceptions}
-          onRemoveException={handleRemoveException}
-        />
+      <TabsContent value="exceptions" className="flex flex-col flex-1 min-h-0 overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out p-4 sm:p-6">
+        <Card className="flex-1 flex flex-col overflow-hidden border shadow-sm rounded-xl">
+          <ExceptionsViewManager
+            exceptions={config.exceptions}
+            onAddExceptions={handleAddExceptions}
+            onRemoveException={handleRemoveException}
+          />
+        </Card>
       </TabsContent>
 
       <AlertDialog open={pasteConfirmOpen} onOpenChange={setPasteConfirmOpen}>

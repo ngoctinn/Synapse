@@ -48,12 +48,12 @@ export function CustomersPage({ page, customerListPromise }: CustomersPageProps)
     <div
       className="min-h-screen flex flex-col w-full"
     >
-      <Tabs defaultValue="list" className="flex flex-col flex-1 w-full gap-4 p-4" onValueChange={setActiveTab}>
+      <Tabs defaultValue="list" className="flex flex-col flex-1 w-full gap-0" onValueChange={setActiveTab}>
 
-        <div className="flex flex-none flex-col md:flex-row items-center justify-between gap-4">
-          <TabsList className="bg-muted/50 p-1 w-full md:w-fit justify-start h-10">
-            <TabsTrigger value="list" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 min-w-[100px] transition-all duration-200 flex-1 md:flex-none h-full">Danh sách</TabsTrigger>
-            <TabsTrigger value="insights" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 min-w-[100px] transition-all duration-200 flex-1 md:flex-none h-full">Thông tin</TabsTrigger>
+        <div className="sticky top-0 z-40 px-4 py-2 bg-card/95 backdrop-blur-sm border-b flex flex-col md:flex-row items-center justify-between gap-4">
+          <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto justify-start">
+            <TabsTrigger value="list" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 min-w-[100px] transition-all duration-200 flex-1 md:flex-none">Danh sách</TabsTrigger>
+            <TabsTrigger value="insights" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 min-w-[100px] transition-all duration-200 flex-1 md:flex-none">Thông tin</TabsTrigger>
           </TabsList>
 
           <div className="flex items-center gap-3 w-full md:w-auto">
@@ -63,7 +63,7 @@ export function CustomersPage({ page, customerListPromise }: CustomersPageProps)
                     <Input
                         placeholder="Tìm kiếm khách hàng..."
                         startContent={<Search className="size-4 text-muted-foreground" />}
-                        className="h-10 bg-background pr-8"
+                        className="h-9 bg-background pr-8"
                     />
                 </div>
                 <CustomerFilter />
@@ -73,10 +73,10 @@ export function CustomersPage({ page, customerListPromise }: CustomersPageProps)
           </div>
         </div>
 
-        <div className="flex-1 min-h-0">
-            <TabsContent value="list" className="h-full flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
-                <div className="surface-card flex-1 flex flex-col overflow-hidden">
-                    <div className="flex-1 overflow-hidden p-4">
+        <div className="flex-1 p-0 motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 duration-300 ease-out flex flex-col">
+            <TabsContent value="list" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
+               <div className="p-4 flex-1 flex flex-col gap-4">
+                <div className="surface-card overflow-hidden flex-1">
                         <Suspense fallback={<CustomerTableSkeleton />}>
                         <CustomerListWrapper
                             customerListPromise={customerListPromise}
@@ -84,16 +84,17 @@ export function CustomersPage({ page, customerListPromise }: CustomersPageProps)
                         />
                         </Suspense>
                     </div>
-                    <div className="px-4 pb-2">
-                        <Footer />
-                    </div>
+                    <Footer />
                 </div>
             </TabsContent>
 
-            <TabsContent value="insights" className="h-full mt-0 border-0 p-0 data-[state=inactive]:hidden">
-                 <div className="surface-card h-full p-8 text-center text-muted-foreground">
+            <TabsContent value="insights" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
+               <div className="p-4 flex-1 flex flex-col gap-4">
+                 <div className="surface-card flex-1 p-8 text-center text-muted-foreground">
                     <p>Tính năng báo cáo và thông tin chi tiết khách hàng đang được phát triển.</p>
-                </div>
+                 </div>
+                 <Footer />
+               </div>
             </TabsContent>
         </div>
       </Tabs>
