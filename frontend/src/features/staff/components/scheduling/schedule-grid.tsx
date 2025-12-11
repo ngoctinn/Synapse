@@ -145,7 +145,10 @@ export function ScheduleGrid({
                         "p-1.5 border-r last:border-r-0 min-h-[72px] relative transition-all duration-200",
                         !schedule && isToday ? "bg-primary/[0.02]" : "",
                         !schedule && !isToday ? "bg-background hover:bg-muted/20" : "",
-                        selectedTool ? "cursor-crosshair" : "cursor-default"
+                        selectedTool ? "cursor-crosshair" : "cursor-default",
+                        // Visual Cues cho Paint Mode
+                        selectedTool && selectedTool !== "eraser" && !schedule ? "hover:bg-primary/10 hover:ring-2 hover:ring-primary/30 hover:ring-inset" : "",
+                        selectedTool === "eraser" && schedule ? "hover:bg-destructive/10 hover:ring-2 hover:ring-destructive/30 hover:ring-inset" : ""
                       )}
                     >
                       {shift ? (

@@ -5,8 +5,8 @@ import { deleteStaff } from "@/features/staff/actions"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { TableRowActions } from "@/shared/ui/custom/table-row-actions"
 import {
-  DropdownMenuItem,
-  DropdownMenuLabel
+    DropdownMenuItem,
+    DropdownMenuLabel
 } from "@/shared/ui/dropdown-menu"
 import { KeyRound } from "lucide-react"
 import { startTransition, useState } from "react"
@@ -21,10 +21,13 @@ interface StaffActionsProps {
 
 export function StaffActions({ staff, skills, onEdit }: StaffActionsProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const handleDelete = () => {
+    setIsDeleting(true)
     startTransition(async () => {
       const result = await deleteStaff(staff.user_id)
+      setIsDeleting(false)
       if (result.success) {
         setShowDeleteDialog(false)
         showToast.success("Thành công", result.message)
@@ -55,6 +58,7 @@ export function StaffActions({ staff, skills, onEdit }: StaffActionsProps) {
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
         onConfirm={handleDelete}
+        isDeleting={isDeleting}
       />
     </>
   )

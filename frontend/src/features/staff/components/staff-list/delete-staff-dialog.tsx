@@ -1,22 +1,24 @@
 "use client"
 
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/shared/ui/alert-dialog"
-import { Staff } from "../../types"
+import { Loader2 } from "lucide-react"
+import { Staff } from "../../model/types"
 
 interface DeleteStaffDialogProps {
   staff: Staff | null
   open: boolean
   onOpenChange: (open: boolean) => void
   onConfirm: () => void
+  isDeleting?: boolean
 }
 
 export function DeleteStaffDialog({
@@ -24,6 +26,7 @@ export function DeleteStaffDialog({
   open,
   onOpenChange,
   onConfirm,
+  isDeleting = false,
 }: DeleteStaffDialogProps) {
   if (!staff) return null
 
@@ -42,9 +45,14 @@ export function DeleteStaffDialog({
           <AlertDialogCancel>Hủy bỏ</AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            disabled={isDeleting}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50"
           >
-            Xóa nhân viên
+            {isDeleting ? (
+              <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Đang xóa...</>
+            ) : (
+              "Xóa nhân viên"
+            )}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
