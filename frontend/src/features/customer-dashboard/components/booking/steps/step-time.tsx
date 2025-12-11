@@ -101,7 +101,7 @@ export function StepTime({ state, updateState }: BookingStepProps) {
                         Giờ trống {selectedDate && format(selectedDate, "dd/MM", { locale: vi })}
                     </h3>
                     {preference === "any" && !isLoading && (
-                        <Badge variant="outline" className="text-[10px] bg-green-500/10 text-green-600 border-green-200 dark:border-green-800">
+                        <Badge variant="outline" className="text-[10px] bg-alert-success text-alert-success-foreground border-alert-success-border">
                             Giờ vàng (Giảm 10%)
                         </Badge>
                     )}
@@ -161,15 +161,15 @@ function TimeSlotButton({ slot, selectedTime, onClick }: { slot: TimeSlot, selec
             className={cn(
                 "relative h-10 w-full font-normal transition-all duration-200",
                 selectedTime === slot.time ? "ring-2 ring-primary ring-offset-2 shadow-md scale-[1.02]" : "hover:border-primary/50 text-muted-foreground hover:text-foreground",
-                slot.isRecommended && selectedTime !== slot.time && "border-green-200 bg-green-50/50 text-green-700 hover:bg-green-100 hover:border-green-300 dark:bg-green-900/10 dark:text-green-400 dark:border-green-900"
+                slot.isRecommended && selectedTime !== slot.time && "border-alert-success-border bg-alert-success text-alert-success-foreground hover:bg-alert-success/80 hover:border-alert-success-border"
             )}
             onClick={onClick}
         >
              {slot.time}
              {slot.isRecommended && (
                  <span className="absolute -top-1 -right-1 h-2 w-2">
-                     <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping"></span>
-                     <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                     <span className="absolute inline-flex h-full w-full rounded-full bg-success opacity-75 animate-ping"></span>
+                     <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
                  </span>
              )}
         </Button>
