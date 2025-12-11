@@ -1,32 +1,21 @@
-
-"use client"
-
-import { Service } from "@/features/services/types"
-import { Badge } from "@/shared/ui/badge"
-import { Button } from "@/shared/ui/button"
-import { motion } from "framer-motion"
-import { Clock, Tag } from "lucide-react"
-import Image from "next/image"
+import { Service } from "@/features/services/types";
+import { Badge } from "@/shared/ui/badge";
+import { Button } from "@/shared/ui/button";
+import { Clock, Tag } from "lucide-react";
+import Image from "next/image";
 
 interface ServiceCardProps {
-  service: Service
-  onBook?: (serviceId: string) => void
+  service: Service;
+  onBook?: (serviceId: string) => void;
 }
 
 export function ServiceCard({ service, onBook }: ServiceCardProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      whileHover={{ y: -5 }}
-      transition={{ duration: 0.3 }}
-      className="group relative flex flex-col overflow-hidden surface-card backdrop-blur-sm text-card-foreground hover:shadow-xl hover:ring-1 hover:ring-primary/50 transition-all duration-300"
-    >
+    <div className="group relative flex flex-col overflow-hidden rounded-lg surface-card text-card-foreground hover:shadow-xl hover:ring-1 hover:ring-primary/50 transition-all duration-300 hover:-translate-y-1">
       {/* Image Container */}
       <div className="relative aspect-[4/3] w-full overflow-hidden">
         <Image
-          src={service.image_url || ''}
+          src={service.image_url || ""}
           alt={service.name}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-110"
@@ -37,14 +26,20 @@ export function ServiceCard({ service, onBook }: ServiceCardProps) {
         {/* Chips/Badges overlay */}
         <div className="absolute top-3 right-3 flex gap-2">
           {service.is_popular && (
-            <Badge variant="warning" className="shadow-sm backdrop-blur-md border animate-pulse">
+            <Badge
+              variant="warning"
+              className="shadow-sm backdrop-blur-md border animate-pulse"
+            >
               Phổ biến
             </Badge>
           )}
         </div>
 
         <div className="absolute bottom-3 left-3">
-          <Badge variant="glass" className="backdrop-blur-md bg-black/40 text-white border-white/20">
+          <Badge
+            variant="glass"
+            className="backdrop-blur-md bg-black/40 text-white border-white/20"
+          >
             {service.category}
           </Badge>
         </div>
@@ -53,7 +48,7 @@ export function ServiceCard({ service, onBook }: ServiceCardProps) {
       {/* Content */}
       <div className="flex flex-1 flex-col p-5">
         <div className="flex justify-between items-start gap-2 mb-2">
-          <h3 className="font-serif text-lg font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
+          <h3 className="text-lg font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
             {service.name}
           </h3>
         </div>
@@ -70,7 +65,10 @@ export function ServiceCard({ service, onBook }: ServiceCardProps) {
           <div className="flex items-center gap-1.5 font-bold text-primary text-base">
             <Tag className="h-4 w-4" />
             <span>
-              {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(service.price)}
+              {new Intl.NumberFormat("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              }).format(service.price)}
             </span>
           </div>
         </div>
@@ -82,6 +80,6 @@ export function ServiceCard({ service, onBook }: ServiceCardProps) {
           Đặt lịch ngay
         </Button>
       </div>
-    </motion.div>
-  )
+    </div>
+  );
 }
