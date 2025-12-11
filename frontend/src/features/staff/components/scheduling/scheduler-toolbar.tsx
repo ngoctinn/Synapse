@@ -52,7 +52,7 @@ export function SchedulerToolbar({
           <ChevronRight className="h-4 w-4" />
         </Button>
         <div className="w-px h-4 bg-border mx-1" />
-        <Button variant="ghost" size="sm" onClick={onResetToday} className="h-7 text-xs px-2">
+        <Button variant="ghost" size="sm" onClick={onResetToday}>
           {SCHEDULER_UI.TODAY}
         </Button>
       </div>

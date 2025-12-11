@@ -9,10 +9,10 @@ import { useForm } from "react-hook-form"
 import { Skill } from "@/features/services/types"
 import { manageStaff } from "@/features/staff/actions"
 import {
-    StaffCreateFormValues,
-    StaffUpdateFormValues,
-    staffCreateSchema,
-    staffUpdateSchema
+  StaffCreateFormValues,
+  StaffUpdateFormValues,
+  staffCreateSchema,
+  staffUpdateSchema
 } from "@/features/staff/model/schemas"
 import { Staff } from "@/features/staff/model/types"
 
@@ -21,12 +21,12 @@ import { Button } from "@/shared/ui/button"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { Form } from "@/shared/ui/form"
 import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle
 } from "@/shared/ui/sheet"
 import { StaffForm } from "./staff-form"
 
@@ -152,18 +152,11 @@ export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffShe
                 type="submit"
                 form="staff-form"
                 disabled={isPending}
-                className="min-w-[140px] shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
+                className="min-w-[140px]"
                 isLoading={isPending}
+                startContent={mode === "create" ? <Send className="h-4 w-4" /> : <Save className="h-4 w-4" />}
             >
-                {mode === "create" ? (
-                    <>
-                        <Send className="mr-2 h-4 w-4" /> Gửi lời mời
-                    </>
-                ) : (
-                    <>
-                        <Save className="mr-2 h-4 w-4" /> Lưu thay đổi
-                    </>
-                )}
+                {mode === "create" ? "Gửi lời mời" : "Lưu thay đổi"}
             </Button>
         </SheetFooter>
       </SheetContent>

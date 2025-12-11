@@ -38,12 +38,12 @@ interface ExceptionsViewManagerProps {
   onRemoveException: (id: string | string[]) => void;
 }
 
-export function ExceptionsViewManager({ 
-  exceptions, 
-  onAddExceptions, 
-  onRemoveException 
+export function ExceptionsViewManager({
+  exceptions,
+  onAddExceptions,
+  onRemoveException
 }: ExceptionsViewManagerProps) {
-  
+
   // --- 1. Shared View Logic (Hook) ---
   const {
     filteredExceptions,
@@ -79,10 +79,10 @@ export function ExceptionsViewManager({
       isOpen: boolean;
       ids: string[];
   }>({ isOpen: false, ids: [] });
-  
+
   // Convert selectedDateIds Set to sorted array of Dates for Calendar
   const selectedDates = useMemo(() => getSelectedDates(), [getSelectedDates, selectedDateIds]);
-  
+
   // Calculate matched keys for styling (Highlighed vs Dimmed)
   const matchedDateKeys = useMemo(() => {
     return new Set(filteredExceptions.map(e => format(e.date, 'yyyy-MM-dd')));
@@ -96,7 +96,7 @@ export function ExceptionsViewManager({
   };
 
   // --- Render Components Helpers ---
-  
+
   const renderListHeader = () => (
       <div className="p-3 border-b bg-muted/10 font-bold text-xs text-muted-foreground uppercase tracking-wider flex justify-between items-center sticky top-0 backdrop-blur-sm z-10">
           <span className="flex items-center gap-2">
@@ -108,8 +108,8 @@ export function ExceptionsViewManager({
 
   const renderCalendar = () => (
       isYearView ? (
-        <YearViewGrid 
-            year={dateRange?.from?.getFullYear() || new Date().getFullYear()} 
+        <YearViewGrid
+            year={dateRange?.from?.getFullYear() || new Date().getFullYear()}
             exceptions={exceptions} // Pass ALL exceptions to show context
             matchedDateKeys={matchedDateKeys} // Pass keys to highlight
             selectedDates={selectedDates}
@@ -123,10 +123,10 @@ export function ExceptionsViewManager({
             }}
         />
     ) : (
-        <ExceptionsCalendar 
+        <ExceptionsCalendar
             exceptions={filteredExceptions}
             selectedDates={selectedDates}
-            displayDate={dateRange?.from || new Date()} 
+            displayDate={dateRange?.from || new Date()}
             onSelectDates={setSelectedDates}
             onEdit={(ex) => {
                 clearSelection();
@@ -159,7 +159,7 @@ export function ExceptionsViewManager({
           <div className="space-y-4 p-1 pb-10">
               {groupedItems.map((group, index) => {
                   const showYearHeader = index === 0 || group.year !== groupedItems[index - 1].year;
-                  
+
                   return (
                       <ExceptionListItem
                           key={group.id}
@@ -169,13 +169,13 @@ export function ExceptionsViewManager({
                           onSelectGroup={(dates, isFullySelected) => {
                               const groupDateStrings = dates.map(d => format(d, 'yyyy-MM-dd'));
                               const allDates = getSelectedDates();
-                              
+
                               if (isFullySelected) {
                                   const newDates = allDates.filter(d => !groupDateStrings.includes(format(d, 'yyyy-MM-dd')));
                                   setSelectedDates(newDates);
                               } else {
                                   // Merge unique
-                                  const allUnique = [...allDates, ...dates].filter((d, i, self) => 
+                                  const allUnique = [...allDates, ...dates].filter((d, i, self) =>
                                       i === self.findIndex(t => t.getTime() === d.getTime())
                                   );
                                   setSelectedDates(allUnique);
@@ -196,19 +196,19 @@ export function ExceptionsViewManager({
   };
 
   // Calculate active filters count excluding Date Range (which is a View Context)
-  const filtersActiveCount = 
-      (statusFilter ? 1 : 0) + 
-      (typeFilter.length > 0 ? 1 : 0) + 
+  const filtersActiveCount =
+      (statusFilter ? 1 : 0) +
+      (typeFilter.length > 0 ? 1 : 0) +
       (searchQuery ? 1 : 0);
 
   return (
     <div className="h-full flex flex-col">
-         <ExceptionsFilterBar 
+         <ExceptionsFilterBar
              activeCount={filtersActiveCount}
              onClearFilters={clearFilters}
              searchQuery={searchQuery}
              setSearchQuery={setSearchQuery}
-             statusFilter={statusFilter} 
+             statusFilter={statusFilter}
              setStatusFilter={setStatusFilter}
              typeFilter={typeFilter}
              setTypeFilter={setTypeFilter}
@@ -237,8 +237,8 @@ export function ExceptionsViewManager({
              endContent={
                <div className="flex items-center gap-2">
                    {/* Add Button */}
-                   <Button onClick={handleManualAdd} className="bg-primary text-primary-foreground shadow-sm hover:shadow-md transition-all">
-                        <Plus className="w-4 h-4 mr-2" /> Thêm ngoại lệ
+                   <Button onClick={handleManualAdd} startContent={<Plus className="w-4 h-4" />}>
+                        Thêm ngoại lệ
                    </Button>
                </div>
              }
@@ -269,9 +269,9 @@ export function ExceptionsViewManager({
                            {renderCalendar()}
                         </div>
                     </ResizablePanel>
-                    
+
                     <ResizableHandle />
-                    
+
                     <ResizablePanel defaultSize={35} minSize={25}>
                         <div className="h-full flex flex-col bg-muted/5">
                             {renderListHeader()}
@@ -284,8 +284,8 @@ export function ExceptionsViewManager({
            </div>
        </div>
 
-       <ExceptionSheet 
-           isOpen={isDialogOpen} 
+       <ExceptionSheet
+           isOpen={isDialogOpen}
            onClose={() => setIsDialogOpen(false)}
            selectedDates={selectedDates}
            existingExceptions={exceptions}
@@ -299,7 +299,7 @@ export function ExceptionsViewManager({
                 const idsToDelete = exceptions
                      .filter(e => selectedDateIds.has(format(e.date, 'yyyy-MM-dd')))
                      .map(e => e.id);
-                 
+
                 if (idsToDelete.length > 0) {
                     setIsDialogOpen(false);
                     setDeleteConfirmation({ isOpen: true, ids: idsToDelete });
@@ -310,8 +310,8 @@ export function ExceptionsViewManager({
            }}
        />
 
-       <AlertDialog 
-          open={deleteConfirmation.isOpen} 
+       <AlertDialog
+          open={deleteConfirmation.isOpen}
           onOpenChange={(open) => !open && setDeleteConfirmation(prev => ({ ...prev, isOpen: false }))}
        >
           <AlertDialogContent>
@@ -323,7 +323,7 @@ export function ExceptionsViewManager({
               </AlertDialogHeader>
               <AlertDialogFooter>
                   <AlertDialogCancel>Hủy bỏ</AlertDialogCancel>
-                  <AlertDialogAction 
+                  <AlertDialogAction
                       onClick={() => {
                           onRemoveException(deleteConfirmation.ids);
                           setDeleteConfirmation({ isOpen: false, ids: [] });

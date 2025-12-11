@@ -1,10 +1,10 @@
 'use client';
 
-import * as React from "react";
+import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
-import { RotateCcw, Save, Loader2 } from "lucide-react";
-import { cn } from "@/shared/lib/utils";
+import { Loader2, RotateCcw, Save } from "lucide-react";
+import * as React from "react";
 
 interface SettingsHeaderProps {
   isDirty?: boolean;
@@ -42,32 +42,32 @@ export function SettingsHeader({
         {/* Status Indicator */}
         <div className={cn(
           "px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-300 flex items-center gap-2",
-          isDirty 
-            ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800" 
-            : "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800"
+          isDirty
+            ? "bg-warning/10 text-warning border-warning/20"
+            : "bg-success/10 text-success border-success/20"
         )}>
           <span className="relative flex h-2 w-2">
             <span className={cn(
               "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75",
-              isDirty ? "bg-amber-500" : "bg-green-500"
+              isDirty ? "bg-warning" : "bg-success"
             )} />
             <span className={cn(
               "relative inline-flex rounded-full h-2 w-2",
-              isDirty ? "bg-amber-500" : "bg-green-500"
+              isDirty ? "bg-warning" : "bg-success"
             )} />
           </span>
           {isDirty ? dirtyLabel : cleanLabel}
         </div>
-        
+
         {/* Reset Button */}
         {onReset && (
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  onClick={onReset} 
-                  disabled={!isDirty || isPending} 
+                <Button
+                  variant="ghost"
+                  onClick={onReset}
+                  disabled={!isDirty || isPending}
                   className="h-9 px-4 hidden sm:flex"
                 >
                   <RotateCcw className="w-4 h-4 mr-2" />
@@ -84,9 +84,9 @@ export function SettingsHeader({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button 
-                  onClick={onSave} 
-                  disabled={!isDirty || isPending} 
+                <Button
+                  onClick={onSave}
+                  disabled={!isDirty || isPending}
                   className={cn(
                     "h-9 px-6 transition-all duration-300",
                     isDirty && "animate-pulse-subtle"

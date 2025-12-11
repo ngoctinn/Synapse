@@ -25,7 +25,7 @@ import { ImageUpload } from "./image-upload"
 import { ServiceTimeVisualizer } from "./service-time-visualizer"
 
 interface ServiceFormProps {
-  mode: "create" | "edit"
+  mode: "create" | "update"
   availableSkills: Skill[]
   availableRoomTypes: RoomType[]
   availableEquipment: Resource[]

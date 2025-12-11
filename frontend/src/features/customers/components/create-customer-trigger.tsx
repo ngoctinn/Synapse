@@ -10,8 +10,7 @@ export function CreateCustomerTrigger() {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} className="shadow-sm">
-        <Plus className="mr-2 h-4 w-4" />
+      <Button onClick={() => setOpen(true)} startContent={<Plus className="h-4 w-4" />}>
         Thêm khách hàng
       </Button>
 

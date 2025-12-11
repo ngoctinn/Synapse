@@ -9,12 +9,12 @@ import { Button } from "@/shared/ui/button"
 import { TimeInput } from "@/shared/ui/custom/time-input"
 import { DialogFooter } from "@/shared/ui/dialog"
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form"
 import { Input } from "@/shared/ui/input"
 import { Shift } from "../../model/types"
@@ -145,10 +145,10 @@ export function ShiftForm({ onSuccess, onCancel }: ShiftFormProps) {
         />
 
         <DialogFooter className="pt-2">
-            <Button type="button" variant="outline" onClick={onCancel} className="h-11">
+            <Button type="button" variant="outline" size="lg" onClick={onCancel}>
                 Hủy
             </Button>
-            <Button type="submit" className="h-11 min-w-[120px]">
+            <Button type="submit" size="lg">
                 Thêm ca
             </Button>
         </DialogFooter>

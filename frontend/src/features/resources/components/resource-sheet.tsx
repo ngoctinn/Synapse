@@ -4,12 +4,12 @@ import { Button } from "@/shared/ui/button";
 import { showToast } from "@/shared/ui/custom/sonner";
 import { Form } from "@/shared/ui/form";
 import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle
 } from "@/shared/ui/sheet";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Save } from "lucide-react";
@@ -152,7 +152,7 @@ export function ResourceSheet({
                 type="submit"
                 form="resource-form"
                 isLoading={isPending}
-                className="min-w-[140px] shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
+                className="min-w-[140px]"
                 startContent={<Save className="h-4 w-4" />}
             >
                 {resource ? "Lưu thay đổi" : "Tạo mới"}

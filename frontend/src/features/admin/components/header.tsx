@@ -1,6 +1,8 @@
 "use client"
 
 import { logoutAction } from "@/features/auth/actions"
+import { NotificationBell } from "@/features/notifications/components/notification-bell"
+import { NotificationPopover } from "@/features/notifications/components/notification-popover"
 import { UserProfile } from "@/shared/components/layout/components/header/types"
 import { cn } from "@/shared/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
@@ -23,11 +25,9 @@ import {
 } from "@/shared/ui/dropdown-menu"
 import { Separator } from "@/shared/ui/separator"
 import { SidebarTrigger } from "@/shared/ui/sidebar"
-import { Bell, LogOut, Settings, User } from "lucide-react"
+import { LogOut, Settings, User } from "lucide-react"
 import { usePathname } from "next/navigation"
 import React from "react"
-import { NotificationPopover } from "@/features/notifications/components/notification-popover"
-import { NotificationBell } from "@/features/notifications/components/notification-bell"
 
 // Mapping đường dẫn sang tên hiển thị Tiếng Việt
 const BREADCRUMB_MAP: Record<string, string> = {
@@ -117,7 +117,7 @@ export function AdminHeader({ className, user }: AdminHeaderProps) {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-50 transition-all hover:ring-2 hover:ring-primary/10">
+            <Button variant="ghost" size="icon" className="rounded-full">
               <Avatar className="w-8 h-8 border border-slate-200 shadow-sm">
                 <AvatarImage src={avatarUrl} />
                 <AvatarFallback>{initials}</AvatarFallback>

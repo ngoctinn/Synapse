@@ -27,7 +27,7 @@ export function StepSuccess({ onClose }: StepSuccessProps) {
                 </p>
             </div>
 
-            <Button onClick={onClose} className="mt-4 min-w-[140px] h-11 text-base shadow-md">
+            <Button onClick={onClose} size="lg" className="mt-4">
                 Hoàn tất
             </Button>
         </div>

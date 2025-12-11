@@ -175,7 +175,7 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
                     <TooltipProvider>
                         <Tooltip>
                         <TooltipTrigger asChild>
-                            <Button variant="secondary" size="sm" onClick={handlePasteToAll} className="h-7 text-xs font-medium bg-primary/10 text-primary hover:bg-primary/20 border-none shadow-none">
+                            <Button variant="secondary" size="sm" onClick={handlePasteToAll}>
                             <Copy className="w-3 h-3 mr-1.5" />
                             {OPERATING_HOURS_UI.COPY_TO_ALL}
                             </Button>
@@ -183,7 +183,7 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
                         <TooltipContent>{OPERATING_HOURS_UI.COPY_TOOLTIP}</TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
-                    <Button variant="ghost" size="sm" onClick={handleCancelCopy} className="h-7 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10">
+                    <Button variant="ghost" size="sm" onClick={handleCancelCopy}>
                         {OPERATING_HOURS_UI.CANCEL}
                     </Button>
                     </div>

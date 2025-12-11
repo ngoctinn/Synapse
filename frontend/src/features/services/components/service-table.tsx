@@ -4,14 +4,14 @@ import { Resource, RoomType } from "@/features/resources"
 import { useBulkAction, useTableParams, useTableSelection } from "@/shared/hooks"
 import { formatCurrency } from "@/shared/lib/utils"
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/shared/ui/alert-dialog"
 import { Badge } from "@/shared/ui/badge"
 import { Column, DataTable } from "@/shared/ui/custom/data-table"
@@ -198,7 +198,7 @@ export function ServiceTable({
 
       {editingService && (
         <ServiceSheet
-            mode="edit"
+            mode="update"
             initialData={editingService}
             open={!!editingService}
             onOpenChange={(open) => !open && setEditingService(null)}

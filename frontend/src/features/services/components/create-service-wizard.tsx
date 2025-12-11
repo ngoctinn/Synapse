@@ -22,8 +22,7 @@ export function CreateServiceWizard({
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} className="shadow-lg shadow-primary/20">
-        <Plus className="mr-2 h-4 w-4" />
+      <Button onClick={() => setOpen(true)} startContent={<Plus className="h-4 w-4" />}>
         Tạo dịch vụ
       </Button>
 

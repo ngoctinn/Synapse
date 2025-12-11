@@ -7,10 +7,10 @@ import { useForm } from "react-hook-form"
 
 import { manageCustomer } from "@/features/customers/actions"
 import {
-  CustomerFormValues,
-  customerSchema,
-  CustomerUpdateFormValues,
-  customerUpdateSchema
+    CustomerFormValues,
+    customerSchema,
+    CustomerUpdateFormValues,
+    customerUpdateSchema
 } from "@/features/customers/model/schemas"
 import { Customer } from "@/features/customers/model/types"
 
@@ -18,12 +18,12 @@ import { Button } from "@/shared/ui/button"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { Form } from "@/shared/ui/form"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle
 } from "@/shared/ui/sheet"
 import { CustomerForm } from "./customer-form"
 
@@ -139,7 +139,7 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
             </Form>
         </div>
 
-        <SheetFooter className="px-6 py-4 border-t sm:justify-between flex-row items-center gap-4 bg-background z-30">
+        <SheetFooter className="px-6 py-4 border-t sm:justify-between flex-row items-center gap-4 bg-background">
             <Button
                 type="button"
                 variant="ghost"

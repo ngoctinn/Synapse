@@ -4,12 +4,12 @@ import { Resource, RoomType } from "@/features/resources"
 import { Button } from "@/shared/ui/button"
 import { Form } from "@/shared/ui/form"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
 } from "@/shared/ui/sheet"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save, Send } from "lucide-react"
@@ -23,7 +23,7 @@ import { Service, Skill } from "../types"
 import { ServiceForm } from "./service-form"
 
 interface ServiceSheetProps {
-  mode: "create" | "edit"
+  mode: "create" | "update"
   initialData?: Service
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -42,7 +42,7 @@ export function ServiceSheet({
   availableEquipment,
 }: ServiceSheetProps) {
   const [isPending, startTransition] = React.useTransition()
-  const isEditMode = mode === "edit"
+  const isUpdateMode = mode === "update"
 
   const form = useForm<ServiceFormValues>({
     resolver: zodResolver(serviceSchema) as Resolver<ServiceFormValues>,
@@ -93,16 +93,16 @@ export function ServiceSheet({
     startTransition(async () => {
       try {
         const result =
-          isEditMode && initialData
+          isUpdateMode && initialData
             ? await updateService(initialData.id, data)
             : await createService(data)
 
         if (result.success) {
           toast.success(
-            isEditMode ? "Cập nhật thành công" : "Tạo dịch vụ thành công",
+            isUpdateMode ? "Cập nhật thành công" : "Tạo dịch vụ thành công",
             {
               description: `Dịch vụ "${data.name}" đã được ${
-                isEditMode ? "cập nhật" : "thêm vào hệ thống"
+                isUpdateMode ? "cập nhật" : "thêm vào hệ thống"
               }.`,
             }
           )
@@ -123,10 +123,10 @@ export function ServiceSheet({
       <SheetContent className="w-full sm:max-w-xl p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
         <SheetHeader className="px-6 py-4 border-b">
           <SheetTitle className="text-xl font-semibold text-foreground">
-            {isEditMode ? "Chỉnh sửa dịch vụ" : "Tạo dịch vụ mới"}
+            {isUpdateMode ? "Chỉnh sửa dịch vụ" : "Tạo dịch vụ mới"}
           </SheetTitle>
           <SheetDescription className="text-muted-foreground text-sm">
-            {isEditMode
+            {isUpdateMode
               ? "Cập nhật thông tin dịch vụ, giá và tài nguyên."
               : "Thêm dịch vụ mới vào hệ thống của bạn."}
           </SheetDescription>
@@ -163,10 +163,10 @@ export function ServiceSheet({
             type="submit"
             form="service-form"
             isLoading={isPending}
-            className="min-w-[140px] shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
-            startContent={isEditMode ? <Save className="h-4 w-4" /> : <Send className="h-4 w-4" />}
+            className="min-w-[140px]"
+            startContent={isUpdateMode ? <Save className="h-4 w-4" /> : <Send className="h-4 w-4" />}
           >
-            {isEditMode ? "Lưu thay đổi" : "Tạo dịch vụ"}
+            {isUpdateMode ? "Lưu thay đổi" : "Tạo dịch vụ"}
           </Button>
         </SheetFooter>
       </SheetContent>
