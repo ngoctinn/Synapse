@@ -118,7 +118,7 @@ export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffShe
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} onOpenChange={(val) => !isPending && onOpenChange(val)}>
       <SheetContent className="w-full sm:max-w-md p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
         <SheetHeader className="px-6 py-4 border-b">
             <div className="flex items-center justify-between">
@@ -145,7 +145,8 @@ export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffShe
             <Button
                 type="button"
                 variant="ghost"
-                onClick={() => onOpenChange(false)}
+                onClick={() => !isPending && onOpenChange(false)}
+                disabled={isPending}
                 className="text-muted-foreground hover:text-foreground"
             >
                 Hủy bỏ

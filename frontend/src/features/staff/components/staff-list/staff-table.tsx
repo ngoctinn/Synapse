@@ -1,7 +1,7 @@
 "use client"
 
 import { Skill } from "@/features/services/types"
-import { useStaffActions } from "@/features/staff/hooks/use-staff-actions"
+import { deleteStaff } from "@/features/staff/actions"
 import { useTableParams, useTableSelection } from "@/shared/hooks"
 import { cn } from "@/shared/lib/utils"
 import {
@@ -21,6 +21,7 @@ import { AnimatedUsersIcon } from "@/shared/ui/custom/animated-icon"
 import { Column, DataTable } from "@/shared/ui/custom/data-table"
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state"
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
+import { showToast } from "@/shared/ui/custom/sonner"
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar"
 import {
   Tooltip,
@@ -29,7 +30,7 @@ import {
   TooltipTrigger,
 } from "@/shared/ui/tooltip"
 import { Calendar } from "lucide-react"
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { ROLE_CONFIG } from "../../model/constants"
 import { Staff } from "../../model/types"
 import { InviteStaffTrigger } from "../invite-staff-trigger"
@@ -92,16 +93,35 @@ export function StaffTable({
     keyExtractor: (item) => item.user_id,
   })
 
-  const {
-      isPending,
-      showBulkDeleteDialog,
-      setShowBulkDeleteDialog,
-      handleBulkDelete
-  } = useStaffActions()
+  const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
-  const onBulkDelete = () => {
-      const ids = Array.from(selection.selectedIds) as string[]
-      handleBulkDelete(ids, selection.clearAll)
+  const handleBulkDelete = () => {
+    const ids = Array.from(selection.selectedIds) as string[]
+    if (ids.length === 0) return
+
+    startTransition(async () => {
+      try {
+        const results = await Promise.allSettled(ids.map((id) => deleteStaff(id)))
+
+        const successCount = results.filter((r) => r.status === "fulfilled" && r.value.success).length
+        const failures = results.filter((r) => r.status === "rejected" || (r.status === "fulfilled" && !r.value.success))
+
+        if (successCount > 0) {
+          showToast.success("Thành công", `Đã xóa ${successCount} nhân viên`)
+          selection.clearAll()
+        }
+
+        if (failures.length > 0) {
+          showToast.error("Lỗi", `Không thể xóa ${failures.length} nhân viên`)
+        }
+      } catch (error) {
+        console.error(error)
+        showToast.error("Lỗi", "Không thể xóa nhân viên")
+      } finally {
+        setShowBulkDeleteDialog(false)
+      }
+    })
   }
 
 
@@ -212,6 +232,7 @@ export function StaffTable({
     }
   ]
 
+
   return (
     <>
       <DataTable
@@ -225,6 +246,7 @@ export function StaffTable({
         variant={variant}
         isLoading={isLoading}
         skeletonCount={5}
+        disabled={isPending}
 
         selectable
         isSelected={selection.isSelected}
@@ -246,6 +268,11 @@ export function StaffTable({
           />
         }
       />
+      {isPending && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/50 backdrop-blur-[1px]">
+            {/* Blocking interaction */}
+        </div>
+      )}
 
       <TableActionBar
         selectedCount={selection.selectedCount}
@@ -264,18 +291,25 @@ export function StaffTable({
               Xóa {selection.selectedCount} nhân viên?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Hành động này không thể hoàn tác. Tất cả nhân viên đã chọn sẽ bị xóa khỏi hệ thống.
+              Hành động này không thể hoàn tác. <span className="font-semibold text-foreground">{selection.selectedCount}</span> nhân viên đã chọn sẽ bị xóa vĩnh viễn khỏi hệ thống.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isPending}>Hủy</AlertDialogCancel>
             <AlertDialogAction
-              onClick={onBulkDelete}
+              onClick={handleBulkDelete}
 
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               disabled={isPending}
             >
-              {isPending ? "Đang xóa..." : `Xóa ${selection.selectedCount} mục`}
+              {isPending ? (
+                  <>
+                      <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-r-transparent" />
+                      Đang xóa...
+                  </>
+               ) : (
+                  `Xóa ${selection.selectedCount} mục`
+               )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

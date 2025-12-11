@@ -5,19 +5,19 @@ import { cn } from "@/shared/lib/utils"
 import { DatePicker } from "@/shared/ui/custom/date-picker"
 import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form"
 import { Input } from "@/shared/ui/input"
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/shared/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { Textarea } from "@/shared/ui/textarea"
@@ -106,7 +106,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                     startContent={<User size={18} />}
                     placeholder="Nguyễn Văn A"
                     {...field}
-                    className="bg-background h-10"
+                    className="bg-background"
                     />
                 </FormControl>
                 <FormMessage />
@@ -127,7 +127,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                         type="email"
                         placeholder="email@example.com"
                         {...field}
-                        className="bg-background h-10"
+                        className="bg-background"
                     />
                     </FormControl>
                     <FormMessage />
@@ -147,8 +147,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                         type="tel"
                         placeholder="0912 345 678"
                         {...field}
-                        className="h-10"
-                    />
+                        />
                     </FormControl>
                     <FormMessage />
                 </FormItem>
@@ -193,7 +192,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                     defaultValue={field.value}
                     disabled={mode === "update"}
                   >
-                    <SelectTrigger className="h-10" startContent={<Briefcase size={18} />}>
+                    <SelectTrigger startContent={<Briefcase size={18} />}>
                       <SelectValue placeholder="Chọn vai trò" />
                     </SelectTrigger>
                     <SelectContent>
@@ -218,7 +217,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                       startContent={<Briefcase size={18} />}
                       placeholder="VD: Senior Tech"
                       {...field}
-                      className="bg-background h-10"
+                      className="bg-background"
                     />
                   </FormControl>
                   <FormMessage />
@@ -280,7 +279,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                                 newTags={[]}
                                 onSelectedChange={(ids) => field.onChange(ids)}
                                 onNewTagsChange={() => {}}
-                                placeholder="Chọn kỹ năng..."
+                                placeholder="Nhập tên kỹ năng rồi nhấn Enter..."
                                 isError={fieldState.invalid}
                             />
                         </FormControl>
