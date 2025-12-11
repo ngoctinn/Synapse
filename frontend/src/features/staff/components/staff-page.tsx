@@ -120,15 +120,13 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
             {activeTab === "list" && (
               <FilterBar
                 startContent={
-                  <div className="relative">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
                     <Input
                       placeholder="Tìm kiếm nhân viên..."
                       defaultValue={initialSearch}
                       onChange={(e) => handleSearch(e.target.value)}
-                      className="h-9 bg-background pl-9 pr-4 w-full md:w-[250px]"
+                      startContent={<Search className="size-4" />}
+                      className="h-9 bg-background w-full md:w-[250px]"
                     />
-                  </div>
                 }
                 endContent={<StaffFilter />}
               />
