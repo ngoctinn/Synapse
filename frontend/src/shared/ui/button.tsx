@@ -1,14 +1,14 @@
-import { Slot } from "@radix-ui/react-slot"
-import { cva, type VariantProps } from "class-variance-authority"
-import { Loader2 } from "lucide-react"
-import * as React from "react"
+import { Slot } from "@radix-ui/react-slot";
+import { cva, type VariantProps } from "class-variance-authority";
+import { Loader2 } from "lucide-react";
+import * as React from "react";
 
 import {
-    type ButtonVariant,
-    type ComponentSize,
-    warnDeprecated,
-} from "@/shared/lib/design-system.types"
-import { cn } from "@/shared/lib/utils"
+  type ButtonVariant,
+  type ComponentSize,
+  warnDeprecated,
+} from "@/shared/lib/design-system.types";
+import { cn } from "@/shared/lib/utils";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 active:scale-[0.98] cursor-pointer",
@@ -42,30 +42,30 @@ const buttonVariants = cva(
       size: "default",
     },
   }
-)
+);
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  asChild?: boolean
+  asChild?: boolean;
   /** Trạng thái loading của button */
-  isLoading?: boolean
+  isLoading?: boolean;
   /** Icon hoặc content hiển thị bên trái */
-  startContent?: React.ReactNode
+  startContent?: React.ReactNode;
   /** Icon hoặc content hiển thị bên phải */
-  endContent?: React.ReactNode
+  endContent?: React.ReactNode;
   /**
    * @deprecated Sử dụng `isLoading` thay thế
    */
-  loading?: boolean
+  loading?: boolean;
   /**
    * @deprecated Sử dụng `startContent` thay thế
    */
-  leftIcon?: React.ReactNode
+  leftIcon?: React.ReactNode;
   /**
    * @deprecated Sử dụng `endContent` thay thế
    */
-  rightIcon?: React.ReactNode
+  rightIcon?: React.ReactNode;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -89,21 +89,21 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     // Deprecation warnings
     if (loading) {
-      warnDeprecated("Button", "loading", "isLoading")
+      warnDeprecated("Button", "loading", "isLoading");
     }
     if (leftIcon) {
-      warnDeprecated("Button", "leftIcon", "startContent")
+      warnDeprecated("Button", "leftIcon", "startContent");
     }
     if (rightIcon) {
-      warnDeprecated("Button", "rightIcon", "endContent")
+      warnDeprecated("Button", "rightIcon", "endContent");
     }
 
-    const Comp = asChild ? Slot : "button"
-    const isRunning = isLoading || loading
+    const Comp = asChild ? Slot : "button";
+    const isRunning = isLoading || loading;
 
     // Backward compat: fallback to deprecated props if new ones not provided
-    const leftContent = startContent ?? leftIcon
-    const rightContent = endContent ?? rightIcon
+    const leftContent = startContent ?? leftIcon;
+    const rightContent = endContent ?? rightIcon;
 
     return (
       <Comp
@@ -113,15 +113,18 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {isRunning && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        {!isRunning && leftContent && <span className="mr-1">{leftContent}</span>}
+        {!isRunning && leftContent && (
+          <span className="mr-1">{leftContent}</span>
+        )}
         {children}
-        {!isRunning && rightContent && <span className="ml-1">{rightContent}</span>}
+        {!isRunning && rightContent && (
+          <span className="ml-1">{rightContent}</span>
+        )}
       </Comp>
-    )
+    );
   }
-)
-Button.displayName = "Button"
+);
+Button.displayName = "Button";
 
-export { Button, buttonVariants }
-export type { ButtonVariant, ComponentSize }
-
+export { Button, buttonVariants };
+export type { ButtonVariant, ComponentSize };

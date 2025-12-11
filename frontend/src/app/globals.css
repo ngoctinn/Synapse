@@ -6,15 +6,15 @@
 :root {
   /* --- Premium Spa Palette (Light) --- */
   /* Background: Pure Neutral White/Gray */
-  --background: oklch(1.0 0 0);
+  --background: oklch(1 0 0);
   /* Foreground: Deep Slate for readability */
   --foreground: oklch(0.25 0.02 260);
 
   /* Card: Pure White */
-  --card: oklch(1.0 0 0);
+  --card: oklch(1 0 0);
   --card-foreground: oklch(0.25 0.02 260);
 
-  --popover: oklch(1.0 0 0);
+  --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.25 0.02 260);
 
   /* Layout Variables */
@@ -23,8 +23,13 @@
   --appointment-header-height-mobile: 130px;
   --calendar-header-height: 53px;
   --calendar-header-height-mobile: 130px;
-  --timeline-header-offset: calc(var(--appointment-header-height) + var(--calendar-header-height));
-  --timeline-header-offset-mobile: calc(var(--appointment-header-height-mobile) + var(--calendar-header-height-mobile));
+  --timeline-header-offset: calc(
+    var(--appointment-header-height) + var(--calendar-header-height)
+  );
+  --timeline-header-offset-mobile: calc(
+    var(--appointment-header-height-mobile) +
+      var(--calendar-header-height-mobile)
+  );
 
   --staff-header-height: 53px;
   --staff-header-height-mobile: 105px;
@@ -35,7 +40,7 @@
 
   /* Secondary: Soft Sage/Mist (Tăng chroma để nổi bật hơn) */
   --secondary: oklch(0.93 0.06 160);
-  --secondary-foreground: oklch(0.30 0.10 160);
+  --secondary-foreground: oklch(0.3 0.1 160);
 
   /* Muted: Neutral Gray for dividers/subtext */
   --muted: oklch(0.96 0.01 260);
@@ -47,25 +52,25 @@
 
   /* Destructive: Soft Red */
   --destructive: oklch(0.65 0.22 25);
-  --destructive-foreground: oklch(1.0 0 0);
+  --destructive-foreground: oklch(1 0 0);
 
   /* Border: Subtle Gray - Premium Light */
   --border: oklch(0.94 0.01 260); /* Lighter than before (0.92) */
-  --input: oklch(0.94 0.01 260);  /* Softens the default border */
-  --ring: oklch(0.48 0.14 200);   /* Keep Primary Teal */
+  --input: oklch(0.94 0.01 260); /* Softens the default border */
+  --ring: oklch(0.48 0.14 200); /* Keep Primary Teal */
 
   /* Charts: Harmonious Nature Tones */
   --chart-1: oklch(0.48 0.14 200); /* Teal */
-  --chart-2: oklch(0.60 0.15 160); /* Green */
+  --chart-2: oklch(0.6 0.15 160); /* Green */
   --chart-3: oklch(0.55 0.12 240); /* Blue */
-  --chart-4: oklch(0.70 0.15 85);  /* Gold */
-  --chart-5: oklch(0.65 0.20 25);  /* Coral */
+  --chart-4: oklch(0.7 0.15 85); /* Gold */
+  --chart-5: oklch(0.65 0.2 25); /* Coral */
 
   /* Sidebar: Glassy White */
-  --sidebar: oklch(1.0 0 0); /* Match global background */
+  --sidebar: oklch(1 0 0); /* Match global background */
   --sidebar-foreground: oklch(0.25 0.02 260);
   --sidebar-primary: oklch(0.48 0.14 200);
-  --sidebar-primary-foreground: oklch(1.0 0 0);
+  --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.96 0 0); /* Neutral accent */
   --sidebar-accent-foreground: oklch(0.25 0.02 260);
   --sidebar-border: oklch(0.94 0 0); /* Neutral border */
@@ -86,38 +91,38 @@
   /* Alert Colors: Warning (Amber) */
   --alert-warning: oklch(0.96 0.08 85);
   --alert-warning-foreground: oklch(0.45 0.12 50);
-  --alert-warning-border: oklch(0.88 0.10 85);
+  --alert-warning-border: oklch(0.88 0.1 85);
 
   /* Alert Colors: Success (Green) */
   --alert-success: oklch(0.96 0.05 155);
-  --alert-success-foreground: oklch(0.35 0.10 155);
+  --alert-success-foreground: oklch(0.35 0.1 155);
   --alert-success-border: oklch(0.88 0.08 155);
 
   /* Alert Colors: Info (Blue) */
   --alert-info: oklch(0.96 0.05 240);
-  --alert-info-foreground: oklch(0.40 0.12 240);
+  --alert-info-foreground: oklch(0.4 0.12 240);
   --alert-info-border: oklch(0.88 0.08 240);
 
   /* Vibrant Alert Colors (Mid-tone for UI Elements like Sonner) */
   /* Mimics Destructive behavior: High Chroma, Mid Lightness */
   --alert-warning-vibrant: oklch(0.75 0.16 70);
-  --alert-success-vibrant: oklch(0.65 0.20 150);
-  --alert-info-vibrant: oklch(0.60 0.18 240);
+  --alert-success-vibrant: oklch(0.65 0.2 150);
+  --alert-info-vibrant: oklch(0.6 0.18 240);
 
   /* --- Appointment Status Colors (Premium Pastel) --- */
   /* Pending: Amber-like */
   --status-pending: oklch(0.96 0.08 85);
   --status-pending-foreground: oklch(0.45 0.12 50);
-  --status-pending-border: oklch(0.88 0.10 85);
+  --status-pending-border: oklch(0.88 0.1 85);
 
   /* Confirmed: Sky-like */
   --status-confirmed: oklch(0.96 0.05 240);
-  --status-confirmed-foreground: oklch(0.40 0.12 240);
+  --status-confirmed-foreground: oklch(0.4 0.12 240);
   --status-confirmed-border: oklch(0.88 0.08 240);
 
   /* Serving: Emerald-like */
   --status-serving: oklch(0.96 0.05 155);
-  --status-serving-foreground: oklch(0.35 0.10 155);
+  --status-serving-foreground: oklch(0.35 0.1 155);
   --status-serving-border: oklch(0.88 0.08 155);
 
   /* Completed: Slate-like */
@@ -131,9 +136,9 @@
   --status-cancelled-border: oklch(0.88 0.08 15);
 
   /* No-Show: Red-like */
-  --status-noshow: oklch(0.95 0.10 25);
-  --status-noshow-foreground: oklch(0.40 0.15 25);
-  --status-noshow-border: oklch(0.88 0.10 25);
+  --status-noshow: oklch(0.95 0.1 25);
+  --status-noshow-foreground: oklch(0.4 0.15 25);
+  --status-noshow-border: oklch(0.88 0.1 25);
 }
 
 .dark {
@@ -159,37 +164,37 @@
 
   /* Muted: Dark Gray */
   --muted: oklch(0.25 0.02 260);
-  --muted-foreground: oklch(0.70 0.02 260);
+  --muted-foreground: oklch(0.7 0.02 260);
 
   /* Accent: Deep Gold/Bronze */
-  --accent: oklch(0.30 0.10 85);
-  --accent-foreground: oklch(0.90 0.10 85);
+  --accent: oklch(0.3 0.1 85);
+  --accent-foreground: oklch(0.9 0.1 85);
 
   --destructive: oklch(0.65 0.22 25);
-  --destructive-foreground: oklch(1.0 0 0);
+  --destructive-foreground: oklch(1 0 0);
 
   --border: oklch(0.28 0.02 260);
   --input: oklch(0.28 0.02 260);
   --ring: oklch(0.65 0.15 200);
 
   --chart-1: oklch(0.65 0.15 200);
-  --chart-2: oklch(0.60 0.15 160);
+  --chart-2: oklch(0.6 0.15 160);
   --chart-3: oklch(0.55 0.12 240);
-  --chart-4: oklch(0.70 0.15 85);
-  --chart-5: oklch(0.65 0.20 25);
+  --chart-4: oklch(0.7 0.15 85);
+  --chart-5: oklch(0.65 0.2 25);
 
   --sidebar: oklch(0.15 0.02 260);
   --sidebar-foreground: oklch(0.95 0.01 260);
   --sidebar-primary: oklch(0.65 0.15 200);
-  --sidebar-primary-foreground: oklch(1.0 0 0);
+  --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.25 0.05 200);
-  --sidebar-accent-foreground: oklch(0.90 0.05 200);
+  --sidebar-accent-foreground: oklch(0.9 0.05 200);
   --sidebar-border: oklch(0.28 0.02 260);
   --sidebar-ring: oklch(0.65 0.15 200);
 
   /* Alert Colors: Warning (Amber) - Dark */
   --alert-warning: oklch(0.25 0.08 50);
-  --alert-warning-foreground: oklch(0.90 0.08 85);
+  --alert-warning-foreground: oklch(0.9 0.08 85);
   --alert-warning-border: oklch(0.35 0.08 50);
 
   /* Alert Colors: Success (Green) - Dark */
@@ -205,7 +210,7 @@
   /* --- Appointment Status Colors (Premium Pastel) - Dark --- */
   /* Pending: Amber-like */
   --status-pending: oklch(0.25 0.08 50);
-  --status-pending-foreground: oklch(0.90 0.08 85);
+  --status-pending-foreground: oklch(0.9 0.08 85);
   --status-pending-border: oklch(0.35 0.08 50);
 
   /* Confirmed: Sky-like */
@@ -220,7 +225,7 @@
 
   /* Completed: Slate-like */
   --status-completed: oklch(0.15 0.02 260);
-  --status-completed-foreground: oklch(0.70 0.02 260);
+  --status-completed-foreground: oklch(0.7 0.02 260);
   --status-completed-border: oklch(0.28 0.02 260);
 
   /* Cancelled: Rose-like */
@@ -229,9 +234,9 @@
   --status-cancelled-border: oklch(0.32 0.06 15);
 
   /* No-Show: Red-like */
-  --status-noshow: oklch(0.25 0.10 25);
-  --status-noshow-foreground: oklch(0.90 0.10 25);
-  --status-noshow-border: oklch(0.35 0.10 25);
+  --status-noshow: oklch(0.25 0.1 25);
+  --status-noshow-foreground: oklch(0.9 0.1 25);
+  --status-noshow-border: oklch(0.35 0.1 25);
 }
 
 @theme inline {
@@ -321,7 +326,8 @@
   * {
     @apply border-border outline-ring/50;
   }
-  html, body {
+  html,
+  body {
     height: 100%;
   }
   body {
@@ -352,7 +358,7 @@
 
   /* Ensure Error State Focus is Red */
   .focus-premium[aria-invalid="true"] {
-     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/20 focus-visible:border-destructive transition-all duration-200;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/20 focus-visible:border-destructive transition-all duration-200;
   }
 
   .glass-card {
@@ -377,7 +383,12 @@
   }
 
   .animate-shimmer {
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.5),
+      transparent
+    );
     background-size: 200% 100%;
     animation: shimmer 2s infinite;
   }
@@ -393,33 +404,110 @@
 
 /* Keyframes */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 @keyframes bounceSubtle {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 @keyframes pulseHorizontal {
-  0%, 100% { transform: translateX(0); opacity: 1; }
-  50% { transform: translateX(-3px); opacity: 0.7; }
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(-3px);
+    opacity: 0.7;
+  }
+}
+
+/* Blob Animation for Hero */
+@keyframes blob {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(20px, -30px) scale(1.05);
+  }
+  50% {
+    transform: translate(-20px, 20px) scale(0.95);
+  }
+  75% {
+    transform: translate(30px, 10px) scale(1.02);
+  }
+}
+
+.animate-blob {
+  animation: blob 10s ease-in-out infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Gradient Animation */
+@keyframes gradient-x {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 3s ease infinite;
 }
 
 /* Custom Scrollbar */
@@ -442,4 +530,3 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--muted-foreground);
 }
-
