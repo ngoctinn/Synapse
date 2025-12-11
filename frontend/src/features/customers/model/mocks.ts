@@ -2,16 +2,14 @@ import { Customer } from './types';
 
 export const MOCK_CUSTOMERS: Customer[] = [
   {
-    user_id: "user-1",
-    user: {
-      id: "user-1",
-      full_name: "Phạm Thị Hoa",
-      email: "hoa.pham@example.com",
-      phone_number: "0912345678",
-      avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Hoa",
-      is_active: true,
-      created_at: "2024-01-15T08:00:00Z"
-    },
+    id: "cust-1", // New independent ID
+    user_id: "user-1", // Linked App Account
+    full_name: "Phạm Thị Hoa",
+    phone_number: "0912345678",
+    email: "hoa.pham@example.com",
+    avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Hoa",
+    is_active: true,
+
     loyalty_points: 150,
     membership_tier: "SILVER",
     gender: "FEMALE",
@@ -19,19 +17,20 @@ export const MOCK_CUSTOMERS: Customer[] = [
     address: "123 Nguyễn Huệ, Q1, TP.HCM",
     allergies: "Dị ứng phấn hoa",
     medical_notes: "Da nhạy cảm, dễ kích ứng với mỹ phẩm chứa cồn",
-    preferred_staff_id: null
+    preferred_staff_id: null,
+
+    created_at: "2024-01-15T08:00:00Z",
+    updated_at: "2024-01-15T08:00:00Z"
   },
   {
+    id: "cust-2",
     user_id: "user-2",
-    user: {
-      id: "user-2",
-      full_name: "Trần Minh Tuấn",
-      email: "tuan.tran@example.com",
-      phone_number: "0987654321",
-      avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Tuan",
-      is_active: true,
-      created_at: "2024-02-10T10:30:00Z"
-    },
+    full_name: "Trần Minh Tuấn",
+    phone_number: "0987654321",
+    email: "tuan.tran@example.com",
+    avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Tuan",
+    is_active: true,
+
     loyalty_points: 520,
     membership_tier: "GOLD",
     gender: "MALE",
@@ -39,26 +38,52 @@ export const MOCK_CUSTOMERS: Customer[] = [
     address: "45 Lê Lợi, Q1, TP.HCM",
     allergies: null,
     medical_notes: "Thường xuyên đau mỏi vai gáy",
-    preferred_staff_id: "staff-1"
+    preferred_staff_id: "staff-1",
+
+    created_at: "2024-02-10T10:30:00Z",
+    updated_at: "2024-02-10T10:30:00Z"
   },
   {
-      user_id: "user-3",
-      user: {
-        id: "user-3",
-        full_name: "Lê Thu Thảo",
-        email: "thao.le@gmail.com",
-        phone_number: "0901234567",
-        avatar_url: null,
-        is_active: true,
-        created_at: "2024-03-05T14:15:00Z"
-      },
-      loyalty_points: 1200,
-      membership_tier: "PLATINUM",
-      gender: "FEMALE",
-      date_of_birth: "1995-08-08",
-      address: "Biệt thự Lan Anh, Q2",
-      allergies: "Hải sản",
-      medical_notes: "Đang mang thai tuần thứ 12",
-      preferred_staff_id: "staff-2"
-    }
+    id: "cust-3",
+    user_id: "user-3",
+    full_name: "Lê Thu Thảo",
+    phone_number: "0901234567",
+    email: "thao.le@gmail.com",
+    avatar_url: null,
+    is_active: true,
+
+    loyalty_points: 1200,
+    membership_tier: "PLATINUM",
+    gender: "FEMALE",
+    date_of_birth: "1995-08-08",
+    address: "Biệt thự Lan Anh, Q2",
+    allergies: "Hải sản",
+    medical_notes: "Đang mang thai tuần thứ 12",
+    preferred_staff_id: "staff-2",
+
+    created_at: "2024-03-05T14:15:00Z",
+    updated_at: "2024-03-05T14:15:00Z"
+  },
+  // Example: Walk-in Guest (No email, no user_id)
+  {
+    id: "cust-4",
+    user_id: null, // Walk-in
+    full_name: "Chị Lan (Vãng lai)",
+    phone_number: "0999888777", // Only Phone
+    email: null,
+    avatar_url: null,
+    is_active: true,
+
+    loyalty_points: 50,
+    membership_tier: "SILVER",
+    gender: "FEMALE",
+    date_of_birth: null,
+    address: null,
+    allergies: null,
+    medical_notes: "Khách gọi điện đặt lần đầu",
+    preferred_staff_id: null,
+
+    created_at: "2025-12-11T09:00:00Z",
+    updated_at: "2025-12-11T09:00:00Z"
+  }
 ]

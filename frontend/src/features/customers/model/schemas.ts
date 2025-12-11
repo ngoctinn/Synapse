@@ -10,12 +10,13 @@ export const customerSchema = z.object({
   allergies: z.string().optional().nullable(),
   medical_notes: z.string().optional().nullable(),
   preferred_staff_id: z.string().optional().nullable(),
+  loyalty_points: z.coerce.number().min(0).optional().default(0),
 })
 
 export type CustomerFormValues = z.infer<typeof customerSchema>
 
 export const customerUpdateSchema = customerSchema.extend({
-  user_id: z.string().uuid(),
+  id: z.string().uuid(),
 })
 
 export type CustomerUpdateFormValues = z.infer<typeof customerUpdateSchema>

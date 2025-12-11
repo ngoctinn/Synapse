@@ -74,7 +74,7 @@ export function CustomerTable({
 
   const selection = useTableSelection({
     data,
-    keyExtractor: (item) => item.user_id,
+    keyExtractor: (item) => item.id,
   })
 
   const handleBulkDelete = async () => {
@@ -87,27 +87,27 @@ export function CustomerTable({
   const columns: Column<Customer>[] = [
     {
       header: "Khách hàng",
-      accessorKey: "user.full_name" as any,
+      accessorKey: "full_name",
       sortable: true,
       cell: (customer) => (
         <div className="flex items-center gap-4">
           <Avatar className="h-11 w-11 border">
-            <AvatarImage src={customer.user.avatar_url || undefined} alt={customer.user.full_name} />
+            <AvatarImage src={customer.avatar_url || undefined} alt={customer.full_name} />
             <AvatarFallback className="bg-primary/10 text-primary font-medium">
-              {(customer.user.full_name).charAt(0).toUpperCase()}
+              {(customer.full_name).charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">{customer.user.full_name}</span>
-            <span className="text-xs text-muted-foreground">{customer.user.email}</span>
+            <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">{customer.full_name}</span>
+            <span className="text-xs text-muted-foreground">{customer.email || "Chưa có email"}</span>
           </div>
         </div>
       )
     },
     {
         header: "Số điện thoại",
-        accessorKey: "user.phone_number" as any,
-        cell: (c) => <div className="text-sm font-mono">{c.user.phone_number || "--"}</div>
+        accessorKey: "phone_number",
+        cell: (c) => <div className="text-sm font-mono">{c.phone_number || "--"}</div>
     },
     {
         header: "Hạng thành viên",
@@ -177,7 +177,7 @@ export function CustomerTable({
       <DataTable
         data={data}
         columns={columns}
-        keyExtractor={(item) => item.user_id}
+        keyExtractor={(item) => item.id}
         page={page}
         totalPages={totalPages}
         onPageChange={handlePageChange}

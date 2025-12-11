@@ -2,6 +2,7 @@
 
 import { Skill } from "@/features/services/types"
 import { cn } from "@/shared/lib/utils"
+import { DatePicker } from "@/shared/ui/custom/date-picker"
 import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
     FormControl,
@@ -20,6 +21,7 @@ import {
 } from "@/shared/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { Textarea } from "@/shared/ui/textarea"
+import { format, parse } from "date-fns"
 import { Briefcase, Check, Mail, Phone, User } from "lucide-react"
 import { useFormContext, useWatch } from "react-hook-form"
 
@@ -266,9 +268,10 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                     <FormItem>
                         <FormLabel className="text-foreground/80 font-normal">Ngày tuyển dụng</FormLabel>
                         <FormControl>
-                            <Input
-                                type="date"
-                                {...field}
+                            <DatePicker
+                                value={field.value ? parse(field.value, "yyyy-MM-dd", new Date()) : undefined}
+                                onChange={(date) => field.onChange(date ? format(date, "yyyy-MM-dd") : "")}
+                                placeholder="Chọn ngày"
                                 className="bg-background"
                             />
                         </FormControl>

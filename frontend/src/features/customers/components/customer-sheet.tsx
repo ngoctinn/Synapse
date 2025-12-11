@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Save, UserPlus } from "lucide-react"
+import { AlertCircle, Crown, Save, UserPlus } from "lucide-react"
 import * as React from "react"
 import { useForm } from "react-hook-form"
 
@@ -14,6 +14,8 @@ import {
 } from "@/features/customers/model/schemas"
 import { Customer } from "@/features/customers/model/types"
 
+
+import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { Form } from "@/shared/ui/form"
@@ -47,8 +49,9 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
 
   const schema = mode === "create" ? customerSchema : customerUpdateSchema
 
+
   const form = useForm<CustomerFormValues | CustomerUpdateFormValues>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema) as any,
     defaultValues: {
       full_name: "",
       email: "",
@@ -74,10 +77,10 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
     if (open) {
       if (mode === "update" && customer) {
           form.reset({
-              user_id: customer.user_id,
-              full_name: customer.user.full_name,
-              email: customer.user.email,
-              phone_number: customer.user.phone_number || "",
+              id: customer.id,
+              full_name: customer.full_name,
+              email: customer.email || "",
+              phone_number: customer.phone_number || "",
               gender: customer.gender || undefined,
               date_of_birth: customer.date_of_birth || "",
               address: customer.address || "",
@@ -120,9 +123,23 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
       <SheetContent className="w-full sm:max-w-xl p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
         <SheetHeader className="px-6 py-4 border-b">
             <div className="flex items-center justify-between">
-                <SheetTitle className="text-xl font-semibold text-foreground">
+                <SheetTitle className="text-xl font-semibold text-foreground flex items-center gap-3">
                     {mode === "create" ? "Thêm khách hàng mới" : "Hồ sơ khách hàng"}
-                </SheetTitle>
+
+                    {mode === "update" && customer?.allergies && (
+                        <Badge variant="destructive" className="gap-1.5 h-6 animate-in zoom-in-50">
+                             <AlertCircle className="size-3.5" />
+                             Dị ứng
+                        </Badge>
+                    )}
+
+                    {mode === "update" && customer?.membership_tier === "GOLD" && (
+                        <Badge variant="warning" className="gap-1.5 h-6 border-amber-200 text-amber-700 bg-amber-100">
+                             <Crown className="size-3.5" />
+                             Gold
+                        </Badge>
+                    )}
+                 </SheetTitle>
             </div>
             <SheetDescription className="text-muted-foreground text-sm">
                 {mode === "create"
