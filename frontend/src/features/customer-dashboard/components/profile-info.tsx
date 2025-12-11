@@ -28,13 +28,12 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
           name="fullName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-semibold text-foreground/80">{PROFILE_LABELS.FULL_NAME}</FormLabel>
+              <FormLabel className="text-foreground/80 font-normal">{PROFILE_LABELS.FULL_NAME}</FormLabel>
               <FormControl>
                 <Input
                   startContent={<User className="w-4 h-4 text-muted-foreground" />}
                   placeholder={PROFILE_LABELS.FULL_NAME_PLACEHOLDER}
                   aria-invalid={!!form.formState.errors.fullName}
-                  className=""
                   {...field}
                 />
               </FormControl>
@@ -49,7 +48,7 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
             name="dateOfBirth"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-semibold text-foreground/80">{PROFILE_LABELS.DATE_OF_BIRTH}</FormLabel>
+                <FormLabel className="text-foreground/80 font-normal">{PROFILE_LABELS.DATE_OF_BIRTH}</FormLabel>
                 <FormControl>
                   <DatePicker
                     mode="input"
@@ -77,14 +76,13 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-semibold text-foreground/80">{PROFILE_LABELS.PHONE}</FormLabel>
+                <FormLabel className="text-foreground/80 font-normal">{PROFILE_LABELS.PHONE}</FormLabel>
                 <FormControl>
                   <Input
                     type="tel"
                     startContent={<Phone className="w-4 h-4 text-muted-foreground" />}
                     placeholder={PROFILE_LABELS.PHONE_PLACEHOLDER}
                     aria-invalid={!!form.formState.errors.phone}
-                    className=""
                     {...field}
                   />
                 </FormControl>
@@ -99,7 +97,7 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-semibold text-foreground/80">{PROFILE_LABELS.EMAIL}</FormLabel>
+              <FormLabel className="text-foreground/80 font-normal">{PROFILE_LABELS.EMAIL}</FormLabel>
               <FormControl>
                 <TooltipProvider>
                   <Tooltip delayDuration={200}>
@@ -133,13 +131,12 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
           name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-semibold text-foreground/80">{PROFILE_LABELS.ADDRESS}</FormLabel>
+              <FormLabel className="text-foreground/80 font-normal">{PROFILE_LABELS.ADDRESS}</FormLabel>
               <FormControl>
                 <Input
                   startContent={<MapPin className="w-4 h-4 text-muted-foreground" />}
                   placeholder={PROFILE_LABELS.ADDRESS_PLACEHOLDER}
                   aria-invalid={!!form.formState.errors.address}
-                  className=""
                   {...field}
                 />
               </FormControl>

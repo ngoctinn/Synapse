@@ -36,7 +36,7 @@ export function ProfileAvatar({ user, control }: ProfileAvatarProps) {
                     </Avatar>
 
                     {/* Hover Overlay */}
-                    <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-300 backdrop-blur-[1px]">
+                    <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-300">
                       <Camera className="h-8 w-8 text-white drop-shadow-md" />
                     </div>
 

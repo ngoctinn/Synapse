@@ -89,12 +89,12 @@ export function ProfileForm({ user }: ProfileFormProps) {
   return (
     <MotionWrapper
       {...motionProps}
-      className="w-full max-w-5xl mx-auto pt-20 md:pt-24 pb-12"
+      className="w-full max-w-5xl mx-auto py-8 px-4"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <Card className="relative overflow-hidden border-200 border shadow-sm bg-card/100 dark:bg-card/50 backdrop-blur-md ring-1 ring-black/5 dark:ring-white/10 dark:border-white/10">
-            <CardHeader className="pb-8 border-b border-border/10 bg-muted/20 px-8 pt-8">
+          <Card className="relative overflow-hidden border shadow-sm bg-card dark:bg-card/80">
+            <CardHeader className="pb-8 border-b bg-muted/40 px-8 pt-8">
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="text-2xl font-bold tracking-tight text-foreground">
