@@ -2,7 +2,7 @@
 
 import { Skill } from "@/features/services/types"
 import { useStaffActions } from "@/features/staff/hooks/use-staff-actions"
-import { useTableSelection } from "@/shared/hooks/use-table-selection"
+import { useTableParams, useTableSelection } from "@/shared/hooks"
 import { cn } from "@/shared/lib/utils"
 import {
   AlertDialog,
@@ -30,7 +30,6 @@ import {
   TooltipTrigger,
 } from "@/shared/ui/tooltip"
 import { Calendar } from "lucide-react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { ROLE_CONFIG } from "../../model/constants"
 import { Staff } from "../../model/types"
@@ -70,23 +69,24 @@ const GroupActionButtons = ({ staff }: { staff: Staff }) => {
 export function StaffTable({
   data,
   skills,
-  page = 1,
+  page: pageProp,
   totalPages = 1,
-  onPageChange,
+  onPageChange: onPageChangeProp,
   className,
   variant = "default",
   isLoading
 }: StaffTableProps) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
   const [editingStaff, setEditingStaff] = useState<Staff | null>(null)
 
+  // Use custom hook for URL state management
+  const { page: urlPage, sortBy, order, handlePageChange: urlPageChange, handleSort } = useTableParams({
+    defaultSortBy: "created_at",
+    defaultOrder: "desc"
+  })
 
-
-  const sortColumn = searchParams.get("sort_by") || "created_at"
-  const sortDirection = (searchParams.get("order") as "asc" | "desc") || "desc"
-
+  // Support both controlled and uncontrolled modes
+  const page = pageProp ?? urlPage
+  const handlePageChange = onPageChangeProp ?? urlPageChange
 
   const selection = useTableSelection({
     data,
@@ -100,32 +100,11 @@ export function StaffTable({
       handleBulkDelete
   } = useStaffActions()
 
-  const handlePageChange = (newPage: number) => {
-    if (onPageChange) {
-      onPageChange(newPage)
-      return
-    }
-
-    const params = new URLSearchParams(searchParams.toString())
-    params.set("page", newPage.toString())
-    router.push(`${pathname}?${params.toString()}`)
-  }
-
-  const handleSort = (column: string) => {
-    const params = new URLSearchParams(searchParams.toString())
-    if (sortColumn === column) {
-      params.set("order", sortDirection === "asc" ? "desc" : "asc")
-    } else {
-      params.set("sort_by", column)
-      params.set("order", "asc") // Default to asc for new column
-    }
-    router.push(`${pathname}?${params.toString()}`)
-  }
-
   const onBulkDelete = () => {
       const ids = Array.from(selection.selectedIds) as string[]
       handleBulkDelete(ids, selection.clearAll)
   }
+
 
   const columns: Column<Staff>[] = [
     {
@@ -248,8 +227,8 @@ export function StaffTable({
         isPartiallySelected={selection.isPartiallySelected}
 
         onRowClick={(staff) => setEditingStaff(staff)}
-        sortColumn={sortColumn}
-        sortDirection={sortDirection}
+        sortColumn={sortBy}
+        sortDirection={order}
         onSort={handleSort}
         emptyState={
           <DataTableEmptyState

@@ -1,17 +1,17 @@
 "use client"
 
 import { Resource, RoomType } from "@/features/resources"
-import { useTableSelection } from "@/shared/hooks/use-table-selection"
+import { useBulkAction, useTableParams, useTableSelection } from "@/shared/hooks"
 import { formatCurrency } from "@/shared/lib/utils"
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
 } from "@/shared/ui/alert-dialog"
 import { Badge } from "@/shared/ui/badge"
 import { Column, DataTable } from "@/shared/ui/custom/data-table"
@@ -20,9 +20,7 @@ import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
 import { StatusBadge } from "@/shared/ui/custom/status-badge"
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar"
 import { Plus } from "lucide-react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useState, useTransition } from "react"
-import { toast } from "sonner"
+import { useState } from "react"
 import { deleteService } from "../actions"
 import { Service, Skill } from "../types"
 import { CreateServiceWizard } from "./create-service-wizard"
@@ -47,72 +45,43 @@ export function ServiceTable({
   availableSkills,
   availableRoomTypes,
   availableEquipment,
-  page = 1,
+  page: pageProp,
   totalPages = 1,
-  onPageChange,
+  onPageChange: onPageChangeProp,
   className,
   variant = "default",
   isLoading
 }: ServiceTableProps) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-  const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false)
   const [editingService, setEditingService] = useState<Service | null>(null)
-  const [isPending, startTransition] = useTransition()
 
+  // Use custom hook for URL state management
+  const { page: urlPage, handlePageChange: urlPageChange } = useTableParams()
+
+  // Support both controlled and uncontrolled modes
+  const page = pageProp ?? urlPage
+  const handlePageChange = onPageChangeProp ?? urlPageChange
 
   const selection = useTableSelection({
     data: services,
     keyExtractor: (item) => item.id,
   })
 
-  const handlePageChange = (newPage: number) => {
-    if (onPageChange) {
-      onPageChange(newPage)
-      return
+  // Use custom hook for bulk delete
+  const { execute: executeBulkDelete, isPending, showDialog: showBulkDeleteDialog, setShowDialog: setShowBulkDeleteDialog } = useBulkAction(
+    deleteService,
+    {
+      successMessage: (count) => `Đã xóa ${count} dịch vụ`,
+      errorMessage: (count) => `Không thể xóa ${count} dịch vụ`,
     }
+  )
 
-    const params = new URLSearchParams(searchParams.toString())
-    params.set("page", newPage.toString())
-    router.push(`${pathname}?${params.toString()}`)
-  }
-
-
-  const handleBulkDelete = async () => {
+  const handleBulkDelete = () => {
     const ids = Array.from(selection.selectedIds) as string[]
-    if (ids.length === 0) return
-
-    startTransition(async () => {
-      try {
-        let successCount = 0
-        for (const id of ids) {
-          try {
-            const result = await deleteService(id)
-            if (result.success) successCount++
-          } catch (e) {
-            console.error(`Failed to delete ${id}:`, e)
-          }
-        }
-
-        if (successCount > 0) {
-          toast.success(`Đã xóa ${successCount} dịch vụ`)
-          selection.clearAll()
-          router.refresh()
-        }
-        if (successCount < ids.length) {
-          toast.error(`Không thể xóa ${ids.length - successCount} dịch vụ`)
-        }
-      } catch (error) {
-        console.error(error)
-        toast.error("Không thể xóa dịch vụ")
-      } finally {
-        setShowBulkDeleteDialog(false)
-      }
-    })
+    executeBulkDelete(ids, selection.clearAll)
   }
 
   const columns: Column<Service>[] = [
+
     {
       header: "Tên dịch vụ",
       cell: (service) => (

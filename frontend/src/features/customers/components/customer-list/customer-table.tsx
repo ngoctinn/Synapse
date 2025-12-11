@@ -1,6 +1,6 @@
 "use client"
 
-import { useTableSelection } from "@/shared/hooks/use-table-selection"
+import { useTableParams, useTableSelection } from "@/shared/hooks"
 import { cn } from "@/shared/lib/utils"
 import {
   AlertDialog,
@@ -27,7 +27,6 @@ import {
   TooltipTrigger,
 } from "@/shared/ui/tooltip"
 import { Activity, AlertCircle } from "lucide-react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useState, useTransition } from "react"
 import { Customer } from "../../model/types"
 import { CreateCustomerTrigger } from "../create-customer-trigger"
@@ -52,48 +51,31 @@ const TIER_STYLES: Record<string, string> = {
 
 export function CustomerTable({
   data,
-  page = 1,
+  page: pageProp,
   totalPages = 1,
-  onPageChange,
+  onPageChange: onPageChangeProp,
   className,
   isLoading,
   variant = "default"
 }: CustomerTableProps) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false)
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null)
   const [isPending, startTransition] = useTransition()
 
-  const sortColumn = searchParams.get("sort_by") || "created_at"
-  const sortDirection = (searchParams.get("order") as "asc" | "desc") || "desc"
+  // Use custom hook for URL state management
+  const { page: urlPage, sortBy, order, handlePageChange: urlPageChange, handleSort } = useTableParams({
+    defaultSortBy: "created_at",
+    defaultOrder: "desc"
+  })
+
+  // Support both controlled and uncontrolled modes
+  const page = pageProp ?? urlPage
+  const handlePageChange = onPageChangeProp ?? urlPageChange
 
   const selection = useTableSelection({
     data,
     keyExtractor: (item) => item.user_id,
   })
-
-  const handlePageChange = (newPage: number) => {
-    if (onPageChange) {
-      onPageChange(newPage)
-      return
-    }
-    const params = new URLSearchParams(searchParams.toString())
-    params.set("page", newPage.toString())
-    router.push(`${pathname}?${params.toString()}`)
-  }
-
-  const handleSort = (column: string) => {
-    const params = new URLSearchParams(searchParams.toString())
-    if (sortColumn === column) {
-      params.set("order", sortDirection === "asc" ? "desc" : "asc")
-    } else {
-      params.set("sort_by", column)
-      params.set("order", "asc")
-    }
-    router.push(`${pathname}?${params.toString()}`)
-  }
 
   const handleBulkDelete = async () => {
       // Mock implementation
@@ -212,8 +194,8 @@ export function CustomerTable({
         isPartiallySelected={selection.isPartiallySelected}
 
         onRowClick={(c) => setEditingCustomer(c)}
-        sortColumn={sortColumn}
-        sortDirection={sortDirection}
+        sortColumn={sortBy}
+        sortDirection={order}
         onSort={handleSort}
         emptyState={
           <DataTableEmptyState
