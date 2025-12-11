@@ -336,7 +336,7 @@ export function StaffTableSkeleton() {
       searchable={false}
       filterable={false}
       showAction={false}
-      className="border-none shadow-none rounded-none"
+      variant="flush"
     />
   )
 }

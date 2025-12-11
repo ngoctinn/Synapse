@@ -2,14 +2,14 @@
 
 import { useBulkAction, useTableParams, useTableSelection } from "@/shared/hooks";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
 import { Badge } from "@/shared/ui/badge";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
@@ -169,6 +169,8 @@ export function SkillTableSkeleton() {
       rowCount={5}
       searchable={false}
       filterable={false}
+      showAction={false}
+      variant="flush"
     />
   );
 }

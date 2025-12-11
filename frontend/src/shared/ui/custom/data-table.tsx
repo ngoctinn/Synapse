@@ -149,6 +149,8 @@ export function DataTable<T>({
         rowCount={skeletonCount}
         searchable={false}
         filterable={false}
+        showAction={variant !== "flush"}
+        variant={variant}
       />
     )
   }

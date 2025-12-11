@@ -8,6 +8,7 @@ interface DataTableSkeletonProps {
   searchable?: boolean
   filterable?: boolean
   className?: string
+  variant?: "default" | "flush"
 }
 
 export function DataTableSkeleton({
@@ -17,11 +18,17 @@ export function DataTableSkeleton({
   searchable = true,
   filterable = false,
   className,
+  variant = "default",
 }: DataTableSkeletonProps) {
   const showToolbar = showAction || searchable || filterable
 
   return (
-    <div className={cn("rounded-md border bg-background shadow-sm overflow-hidden", className)}>
+    <div className={cn(
+      "overflow-hidden",
+      variant === "default" && "rounded-md border bg-background shadow-sm",
+      variant === "flush" && "border-none shadow-none rounded-none bg-transparent",
+      className
+    )}>
       <div className="p-4">
         {/* Toolbar Skeleton */}
         {showToolbar && (

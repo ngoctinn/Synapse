@@ -267,11 +267,11 @@ export function ResourceTableSkeleton() {
   return (
     <DataTableSkeleton
       columnCount={5}
-      rowCount={10}
+      rowCount={5}
       searchable={false}
       filterable={false}
       showAction={false}
-      className="border-none shadow-none rounded-none"
+      variant="flush"
     />
   )
 }

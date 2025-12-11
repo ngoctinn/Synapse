@@ -4,14 +4,14 @@ import { Resource, RoomType } from "@/features/resources"
 import { useBulkAction, useTableParams, useTableSelection } from "@/shared/hooks"
 import { formatCurrency } from "@/shared/lib/utils"
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
 } from "@/shared/ui/alert-dialog"
 import { Badge } from "@/shared/ui/badge"
 import { Column, DataTable } from "@/shared/ui/custom/data-table"
@@ -245,7 +245,7 @@ export function ServiceTableSkeleton() {
       searchable={false}
       filterable={false}
       showAction={false}
-      className="border-none shadow-none rounded-none"
+      variant="flush"
     />
   )
 }

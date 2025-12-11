@@ -1,5 +1,6 @@
 "use client"
 
+import { FilterBar } from "@/shared/ui/custom/filter-bar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { Suspense, use, useState } from "react"
 import { MaintenanceTask, Resource, ResourceGroup } from "../types"
@@ -77,10 +78,10 @@ export function ResourcePage({ resourcesPromise, groupsPromise, tasksPromise }: 
 
           <div className="flex items-center gap-3 w-full md:w-auto">
             {activeTab === "list" && (
-              <div className="flex items-center gap-2 flex-1 md:flex-none">
-                <ResourceToolbar />
-                <ResourceFilter />
-              </div>
+              <FilterBar
+                startContent={<ResourceToolbar />}
+                endContent={<ResourceFilter />}
+              />
             )}
             <Suspense fallback={<div className="w-[130px] h-9 bg-muted animate-pulse rounded-md" />}>
               <AddResourceWrapper groupsPromise={groupsPromise} />
