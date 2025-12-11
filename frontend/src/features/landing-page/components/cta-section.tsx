@@ -7,7 +7,7 @@ import Link from "next/link"
 
 export function CTASection() {
   return (
-    <section id="contact" className="container mx-auto px-4 py-24 md:py-32">
+    <section id="contact" className="container mx-auto px-4 py-10 md:py-14">
       <div className="relative overflow-hidden rounded-3xl bg-primary px-6 py-16 md:px-16 md:py-24 text-center shadow-2xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

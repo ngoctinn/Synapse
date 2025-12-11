@@ -31,7 +31,7 @@ const testimonials = [
 
 export function Testimonials() {
   return (
-    <section id="testimonials" className="container mx-auto px-4 py-16 md:py-24 relative">
+    <section id="testimonials" className="container mx-auto px-4 py-10 md:py-14 relative">
        {/* Background gradient for depth */}
       <div className="absolute inset-0 bg-gradient-to-b from-muted/30 to-background -z-10" />
 
@@ -53,7 +53,7 @@ export function Testimonials() {
             transition={{ duration: 0.5, delay: index * 0.1 }}
             viewport={{ once: true }}
           >
-            <Card className="h-full border bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <Card className="h-full surface-card backdrop-blur-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
               <CardContent className="p-8 flex flex-col gap-6 h-full">
                 <Quote className="h-10 w-10 text-primary/40" />
                 <p className="text-muted-foreground leading-relaxed flex-1 italic relative z-10">

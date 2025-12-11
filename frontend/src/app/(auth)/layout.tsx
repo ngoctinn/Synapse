@@ -31,10 +31,10 @@ export default function AuthLayout({
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-secondary/20 rounded-full blur-3xl" />
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8 lg:p-12 relative">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8 lg:p-12 relative bg-slate-50 dark:bg-slate-950">
         <HeaderLogo className="lg:hidden absolute top-8 left-8" textClassName="text-xl font-serif inline-block" />
 
-        <div className="w-full max-w-[400px] space-y-6 animate-fade-in">
+        <div className="w-full max-w-[440px] space-y-6 animate-fade-in surface-card p-8">
           {children}
         </div>
 

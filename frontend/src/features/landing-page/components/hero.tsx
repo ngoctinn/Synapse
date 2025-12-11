@@ -66,7 +66,7 @@ export function Hero() {
             whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
             viewport={{ once: true }}
-            className="relative mx-auto max-w-5xl rounded-xl border bg-background/50 p-2 shadow-2xl backdrop-blur-sm lg:rounded-2xl lg:p-4 ring-1 ring-white/10"
+            className="relative mx-auto max-w-5xl rounded-xl border bg-white/60 dark:bg-slate-900/60 p-2 shadow-2xl backdrop-blur-sm lg:rounded-2xl lg:p-4 ring-1 ring-white/10"
         >
             <div className="rounded-lg border bg-background overflow-hidden aspect-[16/9] relative shadow-inner">
                 {/* Mock Header */}

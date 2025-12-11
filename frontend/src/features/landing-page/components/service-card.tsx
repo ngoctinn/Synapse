@@ -21,7 +21,7 @@ export function ServiceCard({ service, onBook }: ServiceCardProps) {
       viewport={{ once: true }}
       whileHover={{ y: -5 }}
       transition={{ duration: 0.3 }}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border bg-card/50 backdrop-blur-sm text-card-foreground shadow-sm hover:shadow-xl hover:ring-1 hover:ring-primary/50 transition-all duration-300"
+      className="group relative flex flex-col overflow-hidden surface-card backdrop-blur-sm text-card-foreground hover:shadow-xl hover:ring-1 hover:ring-primary/50 transition-all duration-300"
     >
       {/* Image Container */}
       <div className="relative aspect-[4/3] w-full overflow-hidden">

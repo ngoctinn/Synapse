@@ -38,7 +38,7 @@ export function ServicesSection() {
   }
 
   return (
-    <section id="services" className="py-24 bg-muted/30">
+    <section id="services" className="py-10 md:py-14">
         <div className="container mx-auto px-4">
             <div className="flex flex-col items-center text-center mb-12">
                 <motion.div

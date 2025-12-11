@@ -38,7 +38,7 @@ const features = [
 
 export function Features() {
   return (
-    <section id="features" className="container mx-auto px-4 py-16 md:py-24 lg:py-32">
+    <section id="features" className="container mx-auto px-4 py-10 md:py-14">
       <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center mb-16">
         <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-5xl font-bold">
           Tính năng vượt trội
@@ -56,7 +56,7 @@ export function Features() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: index * 0.1 }}
             viewport={{ once: true }}
-            className="group relative overflow-hidden rounded-2xl border bg-background/50 p-2 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+            className="group relative overflow-hidden surface-card p-2 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 

@@ -2,16 +2,16 @@
 
 import { HeaderLogo } from "@/shared/ui/branding/header-logo"
 import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarGroup,
-    SidebarGroupContent,
-    SidebarHeader,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    SidebarRail,
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
 } from "@/shared/ui/sidebar"
 import { HelpCircle } from "lucide-react"
 import { SIDEBAR_ITEMS } from "../constants"
@@ -23,7 +23,7 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
       collapsible="icon"
       role="navigation"
       aria-label="Menu điều hướng Admin"
-      className="border-r border-sidebar-border bg-sidebar/95 backdrop-blur-md supports-[backdrop-filter]:bg-sidebar/80 shadow-sm"
+      className="border-r-0 bg-background shadow-none z-30"
       {...props}
     >
       <SidebarHeader className="h-16 justify-center px-4 group-data-[collapsible=icon]:px-0">
@@ -35,10 +35,10 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="px-2 py-4 group-data-[collapsible=icon]:px-1">
+      <SidebarContent className="px-2 py-2 group-data-[collapsible=icon]:px-1">
         <SidebarGroup className="group-data-[collapsible=icon]:items-center">
           <SidebarGroupContent>
-            <SidebarMenu className="gap-2">
+            <SidebarMenu className="gap-2" aria-label="Danh mục chính">
               {SIDEBAR_ITEMS.map((item) => (
                 <SidebarItem key={item.title} item={item} />
               ))}

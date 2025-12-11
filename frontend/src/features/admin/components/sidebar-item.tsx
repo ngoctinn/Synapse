@@ -53,12 +53,13 @@ export function SidebarItem({ item }: SidebarItemProps) {
                 tooltip={item.title}
                 isActive={isActive}
                 className={cn(
-                  "h-11 min-h-[44px] font-medium justify-center rounded-xl transition-all duration-200 ease-out",
-                  "group-data-[collapsible=icon]:!size-11 group-data-[collapsible=icon]:!min-h-[44px]",
+                  "h-10 min-h-[40px] font-medium justify-center rounded-xl transition-all duration-200 ease-out",
+                  "group-data-[collapsible=icon]:!size-10 group-data-[collapsible=icon]:!min-h-[40px]",
                   "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                   "focus-visible:ring-2 focus-visible:ring-sidebar-ring",
                   "active:scale-[0.98] active:bg-sidebar-accent/80",
-                  "data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:shadow-sm"
+                  "active:scale-[0.98] active:bg-sidebar-accent/80",
+                  "data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:font-bold"
                 )}
               >
                 <Icon className="size-5" />
@@ -98,12 +99,13 @@ export function SidebarItem({ item }: SidebarItemProps) {
               tooltip={item.title}
               isActive={isActive}
               className={cn(
-                "h-11 min-h-[44px] font-medium rounded-xl transition-all duration-200 ease-out",
-                "group-data-[collapsible=icon]:!size-11 group-data-[collapsible=icon]:!min-h-[44px]",
+                "h-10 min-h-[40px] font-medium rounded-xl transition-all duration-200 ease-out",
+                "group-data-[collapsible=icon]:!size-10 group-data-[collapsible=icon]:!min-h-[40px]",
                 "group-hover/menu-item:bg-sidebar-accent group-hover/menu-item:text-sidebar-accent-foreground",
                 "focus-visible:ring-2 focus-visible:ring-sidebar-ring",
                 "active:scale-[0.98] active:bg-sidebar-accent/80",
-                "data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-semibold",
+                "active:scale-[0.98] active:bg-sidebar-accent/80",
+                "data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:font-bold",
                 "motion-safe:hover:translate-x-1"
               )}
             >
@@ -153,11 +155,12 @@ export function SidebarItem({ item }: SidebarItemProps) {
         isActive={isActive}
         tooltip={item.title}
         className={cn(
-          "h-11 min-h-[44px] font-medium rounded-xl transition-all duration-200 ease-out",
-          "group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:!size-11 group-data-[collapsible=icon]:!min-h-[44px]",
+          "h-10 min-h-[40px] font-medium rounded-xl transition-all duration-200 ease-out",
+          "group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:!size-10 group-data-[collapsible=icon]:!min-h-[40px]",
           "focus-visible:ring-2 focus-visible:ring-sidebar-ring",
           "active:scale-[0.98] active:bg-sidebar-accent/80",
-          "data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-semibold",
+          "active:scale-[0.98] active:bg-sidebar-accent/80",
+          "data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:font-bold",
           "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground motion-safe:hover:translate-x-1 group-data-[collapsible=icon]:hover:translate-x-0"
         )}
       >

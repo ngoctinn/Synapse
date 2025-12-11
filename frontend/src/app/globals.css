@@ -5,13 +5,13 @@
 
 :root {
   /* --- Premium Spa Palette (Light) --- */
-  /* Background: Soft Porcelain / Warm White */
-  --background: oklch(0.99 0.005 100);
+  /* Background: Pure Neutral White/Gray */
+  --background: oklch(0.985 0 0);
   /* Foreground: Deep Slate for readability */
   --foreground: oklch(0.25 0.02 260);
 
-  /* Card: Pure White with subtle warmth */
-  --card: oklch(0.99 0.005 100);
+  /* Card: Pure White */
+  --card: oklch(1.0 0 0);
   --card-foreground: oklch(0.25 0.02 260);
 
   --popover: oklch(1.0 0 0);
@@ -62,13 +62,13 @@
   --chart-5: oklch(0.65 0.20 25);  /* Coral */
 
   /* Sidebar: Glassy White */
-  --sidebar: oklch(0.99 0.005 100);
-  --sidebar-foreground: oklch(0.35 0.05 260);
+  --sidebar: oklch(0.985 0 0); /* Match global background */
+  --sidebar-foreground: oklch(0.25 0.02 260);
   --sidebar-primary: oklch(0.48 0.14 200);
   --sidebar-primary-foreground: oklch(1.0 0 0);
-  --sidebar-accent: oklch(0.96 0.02 200);
-  --sidebar-accent-foreground: oklch(0.48 0.14 200);
-  --sidebar-border: oklch(0.94 0.01 260);
+  --sidebar-accent: oklch(0.96 0 0); /* Neutral accent */
+  --sidebar-accent-foreground: oklch(0.25 0.02 260);
+  --sidebar-border: oklch(0.94 0 0); /* Neutral border */
   --sidebar-ring: oklch(0.48 0.14 200);
 
   /* Typography */
@@ -357,6 +357,10 @@
 
   .glass-card {
     @apply bg-white/80 dark:bg-card/80 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-md hover:shadow-lg transition-all duration-300;
+  }
+
+  .surface-card {
+    @apply bg-white dark:bg-slate-900 rounded-xl border border-border shadow-sm;
   }
 
   /* Animation Utilities */

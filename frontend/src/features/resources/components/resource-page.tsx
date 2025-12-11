@@ -29,7 +29,7 @@ function ResourceListWrapper({
       data={resources}
       groups={groups}
       variant="flush"
-      className="border-t"
+      className="border-none"
     />
   )
 }
@@ -68,7 +68,7 @@ export function ResourcePage({ resourcesPromise, groupsPromise, tasksPromise }: 
       <Tabs defaultValue="list" className="flex flex-col flex-1 w-full gap-0" onValueChange={setActiveTab}>
 
         <div
-          className="sticky top-0 z-40 px-4 py-3 bg-background/95 backdrop-blur-sm border-b flex flex-col md:flex-row items-center justify-between gap-4"
+          className="sticky top-0 z-40 px-4 py-2 bg-card/95 backdrop-blur-sm border-b flex flex-col md:flex-row items-center justify-between gap-4"
         >
           <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto justify-start">
             <TabsTrigger value="list" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 min-w-[100px] transition-all duration-200 flex-1 md:flex-none">Danh sách</TabsTrigger>
@@ -90,23 +90,31 @@ export function ResourcePage({ resourcesPromise, groupsPromise, tasksPromise }: 
 
         <div className="flex-1 p-0 motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 motion-safe:duration-300 ease-out flex flex-col">
           <TabsContent value="list" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
-            <Suspense fallback={<ResourceTableSkeleton />}>
-              <ResourceListWrapper
-                resourcesPromise={resourcesPromise}
-                groupsPromise={groupsPromise}
-              />
-            </Suspense>
-            <Footer />
+             <div className="p-4 flex-1 flex flex-col gap-4">
+                <div className="surface-card overflow-hidden flex-1">
+                    <Suspense fallback={<ResourceTableSkeleton />}>
+                    <ResourceListWrapper
+                        resourcesPromise={resourcesPromise}
+                        groupsPromise={groupsPromise}
+                    />
+                    </Suspense>
+                </div>
+                <Footer />
+             </div>
           </TabsContent>
 
           <TabsContent value="maintenance" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
-            <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Đang tải lịch bảo trì...</div>}>
-              <MaintenanceTimelineWrapper
-                resourcesPromise={resourcesPromise}
-                tasksPromise={tasksPromise}
-              />
-            </Suspense>
-            <Footer />
+            <div className="p-4 flex-1 flex flex-col gap-4">
+                <div className="surface-card overflow-hidden flex-1 p-4">
+                    <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Đang tải lịch bảo trì...</div>}>
+                    <MaintenanceTimelineWrapper
+                        resourcesPromise={resourcesPromise}
+                        tasksPromise={tasksPromise}
+                    />
+                    </Suspense>
+                </div>
+                <Footer />
+            </div>
           </TabsContent>
         </div>
       </Tabs>

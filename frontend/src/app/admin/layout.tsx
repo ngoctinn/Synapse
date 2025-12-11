@@ -40,7 +40,7 @@ export default async function AdminLayout({
       <AdminSidebar />
       <SidebarInset className="h-screen max-h-svh overflow-hidden">
         <AdminHeader user={userProfile} />
-        <div className="flex flex-1 flex-col overflow-y-auto">
+        <div className="flex flex-1 flex-col overflow-y-auto bg-slate-50 dark:bg-slate-950">
           {children}
         </div>
       </SidebarInset>
