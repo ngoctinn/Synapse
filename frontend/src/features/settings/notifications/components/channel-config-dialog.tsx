@@ -19,6 +19,7 @@ interface ChannelConfigDialogProps {
   onOpenChange: (open: boolean) => void;
   channel?: NotificationChannel;
   onSave: (channelId: string, config: unknown) => void;
+  isSaving?: boolean;
 }
 
 export function ChannelConfigDialog({
@@ -26,6 +27,7 @@ export function ChannelConfigDialog({
   onOpenChange,
   channel,
   onSave,
+  isSaving = false,
 }: ChannelConfigDialogProps) {
   const [localConfig, setLocalConfig] = useState<Record<string, unknown>>({});
 
@@ -87,7 +89,9 @@ export function ChannelConfigDialog({
           )}
         </div>
         <DialogFooter>
-          <Button onClick={handleSave}>Lưu kết nối</Button>
+          <Button onClick={handleSave} disabled={isSaving}>
+            {isSaving ? "Đang lưu..." : "Lưu kết nối"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

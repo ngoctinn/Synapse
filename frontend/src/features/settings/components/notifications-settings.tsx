@@ -2,8 +2,9 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Separator } from "@/shared/ui/separator";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
+import { toggleChannelAction, updateChannelConfigAction, updateTemplateAction } from "../notifications/actions";
 import { ChannelConfigDialog } from "../notifications/components/channel-config-dialog";
 import { NotificationChannels } from "../notifications/components/notification-channels";
 import { NotificationList } from "../notifications/components/notification-list";
@@ -18,11 +19,13 @@ interface NotificationsSettingsProps {
 export function NotificationsSettings({ initialChannels, initialEvents }: NotificationsSettingsProps) {
   const [channels, setChannels] = useState(initialChannels);
   const [events, setEvents] = useState(initialEvents);
+  const [isPending, startTransition] = useTransition();
 
   const [configuringChannelId, setConfiguringChannelId] = useState<string | null>(null);
   const [editingTemplate, setEditingTemplate] = useState<{ eventId: string; channelId: string } | null>(null);
 
   const handleToggleChannel = (eventId: string, channelId: string, checked: boolean) => {
+    // Optimistic update
     setEvents(prev => prev.map(event => {
       if (event.id === eventId) {
         return {
@@ -35,37 +38,74 @@ export function NotificationsSettings({ initialChannels, initialEvents }: Notifi
       }
       return event;
     }));
-    toast.success("Đã cập nhật cấu hình thông báo");
+
+    startTransition(async () => {
+      try {
+        const result = await toggleChannelAction(eventId, channelId, checked);
+        if (!result.success) {
+           throw new Error(result.message);
+        }
+      } catch (error) {
+        toast.error("Không thể cập nhật cấu hình");
+        // Revert state on error
+        setEvents(prev => prev.map(event => {
+            if (event.id === eventId) {
+              return {
+                ...event,
+                channels: {
+                  ...event.channels,
+                  [channelId]: !checked
+                }
+              };
+            }
+            return event;
+          }));
+      }
+    });
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSaveChannelConfig = (channelId: string, config: any) => {
-    setChannels(prev => prev.map(ch => {
-      if (ch.id === channelId) {
-        return { ...ch, config: { ...ch.config, ...config } };
+    startTransition(async () => {
+      const result = await updateChannelConfigAction(channelId, config);
+      if (result.success) {
+        setChannels(prev => prev.map(ch => {
+            if (ch.id === channelId) {
+              return { ...ch, config: { ...ch.config, ...config } };
+            }
+            return ch;
+          }));
+          setConfiguringChannelId(null);
+          toast.success(result.message);
+      } else {
+        toast.error("Lỗi khi lưu cấu hình");
       }
-      return ch;
-    }));
-    setConfiguringChannelId(null);
-    toast.success("Đã lưu cấu hình kênh thông báo");
+    });
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSaveTemplate = (eventId: string, channelId: string, template: any) => {
-    setEvents(prev => prev.map(event => {
-      if (event.id === eventId) {
-        return {
-          ...event,
-          templates: {
-            ...event.templates,
-            [channelId]: template
-          }
-        };
-      }
-      return event;
-    }));
-    setEditingTemplate(null);
-    toast.success("Đã lưu mẫu tin nhắn");
+    startTransition(async () => {
+        const result = await updateTemplateAction(eventId, channelId, template);
+        if (result.success) {
+            setEvents(prev => prev.map(event => {
+                if (event.id === eventId) {
+                  return {
+                    ...event,
+                    templates: {
+                      ...event.templates,
+                      [channelId]: template
+                    }
+                  };
+                }
+                return event;
+              }));
+              setEditingTemplate(null);
+              toast.success(result.message);
+        } else {
+            toast.error("Lỗi khi lưu mẫu tin");
+        }
+    });
   };
 
   const activeChannelConfig = channels.find(c => c.id === configuringChannelId);
@@ -122,19 +162,21 @@ export function NotificationsSettings({ initialChannels, initialEvents }: Notifi
       {activeChannelConfig && (
         <ChannelConfigDialog
             isOpen={!!configuringChannelId}
-            onOpenChange={(open) => !open && setConfiguringChannelId(null)}
+            onOpenChange={(open) => !open && !isPending && setConfiguringChannelId(null)}
             channel={activeChannelConfig}
             onSave={(channelId, config) => handleSaveChannelConfig(channelId, config)}
+            isSaving={isPending}
         />
       )}
 
       {editingTemplate && activeTemplate && activeTemplateEvent && (
         <TemplateEditor
             isOpen={!!editingTemplate}
-            onOpenChange={(open) => !open && setEditingTemplate(null)}
+            onOpenChange={(open) => !open && !isPending && setEditingTemplate(null)}
             title={`${activeTemplateEvent.name} - ${editingTemplate.channelId.toUpperCase()}`}
             template={activeTemplate}
             onSave={(template) => handleSaveTemplate(activeTemplateEvent.id, editingTemplate.channelId, template)}
+            isSaving={isPending}
         />
       )}
     </div>

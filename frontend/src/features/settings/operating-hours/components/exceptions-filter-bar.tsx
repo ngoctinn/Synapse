@@ -68,7 +68,7 @@ export function ExceptionsFilterBar({
   const paramCount = (typeFilter?.length || 0) + (statusFilter ? 1 : 0) + (dateRange?.from ? 1 : 0);
 
   return (
-    <div className="bg-background border-b px-4 py-2 flex flex-col md:flex-row items-center justify-between gap-4 w-full shrink-0 transition-all duration-200">
+    <div className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm border-b px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-4 w-full shrink-0 transition-all duration-200 support-[backdrop-filter]:bg-background/60">
       {/* LEFT: Start Content (View Toggles) */}
       <div className="w-full md:w-auto flex justify-start order-2 md:order-1 overflow-x-auto no-scrollbar">
         {startContent}

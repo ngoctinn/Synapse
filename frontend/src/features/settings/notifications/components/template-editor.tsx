@@ -23,6 +23,7 @@ interface TemplateEditorProps {
   title: string;
   template?: NotificationTemplate;
   onSave: (newTemplate: NotificationTemplate) => void;
+  isSaving?: boolean;
 }
 
 export function TemplateEditor({
@@ -31,6 +32,7 @@ export function TemplateEditor({
   title,
   template,
   onSave,
+  isSaving = false,
 }: TemplateEditorProps) {
   const [content, setContent] = useState("");
   const [subject, setSubject] = useState("");
@@ -62,7 +64,7 @@ export function TemplateEditor({
       content,
       subject: subject || undefined,
     });
-    onOpenChange(false);
+    // Note: Parent handles close after success
   };
 
   if (!template) return null;
@@ -124,10 +126,12 @@ export function TemplateEditor({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isSaving}>
             Hủy
           </Button>
-          <Button onClick={handleSave}>Lưu thay đổi</Button>
+          <Button onClick={handleSave} disabled={isSaving}>
+            {isSaving ? "Đang lưu..." : "Lưu thay đổi"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

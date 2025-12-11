@@ -1,5 +1,15 @@
 'use client';
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/shared/ui/alert-dialog";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardDescription, CardHeader } from "@/shared/ui/card";
 import { SettingsHeader } from "@/shared/ui/custom/settings-header";
@@ -26,6 +36,7 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
   const [isDirty, setIsDirty] = useState(false);
   const [copySourceDay, setCopySourceDay] = useState<DayOfWeek | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [pasteConfirmOpen, setPasteConfirmOpen] = useState(false);
 
   // Reset internal state if server data changes
   // Reset internal state if server data changes
@@ -88,6 +99,10 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
   };
 
   const handlePasteToAll = () => {
+    setPasteConfirmOpen(true);
+  };
+
+  const confirmPasteToAll = () => {
     if (!copySourceDay) return;
 
     const newSchedule = copyScheduleToAllDays(config.defaultSchedule, copySourceDay);
@@ -97,6 +112,7 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
     setIsDirty(true);
     toast.success(OPERATING_HOURS_UI.PASTE_SUCCESS_ALL(DAY_LABELS[copySourceDay]));
     setCopySourceDay(null);
+    setPasteConfirmOpen(false);
   };
 
   const handleCopy = (day: DayOfWeek) => {
@@ -149,7 +165,7 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
         onSave={handleSave}
         onReset={handleReset}
       >
-        <TabsList className="h-9 bg-muted/50 p-1 w-full md:w-auto grid grid-cols-2 md:flex md:justify-start">
+        <TabsList className="grid w-full grid-cols-2 md:w-auto md:inline-flex bg-muted/50 p-1">
           <TabsTrigger value="schedule" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 transition-all duration-200">{OPERATING_HOURS_UI.STANDARD_TAB}</TabsTrigger>
           <TabsTrigger value="exceptions" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 transition-all duration-200">{OPERATING_HOURS_UI.EXCEPTIONS_TAB}</TabsTrigger>
         </TabsList>
@@ -224,6 +240,22 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
           onRemoveException={handleRemoveException}
         />
       </TabsContent>
+
+      <AlertDialog open={pasteConfirmOpen} onOpenChange={setPasteConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Xác nhận áp dụng tất cả?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Hành động này sẽ ghi đè lịch làm việc của tất cả các ngày khác bằng lịch của ngày {copySourceDay ? DAY_LABELS[copySourceDay] : ''}.
+              Dữ liệu cũ sẽ bị mất.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Hủy bỏ</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmPasteToAll}>Xác nhận ghi đè</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Tabs>
   );
 }

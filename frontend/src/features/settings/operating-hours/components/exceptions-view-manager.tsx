@@ -1,26 +1,16 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { ExceptionDate } from "../model/types";
 import { Button } from "@/shared/ui/button";
-import { List as ListIcon, Calendar as CalendarIcon, Plus, Search } from "lucide-react";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/shared/ui/resizable";
+import { List as ListIcon, Plus, Search } from "lucide-react";
+import { useMemo, useState } from "react";
+import { useCalendarSelection } from "../hooks/use-calendar-selection";
+import { ExceptionDate } from "../model/types";
+import { applyExceptionToDates } from "../utils/bulk-operations";
+import { ExceptionSheet } from "./exception-sheet";
 import { ExceptionsCalendar } from "./exceptions-calendar";
 import { ExceptionsFilterBar } from "./exceptions-filter-bar";
-import { useCalendarSelection } from "../hooks/use-calendar-selection";
 
-import { ExceptionSheet } from "./exception-sheet";
-import { YearViewGrid } from "./year-view-grid";
-import { applyExceptionToDates } from "../utils/bulk-operations";
-import { format, startOfYear, endOfYear, setYear } from "date-fns";
-import { vi } from "date-fns/locale";
-import { useExceptionViewLogic } from "../hooks/use-exception-view-logic";
-import { ExceptionListItem } from "./exception-list-item";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/shared/ui/resizable";
-import { groupExceptions } from "../utils/grouping";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,6 +21,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
+import { endOfYear, format, setYear, startOfYear } from "date-fns";
+import { useExceptionViewLogic } from "../hooks/use-exception-view-logic";
+import { groupExceptions } from "../utils/grouping";
+import { ExceptionListItem } from "./exception-list-item";
+import { YearViewGrid } from "./year-view-grid";
 
 interface ExceptionsViewManagerProps {
   exceptions: ExceptionDate[];
@@ -201,6 +196,18 @@ export function ExceptionsViewManager({
       (typeFilter.length > 0 ? 1 : 0) +
       (searchQuery ? 1 : 0);
 
+  // Delete state
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    // Simulate network delay to give feedback
+    await new Promise(resolve => setTimeout(resolve, 500));
+    onRemoveException(deleteConfirmation.ids);
+    setIsDeleting(false);
+    setDeleteConfirmation({ isOpen: false, ids: [] });
+  };
+
   return (
     <div className="h-full flex flex-col">
          <ExceptionsFilterBar
@@ -221,7 +228,7 @@ export function ExceptionsViewManager({
                         onClick={() => setViewMode('calendar')}
                         className="gap-2 h-9"
                     >
-                        <CalendarIcon className="w-4 h-4" />
+                        {/* <CalendarIcon className="w-4 h-4" /> */}
                         Lịch
                     </Button>
                     <Button
@@ -312,7 +319,7 @@ export function ExceptionsViewManager({
 
        <AlertDialog
           open={deleteConfirmation.isOpen}
-          onOpenChange={(open) => !open && setDeleteConfirmation(prev => ({ ...prev, isOpen: false }))}
+          onOpenChange={(open) => !open && !isDeleting && setDeleteConfirmation(prev => ({ ...prev, isOpen: false }))}
        >
           <AlertDialogContent>
               <AlertDialogHeader>
@@ -322,15 +329,16 @@ export function ExceptionsViewManager({
                   </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                  <AlertDialogCancel>Hủy bỏ</AlertDialogCancel>
+                  <AlertDialogCancel disabled={isDeleting}>Hủy bỏ</AlertDialogCancel>
                   <AlertDialogAction
-                      onClick={() => {
-                          onRemoveException(deleteConfirmation.ids);
-                          setDeleteConfirmation({ isOpen: false, ids: [] });
+                      onClick={(e) => {
+                          e.preventDefault();
+                          handleDelete();
                       }}
+                      disabled={isDeleting}
                       className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                   >
-                      Xóa vĩnh viễn
+                      {isDeleting ? "Đang xóa..." : "Xóa vĩnh viễn"}
                   </AlertDialogAction>
               </AlertDialogFooter>
           </AlertDialogContent>
