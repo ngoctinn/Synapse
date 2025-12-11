@@ -31,9 +31,9 @@ export function ResourceFilter() {
 
   return (
     <FilterButton
-      isActive={activeCount > 0}
       count={activeCount}
       onClear={clearFilters}
+      className="h-9 w-9"
     >
       <div className="grid gap-6 p-1">
 
