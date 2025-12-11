@@ -2,19 +2,20 @@
 
 import { Resource, RoomType } from "@/features/resources"
 import { cn } from "@/shared/lib/utils"
+import { ColorSwatchGroup } from "@/shared/ui/custom/color-swatch-group"
 import { DurationPicker } from "@/shared/ui/custom/duration-picker"
+import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs"
 import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form"
 import { Input } from "@/shared/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select"
 import { Switch } from "@/shared/ui/switch"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { Textarea } from "@/shared/ui/textarea"
 import { Box, Palette, Settings, Tag, Users } from "lucide-react"
 import { useFormContext } from "react-hook-form"
@@ -121,22 +122,12 @@ function ServiceBasicInfo() {
                 <FormItem>
                   <FormLabel className="text-foreground/80 text-xs">Màu hiển thị</FormLabel>
                   <FormControl>
-                      <div className="flex flex-wrap gap-1.5">
-                        {SERVICE_COLORS.map((color) => (
-                          <button
-                            key={color}
-                            type="button"
-                            className={cn(
-                              "w-8 h-8 rounded-full border transition-all flex-shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                              field.value === color
-                                ? "ring-2 ring-primary ring-offset-1 scale-110"
-                                : "hover:scale-110 hover:shadow-sm opacity-70 hover:opacity-100"
-                            )}
-                            style={{ backgroundColor: color }}
-                            onClick={() => field.onChange(color)}
-                          />
-                        ))}
-                      </div>
+                    <ColorSwatchGroup
+                      value={field.value}
+                      onChange={field.onChange}
+                      options={SERVICE_COLORS}
+                      ariaLabel="Chọn màu hiển thị cho dịch vụ"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -364,6 +355,12 @@ function ServiceResourcesInfo({
   )
 }
 
+const SERVICE_FORM_TABS = [
+  { value: "basic", label: "Thông tin" },
+  { value: "time", label: "Giá & Thời gian" },
+  { value: "resources", label: "Tài nguyên" },
+]
+
 export function ServiceForm({
   mode,
   availableSkills,
@@ -379,30 +376,24 @@ export function ServiceForm({
 
   return (
     <div className={cn("w-full h-full", className)}>
-        <Tabs defaultValue="basic" className="w-full h-full flex flex-col">
-          <TabsList className="grid w-full grid-cols-3 bg-muted/60 rounded-lg p-1 mb-4 h-11 shrink-0">
-            <TabsTrigger value="basic" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">Thông tin</TabsTrigger>
-            <TabsTrigger value="time" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">Giá & Thời gian</TabsTrigger>
-            <TabsTrigger value="resources" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">Tài nguyên</TabsTrigger>
-          </TabsList>
-
-          <div className="flex-1 overflow-y-auto px-1 pb-4 [scrollbar-gutter:stable]">
-            <TabsContent value="basic" className="mt-0">
-                <ServiceBasicInfo />
-            </TabsContent>
-            <TabsContent value="time" className="mt-0">
-                <ServiceTimePriceInfo duration={duration} bufferTime={bufferTime} />
-            </TabsContent>
-            <TabsContent value="resources" className="mt-0">
-                <ServiceResourcesInfo
-                  availableRoomTypes={availableRoomTypes}
-                  skillOptions={skillOptions}
-                  availableEquipment={availableEquipment}
-                  duration={duration}
-                />
-            </TabsContent>
-          </div>
-        </Tabs>
+      <FormTabs tabs={SERVICE_FORM_TABS} defaultValue="basic">
+        <div className="flex-1 overflow-y-auto px-1 pb-4 [scrollbar-gutter:stable]">
+          <FormTabsContent value="basic" className="mt-0">
+            <ServiceBasicInfo />
+          </FormTabsContent>
+          <FormTabsContent value="time" className="mt-0">
+            <ServiceTimePriceInfo duration={duration} bufferTime={bufferTime} />
+          </FormTabsContent>
+          <FormTabsContent value="resources" className="mt-0">
+            <ServiceResourcesInfo
+              availableRoomTypes={availableRoomTypes}
+              skillOptions={skillOptions}
+              availableEquipment={availableEquipment}
+              duration={duration}
+            />
+          </FormTabsContent>
+        </div>
+      </FormTabs>
     </div>
   )
 }

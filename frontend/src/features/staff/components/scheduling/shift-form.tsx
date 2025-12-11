@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { Button } from "@/shared/ui/button"
+import { ColorSwatchGroup } from "@/shared/ui/custom/color-swatch-group"
 import { TimeInput } from "@/shared/ui/custom/time-input"
 import { DialogFooter } from "@/shared/ui/dialog"
 import {
@@ -64,7 +65,9 @@ export function ShiftForm({ onSuccess, onCancel }: ShiftFormProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tên ca</FormLabel>
+              <FormLabel>
+                Tên ca <span className="text-destructive">*</span>
+              </FormLabel>
               <FormControl>
                 <Input
                   startContent={<Tag size={18} />}
@@ -84,7 +87,9 @@ export function ShiftForm({ onSuccess, onCancel }: ShiftFormProps) {
             name="startTime"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Bắt đầu</FormLabel>
+                <FormLabel>
+                  Bắt đầu <span className="text-destructive">*</span>
+                </FormLabel>
                 <FormControl>
                    <TimeInput
                     value={field.value}
@@ -101,7 +106,9 @@ export function ShiftForm({ onSuccess, onCancel }: ShiftFormProps) {
             name="endTime"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Kết thúc</FormLabel>
+                <FormLabel>
+                  Kết thúc <span className="text-destructive">*</span>
+                </FormLabel>
                 <FormControl>
                   <TimeInput
                     value={field.value}
@@ -122,22 +129,12 @@ export function ShiftForm({ onSuccess, onCancel }: ShiftFormProps) {
             <FormItem>
               <FormLabel>Màu sắc</FormLabel>
               <FormControl>
-                <div role="radiogroup" aria-label="Chọn màu sắc" className="flex gap-2 flex-wrap">
-                  {COLORS.map((c) => (
-                    <button
-                      key={c}
-                      type="button"
-                      role="radio"
-                      aria-checked={field.value === c}
-                      aria-label={`Màu ${c}`}
-                      onClick={() => field.onChange(c)}
-                      className={`w-8 h-8 rounded-full border-2 transition-all hover:scale-105 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary ${
-                        field.value === c ? "border-foreground scale-110" : "border-transparent"
-                      }`}
-                      style={{ backgroundColor: c }}
-                    />
-                  ))}
-                </div>
+                <ColorSwatchGroup
+                  value={field.value}
+                  onChange={field.onChange}
+                  options={COLORS}
+                  ariaLabel="Chọn màu sắc cho ca làm việc"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -1,5 +1,6 @@
 "use client"
 
+import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs"
 import {
     Sheet,
     SheetContent,
@@ -7,7 +8,6 @@ import {
     SheetHeader,
     SheetTitle,
 } from "@/shared/ui/sheet"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 import { useState } from "react"
 import { MOCK_SHIFTS } from "../../model/shifts"
 import { Shift } from "../../model/types"
@@ -20,6 +20,11 @@ interface AddShiftDialogProps {
   staffName?: string
   dateStr?: string
 }
+
+const ADD_SHIFT_TABS = [
+  { value: "template", label: "Ca Mẫu" },
+  { value: "custom", label: "Tùy Chỉnh" },
+]
 
 export function AddShiftDialog({
   open,
@@ -49,13 +54,13 @@ export function AddShiftDialog({
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto p-6">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-muted/60 rounded-lg p-1 mb-6 h-11">
-              <TabsTrigger value="template" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">Ca mẫu</TabsTrigger>
-              <TabsTrigger value="custom" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">Tùy chỉnh</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="template" className="mt-0">
+          <FormTabs
+            tabs={ADD_SHIFT_TABS}
+            value={activeTab}
+            onValueChange={setActiveTab}
+            listClassName="mb-6"
+          >
+            <FormTabsContent value="template" className="mt-0">
               <div className="flex flex-col gap-3">
                 {MOCK_SHIFTS.map((shift) => (
                   <button
@@ -78,9 +83,9 @@ export function AddShiftDialog({
                   </button>
                 ))}
               </div>
-            </TabsContent>
+            </FormTabsContent>
 
-            <TabsContent value="custom" className="mt-0">
+            <FormTabsContent value="custom" className="mt-0">
               <ShiftForm
                 onSuccess={(shift) => {
                   onAddShift(shift);
@@ -88,10 +93,11 @@ export function AddShiftDialog({
                 }}
                 onCancel={() => onOpenChange(false)}
               />
-            </TabsContent>
-          </Tabs>
+            </FormTabsContent>
+          </FormTabs>
         </div>
       </SheetContent>
     </Sheet>
   )
 }
+
