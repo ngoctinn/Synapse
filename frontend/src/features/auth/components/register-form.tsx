@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { motion } from "framer-motion";
 import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import Link from "next/link";
 import { startTransition, useActionState, useEffect, useState } from "react";
@@ -68,34 +67,29 @@ export function RegisterForm() {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="w-full"
-    >
+    <div className="w-full animate-fade-in">
       <div className="flex flex-col space-y-2 text-center mb-8">
-        <h1 className="text-3xl font-serif font-bold tracking-tight text-primary">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
           Tạo tài khoản mới
         </h1>
-        <p className="text-muted-foreground">
-          Trải nghiệm dịch vụ chuyên nghiệp ngay hôm nay.
+        <p className="text-sm text-muted-foreground">
+          Trải nghiệm dịch vụ chuyên nghiệp ngay hôm nay
         </p>
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="fullName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80 font-normal">Họ và tên</FormLabel>
+                <FormLabel>Họ và tên</FormLabel>
                 <FormControl>
                   <Input
                     startContent={<User className="size-4 text-muted-foreground" />}
-                    placeholder="Nhập họ và tên của bạn"
-                    className="bg-background/50 h-10"
+                    placeholder="Nhập họ và tên"
+                    autoComplete="name"
                     {...field}
                   />
                 </FormControl>
@@ -108,12 +102,12 @@ export function RegisterForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80 font-normal">Email</FormLabel>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
                     startContent={<Mail className="size-4 text-muted-foreground" />}
                     placeholder="name@example.com"
-                    className="bg-background/50 h-10"
+                    autoComplete="email"
                     {...field}
                   />
                 </FormControl>
@@ -126,7 +120,7 @@ export function RegisterForm() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80 font-normal">Mật khẩu</FormLabel>
+                <FormLabel>Mật khẩu</FormLabel>
                 <FormControl>
                   <Input
                     type={showPassword ? "text" : "password"}
@@ -135,13 +129,14 @@ export function RegisterForm() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="text-muted-foreground hover:text-foreground focus:outline-none"
+                        className="text-muted-foreground hover:text-foreground transition-colors"
+                        aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
                       >
                         {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                       </button>
                     }
-                    placeholder="Tạo mật khẩu (tối thiểu 8 ký tự)"
-                    className="bg-background/50 h-10"
+                    placeholder="Tối thiểu 8 ký tự"
+                    autoComplete="new-password"
                     {...field}
                   />
                 </FormControl>
@@ -154,7 +149,7 @@ export function RegisterForm() {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80 font-normal">Xác nhận mật khẩu</FormLabel>
+                <FormLabel>Xác nhận mật khẩu</FormLabel>
                 <FormControl>
                   <Input
                     type={showConfirmPassword ? "text" : "password"}
@@ -163,13 +158,14 @@ export function RegisterForm() {
                       <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="text-muted-foreground hover:text-foreground focus:outline-none"
+                        className="text-muted-foreground hover:text-foreground transition-colors"
+                        aria-label={showConfirmPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
                       >
                         {showConfirmPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                       </button>
                     }
                     placeholder="Nhập lại mật khẩu"
-                    className="bg-background/50 h-10"
+                    autoComplete="new-password"
                     {...field}
                   />
                 </FormControl>
@@ -180,7 +176,7 @@ export function RegisterForm() {
 
           <Button
             type="submit"
-            className="w-full h-12 text-base font-medium shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-[1.01]"
+            className="w-full mt-6"
             isLoading={isPending}
           >
             Đăng ký
@@ -188,12 +184,15 @@ export function RegisterForm() {
         </form>
       </Form>
 
-      <div className="mt-8 text-center text-sm text-muted-foreground">
+      <p className="mt-6 text-center text-sm text-muted-foreground">
         Đã có tài khoản?{" "}
-        <Link href="/login" className="text-primary font-bold hover:underline underline-offset-4 transition-colors">
+        <Link
+          href="/login"
+          className="text-primary font-medium hover:underline underline-offset-4"
+        >
           Đăng nhập ngay
         </Link>
-      </div>
+      </p>
 
       <CustomDialog
         open={showCheckEmailDialog}
@@ -213,6 +212,6 @@ export function RegisterForm() {
           },
         }}
       />
-    </motion.div>
+    </div>
   );
 }

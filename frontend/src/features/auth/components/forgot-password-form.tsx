@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { motion } from "framer-motion";
 import { Mail } from "lucide-react";
 import Link from "next/link";
 import { startTransition, useActionState, useEffect, useState } from "react";
@@ -11,12 +10,12 @@ import { Button } from "@/shared/ui/button";
 import { CustomDialog } from "@/shared/ui/custom/dialog";
 import { showToast } from "@/shared/ui/custom/sonner";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
 import { forgotPasswordAction } from "../actions";
@@ -68,35 +67,29 @@ export function ForgotPasswordForm() {
   };
 
   return (
-    <>
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="w-full"
-    >
+    <div className="w-full animate-fade-in">
       <div className="flex flex-col space-y-2 text-center mb-8">
-        <h1 className="text-3xl font-serif font-bold tracking-tight text-primary">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
           Quên mật khẩu?
         </h1>
-        <p className="text-muted-foreground">
-          Đừng lo lắng, chúng tôi sẽ giúp bạn lấy lại quyền truy cập.
+        <p className="text-sm text-muted-foreground">
+          Nhập email để nhận liên kết đặt lại mật khẩu
         </p>
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80 font-normal">Email</FormLabel>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
-                    startContent={<Mail size={18} />}
+                    startContent={<Mail className="size-4 text-muted-foreground" />}
                     placeholder="name@example.com"
-                    className="bg-background/50 h-12"
+                    autoComplete="email"
                     {...field}
                   />
                 </FormControl>
@@ -107,7 +100,7 @@ export function ForgotPasswordForm() {
 
           <Button
             type="submit"
-            className="w-full h-12 text-base font-medium shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-[1.01]"
+            className="w-full mt-6"
             isLoading={isPending}
           >
             Gửi yêu cầu
@@ -115,16 +108,15 @@ export function ForgotPasswordForm() {
         </form>
       </Form>
 
-      <div className="mt-8 text-center text-sm text-muted-foreground">
+      <p className="mt-6 text-center text-sm text-muted-foreground">
         Nhớ mật khẩu?{" "}
         <Link
           href="/login"
-          className="text-primary font-bold hover:underline underline-offset-4 transition-colors"
+          className="text-primary font-medium hover:underline underline-offset-4"
         >
           Đăng nhập
         </Link>
-      </div>
-    </motion.div>
+      </p>
 
       <CustomDialog
         open={showCheckEmailDialog}
@@ -140,12 +132,10 @@ export function ForgotPasswordForm() {
         secondaryAction={{
           label: "Gửi lại",
           onClick: () => {
-            // Logic gửi lại có thể gọi lại action hoặc một action khác
-            // Ở đây tạm thời chỉ hiện toast thông báo giả lập
             showToast.info("Đã gửi lại", "Email xác thực mới đã được gửi.");
           },
         }}
       />
-    </>
+    </div>
   );
 }

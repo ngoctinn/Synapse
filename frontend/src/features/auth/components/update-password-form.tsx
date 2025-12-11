@@ -1,9 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { motion } from "framer-motion";
+import { Eye, EyeOff, Lock } from "lucide-react";
 import Link from "next/link";
-import { startTransition, useActionState, useEffect } from "react";
+import { startTransition, useActionState, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { updatePasswordAction } from "../actions";
@@ -12,16 +12,14 @@ import { updatePasswordSchema, type UpdatePasswordInput } from "../schemas";
 import { Button } from "@/shared/ui/button";
 import { showToast } from "@/shared/ui/custom/sonner";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
-import { Eye, EyeOff, Lock } from "lucide-react";
-import { useState } from "react";
 
 export function UpdatePasswordForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -57,29 +55,24 @@ export function UpdatePasswordForm() {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="w-full"
-    >
+    <div className="w-full animate-fade-in">
       <div className="flex flex-col space-y-2 text-center mb-8">
-        <h1 className="text-3xl font-serif font-bold tracking-tight text-primary">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
           Cập nhật mật khẩu
         </h1>
-        <p className="text-muted-foreground">
-          Nhập mật khẩu mới cho tài khoản của bạn.
+        <p className="text-sm text-muted-foreground">
+          Nhập mật khẩu mới cho tài khoản của bạn
         </p>
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80 font-normal">Mật khẩu mới</FormLabel>
+                <FormLabel>Mật khẩu mới</FormLabel>
                 <FormControl>
                   <Input
                     type={showPassword ? "text" : "password"}
@@ -88,13 +81,14 @@ export function UpdatePasswordForm() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="text-muted-foreground hover:text-foreground focus:outline-none"
+                        className="text-muted-foreground hover:text-foreground transition-colors"
+                        aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
                       >
                         {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                       </button>
                     }
-                    placeholder="Nhập mật khẩu mới"
-                    className="bg-background/50 h-10"
+                    placeholder="Tối thiểu 8 ký tự"
+                    autoComplete="new-password"
                     {...field}
                   />
                 </FormControl>
@@ -107,7 +101,7 @@ export function UpdatePasswordForm() {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80 font-normal">Xác nhận mật khẩu mới</FormLabel>
+                <FormLabel>Xác nhận mật khẩu mới</FormLabel>
                 <FormControl>
                   <Input
                     type={showConfirmPassword ? "text" : "password"}
@@ -116,13 +110,14 @@ export function UpdatePasswordForm() {
                       <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="text-muted-foreground hover:text-foreground focus:outline-none"
+                        className="text-muted-foreground hover:text-foreground transition-colors"
+                        aria-label={showConfirmPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
                       >
                         {showConfirmPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                       </button>
                     }
                     placeholder="Nhập lại mật khẩu mới"
-                    className="bg-background/50 h-10"
+                    autoComplete="new-password"
                     {...field}
                   />
                 </FormControl>
@@ -133,8 +128,7 @@ export function UpdatePasswordForm() {
 
           <Button
             type="submit"
-            size="lg"
-            className="w-full text-base font-medium shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-[1.01]"
+            className="w-full mt-6"
             isLoading={isPending}
           >
             Cập nhật mật khẩu
@@ -142,11 +136,14 @@ export function UpdatePasswordForm() {
         </form>
       </Form>
 
-      <div className="mt-8 text-center text-sm text-muted-foreground">
-        <Link href="/login" className="text-primary font-medium hover:underline underline-offset-4 transition-colors">
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        <Link
+          href="/login"
+          className="text-primary font-medium hover:underline underline-offset-4"
+        >
           Quay lại đăng nhập
         </Link>
-      </div>
-    </motion.div>
+      </p>
+    </div>
   );
 }
