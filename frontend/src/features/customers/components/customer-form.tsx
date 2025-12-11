@@ -3,33 +3,42 @@
 import { cn } from "@/shared/lib/utils"
 import { DatePicker } from "@/shared/ui/custom/date-picker"
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form"
 import { Input } from "@/shared/ui/input"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
+import { FORM_TABS_LIST_CLASS, FORM_TABS_TRIGGER_CLASS, getFormTabsGridCols } from "@/shared/ui/tabs-styles"
 import { Textarea } from "@/shared/ui/textarea"
 import { Activity, AlertCircle, Crown, Heart, Mail, MapPin, Phone, Star, User } from "lucide-react"
 import { useFormContext } from "react-hook-form"
+
+// Type cho danh sách KTV được truyền từ parent
+export type TechnicianOption = {
+  id: string
+  name: string
+}
 
 interface CustomerFormProps {
   mode: "create" | "update"
   className?: string
   disabled?: boolean
+  /** Danh sách kỹ thuật viên cho dropdown "Chuyên viên ưu tiên" */
+  technicians?: TechnicianOption[]
 }
 
 
-export function CustomerForm({ mode, className, disabled }: CustomerFormProps) {
+export function CustomerForm({ mode, className, disabled, technicians = [] }: CustomerFormProps) {
   const form = useFormContext()
 
   return (
@@ -45,16 +54,16 @@ export function CustomerForm({ mode, className, disabled }: CustomerFormProps) {
        )}
 
       <Tabs defaultValue="general" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 bg-muted/60 rounded-lg p-1 mb-6 h-11">
-          <TabsTrigger value="general" className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+        <TabsList className={`${FORM_TABS_LIST_CLASS} ${getFormTabsGridCols(3)}`}>
+          <TabsTrigger value="general" className={`flex items-center gap-2 ${FORM_TABS_TRIGGER_CLASS}`}>
             <User className="h-4 w-4" />
             Hồ sơ
           </TabsTrigger>
-          <TabsTrigger value="health" className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+          <TabsTrigger value="health" className={`flex items-center gap-2 ${FORM_TABS_TRIGGER_CLASS}`}>
             <Activity className="h-4 w-4" />
             Sức khỏe
           </TabsTrigger>
-          <TabsTrigger value="membership" className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+          <TabsTrigger value="membership" className={`flex items-center gap-2 ${FORM_TABS_TRIGGER_CLASS}`}>
             <Crown className="h-4 w-4" />
             Thành viên
           </TabsTrigger>
@@ -369,9 +378,16 @@ export function CustomerForm({ mode, className, disabled }: CustomerFormProps) {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="none">Không có ưu tiên</SelectItem>
-                            {/* Mock staff data - in real app fetch from API */}
-                           <SelectItem value="staff_1">Nguyễn Thị KTV</SelectItem>
-                           <SelectItem value="staff_2">Trần Văn Senior</SelectItem>
+                            {technicians.map((tech) => (
+                              <SelectItem key={tech.id} value={tech.id}>
+                                {tech.name}
+                              </SelectItem>
+                            ))}
+                            {technicians.length === 0 && (
+                              <SelectItem value="_loading" disabled>
+                                Đang tải danh sách...
+                              </SelectItem>
+                            )}
                         </SelectContent>
                       </Select>
                       <FormMessage />

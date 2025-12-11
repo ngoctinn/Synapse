@@ -6,21 +6,22 @@ import { useFormContext } from "react-hook-form";
 import { cn } from "@/shared/lib/utils";
 import { TagInput } from "@/shared/ui/custom/tag-input";
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
+import { FORM_TABS_LIST_CLASS, FORM_TABS_TRIGGER_CLASS, getFormTabsGridCols } from "@/shared/ui/tabs-styles";
 import { Textarea } from "@/shared/ui/textarea";
 
 import { ResourceGroup } from "../types";
@@ -41,9 +42,9 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
   return (
     <div className={cn("w-full", className)}>
         <Tabs defaultValue="general" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-muted/60 rounded-lg p-1 mb-6 h-11">
-                <TabsTrigger value="general" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">Thông tin chung</TabsTrigger>
-                <TabsTrigger value="config" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">Cấu hình vận hành</TabsTrigger>
+            <TabsList className={`${FORM_TABS_LIST_CLASS} ${getFormTabsGridCols(2)}`}>
+                <TabsTrigger value="general" className={FORM_TABS_TRIGGER_CLASS}>Thông tin chung</TabsTrigger>
+                <TabsTrigger value="config" className={FORM_TABS_TRIGGER_CLASS}>Cấu hình vận hành</TabsTrigger>
             </TabsList>
             <TabsContent value="general" className="space-y-4">
                 {renderGeneralInfo()}

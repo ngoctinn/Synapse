@@ -3,14 +3,14 @@
 import { useTableSelection } from "@/shared/hooks/use-table-selection";
 import { cn } from "@/shared/lib/utils";
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
 import { Badge } from "@/shared/ui/badge";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
@@ -22,7 +22,7 @@ import { Bed, Box } from "lucide-react";
 import { useState, useTransition } from "react";
 import { deleteResource } from "../actions";
 import { Resource, ResourceGroup } from "../types";
-import { AddResourceTrigger } from "./add-resource-trigger";
+import { CreateResourceTrigger } from "./create-resource-trigger";
 import { ResourceActions } from "./resource-actions";
 import { ResourceSheet } from "./resource-sheet";
 
@@ -206,7 +206,7 @@ export function ResourceTable({ data, groups, isLoading, className, variant = "d
             icon={Box}
             title="Chưa có tài nguyên nào"
             description="Tạo tài nguyên đầu tiên để bắt đầu quản lý."
-            action={<AddResourceTrigger groups={groups} />}
+            action={<CreateResourceTrigger groups={groups} />}
           />
         }
         disabled={isPending}

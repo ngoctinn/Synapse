@@ -1,34 +1,27 @@
 "use client";
 
-import { Resource, RoomType } from "@/features/resources";
 import { useDeleteAction } from "@/shared/hooks";
 import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
 import { TableRowActions } from "@/shared/ui/custom/table-row-actions";
 import { DropdownMenuItem, DropdownMenuLabel } from "@/shared/ui/dropdown-menu";
 import { Copy } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { toast } from "sonner";
 import { cloneService, deleteService } from "../actions";
-import { Service, Skill } from "../types";
-import { EditServiceDialog } from "./edit-service-dialog";
+import { Service } from "../types";
 
 interface ServiceActionsProps {
   service: Service;
-  availableSkills: Skill[];
-  availableRoomTypes: RoomType[];
-  availableEquipment: Resource[];
+  onEdit: () => void;
 }
 
 export function ServiceActions({
   service,
-  availableSkills,
-  availableRoomTypes,
-  availableEquipment,
+  onEdit,
 }: ServiceActionsProps) {
   const router = useRouter();
   const [clonePending, startCloneTransition] = useTransition();
-  const [openEdit, setOpenEdit] = useState(false);
 
   // Sử dụng useDeleteAction hook
   const {
@@ -59,7 +52,7 @@ export function ServiceActions({
   return (
     <>
       <TableRowActions
-        onEdit={() => setOpenEdit(true)}
+        onEdit={onEdit}
         onDelete={openDeleteDialog}
         disabled={isPending}
         extraActions={
@@ -71,15 +64,6 @@ export function ServiceActions({
             </DropdownMenuItem>
           </>
         }
-      />
-
-      <EditServiceDialog
-        open={openEdit}
-        onOpenChange={setOpenEdit}
-        service={service}
-        availableSkills={availableSkills}
-        availableRoomTypes={availableRoomTypes}
-        availableEquipment={availableEquipment}
       />
 
       <DeleteConfirmDialog

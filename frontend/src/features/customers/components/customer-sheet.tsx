@@ -8,12 +8,13 @@ import { useForm } from "react-hook-form"
 
 import { manageCustomer } from "@/features/customers/actions"
 import {
-  CustomerFormValues,
-  customerSchema,
-  CustomerUpdateFormValues,
-  customerUpdateSchema
+    CustomerFormValues,
+    customerSchema,
+    CustomerUpdateFormValues,
+    customerUpdateSchema
 } from "@/features/customers/model/schemas"
 import { Customer } from "@/features/customers/model/types"
+import { getTechnicians, type TechnicianOption } from "@/features/staff/actions"
 
 
 import { Badge } from "@/shared/ui/badge"
@@ -21,14 +22,15 @@ import { Button } from "@/shared/ui/button"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { Form } from "@/shared/ui/form"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle
 } from "@/shared/ui/sheet"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
+import { getFormTabsGridCols, SHEET_TABS_LIST_CLASS, SHEET_TABS_TRIGGER_CLASS } from "@/shared/ui/tabs-styles"
 import { CustomerForm } from "./customer-form"
 import { CustomerHistory } from "./customer-history"
 
@@ -49,8 +51,16 @@ const initialState = {
 
 export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSheetProps) {
   const [state, dispatch, isPending] = React.useActionState(manageCustomer, initialState)
+  const [technicians, setTechnicians] = React.useState<TechnicianOption[]>([])
 
   const schema = mode === "create" ? customerSchema : customerUpdateSchema
+
+  // Fetch danh sách kỹ thuật viên cho dropdown "Chuyên viên ưu tiên"
+  React.useEffect(() => {
+    if (open) {
+      getTechnicians().then(setTechnicians)
+    }
+  }, [open])
 
 
   const form = useForm<CustomerFormValues | CustomerUpdateFormValues>({
@@ -148,7 +158,7 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
                     )}
 
                     {mode === "update" && customer?.membership_tier === "GOLD" && (
-                        <Badge variant="warning" className="gap-1.5 h-6 border-accent text-accent-foreground bg-accent">
+                        <Badge variant="warning" className="gap-1.5 h-6">
                              <Crown className="size-3.5" />
                              Gold
                         </Badge>
@@ -166,15 +176,15 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
             <Form {...form}>
                 <form id="customer-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     {mode === "create" ? (
-                         <CustomerForm mode={mode} disabled={isPending} />
+                         <CustomerForm mode={mode} disabled={isPending} technicians={technicians} />
                     ) : (
                         <Tabs defaultValue="info" className="w-full">
-                            <TabsList className="grid w-full grid-cols-2 mb-6">
-                                <TabsTrigger value="info">Thông tin</TabsTrigger>
-                                <TabsTrigger value="history">Lịch sử & Thống kê</TabsTrigger>
+                            <TabsList className={`${SHEET_TABS_LIST_CLASS} ${getFormTabsGridCols(2)}`}>
+                                <TabsTrigger value="info" className={SHEET_TABS_TRIGGER_CLASS}>Thông tin</TabsTrigger>
+                                <TabsTrigger value="history" className={SHEET_TABS_TRIGGER_CLASS}>Lịch sử & Thống kê</TabsTrigger>
                             </TabsList>
                             <TabsContent value="info" className="mt-0 space-y-6">
-                                <CustomerForm mode={mode} disabled={isPending} />
+                                <CustomerForm mode={mode} disabled={isPending} technicians={technicians} />
                             </TabsContent>
                             <TabsContent value="history" className="mt-0">
                                 <CustomerHistory />

@@ -74,7 +74,7 @@ export function StaffFilter() {
               <SelectItem value="all">Tất cả trạng thái</SelectItem>
               <SelectItem value="true">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                  <CheckCircle2 className="h-4 w-4 text-success" />
                   <span>Hoạt động</span>
                 </div>
               </SelectItem>
