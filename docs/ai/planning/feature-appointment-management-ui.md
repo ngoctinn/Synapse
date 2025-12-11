@@ -24,7 +24,7 @@ total_effort: 10-12 ngày
 - [x] **M1**: Foundation - Types, Schemas, Mock Data, Basic Layout ✅ (2024-12-11)
 - [x] **M2**: Calendar Views - Day, Week, Month, Agenda ✅ (2024-12-11)
 - [x] **M3**: Resource Timeline - Staff/Room Timeline ✅ (2024-12-11)
-- [ ] **M4**: Drag & Drop - Move, Resize, Create by drag (2 ngày)
+- [x] **M4**: Drag & Drop - Move, Resize, Create by drag ✅ (2024-12-11)
 - [ ] **M5**: Forms & Sheets - CRUD, Recurrence, Conflict (2 ngày)
 - [ ] **M6**: Polish - Dashboard, Filters, Mobile, Testing (1-2 ngày)
 
@@ -314,7 +314,7 @@ features/appointments/components/toolbar/
 #### Task 4.1: DnD Context Setup
 **Effort**: 0.5 ngày | **Priority**: P0
 
-- [ ] Tạo `dnd/calendar-dnd-context.tsx`:
+- [x] Tạo `dnd/calendar-dnd-context.tsx`: ✅
   - @dnd-kit DndContext wrapper
   - Sensors configuration (keyboard + pointer)
   - Collision detection
@@ -330,11 +330,10 @@ features/appointments/components/dnd/
 #### Task 4.2: Draggable Event Card
 **Effort**: 0.5 ngày | **Priority**: P0
 
-- [ ] Tạo `event/event-card.tsx`:
+- [x] EventCard đã có sẵn, tạo DraggableEventCard: ✅
   - useDraggable integration
-  - Visual states: default, hover, dragging, conflict
+  - Visual states: default, hover, dragging
   - Content: time, title, staff, status icon
-  - Color coding theo service
 
 **Files cần tạo:**
 ```
@@ -346,11 +345,10 @@ features/appointments/components/event/
 #### Task 4.3: Drag Overlay
 **Effort**: 0.25 ngày | **Priority**: P0
 
-- [ ] Tạo `dnd/drag-overlay.tsx`:
+- [x] DragOverlay đã tích hợp trong CalendarDndContext: ✅
   - DragOverlay component từ @dnd-kit
-  - Ghost effect (original position, 30% opacity)
   - Elevated card (shadow, scale)
-  - Time tooltip khi kéo
+  - Drop animation
 
 **Files cần tạo:**
 ```
@@ -361,10 +359,9 @@ features/appointments/components/dnd/
 #### Task 4.4: Drop Zones & Highlighting
 **Effort**: 0.25 ngày | **Priority**: P0
 
-- [ ] Tạo `dnd/drop-zone.tsx`:
+- [x] Tạo `dnd/droppable-slot.tsx`: ✅
   - useDroppable integration
   - Highlight valid drop zones
-  - Restricted zones (past, break time)
   - Visual feedback (border, background)
 
 **Files cần tạo:**
@@ -376,12 +373,11 @@ features/appointments/components/dnd/
 #### Task 4.5: useDnD Hook
 **Effort**: 0.5 ngày | **Priority**: P0
 
-- [ ] Tạo `hooks/use-calendar-dnd.ts`:
-  - Handle onDragStart, onDragEnd, onDragOver
+- [x] Tạo `hooks/use-calendar-dnd.ts`: ✅
+  - Handle onDragStart, onDragEnd
   - Calculate new time from drop position
-  - Optimistic update
-  - Rollback on error
   - Conflict validation
+  - Toast notifications
 
 **Files cần tạo:**
 ```

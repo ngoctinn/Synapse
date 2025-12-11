@@ -396,15 +396,15 @@ export function CalendarDnDContext({ children, onEventMove }: CalendarDnDContext
 | 3.3 Zoom Control | ✅ Hoàn thành | Tích hợp trong ResourceTimeline |
 | 3.4 Integration | ✅ Hoàn thành | CalendarView router, staffList/roomList |
 
-### Giai đoạn 4: Drag & Drop
+### Giai đoạn 4: Drag & Drop ✅
 | Task | Status | Notes |
 |------|--------|-------|
-| 4.1 DnD Context | ⏳ Chưa bắt đầu | |
-| 4.2 Draggable Card | ⏳ Chưa bắt đầu | |
-| 4.3 Drag Overlay | ⏳ Chưa bắt đầu | |
-| 4.4 Drop Zones | ⏳ Chưa bắt đầu | |
-| 4.5 useDnD Hook | ⏳ Chưa bắt đầu | |
-| 4.6 Resize | ⏳ Chưa bắt đầu | P2 |
+| 4.1 DnD Context | ✅ Hoàn thành | CalendarDndContext + sensors |
+| 4.2 Draggable Card | ✅ Hoàn thành | DraggableEventCard wrapper |
+| 4.3 Drag Overlay | ✅ Hoàn thành | Tích hợp trong DndContext |
+| 4.4 Drop Zones | ✅ Hoàn thành | DroppableSlot component |
+| 4.5 useDnD Hook | ✅ Hoàn thành | useCalendarDnd + conflict check |
+| 4.6 Resize | ⏳ P2 - Bỏ qua | Stretch goal |
 
 ### Giai đoạn 5: Forms & Sheets
 | Task | Status | Notes |

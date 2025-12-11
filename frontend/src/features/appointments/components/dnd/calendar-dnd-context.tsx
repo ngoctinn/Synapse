@@ -11,20 +11,20 @@
  */
 
 import {
-    closestCenter,
-    DndContext,
-    DragOverlay,
-    KeyboardSensor,
-    PointerSensor,
-    useSensor,
-    useSensors,
-    type DragEndEvent,
-    type DragOverEvent,
-    type DragStartEvent,
-    type Modifier,
+  closestCenter,
+  DndContext,
+  DragOverlay,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+  type DragOverEvent,
+  type DragStartEvent,
+  type Modifier,
 } from "@dnd-kit/core";
 import {
-    restrictToParentElement
+  restrictToParentElement
 } from "@dnd-kit/modifiers";
 import { useCallback, useState } from "react";
 
@@ -69,7 +69,6 @@ export interface DropData {
 
 function createGridSnapModifier(zoomLevel: ZoomLevel): Modifier {
   const minuteHeight = 60 / zoomLevel; // pixels per minute based on zoom
-  const snapInterval = zoomLevel; // snap to zoom interval
 
   return ({ transform }) => {
     // Snap Y axis to grid
@@ -95,7 +94,6 @@ export function CalendarDndContext({
 }: CalendarDndContextProps) {
   // Active event being dragged
   const [activeEvent, setActiveEvent] = useState<CalendarEvent | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
 
   // Configure sensors
   const sensors = useSensors(
@@ -121,7 +119,6 @@ export function CalendarDndContext({
     const data = event.active.data.current as DragData;
     if (data?.type === "event") {
       setActiveEvent(data.event);
-      setIsDragging(true);
     }
   }, []);
 
@@ -144,7 +141,6 @@ export function CalendarDndContext({
       const { active, over } = event;
 
       setActiveEvent(null);
-      setIsDragging(false);
 
       if (!over || !onEventMove) return;
 
@@ -174,7 +170,6 @@ export function CalendarDndContext({
 
   const handleDragCancel = useCallback(() => {
     setActiveEvent(null);
-    setIsDragging(false);
   }, []);
 
   // ============================================
@@ -222,3 +217,4 @@ export function CalendarDndContext({
 // ============================================
 
 export { useDraggable, useDroppable } from "@dnd-kit/core";
+

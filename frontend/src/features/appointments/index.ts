@@ -30,11 +30,18 @@ export {
 // Event Components
 export { EventCard } from "./components/event";
 
+// DnD Components
+export {
+  CalendarDndContext,
+  DraggableEventCard,
+  DroppableSlot
+} from "./components/dnd";
+
 // ============================================
 // HOOKS
 // ============================================
 
-export { useCalendarState } from "./hooks";
+export { useCalendarDnd, useCalendarState } from "./hooks";
 
 // ============================================
 // TYPES
