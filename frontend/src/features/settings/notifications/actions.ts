@@ -18,20 +18,18 @@ export async function toggleChannelAction(
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function updateChannelConfigAction(
   channelId: string,
-  config: any
+  config: Record<string, unknown>
 ): Promise<{ success: boolean; message: string }> {
   await delay();
   return { success: true, message: 'Đã lưu cấu hình kênh thông báo' };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function updateTemplateAction(
   eventId: string,
   channelId: string,
-  template: any
+  template: Record<string, unknown>
 ): Promise<{ success: boolean; message: string }> {
   await delay();
   return { success: true, message: 'Đã lưu mẫu tin nhắn thành công' };

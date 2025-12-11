@@ -20,7 +20,7 @@ import {
     SelectValue,
 } from "@/shared/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
-import { FORM_TABS_LIST_CLASS, FORM_TABS_TRIGGER_CLASS, getFormTabsGridCols } from "@/shared/ui/tabs-styles"
+
 import { Textarea } from "@/shared/ui/textarea"
 import { format, parse } from "date-fns"
 import { Briefcase, Check, Mail, Phone, User } from "lucide-react"
@@ -61,10 +61,10 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
              </div>
         ) : (
             <Tabs defaultValue="general" className="w-full">
-                <TabsList className={`${FORM_TABS_LIST_CLASS} ${getFormTabsGridCols(3)}`}>
-                    <TabsTrigger value="general" className={FORM_TABS_TRIGGER_CLASS}>Thông tin chung</TabsTrigger>
-                    <TabsTrigger value="professional" className={FORM_TABS_TRIGGER_CLASS}>Nghiệp vụ</TabsTrigger>
-                    <TabsTrigger value="hr" className={FORM_TABS_TRIGGER_CLASS}>Nhân sự</TabsTrigger>
+                <TabsList variant="form" size="lg" fullWidth gridCols={3}>
+                    <TabsTrigger value="general" variant="form">Thông tin chung</TabsTrigger>
+                    <TabsTrigger value="professional" variant="form">Nghiệp vụ</TabsTrigger>
+                    <TabsTrigger value="hr" variant="form">Nhân sự</TabsTrigger>
                 </TabsList>
                 <TabsContent value="general" className="space-y-4 border rounded-lg bg-card p-4">
                     {renderGeneralInfo()}

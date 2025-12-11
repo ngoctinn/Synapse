@@ -2,7 +2,7 @@
 
 import { FilterBar } from "@/shared/ui/custom/filter-bar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
-import { PAGE_TABS_LIST_CLASS, PAGE_TABS_TRIGGER_CLASS } from "@/shared/ui/tabs-styles"
+
 import { Suspense, use, useState } from "react"
 import { MaintenanceTask, Resource, ResourceGroup } from "../types"
 import { CreateResourceTrigger } from "./create-resource-trigger"
@@ -72,9 +72,9 @@ export function ResourcePage({ resourcesPromise, groupsPromise, tasksPromise }: 
         <div
           className="sticky top-0 z-40 px-4 py-2 bg-card/95 backdrop-blur-sm border-b flex flex-col md:flex-row items-center justify-between gap-4"
         >
-          <TabsList className={PAGE_TABS_LIST_CLASS}>
-            <TabsTrigger value="list" className={PAGE_TABS_TRIGGER_CLASS}>Danh sách</TabsTrigger>
-            <TabsTrigger value="maintenance" className={PAGE_TABS_TRIGGER_CLASS}>Lịch bảo trì</TabsTrigger>
+          <TabsList variant="default" size="default">
+            <TabsTrigger value="list" variant="default" stretch={false}>Danh sách</TabsTrigger>
+            <TabsTrigger value="maintenance" variant="default" stretch={false}>Lịch bảo trì</TabsTrigger>
           </TabsList>
 
           <div className="flex items-center gap-3 w-full md:w-auto">

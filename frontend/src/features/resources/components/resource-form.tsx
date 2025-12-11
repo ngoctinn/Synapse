@@ -21,7 +21,7 @@ import {
     SelectValue,
 } from "@/shared/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
-import { FORM_TABS_LIST_CLASS, FORM_TABS_TRIGGER_CLASS, getFormTabsGridCols } from "@/shared/ui/tabs-styles";
+
 import { Textarea } from "@/shared/ui/textarea";
 
 import { ResourceGroup } from "../types";
@@ -42,9 +42,9 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
   return (
     <div className={cn("w-full", className)}>
         <Tabs defaultValue="general" className="w-full">
-            <TabsList className={`${FORM_TABS_LIST_CLASS} ${getFormTabsGridCols(2)}`}>
-                <TabsTrigger value="general" className={FORM_TABS_TRIGGER_CLASS}>Thông tin chung</TabsTrigger>
-                <TabsTrigger value="config" className={FORM_TABS_TRIGGER_CLASS}>Cấu hình vận hành</TabsTrigger>
+            <TabsList variant="form" size="lg" fullWidth gridCols={2}>
+                <TabsTrigger value="general" variant="form">Thông tin chung</TabsTrigger>
+                <TabsTrigger value="config" variant="form">Cấu hình vận hành</TabsTrigger>
             </TabsList>
             <TabsContent value="general" className="space-y-4">
                 {renderGeneralInfo()}

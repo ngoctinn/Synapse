@@ -3,7 +3,7 @@
 import { FilterBar } from "@/shared/ui/custom/filter-bar"
 import { Input } from "@/shared/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
-import { PAGE_TABS_LIST_CLASS, PAGE_TABS_TRIGGER_CLASS } from "@/shared/ui/tabs-styles"
+
 import { Search } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Suspense, use, useTransition } from "react"
@@ -87,9 +87,9 @@ export function CustomersPage({ page, customerListPromise }: CustomersPageProps)
       <Tabs value={activeTab} className="flex flex-col flex-1 w-full gap-0" onValueChange={handleTabChange}>
 
         <div className="sticky top-0 z-40 px-4 py-2 bg-card/95 backdrop-blur-sm border-b flex flex-col md:flex-row items-center justify-between gap-4">
-          <TabsList className={PAGE_TABS_LIST_CLASS}>
-            <TabsTrigger value="list" className={PAGE_TABS_TRIGGER_CLASS}>Danh sách</TabsTrigger>
-            <TabsTrigger value="insights" className={PAGE_TABS_TRIGGER_CLASS}>Thông tin</TabsTrigger>
+          <TabsList variant="default" size="default">
+            <TabsTrigger value="list" variant="default" stretch={false}>Danh sách</TabsTrigger>
+            <TabsTrigger value="insights" variant="default" stretch={false}>Thông tin</TabsTrigger>
           </TabsList>
 
           <div className="flex items-center gap-3 w-full md:w-auto">
