@@ -10,6 +10,7 @@
 import { Filter, Plus, RefreshCw, Settings2 } from "lucide-react";
 import { use, useCallback, useEffect, useState, useTransition } from "react"; // Added `useCallback` hook
 
+import { PageContent, PageHeader, PageShell, SurfaceCard } from "@/shared/components/layout/page-layout";
 import { cn } from "@/shared/lib/utils";
 import {
   Button,
@@ -339,12 +340,11 @@ export function AppointmentsPage({
 
 
   return (
-    <div className="flex flex-col h-full">
+    <PageShell>
       {/* ============================================ */}
       {/* COMPACT HEADER */}
       {/* ============================================ */}
-      <div className="flex-none px-4 py-3 border-b bg-background/95 backdrop-blur-sm">
-        <div className="flex items-center justify-between gap-4">
+      <PageHeader className="h-auto py-2">
           {/* Title + Inline Metrics */}
           <div className="flex items-center gap-6">
             <h1 className="text-lg font-semibold tracking-tight">
@@ -397,104 +397,105 @@ export function AppointmentsPage({
               <span className="hidden sm:inline">Tạo lịch hẹn</span>
             </Button>
           </div>
-        </div>
-      </div>
+      </PageHeader>
 
-      {/* ============================================ */}
-      {/* TOOLBAR */}
-      {/* ============================================ */}
-      <div className="flex-none px-4 py-2 border-b">
-        <div className="flex items-center justify-between gap-2 sm:gap-4 flex-wrap">
-          {/* Date Navigator */}
-          <DateNavigator
-            date={date}
-            formattedDateRange={formattedDateRange}
-            isToday={isToday}
-            onPrev={goPrev}
-            onNext={goNext}
-            onToday={goToday}
-            onDateSelect={goToDate}
-          />
+      <PageContent fullWidth className="p-0 gap-0">
+        {/* ============================================ */}
+        {/* TOOLBAR */}
+        {/* ============================================ */}
+        <div className="flex-none px-4 py-2 border-b bg-background/50 backdrop-blur-sm sticky top-0 z-30">
+            <div className="flex items-center justify-between gap-2 sm:gap-4 flex-wrap">
+            {/* Date Navigator */}
+            <DateNavigator
+                date={date}
+                formattedDateRange={formattedDateRange}
+                isToday={isToday}
+                onPrev={goPrev}
+                onNext={goNext}
+                onToday={goToday}
+                onDateSelect={goToDate}
+            />
 
-          {/* View Switcher (Desktop) */}
-          <div className="hidden md:block">
-            <ViewSwitcher value={view} onChange={setView} />
-          </div>
-
-          {/* Actions */}
-          <div className="flex items-center gap-1">
-            {/* View Switcher (Mobile) */}
-            <div className="md:hidden">
-              <ViewSwitcher value={view} onChange={setView} hiddenViews={["timeline"]} />
+            {/* View Switcher (Desktop) */}
+            <div className="hidden md:block">
+                <ViewSwitcher value={view} onChange={setView} />
             </div>
 
-            {/* Filter Button */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" className="h-8 w-8">
-                  <Filter className="h-4 w-4" />
-                  <span className="sr-only">Bộ lọc</span>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Bộ lọc</TooltipContent>
-            </Tooltip>
+            {/* Actions */}
+            <div className="flex items-center gap-1">
+                {/* View Switcher (Mobile) */}
+                <div className="md:hidden">
+                <ViewSwitcher value={view} onChange={setView} hiddenViews={["timeline"]} />
+                </div>
 
-            {/* Refresh Button */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={handleRefresh}
-                  disabled={isPending}
-                >
-                  <RefreshCw className={cn("h-4 w-4", isPending && "animate-spin")} />
-                  <span className="sr-only">Làm mới</span>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Làm mới</TooltipContent>
-            </Tooltip>
+                {/* Filter Button */}
+                <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button variant="outline" size="icon" className="h-8 w-8">
+                    <Filter className="h-4 w-4" />
+                    <span className="sr-only">Bộ lọc</span>
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent>Bộ lọc</TooltipContent>
+                </Tooltip>
 
-            {/* Settings Button */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" className="h-8 w-8">
-                  <Settings2 className="h-4 w-4" />
-                  <span className="sr-only">Cài đặt</span>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Cài đặt hiển thị</TooltipContent>
-            </Tooltip>
-          </div>
+                {/* Refresh Button */}
+                <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={handleRefresh}
+                    disabled={isPending}
+                    >
+                    <RefreshCw className={cn("h-4 w-4", isPending && "animate-spin")} />
+                    <span className="sr-only">Làm mới</span>
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent>Làm mới</TooltipContent>
+                </Tooltip>
+
+                {/* Settings Button */}
+                <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button variant="outline" size="icon" className="h-8 w-8">
+                    <Settings2 className="h-4 w-4" />
+                    <span className="sr-only">Cài đặt</span>
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent>Cài đặt hiển thị</TooltipContent>
+                </Tooltip>
+            </div>
+            </div>
         </div>
-      </div>
 
-      {/* ============================================ */}
-      {/* MAIN CALENDAR AREA */}
-      {/* ============================================ */}
-      <div className="flex-1 p-4 overflow-hidden">
-        <div className="surface-card h-full rounded-lg border overflow-hidden">
-          <CalendarView
-            view={view}
-            date={date}
-            dateRange={dateRange}
-            events={events}
-            densityMode={densityMode}
-            staffList={staffList}
-            roomList={roomList}
-            onEventClick={handleEventClick}
-            onSlotClick={handleSlotClick}
-            isLoading={isPending && events.length === 0}
-            onCheckIn={handleCheckIn}
-            onNoShow={handleNoShow}
-            onCancel={handleCancel}
-            onDelete={handleDelete}
-            onEdit={handleEdit}
-            className="flex-1"
-          />
+        {/* ============================================ */}
+        {/* MAIN CALENDAR AREA */}
+        {/* ============================================ */}
+        <div className="flex-1 p-4 overflow-hidden h-full">
+            <SurfaceCard className="h-full rounded-lg border overflow-hidden">
+            <CalendarView
+                view={view}
+                date={date}
+                dateRange={dateRange}
+                events={events}
+                densityMode={densityMode}
+                staffList={staffList}
+                roomList={roomList}
+                onEventClick={handleEventClick}
+                onSlotClick={handleSlotClick}
+                isLoading={isPending && events.length === 0}
+                onCheckIn={handleCheckIn}
+                onNoShow={handleNoShow}
+                onCancel={handleCancel}
+                onDelete={handleDelete}
+                onEdit={handleEdit}
+                className="flex-1"
+            />
+            </SurfaceCard>
         </div>
-      </div>
+      </PageContent>
 
       {/* ============================================ */}
       {/* APPOINTMENT SHEET */}
@@ -542,6 +543,6 @@ export function AppointmentsPage({
           serviceName={selectedEvent.appointment.serviceName}
         />
       )}
-    </div>
+    </PageShell>
   );
 }

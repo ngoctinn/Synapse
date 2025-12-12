@@ -1,7 +1,7 @@
 "use client";
 
-import { CalendarDays, Plus, Save, Send, Trash2 } from "lucide-react";
 import { format } from "date-fns";
+import { Save, Send, Trash2 } from "lucide-react";
 
 import { Button } from "@/shared/ui/button";
 import {
@@ -12,9 +12,9 @@ import {
     SheetHeader,
     SheetTitle
 } from "@/shared/ui/sheet";
-import { ExceptionForm } from "./exception-form";
-import { ExceptionDate } from "../model/types";
 import { useMemo } from "react";
+import { ExceptionDate } from "../model/types";
+import { ExceptionForm } from "./exception-form";
 
 interface ExceptionSheetProps {
   isOpen: boolean;
@@ -40,7 +40,7 @@ export function ExceptionSheet({
     onSubmit,
     onDelete
 }: ExceptionSheetProps) {
-  
+
   // Check if we are editing existing exceptions
   const currentExceptions = useMemo(() => {
     const dateStrings = new Set(selectedDates.map(d => format(d, 'yyyy-MM-dd')));
@@ -48,9 +48,9 @@ export function ExceptionSheet({
   }, [selectedDates, existingExceptions]);
 
   const isEditing = currentExceptions.length > 0;
-  
+
   // Prepare initial data from the first selected exception (if any)
-  const initialData = isEditing && currentExceptions[0] 
+  const initialData = isEditing && currentExceptions[0]
       ? {
           reason: currentExceptions[0].reason,
           type: currentExceptions[0].type,
@@ -67,7 +67,7 @@ export function ExceptionSheet({
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <SheetContent className="w-full sm:max-w-xl p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
-        <SheetHeader className="px-6 py-4 border-b">
+        <SheetHeader className="px-6 py-3 border-b">
             <div className="flex items-center justify-between">
                 <SheetTitle className="text-xl font-semibold text-foreground flex items-center gap-2">
                     {title}
@@ -78,8 +78,8 @@ export function ExceptionSheet({
             </SheetDescription>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto px-6 py-6 [scrollbar-gutter:stable]">
-            <ExceptionForm 
+        <div className="flex-1 overflow-y-auto px-6 py-4 [scrollbar-gutter:stable]">
+            <ExceptionForm
                 id="exception-sheet-form"
                 initialData={initialData}
                 selectedDates={selectedDates}
@@ -88,11 +88,11 @@ export function ExceptionSheet({
                     onSubmit(data);
                     onClose();
                 }}
-                hideFooter={true} 
+                hideFooter={true}
             />
         </div>
 
-        <SheetFooter className="px-6 py-4 border-t sm:justify-between flex-row items-center gap-4 bg-background">
+        <SheetFooter className="px-6 py-3 border-t sm:justify-between flex-row items-center gap-4 bg-background">
             <div className="flex items-center gap-2">
                 {isEditing && onDelete && (
                     <Button
@@ -106,7 +106,7 @@ export function ExceptionSheet({
                     </Button>
                 )}
             </div>
-            
+
             <div className="flex items-center gap-2">
                 <Button
                     type="button"

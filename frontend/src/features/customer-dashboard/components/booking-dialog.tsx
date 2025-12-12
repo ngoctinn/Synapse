@@ -20,7 +20,6 @@
  * AI Note: Resolved conflict by keeping JSDoc and removing duplicate imports
  */
 
-import { AnimatePresence, motion } from "framer-motion"
 import { ArrowLeft, ChevronRight } from "lucide-react"
 import * as React from "react"
 
@@ -173,7 +172,7 @@ export function BookingDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-lg md:max-w-4xl p-0 gap-0 overflow-hidden h-[85vh] md:h-auto md:max-h-[600px] flex flex-col md:flex-row bg-background/95 backdrop-blur-3xl border-none shadow-2xl">
+      <DialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-lg md:max-w-4xl p-0 gap-0 overflow-hidden h-[85vh] md:h-auto md:max-h-[600px] flex flex-col md:flex-row bg-background border-none shadow-2xl">
         <DialogTitle className="sr-only">{stepTitle}</DialogTitle>
 
         {/* SIDEBAR (Desktop Only - except success) */}
@@ -209,18 +208,9 @@ export function BookingDialog({
 
             {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto px-6 py-4">
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        key={state.step}
-                        initial={prefersReducedMotion ? false : { opacity: 0, x: 10 }}
-                        animate={prefersReducedMotion ? {} : { opacity: 1, x: 0 }}
-                        exit={prefersReducedMotion ? {} : { opacity: 0, x: -10 }}
-                        transition={{ duration: 0.25, ease: "easeOut" }}
-                        className="h-full"
-                    >
-                        {renderStep()}
-                    </motion.div>
-                </AnimatePresence>
+                <div className="h-full">
+                    {renderStep()}
+                </div>
             </div>
 
              {/* Footer Navigation */}

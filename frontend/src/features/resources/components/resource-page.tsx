@@ -1,6 +1,7 @@
 "use client"
 
 import { PageFooter } from "@/shared/components/layout/components/page-footer"
+import { PageContent, PageHeader, PageShell, SurfaceCard } from "@/shared/components/layout/page-layout"
 import { ActionResponse } from "@/shared/lib/action-response"
 import { FilterBar } from "@/shared/ui/custom/filter-bar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
@@ -74,12 +75,10 @@ export function ResourcePage({ resourcesPromise, groupsPromise, tasksPromise }: 
   const [activeTab, setActiveTab] = useState("list")
 
   return (
-    <div className="min-h-screen flex flex-col w-full">
+    <PageShell>
       <Tabs defaultValue="list" className="flex flex-col flex-1 w-full gap-0" onValueChange={setActiveTab}>
 
-        <div
-          className="sticky top-0 z-40 px-4 py-2 bg-card/95 backdrop-blur-sm border-b flex flex-col md:flex-row items-center justify-between gap-4"
-        >
+        <PageHeader>
           <TabsList variant="default" size="default">
             <TabsTrigger value="list" variant="default" stretch={false}>Danh sách</TabsTrigger>
             <TabsTrigger value="maintenance" variant="default" stretch={false}>Lịch bảo trì</TabsTrigger>
@@ -96,38 +95,38 @@ export function ResourcePage({ resourcesPromise, groupsPromise, tasksPromise }: 
               <AddResourceWrapper groupsPromise={groupsPromise} />
             </Suspense>
           </div>
-        </div>
+        </PageHeader>
 
-        <div className="flex-1 p-0 motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 motion-safe:duration-300 ease-out flex flex-col">
+        <div className="flex-1 flex flex-col overflow-hidden motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 motion-safe:duration-300 ease-out">
           <TabsContent value="list" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
-             <div className="p-4 flex-1 flex flex-col gap-4">
-                <div className="surface-card overflow-hidden flex-1">
+             <PageContent>
+                <SurfaceCard>
                     <Suspense fallback={<ResourceTableSkeleton />}>
                     <ResourceListWrapper
                         resourcesPromise={resourcesPromise}
                         groupsPromise={groupsPromise}
                     />
                     </Suspense>
-                </div>
+                </SurfaceCard>
                 <PageFooter />
-             </div>
+             </PageContent>
           </TabsContent>
 
           <TabsContent value="maintenance" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
-            <div className="p-4 flex-1 flex flex-col gap-4">
-                <div className="surface-card overflow-hidden flex-1 p-4">
+            <PageContent>
+                <SurfaceCard className="p-4">
                     <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Đang tải lịch bảo trì...</div>}>
                     <MaintenanceTimelineWrapper
                         resourcesPromise={resourcesPromise}
                         tasksPromise={tasksPromise}
                     />
                     </Suspense>
-                </div>
+                </SurfaceCard>
                 <PageFooter />
-            </div>
+            </PageContent>
           </TabsContent>
         </div>
       </Tabs>
-    </div>
+    </PageShell>
   )
 }

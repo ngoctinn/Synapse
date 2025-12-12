@@ -1,5 +1,6 @@
 'use client';
 
+import { PageContent, PageHeader, PageShell, SurfaceCard } from "@/shared/components/layout/page-layout";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,11 +12,9 @@ import {
   AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
 import { Button } from "@/shared/ui/button";
-import { Card, CardContent, CardDescription, CardHeader } from "@/shared/ui/card";
-import { SettingsHeader } from "@/shared/ui/custom/settings-header";
+import { CardContent, CardDescription, CardHeader } from "@/shared/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
-import { motion } from "framer-motion";
 import { Copy } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -142,122 +141,126 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
     toast.info(OPERATING_HOURS_UI.RESET);
   };
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
 
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
-  };
 
   return (
-    <Tabs defaultValue="schedule" className="flex flex-col flex-1 w-full gap-0 h-full overflow-hidden">
-      <SettingsHeader
-        isDirty={isDirty}
-        isPending={isPending}
-        onSave={handleSave}
-        onReset={handleReset}
-      >
-        <TabsList className="grid w-full grid-cols-2 md:w-auto md:inline-flex">
-          <TabsTrigger value="schedule" className="px-4">{OPERATING_HOURS_UI.STANDARD_TAB}</TabsTrigger>
-          <TabsTrigger value="exceptions" className="px-4">{OPERATING_HOURS_UI.EXCEPTIONS_TAB}</TabsTrigger>
-        </TabsList>
-      </SettingsHeader>
+    <PageShell>
+      <Tabs defaultValue="schedule" className="flex flex-col flex-1 w-full gap-0 h-full overflow-hidden">
+        <PageHeader>
+            {/* Tabs List within Header */}
+            <TabsList className="grid w-full grid-cols-2 md:w-auto md:inline-flex">
+                <TabsTrigger value="schedule" className="px-4">{OPERATING_HOURS_UI.STANDARD_TAB}</TabsTrigger>
+                <TabsTrigger value="exceptions" className="px-4">{OPERATING_HOURS_UI.EXCEPTIONS_TAB}</TabsTrigger>
+            </TabsList>
 
-      <TabsContent value="schedule" className="space-y-6 animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out p-4 sm:p-6 overflow-y-auto">
-        <div className="space-y-6">
-            <Card className="border shadow-sm rounded-xl">
-            <CardHeader className="px-4 pt-6 pb-4 sm:px-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="space-y-1">
-                    <CardDescription className="text-sm text-muted-foreground">
-                    {OPERATING_HOURS_UI.DESCRIPTION_TITLE}
-                    </CardDescription>
-                </div>
-                {copySourceDay && (
-                    <div className="flex flex-wrap items-center gap-3 animate-in fade-in slide-in-from-right-8 duration-300 bg-muted/50 px-3 py-2 rounded-lg border w-full sm:w-auto">
-                    <span className="text-sm text-muted-foreground whitespace-nowrap">
-                        {OPERATING_HOURS_UI.FROM_LABEL} <span className="font-bold text-primary">{DAY_LABELS[copySourceDay]}</span>
-                    </span>
-                    <div className="h-4 w-px bg-border hidden sm:block" />
-                    <div className="flex items-center gap-2 flex-1 sm:flex-none justify-end">
-                    <TooltipProvider>
-                        <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button variant="secondary" size="sm" onClick={handlePasteToAll}>
-                            <Copy className="w-3 h-3 mr-1.5" />
-                            {OPERATING_HOURS_UI.COPY_TO_ALL}
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>{OPERATING_HOURS_UI.COPY_TOOLTIP}</TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                    <Button variant="ghost" size="sm" onClick={handleCancelCopy}>
-                        {OPERATING_HOURS_UI.CANCEL}
-                    </Button>
-                    </div>
-                    </div>
-                )}
-                </div>
-            </CardHeader>
-            <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
-                <motion.div
-                className="grid gap-4"
-                variants={container}
-                initial="hidden"
-                animate="show"
+            {/* Actions aligned right */}
+            <div className="flex items-center gap-2">
+                <Button
+                    variant="ghost"
+                    onClick={handleReset}
+                    disabled={isPending || !isDirty}
                 >
-                {config.defaultSchedule.map((schedule, index) => (
-                <motion.div key={schedule.day} variants={item}>
-                    <DayScheduleRow
-                    schedule={schedule}
-                    onChange={(newSchedule) => handleScheduleChange(index, newSchedule)}
-                    onCopy={() => handleCopy(schedule.day)}
-                    onPaste={() => handlePaste(schedule.day)}
-                    onCancelCopy={handleCancelCopy}
-                    isCopying={copySourceDay === schedule.day}
-                    isPasteTarget={copySourceDay !== null && copySourceDay !== schedule.day}
-                    />
-                </motion.div>
-                ))}
-                </motion.div>
-            </CardContent>
-            </Card>
+                    {OPERATING_HOURS_UI.CANCEL_CHANGES}
+                </Button>
+                <Button
+                    onClick={handleSave}
+                    disabled={isPending || !isDirty}
+                    isLoading={isPending}
+                >
+                    {OPERATING_HOURS_UI.SAVE_CHANGES}
+                </Button>
+            </div>
+        </PageHeader>
+
+        <div className="flex-1 flex flex-col overflow-hidden">
+            <TabsContent value="schedule" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 duration-500 ease-out">
+                <PageContent>
+                    <div className="space-y-6">
+                        <SurfaceCard>
+                        <CardHeader className="px-4 pt-6 pb-4 sm:px-6">
+                            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="space-y-1">
+                                <CardDescription className="text-sm text-muted-foreground">
+                                {OPERATING_HOURS_UI.DESCRIPTION_TITLE}
+                                </CardDescription>
+                            </div>
+                            {copySourceDay && (
+                                <div className="flex flex-wrap items-center gap-3 animate-in fade-in slide-in-from-right-8 duration-300 bg-muted/50 px-3 py-2 rounded-lg border w-full sm:w-auto">
+                                <span className="text-sm text-muted-foreground whitespace-nowrap">
+                                    {OPERATING_HOURS_UI.FROM_LABEL} <span className="font-bold text-primary">{DAY_LABELS[copySourceDay]}</span>
+                                </span>
+                                <div className="h-4 w-px bg-border hidden sm:block" />
+                                <div className="flex items-center gap-2 flex-1 sm:flex-none justify-end">
+                                <TooltipProvider>
+                                    <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button variant="secondary" size="sm" onClick={handlePasteToAll}>
+                                        <Copy className="w-3 h-3 mr-1.5" />
+                                        {OPERATING_HOURS_UI.COPY_TO_ALL}
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>{OPERATING_HOURS_UI.COPY_TOOLTIP}</TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                                <Button variant="ghost" size="sm" onClick={handleCancelCopy}>
+                                    {OPERATING_HOURS_UI.CANCEL}
+                                </Button>
+                                </div>
+                                </div>
+                            )}
+                            </div>
+                        </CardHeader>
+                        <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
+                            <div className="grid gap-4">
+                            {config.defaultSchedule.map((schedule, index) => (
+                            <div key={schedule.day}>
+                                <DayScheduleRow
+                                schedule={schedule}
+                                onChange={(newSchedule) => handleScheduleChange(index, newSchedule)}
+                                onCopy={() => handleCopy(schedule.day)}
+                                onPaste={() => handlePaste(schedule.day)}
+                                onCancelCopy={handleCancelCopy}
+                                isCopying={copySourceDay === schedule.day}
+                                isPasteTarget={copySourceDay !== null && copySourceDay !== schedule.day}
+                                />
+                            </div>
+                            ))}
+                            </div>
+                        </CardContent>
+                        </SurfaceCard>
+                    </div>
+                </PageContent>
+            </TabsContent>
+
+            <TabsContent value="exceptions" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 duration-500 ease-out">
+                <PageContent>
+                    <SurfaceCard className="h-full">
+                        <ExceptionsViewManager
+                            exceptions={config.exceptions}
+                            onAddExceptions={handleAddExceptions}
+                            onRemoveException={handleRemoveException}
+                        />
+                    </SurfaceCard>
+                </PageContent>
+            </TabsContent>
         </div>
-      </TabsContent>
 
-      <TabsContent value="exceptions" className="flex flex-col flex-1 min-h-0 overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out p-4 sm:p-6">
-        <Card className="flex-1 flex flex-col overflow-hidden border shadow-sm rounded-xl">
-          <ExceptionsViewManager
-            exceptions={config.exceptions}
-            onAddExceptions={handleAddExceptions}
-            onRemoveException={handleRemoveException}
-          />
-        </Card>
-      </TabsContent>
-
-      <AlertDialog open={pasteConfirmOpen} onOpenChange={setPasteConfirmOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Xác nhận áp dụng tất cả?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Hành động này sẽ ghi đè lịch làm việc của tất cả các ngày khác bằng lịch của ngày {copySourceDay ? DAY_LABELS[copySourceDay] : ''}.
-              Dữ liệu cũ sẽ bị mất.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Hủy bỏ</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmPasteToAll}>Xác nhận ghi đè</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </Tabs>
+        <AlertDialog open={pasteConfirmOpen} onOpenChange={setPasteConfirmOpen}>
+            <AlertDialogContent>
+            <AlertDialogHeader>
+                <AlertDialogTitle>Xác nhận áp dụng tất cả?</AlertDialogTitle>
+                <AlertDialogDescription>
+                Hành động này sẽ ghi đè lịch làm việc của tất cả các ngày khác bằng lịch của ngày {copySourceDay ? DAY_LABELS[copySourceDay] : ''}.
+                Dữ liệu cũ sẽ bị mất.
+                </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+                <AlertDialogCancel>Hủy bỏ</AlertDialogCancel>
+                <AlertDialogAction onClick={confirmPasteToAll}>Xác nhận ghi đè</AlertDialogAction>
+            </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+      </Tabs>
+    </PageShell>
   );
 }

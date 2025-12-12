@@ -1,30 +1,30 @@
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import {
-    Calendar,
-    CheckCircle2,
-    Clock,
-    Edit,
-    MapPin,
-    Phone,
-    Receipt,
-    User,
-    XCircle
+  Calendar,
+  CheckCircle2,
+  Clock,
+  Edit,
+  MapPin,
+  Phone,
+  Receipt,
+  User,
+  XCircle
 } from "lucide-react";
 import { useEffect, useState } from "react"; // Import useEffect
 
 import { cn } from "@/shared/lib/utils";
 import {
-    Badge,
-    Button,
-    ScrollArea,
-    Separator,
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle,
+  Badge,
+  Button,
+  ScrollArea,
+  Separator,
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
 } from "@/shared/ui";
 
 import { ReviewPrompt } from "@/features/reviews/components/review-prompt"; // Import ReviewPrompt
@@ -302,7 +302,7 @@ export function AppointmentSheet({
         {/* FOOTER */}
         {/* ============================================ */}
         {isViewMode && (
-          <SheetFooter className="p-6 pt-4 border-t bg-muted/30 flex-col gap-3">
+          <SheetFooter className="px-6 py-3 border-t bg-muted/30 flex-col gap-3">
             {/* Quick Actions */}
             <div className="flex items-center gap-2 w-full">
               {canCreateInvoice && (

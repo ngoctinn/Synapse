@@ -14,4 +14,6 @@ export const OPERATING_HOURS_UI = {
   DESCRIPTION_TITLE: "Thiết lập giờ mở cửa mặc định cho từng ngày trong tuần.",
   ADD_EXCEPTION_SUCCESS: (count: number) => `Đã thêm ${count} ngày ngoại lệ mới`,
   REMOVE_EXCEPTION_SUCCESS: (count: number) => count > 1 ? `Đã xóa ${count} mục` : "Đã xóa ngày ngoại lệ",
+  SAVE_CHANGES: "Lưu thay đổi",
+  CANCEL_CHANGES: "Hủy thay đổi",
 } as const;

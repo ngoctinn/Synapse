@@ -52,7 +52,7 @@ export function Hero() {
         </div>
 
         {/* Dashboard Mockup Visualization */}
-        <div className="relative mx-auto max-w-5xl rounded-xl border bg-white/60 dark:bg-slate-900/60 p-2 shadow-2xl backdrop-blur-sm lg:rounded-2xl lg:p-4 ring-1 ring-white/10 animate-slide-up">
+        <div className="relative mx-auto max-w-5xl glass-card p-2 shadow-2xl lg:rounded-2xl lg:p-4 ring-1 ring-white/10 animate-slide-up">
           <div className="rounded-lg border bg-background overflow-hidden aspect-[16/9] relative shadow-inner">
             {/* Mock Header */}
             <div className="h-12 border-b bg-muted/30 flex items-center px-4 gap-2">
@@ -92,10 +92,10 @@ export function Hero() {
       </div>
 
       {/* Simple Background - No heavy animations */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl -z-10 opacity-30 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] bg-purple-500/20 rounded-full blur-[120px]" />
-        <div className="absolute top-[-10%] right-[-10%] w-[40rem] h-[40rem] bg-primary/20 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-20%] left-[20%] w-[50rem] h-[50rem] bg-pink-500/20 rounded-full blur-[120px]" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl -z-10 opacity-20 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] bg-purple-500/20 rounded-full blur-2xl" />
+        <div className="absolute top-[-10%] right-[-10%] w-[40rem] h-[40rem] bg-primary/20 rounded-full blur-2xl" />
+        <div className="absolute bottom-[-20%] left-[20%] w-[50rem] h-[50rem] bg-pink-500/20 rounded-full blur-2xl" />
       </div>
     </section>
   );

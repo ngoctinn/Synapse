@@ -2,6 +2,7 @@
 
 import { Resource, RoomType } from "@/features/resources"
 import { PageFooter } from "@/shared/components/layout/components/page-footer"
+import { PageContent, PageHeader, PageShell, SurfaceCard } from "@/shared/components/layout/page-layout"
 import { FilterBar } from "@/shared/ui/custom/filter-bar"
 import { Input } from "@/shared/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
@@ -96,12 +97,10 @@ export function ServicesPage({ page, skills, roomTypes, equipmentList, servicesP
   const isServiceTab = activeTab === "list"
 
   return (
-    <div className="min-h-screen flex flex-col w-full">
+    <PageShell>
       <Tabs defaultValue="list" className="flex flex-col flex-1 w-full gap-0" onValueChange={setActiveTab}>
 
-        <div
-          className="sticky top-0 z-40 px-4 py-2 bg-card/95 backdrop-blur-sm border-b flex flex-col md:flex-row items-center justify-between gap-4"
-        >
+        <PageHeader>
           <TabsList variant="default" size="default">
             <TabsTrigger value="list" aria-label="Danh sách dịch vụ" variant="default" stretch={false}>Dịch vụ</TabsTrigger>
             <TabsTrigger value="skills" aria-label="Danh sách kỹ năng" variant="default" stretch={false}>Kỹ năng</TabsTrigger>
@@ -127,12 +126,12 @@ export function ServicesPage({ page, skills, roomTypes, equipmentList, servicesP
                <CreateSkillDialog />
             )}
           </div>
-        </div>
+        </PageHeader>
 
-        <div className="flex-1 p-0 motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 duration-300 ease-out flex flex-col">
+        <div className="flex-1 flex flex-col overflow-hidden motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 duration-300 ease-out">
           <TabsContent value="list" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
-             <div className="p-4 flex-1 flex flex-col gap-4">
-                <div className="surface-card overflow-hidden flex-1">
+             <PageContent>
+                <SurfaceCard>
                     <Suspense fallback={<ServiceTableSkeleton />}>
                     <ServiceListWrapper
                         servicesPromise={servicesPromise}
@@ -142,24 +141,24 @@ export function ServicesPage({ page, skills, roomTypes, equipmentList, servicesP
                         page={page}
                     />
                     </Suspense>
-                </div>
+                </SurfaceCard>
                 <PageFooter />
-             </div>
+             </PageContent>
           </TabsContent>
 
           <TabsContent value="skills" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
-            <div className="p-4 flex-1 flex flex-col gap-4">
-              <div className="surface-card overflow-hidden flex-1">
+            <PageContent>
+              <SurfaceCard>
                 <SkillTable
                   skills={skills}
                   className="border-none"
                 />
-              </div>
+              </SurfaceCard>
               <PageFooter />
-            </div>
+            </PageContent>
           </TabsContent>
         </div>
       </Tabs>
-    </div>
+    </PageShell>
   )
 }

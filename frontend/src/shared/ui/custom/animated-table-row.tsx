@@ -1,9 +1,8 @@
 "use client"
 
 import { cn } from "@/shared/lib/utils"
-import { HTMLMotionProps, motion } from "framer-motion"
 
-interface AnimatedTableRowProps extends HTMLMotionProps<"tr"> {
+interface AnimatedTableRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
   index: number
   children: React.ReactNode
   className?: string
@@ -16,17 +15,14 @@ export function AnimatedTableRow({
   ...props
 }: AnimatedTableRowProps) {
   return (
-    <motion.tr
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.2, delay: index * 0.05 }}
+    <tr
       className={cn(
-        "transition-colors",
+        "transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
         className
       )}
       {...props}
     >
       {children}
-    </motion.tr>
+    </tr>
   )
 }

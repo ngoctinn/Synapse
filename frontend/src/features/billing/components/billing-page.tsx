@@ -1,12 +1,13 @@
 "use client";
 
+import { PageContent, PageHeader, PageShell, SurfaceCard } from "@/shared/components/layout/page-layout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { AlertCircle, CheckCircle, DollarSign, FileText } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
+import { getBillingMetrics, getInvoices } from "../actions";
 import { Invoice, InvoiceMetrics } from "../types";
-import { getInvoices, getBillingMetrics } from "../actions";
 import { InvoiceTable } from "./invoice-table";
 import { InvoiceSheet } from "./sheet/invoice-sheet";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
-import { DollarSign, FileText, CheckCircle, AlertCircle } from "lucide-react";
 
 export function BillingPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -47,7 +48,7 @@ export function BillingPage() {
         // We need to re-fetch the specific invoice or find it in the new list
         // Since loadData updates the list, we can just close/re-open or rely on finding it
         // Simpler: just refresh list and close sheet or let user see updated state if we fetched single
-        // For now, loadData refreshes list. 
+        // For now, loadData refreshes list.
         // We should arguably also update the selectedInvoice state from the new list
         startTransition(async () => {
             const res = await getInvoices();
@@ -63,86 +64,88 @@ export function BillingPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6 p-6 h-full overflow-hidden">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Quản lý hóa đơn</h1>
-      </div>
+    <PageShell>
+      <PageHeader>
+        <h1 className="text-xl font-bold tracking-tight">Quản lý hóa đơn</h1>
+      </PageHeader>
 
-      {/* Metrics Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tổng doanh thu</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {metrics
-                ? new Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(metrics.totalRevenue)
-                : "..."}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Chờ thanh toán</CardTitle>
-            <AlertCircle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-orange-600">
-               {metrics
-                ? new Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(metrics.pendingAmount)
-                : "..."}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
+      <PageContent>
+        {/* Metrics Cards */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Đã thanh toán</CardTitle>
-                <CheckCircle className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">Tổng doanh thu</CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold text-green-600">
-                    {metrics?.paidInvoices ?? "..."}
+                <div className="text-2xl font-bold">
+                {metrics
+                    ? new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                    }).format(metrics.totalRevenue)
+                    : "..."}
                 </div>
-                <p className="text-xs text-muted-foreground">hóa đơn</p>
             </CardContent>
-        </Card>
-        <Card>
-             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Chưa thanh toán</CardTitle>
-                <FileText className="h-4 w-4 text-muted-foreground" />
+            </Card>
+            <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Chờ thanh toán</CardTitle>
+                <AlertCircle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
                 <div className="text-2xl font-bold text-orange-600">
-                    {metrics?.unpaidInvoices ?? "..."}
+                {metrics
+                    ? new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                    }).format(metrics.pendingAmount)
+                    : "..."}
                 </div>
-                 <p className="text-xs text-muted-foreground">hóa đơn</p>
             </CardContent>
-        </Card>
-      </div>
+            </Card>
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Đã thanh toán</CardTitle>
+                    <CheckCircle className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold text-green-600">
+                        {metrics?.paidInvoices ?? "..."}
+                    </div>
+                    <p className="text-xs text-muted-foreground">hóa đơn</p>
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Chưa thanh toán</CardTitle>
+                    <FileText className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold text-orange-600">
+                        {metrics?.unpaidInvoices ?? "..."}
+                    </div>
+                    <p className="text-xs text-muted-foreground">hóa đơn</p>
+                </CardContent>
+            </Card>
+        </div>
 
-      {/* Main Table Area */}
-      <div className="flex-1 overflow-hidden border rounded-md bg-card">
-         <InvoiceTable 
-            data={invoices} 
-            onView={handleViewInvoice} 
-            isLoading={isPending && invoices.length === 0}
-         />
-      </div>
+        {/* Main Table Area */}
+        <SurfaceCard>
+            <InvoiceTable
+                data={invoices}
+                onView={handleViewInvoice}
+                isLoading={isPending && invoices.length === 0}
+            />
+        </SurfaceCard>
 
-      <InvoiceSheet
-        invoice={selectedInvoice}
-        open={isSheetOpen}
-        onOpenChange={setIsSheetOpen}
-        onUpdate={handleUpdate}
-      />
-    </div>
+        <InvoiceSheet
+            invoice={selectedInvoice}
+            open={isSheetOpen}
+            onOpenChange={setIsSheetOpen}
+            onUpdate={handleUpdate}
+        />
+      </PageContent>
+    </PageShell>
   );
 }

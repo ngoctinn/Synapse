@@ -1,6 +1,7 @@
 "use client"
 
 import { PageFooter } from "@/shared/components/layout/components/page-footer"
+import { PageContent, PageHeader, PageShell, SurfaceCard } from "@/shared/components/layout/page-layout"
 import { ActionResponse } from "@/shared/lib/action-response"
 import { FilterBar } from "@/shared/ui/custom/filter-bar"
 import { Input } from "@/shared/ui/input"
@@ -85,12 +86,10 @@ export function CustomersPage({ page, customerListPromise }: CustomersPageProps)
   }, 300)
 
   return (
-    <div
-      className="min-h-screen flex flex-col w-full"
-    >
+    <PageShell>
       <Tabs value={activeTab} className="flex flex-col flex-1 w-full gap-0" onValueChange={handleTabChange}>
 
-        <div className="sticky top-0 z-40 px-4 py-2 bg-card/95 backdrop-blur-sm border-b flex flex-col md:flex-row items-center justify-between gap-4">
+        <PageHeader>
           <TabsList variant="default" size="default">
             <TabsTrigger value="list" variant="default" stretch={false}>Danh sách</TabsTrigger>
             <TabsTrigger value="insights" variant="default" stretch={false}>Thông tin</TabsTrigger>
@@ -113,33 +112,33 @@ export function CustomersPage({ page, customerListPromise }: CustomersPageProps)
             )}
             <CreateCustomerTrigger />
           </div>
-        </div>
+        </PageHeader>
 
-        <div className="flex-1 p-0 motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 duration-300 ease-out flex flex-col">
+        <div className="flex-1 flex flex-col overflow-hidden motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 duration-300 ease-out">
             <TabsContent value="list" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
-               <div className="p-4 flex-1 flex flex-col gap-4">
-                <div className="surface-card overflow-hidden flex-1">
+               <PageContent>
+                <SurfaceCard>
                         <Suspense fallback={<CustomerTableSkeleton />}>
                         <CustomerListWrapper
                             customerListPromise={customerListPromise}
                             page={page}
                         />
                         </Suspense>
-                    </div>
+                    </SurfaceCard>
                     <PageFooter />
-                </div>
+                </PageContent>
             </TabsContent>
 
             <TabsContent value="insights" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
-               <div className="p-4 flex-1 flex flex-col gap-4">
-                 <div className="surface-card flex-1 p-8 text-center text-muted-foreground">
+               <PageContent>
+                 <SurfaceCard className="p-8 justify-center items-center text-muted-foreground">
                     <p>Tính năng báo cáo và thông tin chi tiết khách hàng đang được phát triển.</p>
-                 </div>
+                 </SurfaceCard>
                  <PageFooter />
-               </div>
+               </PageContent>
             </TabsContent>
         </div>
       </Tabs>
-    </div>
+    </PageShell>
   )
 }
