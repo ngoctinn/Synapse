@@ -117,7 +117,7 @@ export function ServiceSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-xl p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
+      <SheetContent className="w-full sm:max-w-lg p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
         <SheetHeader>
           <SheetTitle className="text-xl font-semibold text-foreground">
             {isUpdateMode ? "Chỉnh sửa dịch vụ" : "Tạo dịch vụ mới"}

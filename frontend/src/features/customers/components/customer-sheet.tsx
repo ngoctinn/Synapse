@@ -138,7 +138,7 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className={cn(
           "w-full p-0 gap-0 flex flex-col bg-background border-l shadow-2xl transition-all duration-300",
-          mode === "update" ? "sm:max-w-3xl" : "sm:max-w-xl"
+          mode === "update" ? "sm:max-w-3xl" : "sm:max-w-lg"
       )}>
         <SheetHeader>
             <div className="flex items-center justify-between">

@@ -17,14 +17,13 @@ import { cn } from "@/shared/lib/utils";
 import {
   Badge,
   Button,
-  ScrollArea,
   Separator,
   Sheet,
   SheetContent,
   SheetDescription,
   SheetFooter,
   SheetHeader,
-  SheetTitle,
+  SheetTitle
 } from "@/shared/ui";
 
 import { ReviewPrompt } from "@/features/reviews/components/review-prompt"; // Import ReviewPrompt
@@ -99,6 +98,10 @@ export function AppointmentSheet({
     ? APPOINTMENT_STATUS_CONFIG[appointment.status]
     : null;
 
+  const isCreateMode = mode === "create" || !appointment;
+  const isEditMode = mode === "edit";
+  const isViewMode = mode === "view" && !!appointment;
+
   // Effect to trigger review prompt if needed
   useEffect(() => {
     if (open && isViewMode && appointment?.status === "completed") {
@@ -108,7 +111,7 @@ export function AppointmentSheet({
       // For now, let's keep it simple: if completed, ask parent to check
       onReviewNeeded?.(appointment.id);
     }
-  }, [open, mode, appointment?.status, appointment?.id, onReviewNeeded]);
+  }, [open, isViewMode, appointment?.status, appointment?.id, onReviewNeeded]);
 
   const handleClose = () => {
     onOpenChange(false);
@@ -132,10 +135,6 @@ export function AppointmentSheet({
     setMode("view");
   };
 
-  const isCreateMode = mode === "create" || !appointment;
-  const isEditMode = mode === "edit";
-  const isViewMode = mode === "view" && !!appointment;
-
   const canCheckIn =
     appointment?.status === "confirmed" ||
     appointment?.status === "pending";
@@ -146,7 +145,7 @@ export function AppointmentSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-lg p-0 flex flex-col">
+      <SheetContent className="w-full sm:max-w-lg p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
         {/* ============================================ */}
         {/* HEADER */}
         {/* ============================================ */}
@@ -182,15 +181,14 @@ export function AppointmentSheet({
         {/* ============================================ */}
         {/* CONTENT */}
         {/* ============================================ */}
-        <ScrollArea className="flex-1">
+        <div className="sheet-scroll-area">
           {(isCreateMode || isEditMode) ? (
             // Form Mode
-            <div className="p-6">
+            <div className="space-y-6">
               <AppointmentForm
                 appointment={appointment}
                 defaultValues={defaultValues}
                 onSubmit={handleSave}
-                onCancel={isEditMode ? handleCancelEdit : handleClose}
                 availableStaff={availableStaff}
                 availableResources={availableResources}
                 availableServices={availableServices}
@@ -198,7 +196,7 @@ export function AppointmentSheet({
             </div>
           ) : (
             // View Mode
-            <div className="p-6 space-y-6">
+            <div className="space-y-6">
               {/* Time Info */}
               <div className="space-y-3">
                 <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
@@ -296,59 +294,81 @@ export function AppointmentSheet({
               )}
             </div>
           )}
-        </ScrollArea>
+        </div>
 
         {/* ============================================ */}
         {/* FOOTER */}
         {/* ============================================ */}
-        {isViewMode && (
-          <SheetFooter className="px-6 py-3 border-t bg-muted/30 flex-col gap-3">
-            {/* Quick Actions */}
-            <div className="flex items-center gap-2 w-full">
-              {canCreateInvoice && (
-                <Button
-                  className="w-full bg-green-600 hover:bg-green-700"
-                  onClick={() => onCreateInvoice?.(appointment!.id)}
-                  startContent={<Receipt className="size-4" />}
-                >
-                  Tạo hóa đơn
-                </Button>
-              )}
-            </div>
-            <div className="flex items-center gap-2 w-full">
-              {canCheckIn && (
-                <Button
-                  variant="outline"
-                  className="flex-1 text-green-600 border-green-200 hover:bg-green-50"
-                  onClick={() => onCheckIn?.(appointment!.id)}
-                  startContent={<CheckCircle2 className="size-4" />}
-                >
-                  Check-in
-                </Button>
-              )}
-              {canCancel && (
-                <Button
-                  variant="outline"
-                  className="flex-1 text-amber-600 border-amber-200 hover:bg-amber-50"
-                  onClick={() => onCancel?.(appointment!.id)}
-                  startContent={<XCircle className="size-4" />}
-                >
-                  Hủy lịch
-                </Button>
-              )}
-            </div>
 
-            {/* Main Actions */}
-            <div className="flex items-center gap-2 w-full">
-              <Button variant="outline" className="flex-1" onClick={handleClose}>
-                Đóng
-              </Button>
-              <Button className="flex-1" onClick={handleEdit} startContent={<Edit className="size-4" />}>
-                Chỉnh sửa
-              </Button>
+        <SheetFooter className="px-6 py-3 border-t bg-background flex-col gap-3 z-20">
+          {isViewMode ? (
+             <>
+                {/* Quick Actions */}
+                <div className="flex items-center gap-2 w-full">
+                  {canCreateInvoice && (
+                    <Button
+                      className="w-full bg-green-600 hover:bg-green-700 h-9"
+                      onClick={() => onCreateInvoice?.(appointment!.id)}
+                      startContent={<Receipt className="size-4" />}
+                    >
+                      Tạo hóa đơn
+                    </Button>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 w-full">
+                  {canCheckIn && (
+                    <Button
+                      variant="outline"
+                      className="flex-1 text-green-600 border-green-200 hover:bg-green-50 h-9"
+                      onClick={() => onCheckIn?.(appointment!.id)}
+                      startContent={<CheckCircle2 className="size-4" />}
+                    >
+                      Check-in
+                    </Button>
+                  )}
+                  {canCancel && (
+                    <Button
+                      variant="outline"
+                      className="flex-1 text-amber-600 border-amber-200 hover:bg-amber-50 h-9"
+                      onClick={() => onCancel?.(appointment!.id)}
+                      startContent={<XCircle className="size-4" />}
+                    >
+                      Hủy lịch
+                    </Button>
+                  )}
+                </div>
+
+                {/* Main Actions */}
+                <div className="flex items-center gap-2 w-full">
+                  <Button variant="ghost" className="flex-1 h-9" onClick={handleClose}>
+                    Đóng
+                  </Button>
+                  <Button className="flex-1 h-9" onClick={handleEdit} startContent={<Edit className="size-4" />}>
+                    Chỉnh sửa
+                  </Button>
+                </div>
+             </>
+          ) : (
+            // Create / Edit Mode Footer
+            <div className="flex items-center gap-3 w-full">
+                <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={isEditMode ? handleCancelEdit : handleClose}
+                    className="flex-1 h-9 text-muted-foreground hover:text-foreground"
+                >
+                    Hủy bỏ
+                </Button>
+                <Button
+                    type="submit"
+                    form="appointment-form"
+                    className="flex-1 h-9"
+                >
+                    {isEditMode ? "Lưu thay đổi" : "Tạo lịch hẹn"}
+                </Button>
             </div>
-          </SheetFooter>
-        )}
+          )}
+        </SheetFooter>
       </SheetContent>
 
       {/* Review Prompt */}

@@ -17,7 +17,6 @@ import { Input } from "@/shared/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select"
 import { Switch } from "@/shared/ui/switch"
 import { Textarea } from "@/shared/ui/textarea"
-import { Box, Palette, Settings, Tag, Users } from "lucide-react"
 import { useFormContext } from "react-hook-form"
 import { SERVICE_COLORS } from "../constants"
 import { Skill } from "../types"
@@ -40,7 +39,7 @@ interface ServiceFormProps {
 function ServiceBasicInfo() {
   const form = useFormContext()
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300 motion-reduce:animate-none">
+    <div className="space-y-6">
       {/* Active Toggle */}
       <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border">
         <div>
@@ -104,7 +103,6 @@ function ServiceBasicInfo() {
                 </FormLabel>
                 <FormControl>
                   <Input
-                    startContent={<Tag className="size-4 text-muted-foreground" />}
                     placeholder="VD: Massage Body"
                     className="h-10 text-sm"
                     {...field}
@@ -160,7 +158,7 @@ function ServiceBasicInfo() {
 function ServiceTimePriceInfo({ duration, bufferTime }: { duration: number; bufferTime: number }) {
   const form = useFormContext()
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300 motion-reduce:animate-none">
+    <div className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
         <FormField
           control={form.control}
@@ -219,8 +217,7 @@ function ServiceTimePriceInfo({ duration, bufferTime }: { duration: number; buff
         name="price"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-2">
-              <Palette className="w-4 h-4 text-primary" />
+            <FormLabel>
               Giá niêm yết
             </FormLabel>
             <FormControl>
@@ -232,7 +229,7 @@ function ServiceTimePriceInfo({ duration, bufferTime }: { duration: number; buff
                   const val = e.target.valueAsNumber
                   field.onChange(isNaN(val) ? 0 : val)
                 }}
-                onBlur={(e) => {
+                onBlur={() => {
                   // Ensure value is not negative on blur
                   if (field.value < 0) field.onChange(0)
                 }}
@@ -265,7 +262,7 @@ function ServiceResourcesInfo({
 }) {
   const form = useFormContext()
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300 motion-reduce:animate-none">
+    <div className="space-y-6">
       <FormField
         control={form.control}
         name="resource_requirements.room_type_id"
@@ -281,8 +278,7 @@ function ServiceResourcesInfo({
               >
                 <FormControl>
                   <SelectTrigger
-                    className="bg-background h-10"
-                    startContent={<Box className="size-4 text-muted-foreground" />}
+                    className="bg-background h-10 w-full"
                   >
                     <SelectValue placeholder="-- Chọn loại phòng --" />
                   </SelectTrigger>
@@ -306,8 +302,7 @@ function ServiceResourcesInfo({
         name="skill_ids"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-primary" />
+            <FormLabel>
               Kỹ năng yêu cầu
             </FormLabel>
             <FormControl>
@@ -327,8 +322,7 @@ function ServiceResourcesInfo({
       />
 
       <div className="space-y-3 pt-2 border-t">
-        <FormLabel className="flex items-center gap-2">
-          <Settings className="w-4 h-4 text-primary" />
+        <FormLabel>
           Thiết bị & Timeline
         </FormLabel>
         <FormField
@@ -374,25 +368,61 @@ export function ServiceForm({
 
   const skillOptions = availableSkills.map((s) => ({ id: s.id, label: s.name }))
 
-  return (
-    <div className={cn("w-full h-full", className)}>
-      <FormTabs tabs={SERVICE_FORM_TABS} defaultValue="basic">
-        <div className="flex-1 overflow-y-auto px-1 pb-4 [scrollbar-gutter:stable]">
-          <FormTabsContent value="basic" className="mt-0">
-            <ServiceBasicInfo />
-          </FormTabsContent>
-          <FormTabsContent value="time" className="mt-0">
-            <ServiceTimePriceInfo duration={duration} bufferTime={bufferTime} />
-          </FormTabsContent>
-          <FormTabsContent value="resources" className="mt-0">
-            <ServiceResourcesInfo
-              availableRoomTypes={availableRoomTypes}
-              skillOptions={skillOptions}
-              availableEquipment={availableEquipment}
-              duration={duration}
-            />
-          </FormTabsContent>
+  // Helper render functions
+  const renderBasicInfo = () => <ServiceBasicInfo />
+  const renderTimePrice = () => <ServiceTimePriceInfo duration={duration} bufferTime={bufferTime} />
+  const renderResources = () => (
+    <ServiceResourcesInfo
+      availableRoomTypes={availableRoomTypes}
+      skillOptions={skillOptions}
+      availableEquipment={availableEquipment}
+      duration={duration}
+    />
+  )
+
+  if (mode === "create") {
+    return (
+      <div className={cn("w-full space-y-6 pt-2", className)}>
+        {/* Basic Info Section */}
+        <div className="space-y-4">
+          <h3 className="font-semibold text-base">Thông tin cơ bản</h3>
+          {renderBasicInfo()}
         </div>
+
+        {/* Time & Price Section */}
+        <div className="space-y-4">
+          <div className="border-t pt-4">
+            <h3 className="font-semibold text-base">Thời gian & Chi phí</h3>
+          </div>
+          {renderTimePrice()}
+        </div>
+
+        {/* Resources Section */}
+        <div className="space-y-4">
+          <div className="border-t pt-4">
+            <h3 className="font-semibold text-base">Tài nguyên yêu cầu</h3>
+          </div>
+          {renderResources()}
+        </div>
+      </div>
+    )
+  }
+
+  // Update Mode: Use Tabs
+  return (
+    <div className={cn("w-full", className)}>
+      <FormTabs tabs={SERVICE_FORM_TABS} defaultValue="basic">
+         <div className="mt-4">
+            <FormTabsContent value="basic" className="mt-0">
+                {renderBasicInfo()}
+            </FormTabsContent>
+            <FormTabsContent value="time" className="mt-0">
+                {renderTimePrice()}
+            </FormTabsContent>
+            <FormTabsContent value="resources" className="mt-0">
+                {renderResources()}
+            </FormTabsContent>
+         </div>
       </FormTabs>
     </div>
   )

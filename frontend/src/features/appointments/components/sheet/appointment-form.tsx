@@ -21,7 +21,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import { cn } from "@/shared/lib/utils";
 import {
@@ -66,6 +66,7 @@ import type { Appointment, TimelineResource } from "../../types";
 // ============================================
 
 interface AppointmentFormProps {
+  id?: string;
   appointment?: Appointment | null;
   defaultValues?: {
     date?: Date;
@@ -73,7 +74,7 @@ interface AppointmentFormProps {
     staffId?: string;
   };
   onSubmit: (appointment: Appointment) => void;
-  onCancel: () => void;
+  // onCancel is no longer needed in the form itself if buttons are external
   availableStaff: TimelineResource[];
   availableResources: TimelineResource[];
   availableServices: MockService[];
@@ -108,10 +109,10 @@ function generateTimeSlots(): string[] {
 // ============================================
 
 export function AppointmentForm({
+  id = "appointment-form",
   appointment,
   defaultValues,
   onSubmit,
-  onCancel,
   availableStaff,
   availableResources,
   availableServices,
@@ -141,7 +142,7 @@ export function AppointmentForm({
   // Search customers
   useEffect(() => {
     if (customerSearch.length < 2) {
-      setCustomerOptions([]);
+      if (customerOptions.length > 0) setCustomerOptions([]);
       return;
     }
 
@@ -158,7 +159,7 @@ export function AppointmentForm({
   }, [customerSearch]);
 
   // Calculate end time based on services
-  const selectedServices = form.watch("serviceIds");
+  const selectedServices = useWatch({ control: form.control, name: "serviceIds" });
   const totalDuration = selectedServices.reduce(
     (acc: number, serviceId: string) => {
       const service = availableServices.find((s) => s.id === serviceId);
@@ -221,14 +222,14 @@ export function AppointmentForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+      <form id={id} onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
             {/* CUSTOMER FIELD */}
             <FormField
               control={form.control}
               name="customerId"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Khách hàng *</FormLabel>
+                  <FormLabel>Khách hàng <span className="text-destructive">*</span></FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -236,7 +237,7 @@ export function AppointmentForm({
                           variant="outline"
                           role="combobox"
                           className={cn(
-                            "justify-between",
+                            "justify-between h-10 bg-background",
                             !field.value && "text-muted-foreground"
                           )}
                         >
@@ -312,13 +313,13 @@ export function AppointmentForm({
               name="serviceIds"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Dịch vụ *</FormLabel>
+                  <FormLabel>Dịch vụ <span className="text-destructive">*</span></FormLabel>
                   <Select
                     value={field.value[0] || ""}
                     onValueChange={(value) => field.onChange([value])}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-10 bg-background">
                         <SelectValue placeholder="Chọn dịch vụ" />
                       </SelectTrigger>
                     </FormControl>
@@ -349,10 +350,10 @@ export function AppointmentForm({
               name="staffId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Kỹ thuật viên *</FormLabel>
+                  <FormLabel>Kỹ thuật viên <span className="text-destructive">*</span></FormLabel>
                   <Select value={field.value} onValueChange={field.onChange}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-10 bg-background">
                         <SelectValue placeholder="Chọn kỹ thuật viên" />
                       </SelectTrigger>
                     </FormControl>
@@ -382,14 +383,14 @@ export function AppointmentForm({
                 name="date"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Ngày *</FormLabel>
+                    <FormLabel>Ngày <span className="text-destructive">*</span></FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
                             variant="outline"
                             className={cn(
-                              "pl-3 text-left font-normal",
+                              "pl-3 text-left font-normal h-10 bg-background",
                               !field.value && "text-muted-foreground"
                             )}
                           >
@@ -420,10 +421,10 @@ export function AppointmentForm({
                 name="startTime"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Giờ bắt đầu *</FormLabel>
+                    <FormLabel>Giờ bắt đầu <span className="text-destructive">*</span></FormLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-10 bg-background">
                           <SelectValue placeholder="Chọn giờ" />
                         </SelectTrigger>
                       </FormControl>
@@ -453,7 +454,7 @@ export function AppointmentForm({
                     onValueChange={(value) => field.onChange(value || undefined)}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-10 bg-background">
                         <SelectValue placeholder="Chọn phòng (không bắt buộc)" />
                       </SelectTrigger>
                     </FormControl>
@@ -480,7 +481,7 @@ export function AppointmentForm({
                   <FormControl>
                     <Textarea
                       placeholder="Ghi chú cho lịch hẹn..."
-                      className="resize-none"
+                      className="resize-none bg-background min-h-[80px]"
                       rows={3}
                       {...field}
                     />
@@ -489,22 +490,6 @@ export function AppointmentForm({
                 </FormItem>
               )}
             />
-
-            {/* ACTIONS */}
-            <div className="flex items-center gap-3 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                className="flex-1"
-                onClick={onCancel}
-              >
-                Hủy
-              </Button>
-              <Button type="submit" className="flex-1" disabled={isPending}>
-                {isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                {appointment ? "Lưu thay đổi" : "Tạo lịch hẹn"}
-              </Button>
-            </div>
       </form>
     </Form>
   );

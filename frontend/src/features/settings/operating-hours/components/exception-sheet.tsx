@@ -5,12 +5,12 @@ import { Save, Send, Trash2 } from "lucide-react";
 
 import { Button } from "@/shared/ui/button";
 import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle
 } from "@/shared/ui/sheet";
 import { useMemo } from "react";
 import { ExceptionDate } from "../model/types";
@@ -78,7 +78,7 @@ export function ExceptionSheet({
             </SheetDescription>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto px-6 py-4 [scrollbar-gutter:stable]">
+        <div className="sheet-scroll-area">
             <ExceptionForm
                 id="exception-sheet-form"
                 initialData={initialData}

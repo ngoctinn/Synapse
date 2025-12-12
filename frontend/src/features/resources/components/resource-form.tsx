@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, Barcode, Box, Clock, Tags, Type, Users } from "lucide-react";
+import { Tags } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 
 import { cn } from "@/shared/lib/utils";
@@ -39,17 +39,37 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
   const selectedGroup = groups.find(g => g.id === groupId);
   const resourceType = selectedGroup?.type;
 
+  if (mode === "create") {
+    return (
+        <div className={cn("w-full space-y-6 pt-2", className)}>
+            <div>
+                 <h3 className="font-semibold text-base mb-4">
+                    Thông tin chung
+                 </h3>
+                 {renderGeneralInfo()}
+            </div>
+
+            <div className="border-t pt-4">
+                 <h3 className="font-semibold text-base mb-4">
+                    Cấu hình vận hành
+                 </h3>
+                 {renderConfigInfo()}
+            </div>
+        </div>
+    );
+  }
+
   return (
     <div className={cn("w-full", className)}>
         <Tabs defaultValue="general" className="w-full">
-            <TabsList variant="form" size="lg" fullWidth gridCols={2}>
-                <TabsTrigger value="general" variant="form">Thông tin chung</TabsTrigger>
-                <TabsTrigger value="config" variant="form">Cấu hình vận hành</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="general">Thông tin chung</TabsTrigger>
+                <TabsTrigger value="config">Cấu hình vận hành</TabsTrigger>
             </TabsList>
-            <TabsContent value="general" className="space-y-4">
+            <TabsContent value="general" className="mt-4 border-none p-0">
                 {renderGeneralInfo()}
             </TabsContent>
-            <TabsContent value="config" className="space-y-4">
+            <TabsContent value="config" className="mt-4 border-none p-0">
                 {renderConfigInfo()}
             </TabsContent>
         </Tabs>
@@ -60,29 +80,6 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
     return (
     <div className="space-y-6">
         {/* Image Upload Pattern matching StaffForm */}
-        <div className="flex items-start gap-6 p-4 border rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors group">
-            <div className="relative">
-                 <div className="size-20 rounded-xl bg-background flex items-center justify-center border-2 border-dashed border-muted-foreground/30 group-hover:border-primary/50 transition-all shadow-sm overflow-hidden">
-                     {mode === 'update' ? (
-                         <Box className="size-8 text-muted-foreground" />
-                     ) : (
-                         <div className="text-center">
-                             <Box className="size-8 text-muted-foreground/50 mx-auto" />
-                         </div>
-                     )}
-                 </div>
-            </div>
-            <div className="flex-1 space-y-1">
-                 <div className="flex items-center justify-between">
-                     <p className="text-sm font-medium text-foreground">Hình ảnh tài nguyên</p>
-                     <span className="text-[10px] px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 font-medium">Sắp ra mắt</span>
-                 </div>
-                 <p className="text-xs text-muted-foreground leading-relaxed">
-                     Hỗ trợ định dạng JPG, PNG. Kích thước tối đa 5MB.<br/>
-                     Hình ảnh sẽ hiển thị trên lưới lịch đặt phòng/thiết bị.
-                 </p>
-            </div>
-        </div>
 
         <div className="grid gap-6">
             <FormField
@@ -93,7 +90,6 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                     <FormLabel>Tên tài nguyên <span className="text-destructive">*</span></FormLabel>
                     <FormControl>
                     <Input
-                        startContent={<Type className="size-4 text-muted-foreground" />}
                         placeholder="Ví dụ: Phòng VIP 1"
                         {...field}
                         className="bg-background"
@@ -113,7 +109,6 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                         <FormLabel>Mã định danh <span className="text-destructive">*</span></FormLabel>
                         <FormControl>
                         <Input
-                            startContent={<Barcode className="size-4 text-muted-foreground" />}
                             placeholder="Ví dụ: R-VIP-01"
                             {...field}
                             className="bg-background"
@@ -141,8 +136,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                         >
                             <FormControl>
                                 <SelectTrigger
-                                    className="bg-background"
-                                    startContent={<Box className="size-4 text-muted-foreground" />}
+                                    className="bg-background w-full"
                                 >
                                     <SelectValue placeholder="Chọn phân loại" />
                                 </SelectTrigger>
@@ -186,10 +180,6 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
   function renderConfigInfo() {
     return (
     <div className="space-y-6">
-         <div className="flex items-center gap-3 p-3 bg-info/10 text-info rounded-lg text-sm mb-4 border border-info/20">
-            <Activity className="size-4 shrink-0" />
-            <p>Các thiết lập này ảnh hưởng trực tiếp đến việc xếp lịch và tính khả dụng.</p>
-         </div>
 
          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField
@@ -204,8 +194,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                     >
                          <FormControl>
                             <SelectTrigger
-                                className="bg-background"
-                                startContent={<Activity className="size-4 text-muted-foreground" />}
+                                className="bg-background w-full"
                             >
                                 <SelectValue placeholder="Chọn trạng thái" />
                             </SelectTrigger>
@@ -229,9 +218,6 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                     <FormLabel>Thời gian Setup (phút)</FormLabel>
                     <FormControl>
                     <Input
-                        startContent={<Clock className="size-4 text-muted-foreground" />}
-                        type="number"
-                        min={0}
                         placeholder="0"
                         {...field}
                          className="bg-background"
@@ -243,7 +229,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
             />
 
             {resourceType === "ROOM" && (
-                 <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+
                     <FormField
                     control={form.control}
                     name="capacity"
@@ -252,7 +238,6 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                         <FormLabel>Sức chứa tối đa (người)</FormLabel>
                         <FormControl>
                         <Input
-                            startContent={<Users className="size-4 text-muted-foreground" />}
                             type="number"
                             min={1}
                             placeholder="1"
@@ -264,12 +249,11 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                     </FormItem>
                     )}
                 />
-                </div>
             )}
         </div>
 
         {resourceType === "EQUIPMENT" && (
-            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+            <div>
                 <FormField
                     control={form.control}
                     name="tags"
