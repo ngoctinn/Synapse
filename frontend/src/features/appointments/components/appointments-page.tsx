@@ -20,10 +20,11 @@ import {
 
 import { ActionResponse } from "@/shared/lib/action-response"; // Import ActionResponse
 import { getAppointmentMetrics, getAppointments } from "../actions"; // getStaffList, getResourceList, getServiceList are now passed as props
-import { MockService, MOCK_STAFF } from "../mock-data";
+import { MockService, MockStaff } from "../mock-data"; // Import MockService, MockStaff
 import { useCalendarState } from "../hooks/use-calendar-state";
 import type { Appointment, AppointmentMetrics, CalendarEvent, TimelineResource } from "../types";
 import { CalendarView } from "./calendar";
+import { WalkInBookingDialog } from "./walk-in-booking-dialog";
 import { AppointmentSheet } from "./sheet";
 import { DateNavigator, ViewSwitcher } from "./toolbar";
 
@@ -36,7 +37,7 @@ interface AppointmentsPageProps {
   staffListPromise: Promise<ActionResponse<TimelineResource[]>>;
   resourceListPromise: Promise<ActionResponse<TimelineResource[]>>;
   serviceListPromise: Promise<ActionResponse<MockService[]>>;
-  fullStaffList: TimelineResource[]; // Passed directly from Server Component
+  fullStaffList: MockStaff[]; // Passed directly from Server Component
 }
 
 export function AppointmentsPage({
@@ -81,10 +82,11 @@ export function AppointmentsPage({
   const [roomList, setRoomList] = useState<TimelineResource[]>(initialRoomList);
   const [isPending, startTransition] = useTransition();
 
-  // Sheet state
+  // Dialog/Sheet states
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [sheetMode, setSheetMode] = useState<"view" | "edit" | "create">("view");
+  const [showWalkInDialog, setShowWalkInDialog] = useState(false);
 
   // Fetch metrics when date changes (metrics are dynamic and client-side controlled)
   useEffect(() => {
@@ -180,14 +182,25 @@ export function AppointmentsPage({
           </div>
 
           {/* Actions */}
-          <Button
-            className="gap-2 shadow-sm h-8"
-            size="sm"
-            onClick={handleCreateClick}
-          >
-            <Plus className="h-4 w-4" />
-            <span className="hidden sm:inline">Tạo lịch hẹn</span>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              className="gap-2 shadow-sm h-8"
+              size="sm"
+              onClick={() => setShowWalkInDialog(true)}
+              variant="outline"
+            >
+              <Plus className="h-4 w-4" />
+              <span className="hidden sm:inline">Tạo nhanh</span>
+            </Button>
+            <Button
+              className="gap-2 shadow-sm h-8"
+              size="sm"
+              onClick={handleCreateClick}
+            >
+              <Plus className="h-4 w-4" />
+              <span className="hidden sm:inline">Tạo lịch hẹn</span>
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -292,6 +305,18 @@ export function AppointmentsPage({
         availableStaff={staffList}
         availableResources={roomList}
         availableServices={initialServiceList}
+      />
+
+      {/* ============================================ */}
+      {/* WALK-IN BOOKING DIALOG */}
+      {/* ============================================ */}
+      <WalkInBookingDialog
+        open={showWalkInDialog}
+        onOpenChange={setShowWalkInDialog}
+        availableStaff={staffList}
+        availableResources={roomList}
+        availableServices={initialServiceList}
+        onBookingSuccess={handleRefresh}
       />
     </div>
   );
