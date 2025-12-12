@@ -29,6 +29,7 @@ import {
   getAppointments,
   markNoShow,
 } from "../actions"; // getStaffList, getResourceList, getServiceList are now passed as props
+import { createInvoice } from "@/features/billing/actions";
 import { MockService, MockStaff } from "../mock-data"; // Import MockService, MockStaff
 import { useCalendarState } from "../hooks/use-calendar-state";
 import type { Appointment, AppointmentMetrics, CalendarEvent, TimelineResource } from "../types";
@@ -202,6 +203,20 @@ export function AppointmentsPage({
     setSelectedEvent(event);
     setSheetMode("edit");
     setIsSheetOpen(true);
+  };
+
+  const handleCreateInvoice = (bookingId: string) => {
+    startTransition(async () => {
+      const result = await createInvoice(bookingId);
+      if (result.status === "success") {
+        showToast.success(result.message);
+        // Optional: Redirect to billing page or show invoice details
+        // router.push(`/admin/billing?invoiceId=${result.data.id}`);
+        setIsSheetOpen(false);
+      } else {
+        showToast.error(result.message || "Không thể tạo hóa đơn");
+      }
+    });
   };
 
   const handleSlotClick = (date: Date, hour: number, minute: number) => {
@@ -425,6 +440,7 @@ export function AppointmentsPage({
         mode={sheetMode}
         event={selectedEvent}
         onSave={handleSaveAppointment}
+        onCreateInvoice={handleCreateInvoice}
         availableStaff={staffList}
         availableResources={roomList}
         availableServices={initialServiceList}

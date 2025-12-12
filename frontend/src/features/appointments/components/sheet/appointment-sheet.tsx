@@ -17,6 +17,7 @@ import {
     Edit,
     MapPin,
     Phone,
+    Receipt,
     User,
     XCircle
 } from "lucide-react";
@@ -64,6 +65,8 @@ interface AppointmentSheetProps {
   onCheckIn?: (id: string) => void;
   /** Callback khi cancel */
   onCancel?: (id: string) => void;
+  /** Callback tạo hóa đơn */
+  onCreateInvoice?: (id: string) => void;
   /** Default values cho create mode */
   defaultValues?: {
     date?: Date;
@@ -88,6 +91,7 @@ export function AppointmentSheet({
   onDelete,
   onCheckIn,
   onCancel,
+  onCreateInvoice,
   defaultValues,
   availableStaff,
   availableResources,
@@ -129,6 +133,7 @@ export function AppointmentSheet({
   const canCancel =
     appointment?.status === "pending" ||
     appointment?.status === "confirmed";
+  const canCreateInvoice = appointment?.status === "completed";
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -290,6 +295,17 @@ export function AppointmentSheet({
         {isViewMode && (
           <SheetFooter className="p-6 pt-4 border-t bg-muted/30 flex-col gap-3">
             {/* Quick Actions */}
+            <div className="flex items-center gap-2 w-full">
+              {canCreateInvoice && (
+                <Button
+                  className="w-full bg-green-600 hover:bg-green-700"
+                  onClick={() => onCreateInvoice?.(appointment!.id)}
+                >
+                  <Receipt className="h-4 w-4 mr-2" />
+                  Tạo hóa đơn
+                </Button>
+              )}
+            </div>
             <div className="flex items-center gap-2 w-full">
               {canCheckIn && (
                 <Button
