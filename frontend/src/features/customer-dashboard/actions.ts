@@ -5,6 +5,13 @@ import { revalidatePath } from "next/cache";
 import "server-only";
 import { profileSchema } from "./schemas";
 import { updateCustomerProfile } from "./services/api";
+import { cancelAppointment as adminCancelAppointment } from "@/features/appointments/actions";
+
+export async function cancelBooking(id: string, reason: string): Promise<ActionResponse<any>> {
+  const result = await adminCancelAppointment(id, reason);
+  revalidatePath("/dashboard/appointments");
+  return result;
+}
 
 
 export async function updateProfile(prevState: unknown, formData: FormData): Promise<ActionResponse> {
