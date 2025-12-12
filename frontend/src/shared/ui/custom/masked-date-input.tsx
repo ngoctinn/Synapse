@@ -6,7 +6,7 @@ import { LucideIcon, LucideProps } from "lucide-react"
 import * as React from "react"
 
 interface MaskedDateInputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange" | "value"> {
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange" | "value" | "size"> {
   value?: Date
   onChange?: (date?: Date) => void
   icon?: LucideIcon

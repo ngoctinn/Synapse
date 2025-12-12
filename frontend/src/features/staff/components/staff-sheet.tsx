@@ -38,14 +38,10 @@ interface StaffSheetProps {
   skills: Skill[]
 }
 
-const initialState = {
-    success: false,
-    message: "",
-    error: "",
-}
+// ... imports
 
 export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffSheetProps) {
-  const [state, dispatch, isPending] = React.useActionState(manageStaff, initialState)
+  const [state, dispatch, isPending] = React.useActionState(manageStaff, undefined)
 
 
   const schema = mode === "create" ? staffCreateSchema : staffUpdateSchema
@@ -63,11 +59,11 @@ export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffShe
 
 
   React.useEffect(() => {
-    if (state.success && state.message) {
+    if (state?.status === "success" && state.message) {
       showToast.success(mode === "create" ? "Đã gửi lời mời" : "Cập nhật thành công", state.message)
       onOpenChange(false)
-    } else if (state.error) {
-      showToast.error("Thất bại", state.error)
+    } else if (state?.status === "error") {
+      showToast.error("Thất bại", state.message)
     }
   }, [state, mode, onOpenChange])
 

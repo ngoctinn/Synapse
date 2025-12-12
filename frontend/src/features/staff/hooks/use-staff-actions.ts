@@ -22,7 +22,7 @@ export function useStaffActions({ onSuccess, onError }: UseStaffActionsProps = {
                 for (const id of ids) {
                     try {
                         const result = await deleteStaff(id)
-                        if (result.success) successCount++
+                        if (result.status === "success") successCount++
                     } catch (e) {
                         console.error(`Failed to delete ${id}:`, e)
                     }

@@ -5,7 +5,7 @@ import { Input } from "@/shared/ui/input"
 import * as React from "react"
 
 export interface TimeInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
   /**
    * Variant size cho TimeInput
    * - `default`: h-10 - kích thước mặc định

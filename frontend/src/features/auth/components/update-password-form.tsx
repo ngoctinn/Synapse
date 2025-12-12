@@ -37,10 +37,10 @@ export function UpdatePasswordForm() {
 
 
   useEffect(() => {
-    if (state?.success) {
+    if (state?.status === "success") {
       showToast.success("Cập nhật thành công", state.message);
       form.reset();
-    } else if (state?.success === false) {
+    } else if (state?.status === "error") {
       showToast.error("Cập nhật thất bại", state.message);
     }
   }, [state, form]);

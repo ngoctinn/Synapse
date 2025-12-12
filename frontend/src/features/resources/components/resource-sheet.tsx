@@ -28,11 +28,7 @@ interface ResourceSheetProps {
   groups: ResourceGroup[]
 }
 
-const initialState = {
-  success: false,
-  message: "",
-  error: "",
-}
+// ... imports
 
 export function ResourceSheet({
   open,
@@ -41,7 +37,7 @@ export function ResourceSheet({
   resource,
   groups,
 }: ResourceSheetProps) {
-  const [state, dispatch, isPending] = React.useActionState(manageResource, initialState);
+  const [state, dispatch, isPending] = React.useActionState(manageResource, undefined);
 
   const form = useForm<ResourceFormValues>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -88,13 +84,15 @@ export function ResourceSheet({
 
 
   React.useEffect(() => {
-    if (state.success && state.message) {
+    if (state?.status === "success" && state.message) {
       showToast.success(mode === "update" ? "Cập nhật thành công" : "Tạo mới thành công", state.message);
       onOpenChange(false);
-    } else if (state.error) {
-      showToast.error("Thất bại", state.error);
+    } else if (state?.status === "error") {
+      showToast.error("Thất bại", state.message);
     }
   }, [state, mode, onOpenChange]);
+
+// ... rest
 
   const onSubmit = (data: ResourceFormValues) => {
     const formData = new FormData();

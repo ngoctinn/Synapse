@@ -1,5 +1,6 @@
 "use client"
 
+import { ActionResponse } from "@/shared/lib/action-response"
 import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
 import { Card } from "@/shared/ui/card"
@@ -16,7 +17,7 @@ import { ScheduleEditor } from "../operating-hours/components/schedule-editor"
 import { ExceptionDate, OperatingHoursConfig } from "../operating-hours/model/types"
 
 interface SettingsPageProps {
-  operatingHoursPromise: Promise<OperatingHoursConfig>
+  operatingHoursPromise: Promise<ActionResponse<OperatingHoursConfig>>
   channelsPromise: Promise<NotificationChannel[]>
   eventsPromise: Promise<NotificationEvent[]>
 }
@@ -67,11 +68,11 @@ function SettingsForm({
   const handleSave = useCallback(() => {
     startTransition(async () => {
       const result = await updateOperatingHours(config)
-      if (result.success) {
+      if (result.status === "success") {
         setIsDirty(false)
         toast.success(result.message)
       } else {
-        toast.error("Không thể lưu cấu hình")
+        toast.error(result.message || "Không thể lưu cấu hình")
       }
     })
   }, [config])
@@ -218,9 +219,15 @@ function SettingsContent({
   eventsPromise
 }: SettingsPageProps) {
   // Unwrap all promises at once
-  const initialConfig = use(operatingHoursPromise)
+  const opHoursRes = use(operatingHoursPromise)
   const channels = use(channelsPromise)
   const events = use(eventsPromise)
+
+  if (opHoursRes.status !== 'success' || !opHoursRes.data) {
+     return <div className="p-4 text-destructive">Không tải được cấu hình thời gian làm việc</div>
+  }
+
+  const initialConfig = opHoursRes.data
 
   // Use JSON.stringify of config to force remount when data changes
   // This avoids setState in useEffect and ensures clean state reset

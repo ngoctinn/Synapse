@@ -50,11 +50,11 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
   const handleSave = () => {
     startTransition(async () => {
       const result = await updateOperatingHours(config);
-      if (result.success) {
+      if (result.status === "success") {
         setIsDirty(false);
         toast.success(result.message);
       } else {
-        toast.error(OPERATING_HOURS_UI.SAVE_ERROR);
+        toast.error(result.message || OPERATING_HOURS_UI.SAVE_ERROR);
       }
     });
   };

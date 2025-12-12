@@ -1,13 +1,13 @@
 "use server";
 
+import { ActionResponse, error, success } from "@/shared/lib/action-response";
 import { revalidatePath } from "next/cache";
 import "server-only";
 import { profileSchema } from "./schemas";
 import { updateCustomerProfile } from "./services/api";
 
-import { ActionState } from "./types";
 
-export async function updateProfile(prevState: ActionState, formData: FormData): Promise<ActionState> {
+export async function updateProfile(prevState: unknown, formData: FormData): Promise<ActionResponse> {
   const rawData = {
     fullName: formData.get("fullName"),
     phone: formData.get("phone")?.toString() || undefined,
@@ -20,7 +20,7 @@ export async function updateProfile(prevState: ActionState, formData: FormData):
   const validatedFields = profileSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
-    return { success: false, message: validatedFields.error.issues[0].message };
+    return error("Dữ liệu không hợp lệ", validatedFields.error.flatten().fieldErrors);
   }
 
   const avatarFile = formData.get("avatar") as File;
@@ -34,8 +34,8 @@ export async function updateProfile(prevState: ActionState, formData: FormData):
   try {
     await updateCustomerProfile(validatedFields.data);
     revalidatePath("/dashboard/profile");
-    return { message: "Cập nhật hồ sơ thành công!", success: true };
+    return success(undefined, "Cập nhật hồ sơ thành công!");
   } catch (e) {
-    return { message: `Đã có lỗi xảy ra: ${e instanceof Error ? e.message : String(e)}`, success: false };
+    return error(`Đã có lỗi xảy ra: ${e instanceof Error ? e.message : String(e)}`);
   }
 }

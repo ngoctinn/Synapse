@@ -48,39 +48,14 @@ interface DataTableProps<T> {
   // ─────────────────────────────────────────────────────────────────────────
   // Selection - Grouped config (recommended)
   // ─────────────────────────────────────────────────────────────────────────
-  /** Grouped selection config - sử dụng thay vì flat props */
+  /** Grouped selection config */
   selection?: SelectionConfig
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // Selection - Flat props (backward compat, deprecated)
-  // ─────────────────────────────────────────────────────────────────────────
-  selectable?: boolean
-  /** @deprecated Sử dụng selection.isSelected thay thế */
-  isSelected?: (id: string | number) => boolean
-  /** @deprecated Sử dụng selection.onToggleOne thay thế */
-  onToggleOne?: (id: string | number) => void
-  /** @deprecated Sử dụng selection.onToggleAll thay thế */
-  onToggleAll?: () => void
-  /** @deprecated Sử dụng selection.isAllSelected thay thế */
-  isAllSelected?: boolean
-  /** @deprecated Sử dụng selection.isPartiallySelected thay thế */
-  isPartiallySelected?: boolean
 
   // ─────────────────────────────────────────────────────────────────────────
   // Sorting - Grouped config (recommended)
   // ─────────────────────────────────────────────────────────────────────────
-  /** Grouped sort config - sử dụng thay vì flat props */
+  /** Grouped sort config */
   sort?: SortConfig
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // Sorting - Flat props (backward compat, deprecated)
-  // ─────────────────────────────────────────────────────────────────────────
-  /** @deprecated Sử dụng sort.column thay thế */
-  sortColumn?: string
-  /** @deprecated Sử dụng sort.direction thay thế */
-  sortDirection?: "asc" | "desc"
-  /** @deprecated Sử dụng sort.onSort thay thế */
-  onSort?: (column: string) => void
 
   onRowClick?: (item: T) => void
 }
@@ -100,40 +75,16 @@ export function DataTable<T>({
   skeletonCount = 5,
   disabled = false,
 
-  // Grouped configs (recommended)
+  // Grouped configs
   selection,
   sort,
 
-  // Flat props (backward compat)
-  selectable = false,
-  isSelected: isSelectedProp,
-  onToggleOne: onToggleOneProp,
-  onToggleAll: onToggleAllProp,
-  isAllSelected: isAllSelectedProp,
-  isPartiallySelected: isPartiallySelectedProp,
-  sortColumn: sortColumnProp,
-  sortDirection: sortDirectionProp,
-  onSort: onSortProp,
-
   onRowClick,
 }: DataTableProps<T>) {
-  // Merge selection config: grouped takes priority, fallback to flat props
-  const isSelected = selection?.isSelected ?? isSelectedProp ?? (() => false)
-  const onToggleOne = selection?.onToggleOne ?? onToggleOneProp
-  const onToggleAll = selection?.onToggleAll ?? onToggleAllProp
-  const isAllSelected = selection?.isAllSelected ?? isAllSelectedProp ?? false
-  const isPartiallySelected = selection?.isPartiallySelected ?? isPartiallySelectedProp ?? false
-  const isSelectable = !!selection || selectable
-
-  // Merge sort config: grouped takes priority, fallback to flat props
-  const sortColumn = sort?.column ?? sortColumnProp
-  const sortDirection = sort?.direction ?? sortDirectionProp
-  const onSort = sort?.onSort ?? onSortProp
-
+  const isSelectable = !!selection
 
   // ─────────────────────────────────────────────────────────────────────────
   const containerClasses = cn(
-    "relative w-full overflow-hidden",
     "relative w-full overflow-hidden",
     disabled && "pointer-events-none opacity-60 grayscale",
     variant === "default" && "border rounded-xl shadow-sm bg-background",
@@ -166,13 +117,13 @@ export function DataTable<T>({
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent border-b border-border/60">
-                {isSelectable && (
+                {selection && (
                   <TableHead className="w-12 pl-6">
                     <Checkbox
-                      checked={isAllSelected}
+                      checked={selection.isAllSelected}
                       // @ts-expect-error - indeterminate is valid
-                      indeterminate={isPartiallySelected ? "true" : undefined}
-                      onCheckedChange={onToggleAll}
+                      indeterminate={selection.isPartiallySelected ? "true" : undefined}
+                      onCheckedChange={selection.onToggleAll}
                       aria-label="Chọn tất cả"
                       className="translate-y-[2px]"
                     />
@@ -180,20 +131,20 @@ export function DataTable<T>({
                 )}
 
                 {columns.map((col, index) => {
-                  const isSorted = sortColumn === col.accessorKey?.toString()
+                  const isSorted = sort?.column === col.accessorKey?.toString()
                   return (
                     <TableHead
                       key={index}
                       className={cn(
                         "h-12 font-medium text-muted-foreground transition-colors hover:text-foreground/80",
-                        index === 0 && !selectable ? "pl-6" : "",
+                        index === 0 && !selection ? "pl-6" : "",
                         index === columns.length - 1 ? "pr-6 text-right" : "",
                         col.sortable ? "cursor-pointer select-none" : "",
                         col.headerClassName
                       )}
                       onClick={() => {
-                        if (col.sortable && onSort && col.accessorKey) {
-                          onSort(col.accessorKey.toString())
+                        if (col.sortable && sort?.onSort && col.accessorKey) {
+                          sort.onSort(col.accessorKey.toString())
                         }
                       }}
                     >
@@ -205,7 +156,7 @@ export function DataTable<T>({
                         {col.sortable && (
                           <span className="flex flex-col items-center justify-center w-4 h-4">
                             {isSorted ? (
-                              sortDirection === "asc" ? (
+                              sort?.direction === "asc" ? (
                                 <ArrowUp className="h-3.5 w-3.5 text-primary animate-in fade-in zoom-in duration-200" />
                               ) : (
                                 <ArrowDown className="h-3.5 w-3.5 text-primary animate-in fade-in zoom-in duration-200" />
@@ -224,7 +175,7 @@ export function DataTable<T>({
             <TableBody>
               {data.map((item, index) => {
                 const itemId = keyExtractor(item)
-                const selected = isSelected?.(itemId) ?? false
+                const selected = selection?.isSelected(itemId) ?? false
                 const isClickable = !!onRowClick
 
                 return (
@@ -241,11 +192,11 @@ export function DataTable<T>({
                     }}
                   >
                     {/* Checkbox Cell */}
-                    {isSelectable && (
+                    {selection && (
                       <TableCell className="w-12 pl-6" onClick={(e) => e.stopPropagation()}>
                         <Checkbox
                           checked={selected}
-                          onCheckedChange={() => onToggleOne?.(itemId)}
+                          onCheckedChange={() => selection.onToggleOne(itemId)}
                           aria-label="Chọn hàng"
                           className="translate-y-[2px]"
                         />
@@ -257,8 +208,8 @@ export function DataTable<T>({
                         key={colIndex}
                         className={cn(
                           "py-4",
-                          colIndex === 0 && !isSelectable ? "pl-6 font-medium text-foreground" : "",
-                          colIndex === 0 && isSelectable ? "font-medium text-foreground" : "",
+                          colIndex === 0 && !selection ? "pl-6 font-medium text-foreground" : "",
+                          colIndex === 0 && selection ? "font-medium text-foreground" : "",
                           colIndex === columns.length - 1 ? "pr-6 text-right" : "text-muted-foreground",
                           col.className
                         )}

@@ -91,7 +91,7 @@ export function CustomerTable({
         )
 
         results.forEach((result, index) => {
-            if (result.status === "fulfilled") {
+            if (result.status === "fulfilled" && result.value.status === "success") {
                 successCount++
             } else {
                 failures.push(selectedIds[index].toString())
@@ -214,17 +214,20 @@ export function CustomerTable({
         skeletonCount={5}
         variant={variant}
 
-        selectable
-        isSelected={selection.isSelected}
-        onToggleOne={selection.toggleOne}
-        onToggleAll={selection.toggleAll}
-        isAllSelected={selection.isAllSelected}
-        isPartiallySelected={selection.isPartiallySelected}
+        selection={{
+          isSelected: selection.isSelected,
+          onToggleOne: selection.toggleOne,
+          onToggleAll: selection.toggleAll,
+          isAllSelected: selection.isAllSelected,
+          isPartiallySelected: selection.isPartiallySelected,
+        }}
 
         onRowClick={(c) => setEditingCustomer(c)}
-        sortColumn={sortBy}
-        sortDirection={order}
-        onSort={handleSort}
+        sort={{
+          column: sortBy,
+          direction: order,
+          onSort: handleSort,
+        }}
         emptyState={
           <DataTableEmptyState
             icon={AnimatedUsersIcon}

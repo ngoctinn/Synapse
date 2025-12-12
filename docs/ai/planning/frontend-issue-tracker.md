@@ -8,7 +8,7 @@ last_updated: 2025-12-12
 
 # 📋 ISSUE TRACKER: Frontend Synapse
 
-> **Tổng số:** 32 issues | **Đã xong:** 0 | **Đang làm:** 0 | **Chờ:** 32
+> **Tổng số:** 32 issues | **Đã xong:** 2 | **Đang làm:** 0 | **Chờ:** 30
 
 ---
 
@@ -19,7 +19,7 @@ last_updated: 2025-12-12
 | C1 | `appointments` | Tính năng core chưa triển khai (chỉ ~5%) | M3 | [ ] TODO | - |
 | C2 | `appointments/actions.ts` | Mock Data không persist (createAppointment) | M3 | [ ] TODO | - |
 | C3 | `appointments-page.tsx` | Data Waterfall (useEffect fetch) | M3 | [ ] TODO | - |
-| C4 | **Toàn bộ Actions** | Response Type không nhất quán | M1 | [ ] TODO | - |
+| C4 | **Toàn bộ Actions** | Response Type không nhất quán | M1 | [x] DONE | AI |
 | C5 | `customers`, `staff`, `resources` | Search không kết nối URL Params | M2 | [ ] TODO | - |
 | C6 | `billing` | **Module hoàn toàn thiếu** | M5 | [ ] TODO | - |
 | C7 | `reviews` | **Module hoàn toàn thiếu** | M5 | [ ] TODO | - |
@@ -56,7 +56,7 @@ last_updated: 2025-12-12
 | M7 | `customer-dashboard` | Thiếu Treatment Progress UI | M6 | [ ] TODO | - |
 | M8 | `customer-dashboard` | Thiếu Loyalty Points Display | M6 | [ ] TODO | - |
 | M9 | `analytics` | **Module hoàn toàn thiếu** | M6 | [ ] TODO | - |
-| M10 | `DataTable` | API bị bloated (Flat Props + Grouped Config) | M1 | [ ] TODO | - |
+| M10 | `DataTable` | API bị bloated (Flat Props + Grouped Config) | M1 | [x] DONE | AI |
 
 ---
 
@@ -76,7 +76,7 @@ last_updated: 2025-12-12
 
 | Milestone | Mô tả | Số Issues | Ước tính | Trạng thái |
 |:---|:---|:---:|:---:|:---:|
-| **M1** | Foundation & Response Standardization | 2 | 2d | [ ] Pending |
+| **M1** | Foundation & Response Standardization | 2 | 2d | [x] DONE |
 | **M2** | Fix Critical UX Bugs | 4 | 3d | [ ] Pending |
 | **M3** | Appointments Module Core | 3 | 8d | [ ] Pending |
 | **M4** | Appointments Actions & Workflows | 4 | 4d | [ ] Pending |

@@ -1,22 +1,17 @@
 "use server";
 
+import { ActionResponse, error, success } from "@/shared/lib/action-response";
 import { revalidatePath } from "next/cache";
 import { mockMaintenanceTasks, mockResourceGroups, mockResources } from "./data/mocks";
 import { ResourceFormValues, resourceSchema } from "./schemas";
 import { MaintenanceTask, Resource, ResourceGroup } from "./types";
-
-export type ActionState = {
-  success?: boolean;
-  error?: string;
-  message?: string;
-};
 
 // Simulate a database
 let resources = [...mockResources];
 const resourceGroups = [...mockResourceGroups];
 const maintenanceTasks = [...mockMaintenanceTasks];
 
-export async function manageResource(prevState: ActionState, formData: FormData): Promise<ActionState> {
+export async function manageResource(prevState: unknown, formData: FormData): Promise<ActionResponse> {
     const id = formData.get("id") as string;
     const rawData: Record<string, unknown> = {};
 
@@ -42,42 +37,40 @@ export async function manageResource(prevState: ActionState, formData: FormData)
     const validatedFields = resourceSchema.safeParse(rawData);
 
     if (!validatedFields.success) {
-        return {
-            success: false,
-            error: validatedFields.error.issues[0].message
-        };
+        return error("Dữ liệu không hợp lệ", validatedFields.error.flatten().fieldErrors);
     }
 
     try {
         if (id) {
             await updateResource(id, validatedFields.data);
-            return { success: true, message: "Cập nhật tài nguyên thành công" };
+            return success(undefined, "Cập nhật tài nguyên thành công");
         } else {
             await createResource(validatedFields.data);
-            return { success: true, message: "Tạo tài nguyên mới thành công" };
+            return success(undefined, "Tạo tài nguyên mới thành công");
         }
-    } catch (error) {
-        return { success: false, error: "Đã có lỗi xảy ra" };
+    } catch (err) {
+        return error("Đã có lỗi xảy ra");
     }
 }
 
-export async function getResources(query?: string): Promise<Resource[]> {
+export async function getResources(query?: string): Promise<ActionResponse<Resource[]>> {
   // Simulate network delay
   await new Promise((resolve) => setTimeout(resolve, 500));
 
-  if (!query) return resources;
+  if (!query) return success(resources);
 
   const lowerQuery = query.toLowerCase();
-  return resources.filter(
+  const filtered = resources.filter(
     (r) =>
       r.name.toLowerCase().includes(lowerQuery) ||
       r.code.toLowerCase().includes(lowerQuery)
   );
+  return success(filtered);
 }
 
-export async function getResourceGroups(): Promise<ResourceGroup[]> {
+export async function getResourceGroups(): Promise<ActionResponse<ResourceGroup[]>> {
   await new Promise((resolve) => setTimeout(resolve, 300));
-  return resourceGroups;
+  return success(resourceGroups);
 }
 
 export async function getResourceById(id: string): Promise<Resource | undefined> {
@@ -119,24 +112,32 @@ export async function updateResource(id: string, data: ResourceFormValues): Prom
   return updatedResource;
 }
 
-export async function deleteResource(id: string): Promise<ActionState> {
+export async function deleteResource(id: string): Promise<ActionResponse> {
   await new Promise((resolve) => setTimeout(resolve, 500));
   resources = resources.filter((r) => r.id !== id);
   revalidatePath("/resources");
-  return { success: true, message: "Đã xóa tài nguyên thành công" };
+  return success(undefined, "Đã xóa tài nguyên thành công");
 }
 
 // --- Compatibility Exports (Deprecated) ---
 
 export async function getRoomTypes(): Promise<Resource[]> {
-  return getResources().then(res => res.filter(r => r.type === 'ROOM'));
+    const res = await getResources();
+    if (res.status === 'success' && res.data) {
+        return res.data.filter(r => r.type === 'ROOM');
+    }
+    return [];
 }
 
 export async function getEquipmentList(): Promise<Resource[]> {
-  return getResources().then(res => res.filter(r => r.type === 'EQUIPMENT'));
+    const res = await getResources();
+    if (res.status === 'success' && res.data) {
+        return res.data.filter(r => r.type === 'EQUIPMENT');
+    }
+    return [];
 }
 
-export async function getMaintenanceTasks(): Promise<MaintenanceTask[]> {
+export async function getMaintenanceTasks(): Promise<ActionResponse<MaintenanceTask[]>> {
   await new Promise((resolve) => setTimeout(resolve, 500));
-  return maintenanceTasks;
+  return success(maintenanceTasks);
 }

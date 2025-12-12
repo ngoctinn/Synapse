@@ -26,10 +26,7 @@ export function ForgotPasswordForm() {
   const [showCheckEmailDialog, setShowCheckEmailDialog] = useState(false);
 
 
-  const [state, action, isPending] = useActionState(forgotPasswordAction, {
-    success: false,
-    message: "",
-  });
+  const [state, action, isPending] = useActionState(forgotPasswordAction, undefined);
 
 
   const form = useForm<ForgotPasswordInput>({
@@ -41,17 +38,15 @@ export function ForgotPasswordForm() {
 
 
   useEffect(() => {
-    if (state?.message) {
-      if (state.success) {
-        if (!showCheckEmailDialog) {
-            showToast.success("Đã gửi yêu cầu", state.message);
-            // eslint-disable-next-line react-hooks/set-state-in-effect
-            setShowCheckEmailDialog(true);
-            form.reset();
-        }
-      } else {
-        showToast.error("Gửi yêu cầu thất bại", state.message);
+    if (state?.status === "success") {
+      if (!showCheckEmailDialog) {
+          showToast.success("Đã gửi yêu cầu", state.message);
+          // eslint-disable-next-line react-hooks/set-state-in-effect
+          setShowCheckEmailDialog(true);
+          form.reset();
       }
+    } else if (state?.status === "error") {
+      showToast.error("Gửi yêu cầu thất bại", state.message);
     }
   }, [state, form, showCheckEmailDialog]);
 

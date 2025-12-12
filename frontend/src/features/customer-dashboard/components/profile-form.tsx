@@ -19,18 +19,13 @@ interface ProfileFormProps {
   user: UserProfile
 }
 
-const initialState = {
-  message: '',
-  success: false,
-}
-
 const motionTransition: Transition = {
   duration: 0.3,
   ease: "easeOut",
 }
 
 export function ProfileForm({ user }: ProfileFormProps) {
-  const [state, formAction, isPending] = useActionState(updateProfile, initialState)
+  const [state, formAction, isPending] = useActionState(updateProfile, undefined)
   const prefersReducedMotion = useReducedMotion()
 
   // Date limits
@@ -52,12 +47,10 @@ export function ProfileForm({ user }: ProfileFormProps) {
   })
 
   useEffect(() => {
-    if (state.message) {
-      if (state.success) {
-        showToast.success(PROFILE_MESSAGES.SUCCESS_TITLE, state.message)
-      } else {
-        showToast.error(PROFILE_MESSAGES.ERROR_TITLE, state.message)
-      }
+    if (state?.status === "success") {
+      showToast.success(PROFILE_MESSAGES.SUCCESS_TITLE, state.message)
+    } else if (state?.status === "error") {
+      showToast.error(PROFILE_MESSAGES.ERROR_TITLE, state.message)
     }
   }, [state])
 

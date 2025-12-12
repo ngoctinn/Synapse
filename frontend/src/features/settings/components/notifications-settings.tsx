@@ -42,7 +42,7 @@ export function NotificationsSettings({ initialChannels, initialEvents }: Notifi
     startTransition(async () => {
       try {
         const result = await toggleChannelAction(eventId, channelId, checked);
-        if (!result.success) {
+        if (result.status !== "success") {
            throw new Error(result.message);
         }
       } catch (error) {
@@ -68,7 +68,7 @@ export function NotificationsSettings({ initialChannels, initialEvents }: Notifi
   const handleSaveChannelConfig = (channelId: string, config: any) => {
     startTransition(async () => {
       const result = await updateChannelConfigAction(channelId, config);
-      if (result.success) {
+      if (result.status === "success") {
         setChannels(prev => prev.map(ch => {
             if (ch.id === channelId) {
               return { ...ch, config: { ...ch.config, ...config } };
@@ -87,7 +87,7 @@ export function NotificationsSettings({ initialChannels, initialEvents }: Notifi
   const handleSaveTemplate = (eventId: string, channelId: string, template: any) => {
     startTransition(async () => {
         const result = await updateTemplateAction(eventId, channelId, template);
-        if (result.success) {
+        if (result.status === "success") {
             setEvents(prev => prev.map(event => {
                 if (event.id === eventId) {
                   return {

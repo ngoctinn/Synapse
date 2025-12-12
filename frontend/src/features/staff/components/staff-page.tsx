@@ -1,6 +1,7 @@
 "use client"
 
 import { Skill } from "@/features/services"
+import { ActionResponse } from "@/shared/lib/action-response"
 import { FilterBar } from "@/shared/ui/custom/filter-bar"
 import { Input } from "@/shared/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
@@ -14,12 +15,12 @@ import { StaffScheduler } from "./scheduling/staff-scheduler"
 import { StaffFilter } from "./staff-filter"
 import { StaffTable, StaffTableSkeleton } from "./staff-list/staff-table"
 
-import { Schedule, Staff } from "../model/types"
+import { Schedule, Staff, StaffListResponse } from "../model/types"
 
 interface StaffPageProps {
   page: number
   skills: Skill[]
-  staffListPromise: Promise<{ data: Staff[]; total: number }>
+  staffListPromise: Promise<ActionResponse<StaffListResponse>>
   initialPermissions: Record<string, Record<string, boolean>>
   initialSchedules: Schedule[]
 }
@@ -29,12 +30,21 @@ function StaffListWrapper({
   skills,
   page,
 }: {
-  staffListPromise: Promise<{ data: Staff[]; total: number }>
+  staffListPromise: Promise<ActionResponse<StaffListResponse>>
   skills: Skill[]
   page: number
 }) {
-  const { data, total } = use(staffListPromise)
+  const response = use(staffListPromise)
+  
+  const { data, total } = response.status === 'success' && response.data 
+    ? response.data 
+    : { data: [], total: 0 }
+  
   const totalPages = Math.ceil(total / 10)
+
+  if (response.status === 'error') {
+      return <div className="p-4 text-destructive">Lỗi tải danh sách nhân viên: {response.message}</div>
+  }
 
   return (
     <StaffTable
@@ -53,11 +63,13 @@ function StaffSchedulerWrapper({
   staffListPromise,
   initialSchedules,
 }: {
-  staffListPromise: Promise<{ data: Staff[] }>
+  staffListPromise: Promise<ActionResponse<StaffListResponse>>
   initialSchedules: Schedule[]
 }) {
-  const { data } = use(staffListPromise)
-  return <StaffScheduler initialSchedules={initialSchedules} staffList={data} />
+  const response = use(staffListPromise)
+  const staffData = response.status === 'success' && response.data ? response.data.data : []
+
+  return <StaffScheduler initialSchedules={initialSchedules} staffList={staffData} />
 }
 
 const Footer = () => (

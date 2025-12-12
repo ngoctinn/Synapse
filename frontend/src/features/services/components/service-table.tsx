@@ -182,12 +182,13 @@ export function ServiceTable({
         isLoading={isLoading}
         skeletonCount={6}
 
-        selectable
-        isSelected={selection.isSelected}
-        onToggleOne={(id) => !isPending && selection.toggleOne(id)}
-        onToggleAll={() => !isPending && selection.toggleAll()}
-        isAllSelected={selection.isAllSelected}
-        isPartiallySelected={selection.isPartiallySelected}
+        selection={{
+          isSelected: selection.isSelected,
+          onToggleOne: (id) => !isPending && selection.toggleOne(id),
+          onToggleAll: () => !isPending && selection.toggleAll(),
+          isAllSelected: selection.isAllSelected,
+          isPartiallySelected: selection.isPartiallySelected,
+        }}
 
         onRowClick={(service) => setEditingService(service)}
         emptyState={

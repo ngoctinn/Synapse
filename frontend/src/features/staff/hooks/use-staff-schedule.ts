@@ -71,12 +71,12 @@ export function useStaffSchedule({ initialSchedules }: UseStaffScheduleProps) {
       startTransition(async () => {
           const result = await batchUpdateSchedule(creates, deletes)
 
-          if (result.success) {
+          if (result.status === "success") {
               toast.success(result.message)
               // Commit changes: Local becomes new Server Truth
               setServerSchedules(localSchedules)
           } else {
-              toast.error(result.error)
+              toast.error(result.message || "Lỗi lưu thay đổi")
           }
       })
   }

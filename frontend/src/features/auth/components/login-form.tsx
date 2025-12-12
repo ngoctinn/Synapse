@@ -39,10 +39,10 @@ export function LoginForm() {
 
 
   useEffect(() => {
-    if (state?.success) {
+    if (state?.status === "success") {
       showToast.success("Đăng nhập thành công", "Chào mừng bạn quay trở lại hệ thống.");
       router.push("/");
-    } else if (state?.success === false) {
+    } else if (state?.status === "error") {
       showToast.error("Đăng nhập thất bại", state.message);
     }
   }, [state, router]);

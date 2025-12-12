@@ -14,11 +14,15 @@ export default async function Page({
   const start = format(startOfWeek(today, { weekStartsOn: 1 }), "yyyy-MM-dd")
   const end = format(endOfWeek(today, { weekStartsOn: 1 }), "yyyy-MM-dd")
 
-  const [skills, permissions, initialSchedules] = await Promise.all([
+  const [skillsRes, permissionsRes, schedulesRes] = await Promise.all([
     getSkills(),
     getPermissions(),
     getSchedules(start, end)
   ])
+
+  const skills = skillsRes.status === "success" ? skillsRes.data || [] : []
+  const permissions = permissionsRes.status === "success" ? permissionsRes.data || {} : {}
+  const schedules = schedulesRes.status === "success" ? schedulesRes.data || [] : []
 
   // Truyền Promise để Suspense hiển thị skeleton
   const staffListPromise = getStaffList(pageNumber)
@@ -29,7 +33,7 @@ export default async function Page({
       skills={skills}
       staffListPromise={staffListPromise}
       initialPermissions={permissions}
-      initialSchedules={initialSchedules}
+      initialSchedules={schedules}
     />
   )
 }

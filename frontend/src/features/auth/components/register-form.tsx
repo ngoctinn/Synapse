@@ -42,7 +42,7 @@ export function RegisterForm() {
 
 
   useEffect(() => {
-    if (state?.success) {
+    if (state?.status === "success") {
       // Only trigger if not already shown to avoid loops
       if (!showCheckEmailDialog) {
           showToast.success("Đăng ký thành công", state.message);
@@ -50,7 +50,7 @@ export function RegisterForm() {
           setShowCheckEmailDialog(true);
           form.reset();
       }
-    } else if (state?.success === false) {
+    } else if (state?.status === "error") {
       showToast.error("Đăng ký thất bại", state.message);
     }
   }, [state, form, showCheckEmailDialog]);

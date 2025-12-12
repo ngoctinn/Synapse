@@ -131,12 +131,12 @@ export function StaffTable({
         );
 
         const successCount = results.filter(
-          (r) => r.status === "fulfilled" && r.value.success
+          (r) => r.status === "fulfilled" && r.value.status === "success"
         ).length;
         const failures = results.filter(
           (r) =>
             r.status === "rejected" ||
-            (r.status === "fulfilled" && !r.value.success)
+            (r.status === "fulfilled" && r.value.status !== "success")
         );
 
         if (successCount > 0) {
@@ -296,16 +296,19 @@ export function StaffTable({
         isLoading={isLoading}
         skeletonCount={5}
         disabled={isPending}
-        selectable
-        isSelected={selection.isSelected}
-        onToggleOne={selection.toggleOne}
-        onToggleAll={selection.toggleAll}
-        isAllSelected={selection.isAllSelected}
-        isPartiallySelected={selection.isPartiallySelected}
+        selection={{
+          isSelected: selection.isSelected,
+          onToggleOne: selection.toggleOne,
+          onToggleAll: selection.toggleAll,
+          isAllSelected: selection.isAllSelected,
+          isPartiallySelected: selection.isPartiallySelected,
+        }}
+        sort={{
+          column: sortBy,
+          direction: order,
+          onSort: handleSort,
+        }}
         onRowClick={(staff) => setEditingStaff(staff)}
-        sortColumn={sortBy}
-        sortDirection={order}
-        onSort={handleSort}
         emptyState={
           <DataTableEmptyState
             icon={AnimatedUsersIcon}

@@ -1,15 +1,10 @@
 "use server"
 
+import { ActionResponse, error, success } from "@/shared/lib/action-response"
 import { revalidatePath } from "next/cache"
 import { MOCK_CUSTOMERS } from "./model/mocks"
 import { customerSchema, customerUpdateSchema } from "./model/schemas"
 import { Customer } from "./model/types"
-
-export type ActionState = {
-  success?: boolean
-  error?: string
-  message?: string
-}
 
 export type CustomerListResponse = {
     data: Customer[]
@@ -21,19 +16,19 @@ export type CustomerListResponse = {
 export async function getCustomers(
   page: number = 1,
   limit: number = 10
-): Promise<CustomerListResponse> {
+): Promise<ActionResponse<CustomerListResponse>> {
   // Simulate network delay
   await new Promise((resolve) => setTimeout(resolve, 500))
 
-  return {
+  return success({
     data: MOCK_CUSTOMERS,
     total: MOCK_CUSTOMERS.length,
     page,
     limit,
-  }
+  })
 }
 
-export async function manageCustomer(prevState: ActionState, formData: FormData): Promise<ActionState> {
+export async function manageCustomer(prevState: unknown, formData: FormData): Promise<ActionResponse> {
     const mode = formData.get("form_mode")
     if (mode === "create") {
         return createCustomer(prevState, formData)
@@ -42,40 +37,34 @@ export async function manageCustomer(prevState: ActionState, formData: FormData)
     }
 }
 
-async function createCustomer(prevState: ActionState, formData: FormData): Promise<ActionState> {
+async function createCustomer(prevState: unknown, formData: FormData): Promise<ActionResponse> {
     const rawData = Object.fromEntries(formData.entries())
     const validated = customerSchema.safeParse(rawData)
 
     if (!validated.success) {
-        return {
-            success: false,
-            error: validated.error.issues[0].message
-        }
+        return error("Dữ liệu không hợp lệ", validated.error.flatten().fieldErrors)
     }
 
     await new Promise((resolve) => setTimeout(resolve, 800))
     revalidatePath("/admin/customers")
-    return { success: true, message: "Thêm khách hàng thành công (Mock)" }
+    return success(undefined, "Thêm khách hàng thành công (Mock)")
 }
 
-async function updateCustomer(prevState: ActionState, formData: FormData): Promise<ActionState> {
+async function updateCustomer(prevState: unknown, formData: FormData): Promise<ActionResponse> {
     const rawData = Object.fromEntries(formData.entries())
     const validated = customerUpdateSchema.safeParse(rawData)
 
      if (!validated.success) {
-        return {
-            success: false,
-            error: validated.error.issues[0].message
-        }
+        return error("Dữ liệu không hợp lệ", validated.error.flatten().fieldErrors)
     }
 
     await new Promise((resolve) => setTimeout(resolve, 800))
     revalidatePath("/admin/customers")
-    return { success: true, message: "Cập nhật khách hàng thành công (Mock)" }
+    return success(undefined, "Cập nhật khách hàng thành công (Mock)")
 }
 
-export async function deleteCustomer(id: string): Promise<ActionState> {
+export async function deleteCustomer(id: string): Promise<ActionResponse> {
     await new Promise((resolve) => setTimeout(resolve, 600))
     revalidatePath("/admin/customers")
-    return { success: true, message: `Đã xóa khách hàng ${id} (Mock)` }
+    return success(undefined, `Đã xóa khách hàng ${id} (Mock)`)
 }

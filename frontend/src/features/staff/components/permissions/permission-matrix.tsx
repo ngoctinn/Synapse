@@ -48,12 +48,12 @@ export function PermissionMatrix({ initialPermissions, className }: PermissionMa
   const handleSave = () => {
     startTransition(async () => {
       const result = await updatePermissions(permissions)
-      if (result.success) {
+      if (result.status === "success") {
         toast.success(result.message)
         setHasChanges(false)
         setChangeCount(0)
       } else {
-        toast.error(result.error)
+        toast.error(result.message || "Lỗi cập nhật phân quyền")
       }
     })
   }

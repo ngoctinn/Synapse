@@ -110,12 +110,13 @@ export function SkillTable({
         isLoading={isLoading}
         skeletonCount={5}
 
-        selectable
-        isSelected={selection.isSelected}
-        onToggleOne={selection.toggleOne}
-        onToggleAll={selection.toggleAll}
-        isAllSelected={selection.isAllSelected}
-        isPartiallySelected={selection.isPartiallySelected}
+        selection={{
+          isSelected: selection.isSelected,
+          onToggleOne: selection.toggleOne,
+          onToggleAll: selection.toggleAll,
+          isAllSelected: selection.isAllSelected,
+          isPartiallySelected: selection.isPartiallySelected,
+        }}
         emptyState={
           <DataTableEmptyState
             icon={Plus}

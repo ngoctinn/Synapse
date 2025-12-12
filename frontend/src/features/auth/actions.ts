@@ -1,5 +1,6 @@
 "use server";
 
+import { ActionResponse, error, success } from "@/shared/lib/action-response";
 import { createClient } from "@/shared/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
@@ -12,7 +13,7 @@ import { forgotPasswordSchema, loginSchema, registerSchema, updatePasswordSchema
  * @param prevState Trạng thái trước đó của form (từ useActionState)
  * @param formData Dữ liệu form gửi lên
  */
-export async function loginAction(prevState: unknown, formData: FormData) {
+export async function loginAction(prevState: unknown, formData: FormData): Promise<ActionResponse> {
   const rawData = {
     email: formData.get("email"),
     password: formData.get("password"),
@@ -22,32 +23,32 @@ export async function loginAction(prevState: unknown, formData: FormData) {
   const validatedFields = loginSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
-    return { success: false, message: validatedFields.error.issues[0].message };
+    return error("Dữ liệu không hợp lệ", validatedFields.error.flatten().fieldErrors);
   }
 
   const { email, password } = validatedFields.data;
   const supabase = await createClient();
 
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { error: authError } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
 
-  if (error) {
-    return { success: false, message: error.message };
+  if (authError) {
+    return error(authError.message);
   }
 
 
   revalidatePath("/", "layout");
-  return { success: true, message: "Đăng nhập thành công!" };
+  return success(undefined, "Đăng nhập thành công!");
 }
 
 /**
  * Xử lý đăng ký tài khoản mới
  * @param formData Dữ liệu form gửi lên
  */
-export async function registerAction(prevState: unknown, formData: FormData) {
+export async function registerAction(prevState: unknown, formData: FormData): Promise<ActionResponse> {
   const rawData = {
     email: formData.get("email"),
     password: formData.get("password"),
@@ -58,14 +59,14 @@ export async function registerAction(prevState: unknown, formData: FormData) {
   const validatedFields = registerSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
-    return { success: false, message: validatedFields.error.issues[0].message };
+    return error("Dữ liệu không hợp lệ", validatedFields.error.flatten().fieldErrors);
   }
 
   const { email, password, fullName } = validatedFields.data;
   const supabase = await createClient();
 
 
-  const { error } = await supabase.auth.signUp({
+  const { error: authError } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -76,13 +77,13 @@ export async function registerAction(prevState: unknown, formData: FormData) {
     },
   });
 
-  if (error) {
-    return { success: false, message: error.message };
+  if (authError) {
+    return error(authError.message);
   }
 
 
   revalidatePath("/", "layout");
-  return { success: true, message: "Đăng ký thành công! Vui lòng kiểm tra email để xác thực." };
+  return success(undefined, "Đăng ký thành công! Vui lòng kiểm tra email để xác thực.");
 }
 
 /**
@@ -100,7 +101,7 @@ export async function logoutAction() {
  * @param prevState Trạng thái trước đó
  * @param formData Dữ liệu form
  */
-export async function forgotPasswordAction(prevState: unknown, formData: FormData) {
+export async function forgotPasswordAction(prevState: unknown, formData: FormData): Promise<ActionResponse> {
   const rawData = {
     email: formData.get("email"),
   };
@@ -109,7 +110,7 @@ export async function forgotPasswordAction(prevState: unknown, formData: FormDat
   const validatedFields = forgotPasswordSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
-    return { success: false, message: validatedFields.error.issues[0].message };
+    return error("Dữ liệu không hợp lệ", validatedFields.error.flatten().fieldErrors);
   }
 
   const { email } = validatedFields.data;
@@ -120,22 +121,22 @@ export async function forgotPasswordAction(prevState: unknown, formData: FormDat
   const origin = headerStore.get('origin');
 
 
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+  const { error: authError } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${origin}/auth/callback?next=/reset-password`,
   });
 
-  if (error) {
-    return { success: false, message: error.message };
+  if (authError) {
+    return error(authError.message);
   }
 
-  return { success: true, message: "Đã gửi email khôi phục mật khẩu!" };
+  return success(undefined, "Đã gửi email khôi phục mật khẩu!");
 }
 
 /**
  * Xử lý cập nhật mật khẩu mới
  * @param formData Dữ liệu form
  */
-export async function updatePasswordAction(prevState: unknown, formData: FormData) {
+export async function updatePasswordAction(prevState: unknown, formData: FormData): Promise<ActionResponse> {
   const rawData = {
     password: formData.get("password"),
   };
@@ -144,21 +145,21 @@ export async function updatePasswordAction(prevState: unknown, formData: FormDat
   const validatedFields = updatePasswordSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
-    return { success: false, message: validatedFields.error.issues[0].message };
+    return error("Dữ liệu không hợp lệ", validatedFields.error.flatten().fieldErrors);
   }
 
   const { password } = validatedFields.data;
   const supabase = await createClient();
 
 
-  const { error } = await supabase.auth.updateUser({
+  const { error: authError } = await supabase.auth.updateUser({
     password: password,
   });
 
-  if (error) {
-    return { success: false, message: error.message };
+  if (authError) {
+    return error(authError.message);
   }
 
   revalidatePath("/", "layout");
-  return { success: true, message: "Cập nhật mật khẩu thành công!" };
+  return success(undefined, "Cập nhật mật khẩu thành công!");
 }

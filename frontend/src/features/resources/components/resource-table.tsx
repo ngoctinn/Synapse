@@ -56,7 +56,7 @@ export function ResourceTable({ data, groups, isLoading, className, variant = "d
         for (const id of ids) {
           try {
             const result = await deleteResource(id);
-            if (result.success) successCount++;
+            if (result.status === "success") successCount++;
           } catch (e) {
             console.error(`Failed to delete ${id}:`, e);
           }
@@ -191,12 +191,13 @@ export function ResourceTable({ data, groups, isLoading, className, variant = "d
         variant={variant}
 
         // Selection props
-        selectable
-        isSelected={selection.isSelected}
-        onToggleOne={selection.toggleOne}
-        onToggleAll={selection.toggleAll}
-        isAllSelected={selection.isAllSelected}
-        isPartiallySelected={selection.isPartiallySelected}
+        selection={{
+          isSelected: selection.isSelected,
+          onToggleOne: selection.toggleOne,
+          onToggleAll: selection.toggleAll,
+          isAllSelected: selection.isAllSelected,
+          isPartiallySelected: selection.isPartiallySelected,
+        }}
 
         // Row interaction
         onRowClick={(resource) => setEditResource(resource)}

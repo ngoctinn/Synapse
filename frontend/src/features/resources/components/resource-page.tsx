@@ -1,5 +1,6 @@
 "use client"
 
+import { ActionResponse } from "@/shared/lib/action-response"
 import { FilterBar } from "@/shared/ui/custom/filter-bar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 
@@ -12,20 +13,28 @@ import { ResourceTable, ResourceTableSkeleton } from "./resource-table"
 import { ResourceToolbar } from "./resource-toolbar"
 
 interface ResourcePageProps {
-  resourcesPromise: Promise<Resource[]>
-  groupsPromise: Promise<ResourceGroup[]>
-  tasksPromise: Promise<MaintenanceTask[]>
+  resourcesPromise: Promise<ActionResponse<Resource[]>>
+  groupsPromise: Promise<ActionResponse<ResourceGroup[]>>
+  tasksPromise: Promise<ActionResponse<MaintenanceTask[]>>
 }
 
 function ResourceListWrapper({
   resourcesPromise,
   groupsPromise,
 }: {
-  resourcesPromise: Promise<Resource[]>
-  groupsPromise: Promise<ResourceGroup[]>
+  resourcesPromise: Promise<ActionResponse<Resource[]>>
+  groupsPromise: Promise<ActionResponse<ResourceGroup[]>>
 }) {
-  const resources = use(resourcesPromise)
-  const groups = use(groupsPromise)
+  const resourcesRes = use(resourcesPromise)
+  const groupsRes = use(groupsPromise)
+  
+  const resources = resourcesRes.status === 'success' ? resourcesRes.data || [] : []
+  const groups = groupsRes.status === 'success' ? groupsRes.data || [] : []
+
+  if (resourcesRes.status === 'error') {
+      return <div className="p-4 text-destructive">Lỗi tải tài nguyên: {resourcesRes.message}</div>
+  }
+
   return (
     <ResourceTable
       data={resources}
@@ -36,8 +45,9 @@ function ResourceListWrapper({
   )
 }
 
-function AddResourceWrapper({ groupsPromise }: { groupsPromise: Promise<ResourceGroup[]> }) {
-  const groups = use(groupsPromise)
+function AddResourceWrapper({ groupsPromise }: { groupsPromise: Promise<ActionResponse<ResourceGroup[]>> }) {
+  const groupsRes = use(groupsPromise)
+  const groups = groupsRes.status === 'success' ? groupsRes.data || [] : []
   return <CreateResourceTrigger groups={groups} />
 }
 
@@ -45,11 +55,15 @@ function MaintenanceTimelineWrapper({
   resourcesPromise,
   tasksPromise,
 }: {
-  resourcesPromise: Promise<Resource[]>
-  tasksPromise: Promise<MaintenanceTask[]>
+  resourcesPromise: Promise<ActionResponse<Resource[]>>
+  tasksPromise: Promise<ActionResponse<MaintenanceTask[]>>
 }) {
-  const resources = use(resourcesPromise)
-  const tasks = use(tasksPromise)
+  const resourcesRes = use(resourcesPromise)
+  const tasksRes = use(tasksPromise)
+  
+  const resources = resourcesRes.status === 'success' ? resourcesRes.data || [] : []
+  const tasks = tasksRes.status === 'success' ? tasksRes.data || [] : []
+
   return <MaintenanceTimeline resources={resources} tasks={tasks} />
 }
 

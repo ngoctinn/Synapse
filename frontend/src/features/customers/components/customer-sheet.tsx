@@ -41,16 +41,10 @@ interface CustomerSheetProps {
   customer?: Customer
 }
 
-const initialState = {
-    success: false,
-    message: "",
-    error: "",
-}
-
-
+// Remove unused initialState object
 
 export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSheetProps) {
-  const [state, dispatch, isPending] = React.useActionState(manageCustomer, initialState)
+  const [state, dispatch, isPending] = React.useActionState(manageCustomer, undefined)
   const [technicians, setTechnicians] = React.useState<TechnicianOption[]>([])
 
   const schema = mode === "create" ? customerSchema : customerUpdateSchema
@@ -79,11 +73,11 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
   })
 
   React.useEffect(() => {
-    if (state.success && state.message) {
+    if (state?.status === "success" && state.message) {
       showToast.success(mode === "create" ? "Tạo thành công" : "Cập nhật thành công", state.message)
       onOpenChange(false)
-    } else if (state.error) {
-      showToast.error("Thất bại", state.error)
+    } else if (state?.status === "error") {
+      showToast.error("Thất bại", state.message)
     }
   }, [state, mode, onOpenChange])
 

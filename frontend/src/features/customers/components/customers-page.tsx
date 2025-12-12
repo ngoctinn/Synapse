@@ -1,5 +1,6 @@
 "use client"
 
+import { ActionResponse } from "@/shared/lib/action-response"
 import { FilterBar } from "@/shared/ui/custom/filter-bar"
 import { Input } from "@/shared/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
@@ -15,17 +16,23 @@ import { CustomerTable, CustomerTableSkeleton } from "./customer-list/customer-t
 
 interface CustomersPageProps {
   page: number
-  customerListPromise: Promise<CustomerListResponse>
+  customerListPromise: Promise<ActionResponse<CustomerListResponse>>
 }
 
 function CustomerListWrapper({
   customerListPromise,
   page,
 }: {
-  customerListPromise: Promise<CustomerListResponse>
+  customerListPromise: Promise<ActionResponse<CustomerListResponse>>
   page: number
 }) {
-  const { data, total } = use(customerListPromise)
+  const response = use(customerListPromise)
+  
+  if (response.status === "error") {
+    return <div className="p-4 text-center text-destructive">Lỗi tải dữ liệu: {response.message}</div>
+  }
+  
+  const { data, total } = response.data!
   const totalPages = Math.ceil(total / 10)
 
   return (
