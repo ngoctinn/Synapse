@@ -1,8 +1,14 @@
+"use client";
+
 import { Service } from "@/features/services/types";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import { Clock, Tag } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
+
+// Fallback image khi URL rỗng hoặc load thất bại
+const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=1000";
 
 interface ServiceCardProps {
   service: Service;
@@ -10,16 +16,27 @@ interface ServiceCardProps {
 }
 
 export function ServiceCard({ service, onBook }: ServiceCardProps) {
+  const [imgSrc, setImgSrc] = useState(service.image_url || FALLBACK_IMAGE);
+  const [hasError, setHasError] = useState(false);
+
+  const handleImageError = () => {
+    if (!hasError) {
+      setHasError(true);
+      setImgSrc(FALLBACK_IMAGE);
+    }
+  };
+
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-lg surface-card text-card-foreground hover:shadow-xl hover:ring-1 hover:ring-primary/50 transition-all duration-300 hover:-translate-y-1">
       {/* Image Container */}
       <div className="relative aspect-[4/3] w-full overflow-hidden">
         <Image
-          src={service.image_url || ""}
+          src={imgSrc}
           alt={service.name}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-110"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          onError={handleImageError}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80" />
 
@@ -83,3 +100,4 @@ export function ServiceCard({ service, onBook }: ServiceCardProps) {
     </div>
   );
 }
+

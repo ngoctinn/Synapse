@@ -47,11 +47,24 @@ interface BookingDialogProps {
   defaultStaffId?: string
 }
 
+// Default service khi không có service được truyền vào
+const DEFAULT_SERVICE: Service = {
+  id: "srv_default",
+  name: "Trị liệu da chuyên sâu",
+  duration: 60,
+  buffer_time: 15,
+  price: 500000,
+  color: "#3b82f6",
+  is_active: true,
+  skills: [],
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+}
+
 export function BookingDialog({
   open,
   onOpenChange,
-  // @ts-expect-error - Mock default service
-  service = { id: "srv1", name: "Trị liệu da chuyên sâu", duration: 60, price: 500000 },
+  service = DEFAULT_SERVICE,
   defaultStaffId,
 }: BookingDialogProps) {
   // State

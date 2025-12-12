@@ -10,29 +10,29 @@
  */
 
 import {
-  type ActionResponse,
-  error as createErrorResponse,
-  success as createSuccessResponse,
+    type ActionResponse,
+    error as createErrorResponse,
+    success as createSuccessResponse,
 } from "@/shared/lib/action-response";
 import { isWithinInterval } from "date-fns";
 import type { MockCustomer, MockService } from "./mock-data";
 import {
-  appointmentsToCalendarEvents,
-  getMockMetrics,
-  MOCK_APPOINTMENTS,
-  MOCK_CUSTOMERS,
-  MOCK_RESOURCES,
-  MOCK_SERVICES,
-  MOCK_STAFF
+    appointmentsToCalendarEvents,
+    getMockMetrics,
+    MOCK_APPOINTMENTS,
+    MOCK_CUSTOMERS,
+    MOCK_RESOURCES,
+    MOCK_SERVICES,
+    MOCK_STAFF
 } from "./mock-data";
 import type {
-  Appointment,
-  AppointmentFilters,
-  AppointmentMetrics,
-  CalendarEvent,
-  ConflictInfo,
-  DateRange,
-  TimelineResource,
+    Appointment,
+    AppointmentFilters,
+    AppointmentMetrics,
+    CalendarEvent,
+    ConflictInfo,
+    DateRange,
+    TimelineResource,
 } from "./types";
 
 // ============================================
@@ -359,6 +359,113 @@ export async function deleteAppointment(
   } catch (error) {
     console.error("deleteAppointment error:", error);
     return createErrorResponse("Không thể xóa lịch hẹn");
+  }
+}
+
+/**
+ * Check-in khách hàng
+ * Cập nhật trạng thái từ "confirmed" → "in_progress"
+ */
+export async function checkInAppointment(
+  id: string
+): Promise<ActionResponse<Appointment>> {
+  try {
+    await simulateDelay();
+
+    const existing = MOCK_APPOINTMENTS.find((apt) => apt.id === id);
+
+    if (!existing) {
+      return createErrorResponse("Không tìm thấy lịch hẹn");
+    }
+
+    if (existing.status !== "confirmed") {
+      return createErrorResponse("Chỉ có thể check-in lịch hẹn đã xác nhận");
+    }
+
+    const updated: Appointment = {
+      ...existing,
+      status: "in_progress",
+      updatedAt: new Date(),
+    };
+
+    // NOTE: Trong thực tế, sẽ update database ở đây
+
+    return createSuccessResponse(updated, "Check-in thành công");
+  } catch (error) {
+    console.error("checkInAppointment error:", error);
+    return createErrorResponse("Không thể check-in");
+  }
+}
+
+/**
+ * Đánh dấu khách không đến (No-Show)
+ * Cập nhật trạng thái từ "confirmed" → "no_show"
+ */
+export async function markNoShow(
+  id: string
+): Promise<ActionResponse<Appointment>> {
+  try {
+    await simulateDelay();
+
+    const existing = MOCK_APPOINTMENTS.find((apt) => apt.id === id);
+
+    if (!existing) {
+      return createErrorResponse("Không tìm thấy lịch hẹn");
+    }
+
+    if (existing.status !== "confirmed") {
+      return createErrorResponse("Chỉ có thể đánh dấu no-show cho lịch hẹn đã xác nhận");
+    }
+
+    const updated: Appointment = {
+      ...existing,
+      status: "no_show",
+      updatedAt: new Date(),
+    };
+
+    // NOTE: Trong thực tế, sẽ update database ở đây
+
+    return createSuccessResponse(updated, "Đã đánh dấu khách không đến");
+  } catch (error) {
+    console.error("markNoShow error:", error);
+    return createErrorResponse("Không thể đánh dấu no-show");
+  }
+}
+
+/**
+ * Hủy lịch hẹn
+ * Cập nhật trạng thái → "cancelled"
+ */
+export async function cancelAppointment(
+  id: string,
+  reason?: string
+): Promise<ActionResponse<Appointment>> {
+  try {
+    await simulateDelay();
+
+    const existing = MOCK_APPOINTMENTS.find((apt) => apt.id === id);
+
+    if (!existing) {
+      return createErrorResponse("Không tìm thấy lịch hẹn");
+    }
+
+    if (existing.status === "cancelled" || existing.status === "completed") {
+      return createErrorResponse("Không thể hủy lịch hẹn này");
+    }
+
+    const updated: Appointment = {
+      ...existing,
+      status: "cancelled",
+      notes: reason ? `${existing.notes || ""}\n[Lý do hủy]: ${reason}`.trim() : existing.notes,
+      updatedAt: new Date(),
+    };
+
+    // NOTE: Trong thực tế, sẽ update database ở đây
+
+    return createSuccessResponse(updated, "Đã hủy lịch hẹn");
+  } catch (error) {
+    console.error("cancelAppointment error:", error);
+    return createErrorResponse("Không thể hủy lịch hẹn");
   }
 }
 

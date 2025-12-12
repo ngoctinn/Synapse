@@ -4,35 +4,36 @@
  * EventPopover - Popover hiển thị thông tin nhanh khi hover/click event
  *
  * Quick info: Khách, SĐT, Dịch vụ, KTV
- * Quick actions: Xem, Sửa, Check-in, Hủy
+ * Quick actions: Xem, Sửa, Check-in, No-Show, Hủy
  */
 
-import { format } from "date-fns";
+import { differenceInMinutes, format } from "date-fns";
 import { vi } from "date-fns/locale";
 import {
-  Calendar,
-  CheckCircle2,
-  Clock,
-  Edit,
-  MoreHorizontal,
-  Phone,
-  Trash2,
-  User,
-  XCircle,
+    Calendar,
+    CheckCircle2,
+    Clock,
+    Edit,
+    MoreHorizontal,
+    Phone,
+    Trash2,
+    User,
+    UserX,
+    XCircle,
 } from "lucide-react";
 
 import { cn } from "@/shared/lib/utils";
 import {
-  Button,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  Separator,
+    Button,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+    Separator,
 } from "@/shared/ui";
 
 import { APPOINTMENT_STATUS_CONFIG } from "../../constants";
@@ -51,6 +52,8 @@ interface EventPopoverProps {
   onEdit?: () => void;
   /** Callback check-in */
   onCheckIn?: () => void;
+  /** Callback đánh dấu No-Show */
+  onNoShow?: () => void;
   /** Callback hủy */
   onCancel?: () => void;
   /** Callback xóa */
@@ -71,6 +74,7 @@ export function EventPopover({
   onView,
   onEdit,
   onCheckIn,
+  onNoShow,
   onCancel,
   onDelete,
   open,
@@ -80,7 +84,22 @@ export function EventPopover({
   const timeRange = `${format(event.start, "HH:mm")} - ${format(event.end, "HH:mm")}`;
   const dateStr = format(event.start, "EEEE, d MMMM yyyy", { locale: vi });
 
-  const canCheckIn = event.status === "confirmed";
+  const now = new Date();
+  const minutesUntilStart = differenceInMinutes(event.start, now);
+  const minutesSinceStart = differenceInMinutes(now, event.start);
+
+  // Check-in: Khách có thể check-in từ 15 phút trước đến 30 phút sau giờ hẹn
+  const canCheckIn =
+    event.status === "confirmed" &&
+    minutesUntilStart <= 15 &&
+    minutesSinceStart <= 30;
+
+  // No-Show: Nếu đã quá 15 phút sau giờ hẹn mà vẫn chưa check-in
+  const canMarkNoShow =
+    event.status === "confirmed" &&
+    minutesSinceStart > 15;
+
+  // Cancel: Chỉ có thể hủy pending hoặc confirmed
   const canCancel = event.status === "pending" || event.status === "confirmed";
 
   return (
@@ -140,9 +159,15 @@ export function EventPopover({
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 {canCheckIn && (
-                  <DropdownMenuItem onClick={onCheckIn}>
-                    <CheckCircle2 className="h-4 w-4 mr-2 text-green-600" />
-                    Check-in
+                  <DropdownMenuItem onClick={onCheckIn} className="text-emerald-600">
+                    <CheckCircle2 className="h-4 w-4 mr-2" />
+                    Check-in khách
+                  </DropdownMenuItem>
+                )}
+                {canMarkNoShow && (
+                  <DropdownMenuItem onClick={onNoShow} className="text-gray-600">
+                    <UserX className="h-4 w-4 mr-2" />
+                    Đánh dấu không đến
                   </DropdownMenuItem>
                 )}
                 {canCancel && (
@@ -211,19 +236,63 @@ export function EventPopover({
 
         {/* Footer Actions */}
         <div className="p-3 flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex-1"
-            onClick={onView}
-          >
-            Xem chi tiết
-          </Button>
-          <Button size="sm" className="flex-1" onClick={onEdit}>
-            Chỉnh sửa
-          </Button>
+          {canCheckIn ? (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1"
+                onClick={onView}
+              >
+                Xem chi tiết
+              </Button>
+              <Button
+                size="sm"
+                className="flex-1 bg-emerald-600 hover:bg-emerald-700"
+                onClick={onCheckIn}
+              >
+                <CheckCircle2 className="h-4 w-4 mr-1.5" />
+                Check-in
+              </Button>
+            </>
+          ) : canMarkNoShow ? (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1"
+                onClick={onView}
+              >
+                Xem chi tiết
+              </Button>
+              <Button
+                size="sm"
+                variant="secondary"
+                className="flex-1"
+                onClick={onNoShow}
+              >
+                <UserX className="h-4 w-4 mr-1.5" />
+                Không đến
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1"
+                onClick={onView}
+              >
+                Xem chi tiết
+              </Button>
+              <Button size="sm" className="flex-1" onClick={onEdit}>
+                Chỉnh sửa
+              </Button>
+            </>
+          )}
         </div>
       </PopoverContent>
     </Popover>
   );
 }
+

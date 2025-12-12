@@ -6,8 +6,9 @@ import { Input } from "@/shared/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 
 import { Search } from "lucide-react"
-import { useSearchParams } from "next/navigation"
-import { Suspense, use, useState } from "react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { Suspense, use, useState, useTransition } from "react"
+import { useDebouncedCallback } from "use-debounce"
 import { Service, Skill } from "../types"
 import { CreateServiceWizard } from "./create-service-wizard"
 import { CreateSkillDialog } from "./create-skill-dialog"
@@ -61,10 +62,30 @@ const Footer = () => (
   )
 
 export function ServicesPage({ page, skills, roomTypes, equipmentList, servicesPromise }: ServicesPageProps) {
+  const router = useRouter()
+  const pathname = usePathname()
   const searchParams = useSearchParams()
+  const [, startTransition] = useTransition()
   const [activeTab, setActiveTab] = useState("list")
 
+  // Get initial search query from URL
+  const initialSearch = searchParams.get("search")?.toString() || ""
 
+  // Debounced search handler - syncs with URL params
+  const handleSearch = useDebouncedCallback((term: string) => {
+    const params = new URLSearchParams(searchParams)
+    if (term) {
+      params.set("search", term)
+    } else {
+      params.delete("search")
+    }
+    // Reset page to 1 when searching
+    params.set("page", "1")
+
+    startTransition(() => {
+      router.replace(`${pathname}?${params.toString()}`)
+    })
+  }, 300)
 
   const isServiceTab = activeTab === "list"
 
@@ -93,8 +114,10 @@ export function ServicesPage({ page, skills, roomTypes, equipmentList, servicesP
                 startContent={
                   <Input
                     placeholder={isServiceTab ? "Tìm kiếm dịch vụ..." : "Tìm kiếm kỹ năng..."}
+                    defaultValue={initialSearch}
+                    onChange={(e) => handleSearch(e.target.value)}
                     startContent={<Search className="size-4 text-muted-foreground" />}
-                    className="h-9 bg-background pr-8"
+                    className="h-9 bg-background w-full md:w-[250px]"
                   />
                 }
                 endContent={isServiceTab && <ServiceFilter availableSkills={skills} />}

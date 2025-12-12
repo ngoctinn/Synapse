@@ -136,7 +136,9 @@ export {
 // ============================================
 
 export {
+  cancelAppointment,
   checkConflicts,
+  checkInAppointment,
   createAppointment,
   deleteAppointment,
   getAppointmentById,
@@ -145,6 +147,7 @@ export {
   getResourceList,
   getServiceList,
   getStaffList,
+  markNoShow,
   searchCustomers,
   updateAppointment,
   updateAppointmentTime

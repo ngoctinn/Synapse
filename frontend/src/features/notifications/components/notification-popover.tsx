@@ -58,7 +58,7 @@ export function NotificationPopover({ children }: NotificationPopoverProps) {
              <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-slate-500 hover:text-blue-600"
+              className="h-8 w-8 text-muted-foreground hover:text-primary"
               title="Đánh dấu tất cả đã đọc"
               onClick={handleMarkAllRead}
             >
@@ -67,7 +67,7 @@ export function NotificationPopover({ children }: NotificationPopoverProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-slate-500 hover:text-slate-900"
+              className="h-8 w-8 text-muted-foreground hover:text-foreground"
               title="Cài đặt thông báo"
             >
               <Settings className="w-4 h-4" />

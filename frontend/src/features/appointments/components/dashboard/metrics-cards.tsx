@@ -13,7 +13,7 @@ import {
     TrendingUp,
     Users,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/shared/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui";
@@ -48,16 +48,12 @@ interface MetricCardData {
 
 function useAnimatedNumber(targetValue: number, duration: number = 500): number {
   const [displayValue, setDisplayValue] = useState(0);
+  const startValueRef = useRef(0);
 
   useEffect(() => {
-    if (targetValue === 0) {
-      setDisplayValue(0);
-      return;
-    }
-
     let startTime: number;
     let animationFrame: number;
-    const startValue = displayValue;
+    const startValue = startValueRef.current;
 
     const animate = (currentTime: number) => {
       if (!startTime) startTime = currentTime;
@@ -69,6 +65,7 @@ function useAnimatedNumber(targetValue: number, duration: number = 500): number 
       const currentValue = Math.round(startValue + (targetValue - startValue) * easeOut);
 
       setDisplayValue(currentValue);
+      startValueRef.current = currentValue; // Update ref to current value
 
       if (progress < 1) {
         animationFrame = requestAnimationFrame(animate);

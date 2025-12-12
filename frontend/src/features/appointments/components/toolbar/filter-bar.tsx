@@ -52,6 +52,7 @@ export function FilterBar({
   className,
 }: FilterBarProps) {
   const [staffOpen, setStaffOpen] = useState(false);
+  const [serviceOpen, setServiceOpen] = useState(false);
   const [statusOpen, setStatusOpen] = useState(false);
 
   // Status options
@@ -77,6 +78,13 @@ export function FilterBar({
       ? filters.staffIds.filter((id) => id !== staffId)
       : [...filters.staffIds, staffId];
     onFiltersChange({ ...filters, staffIds: newStaffIds });
+  };
+
+  const handleServiceToggle = (serviceId: string) => {
+    const newServiceIds = filters.serviceIds.includes(serviceId)
+      ? filters.serviceIds.filter((id) => id !== serviceId)
+      : [...filters.serviceIds, serviceId];
+    onFiltersChange({ ...filters, serviceIds: newServiceIds });
   };
 
   const handleStatusToggle = (status: AppointmentStatus) => {
@@ -106,6 +114,12 @@ export function FilterBar({
         onFiltersChange({
           ...filters,
           staffIds: filters.staffIds.filter((id) => id !== value),
+        });
+        break;
+      case "service":
+        onFiltersChange({
+          ...filters,
+          serviceIds: filters.serviceIds.filter((id) => id !== value),
         });
         break;
       case "status":
@@ -177,6 +191,56 @@ export function FilterBar({
                         )}
                       />
                       {staff.name}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+
+        {/* Service Filter */}
+        <Popover open={serviceOpen} onOpenChange={setServiceOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className={cn(
+                "h-9",
+                filters.serviceIds.length > 0 && "border-primary"
+              )}
+            >
+              <Filter className="h-4 w-4 mr-2" />
+              Dịch vụ
+              {filters.serviceIds.length > 0 && (
+                <Badge variant="secondary" className="ml-2 h-5 px-1.5">
+                  {filters.serviceIds.length}
+                </Badge>
+              )}
+              <ChevronsUpDown className="h-4 w-4 ml-2 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[200px] p-0" align="start">
+            <Command>
+              <CommandInput placeholder="Tìm dịch vụ..." />
+              <CommandList>
+                <CommandEmpty>Không tìm thấy</CommandEmpty>
+                <CommandGroup>
+                  {serviceOptions.map((service) => (
+                    <CommandItem
+                      key={service.id}
+                      value={service.id}
+                      onSelect={() => handleServiceToggle(service.id)}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          filters.serviceIds.includes(service.id)
+                            ? "opacity-100"
+                            : "opacity-0"
+                        )}
+                      />
+                      {service.name}
                     </CommandItem>
                   ))}
                 </CommandGroup>
@@ -278,6 +342,26 @@ export function FilterBar({
             );
           })}
 
+          {/* Service chips */}
+          {filters.serviceIds.map((serviceId) => {
+            const service = serviceOptions.find((s) => s.id === serviceId);
+            return (
+              <Badge
+                key={`service-${serviceId}`}
+                variant="secondary"
+                className="gap-1 pr-1"
+              >
+                {service?.name || serviceId}
+                <button
+                  className="ml-1 rounded-full hover:bg-muted p-0.5"
+                  onClick={() => handleRemoveFilter("service", serviceId)}
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </Badge>
+            );
+          })}
+
           {/* Status chips */}
           {filters.statuses.map((status) => {
             const config = APPOINTMENT_STATUS_CONFIG[status];
@@ -301,7 +385,7 @@ export function FilterBar({
           {/* Search chip */}
           {filters.searchQuery && (
             <Badge variant="secondary" className="gap-1 pr-1">
-              "{filters.searchQuery}"
+              &quot;{filters.searchQuery}&quot;
               <button
                 className="ml-1 rounded-full hover:bg-muted p-0.5"
                 onClick={() => handleRemoveFilter("search", "")}
