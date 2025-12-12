@@ -6,6 +6,7 @@ import { DatePicker } from "@/shared/ui/custom/date-picker"
 import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -232,10 +233,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
         name="color_code"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center justify-between">
-              <span>Màu hiển thị (Lịch)</span>
-              <span className="text-xs text-muted-foreground font-normal">Được dùng để định danh trên lịch hẹn</span>
-            </FormLabel>
+            <FormLabel>Màu hiển thị (Lịch)</FormLabel>
             <div className="flex flex-wrap gap-3 p-3 border rounded-lg bg-background/50">
               {COLOR_PRESETS.map((color) => (
                 <button
@@ -260,6 +258,9 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                 </button>
               ))}
             </div>
+            <FormDescription>
+              Được dùng để định danh trên lịch hẹn
+            </FormDescription>
             <FormMessage />
           </FormItem>
         )}

@@ -9,7 +9,7 @@ const inputVariants = cva(
     variants: {
       variant: {
         default:
-          "border-input shadow-xs hover:border-input hover:shadow-md focus-premium dark:bg-input/30",
+          "border-input bg-background shadow-xs hover:border-input hover:shadow-md focus-premium dark:bg-input/30",
         glass:
           "bg-background/60 backdrop-blur-xl border-white/10 shadow-none focus-premium",
         flat: "bg-secondary/50 border-transparent shadow-none hover:bg-secondary/80 focus-premium focus-visible:bg-background",

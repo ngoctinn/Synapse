@@ -62,7 +62,7 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
                     autoFocus={mode === "create"}
                     disabled={disabled}
                     {...field}
-                    className="h-10 bg-background font-medium"
+                    className="font-medium"
                 />
                 </FormControl>
                 <FormMessage />
@@ -83,7 +83,6 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
                     placeholder="Nguyễn Văn A"
                     disabled={disabled}
                     {...field}
-                    className="bg-background h-10"
                     />
                 </FormControl>
                 <FormMessage />
@@ -104,7 +103,7 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
                     defaultValue={field.value}
                     disabled={disabled}
                   >
-                    <SelectTrigger className="bg-background h-10 w-full">
+                    <SelectTrigger>
                       <SelectValue placeholder="Chọn giới tính" />
                     </SelectTrigger>
                     <SelectContent>
@@ -162,7 +161,6 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
                     placeholder="email@example.com"
                     disabled={disabled}
                     {...field}
-                    className="bg-background h-10"
                 />
                 </FormControl>
                 <FormMessage />
@@ -181,7 +179,6 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
                     placeholder="Số nhà, đường..."
                     disabled={disabled}
                     {...field}
-                    className="bg-background h-10"
                 />
                 </FormControl>
                 <FormMessage />
@@ -255,7 +252,7 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
                     defaultValue={field.value || "SILVER"}
                     disabled={disabled || mode === "create"}
                   >
-                    <SelectTrigger className="bg-background h-10 w-full">
+                    <SelectTrigger>
                       <SelectValue placeholder="Chọn hạng thẻ" />
                     </SelectTrigger>
                     <SelectContent>
@@ -283,7 +280,6 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
                         placeholder="0"
                         disabled={disabled}
                         {...field}
-                        className="bg-background h-10"
                         />
                     </FormControl>
                     <FormMessage />
@@ -303,7 +299,7 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
                     defaultValue={field.value || undefined}
                     disabled={disabled}
                   >
-                    <SelectTrigger className="bg-background h-10 w-full">
+                    <SelectTrigger>
                       <SelectValue placeholder="Chọn nhân viên yêu thích" />
                     </SelectTrigger>
                     <SelectContent>

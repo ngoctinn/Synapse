@@ -13,26 +13,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { vi } from "date-fns/locale";
-import {
-  CalendarIcon,
-  Check,
-  ChevronsUpDown,
-  Loader2,
-} from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
-import { cn } from "@/shared/lib/utils";
 import {
-  Button,
-  Calendar,
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
   Form,
   FormControl,
   FormDescription,
@@ -40,16 +24,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Textarea,
+  Textarea
 } from "@/shared/ui";
+import { Combobox } from "@/shared/ui/custom/combobox";
+import { DatePicker } from "@/shared/ui/custom/date-picker";
 
 import {
   searchCustomers,
@@ -140,13 +123,18 @@ export function AppointmentForm({
   });
 
   // Search customers
-  useEffect(() => {
+  // Search customers with debounce
+  // Using simplified logic with Combobox
+  const handleCustomerSearch = (term: string) => {
+      setCustomerSearch(term);
+  }
+
+  // Fetch customers effect (debounced)
+   useEffect(() => {
     if (customerSearch.length < 2) {
-      if (customerOptions.length > 0) setCustomerOptions([]);
       return;
     }
-
-    const searchTimeout = setTimeout(async () => {
+    const timer = setTimeout(async () => {
       setIsSearching(true);
       const result = await searchCustomers(customerSearch);
       if (result.data) {
@@ -154,8 +142,7 @@ export function AppointmentForm({
       }
       setIsSearching(false);
     }, 300);
-
-    return () => clearTimeout(searchTimeout);
+    return () => clearTimeout(timer);
   }, [customerSearch]);
 
   // Calculate end time based on services
@@ -228,80 +215,24 @@ export function AppointmentForm({
               control={form.control}
               name="customerId"
               render={({ field }) => (
-                <FormItem className="flex flex-col">
+                <FormItem>
                   <FormLabel>Khách hàng <span className="text-destructive">*</span></FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          className={cn(
-                            "justify-between h-10 bg-background",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value
-                            ? customerOptions.find((c) => c.id === field.value)
-                                ?.name ||
-                              appointment?.customerName ||
-                              "Đã chọn"
-                            : "Tìm kiếm khách hàng..."}
-                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-full p-0" align="start">
-                      <Command shouldFilter={false}>
-                        <CommandInput
-                          placeholder="Nhập tên hoặc SĐT..."
-                          value={customerSearch}
-                          onValueChange={setCustomerSearch}
-                        />
-                        <CommandList>
-                          {isSearching ? (
-                            <div className="py-6 text-center text-sm text-muted-foreground">
-                              <Loader2 className="h-4 w-4 animate-spin mx-auto mb-2" />
-                              Đang tìm kiếm...
-                            </div>
-                          ) : customerOptions.length === 0 ? (
-                            <CommandEmpty>
-                              {customerSearch.length < 2
-                                ? "Nhập ít nhất 2 ký tự để tìm"
-                                : "Không tìm thấy khách hàng"}
-                            </CommandEmpty>
-                          ) : (
-                            <CommandGroup>
-                              {customerOptions.map((customer) => (
-                                <CommandItem
-                                  key={customer.id}
-                                  value={customer.id}
-                                  onSelect={() => {
-                                    field.onChange(customer.id);
-                                  }}
-                                >
-                                  <Check
-                                    className={cn(
-                                      "mr-2 h-4 w-4",
-                                      field.value === customer.id
-                                        ? "opacity-100"
-                                        : "opacity-0"
-                                    )}
-                                  />
-                                  <div>
-                                    <div className="font-medium">{customer.name}</div>
-                                    <div className="text-xs text-muted-foreground">
-                                      {customer.phone}
-                                    </div>
-                                  </div>
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          )}
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
+                   <FormControl>
+                      <Combobox
+                        options={customerOptions.map(c => ({
+                            value: c.id,
+                            label: c.name,
+                            description: c.phone
+                        }))}
+                        value={field.value}
+                        onChange={field.onChange}
+                        onSearch={handleCustomerSearch}
+                        placeholder={appointment?.customerName || "Tìm khách hàng..."}
+                        searchPlaceholder="Nhập tên hoặc SĐT..."
+                        emptyMessage={customerSearch.length < 2 ? "Nhập 2 ký tự để tìm..." : "Không tìm thấy khách hàng"}
+                        isLoading={isSearching}
+                      />
+                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -319,7 +250,7 @@ export function AppointmentForm({
                     onValueChange={(value) => field.onChange([value])}
                   >
                     <FormControl>
-                      <SelectTrigger className="h-10 bg-background">
+                      <SelectTrigger>
                         <SelectValue placeholder="Chọn dịch vụ" />
                       </SelectTrigger>
                     </FormControl>
@@ -353,7 +284,7 @@ export function AppointmentForm({
                   <FormLabel>Kỹ thuật viên <span className="text-destructive">*</span></FormLabel>
                   <Select value={field.value} onValueChange={field.onChange}>
                     <FormControl>
-                      <SelectTrigger className="h-10 bg-background">
+                      <SelectTrigger>
                         <SelectValue placeholder="Chọn kỹ thuật viên" />
                       </SelectTrigger>
                     </FormControl>
@@ -376,41 +307,21 @@ export function AppointmentForm({
               )}
             />
 
-            {/* DATE & TIME FIELDS */}
             <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="date"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
+               <FormField
+                  control={form.control}
+                  name="date"
+                  render={({ field }) => (
+                  <FormItem>
                     <FormLabel>Ngày <span className="text-destructive">*</span></FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
                         <FormControl>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "pl-3 text-left font-normal h-10 bg-background",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value
-                              ? format(field.value, "dd/MM/yyyy", { locale: vi })
-                              : "Chọn ngày"}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
+                            <DatePicker
+                                value={field.value}
+                                onChange={field.onChange}
+                                placeholder="Chọn ngày"
+                                minDate={new Date()}
+                            />
                         </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date: Date) => date < new Date()}
-                          locale={vi}
-                        />
-                      </PopoverContent>
-                    </Popover>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -424,7 +335,7 @@ export function AppointmentForm({
                     <FormLabel>Giờ bắt đầu <span className="text-destructive">*</span></FormLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
-                        <SelectTrigger className="h-10 bg-background">
+                        <SelectTrigger>
                           <SelectValue placeholder="Chọn giờ" />
                         </SelectTrigger>
                       </FormControl>
@@ -454,7 +365,7 @@ export function AppointmentForm({
                     onValueChange={(value) => field.onChange(value || undefined)}
                   >
                     <FormControl>
-                      <SelectTrigger className="h-10 bg-background">
+                      <SelectTrigger>
                         <SelectValue placeholder="Chọn phòng (không bắt buộc)" />
                       </SelectTrigger>
                     </FormControl>
@@ -481,7 +392,7 @@ export function AppointmentForm({
                   <FormControl>
                     <Textarea
                       placeholder="Ghi chú cho lịch hẹn..."
-                      className="resize-none bg-background min-h-[80px]"
+                      className="resize-none min-h-[80px]"
                       rows={3}
                       {...field}
                     />

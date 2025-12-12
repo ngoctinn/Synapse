@@ -347,7 +347,7 @@ export function AppointmentsPage({
       <PageHeader className="h-auto py-2">
           {/* Title + Inline Metrics */}
           <div className="flex items-center gap-6">
-            <h1 className="text-lg font-semibold tracking-tight">
+            <h1 className="text-xl font-bold tracking-tight">
               Lịch hẹn
             </h1>
 
@@ -380,7 +380,6 @@ export function AppointmentsPage({
           {/* Actions */}
           <div className="flex items-center gap-2">
             <Button
-              className="gap-2 shadow-sm h-8"
               size="sm"
               onClick={() => setShowWalkInDialog(true)}
               variant="outline"
@@ -389,7 +388,6 @@ export function AppointmentsPage({
               <span className="hidden sm:inline">Tạo nhanh</span>
             </Button>
             <Button
-              className="gap-2 shadow-sm h-8"
               size="sm"
               onClick={handleCreateClick}
             >
@@ -431,7 +429,7 @@ export function AppointmentsPage({
                 {/* Filter Button */}
                 <Tooltip>
                 <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" className="h-8 w-8">
+                    <Button variant="outline" size="icon">
                     <Filter className="h-4 w-4" />
                     <span className="sr-only">Bộ lọc</span>
                     </Button>
@@ -445,7 +443,6 @@ export function AppointmentsPage({
                     <Button
                     variant="outline"
                     size="icon"
-                    className="h-8 w-8"
                     onClick={handleRefresh}
                     disabled={isPending}
                     >
@@ -459,7 +456,7 @@ export function AppointmentsPage({
                 {/* Settings Button */}
                 <Tooltip>
                 <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" className="h-8 w-8">
+                    <Button variant="outline" size="icon">
                     <Settings2 className="h-4 w-4" />
                     <span className="sr-only">Cài đặt</span>
                     </Button>

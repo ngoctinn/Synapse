@@ -92,7 +92,6 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                     <Input
                         placeholder="Ví dụ: Phòng VIP 1"
                         {...field}
-                        className="bg-background"
                     />
                     </FormControl>
                     <FormMessage />
@@ -111,7 +110,6 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                         <Input
                             placeholder="Ví dụ: R-VIP-01"
                             {...field}
-                            className="bg-background"
                         />
                         </FormControl>
                         <FormMessage />
@@ -135,9 +133,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                             disabled={mode === "update"}
                         >
                             <FormControl>
-                                <SelectTrigger
-                                    className="bg-background w-full"
-                                >
+                                <SelectTrigger>
                                     <SelectValue placeholder="Chọn phân loại" />
                                 </SelectTrigger>
                             </FormControl>
@@ -164,7 +160,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                     <FormControl>
                         <Textarea
                         placeholder="Mô tả về đặc điểm, vị trí hoặc công dụng..."
-                        className="min-h-[100px] resize-none bg-background"
+                        className="min-h-[100px] resize-none"
                         {...field}
                         />
                     </FormControl>
@@ -193,9 +189,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                         defaultValue={field.value}
                     >
                          <FormControl>
-                            <SelectTrigger
-                                className="bg-background w-full"
-                            >
+                            <SelectTrigger>
                                 <SelectValue placeholder="Chọn trạng thái" />
                             </SelectTrigger>
                         </FormControl>
@@ -220,7 +214,6 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                     <Input
                         placeholder="0"
                         {...field}
-                         className="bg-background"
                     />
                     </FormControl>
                     <FormMessage />
@@ -242,7 +235,6 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                             min={1}
                             placeholder="1"
                             {...field}
-                             className="bg-background"
                         />
                         </FormControl>
                         <FormMessage />

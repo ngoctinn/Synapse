@@ -66,9 +66,8 @@ export function ReviewsAdminPage() {
                 <Input
                     id="search"
                     placeholder="Tìm kiếm đánh giá..."
-                    value={filters.search}
                     onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))}
-                    className="h-9 w-full bg-background"
+                    size="sm"
                 />
             </div>
           }
@@ -78,7 +77,7 @@ export function ReviewsAdminPage() {
                     value={filters.rating?.[0]?.toString() || ""}
                     onValueChange={handleRatingChange}
                 >
-                    <SelectTrigger className="h-9 w-[150px] bg-background">
+                    <SelectTrigger size="sm" className="w-[150px]">
                     <SelectValue placeholder="Tất cả sao" />
                     </SelectTrigger>
                     <SelectContent>
@@ -92,7 +91,7 @@ export function ReviewsAdminPage() {
                 </Select>
 
                 {(filters.search || (filters.rating?.length ?? 0) > 0) && (
-                <Button variant="outline" size="sm" onClick={handleClearFilters} className="h-9 gap-2">
+                <Button variant="outline" size="sm" onClick={handleClearFilters}>
                     <XCircle className="h-3.5 w-3.5" />
                     Xóa
                 </Button>
