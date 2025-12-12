@@ -1,13 +1,3 @@
-"use client";
-
-/**
- * AppointmentSheet - Slide-over panel cho View/Edit lịch hẹn
- *
- * - View mode: Hiển thị chi tiết đầy đủ
- * - Edit mode: Form chỉnh sửa
- * - Tích hợp conflict warning
- */
-
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import {
@@ -21,7 +11,7 @@ import {
     User,
     XCircle
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react"; // Import useEffect
 
 import { cn } from "@/shared/lib/utils";
 import {
@@ -41,6 +31,7 @@ import { APPOINTMENT_STATUS_CONFIG } from "../../constants";
 import type { Appointment, CalendarEvent, TimelineResource } from "../../types";
 import { MockService } from "../../mock-data";
 import { AppointmentForm } from "./appointment-form";
+import { ReviewPrompt } from "@/features/reviews/components/review-prompt"; // Import ReviewPrompt
 
 // ============================================
 // TYPES
@@ -67,6 +58,8 @@ interface AppointmentSheetProps {
   onCancel?: (id: string) => void;
   /** Callback tạo hóa đơn */
   onCreateInvoice?: (id: string) => void;
+  /** Callback khi cần đánh giá */
+  onReviewNeeded?: (bookingId: string) => void;
   /** Default values cho create mode */
   defaultValues?: {
     date?: Date;
@@ -92,22 +85,38 @@ export function AppointmentSheet({
   onCheckIn,
   onCancel,
   onCreateInvoice,
+  onReviewNeeded,
   defaultValues,
   availableStaff,
   availableResources,
   availableServices,
 }: AppointmentSheetProps) {
   const [mode, setMode] = useState<SheetMode>(initialMode);
+  const [reviewPromptOpen, setReviewPromptOpen] = useState(false);
 
   const appointment = event?.appointment;
   const statusConfig = appointment
     ? APPOINTMENT_STATUS_CONFIG[appointment.status]
     : null;
 
+  // Effect to trigger review prompt if needed
+  useEffect(() => {
+    if (open && isViewMode && appointment?.status === "completed") {
+      // In a real app, you'd check if an invoice is paid and if a review already exists
+      // For mock, we just assume it might be needed for completed appointments
+      // And let the parent decide when to actually trigger `onReviewNeeded` (after invoice paid)
+      // For now, let's keep it simple: if completed, ask parent to check
+      onReviewNeeded?.(appointment.id);
+    }
+  }, [open, mode, appointment?.status, appointment?.id, onReviewNeeded]);
+
   const handleClose = () => {
     onOpenChange(false);
     // Reset mode sau khi đóng
-    setTimeout(() => setMode(initialMode), 300);
+    setTimeout(() => {
+        setMode(initialMode);
+        setReviewPromptOpen(false); // Close review prompt on sheet close
+    }, 300);
   };
 
   const handleEdit = () => {
@@ -342,6 +351,18 @@ export function AppointmentSheet({
           </SheetFooter>
         )}
       </SheetContent>
+
+      {/* Review Prompt */}
+      {appointment && (
+        <ReviewPrompt
+          bookingId={appointment.id}
+          open={reviewPromptOpen}
+          onOpenChange={setReviewPromptOpen}
+          onReviewSubmitted={handleClose} // Close sheet after review
+          customerName={appointment.customerName}
+          serviceName={appointment.serviceName}
+        />
+      )}
     </Sheet>
   );
 }
