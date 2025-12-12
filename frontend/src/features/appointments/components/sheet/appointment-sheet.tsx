@@ -37,7 +37,8 @@ import {
 } from "@/shared/ui";
 
 import { APPOINTMENT_STATUS_CONFIG } from "../../constants";
-import type { Appointment, CalendarEvent } from "../../types";
+import type { Appointment, CalendarEvent, TimelineResource } from "../../types";
+import { MockService } from "../../mock-data";
 import { AppointmentForm } from "./appointment-form";
 
 // ============================================
@@ -69,6 +70,9 @@ interface AppointmentSheetProps {
     startTime?: string;
     staffId?: string;
   };
+  availableStaff: TimelineResource[];
+  availableResources: TimelineResource[];
+  availableServices: MockService[];
 }
 
 // ============================================
@@ -85,6 +89,9 @@ export function AppointmentSheet({
   onCheckIn,
   onCancel,
   defaultValues,
+  availableStaff,
+  availableResources,
+  availableServices,
 }: AppointmentSheetProps) {
   const [mode, setMode] = useState<SheetMode>(initialMode);
 
@@ -170,6 +177,9 @@ export function AppointmentSheet({
                 defaultValues={defaultValues}
                 onSubmit={handleSave}
                 onCancel={isEditMode ? handleCancelEdit : handleClose}
+                availableStaff={availableStaff}
+                availableResources={availableResources}
+                availableServices={availableServices}
               />
             </div>
           ) : (

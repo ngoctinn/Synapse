@@ -2,6 +2,7 @@
 
 import "server-only";
 
+import { ActionResponse, error, success } from "@/shared/lib/action-response";
 import { revalidatePath } from "next/cache";
 import { MOCK_SERVICES, MOCK_SKILLS } from "./data/mocks";
 import { serviceSchema, skillSchema } from "./schemas";
@@ -16,7 +17,7 @@ export async function getServices(
   limit = 10,
   search?: string,
   activeOnly = false
-): Promise<PaginatedResponse<Service>> {
+): Promise<ActionResponse<PaginatedResponse<Service>>> {
 
   await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -40,27 +41,27 @@ export async function getServices(
   const end = start + limit;
   const data = filtered.slice(start, end);
 
-  return {
+  return success({
     data: data,
     total,
     page,
     limit,
-  };
+  });
 }
 
-export async function getService(id: string): Promise<Service> {
+export async function getService(id: string): Promise<ActionResponse<Service>> {
   await new Promise((resolve) => setTimeout(resolve, 300));
   const service = services.find((s) => s.id === id);
   if (!service) {
-    throw new Error("Không tìm thấy dịch vụ");
+    return error("Không tìm thấy dịch vụ");
   }
-  return service;
+  return success(service);
 }
 
-export async function createService(data: ServiceCreateInput): Promise<{ success: boolean; message?: string; data?: Service }> {
+export async function createService(data: ServiceCreateInput): Promise<ActionResponse<Service>> {
   const validation = serviceSchema.safeParse(data);
   if (!validation.success) {
-    return { success: false, message: "Dữ liệu không hợp lệ: " + validation.error.issues[0].message };
+    return error("Dữ liệu không hợp lệ", validation.error.flatten().fieldErrors);
   }
 
   await new Promise((resolve) => setTimeout(resolve, 800));
@@ -82,12 +83,20 @@ export async function createService(data: ServiceCreateInput): Promise<{ success
 
   services = [newService, ...services];
   revalidatePath("/admin/services");
-  return { success: true, data: newService };
+  return success(newService, "Tạo dịch vụ thành công");
 }
 
-export async function cloneService(id: string): Promise<{ success: boolean; message?: string }> {
+export async function cloneService(id: string): Promise<ActionResponse> {
   try {
-    const service = await getService(id);
+    const serviceRes = await getService(id);
+    if (serviceRes.status === "error") {
+      return error(serviceRes.message || "Không thể tải dịch vụ");
+    }
+    const service = serviceRes.data;
+    if (!service) {
+      return error("Không tìm thấy dịch vụ để nhân bản");
+    }
+
     const cloneData: ServiceCreateInput = {
       name: `${service.name} (Sao chép)`,
       duration: service.duration,
@@ -100,24 +109,28 @@ export async function cloneService(id: string): Promise<{ success: boolean; mess
       description: service.description || undefined,
     };
 
-    return await createService(cloneData);
-  } catch (error) {
-    console.error("Lỗi nhân bản dịch vụ:", error);
-    return { success: false, message: "Không thể nhân bản dịch vụ" };
+    const createRes = await createService(cloneData);
+    if (createRes.status === "error") {
+      return error(createRes.message || "Lỗi khi tạo dịch vụ nhân bản");
+    }
+    return success(undefined, "Nhân bản dịch vụ thành công");
+  } catch (err) {
+    console.error("Lỗi nhân bản dịch vụ:", err);
+    return error("Không thể nhân bản dịch vụ");
   }
 }
 
-export async function updateService(id: string, data: ServiceUpdateInput): Promise<{ success: boolean; message?: string; data?: Service }> {
+export async function updateService(id: string, data: ServiceUpdateInput): Promise<ActionResponse<Service>> {
   const validation = serviceSchema.partial().safeParse(data);
   if (!validation.success) {
-    return { success: false, message: "Dữ liệu không hợp lệ: " + validation.error.issues[0].message };
+    return error("Dữ liệu không hợp lệ", validation.error.flatten().fieldErrors);
   }
 
   await new Promise((resolve) => setTimeout(resolve, 600));
 
   const index = services.findIndex((s) => s.id === id);
   if (index === -1) {
-    return { success: false, message: "Không tìm thấy dịch vụ" };
+    return error("Không tìm thấy dịch vụ");
   }
 
   const updatedService = {
@@ -129,35 +142,37 @@ export async function updateService(id: string, data: ServiceUpdateInput): Promi
 
   services[index] = updatedService;
   revalidatePath("/admin/services");
-  return { success: true, data: updatedService };
+  return success(updatedService, "Cập nhật dịch vụ thành công");
 }
 
-export async function deleteService(id: string): Promise<{ success: boolean; message?: string }> {
+export async function deleteService(id: string): Promise<ActionResponse> {
   await new Promise((resolve) => setTimeout(resolve, 500));
   services = services.filter((s) => s.id !== id);
   revalidatePath("/admin/services");
-  return { success: true, message: "Đã xóa dịch vụ thành công" };
+  return success(undefined, "Đã xóa dịch vụ thành công");
 }
 
 export async function getSkills(
   page = 1,
   limit = 10
-): Promise<{ data: Skill[]; total: number }> {
+): Promise<ActionResponse<PaginatedResponse<Skill>>> {
     await new Promise((resolve) => setTimeout(resolve, 300));
     const start = (page - 1) * limit;
     const end = start + limit;
     const data = skills.slice(start, end);
 
-    return {
+    return success({
         data: data,
-        total: skills.length
-    };
+        total: skills.length,
+        page: page,
+        limit: limit
+    });
 }
 
-export async function createSkill(data: SkillCreateInput): Promise<{ success: boolean; message?: string; data?: Skill }> {
+export async function createSkill(data: SkillCreateInput): Promise<ActionResponse<Skill>> {
   const validation = skillSchema.safeParse(data);
   if (!validation.success) {
-    return { success: false, message: "Dữ liệu không hợp lệ: " + validation.error.issues[0].message };
+    return error("Dữ liệu không hợp lệ", validation.error.flatten().fieldErrors);
   }
 
   await new Promise((resolve) => setTimeout(resolve, 500));
@@ -169,31 +184,31 @@ export async function createSkill(data: SkillCreateInput): Promise<{ success: bo
 
   skills = [...skills, newSkill];
   revalidatePath("/admin/services");
-  return { success: true, data: newSkill };
+  return success(newSkill, "Đã tạo kỹ năng thành công");
 }
 
-export async function updateSkill(id: string, data: SkillUpdateInput): Promise<{ success: boolean; message?: string; data?: Skill }> {
+export async function updateSkill(id: string, data: SkillUpdateInput): Promise<ActionResponse<Skill>> {
   const validation = skillSchema.partial().safeParse(data);
   if (!validation.success) {
-    return { success: false, message: "Dữ liệu không hợp lệ: " + validation.error.issues[0].message };
+    return error("Dữ liệu không hợp lệ", validation.error.flatten().fieldErrors);
   }
 
   await new Promise((resolve) => setTimeout(resolve, 500));
   const index = skills.findIndex((s) => s.id === id);
     if (index === -1) {
-    return { success: false, message: "Không tìm thấy kỹ năng" };
+    return error("Không tìm thấy kỹ năng");
   }
 
   const updatedSkill = { ...skills[index], ...data };
   skills[index] = updatedSkill;
 
   revalidatePath("/admin/services");
-  return { success: true, data: updatedSkill };
+  return success(updatedSkill, "Đã cập nhật kỹ năng thành công");
 }
 
-export async function deleteSkill(id: string): Promise<{ success: boolean; message?: string }> {
+export async function deleteSkill(id: string): Promise<ActionResponse> {
     await new Promise((resolve) => setTimeout(resolve, 500));
     skills = skills.filter(s => s.id !== id);
   revalidatePath("/admin/services");
-  return { success: true, message: "Đã xóa kỹ năng thành công" };
+  return success(undefined, "Đã xóa kỹ năng thành công");
 }

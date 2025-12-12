@@ -1,5 +1,6 @@
 "use client"
 
+import { ActionResponse } from "@/shared/lib/action-response"
 import { useRouter } from "next/navigation"
 import { useCallback, useState, useTransition } from "react"
 import { toast } from "sonner"
@@ -8,7 +9,7 @@ interface BulkActionOptions {
   /** Success message formatter */
   successMessage?: (count: number) => string
   /** Error message formatter */
-  errorMessage?: (count: number) => string
+  errorMessage?: (count: number, failedMessages?: string[]) => string
   /** Should refresh router after success */
   refreshOnSuccess?: boolean
 }
@@ -42,12 +43,12 @@ interface UseBulkActionReturn<T extends string = string> {
  * ```
  */
 export function useBulkAction<T extends string = string>(
-  actionFn: (id: T) => Promise<{ success: boolean }>,
+  actionFn: (id: T) => Promise<ActionResponse>,
   options: BulkActionOptions = {}
 ): UseBulkActionReturn<T> {
   const {
     successMessage = (count) => `Đã xử lý ${count} mục`,
-    errorMessage = (count) => `Không thể xử lý ${count} mục`,
+    errorMessage = (count, failedMessages) => `Không thể xử lý ${count} mục. Chi tiết: ${failedMessages?.join(", ") || "Lỗi không xác định."}`,
     refreshOnSuccess = true,
   } = options
 
@@ -61,13 +62,20 @@ export function useBulkAction<T extends string = string>(
 
       startTransition(async () => {
         let successCount = 0
+        const failedMessages: string[] = []
 
         for (const id of ids) {
           try {
             const result = await actionFn(id)
-            if (result.success) successCount++
-          } catch (error) {
+            if (result.status === "success") {
+                successCount++
+            } else {
+                failedMessages.push(result.message || `Lỗi không xác định khi xử lý ${id}`)
+            }
+          } catch (error: unknown) {
             console.error(`Failed to process ${id}:`, error)
+            const message = error instanceof Error ? error.message : "Lỗi không xác định";
+            failedMessages.push(message || `Lỗi không xác định khi xử lý ${id}`)
           }
         }
 
@@ -81,8 +89,8 @@ export function useBulkAction<T extends string = string>(
         }
 
         // Show error toast for failed items
-        if (successCount < ids.length) {
-          toast.error(errorMessage(ids.length - successCount))
+        if (failedMessages.length > 0) {
+          toast.error(errorMessage(failedMessages.length, failedMessages))
         }
 
         setShowDialog(false)

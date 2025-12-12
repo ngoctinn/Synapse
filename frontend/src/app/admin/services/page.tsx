@@ -11,22 +11,23 @@ export default async function Page({
   const { page } = await searchParams
   const pageNumber = Number(page) || 1
 
-  const [skillsData, roomTypes, equipmentList] = await Promise.all([
+  const [skillsRes, roomTypesRes, equipmentListRes] = await Promise.all([
     getSkills(),
     getRoomTypes(),
     getEquipmentList()
   ])
 
-  const servicesPromise = getServices(pageNumber).then(res => ({
-      data: res.data,
-      total: res.total
-  }))
+  const skills = skillsRes.status === 'success' ? skillsRes.data?.data || [] : []
+  const roomTypes = roomTypesRes.status === 'success' ? roomTypesRes.data || [] : []
+  const equipmentList = equipmentListRes.status === 'success' ? equipmentListRes.data || [] : []
+
+  const servicesPromise = getServices(pageNumber)
 
   return (
     <ServicesPage
       page={pageNumber}
       servicesPromise={servicesPromise}
-      skills={skillsData.data}
+      skills={skills}
       roomTypes={roomTypes}
       equipmentList={equipmentList}
     />

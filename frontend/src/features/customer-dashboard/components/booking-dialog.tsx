@@ -147,14 +147,20 @@ export function BookingDialog({
         isSubmitting
     }
 
-    switch (state.step) {
-        case "preference": return <StepPreference {...commonProps} />
-        case "staff-select": return <StepStaff {...commonProps} />
-        case "time-select": return <StepTime {...commonProps} />
-        case "confirm": return <StepConfirm {...commonProps} />
-        case "success": return <StepSuccess onClose={() => onOpenChange(false)} />
-        default: return null
-    }
+    return (
+        <fieldset disabled={isSubmitting}>
+            {(() => { // Wrap the switch case in an IIFE
+                switch (state.step) {
+                    case "preference": return <StepPreference {...commonProps} />
+                    case "staff-select": return <StepStaff {...commonProps} />
+                    case "time-select": return <StepTime {...commonProps} />
+                    case "confirm": return <StepConfirm {...commonProps} />
+                    case "success": return <StepSuccess onClose={() => onOpenChange(false)} />
+                    default: return null
+                }
+            })()}
+        </fieldset>
+    )
   }
 
   const stepTitle = {

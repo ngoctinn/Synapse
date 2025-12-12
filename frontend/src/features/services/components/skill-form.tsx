@@ -46,8 +46,8 @@ export function SkillForm({ skill, onSuccess }: SkillFormProps) {
           ? await updateSkill(skill.id, values)
           : await createSkill(values);
 
-        if (result.success) {
-          toast.success(skill ? "Cập nhật kỹ năng thành công" : "Tạo kỹ năng thành công");
+        if (result.status === "success") {
+          toast.success(result.message);
           if (onSuccess) {
             onSuccess();
           }

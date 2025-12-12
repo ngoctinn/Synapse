@@ -132,7 +132,9 @@ export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffShe
         <div className="flex-1 overflow-y-auto px-6 py-6" id="sheet-scroll-container">
             <Form {...form}>
                 <form id="staff-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                    <StaffForm mode={mode} skills={skills} />
+                    <fieldset disabled={isPending}>
+                        <StaffForm mode={mode} skills={skills} />
+                    </fieldset>
                 </form>
             </Form>
         </div>

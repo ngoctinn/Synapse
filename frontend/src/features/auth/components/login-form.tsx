@@ -71,69 +71,71 @@ export function LoginForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input
-                    startContent={<Mail className="size-4 text-muted-foreground" />}
-                    placeholder="name@example.com"
-                    autoComplete="email"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex items-center justify-between">
-                  <FormLabel>Mật khẩu</FormLabel>
-                  <Link
-                    href="/forgot-password"
-                    className="text-xs text-primary hover:underline underline-offset-4"
-                  >
-                    Quên mật khẩu?
-                  </Link>
-                </div>
-                <FormControl>
-                  <Input
-                    type={showPassword ? "text" : "password"}
-                    startContent={<Lock className="size-4 text-muted-foreground" />}
-                    endContent={
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="text-muted-foreground hover:text-foreground transition-colors"
-                        aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-                      >
-                        {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                      </button>
-                    }
-                    placeholder="Nhập mật khẩu"
-                    autoComplete="current-password"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <fieldset disabled={isPending}>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      startContent={<Mail className="size-4 text-muted-foreground" />}
+                      placeholder="name@example.com"
+                      autoComplete="email"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center justify-between">
+                    <FormLabel>Mật khẩu</FormLabel>
+                    <Link
+                      href="/forgot-password"
+                      className="text-xs text-primary hover:underline underline-offset-4"
+                    >
+                      Quên mật khẩu?
+                    </Link>
+                  </div>
+                  <FormControl>
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      startContent={<Lock className="size-4 text-muted-foreground" />}
+                      endContent={
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="text-muted-foreground hover:text-foreground transition-colors"
+                          aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                        >
+                          {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                        </button>
+                      }
+                      placeholder="Nhập mật khẩu"
+                      autoComplete="current-password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <Button
-            type="submit"
-            className="w-full mt-6"
-            isLoading={isPending}
-          >
-            Đăng nhập
-          </Button>
+            <Button
+              type="submit"
+              className="w-full mt-6"
+              isLoading={isPending}
+            >
+              Đăng nhập
+            </Button>
+          </fieldset>
         </form>
       </Form>
 

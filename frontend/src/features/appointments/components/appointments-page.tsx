@@ -8,7 +8,7 @@
  */
 
 import { Filter, Plus, RefreshCw, Settings2 } from "lucide-react";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useTransition, use } from "react"; // Added `use` hook
 
 import { cn } from "@/shared/lib/utils";
 import {
@@ -18,7 +18,9 @@ import {
   TooltipTrigger
 } from "@/shared/ui";
 
-import { getAppointmentMetrics, getAppointments, getResourceList, getStaffList } from "../actions";
+import { ActionResponse } from "@/shared/lib/action-response"; // Import ActionResponse
+import { getAppointmentMetrics, getAppointments } from "../actions"; // getStaffList, getResourceList, getServiceList are now passed as props
+import { MockService, MOCK_STAFF } from "../mock-data";
 import { useCalendarState } from "../hooks/use-calendar-state";
 import type { Appointment, AppointmentMetrics, CalendarEvent, TimelineResource } from "../types";
 import { CalendarView } from "./calendar";
@@ -29,7 +31,21 @@ import { DateNavigator, ViewSwitcher } from "./toolbar";
 // COMPONENT
 // ============================================
 
-export function AppointmentsPage() {
+interface AppointmentsPageProps {
+  appointmentsPromise: Promise<ActionResponse<CalendarEvent[]>>;
+  staffListPromise: Promise<ActionResponse<TimelineResource[]>>;
+  resourceListPromise: Promise<ActionResponse<TimelineResource[]>>;
+  serviceListPromise: Promise<ActionResponse<MockService[]>>;
+  fullStaffList: TimelineResource[]; // Passed directly from Server Component
+}
+
+export function AppointmentsPage({
+  appointmentsPromise,
+  staffListPromise,
+  resourceListPromise,
+  serviceListPromise,
+  fullStaffList, // Data that doesn't need to be unwrapped
+}: AppointmentsPageProps) {
   // Calendar state hook
   const {
     view,
@@ -45,11 +61,24 @@ export function AppointmentsPage() {
     densityMode,
   } = useCalendarState();
 
-  // Data state
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  // Use the `use` hook to unwrap the promises from Server Component
+  const appointmentsRes = use(appointmentsPromise);
+  const staffRes = use(staffListPromise);
+  const resourceRes = use(resourceListPromise);
+  const serviceRes = use(serviceListPromise);
+
+  // Extract initial data
+  const initialEvents = appointmentsRes.status === 'success' ? appointmentsRes.data || [] : [];
+  const initialStaffList = staffRes.status === 'success' ? staffRes.data || [] : [];
+  const initialRoomList = resourceRes.status === 'success' ? resourceRes.data || [] : [];
+  const initialServiceList = serviceRes.status === 'success' ? serviceRes.data || [] : [];
+
+
+  // Client states
+  const [events, setEvents] = useState<CalendarEvent[]>(initialEvents);
   const [metrics, setMetrics] = useState<AppointmentMetrics | null>(null);
-  const [staffList, setStaffList] = useState<TimelineResource[]>([]);
-  const [roomList, setRoomList] = useState<TimelineResource[]>([]);
+  const [staffList, setStaffList] = useState<TimelineResource[]>(initialStaffList);
+  const [roomList, setRoomList] = useState<TimelineResource[]>(initialRoomList);
   const [isPending, startTransition] = useTransition();
 
   // Sheet state
@@ -57,33 +86,15 @@ export function AppointmentsPage() {
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [sheetMode, setSheetMode] = useState<"view" | "edit" | "create">("view");
 
-  // Fetch data when date range changes
+  // Fetch metrics when date changes (metrics are dynamic and client-side controlled)
   useEffect(() => {
     startTransition(async () => {
-      const [eventsResult, metricsResult, staffResult, roomResult] = await Promise.all([
-        getAppointments(dateRange),
-        getAppointmentMetrics(date),
-        getStaffList(),
-        getResourceList(),
-      ]);
-
-      if (eventsResult.status === "success" && eventsResult.data) {
-        setEvents(eventsResult.data);
-      }
-
+      const metricsResult = await getAppointmentMetrics(date);
       if (metricsResult.status === "success" && metricsResult.data) {
         setMetrics(metricsResult.data);
       }
-
-      if (staffResult.status === "success" && staffResult.data) {
-        setStaffList(staffResult.data);
-      }
-
-      if (roomResult.status === "success" && roomResult.data) {
-        setRoomList(roomResult.data);
-      }
     });
-  }, [dateRange, date]);
+  }, [date]);
 
   // Event handlers
   const handleEventClick = (event: CalendarEvent) => {
@@ -99,7 +110,7 @@ export function AppointmentsPage() {
   };
 
   const handleSaveAppointment = (appointment: Appointment) => {
-    // TODO: Call API to save appointment
+    // TODO: Call API to save appointment (this will be implemented in M3.2)
     console.log("Saving appointment:", appointment);
     setIsSheetOpen(false);
     handleRefresh();
@@ -113,6 +124,21 @@ export function AppointmentsPage() {
       }
     });
   };
+
+  // Error handling for initial data
+  if (appointmentsRes.status === 'error') {
+    return <div className="p-4 text-destructive">Lỗi tải lịch hẹn: {appointmentsRes.message}</div>;
+  }
+  if (staffRes.status === 'error') {
+    return <div className="p-4 text-destructive">Lỗi tải danh sách nhân viên: {staffRes.message}</div>;
+  }
+  if (resourceRes.status === 'error') {
+    return <div className="p-4 text-destructive">Lỗi tải danh sách tài nguyên: {resourceRes.message}</div>;
+  }
+  if (serviceRes.status === 'error') {
+    return <div className="p-4 text-destructive">Lỗi tải danh sách dịch vụ: {serviceRes.message}</div>;
+  }
+
 
   return (
     <div className="flex flex-col h-full">
@@ -263,6 +289,9 @@ export function AppointmentsPage() {
         mode={sheetMode}
         event={selectedEvent}
         onSave={handleSaveAppointment}
+        availableStaff={staffList}
+        availableResources={roomList}
+        availableServices={initialServiceList}
       />
     </div>
   );

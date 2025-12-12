@@ -133,7 +133,9 @@ export function ResourceSheet({
         <div className="flex-1 overflow-y-auto px-6 py-6 [scrollbar-gutter:stable]">
           <Form {...form}>
             <form id="resource-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <ResourceForm mode={mode} groups={groups} />
+              <fieldset disabled={isPending}>
+                <ResourceForm mode={mode} groups={groups} />
+              </fieldset>
             </form>
           </Form>
         </div>

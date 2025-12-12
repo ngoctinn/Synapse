@@ -121,20 +121,20 @@ export async function deleteResource(id: string): Promise<ActionResponse> {
 
 // --- Compatibility Exports (Deprecated) ---
 
-export async function getRoomTypes(): Promise<Resource[]> {
+export async function getRoomTypes(): Promise<ActionResponse<Resource[]>> {
     const res = await getResources();
     if (res.status === 'success' && res.data) {
-        return res.data.filter(r => r.type === 'ROOM');
+        return success(res.data.filter(r => r.type === 'ROOM'));
     }
-    return [];
+    return error(res.message || "Không thể tải loại phòng");
 }
 
-export async function getEquipmentList(): Promise<Resource[]> {
+export async function getEquipmentList(): Promise<ActionResponse<Resource[]>> {
     const res = await getResources();
     if (res.status === 'success' && res.data) {
-        return res.data.filter(r => r.type === 'EQUIPMENT');
+        return success(res.data.filter(r => r.type === 'EQUIPMENT'));
     }
-    return [];
+    return error(res.message || "Không thể tải danh sách thiết bị");
 }
 
 export async function getMaintenanceTasks(): Promise<ActionResponse<MaintenanceTask[]>> {

@@ -67,72 +67,74 @@ export function UpdatePasswordForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Mật khẩu mới</FormLabel>
-                <FormControl>
-                  <Input
-                    type={showPassword ? "text" : "password"}
-                    startContent={<Lock className="size-4 text-muted-foreground" />}
-                    endContent={
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="text-muted-foreground hover:text-foreground transition-colors"
-                        aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-                      >
-                        {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                      </button>
-                    }
-                    placeholder="Tối thiểu 8 ký tự"
-                    autoComplete="new-password"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Xác nhận mật khẩu mới</FormLabel>
-                <FormControl>
-                  <Input
-                    type={showConfirmPassword ? "text" : "password"}
-                    startContent={<Lock className="size-4 text-muted-foreground" />}
-                    endContent={
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="text-muted-foreground hover:text-foreground transition-colors"
-                        aria-label={showConfirmPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-                      >
-                        {showConfirmPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                      </button>
-                    }
-                    placeholder="Nhập lại mật khẩu mới"
-                    autoComplete="new-password"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <fieldset disabled={isPending}>
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Mật khẩu mới</FormLabel>
+                  <FormControl>
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      startContent={<Lock className="size-4 text-muted-foreground" />}
+                      endContent={
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="text-muted-foreground hover:text-foreground transition-colors"
+                          aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                        >
+                          {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                        </button>
+                      }
+                      placeholder="Tối thiểu 8 ký tự"
+                      autoComplete="new-password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Xác nhận mật khẩu mới</FormLabel>
+                  <FormControl>
+                    <Input
+                      type={showConfirmPassword ? "text" : "password"}
+                      startContent={<Lock className="size-4 text-muted-foreground" />}
+                      endContent={
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          className="text-muted-foreground hover:text-foreground transition-colors"
+                          aria-label={showConfirmPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                        >
+                          {showConfirmPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                        </button>
+                      }
+                      placeholder="Nhập lại mật khẩu mới"
+                      autoComplete="new-password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <Button
-            type="submit"
-            className="w-full mt-6"
-            isLoading={isPending}
-          >
-            Cập nhật mật khẩu
-          </Button>
+            <Button
+              type="submit"
+              className="w-full mt-6"
+              isLoading={isPending}
+            >
+              Cập nhật mật khẩu
+            </Button>
+          </fieldset>
         </form>
       </Form>
 

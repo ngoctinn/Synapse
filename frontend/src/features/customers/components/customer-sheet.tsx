@@ -169,22 +169,24 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
         <div className="flex-1 overflow-y-auto px-6 py-6" id="sheet-scroll-container">
             <Form {...form}>
                 <form id="customer-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                    {mode === "create" ? (
-                         <CustomerForm mode={mode} disabled={isPending} technicians={technicians} />
-                    ) : (
-                        <Tabs defaultValue="info" className="w-full">
-                            <TabsList variant="default" fullWidth gridCols={2} className="mb-6 h-10">
-                                <TabsTrigger value="info" variant="default">Thông tin</TabsTrigger>
-                                <TabsTrigger value="history" variant="default">Lịch sử & Thống kê</TabsTrigger>
-                            </TabsList>
-                            <TabsContent value="info" className="mt-0 space-y-6">
-                                <CustomerForm mode={mode} disabled={isPending} technicians={technicians} />
-                            </TabsContent>
-                            <TabsContent value="history" className="mt-0">
-                                <CustomerHistory />
-                            </TabsContent>
-                        </Tabs>
-                    )}
+                    <fieldset disabled={isPending}>
+                        {mode === "create" ? (
+                             <CustomerForm mode={mode} disabled={isPending} technicians={technicians} />
+                        ) : (
+                            <Tabs defaultValue="info" className="w-full">
+                                <TabsList variant="default" fullWidth gridCols={2} className="mb-6 h-10">
+                                    <TabsTrigger value="info" variant="default">Thông tin</TabsTrigger>
+                                    <TabsTrigger value="history" variant="default">Lịch sử & Thống kê</TabsTrigger>
+                                </TabsList>
+                                <TabsContent value="info" className="mt-0 space-y-6">
+                                    <CustomerForm mode={mode} disabled={isPending} technicians={technicians} />
+                                </TabsContent>
+                                <TabsContent value="history" className="mt-0">
+                                    <CustomerHistory />
+                                </TabsContent>
+                            </Tabs>
+                        )}
+                    </fieldset>
                 </form>
             </Form>
         </div>

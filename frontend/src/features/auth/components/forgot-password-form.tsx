@@ -74,32 +74,34 @@ export function ForgotPasswordForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input
-                    startContent={<Mail className="size-4 text-muted-foreground" />}
-                    placeholder="name@example.com"
-                    autoComplete="email"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <fieldset disabled={isPending}>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      startContent={<Mail className="size-4 text-muted-foreground" />}
+                      placeholder="name@example.com"
+                      autoComplete="email"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <Button
-            type="submit"
-            className="w-full mt-6"
-            isLoading={isPending}
-          >
-            Gửi yêu cầu
-          </Button>
+            <Button
+              type="submit"
+              className="w-full mt-6"
+              isLoading={isPending}
+            >
+              Gửi yêu cầu
+            </Button>
+          </fieldset>
         </form>
       </Form>
 

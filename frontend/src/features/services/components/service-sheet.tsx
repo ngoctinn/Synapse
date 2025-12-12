@@ -97,7 +97,7 @@ export function ServiceSheet({
             ? await updateService(initialData.id, data)
             : await createService(data)
 
-        if (result.success) {
+        if (result.status === "success") {
           toast.success(
             isUpdateMode ? "Cập nhật thành công" : "Tạo dịch vụ thành công",
             {
@@ -139,13 +139,15 @@ export function ServiceSheet({
               onSubmit={form.handleSubmit(onSubmit)}
               className="h-full flex flex-col"
             >
-              <ServiceForm
-                mode={mode}
-                availableSkills={availableSkills}
-                availableRoomTypes={availableRoomTypes}
-                availableEquipment={availableEquipment}
-                className="flex-1"
-              />
+              <fieldset disabled={isPending}>
+                <ServiceForm
+                  mode={mode}
+                  availableSkills={availableSkills}
+                  availableRoomTypes={availableRoomTypes}
+                  availableEquipment={availableEquipment}
+                  className="flex-1"
+                />
+              </fieldset>
             </form>
           </Form>
         </div>
@@ -156,6 +158,7 @@ export function ServiceSheet({
             variant="ghost"
             onClick={() => onOpenChange(false)}
             className="text-muted-foreground hover:text-foreground"
+            disabled={isPending}
           >
             Hủy bỏ
           </Button>

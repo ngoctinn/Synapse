@@ -9,7 +9,8 @@ import { Search } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Suspense, use, useState, useTransition } from "react"
 import { useDebouncedCallback } from "use-debounce"
-import { Service, Skill } from "../types"
+import { PaginatedResponse, Service, Skill } from "../types"
+import { ActionResponse } from "@/shared/lib/action-response"
 import { CreateServiceWizard } from "./create-service-wizard"
 import { CreateSkillDialog } from "./create-skill-dialog"
 import { ServiceFilter } from "./service-filter"
@@ -21,7 +22,7 @@ interface ServicesPageProps {
   skills: Skill[]
   roomTypes: RoomType[]
   equipmentList: Resource[]
-  servicesPromise: Promise<{ data: Service[]; total: number }>
+  servicesPromise: Promise<ActionResponse<PaginatedResponse<Service>>>
 }
 
 function ServiceListWrapper({
@@ -31,14 +32,23 @@ function ServiceListWrapper({
   equipmentList,
   page,
 }: {
-  servicesPromise: Promise<{ data: Service[]; total: number }>
+  servicesPromise: Promise<ActionResponse<PaginatedResponse<Service>>>
   skills: Skill[]
   roomTypes: RoomType[]
   equipmentList: Resource[]
   page: number
 }) {
-  const { data, total } = use(servicesPromise)
+  const servicesRes = use(servicesPromise)
+  
+  const { data, total, page: resPage, limit: resLimit } = servicesRes.status === 'success' && servicesRes.data
+    ? servicesRes.data
+    : { data: [], total: 0, page: page, limit: 10 }
+
   const totalPages = Math.ceil(total / 10)
+
+  if (servicesRes.status === 'error') {
+    return <div className="p-4 text-destructive">Lỗi tải dịch vụ: {servicesRes.message}</div>
+  }
 
   return (
     <ServiceTable

@@ -38,8 +38,8 @@ export function ServiceActions({
   const handleClone = async () => {
     startCloneTransition(async () => {
       const result = await cloneService(service.id);
-      if (result.success) {
-        toast.success("Đã nhân bản dịch vụ");
+      if (result.status === "success") {
+        toast.success(result.message);
         router.refresh();
       } else {
         toast.error(result.message);

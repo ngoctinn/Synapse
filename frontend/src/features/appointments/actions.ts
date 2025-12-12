@@ -234,7 +234,7 @@ export async function createAppointment(
     };
 
     // NOTE: Trong thực tế, sẽ insert vào database ở đây
-    // MOCK_APPOINTMENTS.push(newAppointment);
+    MOCK_APPOINTMENTS.push(newAppointment);
 
     return createSuccessResponse(newAppointment, "Tạo lịch hẹn thành công");
   } catch (error) {

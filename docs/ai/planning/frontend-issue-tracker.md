@@ -8,7 +8,7 @@ last_updated: 2025-12-12
 
 # 📋 ISSUE TRACKER: Frontend Synapse
 
-> **Tổng số:** 32 issues | **Đã xong:** 2 | **Đang làm:** 0 | **Chờ:** 30
+> **Tổng số:** 32 issues | **Đã xong:** 9 | **Đang làm:** 0 | **Chờ:** 23
 
 ---
 
@@ -16,11 +16,11 @@ last_updated: 2025-12-12
 
 | ID | Module | Vấn đề | Milestone | Trạng thái | Assignee |
 |:---|:---|:---|:---:|:---:|:---:|
-| C1 | `appointments` | Tính năng core chưa triển khai (chỉ ~5%) | M3 | [ ] TODO | - |
-| C2 | `appointments/actions.ts` | Mock Data không persist (createAppointment) | M3 | [ ] TODO | - |
-| C3 | `appointments-page.tsx` | Data Waterfall (useEffect fetch) | M3 | [ ] TODO | - |
+| C1 | `appointments` | Tính năng core chưa triển khai (chỉ ~5%) | M3 | [x] DONE | AI |
+| C2 | `appointments/actions.ts` | Mock Data không persist (createAppointment) | M3 | [x] DONE | AI |
+| C3 | `appointments-page.tsx` | Data Waterfall (useEffect fetch) | M3 | [x] DONE | AI |
 | C4 | **Toàn bộ Actions** | Response Type không nhất quán | M1 | [x] DONE | AI |
-| C5 | `customers`, `staff`, `resources` | Search không kết nối URL Params | M2 | [ ] TODO | - |
+| C5 | `customers`, `staff`, `resources` | Search không kết nối URL Params | M2 | [x] DONE | AI |
 | C6 | `billing` | **Module hoàn toàn thiếu** | M5 | [ ] TODO | - |
 | C7 | `reviews` | **Module hoàn toàn thiếu** | M5 | [ ] TODO | - |
 
@@ -32,9 +32,9 @@ last_updated: 2025-12-12
 |:---|:---|:---|:---:|:---:|:---:|
 | H1 | `customer-dashboard` | Thiếu nút Hủy lịch hẹn | M4 | [ ] TODO | - |
 | H2 | `customer-dashboard` | Booking Dialog dùng Mock, không check availability | M4 | [ ] TODO | - |
-| H3 | `staff/scheduler` | Thiếu validation endTime > startTime | M2 | [ ] TODO | - |
-| H4 | `customers` | Bulk Delete là Mock (chỉ console.log) | M2 | [ ] TODO | - |
-| H5 | **Tất cả Sheets/Forms** | Không disable khi isPending | M2 | [ ] TODO | - |
+| H3 | `staff/scheduler` | Thiếu validation endTime > startTime | M2 | [x] DONE | AI |
+| H4 | `customers` | Bulk Delete là Mock (chỉ console.log) | M2 | [x] DONE | AI |
+| H5 | **Tất cả Sheets/Forms** | Không disable khi isPending | M2 | [x] DONE | AI |
 | H6 | `appointments` | Thiếu Check-in Action | M4 | [ ] TODO | - |
 | H7 | `appointments` | Thiếu Walk-in Booking Form | M4 | [ ] TODO | - |
 | H8 | `services` | Thiếu UI quản lý `service_categories` | M6 | [ ] TODO | - |
@@ -77,8 +77,8 @@ last_updated: 2025-12-12
 | Milestone | Mô tả | Số Issues | Ước tính | Trạng thái |
 |:---|:---|:---:|:---:|:---:|
 | **M1** | Foundation & Response Standardization | 2 | 2d | [x] DONE |
-| **M2** | Fix Critical UX Bugs | 4 | 3d | [ ] Pending |
-| **M3** | Appointments Module Core | 3 | 8d | [ ] Pending |
+| **M2** | Fix Critical UX Bugs | 4 | 3d | [x] DONE |
+| **M3** | Appointments Module Core | 3 | 8d | [x] DONE |
 | **M4** | Appointments Actions & Workflows | 4 | 4d | [ ] Pending |
 | **M5** | Missing Modules (Billing, Reviews) | 2 | 6d | [ ] Pending |
 | **M6** | Medium Priority Enhancements | 12 | 5d | [ ] Pending |
