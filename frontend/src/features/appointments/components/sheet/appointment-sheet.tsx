@@ -378,8 +378,8 @@ export function AppointmentSheet({
           open={reviewPromptOpen}
           onOpenChange={setReviewPromptOpen}
           onReviewSubmitted={handleClose} // Close sheet after review
-          customerName={appointment.customerName}
-          serviceName={appointment.serviceName}
+          customerName={appointment.customerName || ""}
+          serviceName={appointment.serviceName || ""}
         />
       )}
     </Sheet>

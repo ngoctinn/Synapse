@@ -1,4 +1,4 @@
-import { addDays, subDays, subHours } from "date-fns";
+import { subDays, subHours } from "date-fns";
 import { Invoice } from "./types";
 
 export const MOCK_INVOICES: Invoice[] = [
@@ -39,6 +39,7 @@ export const MOCK_INVOICES: Invoice[] = [
         invoiceId: "INV-001",
         productId: "PROD-001",
         productName: "Sáp vuốt tóc",
+        serviceName: "Sáp vuốt tóc",
         quantity: 1,
         unitPrice: 150000,
         totalPrice: 150000,

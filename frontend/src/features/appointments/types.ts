@@ -46,6 +46,18 @@ export type RecurrenceEndType = "never" | "count" | "until";
 // ============================================
 
 /** Thực thể Cuộc hẹn (từ Database) */
+  /** Item dịch vụ trong booking */
+export interface BookingItem {
+  serviceId: string;
+  serviceName: string;
+  price: number;
+  duration: number;
+  startTime?: Date;
+  staffId?: string; // Tùy chọn: nhân viên riêng cho từng dịch vụ
+  resourceId?: string; // Tùy chọn: phòng riêng cho từng dịch vụ
+}
+
+/** Thực thể Cuộc hẹn (từ Database) */
 export interface Appointment {
   id: string;
 
@@ -55,24 +67,26 @@ export interface Appointment {
   customerPhone: string;
   customerAvatar?: string;
 
-  // Thông tin nhân viên
-  staffId: string;
+  // Thông tin items (Đa dịch vụ)
+  items: BookingItem[]; // NEW: 1-to-Many support
+  totalPrice: number;
+  totalDuration: number;
+
+  // --- LEGACY FIELDS (Backward Compatibility) ---
+  staffId: string;      // Main staff
   staffName: string;
   staffAvatar?: string;
-
-  // Thông tin dịch vụ
-  serviceId: string;
-  serviceName: string;
-  serviceColor: string;
-
-  // Tài nguyên (Phòng/Giường) - tùy chọn
-  resourceId?: string;
+  serviceId?: string;   // Deprecated: use items[0].serviceId
+  serviceName?: string; // Deprecated
+  serviceColor?: string;
+  resourceId?: string;  // Main resource
   resourceName?: string;
+  // ---------------------------------------------
 
   // Thời gian
   startTime: Date;
   endTime: Date;
-  duration: number; // phút
+  duration: number; // Tổng thời gian
 
   // Trạng thái
   status: AppointmentStatus;
@@ -96,7 +110,7 @@ export interface Appointment {
 /** Event hiển thị trên Calendar (simplified từ Appointment) */
 export interface CalendarEvent {
   id: string;
-  title: string; // customerName + serviceName
+  title: string; // customerName + serviceName (hoặc "Combo..")
   start: Date;
   end: Date;
   color: string; // serviceColor

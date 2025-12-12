@@ -77,8 +77,8 @@ export function ViewSwitcher({
             title={CALENDAR_VIEW_CONFIG[view].description}
           >
             {VIEW_ICONS[view]}
-            {/* Ẩn label trên mobile, hiện trên sm+ */}
-            <span className="hidden sm:inline text-xs">
+            {/* Icon Only as requested */}
+            <span className="sr-only">
               {CALENDAR_VIEW_CONFIG[view].label}
             </span>
           </TabsTrigger>

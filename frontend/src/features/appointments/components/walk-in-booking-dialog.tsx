@@ -2,8 +2,8 @@
 
 import { createAppointment } from "@/features/appointments/actions";
 import { AppointmentForm } from "@/features/appointments/components/sheet/appointment-form";
-import { Appointment, TimelineResource } from "@/features/appointments/types";
 import { MockService } from "@/features/appointments/mock-data";
+import { Appointment, TimelineResource } from "@/features/appointments/types";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -13,7 +13,6 @@ import {
 } from "@/shared/ui/alert-dialog";
 import { showToast } from "@/shared/ui/custom/sonner";
 import { Loader2 } from "lucide-react";
-import * as React from "react";
 import { useTransition } from "react";
 
 interface WalkInBookingDialogProps {
@@ -39,7 +38,7 @@ export function WalkInBookingDialog({
     startTransition(async () => {
       const result = await createAppointment({
         customerId: appointment.customerId,
-        serviceIds: [appointment.serviceId],
+        serviceIds: appointment.items.map(item => item.serviceId),
         staffId: appointment.staffId,
         resourceId: appointment.resourceId,
         startTime: appointment.startTime,
@@ -47,7 +46,7 @@ export function WalkInBookingDialog({
       });
 
       if (result.status === "success") {
-        showToast.success(result.message);
+        showToast.success(result.message || "Tạo lịch hẹn thành công");
         onOpenChange(false);
         onBookingSuccess();
       } else {
@@ -68,7 +67,6 @@ export function WalkInBookingDialog({
         <div className="relative">
           <AppointmentForm
             onSubmit={handleCreateAppointment}
-            onCancel={() => onOpenChange(false)}
             availableStaff={availableStaff}
             availableResources={availableResources}
             availableServices={availableServices}

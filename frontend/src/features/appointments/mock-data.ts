@@ -297,11 +297,29 @@ export function generateMockAppointments(baseDate: Date = new Date()): Appointme
     const startTime = setMinutes(setHours(date, hour), minute);
     const endTime = addHours(startTime, service.duration / 60);
 
+    // NEW: Create booking item from the service
+    const item = {
+      serviceId: serviceId,
+      serviceName: service.name,
+      price: service.price,
+      duration: service.duration,
+      startTime: startTime,
+      staffId: staffId,
+      resourceId: resourceId,
+    };
+
     return {
       id,
       customerId,
       customerName: customer.name,
       customerPhone: customer.phone,
+
+      // NEW FIELDS
+      items: [item],
+      totalPrice: service.price,
+      totalDuration: service.duration,
+
+      // LEGACY MAP
       staffId,
       staffName: staff.name,
       staffAvatar: staff.avatar,
@@ -310,6 +328,7 @@ export function generateMockAppointments(baseDate: Date = new Date()): Appointme
       serviceColor: service.color,
       resourceId,
       resourceName: resource?.name,
+
       startTime,
       endTime,
       duration: service.duration,
@@ -628,7 +647,7 @@ export function appointmentToCalendarEvent(appointment: Appointment): CalendarEv
     title: `${appointment.customerName} - ${appointment.serviceName}`,
     start: appointment.startTime,
     end: appointment.endTime,
-    color: appointment.serviceColor,
+    color: appointment.serviceColor || "#gray",
     status: appointment.status,
     staffId: appointment.staffId,
     staffName: appointment.staffName,

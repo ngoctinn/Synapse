@@ -77,7 +77,10 @@ export async function getAppointments(
 
       if (filters.serviceIds?.length) {
         appointments = appointments.filter((apt) =>
-          filters.serviceIds!.includes(apt.serviceId)
+          // Check legacy serviceId (if exists)
+          (apt.serviceId && filters.serviceIds!.includes(apt.serviceId)) ||
+          // Check items array
+          apt.items?.some(item => filters.serviceIds!.includes(item.serviceId))
         );
       }
 
@@ -99,7 +102,7 @@ export async function getAppointments(
           (apt) =>
             apt.customerName.toLowerCase().includes(query) ||
             apt.customerPhone.includes(query) ||
-            apt.serviceName.toLowerCase().includes(query)
+            (apt.serviceName && apt.serviceName.toLowerCase().includes(query))
         );
       }
     }
@@ -198,7 +201,7 @@ export async function createAppointment(
     const conflicts = await checkConflicts(
       data.staffId,
       data.startTime,
-      new Date(data.startTime.getTime() + service.duration * 60 * 1000)
+      new Date(data.startTime.getTime() + (service?.duration || 60) * 60 * 1000)
     );
 
     if (conflicts.data && conflicts.data.length > 0) {
@@ -206,6 +209,24 @@ export async function createAppointment(
         `Xung đột lịch: ${conflicts.data[0].message}`
       );
     }
+
+    // Create booking items
+    const bookingItems = data.serviceIds.map(sId => {
+        const s = MOCK_SERVICES.find(srv => srv.id === sId);
+        return {
+            serviceId: sId,
+            serviceName: s?.name || "",
+            price: s?.price || 0,
+            duration: s?.duration || 0,
+            startTime: data.startTime,
+            staffId: data.staffId,
+            resourceId: data.resourceId
+        };
+    });
+
+    const totalDuration = bookingItems.reduce((sum, item) => sum + item.duration, 0);
+    const totalPrice = bookingItems.reduce((sum, item) => sum + item.price, 0);
+    const endTime = new Date(data.startTime.getTime() + totalDuration * 60 * 1000);
 
     // Create mock appointment
     const newAppointment: Appointment = {
@@ -216,14 +237,22 @@ export async function createAppointment(
       staffId: data.staffId,
       staffName: staff.name,
       staffAvatar: staff.avatar,
+
+      // NEW FIELDS
+      items: bookingItems,
+      totalPrice,
+      totalDuration,
+
+      // LEGACY MAPPINGS
       serviceId: data.serviceIds[0],
       serviceName: service.name,
       serviceColor: service.color,
       resourceId: data.resourceId,
       resourceName: resource?.name,
+
       startTime: data.startTime,
-      endTime: new Date(data.startTime.getTime() + service.duration * 60 * 1000),
-      duration: service.duration,
+      endTime,
+      duration: totalDuration,
       status: "pending",
       notes: data.notes,
       isRecurring: data.isRecurring || false,

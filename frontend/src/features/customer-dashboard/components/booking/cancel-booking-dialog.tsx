@@ -1,13 +1,14 @@
 "use client";
 
+import { Appointment } from "@/features/appointments/types";
 import {
-    AlertDialog,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
 } from "@/shared/ui/alert-dialog";
 import { Button } from "@/shared/ui/button";
 import { showToast } from "@/shared/ui/custom/sonner";
@@ -15,7 +16,6 @@ import { Label } from "@/shared/ui/label";
 import { Textarea } from "@/shared/ui/textarea";
 import { useState, useTransition } from "react";
 import { cancelBooking } from "../../actions";
-import { Appointment } from "../../types";
 
 interface CancelBookingDialogProps {
   open: boolean;

@@ -183,14 +183,14 @@ function SettingsForm({
       <div className="flex-1 flex flex-col overflow-hidden">
         <TabsContent
           value="schedule"
-          className="flex-1 flex flex-col mt-0 border-0 p-4 sm:p-6 overflow-y-auto data-[state=inactive]:hidden"
+          className="flex-1 flex flex-col mt-0 border-0 p-4 sm:p-6 overflow-y-auto data-[state=inactive]:hidden motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 duration-300 ease-out"
         >
           <ScheduleEditor config={config} onConfigChange={handleConfigChange} />
         </TabsContent>
 
         <TabsContent
           value="exceptions"
-          className="flex-1 flex flex-col mt-0 border-0 p-0 overflow-hidden data-[state=inactive]:hidden"
+          className="flex-1 flex flex-col mt-0 border-0 p-0 overflow-hidden data-[state=inactive]:hidden motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 duration-300 ease-out"
         >
           <Card className="flex-1 flex flex-col overflow-hidden m-4 sm:m-6">
             <ExceptionsViewManager
@@ -203,7 +203,7 @@ function SettingsForm({
 
         <TabsContent
           value="notifications"
-          className="flex-1 flex flex-col mt-0 border-0 p-4 sm:p-6 overflow-y-auto data-[state=inactive]:hidden"
+          className="flex-1 flex flex-col mt-0 border-0 p-4 sm:p-6 overflow-y-auto data-[state=inactive]:hidden motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 duration-300 ease-out"
         >
           <NotificationsSettings initialChannels={channels} initialEvents={events} />
         </TabsContent>

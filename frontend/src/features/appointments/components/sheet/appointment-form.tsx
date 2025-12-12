@@ -33,6 +33,7 @@ import {
 } from "@/shared/ui";
 import { Combobox } from "@/shared/ui/custom/combobox";
 import { DatePicker } from "@/shared/ui/custom/date-picker";
+import { MultiServiceSelector } from "../selection/multi-service-selector";
 
 import {
   searchCustomers,
@@ -178,12 +179,40 @@ export function AppointmentForm({
         ? availableResources.find((r) => r.id === values.resourceId)
         : undefined;
 
+      // Create booking items (Multi-service support foundation)
+      const bookingItems = values.serviceIds.map(sId => {
+          const s = availableServices.find(as => as.id === sId);
+          return {
+             serviceId: sId,
+             serviceName: s?.name || "",
+             price: s?.price || 0,
+             duration: s?.duration || 0,
+             startTime: startTime, // Currently all start at same time, will be sequential in M3.3
+             staffId: values.staffId,
+             resourceId: values.resourceId || undefined
+          };
+      });
+
+      // Calculate totals
+      const currentTotalDuration = bookingItems.reduce((acc, item) => acc + item.duration, 0);
+      const currentTotalPrice = bookingItems.reduce((acc, item) => acc + item.price, 0);
+
+      // Recalculate end time based on valid total duration
+      const finalEndTime = new Date(startTime.getTime() + (currentTotalDuration || 60) * 60 * 1000);
+
       // Create appointment object
       const newAppointment: Appointment = {
         id: appointment?.id || `apt-new-${Date.now()}`,
         customerId: values.customerId,
         customerName: customer?.name || appointment?.customerName || "",
         customerPhone: customer?.phone || appointment?.customerPhone || "",
+
+        // NEW FIELDS
+        items: bookingItems,
+        totalPrice: currentTotalPrice,
+        totalDuration: currentTotalDuration,
+
+        // LEGACY MAPPINGS
         serviceId: values.serviceIds[0] || "",
         serviceName: service?.name || appointment?.serviceName || "",
         serviceColor: service ? "#8b5cf6" : appointment?.serviceColor || "#8b5cf6",
@@ -191,9 +220,10 @@ export function AppointmentForm({
         staffName: staff?.name || appointment?.staffName || "",
         resourceId: values.resourceId || undefined,
         resourceName: resource?.name || undefined,
+
         startTime,
-        endTime,
-        duration: totalDuration || 60,
+        endTime: finalEndTime,
+        duration: currentTotalDuration || 60,
         status: appointment?.status || "pending",
         notes: values.notes || "",
         internalNotes: "",
@@ -244,31 +274,16 @@ export function AppointmentForm({
               name="serviceIds"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Dịch vụ <span className="text-destructive">*</span></FormLabel>
-                  <Select
-                    value={field.value[0] || ""}
-                    onValueChange={(value) => field.onChange([value])}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Chọn dịch vụ" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {availableServices.map((service) => (
-                        <SelectItem key={service.id} value={service.id}>
-                          <div className="flex items-center justify-between w-full">
-                            <span>{service.name}</span>
-                            <span className="text-xs text-muted-foreground ml-2">
-                              {service.duration} phút
-                            </span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>Dịch vụ trị liệu <span className="text-destructive">*</span></FormLabel>
+                   <FormControl>
+                      <MultiServiceSelector
+                        selectedIds={field.value}
+                        onChange={field.onChange}
+                        availableServices={availableServices}
+                      />
+                   </FormControl>
                   <FormDescription>
-                    Thời lượng dự kiến: {totalDuration || 0} phút
+                    Tổng thời lượng: {totalDuration || 0} phút
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

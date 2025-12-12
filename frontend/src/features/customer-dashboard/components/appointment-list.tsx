@@ -1,6 +1,6 @@
 "use client"
 
-import { Appointment } from "@/features/customer-dashboard/types"
+import { Appointment } from "@/features/appointments/types"
 import { useReducedMotion } from "@/shared/hooks"
 import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
@@ -120,34 +120,34 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
                         {format(new Date(appt.startTime), "EEEE, dd/MM/yyyy", { locale: vi })}
                      </span>
                      <span className="text-xs">
-                        {format(new Date(appt.startTime), "HH:mm")} ({appt.durationMinutes} phút)
+                        {format(new Date(appt.startTime), "HH:mm")} ({appt.duration} phút)
                      </span>
                   </div>
                 </div>
 
-                {appt.location && (
+                {appt.resourceName && (
                   <div className="flex items-center gap-3 text-muted-foreground">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground">
                        <MapPin className="h-4 w-4" aria-hidden="true" />
                     </div>
-                    <span>{appt.location}</span>
+                    <span>{appt.resourceName || "Chưa xếp phòng"}</span>
                   </div>
                 )}
 
-                {appt.technicianName && (
+                {appt.staffName && (
                   <div className="flex items-center gap-3 text-muted-foreground">
                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground">
                        <User className="h-4 w-4" aria-hidden="true" />
                      </div>
-                    <span>KTV: {appt.technicianName}</span>
+                    <span>KTV: {appt.staffName}</span>
                   </div>
                 )}
 
                 <div className="pt-2 mt-1 border-t flex gap-2 justify-end">
-                  {(appt.status === "PENDING" || appt.status === "CONFIRMED" || appt.status === "pending" || appt.status === "confirmed") && (
-                    <Button 
-                       variant="ghost" 
-                       size="sm" 
+                  {(appt.status === "pending" || appt.status === "confirmed") && (
+                    <Button
+                       variant="ghost"
+                       size="sm"
                        className="text-red-500 hover:text-red-600 hover:bg-red-50"
                        onClick={() => handleCancelClick(appt)}
                     >
@@ -163,8 +163,8 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
           </MotionItem>
         ))}
       </MotionContainer>
-      
-      <CancelBookingDialog 
+
+      <CancelBookingDialog
         open={isCancelOpen}
         onOpenChange={setIsCancelOpen}
         appointment={selectedAppointment}

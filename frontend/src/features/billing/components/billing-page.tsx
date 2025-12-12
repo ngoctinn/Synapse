@@ -66,7 +66,7 @@ export function BillingPage() {
   return (
     <PageShell>
       <PageHeader>
-        <h1 className="text-xl font-bold tracking-tight">Quản lý hóa đơn</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Quản lý hóa đơn</h1>
       </PageHeader>
 
       <PageContent>

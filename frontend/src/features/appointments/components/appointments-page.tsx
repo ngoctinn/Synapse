@@ -10,7 +10,7 @@
 import { Filter, Plus, RefreshCw, Settings2 } from "lucide-react";
 import { use, useCallback, useEffect, useState, useTransition } from "react"; // Added `useCallback` hook
 
-import { PageContent, PageHeader, PageShell, SurfaceCard } from "@/shared/components/layout/page-layout";
+import { PageContent, PageShell, SurfaceCard } from "@/shared/components/layout/page-layout";
 import { cn } from "@/shared/lib/utils";
 import {
   Button,
@@ -303,11 +303,18 @@ export function AppointmentsPage({
         customerId: "",
         customerName: "",
         customerPhone: "",
-        staffId: "",
+        // NEW FIELDS
+        items: [],
+        totalPrice: 0,
+        totalDuration: 60,
+
+        // LEGACY FIELDS
+        staffId: currentFilters.staffIds?.[0] || staffList[0]?.id || "",
         staffName: "",
         serviceId: "",
         serviceName: "",
         serviceColor: "#gray",
+
         startTime,
         endTime: new Date(startTime.getTime() + 60 * 60 * 1000),
         duration: 60,
@@ -344,57 +351,49 @@ export function AppointmentsPage({
       {/* ============================================ */}
       {/* COMPACT HEADER */}
       {/* ============================================ */}
-      <PageHeader className="h-auto py-2">
-          {/* Title + Inline Metrics */}
-          <div className="flex items-center gap-6">
-            <h1 className="text-xl font-bold tracking-tight">
-              Lịch hẹn
-            </h1>
+      <PageHeader className="py-3 shadow-none border-b">
+         <div className="flex flex-1 items-center justify-between">
+            {/* Header / Metrics Info */}
+            <div className="flex items-center gap-6">
+                <h1 className="text-xl font-bold tracking-tight">Lịch hẹn</h1>
 
-            {/* Inline Compact Metrics */}
-            <div className="hidden md:flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-1.5">
-                <span className="text-muted-foreground">Hôm nay:</span>
-                <span className="font-semibold tabular-nums">
-                  {isPending && !metrics ? "—" : metrics?.todayTotal ?? 0}
-                </span>
-              </div>
+                {/* Metrics */}
+                <div className="hidden lg:flex items-center gap-6 text-sm">
+                    <div className="flex items-center gap-2">
+                        <span className="text-muted-foreground">Hôm nay:</span>
+                        <span className="font-semibold">{metrics?.todayTotal ?? 0}</span>
+                    </div>
 
-              {(metrics?.todayPending ?? 0) > 0 && (
-                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-status-pending text-status-pending-foreground border border-status-pending-border">
-                  <span className="w-1.5 h-1.5 rounded-full bg-status-pending-foreground animate-pulse" />
-                  <span className="font-medium tabular-nums">{metrics?.todayPending}</span>
-                  <span className="text-xs">chờ xác nhận</span>
+                    {(metrics?.todayPending ?? 0) > 0 && (
+                        <div className="flex items-center gap-2 px-3 py-1 bg-yellow-50 text-yellow-700 rounded-full border border-yellow-200">
+                             <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-yellow-500"></span>
+                            </span>
+                             <span className="font-semibold">{metrics?.todayPending}</span>
+                             <span>chờ duyệt</span>
+                        </div>
+                    )}
+
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                         <span>Công suất:</span>
+                         <span className="font-semibold text-foreground">{metrics?.occupancyRate ?? 0}%</span>
+                    </div>
                 </div>
-              )}
-
-              <div className="flex items-center gap-1.5 text-muted-foreground">
-                <span>Lấp đầy:</span>
-                <span className="font-semibold text-foreground tabular-nums">
-                  {metrics?.occupancyRate ?? 0}%
-                </span>
-              </div>
             </div>
-          </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-2">
-            <Button
-              size="sm"
-              onClick={() => setShowWalkInDialog(true)}
-              variant="outline"
-            >
-              <Plus className="h-4 w-4" />
-              <span className="hidden sm:inline">Tạo nhanh</span>
-            </Button>
-            <Button
-              size="sm"
-              onClick={handleCreateClick}
-            >
-              <Plus className="h-4 w-4" />
-              <span className="hidden sm:inline">Tạo lịch hẹn</span>
-            </Button>
-          </div>
+            {/* Actions */}
+            <div className="flex items-center gap-3">
+               <Button variant="outline" size="sm" onClick={() => setShowWalkInDialog(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Tạo nhanh
+               </Button>
+               <Button size="sm" onClick={handleCreateClick}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Đặt lịch
+               </Button>
+            </div>
+         </div>
       </PageHeader>
 
       <PageContent fullWidth className="p-0 gap-0">
@@ -402,68 +401,60 @@ export function AppointmentsPage({
         {/* TOOLBAR */}
         {/* ============================================ */}
         <div className="flex-none px-4 py-2 border-b bg-background/50 backdrop-blur-sm sticky top-0 z-30">
-            <div className="flex items-center justify-between gap-2 sm:gap-4 flex-wrap">
-            {/* Date Navigator */}
-            <DateNavigator
-                date={date}
-                formattedDateRange={formattedDateRange}
-                isToday={isToday}
-                onPrev={goPrev}
-                onNext={goNext}
-                onToday={goToday}
-                onDateSelect={goToDate}
-            />
-
-            {/* View Switcher (Desktop) */}
-            <div className="hidden md:block">
-                <ViewSwitcher value={view} onChange={setView} />
-            </div>
-
-            {/* Actions */}
-            <div className="flex items-center gap-1">
-                {/* View Switcher (Mobile) */}
-                <div className="md:hidden">
-                <ViewSwitcher value={view} onChange={setView} hiddenViews={["timeline"]} />
+            <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-2">
+                    <DateNavigator
+                        date={date}
+                        formattedDateRange={formattedDateRange}
+                        isToday={isToday}
+                        onPrev={goPrev}
+                        onNext={goNext}
+                        onToday={goToday}
+                        onDateSelect={goToDate}
+                    />
                 </div>
 
-                {/* Filter Button */}
-                <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon">
-                    <Filter className="h-4 w-4" />
-                    <span className="sr-only">Bộ lọc</span>
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent>Bộ lọc</TooltipContent>
-                </Tooltip>
+                <div className="flex items-center gap-2">
+                   <ViewSwitcher value={view} onChange={setView} hiddenViews={["timeline"]} className="mr-2" />
 
-                {/* Refresh Button */}
-                <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={handleRefresh}
-                    disabled={isPending}
-                    >
-                    <RefreshCw className={cn("h-4 w-4", isPending && "animate-spin")} />
-                    <span className="sr-only">Làm mới</span>
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent>Làm mới</TooltipContent>
-                </Tooltip>
+                   <div className="hidden sm:flex items-center gap-1 border-l pl-3">
+                        <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
+                            <Filter className="h-4 w-4" />
+                            <span className="sr-only">Bộ lọc</span>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Bộ lọc</TooltipContent>
+                        </Tooltip>
 
-                {/* Settings Button */}
-                <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon">
-                    <Settings2 className="h-4 w-4" />
-                    <span className="sr-only">Cài đặt</span>
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent>Cài đặt hiển thị</TooltipContent>
-                </Tooltip>
-            </div>
+                        <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={handleRefresh}
+                            disabled={isPending}
+                            className="h-8 w-8 text-muted-foreground"
+                            >
+                            <RefreshCw className={cn("h-4 w-4", isPending && "animate-spin")} />
+                            <span className="sr-only">Làm mới</span>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Làm mới</TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
+                            <Settings2 className="h-4 w-4" />
+                            <span className="sr-only">Cài đặt</span>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Cài đặt hiển thị</TooltipContent>
+                        </Tooltip>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -536,8 +527,8 @@ export function AppointmentsPage({
             setSelectedBookingForReview(null);
             handleRefresh(); // Refresh appointments after review
           }}
-          customerName={selectedEvent.appointment.customerName}
-          serviceName={selectedEvent.appointment.serviceName}
+          customerName={selectedEvent?.appointment?.customerName || ""}
+          serviceName={selectedEvent?.appointment?.serviceName || ""}
         />
       )}
     </PageShell>
