@@ -8,7 +8,7 @@
  */
 
 import { Filter, Plus, RefreshCw, Settings2 } from "lucide-react";
-import { useCallback, useEffect, useState, useTransition, use } from "react"; // Added `useCallback` hook
+import { use, useCallback, useEffect, useState, useTransition } from "react"; // Added `useCallback` hook
 
 import { cn } from "@/shared/lib/utils";
 import {
@@ -19,27 +19,25 @@ import {
 } from "@/shared/ui";
 import { showToast } from "@/shared/ui/custom/sonner";
 
+import { createInvoice, getInvoice } from "@/features/billing/actions";
+import { getBookingReview } from "@/features/reviews/actions"; // Import getBookingReview
+import { ReviewPrompt } from "@/features/reviews/components/review-prompt"; // Import ReviewPrompt
 import { ActionResponse } from "@/shared/lib/action-response"; // Import ActionResponse
 import {
   cancelAppointment,
   checkInAppointment,
-  createAppointment,
   deleteAppointment,
   getAppointmentMetrics,
   getAppointments,
-  markNoShow,
+  markNoShow
 } from "../actions"; // getStaffList, getResourceList, getServiceList are now passed as props
-import { createInvoice } from "@/features/billing/actions";
-import { getInvoice } from "@/features/billing/actions"; // Import getInvoice
-import { getBookingReview } from "@/features/reviews/actions"; // Import getBookingReview
-import { MockService, MockStaff } from "../mock-data"; // Import MockService, MockStaff
 import { useCalendarState } from "../hooks/use-calendar-state";
+import { MockService } from "../mock-data"; // Import MockService, MOCK_STAFF
 import type { Appointment, AppointmentMetrics, CalendarEvent, TimelineResource } from "../types";
 import { CalendarView } from "./calendar";
-import { WalkInBookingDialog } from "./walk-in-booking-dialog";
 import { AppointmentSheet } from "./sheet";
 import { DateNavigator, ViewSwitcher } from "./toolbar";
-import { ReviewPrompt } from "@/features/reviews/components/review-prompt"; // Import ReviewPrompt
+import { WalkInBookingDialog } from "./walk-in-booking-dialog";
 
 // ============================================
 // COMPONENT
@@ -50,7 +48,7 @@ interface AppointmentsPageProps {
   staffListPromise: Promise<ActionResponse<TimelineResource[]>>;
   resourceListPromise: Promise<ActionResponse<TimelineResource[]>>;
   serviceListPromise: Promise<ActionResponse<MockService[]>>;
-  fullStaffList: MockStaff[]; // Passed directly from Server Component
+  fullStaffList: TimelineResource[]; // Passed directly from Server Component
 }
 
 export function AppointmentsPage({
@@ -73,8 +71,10 @@ export function AppointmentsPage({
     goToday,
     goToDate,
     densityMode,
-    currentFilters, // Ensure this is available if needed
   } = useCalendarState();
+
+  // Filters state - TODO: implement proper filter hook
+  const currentFilters: { staffIds?: string[]; resourceIds?: string[]; statusFilter?: string[] } = {};
 
   // Use the `use` hook to unwrap the promises from Server Component
   const appointmentsRes = use(appointmentsPromise);
@@ -105,16 +105,14 @@ export function AppointmentsPage({
 
 
   // Fetch metrics when date changes (metrics are dynamic and client-side controlled)
-  const fetchMetrics = useCallback(async () => {
-    const metricsResult = await getAppointmentMetrics(date);
-    if (metricsResult.status === "success" && metricsResult.data) {
-      setMetrics(metricsResult.data);
-    }
-  }, [date]);
-
   useEffect(() => {
-    fetchMetrics();
-  }, [date, fetchMetrics]);
+    startTransition(async () => {
+      const metricsResult = await getAppointmentMetrics(date);
+      if (metricsResult.status === "success" && metricsResult.data) {
+        setMetrics(metricsResult.data);
+      }
+    });
+  }, [date]);
 
 
   const refreshEvents = useCallback(async () => {
@@ -156,7 +154,7 @@ export function AppointmentsPage({
 
     // If all conditions met, show review prompt
     setSelectedBookingForReview(bookingId);
-  }, [events]);
+  }, [events, getInvoice, getBookingReview]); // Added getInvoice, getBookingReview as dependencies
 
   const handleSaveAppointment = (appointment: Appointment) => {
     // TODO: Call API to save appointment (this will be implemented in M3.2)
@@ -170,17 +168,26 @@ export function AppointmentsPage({
   };
 
   const handleRefresh = useCallback(() => {
-    refreshEvents();
-    fetchMetrics();
-  }, [refreshEvents, fetchMetrics]);
+    startTransition(async () => {
+      const result = await getAppointments(dateRange, currentFilters);
+      if (result.status === "success" && result.data) {
+          setEvents(result.data);
+      }
+      const metricsResult = await getAppointmentMetrics(date);
+      if (metricsResult.status === "success" && metricsResult.data) {
+        setMetrics(metricsResult.data);
+      }
+    });
+  }, [dateRange, currentFilters, date]);
 
   // Actions Handlers
   const handleCheckIn = useCallback(
     async (event: CalendarEvent) => {
+      if (!event.id) return;
       startTransition(async () => {
-        const result = await checkInAppointment(event.id);
+        const result = await checkInAppointment(event.id!);
         if (result.status === "success") {
-          showToast.success(result.message);
+          showToast.success(result.message || "Check-in thành công");
           handleRefresh();
         } else {
           showToast.error(result.message || "Không thể check-in");
@@ -192,10 +199,11 @@ export function AppointmentsPage({
 
   const handleNoShow = useCallback(
     async (event: CalendarEvent) => {
+      if (!event.id) return;
       startTransition(async () => {
-        const result = await markNoShow(event.id);
+        const result = await markNoShow(event.id!);
         if (result.status === "success") {
-          showToast.success(result.message);
+          showToast.success(result.message || "Đã đánh dấu No-show");
           handleRefresh();
         } else {
           showToast.error(result.message || "Không thể đánh dấu No-show");
@@ -207,20 +215,21 @@ export function AppointmentsPage({
 
   const handleCancel = useCallback(
     async (event: CalendarEvent) => {
+      if (!event.id) return;
       const now = new Date();
       const hoursDifference = (event.start.getTime() - now.getTime()) / (1000 * 60 * 60);
-  
+
       let message = "Bạn có chắc chắn muốn hủy lịch hẹn này?";
       if (hoursDifference < 2 && hoursDifference > 0) {
         message = "Cảnh báo: Hủy lịch hẹn trước 2 giờ có thể bị tính phí hoặc vi phạm chính sách. Bạn có chắc chắn muốn hủy?";
       }
-  
+
       if (!confirm(message)) return;
-  
+
       startTransition(async () => {
-        const result = await cancelAppointment(event.id);
+        const result = await cancelAppointment(event.id!);
         if (result.status === "success") {
-          showToast.success(result.message);
+          showToast.success(result.message || "Hủy lịch hẹn thành công");
           handleRefresh();
         } else {
           showToast.error(result.message || "Không thể hủy lịch hẹn");
@@ -232,11 +241,12 @@ export function AppointmentsPage({
 
   const handleDelete = useCallback(
     async (event: CalendarEvent) => {
+      if (!event.id) return;
       if (!confirm("Bạn có chắc chắn muốn xóa lịch hẹn này?")) return;
       startTransition(async () => {
-        const result = await deleteAppointment(event.id);
+        const result = await deleteAppointment(event.id!);
         if (result.status === "success") {
-          showToast.success(result.message);
+          showToast.success(result.message || "Xóa lịch hẹn thành công");
           handleRefresh();
         } else {
           showToast.error(result.message || "Không thể xóa lịch hẹn");
@@ -257,11 +267,12 @@ export function AppointmentsPage({
       startTransition(async () => {
         const result = await createInvoice(bookingId);
         if (result.status === "success") {
-          showToast.success(result.message);
+          showToast.success(result.message || "Tạo hóa đơn thành công");
           // Optional: Redirect to billing page or show invoice details
           // router.push(`/admin/billing?invoiceId=${result.data.id}`);
           setIsSheetOpen(false);
-          handleReviewNeeded(bookingId); // Check for review after invoice created
+          // After invoice creation, if booking is completed and paid, prompt for review
+          handleReviewNeeded(bookingId);
         } else {
           showToast.error(result.message || "Không thể tạo hóa đơn");
         }
@@ -285,6 +296,7 @@ export function AppointmentsPage({
       staffName: "",
       color: "gray",
       status: "pending",
+      isRecurring: false,
       appointment: {
         id: "new",
         customerId: "",
@@ -294,10 +306,12 @@ export function AppointmentsPage({
         staffName: "",
         serviceId: "",
         serviceName: "",
+        serviceColor: "#gray",
         startTime,
         endTime: new Date(startTime.getTime() + 60 * 60 * 1000),
         duration: 60,
         status: "pending",
+        isRecurring: false,
         createdAt: new Date(),
         updatedAt: new Date(),
         createdBy: "",

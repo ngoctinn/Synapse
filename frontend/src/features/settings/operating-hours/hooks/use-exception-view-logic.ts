@@ -90,7 +90,7 @@ export function useExceptionViewLogic({ exceptions }: UseExceptionViewLogicProps
           } else if (dateRange) {
               // If params exist, detect unit once
               const unit = detectFilterUnit(dateRange);
-              // eslint-disable-next-line react-hooks/set-state-in-effect
+               
               setFilterUnit(prev => prev !== unit ? unit : prev);
           }
           setInitialized(true);

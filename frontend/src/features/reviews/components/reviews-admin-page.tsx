@@ -15,7 +15,7 @@ import {
 import { Label } from "@/shared/ui/label";
 import { REVIEW_RATING_LABELS } from "../constants";
 import { Button } from "@/shared/ui/button";
-import { Filter, XCircle } from "lucide-react";
+import { Filter, Loader2, XCircle } from "lucide-react";
 import { useDebounce } from "use-debounce";
 
 export function ReviewsAdminPage() {

@@ -1,9 +1,11 @@
-import { ActionResponse, error, success } from "@/shared/lib/action-response";
-import { revalidatePath } from "next/cache";
-import { Review, ReviewCreateInput, ReviewFilters, ReviewRating, ReviewUpdateInput } from "./types";
-import { MOCK_REVIEWS } from "./mock-data";
+"use server";
+
 import { MOCK_APPOINTMENTS, MOCK_CUSTOMERS, MOCK_SERVICES } from "@/features/appointments/mock-data";
 import { MOCK_INVOICES } from "@/features/billing/mock-data";
+import { ActionResponse, error, success } from "@/shared/lib/action-response";
+import { revalidatePath } from "next/cache";
+import { MOCK_REVIEWS } from "./mock-data";
+import { Review, ReviewCreateInput, ReviewFilters, ReviewUpdateInput } from "./types";
 
 // Simulate delay
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

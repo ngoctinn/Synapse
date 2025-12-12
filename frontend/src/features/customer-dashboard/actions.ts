@@ -7,7 +7,7 @@ import { profileSchema } from "./schemas";
 import { updateCustomerProfile } from "./services/api";
 import { cancelAppointment as adminCancelAppointment } from "@/features/appointments/actions";
 
-export async function cancelBooking(id: string, reason: string): Promise<ActionResponse<any>> {
+export async function cancelBooking(id: string, reason: string): Promise<ActionResponse<unknown>> {
   const result = await adminCancelAppointment(id, reason);
   revalidatePath("/dashboard/appointments");
   return result;

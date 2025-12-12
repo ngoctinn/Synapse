@@ -35,7 +35,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
           <StarRating rating={review.rating} size={16} readOnly />
         </div>
         {review.comment && (
-          <p className="text-sm text-muted-foreground italic">"{review.comment}"</p>
+          <p className="text-sm text-muted-foreground italic">&quot;{review.comment}&quot;</p>
         )}
         <p className="text-xs text-right text-muted-foreground">
           {format(review.createdAt, "dd/MM/yyyy", { locale: vi })}

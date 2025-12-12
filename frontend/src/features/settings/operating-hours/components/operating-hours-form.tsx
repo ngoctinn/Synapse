@@ -43,7 +43,7 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
   useEffect(() => {
     setConfig(initialConfig);
     setIsDirty(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [initialConfig]);
 
   // Save handler defined before usage in effect

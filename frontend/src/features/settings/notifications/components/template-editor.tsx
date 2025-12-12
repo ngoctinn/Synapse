@@ -42,12 +42,12 @@ export function TemplateEditor({
     if (template) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setContent(prev => prev !== template.content ? template.content : prev);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setSubject(prev => prev !== (template.subject || "") ? (template.subject || "") : prev);
     } else {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setContent(prev => prev !== "" ? "" : prev);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setSubject(prev => prev !== "" ? "" : prev);
     }
   }, [template, isOpen]);
