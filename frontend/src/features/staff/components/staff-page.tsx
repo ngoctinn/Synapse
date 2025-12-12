@@ -1,6 +1,7 @@
 "use client"
 
 import { Skill } from "@/features/services"
+import { PageFooter } from "@/shared/components/layout/components/page-footer"
 import { ActionResponse } from "@/shared/lib/action-response"
 import { FilterBar } from "@/shared/ui/custom/filter-bar"
 import { Input } from "@/shared/ui/input"
@@ -15,7 +16,7 @@ import { StaffScheduler } from "./scheduling/staff-scheduler"
 import { StaffFilter } from "./staff-filter"
 import { StaffTable, StaffTableSkeleton } from "./staff-list/staff-table"
 
-import { Schedule, Staff, StaffListResponse } from "../model/types"
+import { Schedule, StaffListResponse } from "../model/types"
 
 interface StaffPageProps {
   page: number
@@ -35,11 +36,11 @@ function StaffListWrapper({
   page: number
 }) {
   const response = use(staffListPromise)
-  
-  const { data, total } = response.status === 'success' && response.data 
-    ? response.data 
+
+  const { data, total } = response.status === 'success' && response.data
+    ? response.data
     : { data: [], total: 0 }
-  
+
   const totalPages = Math.ceil(total / 10)
 
   if (response.status === 'error') {
@@ -72,11 +73,7 @@ function StaffSchedulerWrapper({
   return <StaffScheduler initialSchedules={initialSchedules} staffList={staffData} />
 }
 
-const Footer = () => (
-  <div className="text-center text-sm text-muted-foreground py-6 mt-auto">
-    © 2025 Synapse. All rights reserved.
-  </div>
-)
+
 
 export function StaffPage({ page, skills, staffListPromise, initialPermissions, initialSchedules }: StaffPageProps) {
   const router = useRouter()
@@ -136,7 +133,7 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
                       placeholder="Tìm kiếm nhân viên..."
                       defaultValue={initialSearch}
                       onChange={(e) => handleSearch(e.target.value)}
-                      startContent={<Search className="size-4" />}
+                      startContent={<Search className="size-4 text-muted-foreground" />}
                       className="h-9 bg-background w-full md:w-[250px]"
                     />
                 }
@@ -160,7 +157,7 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
                   />
                 </Suspense>
               </div>
-              <Footer />
+                <PageFooter />
             </div>
           </TabsContent>
 
@@ -169,7 +166,7 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
               <div className="surface-card overflow-hidden flex-1">
                 <PermissionMatrix initialPermissions={initialPermissions} className="border-none" />
               </div>
-              <Footer />
+                <PageFooter />
             </div>
           </TabsContent>
 
@@ -192,7 +189,7 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
                   />
                 </Suspense>
               </div>
-              <Footer />
+                <PageFooter />
             </div>
           </TabsContent>
         </div>

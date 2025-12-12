@@ -1,16 +1,17 @@
 "use client"
 
 import { Resource, RoomType } from "@/features/resources"
+import { PageFooter } from "@/shared/components/layout/components/page-footer"
 import { FilterBar } from "@/shared/ui/custom/filter-bar"
 import { Input } from "@/shared/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 
+import { ActionResponse } from "@/shared/lib/action-response"
 import { Search } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Suspense, use, useState, useTransition } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { PaginatedResponse, Service, Skill } from "../types"
-import { ActionResponse } from "@/shared/lib/action-response"
 import { CreateServiceWizard } from "./create-service-wizard"
 import { CreateSkillDialog } from "./create-skill-dialog"
 import { ServiceFilter } from "./service-filter"
@@ -39,7 +40,7 @@ function ServiceListWrapper({
   page: number
 }) {
   const servicesRes = use(servicesPromise)
-  
+
   const { data, total, page: resPage, limit: resLimit } = servicesRes.status === 'success' && servicesRes.data
     ? servicesRes.data
     : { data: [], total: 0, page: page, limit: 10 }
@@ -65,11 +66,6 @@ function ServiceListWrapper({
 }
 
 
-const Footer = () => (
-    <div className="text-center text-sm text-muted-foreground py-6 mt-auto">
-      © 2025 Synapse. All rights reserved.
-    </div>
-  )
 
 export function ServicesPage({ page, skills, roomTypes, equipmentList, servicesPromise }: ServicesPageProps) {
   const router = useRouter()
@@ -100,15 +96,7 @@ export function ServicesPage({ page, skills, roomTypes, equipmentList, servicesP
   const isServiceTab = activeTab === "list"
 
   return (
-    <div
-      className="min-h-screen flex flex-col w-full"
-      style={
-        {
-          "--header-height": "53px",
-          "--header-height-mobile": "105px",
-        } as React.CSSProperties
-      }
-    >
+    <div className="min-h-screen flex flex-col w-full">
       <Tabs defaultValue="list" className="flex flex-col flex-1 w-full gap-0" onValueChange={setActiveTab}>
 
         <div
@@ -155,7 +143,7 @@ export function ServicesPage({ page, skills, roomTypes, equipmentList, servicesP
                     />
                     </Suspense>
                 </div>
-                <Footer />
+                <PageFooter />
              </div>
           </TabsContent>
 
@@ -167,7 +155,7 @@ export function ServicesPage({ page, skills, roomTypes, equipmentList, servicesP
                   className="border-none"
                 />
               </div>
-              <Footer />
+              <PageFooter />
             </div>
           </TabsContent>
         </div>

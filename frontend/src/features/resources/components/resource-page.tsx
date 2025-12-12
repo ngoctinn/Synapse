@@ -1,5 +1,6 @@
 "use client"
 
+import { PageFooter } from "@/shared/components/layout/components/page-footer"
 import { ActionResponse } from "@/shared/lib/action-response"
 import { FilterBar } from "@/shared/ui/custom/filter-bar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
@@ -27,7 +28,7 @@ function ResourceListWrapper({
 }) {
   const resourcesRes = use(resourcesPromise)
   const groupsRes = use(groupsPromise)
-  
+
   const resources = resourcesRes.status === 'success' ? resourcesRes.data || [] : []
   const groups = groupsRes.status === 'success' ? groupsRes.data || [] : []
 
@@ -60,27 +61,20 @@ function MaintenanceTimelineWrapper({
 }) {
   const resourcesRes = use(resourcesPromise)
   const tasksRes = use(tasksPromise)
-  
+
   const resources = resourcesRes.status === 'success' ? resourcesRes.data || [] : []
   const tasks = tasksRes.status === 'success' ? tasksRes.data || [] : []
 
   return <MaintenanceTimeline resources={resources} tasks={tasks} />
 }
 
-const Footer = () => (
-  <div className="text-center text-sm text-muted-foreground py-6 mt-auto">
-    © 2025 Synapse. All rights reserved.
-  </div>
-)
+
 
 export function ResourcePage({ resourcesPromise, groupsPromise, tasksPromise }: ResourcePageProps) {
   const [activeTab, setActiveTab] = useState("list")
 
   return (
-    <div className="min-h-screen flex flex-col w-full" style={{
-      "--header-height": "53px",
-      "--header-height-mobile": "105px"
-    } as React.CSSProperties}>
+    <div className="min-h-screen flex flex-col w-full">
       <Tabs defaultValue="list" className="flex flex-col flex-1 w-full gap-0" onValueChange={setActiveTab}>
 
         <div
@@ -115,7 +109,7 @@ export function ResourcePage({ resourcesPromise, groupsPromise, tasksPromise }: 
                     />
                     </Suspense>
                 </div>
-                <Footer />
+                <PageFooter />
              </div>
           </TabsContent>
 
@@ -129,7 +123,7 @@ export function ResourcePage({ resourcesPromise, groupsPromise, tasksPromise }: 
                     />
                     </Suspense>
                 </div>
-                <Footer />
+                <PageFooter />
             </div>
           </TabsContent>
         </div>

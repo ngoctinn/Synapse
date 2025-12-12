@@ -1,5 +1,6 @@
 "use client"
 
+import { PageFooter } from "@/shared/components/layout/components/page-footer"
 import { ActionResponse } from "@/shared/lib/action-response"
 import { FilterBar } from "@/shared/ui/custom/filter-bar"
 import { Input } from "@/shared/ui/input"
@@ -27,11 +28,11 @@ function CustomerListWrapper({
   page: number
 }) {
   const response = use(customerListPromise)
-  
+
   if (response.status === "error") {
     return <div className="p-4 text-center text-destructive">Lỗi tải dữ liệu: {response.message}</div>
   }
-  
+
   const { data, total } = response.data!
   const totalPages = Math.ceil(total / 10)
 
@@ -46,11 +47,7 @@ function CustomerListWrapper({
   )
 }
 
-const Footer = () => (
-  <div className="text-center text-sm text-muted-foreground py-6 mt-auto">
-    © 2025 Synapse. All rights reserved.
-  </div>
-)
+
 
 export function CustomersPage({ page, customerListPromise }: CustomersPageProps) {
   const router = useRouter()
@@ -107,7 +104,7 @@ export function CustomersPage({ page, customerListPromise }: CustomersPageProps)
                             placeholder="Tìm kiếm khách hàng..."
                             defaultValue={initialSearch}
                             onChange={(e) => handleSearch(e.target.value)}
-                            startContent={<Search className="size-4" />}
+                            startContent={<Search className="size-4 text-muted-foreground" />}
                             className="h-9 bg-background w-full md:w-[250px]"
                         />
                     }
@@ -129,7 +126,7 @@ export function CustomersPage({ page, customerListPromise }: CustomersPageProps)
                         />
                         </Suspense>
                     </div>
-                    <Footer />
+                    <PageFooter />
                 </div>
             </TabsContent>
 
@@ -138,7 +135,7 @@ export function CustomersPage({ page, customerListPromise }: CustomersPageProps)
                  <div className="surface-card flex-1 p-8 text-center text-muted-foreground">
                     <p>Tính năng báo cáo và thông tin chi tiết khách hàng đang được phát triển.</p>
                  </div>
-                 <Footer />
+                 <PageFooter />
                </div>
             </TabsContent>
         </div>

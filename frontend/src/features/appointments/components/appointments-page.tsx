@@ -361,8 +361,8 @@ export function AppointmentsPage({
               </div>
 
               {(metrics?.todayPending ?? 0) > 0 && (
-                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-status-pending text-status-pending-foreground border border-status-pending-border">
+                  <span className="w-1.5 h-1.5 rounded-full bg-status-pending-foreground animate-pulse" />
                   <span className="font-medium tabular-nums">{metrics?.todayPending}</span>
                   <span className="text-xs">chờ xác nhận</span>
                 </div>

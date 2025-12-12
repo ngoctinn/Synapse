@@ -1,11 +1,10 @@
 "use client";
 
-import { DataTable } from "@/shared/ui/custom/data-table";
-import { ColumnDef } from "@tanstack/react-table";
+import { Button } from "@/shared/ui/button";
+import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Eye } from "lucide-react";
-import { Button } from "@/shared/ui/button";
 import { Invoice } from "../types";
 import { InvoiceStatusBadge } from "./invoice-status-badge";
 
@@ -16,67 +15,74 @@ interface InvoiceTableProps {
 }
 
 export function InvoiceTable({ data, onView, isLoading }: InvoiceTableProps) {
-  const columns: ColumnDef<Invoice>[] = [
+  const columns: Column<Invoice>[] = [
     {
+      id: "id",
       accessorKey: "id",
       header: "Mã hóa đơn",
-      cell: ({ row }) => <span className="font-medium">{row.original.id}</span>,
+      cell: (item) => <span className="font-medium">{item.id}</span>,
     },
     {
+      id: "customerName",
       accessorKey: "customerName",
       header: "Khách hàng",
-      cell: ({ row }) => (
+      cell: (item) => (
         <div className="flex flex-col">
-          <span>{row.original.customerName}</span>
+          <span>{item.customerName}</span>
           <span className="text-xs text-muted-foreground">
-            {row.original.customerPhone}
+            {item.customerPhone}
           </span>
         </div>
       ),
     },
     {
+      id: "finalAmount",
       accessorKey: "finalAmount",
       header: "Tổng tiền",
-      cell: ({ row }) => (
+      cell: (item) => (
         <span className="font-medium">
           {new Intl.NumberFormat("vi-VN", {
             style: "currency",
             currency: "VND",
-          }).format(row.original.finalAmount)}
+          }).format(item.finalAmount)}
         </span>
       ),
     },
     {
+      id: "paidAmount",
       accessorKey: "paidAmount",
       header: "Đã thanh toán",
-      cell: ({ row }) => (
-        <span className={row.original.paidAmount < row.original.finalAmount ? "text-orange-600" : "text-green-600"}>
+      cell: (item) => (
+        <span className={item.paidAmount < item.finalAmount ? "text-warning" : "text-success"}>
           {new Intl.NumberFormat("vi-VN", {
             style: "currency",
             currency: "VND",
-          }).format(row.original.paidAmount)}
+          }).format(item.paidAmount)}
         </span>
       ),
     },
     {
+      id: "status",
       accessorKey: "status",
       header: "Trạng thái",
-      cell: ({ row }) => <InvoiceStatusBadge status={row.original.status} />,
+      cell: (item) => <InvoiceStatusBadge status={item.status} />,
     },
     {
+      id: "issuedAt",
       accessorKey: "issuedAt",
       header: "Ngày tạo",
-      cell: ({ row }) => format(row.original.issuedAt, "dd/MM/yyyy HH:mm", { locale: vi }),
+      cell: (item) => format(item.issuedAt, "dd/MM/yyyy HH:mm", { locale: vi }),
     },
     {
       id: "actions",
-      cell: ({ row }) => (
+      header: "",
+      cell: (item) => (
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => onView(row.original)}
+          onClick={() => onView(item)}
         >
-          <Eye className="h-4 w-4" />
+          <Eye className="size-4" />
         </Button>
       ),
     },
@@ -86,9 +92,9 @@ export function InvoiceTable({ data, onView, isLoading }: InvoiceTableProps) {
     <DataTable
       columns={columns}
       data={data}
+      keyExtractor={(item) => item.id}
       isLoading={isLoading}
-      searchColumn="customerName"
-      searchPlaceholder="Tìm kiếm hóa đơn..."
     />
   );
 }
+

@@ -7,6 +7,10 @@ interface StatusBadgeProps {
   className?: string
 }
 
+/**
+ * @deprecated Sử dụng `Badge` với `variant="status-active"` hoặc `variant="status-inactive"` thay thế.
+ * Component này sẽ bị xóa trong phiên bản tương lai.
+ */
 export function StatusBadge({
   isActive,
   activeText = "Hoạt động",
