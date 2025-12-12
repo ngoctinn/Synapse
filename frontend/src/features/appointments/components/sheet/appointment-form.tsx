@@ -15,51 +15,51 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import {
-    CalendarIcon,
-    Check,
-    ChevronsUpDown,
-    Loader2,
+  CalendarIcon,
+  Check,
+  ChevronsUpDown,
+  Loader2,
 } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
 import { cn } from "@/shared/lib/utils";
 import {
-    Button,
-    Calendar,
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-    Textarea,
+  Button,
+  Calendar,
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Textarea,
 } from "@/shared/ui";
 
 import {
-    searchCustomers,
+  searchCustomers,
 } from "../../actions";
+import { MockService } from "../../mock-data";
 import {
-    quickAppointmentFormSchema,
-    type QuickAppointmentFormValues,
+  quickAppointmentFormSchema,
+  type QuickAppointmentFormValues,
 } from "../../schemas";
 import type { Appointment, TimelineResource } from "../../types";
-import { MockService } from "../../mock-data";
 
 // ============================================
 // TYPES
@@ -124,6 +124,7 @@ export function AppointmentForm({
   // Form setup
   const form = useForm<QuickAppointmentFormValues>({
     resolver: zodResolver(quickAppointmentFormSchema),
+    disabled: isPending,
     defaultValues: {
       customerId: appointment?.customerId || "",
       serviceIds: appointment?.serviceId ? [appointment.serviceId] : [],
@@ -221,7 +222,6 @@ export function AppointmentForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-        <fieldset disabled={isPending}>
             {/* CUSTOMER FIELD */}
             <FormField
               control={form.control}
@@ -505,7 +505,6 @@ export function AppointmentForm({
                 {appointment ? "Lưu thay đổi" : "Tạo lịch hẹn"}
               </Button>
             </div>
-        </fieldset>
       </form>
     </Form>
   );

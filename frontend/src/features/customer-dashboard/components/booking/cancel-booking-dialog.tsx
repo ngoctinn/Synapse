@@ -1,21 +1,19 @@
 "use client";
 
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+    AlertDialog,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle
 } from "@/shared/ui/alert-dialog";
 import { Button } from "@/shared/ui/button";
+import { showToast } from "@/shared/ui/custom/sonner";
 import { Label } from "@/shared/ui/label";
 import { Textarea } from "@/shared/ui/textarea";
-import { Loader2 } from "lucide-react";
 import { useState, useTransition } from "react";
-import { toast } from "sonner";
 import { cancelBooking } from "../../actions";
 import { Appointment } from "../../types";
 
@@ -39,19 +37,19 @@ export function CancelBookingDialog({
 
   const handleCancel = () => {
     if (!reason.trim()) {
-      toast.error("Vui lòng nhập lý do hủy");
+      showToast.warning("Thiếu thông tin", "Vui lòng nhập lý do hủy");
       return;
     }
 
     startTransition(async () => {
       const result = await cancelBooking(appointment.id, reason);
       if (result.status === "success") {
-        toast.success(result.message);
+        showToast.success("Hủy thành công", result.message);
         onOpenChange(false);
         setReason("");
         onSuccess?.();
       } else {
-        toast.error(result.message || "Không thể hủy lịch hẹn");
+        showToast.error("Hủy thất bại", result.message || "Không thể hủy lịch hẹn");
       }
     });
   };
@@ -86,7 +84,7 @@ export function CancelBookingDialog({
 
           {isLateCancellation && (
             <div className="bg-yellow-50 text-yellow-800 p-3 rounded-md text-sm border border-yellow-200">
-              <strong>Lưu ý:</strong> Bạn đang hủy lịch hẹn trước giờ hẹn dưới 2 tiếng. 
+              <strong>Lưu ý:</strong> Bạn đang hủy lịch hẹn trước giờ hẹn dưới 2 tiếng.
               Việc này có thể ảnh hưởng đến điểm uy tín của bạn hoặc phát sinh phí hủy theo chính sách.
             </div>
           )}
@@ -94,12 +92,12 @@ export function CancelBookingDialog({
 
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending}>Đóng</AlertDialogCancel>
-          <Button 
-            variant="destructive" 
-            onClick={handleCancel} 
+          <Button
+            variant="destructive"
+            onClick={handleCancel}
             disabled={isPending || !reason.trim()}
+            isLoading={isPending}
           >
-            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Xác nhận hủy
           </Button>
         </AlertDialogFooter>

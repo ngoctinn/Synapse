@@ -6,19 +6,19 @@ import { useFormContext } from "react-hook-form";
 import { cn } from "@/shared/lib/utils";
 import { TagInput } from "@/shared/ui/custom/tag-input";
 import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/shared/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 
@@ -90,7 +90,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                 name="name"
                 render={({ field }) => (
                 <FormItem>
-                    <FormLabel className="text-foreground/80 font-normal">Tên tài nguyên <span className="text-destructive">*</span></FormLabel>
+                    <FormLabel>Tên tài nguyên <span className="text-destructive">*</span></FormLabel>
                     <FormControl>
                     <Input
                         startContent={<Type className="size-4 text-muted-foreground" />}
@@ -110,7 +110,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                     name="code"
                     render={({ field }) => (
                     <FormItem>
-                        <FormLabel className="text-foreground/80 font-normal">Mã định danh <span className="text-destructive">*</span></FormLabel>
+                        <FormLabel>Mã định danh <span className="text-destructive">*</span></FormLabel>
                         <FormControl>
                         <Input
                             startContent={<Barcode className="size-4 text-muted-foreground" />}
@@ -129,7 +129,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                     name="groupId"
                     render={({ field }) => (
                     <FormItem>
-                        <FormLabel className="text-foreground/80 font-normal">Nhóm tài nguyên <span className="text-destructive">*</span></FormLabel>
+                        <FormLabel>Nhóm tài nguyên <span className="text-destructive">*</span></FormLabel>
                         <Select
                             onValueChange={(val) => {
                                 field.onChange(val);
@@ -166,7 +166,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                 name="description"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel className="text-foreground/80 font-normal">Mô tả chi tiết</FormLabel>
+                    <FormLabel>Mô tả chi tiết</FormLabel>
                     <FormControl>
                         <Textarea
                         placeholder="Mô tả về đặc điểm, vị trí hoặc công dụng..."
@@ -186,7 +186,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
   function renderConfigInfo() {
     return (
     <div className="space-y-6">
-         <div className="flex items-center gap-3 p-3 bg-blue-50 text-blue-700 rounded-lg text-sm mb-4 border border-blue-100">
+         <div className="flex items-center gap-3 p-3 bg-info/10 text-info rounded-lg text-sm mb-4 border border-info/20">
             <Activity className="size-4 shrink-0" />
             <p>Các thiết lập này ảnh hưởng trực tiếp đến việc xếp lịch và tính khả dụng.</p>
          </div>
@@ -197,7 +197,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                 name="status"
                 render={({ field }) => (
                 <FormItem>
-                    <FormLabel className="text-foreground/80 font-normal">Trạng thái hiện tại <span className="text-destructive">*</span></FormLabel>
+                    <FormLabel>Trạng thái hiện tại <span className="text-destructive">*</span></FormLabel>
                     <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
@@ -226,7 +226,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                 name="setupTime"
                 render={({ field }) => (
                 <FormItem>
-                    <FormLabel className="text-foreground/80 font-normal">Thời gian Setup (phút)</FormLabel>
+                    <FormLabel>Thời gian Setup (phút)</FormLabel>
                     <FormControl>
                     <Input
                         startContent={<Clock className="size-4 text-muted-foreground" />}
@@ -249,7 +249,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                     name="capacity"
                     render={({ field }) => (
                     <FormItem>
-                        <FormLabel className="text-foreground/80 font-normal">Sức chứa tối đa (người)</FormLabel>
+                        <FormLabel>Sức chứa tối đa (người)</FormLabel>
                         <FormControl>
                         <Input
                             startContent={<Users className="size-4 text-muted-foreground" />}
@@ -275,7 +275,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                     name="tags"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel className="text-foreground/80 font-normal">Thẻ quản lý (Tags)</FormLabel>
+                            <FormLabel>Thẻ quản lý (Tags)</FormLabel>
                             <FormControl>
                                 <TagInput
                                     options={[]}

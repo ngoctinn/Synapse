@@ -1,20 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import { useTransition } from "react";
-import { toast } from "sonner";
+import { showToast } from "@/shared/ui/custom/sonner";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
 } from "@/shared/ui/dialog";
-import { Button } from "@/shared/ui/button";
+import { useTransition } from "react";
 import { createReview } from "../actions";
-import { ReviewForm } from "./review-form";
 import { CreateReviewFormValues } from "../schemas";
-import { Loader2 } from "lucide-react";
+import { ReviewForm } from "./review-form";
 
 interface ReviewPromptProps {
   bookingId: string;
@@ -39,11 +36,11 @@ export function ReviewPrompt({
     startTransition(async () => {
       const result = await createReview({ bookingId, ...values });
       if (result.status === "success") {
-        toast.success(result.message);
+        showToast.success("Đánh giá thành công", result.message);
         onOpenChange(false);
         onReviewSubmitted?.();
       } else {
-        toast.error(result.message || "Gửi đánh giá thất bại");
+        showToast.error("Đánh giá thất bại", result.message || "Gửi đánh giá thất bại");
       }
     });
   };

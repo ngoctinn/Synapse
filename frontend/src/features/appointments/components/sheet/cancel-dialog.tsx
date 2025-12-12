@@ -10,21 +10,21 @@
  * - Loading state khi submit
  */
 
+import { showToast } from "@/shared/ui/custom/sonner";
 import { differenceInHours, format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { AlertTriangle, Calendar, Clock, User, XCircle } from "lucide-react";
 import { useState, useTransition } from "react";
-import { toast } from "sonner";
 
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/shared/ui/dialog";
 import { Textarea } from "@/shared/ui/textarea";
 
@@ -76,12 +76,12 @@ export function CancelDialog({
       const result = await cancelAppointment(event.id, reason || undefined);
 
       if (result.status === "success") {
-        toast.success(result.message || "Đã hủy lịch hẹn");
+        showToast.success("Hủy thành công", result.message || "Đã hủy lịch hẹn");
         setReason("");
         onOpenChange(false);
         onSuccess?.();
       } else {
-        toast.error(result.message || "Không thể hủy lịch hẹn");
+        showToast.error("Hủy thất bại", result.message || "Không thể hủy lịch hẹn");
       }
     });
   };

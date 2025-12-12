@@ -2,20 +2,20 @@
 
 import { Resource, RoomType } from "@/features/resources"
 import { Button } from "@/shared/ui/button"
+import { showToast } from "@/shared/ui/custom/sonner"
 import { Form } from "@/shared/ui/form"
 import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle,
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
 } from "@/shared/ui/sheet"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save, Send } from "lucide-react"
 import * as React from "react"
 import { Resolver, useForm } from "react-hook-form"
-import { toast } from "sonner"
 import { createService, updateService } from "../actions"
 import { SERVICE_DEFAULT_VALUES } from "../constants"
 import { ServiceFormValues, serviceSchema } from "../schemas"
@@ -47,6 +47,7 @@ export function ServiceSheet({
   const form = useForm<ServiceFormValues>({
     resolver: zodResolver(serviceSchema) as Resolver<ServiceFormValues>,
     mode: "onChange",
+    disabled: isPending,
     defaultValues: {
       name: initialData?.name || "",
       duration: initialData?.duration || SERVICE_DEFAULT_VALUES.duration,
@@ -98,22 +99,18 @@ export function ServiceSheet({
             : await createService(data)
 
         if (result.status === "success") {
-          toast.success(
+          showToast.success(
             isUpdateMode ? "Cập nhật thành công" : "Tạo dịch vụ thành công",
-            {
-              description: `Dịch vụ "${data.name}" đã được ${
-                isUpdateMode ? "cập nhật" : "thêm vào hệ thống"
-              }.`,
-            }
+            `Dịch vụ "${data.name}" đã được ${
+              isUpdateMode ? "cập nhật" : "thêm vào hệ thống"
+            }.`
           )
           onOpenChange(false)
         } else {
-          toast.error("Thất bại", { description: result.message })
+          showToast.error("Thất bại", result.message)
         }
       } catch (error) {
-        toast.error("Lỗi hệ thống", {
-          description: "Đã có lỗi xảy ra, vui lòng thử lại sau.",
-        })
+        showToast.error("Lỗi hệ thống", "Đã có lỗi xảy ra, vui lòng thử lại sau.")
       }
     })
   }
@@ -121,7 +118,7 @@ export function ServiceSheet({
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full sm:max-w-xl p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
-        <SheetHeader className="px-6 py-4 border-b">
+        <SheetHeader>
           <SheetTitle className="text-xl font-semibold text-foreground">
             {isUpdateMode ? "Chỉnh sửa dịch vụ" : "Tạo dịch vụ mới"}
           </SheetTitle>
@@ -132,14 +129,13 @@ export function ServiceSheet({
           </SheetDescription>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto px-6 py-6">
+        <div className="sheet-scroll-area">
           <Form {...form}>
-            <form
+              <form
               id="service-form"
               onSubmit={form.handleSubmit(onSubmit)}
               className="h-full flex flex-col"
             >
-              <fieldset disabled={isPending}>
                 <ServiceForm
                   mode={mode}
                   availableSkills={availableSkills}
@@ -147,12 +143,11 @@ export function ServiceSheet({
                   availableEquipment={availableEquipment}
                   className="flex-1"
                 />
-              </fieldset>
             </form>
           </Form>
         </div>
 
-        <SheetFooter className="px-6 py-4 border-t sm:justify-between flex-row items-center gap-4 bg-background">
+        <SheetFooter>
           <Button
             type="button"
             variant="ghost"
@@ -167,7 +162,7 @@ export function ServiceSheet({
             form="service-form"
             isLoading={isPending}
             className="min-w-[140px]"
-            startContent={isUpdateMode ? <Save className="h-4 w-4" /> : <Send className="h-4 w-4" />}
+            startContent={isUpdateMode ? <Save className="size-4" /> : <Send className="size-4" />}
           >
             {isUpdateMode ? "Lưu thay đổi" : "Tạo dịch vụ"}
           </Button>

@@ -400,6 +400,32 @@
   .animate-pulse-horizontal {
     animation: pulseHorizontal 1.5s infinite ease-in-out;
   }
+
+  /* Shared Form Animation Classes - Chuẩn hóa LO-056→061 */
+  .form-section-enter {
+    @apply motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-2 motion-safe:duration-300;
+  }
+
+  .form-tab-enter {
+    @apply motion-safe:animate-in motion-safe:fade-in-50 motion-safe:duration-300;
+  }
+
+  .form-panel-enter {
+    @apply motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-500 motion-safe:ease-out;
+  }
+
+  /* Shared Sheet Layout Classes - Chuẩn hóa LO-035→040, LO-076→078 */
+  .sheet-header {
+    @apply px-6 py-4 border-b;
+  }
+
+  .sheet-footer {
+    @apply px-6 py-4 border-t sm:justify-between flex-row items-center gap-4 bg-background;
+  }
+
+  .sheet-scroll-area {
+    @apply flex-1 overflow-y-auto px-6 py-6 [scrollbar-gutter:stable];
+  }
 }
 
 /* Keyframes */

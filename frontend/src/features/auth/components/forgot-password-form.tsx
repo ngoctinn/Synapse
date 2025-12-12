@@ -31,6 +31,7 @@ export function ForgotPasswordForm() {
 
   const form = useForm<ForgotPasswordInput>({
     resolver: zodResolver(forgotPasswordSchema),
+    disabled: isPending,
     defaultValues: {
       email: "",
     },
@@ -74,7 +75,6 @@ export function ForgotPasswordForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <fieldset disabled={isPending}>
             <FormField
               control={form.control}
               name="email"
@@ -96,12 +96,11 @@ export function ForgotPasswordForm() {
 
             <Button
               type="submit"
-              className="w-full mt-6"
+              className="w-full"
               isLoading={isPending}
             >
               Gửi yêu cầu
-            </Button>
-          </fieldset>
+          </Button>
         </form>
       </Form>
 

@@ -1,16 +1,15 @@
 "use client"
 
 import { useTableParams, useTableSelection } from "@/shared/hooks"
-import { cn } from "@/shared/lib/utils"
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
 } from "@/shared/ui/alert-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
@@ -21,10 +20,10 @@ import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar"
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
 } from "@/shared/ui/tooltip"
 import { Activity, AlertCircle, Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
@@ -45,10 +44,10 @@ interface CustomerTableProps {
   variant?: "default" | "flush"
 }
 
-const TIER_STYLES: Record<string, string> = {
-    SILVER: "bg-gradient-to-r from-muted to-muted/80 text-muted-foreground border-border",
-    GOLD: "bg-gradient-to-r from-accent to-accent/80 text-accent-foreground border-accent",
-    PLATINUM: "bg-gradient-to-r from-card-foreground to-card-foreground/90 text-card border-card-foreground",
+const TIER_STYLES: Record<string, "secondary" | "warning" | "default" | "outline"> = {
+    SILVER: "secondary",
+    GOLD: "warning",
+    PLATINUM: "default",
 }
 
 export function CustomerTable({
@@ -141,7 +140,7 @@ export function CustomerTable({
         header: "Hạng thành viên",
         accessorKey: "membership_tier",
         cell: (c) => (
-            <Badge variant="outline" className={cn("text-[10px] font-bold uppercase tracking-wider", TIER_STYLES[c.membership_tier])}>
+            <Badge variant={TIER_STYLES[c.membership_tier] || "outline"} className="text-[10px] uppercase font-bold tracking-wider">
                 {c.membership_tier}
             </Badge>
         )

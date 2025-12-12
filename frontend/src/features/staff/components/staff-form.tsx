@@ -5,19 +5,19 @@ import { cn } from "@/shared/lib/utils"
 import { DatePicker } from "@/shared/ui/custom/date-picker"
 import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form"
 import { Input } from "@/shared/ui/input"
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/shared/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 
@@ -101,7 +101,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
             name="full_name"
             render={({ field }) => (
                 <FormItem>
-                <FormLabel className="text-foreground/80 font-normal">Họ và tên</FormLabel>
+                <FormLabel>Họ và tên</FormLabel>
                 <FormControl>
                     <Input
                     startContent={<User size={18} />}
@@ -121,7 +121,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                 name="email"
                 render={({ field }) => (
                 <FormItem>
-                    <FormLabel className="text-foreground/80 font-normal">Email</FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
                     <Input
                         startContent={<Mail size={18} />}
@@ -141,7 +141,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                 name="phone_number"
                 render={({ field }) => (
                 <FormItem>
-                    <FormLabel className="text-foreground/80 font-normal">Số điện thoại</FormLabel>
+                    <FormLabel>Số điện thoại</FormLabel>
                     <FormControl>
                     <Input
                         startContent={<Phone size={18} />}
@@ -162,7 +162,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
         name="bio"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-foreground/80 font-normal">Giới thiệu ngắn</FormLabel>
+            <FormLabel>Giới thiệu ngắn</FormLabel>
             <FormControl>
               <Textarea
                 placeholder="Mô tả kinh nghiệm, thế mạnh chuyên môn..."
@@ -187,7 +187,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
               name="role"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-foreground/80 font-normal">Vai trò</FormLabel>
+                  <FormLabel>Vai trò</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -212,7 +212,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-foreground/80 font-normal">Chức danh</FormLabel>
+                  <FormLabel>Chức danh</FormLabel>
                   <FormControl>
                     <Input
                       startContent={<Briefcase size={18} />}
@@ -232,7 +232,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
         name="color_code"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-foreground/80 font-normal flex items-center justify-between">
+            <FormLabel className="flex items-center justify-between">
               <span>Màu hiển thị (Lịch)</span>
               <span className="text-xs text-muted-foreground font-normal">Được dùng để định danh trên lịch hẹn</span>
             </FormLabel>
@@ -272,7 +272,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                 name="skill_ids"
                 render={({ field, fieldState }) => (
                     <FormItem>
-                        <FormLabel className="text-foreground/80 font-normal">Kỹ năng chuyên môn</FormLabel>
+                        <FormLabel>Kỹ năng chuyên môn</FormLabel>
                         <FormControl>
                             <TagInput
                                 options={skills.map(s => ({ id: s.id, label: s.name }))}
@@ -302,7 +302,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                 name="hired_at"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel className="text-foreground/80 font-normal">Ngày tuyển dụng</FormLabel>
+                        <FormLabel>Ngày tuyển dụng</FormLabel>
                         <FormControl>
                             <DatePicker
                                 value={field.value ? parse(field.value, "yyyy-MM-dd", new Date()) : undefined}
@@ -320,7 +320,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                 name="commission_rate"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel className="text-foreground/80 font-normal">Hoa hồng (%)</FormLabel>
+                        <FormLabel>Hoa hồng (%)</FormLabel>
                         <FormControl>
                             <Input
                                 type="number"

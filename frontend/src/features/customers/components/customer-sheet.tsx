@@ -8,10 +8,10 @@ import { useForm } from "react-hook-form"
 
 import { manageCustomer } from "@/features/customers/actions"
 import {
-    CustomerFormValues,
-    customerSchema,
-    CustomerUpdateFormValues,
-    customerUpdateSchema
+  CustomerFormValues,
+  customerSchema,
+  CustomerUpdateFormValues,
+  customerUpdateSchema
 } from "@/features/customers/model/schemas"
 import { Customer } from "@/features/customers/model/types"
 import { getTechnicians, type TechnicianOption } from "@/features/staff/actions"
@@ -19,17 +19,17 @@ import { getTechnicians, type TechnicianOption } from "@/features/staff/actions"
 
 import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
+import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs"
 import { showToast } from "@/shared/ui/custom/sonner"
 import { Form } from "@/shared/ui/form"
 import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle
 } from "@/shared/ui/sheet"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 
 import { CustomerForm } from "./customer-form"
 import { CustomerHistory } from "./customer-history"
@@ -60,6 +60,7 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
   const form = useForm<CustomerFormValues | CustomerUpdateFormValues>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(schema) as any,
+    disabled: isPending,
     defaultValues: {
       full_name: "",
       email: "",
@@ -139,7 +140,7 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
           "w-full p-0 gap-0 flex flex-col bg-background border-l shadow-2xl transition-all duration-300",
           mode === "update" ? "sm:max-w-3xl" : "sm:max-w-xl"
       )}>
-        <SheetHeader className="px-6 py-4 border-b">
+        <SheetHeader>
             <div className="flex items-center justify-between">
                 <SheetTitle className="text-xl font-semibold text-foreground flex items-center gap-3">
                     {mode === "create" ? "Thêm khách hàng mới" : "Hồ sơ khách hàng"}
@@ -166,32 +167,32 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
             </SheetDescription>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto px-6 py-6" id="sheet-scroll-container">
+        <div className="sheet-scroll-area" id="sheet-scroll-container">
             <Form {...form}>
                 <form id="customer-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                    <fieldset disabled={isPending}>
                         {mode === "create" ? (
                              <CustomerForm mode={mode} disabled={isPending} technicians={technicians} />
                         ) : (
-                            <Tabs defaultValue="info" className="w-full">
-                                <TabsList variant="default" fullWidth gridCols={2} className="mb-6 h-10">
-                                    <TabsTrigger value="info" variant="default">Thông tin</TabsTrigger>
-                                    <TabsTrigger value="history" variant="default">Lịch sử & Thống kê</TabsTrigger>
-                                </TabsList>
-                                <TabsContent value="info" className="mt-0 space-y-6">
+                            <FormTabs
+                                tabs={[
+                                    { value: "info", label: "Thông tin" },
+                                    { value: "history", label: "Lịch sử & Thống kê" }
+                                ]}
+                                defaultValue="info"
+                            >
+                                <FormTabsContent value="info" className="form-tab-enter mt-0 space-y-6">
                                     <CustomerForm mode={mode} disabled={isPending} technicians={technicians} />
-                                </TabsContent>
-                                <TabsContent value="history" className="mt-0">
+                                </FormTabsContent>
+                                <FormTabsContent value="history" className="form-tab-enter mt-0">
                                     <CustomerHistory />
-                                </TabsContent>
-                            </Tabs>
+                                </FormTabsContent>
+                            </FormTabs>
                         )}
-                    </fieldset>
                 </form>
             </Form>
         </div>
 
-        <SheetFooter className="px-6 py-4 border-t sm:justify-between flex-row items-center gap-4 bg-background z-20">
+        <SheetFooter className="z-20">
             <Button
                 type="button"
                 variant="ghost"
@@ -211,16 +212,9 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
                 disabled={isPending}
                 className="min-w-[140px]"
                 isLoading={isPending}
+                startContent={mode === "create" ? <UserPlus className="size-4" /> : <Save className="size-4" />}
             >
-                {mode === "create" ? (
-                    <>
-                        <UserPlus className="mr-2 h-4 w-4" /> Tạo hồ sơ
-                    </>
-                ) : (
-                    <>
-                        <Save className="mr-2 h-4 w-4" /> Lưu thay đổi
-                    </>
-                )}
+                {mode === "create" ? "Tạo hồ sơ" : "Lưu thay đổi"}
             </Button>
         </SheetFooter>
       </SheetContent>

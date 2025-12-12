@@ -3,19 +3,19 @@
 import { cn } from "@/shared/lib/utils"
 import { DatePicker } from "@/shared/ui/custom/date-picker"
 import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form"
 import { Input } from "@/shared/ui/input"
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/shared/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
 
@@ -95,7 +95,7 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
                 name="phone_number"
                 render={({ field }) => (
                 <FormItem>
-                    <FormLabel className="text-foreground/80 font-normal">
+                    <FormLabel>
                         Số điện thoại <span className="text-destructive ml-0.5">*</span>
                     </FormLabel>
                     <FormControl>
@@ -119,7 +119,7 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
                 name="full_name"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel className="text-foreground/80 font-normal">
+                    <FormLabel>
                         Họ và tên <span className="text-destructive ml-0.5">*</span>
                     </FormLabel>
                     <FormControl>
@@ -143,7 +143,7 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
                   name="gender"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-foreground/80 font-normal">Giới tính</FormLabel>
+                      <FormLabel>Giới tính</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
@@ -168,7 +168,7 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
                     name="date_of_birth"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel className="text-foreground/80 font-normal">Ngày sinh</FormLabel>
+                            <FormLabel>Ngày sinh</FormLabel>
                             <FormControl>
                                 <DatePicker
                                     value={field.value && !isNaN(Date.parse(field.value)) ? new Date(field.value) : undefined}
@@ -198,7 +198,7 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
                 name="email"
                 render={({ field }) => (
                 <FormItem>
-                    <FormLabel className="text-foreground/80 font-normal">
+                    <FormLabel>
                         Email <span className="text-muted-foreground font-normal text-xs ml-1">(Tùy chọn)</span>
                     </FormLabel>
                     <FormControl>
@@ -221,7 +221,7 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
                 name="address"
                 render={({ field }) => (
                 <FormItem>
-                    <FormLabel className="text-foreground/80 font-normal">Địa chỉ</FormLabel>
+                    <FormLabel>Địa chỉ</FormLabel>
                     <FormControl>
                     <Input
                         startContent={<MapPin size={18} />}
@@ -280,7 +280,7 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
             name="medical_notes"
             render={({ field }) => (
                 <FormItem>
-                <FormLabel className="text-foreground/80 font-normal flex items-center gap-2">
+                <FormLabel className="flex items-center gap-2">
                     <Activity className="w-4 h-4 text-info" />
                     Ghi chú y tế & Thai sản
                 </FormLabel>
@@ -318,7 +318,7 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
                   name="membership_tier"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-foreground/80 font-normal">Hạng thành viên</FormLabel>
+                      <FormLabel>Hạng thành viên</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value || "SILVER"}
@@ -344,7 +344,7 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
                     name="loyalty_points"
                     render={({ field }) => (
                         <FormItem>
-                        <FormLabel className="text-foreground/80 font-normal">Điểm tích lũy</FormLabel>
+                        <FormLabel>Điểm tích lũy</FormLabel>
                         <FormControl>
                             <Input
                             startContent={<Star size={18} className="text-accent-foreground" />}
@@ -367,7 +367,7 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
                   name="preferred_staff_id"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-foreground/80 font-normal">Chuyên viên ưu tiên (Nếu có)</FormLabel>
+                      <FormLabel>Chuyên viên ưu tiên (Nếu có)</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value || undefined}

@@ -4,9 +4,9 @@ import { Loader2 } from "lucide-react";
 import * as React from "react";
 
 import {
-  type ButtonVariant,
-  type ComponentSize,
-  warnDeprecated,
+    type ButtonVariant,
+    type ComponentSize,
+    warnDeprecated,
 } from "@/shared/lib/design-system.types";
 import { cn } from "@/shared/lib/utils";
 
@@ -112,7 +112,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={isRunning || disabled}
         {...props}
       >
-        {isRunning && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        {isRunning && <Loader2 className="mr-2 size-4 animate-spin" />}
         {!isRunning && leftContent && (
           <span className="mr-1">{leftContent}</span>
         )}
@@ -128,3 +128,4 @@ Button.displayName = "Button";
 
 export { Button, buttonVariants };
 export type { ButtonVariant, ComponentSize };
+

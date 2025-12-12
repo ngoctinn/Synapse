@@ -1,14 +1,15 @@
 "use client";
 
 import { Button } from "@/shared/ui/button";
+import { showToast } from "@/shared/ui/custom/sonner";
 import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
 import { Textarea } from "@/shared/ui/textarea";
@@ -16,7 +17,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Code, Tag } from "lucide-react";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import * as z from "zod";
 import { createSkill, updateSkill } from "../actions";
 import { skillSchema } from "../schemas";
@@ -47,15 +47,15 @@ export function SkillForm({ skill, onSuccess }: SkillFormProps) {
           : await createSkill(values);
 
         if (result.status === "success") {
-          toast.success(result.message);
+          showToast.success(skill ? "Cập nhật thành công" : "Tạo mới thành công", result.message);
           if (onSuccess) {
             onSuccess();
           }
         } else {
-          toast.error(result.message || "Có lỗi xảy ra");
+          showToast.error("Thất bại", result.message || "Có lỗi xảy ra");
         }
       } catch (error) {
-        toast.error("Có lỗi xảy ra khi lưu kỹ năng");
+        showToast.error("Lỗi hệ thống", "Có lỗi xảy ra khi lưu kỹ năng");
         console.error(error);
       }
     });

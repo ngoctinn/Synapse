@@ -31,6 +31,7 @@ export function LoginForm() {
 
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
+    disabled: isPending,
     defaultValues: {
       email: "",
       password: "",
@@ -71,7 +72,6 @@ export function LoginForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <fieldset disabled={isPending}>
             <FormField
               control={form.control}
               name="email"
@@ -130,12 +130,11 @@ export function LoginForm() {
 
             <Button
               type="submit"
-              className="w-full mt-6"
+              className="w-full"
               isLoading={isPending}
             >
               Đăng nhập
-            </Button>
-          </fieldset>
+          </Button>
         </form>
       </Form>
 

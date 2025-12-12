@@ -29,6 +29,7 @@ export function UpdatePasswordForm() {
 
   const form = useForm<UpdatePasswordInput>({
     resolver: zodResolver(updatePasswordSchema),
+    disabled: isPending,
     defaultValues: {
       password: "",
       confirmPassword: "",
@@ -67,7 +68,6 @@ export function UpdatePasswordForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <fieldset disabled={isPending}>
             <FormField
               control={form.control}
               name="password"
@@ -129,12 +129,11 @@ export function UpdatePasswordForm() {
 
             <Button
               type="submit"
-              className="w-full mt-6"
+              className="w-full"
               isLoading={isPending}
             >
               Cập nhật mật khẩu
-            </Button>
-          </fieldset>
+          </Button>
         </form>
       </Form>
 

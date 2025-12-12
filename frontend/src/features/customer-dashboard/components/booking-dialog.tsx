@@ -148,7 +148,7 @@ export function BookingDialog({
     }
 
     return (
-        <fieldset disabled={isSubmitting}>
+        <>
             {(() => { // Wrap the switch case in an IIFE
                 switch (state.step) {
                     case "preference": return <StepPreference {...commonProps} />
@@ -159,7 +159,7 @@ export function BookingDialog({
                     default: return null
                 }
             })()}
-        </fieldset>
+        </>
     )
   }
 
@@ -232,8 +232,8 @@ export function BookingDialog({
                             onClick={handleBack}
                             disabled={isSubmitting}
                             className="text-muted-foreground hover:text-foreground pl-0 hover:bg-transparent"
+                            startContent={<ArrowLeft className="size-4" />}
                         >
-                            <ArrowLeft className="h-4 w-4 mr-2" />
                             Quay lại
                         </Button>
                      ) : (
@@ -249,16 +249,14 @@ export function BookingDialog({
                             (state.step === "staff-select" && !state.selectedStaff) ||
                             (state.step === "time-select" && !state.selectedTime)
                         }
+                        endContent={!(isSubmitting || state.step === "confirm") ? <ChevronRight className="size-4" /> : undefined}
                     >
                         {isSubmitting ? (
                             "Đang xử lý..."
                         ) : state.step === "confirm" ? (
                             "Xác nhận đặt"
                         ) : (
-                            <>
-                                Tiếp tục
-                                <ChevronRight className="h-4 w-4 ml-2" />
-                            </>
+                             "Tiếp tục"
                         )}
                     </Button>
                 </div>

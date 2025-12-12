@@ -48,6 +48,7 @@ export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffShe
 
   const form = useForm<StaffCreateFormValues | StaffUpdateFormValues>({
     resolver: zodResolver(schema),
+    disabled: isPending,
     defaultValues: {
       email: "",
       full_name: "",
@@ -116,7 +117,7 @@ export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffShe
   return (
     <Sheet open={open} onOpenChange={(val) => !isPending && onOpenChange(val)}>
       <SheetContent className="w-full sm:max-w-md p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
-        <SheetHeader className="px-6 py-4 border-b">
+        <SheetHeader>
             <div className="flex items-center justify-between">
                 <SheetTitle className="text-xl font-semibold text-foreground">
                     {mode === "create" ? "Mời nhân viên" : "Hồ sơ nhân viên"}
@@ -129,17 +130,15 @@ export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffShe
             </SheetDescription>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto px-6 py-6" id="sheet-scroll-container">
+        <div className="sheet-scroll-area" id="sheet-scroll-container">
             <Form {...form}>
                 <form id="staff-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                    <fieldset disabled={isPending}>
                         <StaffForm mode={mode} skills={skills} />
-                    </fieldset>
                 </form>
             </Form>
         </div>
 
-        <SheetFooter className="px-6 py-4 border-t sm:justify-between flex-row items-center gap-4 bg-background">
+        <SheetFooter>
             <Button
                 type="button"
                 variant="ghost"
@@ -155,7 +154,7 @@ export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffShe
                 disabled={isPending}
                 className="min-w-[140px]"
                 isLoading={isPending}
-                startContent={mode === "create" ? <Send className="h-4 w-4" /> : <Save className="h-4 w-4" />}
+                startContent={mode === "create" ? <Send className="size-4" /> : <Save className="size-4" />}
             >
                 {mode === "create" ? "Gửi lời mời" : "Lưu thay đổi"}
             </Button>

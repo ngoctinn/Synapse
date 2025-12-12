@@ -42,6 +42,7 @@ export function ResourceSheet({
   const form = useForm<ResourceFormValues>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(resourceSchema) as any,
+    disabled: isPending,
     defaultValues: {
       name: "",
       code: "",
@@ -117,7 +118,7 @@ export function ResourceSheet({
   return (
     <Sheet open={open} onOpenChange={(val) => !isPending && onOpenChange(val)}>
       <SheetContent className="w-full sm:max-w-md p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
-        <SheetHeader className="px-6 py-4 border-b">
+        <SheetHeader>
             <div className="flex items-center justify-between">
                 <SheetTitle className="text-xl font-semibold text-foreground">
                     {mode === "update" ? "Chỉnh sửa tài nguyên" : "Thêm tài nguyên mới"}
@@ -130,17 +131,15 @@ export function ResourceSheet({
             </SheetDescription>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto px-6 py-6 [scrollbar-gutter:stable]">
+        <div className="sheet-scroll-area">
           <Form {...form}>
             <form id="resource-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <fieldset disabled={isPending}>
                 <ResourceForm mode={mode} groups={groups} />
-              </fieldset>
             </form>
           </Form>
         </div>
 
-        <SheetFooter className="px-6 py-4 border-t sm:justify-between flex-row items-center gap-4 bg-background">
+        <SheetFooter>
             <Button
                 type="button"
                 variant="ghost"
@@ -155,7 +154,7 @@ export function ResourceSheet({
                 form="resource-form"
                 isLoading={isPending}
                 className="min-w-[140px]"
-                startContent={<Save className="h-4 w-4" />}
+                startContent={<Save className="size-4" />}
             >
                 {resource ? "Lưu thay đổi" : "Tạo mới"}
             </Button>

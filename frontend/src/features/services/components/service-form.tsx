@@ -76,7 +76,7 @@ function ServiceBasicInfo() {
               name="image_url"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel className="text-foreground/80">Ảnh đại diện</FormLabel>
+                  <FormLabel>Ảnh đại diện</FormLabel>
                    <FormControl>
                     <ImageUpload
                       value={field.value}
@@ -99,7 +99,7 @@ function ServiceBasicInfo() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80">
+                <FormLabel>
                   Tên dịch vụ <span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
@@ -120,7 +120,7 @@ function ServiceBasicInfo() {
               name="color"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-foreground/80 text-xs">Màu hiển thị</FormLabel>
+                  <FormLabel className="text-xs">Màu hiển thị</FormLabel>
                   <FormControl>
                     <ColorSwatchGroup
                       value={field.value}
@@ -141,7 +141,7 @@ function ServiceBasicInfo() {
         name="description"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-foreground/80">Mô tả</FormLabel>
+            <FormLabel>Mô tả</FormLabel>
             <FormControl>
               <Textarea
                 placeholder="Mô tả chi tiết..."
@@ -167,7 +167,7 @@ function ServiceTimePriceInfo({ duration, bufferTime }: { duration: number; buff
           name="duration"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-foreground/80">
+              <FormLabel>
                 Thời lượng
               </FormLabel>
               <FormControl>
@@ -189,7 +189,7 @@ function ServiceTimePriceInfo({ duration, bufferTime }: { duration: number; buff
           name="buffer_time"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-foreground/80">
+              <FormLabel>
                 Nghỉ giữa ca
               </FormLabel>
               <FormControl>
@@ -219,7 +219,7 @@ function ServiceTimePriceInfo({ duration, bufferTime }: { duration: number; buff
         name="price"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-foreground/80 flex items-center gap-2">
+            <FormLabel className="flex items-center gap-2">
               <Palette className="w-4 h-4 text-primary" />
               Giá niêm yết
             </FormLabel>
@@ -271,7 +271,7 @@ function ServiceResourcesInfo({
         name="resource_requirements.room_type_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-foreground/80">
+            <FormLabel>
               Loại phòng yêu cầu
             </FormLabel>
             <FormControl>
@@ -306,7 +306,7 @@ function ServiceResourcesInfo({
         name="skill_ids"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-foreground/80 flex items-center gap-2">
+            <FormLabel className="flex items-center gap-2">
               <Users className="w-4 h-4 text-primary" />
               Kỹ năng yêu cầu
             </FormLabel>
@@ -327,7 +327,7 @@ function ServiceResourcesInfo({
       />
 
       <div className="space-y-3 pt-2 border-t">
-        <FormLabel className="text-foreground/80 flex items-center gap-2">
+        <FormLabel className="flex items-center gap-2">
           <Settings className="w-4 h-4 text-primary" />
           Thiết bị & Timeline
         </FormLabel>

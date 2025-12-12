@@ -43,7 +43,7 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
   useEffect(() => {
     setConfig(initialConfig);
     setIsDirty(false);
-     
+
   }, [initialConfig]);
 
   // Save handler defined before usage in effect
@@ -165,9 +165,9 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
         onSave={handleSave}
         onReset={handleReset}
       >
-        <TabsList className="grid w-full grid-cols-2 md:w-auto md:inline-flex bg-muted/50 p-1">
-          <TabsTrigger value="schedule" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 transition-all duration-200">{OPERATING_HOURS_UI.STANDARD_TAB}</TabsTrigger>
-          <TabsTrigger value="exceptions" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 transition-all duration-200">{OPERATING_HOURS_UI.EXCEPTIONS_TAB}</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 md:w-auto md:inline-flex">
+          <TabsTrigger value="schedule" className="px-4">{OPERATING_HOURS_UI.STANDARD_TAB}</TabsTrigger>
+          <TabsTrigger value="exceptions" className="px-4">{OPERATING_HOURS_UI.EXCEPTIONS_TAB}</TabsTrigger>
         </TabsList>
       </SettingsHeader>
 
@@ -182,7 +182,7 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
                     </CardDescription>
                 </div>
                 {copySourceDay && (
-                    <div className="flex flex-wrap items-center gap-3 animate-in fade-in slide-in-from-right-8 duration-300 bg-primary/5 px-3 py-2 rounded-lg border border-primary/10 w-full sm:w-auto">
+                    <div className="flex flex-wrap items-center gap-3 animate-in fade-in slide-in-from-right-8 duration-300 bg-muted/50 px-3 py-2 rounded-lg border w-full sm:w-auto">
                     <span className="text-sm text-muted-foreground whitespace-nowrap">
                         {OPERATING_HOURS_UI.FROM_LABEL} <span className="font-bold text-primary">{DAY_LABELS[copySourceDay]}</span>
                     </span>

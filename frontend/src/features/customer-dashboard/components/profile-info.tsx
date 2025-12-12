@@ -28,7 +28,7 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
           name="fullName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-foreground/80 font-normal">{PROFILE_LABELS.FULL_NAME}</FormLabel>
+              <FormLabel>{PROFILE_LABELS.FULL_NAME}</FormLabel>
               <FormControl>
                 <Input
                   startContent={<User className="w-4 h-4 text-muted-foreground" />}
@@ -48,7 +48,7 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
             name="dateOfBirth"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80 font-normal">{PROFILE_LABELS.DATE_OF_BIRTH}</FormLabel>
+                <FormLabel>{PROFILE_LABELS.DATE_OF_BIRTH}</FormLabel>
                 <FormControl>
                   <DatePicker
                     mode="input"
@@ -76,7 +76,7 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground/80 font-normal">{PROFILE_LABELS.PHONE}</FormLabel>
+                <FormLabel>{PROFILE_LABELS.PHONE}</FormLabel>
                 <FormControl>
                   <Input
                     type="tel"
@@ -97,7 +97,7 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-foreground/80 font-normal">{PROFILE_LABELS.EMAIL}</FormLabel>
+              <FormLabel>{PROFILE_LABELS.EMAIL}</FormLabel>
               <FormControl>
                 <TooltipProvider>
                   <Tooltip delayDuration={200}>
@@ -131,7 +131,7 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
           name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-foreground/80 font-normal">{PROFILE_LABELS.ADDRESS}</FormLabel>
+              <FormLabel>{PROFILE_LABELS.ADDRESS}</FormLabel>
               <FormControl>
                 <Input
                   startContent={<MapPin className="w-4 h-4 text-muted-foreground" />}

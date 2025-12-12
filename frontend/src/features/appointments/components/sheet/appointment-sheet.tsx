@@ -27,11 +27,11 @@ import {
     SheetTitle,
 } from "@/shared/ui";
 
-import { APPOINTMENT_STATUS_CONFIG } from "../../constants";
-import type { Appointment, CalendarEvent, TimelineResource } from "../../types";
-import { MockService } from "../../mock-data";
-import { AppointmentForm } from "./appointment-form";
 import { ReviewPrompt } from "@/features/reviews/components/review-prompt"; // Import ReviewPrompt
+import { APPOINTMENT_STATUS_CONFIG } from "../../constants";
+import { MockService } from "../../mock-data";
+import type { Appointment, CalendarEvent, TimelineResource } from "../../types";
+import { AppointmentForm } from "./appointment-form";
 
 // ============================================
 // TYPES
@@ -150,7 +150,7 @@ export function AppointmentSheet({
         {/* ============================================ */}
         {/* HEADER */}
         {/* ============================================ */}
-        <SheetHeader className="p-6 pb-4 border-b">
+        <SheetHeader>
           <div className="flex items-center justify-between">
             <div>
               <SheetTitle className="text-xl">
@@ -309,8 +309,8 @@ export function AppointmentSheet({
                 <Button
                   className="w-full bg-green-600 hover:bg-green-700"
                   onClick={() => onCreateInvoice?.(appointment!.id)}
+                  startContent={<Receipt className="size-4" />}
                 >
-                  <Receipt className="h-4 w-4 mr-2" />
                   Tạo hóa đơn
                 </Button>
               )}
@@ -321,8 +321,8 @@ export function AppointmentSheet({
                   variant="outline"
                   className="flex-1 text-green-600 border-green-200 hover:bg-green-50"
                   onClick={() => onCheckIn?.(appointment!.id)}
+                  startContent={<CheckCircle2 className="size-4" />}
                 >
-                  <CheckCircle2 className="h-4 w-4 mr-2" />
                   Check-in
                 </Button>
               )}
@@ -331,8 +331,8 @@ export function AppointmentSheet({
                   variant="outline"
                   className="flex-1 text-amber-600 border-amber-200 hover:bg-amber-50"
                   onClick={() => onCancel?.(appointment!.id)}
+                  startContent={<XCircle className="size-4" />}
                 >
-                  <XCircle className="h-4 w-4 mr-2" />
                   Hủy lịch
                 </Button>
               )}
@@ -343,8 +343,7 @@ export function AppointmentSheet({
               <Button variant="outline" className="flex-1" onClick={handleClose}>
                 Đóng
               </Button>
-              <Button className="flex-1" onClick={handleEdit}>
-                <Edit className="h-4 w-4 mr-2" />
+              <Button className="flex-1" onClick={handleEdit} startContent={<Edit className="size-4" />}>
                 Chỉnh sửa
               </Button>
             </div>

@@ -1,6 +1,5 @@
 "use client"
 
-import { cn } from "@/shared/lib/utils"
 import { Badge } from "@/shared/ui/badge"
 import { Checkbox } from "@/shared/ui/checkbox"
 import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row"
@@ -70,7 +69,7 @@ export function PermissionMatrix({ initialPermissions, className }: PermissionMa
         <div className="relative w-full">
           <table className="w-full caption-bottom text-sm">
             {/* Sticky Header fixed top-0 because it's inside a relative container or we trust the container scroll */}
-            <TableHeader className={cn("sticky z-30 bg-background shadow-[0_1px_0_0_rgba(0,0,0,0.05)] top-0")}>
+            <TableHeader className="sticky top-0 z-30 bg-background shadow-sm">
               <TableRow className="hover:bg-transparent border-b-0">
                 <TableHead className="w-[250px] font-semibold pl-8 bg-background">Chức năng (Module)</TableHead>
                 {ROLES.map((role) => (

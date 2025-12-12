@@ -1,10 +1,8 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
 
 import { Button } from "@/shared/ui/button";
 import {
@@ -17,8 +15,8 @@ import {
 } from "@/shared/ui/form";
 import { Textarea } from "@/shared/ui/textarea";
 
-import { ReviewRating } from "../types";
 import { CreateReviewFormValues, createReviewSchema } from "../schemas";
+import { ReviewRating } from "../types";
 import { StarRating } from "./star-rating";
 
 interface ReviewFormProps {
@@ -40,9 +38,10 @@ export function ReviewForm({
   const isSubmitting = isPending || externalSubmitting;
 
   const form = useForm<CreateReviewFormValues>({
-    resolver: zodResolver(createReviewSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(createReviewSchema) as any,
     defaultValues: {
-      rating: initialRating || 0, // Using 0 as a placeholder for "not rated"
+      rating: initialRating,
       comment: initialComment || "",
     },
   });
@@ -88,7 +87,6 @@ export function ReviewForm({
               <FormControl>
                 <Textarea
                   placeholder="Chia sẻ thêm về trải nghiệm của bạn..."
-                  rows={4}
                   {...field}
                 />
               </FormControl>
@@ -108,8 +106,7 @@ export function ReviewForm({
               Hủy
             </Button>
           )}
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          <Button type="submit" disabled={isSubmitting} isLoading={isSubmitting}>
             Gửi đánh giá
           </Button>
         </div>

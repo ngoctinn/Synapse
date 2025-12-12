@@ -32,6 +32,7 @@ export function RegisterForm() {
 
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
+    disabled: isPending,
     defaultValues: {
       fullName: "",
       email: "",
@@ -79,7 +80,6 @@ export function RegisterForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <fieldset disabled={isPending}>
             <FormField
               control={form.control}
               name="fullName"
@@ -177,12 +177,11 @@ export function RegisterForm() {
 
             <Button
               type="submit"
-              className="w-full mt-6"
+              className="w-full"
               isLoading={isPending}
             >
               Đăng ký
-            </Button>
-          </fieldset>
+          </Button>
         </form>
       </Form>
 
