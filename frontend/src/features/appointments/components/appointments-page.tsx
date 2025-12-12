@@ -17,9 +17,18 @@ import {
   TooltipContent,
   TooltipTrigger
 } from "@/shared/ui";
+import { showToast } from "@/shared/ui/custom/sonner";
 
 import { ActionResponse } from "@/shared/lib/action-response"; // Import ActionResponse
-import { getAppointmentMetrics, getAppointments } from "../actions"; // getStaffList, getResourceList, getServiceList are now passed as props
+import {
+  cancelAppointment,
+  checkInAppointment,
+  createAppointment,
+  deleteAppointment,
+  getAppointmentMetrics,
+  getAppointments,
+  markNoShow,
+} from "../actions"; // getStaffList, getResourceList, getServiceList are now passed as props
 import { MockService, MockStaff } from "../mock-data"; // Import MockService, MockStaff
 import { useCalendarState } from "../hooks/use-calendar-state";
 import type { Appointment, AppointmentMetrics, CalendarEvent, TimelineResource } from "../types";
@@ -124,7 +133,114 @@ export function AppointmentsPage({
       if (result.status === "success" && result.data) {
         setEvents(result.data);
       }
+      // Also fetch metrics
+      fetchMetrics();
     });
+  };
+
+  // Actions Handlers
+  const handleCheckIn = (event: CalendarEvent) => {
+    startTransition(async () => {
+      const result = await checkInAppointment(event.id);
+      if (result.status === "success") {
+        showToast.success(result.message);
+        handleRefresh();
+      } else {
+        showToast.error(result.message || "Không thể check-in");
+      }
+    });
+  };
+
+  const handleNoShow = (event: CalendarEvent) => {
+    startTransition(async () => {
+      const result = await markNoShow(event.id);
+      if (result.status === "success") {
+        showToast.success(result.message);
+        handleRefresh();
+      } else {
+        showToast.error(result.message || "Không thể đánh dấu No-show");
+      }
+    });
+  };
+
+  const handleCancel = (event: CalendarEvent) => {
+    const now = new Date();
+    const hoursDifference = (event.start.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+    let message = "Bạn có chắc chắn muốn hủy lịch hẹn này?";
+    if (hoursDifference < 2 && hoursDifference > 0) {
+      message = "Cảnh báo: Hủy lịch hẹn trước 2 giờ có thể bị tính phí hoặc vi phạm chính sách. Bạn có chắc chắn muốn hủy?";
+    }
+
+    if (!confirm(message)) return;
+
+    startTransition(async () => {
+      const result = await cancelAppointment(event.id);
+      if (result.status === "success") {
+        showToast.success(result.message);
+        handleRefresh();
+      } else {
+        showToast.error(result.message || "Không thể hủy lịch hẹn");
+      }
+    });
+  };
+
+  const handleDelete = (event: CalendarEvent) => {
+    if (!confirm("Bạn có chắc chắn muốn xóa lịch hẹn này?")) return;
+    startTransition(async () => {
+      const result = await deleteAppointment(event.id);
+      if (result.status === "success") {
+        showToast.success(result.message);
+        handleRefresh();
+      } else {
+        showToast.error(result.message || "Không thể xóa lịch hẹn");
+      }
+    });
+  };
+
+  const handleEdit = (event: CalendarEvent) => {
+    setSelectedEvent(event);
+    setSheetMode("edit");
+    setIsSheetOpen(true);
+  };
+
+  const handleSlotClick = (date: Date, hour: number, minute: number) => {
+    // Create new event at clicked time
+    const startTime = new Date(date);
+    startTime.setHours(hour, minute, 0, 0);
+
+    // Mock event for creation
+    const mockEvent: CalendarEvent = {
+      id: "new",
+      start: startTime,
+      end: new Date(startTime.getTime() + 60 * 60 * 1000), // Default 1 hour
+      title: "Lịch hẹn mới",
+      staffId: currentFilters.staffIds?.[0] || staffList[0]?.id || "",
+      staffName: "",
+      color: "gray",
+      status: "pending",
+      appointment: {
+        id: "new",
+        customerId: "",
+        customerName: "",
+        customerPhone: "",
+        staffId: "",
+        staffName: "",
+        serviceId: "",
+        serviceName: "",
+        startTime,
+        endTime: new Date(startTime.getTime() + 60 * 60 * 1000),
+        duration: 60,
+        status: "pending",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        createdBy: "",
+      },
+    };
+
+    setSelectedEvent(mockEvent);
+    setSheetMode("create");
+    setIsSheetOpen(true);
   };
 
   // Error handling for initial data
@@ -288,7 +404,14 @@ export function AppointmentsPage({
             staffList={staffList}
             roomList={roomList}
             onEventClick={handleEventClick}
+            onSlotClick={handleSlotClick}
             isLoading={isPending && events.length === 0}
+            onCheckIn={handleCheckIn}
+            onNoShow={handleNoShow}
+            onCancel={handleCancel}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+            className="flex-1"
           />
         </div>
       </div>

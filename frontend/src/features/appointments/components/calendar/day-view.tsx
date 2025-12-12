@@ -14,6 +14,7 @@ import { ScrollArea } from "@/shared/ui";
 
 import { DEFAULT_WORKING_HOURS, HOUR_HEIGHT } from "../../constants";
 import type { CalendarEvent, DensityMode } from "../../types";
+import { EventPopover } from "../event";
 import { EventCard } from "../event/event-card";
 import { DateHeader } from "./date-header";
 import { TimeGrid, calculateEventPosition } from "./time-grid";
@@ -34,6 +35,12 @@ interface DayViewProps {
   /** Callback khi click slot trống */
   onSlotClick?: (date: Date, hour: number, minute: number) => void;
   className?: string;
+  // Actions
+  onCheckIn?: (event: CalendarEvent) => void;
+  onNoShow?: (event: CalendarEvent) => void;
+  onCancel?: (event: CalendarEvent) => void;
+  onDelete?: (event: CalendarEvent) => void;
+  onEdit?: (event: CalendarEvent) => void;
 }
 
 // ============================================
@@ -47,6 +54,11 @@ export function DayView({
   onEventClick,
   onSlotClick,
   className,
+  onCheckIn,
+  onNoShow,
+  onCancel,
+  onDelete,
+  onEdit,
 }: DayViewProps) {
   const hourHeight = HOUR_HEIGHT[densityMode];
   const { startHour, endHour } = DEFAULT_WORKING_HOURS;
@@ -147,12 +159,21 @@ export function DayView({
                   width: `${width}%`,
                 }}
               >
-                <EventCard
+                <EventPopover
                   event={event}
-                  onClick={() => onEventClick?.(event)}
-                  variant="compact"
-                  className="h-full"
-                />
+                  onView={() => onEventClick?.(event)}
+                  onCheckIn={() => onCheckIn?.(event)}
+                  onNoShow={() => onNoShow?.(event)}
+                  onCancel={() => onCancel?.(event)}
+                  onDelete={() => onDelete?.(event)}
+                  onEdit={() => onEdit?.(event)}
+                >
+                  <EventCard
+                    event={event}
+                    variant="compact"
+                    className="h-full"
+                  />
+                </EventPopover>
               </div>
             );
           })}

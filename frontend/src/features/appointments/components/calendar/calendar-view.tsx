@@ -50,6 +50,12 @@ interface CalendarViewProps {
   /** Loading state */
   isLoading?: boolean;
   className?: string;
+  // Actions
+  onCheckIn?: (event: CalendarEvent) => void;
+  onNoShow?: (event: CalendarEvent) => void;
+  onCancel?: (event: CalendarEvent) => void;
+  onDelete?: (event: CalendarEvent) => void;
+  onEdit?: (event: CalendarEvent) => void;
 }
 
 // ============================================
@@ -69,6 +75,11 @@ export function CalendarView({
   onDayClick,
   isLoading = false,
   className,
+  onCheckIn,
+  onNoShow,
+  onCancel,
+  onDelete,
+  onEdit,
 }: CalendarViewProps) {
   // Loading skeleton
   if (isLoading) {
@@ -93,6 +104,11 @@ export function CalendarView({
           onEventClick={onEventClick}
           onSlotClick={onSlotClick}
           className={className}
+          onCheckIn={onCheckIn}
+          onNoShow={onNoShow}
+          onCancel={onCancel}
+          onDelete={onDelete}
+          onEdit={onEdit}
         />
       );
 
@@ -105,6 +121,11 @@ export function CalendarView({
           onEventClick={onEventClick}
           onSlotClick={onSlotClick}
           className={className}
+          onCheckIn={onCheckIn}
+          onNoShow={onNoShow}
+          onCancel={onCancel}
+          onDelete={onDelete}
+          onEdit={onEdit}
         />
       );
 
