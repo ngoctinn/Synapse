@@ -6,7 +6,6 @@ import { mockMaintenanceTasks, mockResourceGroups, mockResources } from "./data/
 import { ResourceFormValues, resourceSchema } from "./schemas";
 import { MaintenanceTask, Resource, ResourceGroup } from "./types";
 
-// Simulate a database
 let resources = [...mockResources];
 const resourceGroups = [...mockResourceGroups];
 const maintenanceTasks = [...mockMaintenanceTasks];
@@ -15,24 +14,16 @@ export async function manageResource(prevState: unknown, formData: FormData): Pr
     const id = formData.get("id") as string;
     const rawData: Record<string, unknown> = {};
 
-    // Parse form data
     formData.forEach((value, key) => {
         if (key === "tags") {
-            try {
-                rawData[key] = JSON.parse(value as string);
-            } catch {
-                rawData[key] = [];
-            }
+            try { rawData[key] = JSON.parse(value as string); } catch { rawData[key] = []; }
         } else if (key !== "id" && key !== "form_mode") {
-             // Basic casting
              rawData[key] = value;
         }
     });
 
-    // Handle number conversions manually as FormData is string
     if (rawData.capacity) rawData.capacity = Number(rawData.capacity);
     if (rawData.setupTime) rawData.setupTime = Number(rawData.setupTime);
-
 
     const validatedFields = resourceSchema.safeParse(rawData);
 
@@ -54,22 +45,12 @@ export async function manageResource(prevState: unknown, formData: FormData): Pr
 }
 
 export async function getResources(query?: string): Promise<ActionResponse<Resource[]>> {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
   if (!query) return success(resources);
-
   const lowerQuery = query.toLowerCase();
-  const filtered = resources.filter(
-    (r) =>
-      r.name.toLowerCase().includes(lowerQuery) ||
-      r.code.toLowerCase().includes(lowerQuery)
-  );
-  return success(filtered);
+  return success(resources.filter((r) => r.name.toLowerCase().includes(lowerQuery) || r.code.toLowerCase().includes(lowerQuery)));
 }
 
 export async function getResourceGroups(): Promise<ActionResponse<ResourceGroup[]>> {
-  await new Promise((resolve) => setTimeout(resolve, 300));
   return success(resourceGroups);
 }
 
@@ -78,14 +59,11 @@ export async function getResourceById(id: string): Promise<Resource | undefined>
 }
 
 export async function createResource(data: ResourceFormValues): Promise<Resource> {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
   const newResource: Resource = {
     id: Math.random().toString(36).substring(7),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     ...data,
-    // Ensure capacity is undefined if not a room
     capacity: data.type === 'ROOM' ? data.capacity : undefined,
   } as Resource;
 
@@ -95,14 +73,11 @@ export async function createResource(data: ResourceFormValues): Promise<Resource
 }
 
 export async function updateResource(id: string, data: ResourceFormValues): Promise<Resource> {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
   const index = resources.findIndex((r) => r.id === id);
   if (index === -1) throw new Error("Resource not found");
 
   const updatedResource = {
-    ...resources[index],
-    ...data,
+    ...resources[index], ...data,
     updatedAt: new Date().toISOString(),
     capacity: data.type === 'ROOM' ? data.capacity : undefined,
   } as Resource;
@@ -113,13 +88,10 @@ export async function updateResource(id: string, data: ResourceFormValues): Prom
 }
 
 export async function deleteResource(id: string): Promise<ActionResponse> {
-  await new Promise((resolve) => setTimeout(resolve, 500));
   resources = resources.filter((r) => r.id !== id);
   revalidatePath("/resources");
   return success(undefined, "Đã xóa tài nguyên thành công");
 }
-
-// --- Compatibility Exports (Deprecated) ---
 
 export async function getRoomTypes(): Promise<ActionResponse<Resource[]>> {
     const res = await getResources();
@@ -138,6 +110,5 @@ export async function getEquipmentList(): Promise<ActionResponse<Resource[]>> {
 }
 
 export async function getMaintenanceTasks(): Promise<ActionResponse<MaintenanceTask[]>> {
-  await new Promise((resolve) => setTimeout(resolve, 500));
   return success(maintenanceTasks);
 }

@@ -13,13 +13,7 @@ export type CustomerListResponse = {
     limit: number
 }
 
-export async function getCustomers(
-  page: number = 1,
-  limit: number = 10
-): Promise<ActionResponse<CustomerListResponse>> {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 500))
-
+export async function getCustomers(page: number = 1, limit: number = 10): Promise<ActionResponse<CustomerListResponse>> {
   return success({
     data: MOCK_CUSTOMERS,
     total: MOCK_CUSTOMERS.length,
@@ -30,11 +24,7 @@ export async function getCustomers(
 
 export async function manageCustomer(prevState: unknown, formData: FormData): Promise<ActionResponse> {
     const mode = formData.get("form_mode")
-    if (mode === "create") {
-        return createCustomer(prevState, formData)
-    } else {
-        return updateCustomer(prevState, formData)
-    }
+    return mode === "create" ? createCustomer(prevState, formData) : updateCustomer(prevState, formData)
 }
 
 async function createCustomer(prevState: unknown, formData: FormData): Promise<ActionResponse> {
@@ -45,9 +35,8 @@ async function createCustomer(prevState: unknown, formData: FormData): Promise<A
         return error("Dữ liệu không hợp lệ", validated.error.flatten().fieldErrors)
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 800))
     revalidatePath("/admin/customers")
-    return success(undefined, "Thêm khách hàng thành công (Mock)")
+    return success(undefined, "Thêm khách hàng thành công")
 }
 
 async function updateCustomer(prevState: unknown, formData: FormData): Promise<ActionResponse> {
@@ -58,13 +47,11 @@ async function updateCustomer(prevState: unknown, formData: FormData): Promise<A
         return error("Dữ liệu không hợp lệ", validated.error.flatten().fieldErrors)
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 800))
     revalidatePath("/admin/customers")
-    return success(undefined, "Cập nhật khách hàng thành công (Mock)")
+    return success(undefined, "Cập nhật khách hàng thành công")
 }
 
 export async function deleteCustomer(id: string): Promise<ActionResponse> {
-    await new Promise((resolve) => setTimeout(resolve, 600))
     revalidatePath("/admin/customers")
-    return success(undefined, `Đã xóa khách hàng ${id} (Mock)`)
+    return success(undefined, `Đã xóa khách hàng ${id} thành công`)
 }

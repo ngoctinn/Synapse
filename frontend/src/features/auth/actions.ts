@@ -8,87 +8,45 @@ import { redirect } from "next/navigation";
 import "server-only";
 import { forgotPasswordSchema, loginSchema, registerSchema, updatePasswordSchema } from "./schemas";
 
-/**
- * Xử lý đăng nhập người dùng
- * @param prevState Trạng thái trước đó của form (từ useActionState)
- * @param formData Dữ liệu form gửi lên
- */
 export async function loginAction(prevState: unknown, formData: FormData): Promise<ActionResponse> {
-  const rawData = {
+  const validatedFields = loginSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
-  };
-
-
-  const validatedFields = loginSchema.safeParse(rawData);
-
-  if (!validatedFields.success) {
-    return error("Dữ liệu không hợp lệ", validatedFields.error.flatten().fieldErrors);
-  }
-
-  const { email, password } = validatedFields.data;
-  const supabase = await createClient();
-
-
-  const { error: authError } = await supabase.auth.signInWithPassword({
-    email,
-    password,
   });
 
-  if (authError) {
-    return error(authError.message);
-  }
+  if (!validatedFields.success) return error("Dữ liệu không hợp lệ", validatedFields.error.flatten().fieldErrors);
 
+  const supabase = await createClient();
+  const { error: authError } = await supabase.auth.signInWithPassword(validatedFields.data);
+
+  if (authError) return error(authError.message);
 
   revalidatePath("/", "layout");
   return success(undefined, "Đăng nhập thành công!");
 }
 
-/**
- * Xử lý đăng ký tài khoản mới
- * @param formData Dữ liệu form gửi lên
- */
 export async function registerAction(prevState: unknown, formData: FormData): Promise<ActionResponse> {
-  const rawData = {
+  const validatedFields = registerSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
     fullName: formData.get("fullName"),
-  };
+  });
 
-
-  const validatedFields = registerSchema.safeParse(rawData);
-
-  if (!validatedFields.success) {
-    return error("Dữ liệu không hợp lệ", validatedFields.error.flatten().fieldErrors);
-  }
+  if (!validatedFields.success) return error("Dữ liệu không hợp lệ", validatedFields.error.flatten().fieldErrors);
 
   const { email, password, fullName } = validatedFields.data;
   const supabase = await createClient();
-
-
   const { error: authError } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        full_name: fullName,
-        avatar_url: "",
-      },
-    },
+    email, password,
+    options: { data: { full_name: fullName, avatar_url: "" } },
   });
 
-  if (authError) {
-    return error(authError.message);
-  }
-
+  if (authError) return error(authError.message);
 
   revalidatePath("/", "layout");
   return success(undefined, "Đăng ký thành công! Vui lòng kiểm tra email để xác thực.");
 }
 
-/**
- * Xử lý đăng xuất
- */
 export async function logoutAction() {
   const supabase = await createClient();
   await supabase.auth.signOut();
@@ -96,69 +54,28 @@ export async function logoutAction() {
   redirect("/login");
 }
 
-/**
- * Xử lý quên mật khẩu (gửi email reset)
- * @param prevState Trạng thái trước đó
- * @param formData Dữ liệu form
- */
 export async function forgotPasswordAction(prevState: unknown, formData: FormData): Promise<ActionResponse> {
-  const rawData = {
-    email: formData.get("email"),
-  };
+  const validatedFields = forgotPasswordSchema.safeParse({ email: formData.get("email") });
+  if (!validatedFields.success) return error("Dữ liệu không hợp lệ", validatedFields.error.flatten().fieldErrors);
 
-
-  const validatedFields = forgotPasswordSchema.safeParse(rawData);
-
-  if (!validatedFields.success) {
-    return error("Dữ liệu không hợp lệ", validatedFields.error.flatten().fieldErrors);
-  }
-
-  const { email } = validatedFields.data;
   const supabase = await createClient();
-
-  // 2. Lấy origin hiện tại để tạo link redirect chính xác
-  const headerStore = await headers();
-  const origin = headerStore.get('origin');
-
-
-  const { error: authError } = await supabase.auth.resetPasswordForEmail(email, {
+  const origin = (await headers()).get('origin');
+  const { error: authError } = await supabase.auth.resetPasswordForEmail(validatedFields.data.email, {
     redirectTo: `${origin}/auth/callback?next=/reset-password`,
   });
 
-  if (authError) {
-    return error(authError.message);
-  }
-
+  if (authError) return error(authError.message);
   return success(undefined, "Đã gửi email khôi phục mật khẩu!");
 }
 
-/**
- * Xử lý cập nhật mật khẩu mới
- * @param formData Dữ liệu form
- */
 export async function updatePasswordAction(prevState: unknown, formData: FormData): Promise<ActionResponse> {
-  const rawData = {
-    password: formData.get("password"),
-  };
+  const validatedFields = updatePasswordSchema.safeParse({ password: formData.get("password") });
+  if (!validatedFields.success) return error("Dữ liệu không hợp lệ", validatedFields.error.flatten().fieldErrors);
 
-
-  const validatedFields = updatePasswordSchema.safeParse(rawData);
-
-  if (!validatedFields.success) {
-    return error("Dữ liệu không hợp lệ", validatedFields.error.flatten().fieldErrors);
-  }
-
-  const { password } = validatedFields.data;
   const supabase = await createClient();
+  const { error: authError } = await supabase.auth.updateUser({ password: validatedFields.data.password });
 
-
-  const { error: authError } = await supabase.auth.updateUser({
-    password: password,
-  });
-
-  if (authError) {
-    return error(authError.message);
-  }
+  if (authError) return error(authError.message);
 
   revalidatePath("/", "layout");
   return success(undefined, "Cập nhật mật khẩu thành công!");
