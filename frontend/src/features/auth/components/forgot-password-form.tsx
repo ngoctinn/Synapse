@@ -3,18 +3,18 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail } from "lucide-react";
 import Link from "next/link";
-import { startTransition, useActionState, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-import { ConfirmDialog } from "@/shared/ui";
 import { Button } from "@/shared/ui/button";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
 import { showToast } from "@/shared/ui/sonner";
@@ -22,6 +22,7 @@ import { forgotPasswordAction } from "../actions";
 import { forgotPasswordSchema, type ForgotPasswordInput } from "../schemas";
 
 export function ForgotPasswordForm() {
+  const router = useRouter();
   const [state, action, isPending] = useActionState(forgotPasswordAction, undefined);
 
   const form = useForm<ForgotPasswordInput>({
@@ -32,14 +33,14 @@ export function ForgotPasswordForm() {
     },
   });
 
-  // Effect to show toast messages
   useEffect(() => {
     if (state?.status === "success") {
       showToast.success("Đã gửi yêu cầu", state.message);
+      router.push("/login?password_reset=true");
     } else if (state?.status === "error") {
       showToast.error("Gửi yêu cầu thất bại", state.message);
     }
-  }, [state]);
+  }, [state, router]);
 
   const onSubmit = (values: ForgotPasswordInput) => {
     const formData = new FormData();
@@ -48,20 +49,6 @@ export function ForgotPasswordForm() {
     startTransition(() => {
       action(formData);
     });
-  };
-
-  const handleResend = () => {
-    const currentEmail = form.getValues("email");
-    if (currentEmail) {
-      const formData = new FormData();
-      formData.append("email", currentEmail);
-      startTransition(() => {
-        action(formData);
-      });
-      showToast.info("Đã gửi lại", "Email đặt lại mật khẩu mới đã được gửi.");
-    } else {
-      showToast.error("Lỗi", "Không tìm thấy email để gửi lại.");
-    }
   };
 
   return (
@@ -115,31 +102,6 @@ export function ForgotPasswordForm() {
           Đăng nhập
         </Link>
       </p>
-
-      <ConfirmDialog
-        open={state?.status === "success"}
-        onOpenChange={(open) => {
-          if (!open) {
-             form.reset(); // Reset form when dialog closes
-          }
-        }}
-        variant="info"
-        icon={Mail}
-        title="Kiểm tra email của bạn"
-        description="Chúng tôi đã gửi một liên kết đặt lại mật khẩu đến email của bạn. Vui lòng kiểm tra và làm theo hướng dẫn."
-        primaryAction={{
-          label: "Đã hiểu",
-          onClick: () => {
-            // This onClick is redundant if open is derived from state
-            // But if it's there for explicit user action, keep it.
-            // When this closes the dialog, onOpenChange will be called.
-          },
-        }}
-        secondaryAction={{
-          label: "Gửi lại",
-          onClick: handleResend,
-        }}
-      />
     </div>
   );
 }

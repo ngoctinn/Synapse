@@ -11,7 +11,7 @@ import { ExceptionSheet } from "./exception-sheet";
 import { ExceptionsCalendar } from "./exceptions-calendar";
 import { ExceptionsFilterBar } from "./exceptions-filter-bar";
 
-import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
+import { DeleteConfirmDialog } from "@/shared/ui";
 import { endOfYear, format, setYear, startOfYear } from "date-fns";
 import { useExceptionViewLogic } from "../hooks/use-exception-view-logic";
 import { groupExceptions } from "../utils/grouping";

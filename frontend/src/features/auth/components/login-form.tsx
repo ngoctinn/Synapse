@@ -11,6 +11,7 @@ import { loginAction } from "../actions";
 import { usePasswordVisibility } from "../hooks/use-password-visibility";
 import { loginSchema, type LoginInput } from "../schemas";
 
+import { Alert, AlertDescription } from "@/shared/ui/alert";
 import { Button } from "@/shared/ui/button";
 import {
     Form,
@@ -27,6 +28,8 @@ export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const returnUrl = searchParams.get("returnUrl") || "/";
+  const registered = searchParams.get("registered");
+  const passwordReset = searchParams.get("password_reset");
   const { show, toggle, inputType, Icon, ariaLabel } = usePasswordVisibility();
 
   const [state, action, isPending] = useActionState(loginAction, undefined);
@@ -69,6 +72,21 @@ export function LoginForm() {
           Nhập thông tin đăng nhập để truy cập hệ thống
         </p>
       </div>
+
+      {registered && (
+        <Alert className="mb-4 border-green-200 bg-green-50 text-green-800 dark:border-green-800 dark:bg-green-950 dark:text-green-200">
+          <AlertDescription>
+            Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.
+          </AlertDescription>
+        </Alert>
+      )}
+      {passwordReset && (
+        <Alert className="mb-4 border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-200">
+          <AlertDescription>
+            Email đặt lại mật khẩu đã được gửi. Vui lòng kiểm tra hộp thư.
+          </AlertDescription>
+        </Alert>
+      )}
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

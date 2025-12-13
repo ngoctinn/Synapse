@@ -5,12 +5,12 @@ import { AppointmentForm } from "@/features/appointments/components/sheet/appoin
 import { MockService } from "@/features/appointments/mock-data";
 import { Appointment, TimelineResource } from "@/features/appointments/types";
 import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/shared/ui/alert-dialog";
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from "@/shared/ui/dialog";
 import { showToast } from "@/shared/ui/sonner";
 import { Loader2 } from "lucide-react";
 import { useTransition } from "react";
@@ -56,14 +56,14 @@ export function WalkInBookingDialog({
   };
 
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="sm:max-w-xl">
-        <AlertDialogHeader>
-          <AlertDialogTitle>Tạo lịch hẹn nhanh (Walk-in)</AlertDialogTitle>
-          <AlertDialogDescription>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-xl">
+        <DialogHeader>
+          <DialogTitle>Tạo lịch hẹn nhanh (Walk-in)</DialogTitle>
+          <DialogDescription>
             Tạo một lịch hẹn mới cho khách hàng vãng lai hoặc đặt nhanh.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
+          </DialogDescription>
+        </DialogHeader>
         <div className="relative">
           <AppointmentForm
             onSubmit={handleCreateAppointment}
@@ -77,7 +77,7 @@ export function WalkInBookingDialog({
             </div>
           )}
         </div>
-      </AlertDialogContent>
-    </AlertDialog>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -3,14 +3,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Lock, Mail, User } from "lucide-react";
 import Link from "next/link";
-import { startTransition, useActionState, useEffect } from "react"; // Removed useRef, useState
+import { useRouter } from "next/navigation";
+import { startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-import { registerAction, resendVerificationAction } from "../actions";
+import { registerAction } from "../actions";
 import { usePasswordVisibility } from "../hooks/use-password-visibility";
 import { registerSchema, type RegisterInput } from "../schemas";
 
-import { ConfirmDialog } from "@/shared/ui";
 import { Button } from "@/shared/ui/button";
 import {
   Form,
@@ -24,6 +24,7 @@ import { Input } from "@/shared/ui/input";
 import { showToast } from "@/shared/ui/sonner";
 
 export function RegisterForm() {
+  const router = useRouter();
   const [state, action, isPending] = useActionState(registerAction, undefined);
 
   const form = useForm<RegisterInput>({
@@ -37,14 +38,14 @@ export function RegisterForm() {
     },
   });
 
-  // Effect to show toast messages
   useEffect(() => {
     if (state?.status === "success") {
       showToast.success("Đăng ký thành công", state.message);
+      router.push("/login?registered=true");
     } else if (state?.status === "error") {
       showToast.error("Đăng ký thất bại", state.message);
     }
-  }, [state]);
+  }, [state, router]);
 
   function onSubmit(values: RegisterInput) {
     const formData = new FormData();
@@ -58,18 +59,6 @@ export function RegisterForm() {
     });
   }
 
-  const handleResend = async () => {
-    const currentEmail = form.getValues("email");
-    if (!currentEmail) return;
-    const resendState = await resendVerificationAction(currentEmail);
-    if (resendState.status === "success") {
-      showToast.success("Gửi lại thành công", resendState.message);
-    } else {
-      showToast.error("Gửi lại thất bại", resendState.message);
-    }
-  };
-
-  // Refactored usePasswordVisibility destructuring
   const { toggle: togglePassword, inputType: passwordInputType, Icon: PasswordToggleIcon, ariaLabel: passwordAriaLabel } = usePasswordVisibility();
   const { toggle: toggleConfirmPassword, inputType: confirmPasswordInputType, Icon: ConfirmPasswordToggleIcon, ariaLabel: confirmPasswordAriaLabel } = usePasswordVisibility();
 
@@ -202,31 +191,6 @@ export function RegisterForm() {
           Đăng nhập ngay
         </Link>
       </p>
-
-      <ConfirmDialog
-        open={state?.status === "success"}
-        onOpenChange={(open) => {
-          if (!open) { // Dialog is closing
-            form.reset(); // Reset form when dialog closes
-            // No need to clear registeredEmail as it's not state managed here
-          }
-        }}
-        variant="info"
-        icon={Mail}
-        title="Kiểm tra email của bạn"
-        description="Chúng tôi đã gửi một liên kết xác thực đến email của bạn. Vui lòng kiểm tra và làm theo hướng dẫn để hoàn tất đăng ký."
-        primaryAction={{
-          label: "Đã hiểu",
-          onClick: () => {
-            // This onClick is redundant if open is derived from state
-            // When this closes the dialog, onOpenChange will be called.
-          },
-        }}
-        secondaryAction={{
-          label: "Gửi lại",
-          onClick: handleResend,
-        }}
-      />
     </div>
   );
 }

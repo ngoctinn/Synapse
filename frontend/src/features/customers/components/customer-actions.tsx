@@ -3,7 +3,7 @@
 import { deleteCustomer } from "@/features/customers/actions";
 import { Customer } from "@/features/customers/model/types";
 import { useDeleteAction } from "@/shared/hooks";
-import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
+import { DeleteConfirmDialog } from "@/shared/ui";
 import { TableRowActions } from "@/shared/ui/custom/table-row-actions";
 
 interface CustomerActionsProps {

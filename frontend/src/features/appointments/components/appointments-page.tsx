@@ -6,14 +6,13 @@ import { ReviewPrompt } from "@/features/reviews/components/review-prompt";
 import { PageContent, PageHeader, PageShell, SurfaceCard } from "@/shared/components/layout/page-layout";
 import { ActionResponse } from "@/shared/lib/action-response";
 import { cn } from "@/shared/lib/utils";
-import { Button, Tooltip, TooltipContent, TooltipTrigger } from "@/shared/ui";
-import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
+import { Button, DeleteConfirmDialog, Tooltip, TooltipContent, TooltipTrigger } from "@/shared/ui";
 import { showToast } from "@/shared/ui/sonner";
 import { Activity, CalendarCheck, Clock, LucideIcon, Plus, RefreshCw, Settings2 } from "lucide-react";
 import { use, useCallback, useEffect, useState, useTransition } from "react";
 import {
-  checkInAppointment, deleteAppointment,
-  getAppointmentMetrics, getAppointments, markNoShow
+    checkInAppointment, deleteAppointment,
+    getAppointmentMetrics, getAppointments, markNoShow
 } from "../actions";
 import { useCalendarState } from "../hooks/use-calendar-state";
 import { MockService } from "../mock-data";
