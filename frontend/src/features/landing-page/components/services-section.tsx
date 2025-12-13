@@ -1,13 +1,18 @@
 "use client";
 
-import { BookingDialog } from "@/features/customer-dashboard";
 import { MOCK_SERVICES } from "@/features/services/data/mocks";
 import { Service } from "@/features/services/types";
 import { Badge } from "@/shared/ui/badge";
 import { SearchX } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import { ServiceCard } from "./service-card";
 import { ServiceFilter } from "./service-filter";
+
+const BookingDialog = dynamic(
+  () => import("@/features/customer-dashboard").then((mod) => mod.BookingDialog),
+  { ssr: false }
+);
 
 export function ServicesSection() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -87,11 +92,13 @@ export function ServicesSection() {
         )}
       </div>
 
-      <BookingDialog
-        open={!!selectedService}
-        onOpenChange={(open) => !open && setSelectedService(null)}
-        service={selectedService || undefined}
-      />
+      {selectedService && (
+        <BookingDialog
+          open={!!selectedService}
+          onOpenChange={(open) => !open && setSelectedService(null)}
+          service={selectedService || undefined}
+        />
+      )}
     </section>
   );
 }
