@@ -133,7 +133,7 @@ export async function createPayment(payload: CreatePaymentPayload): Promise<Acti
     if (updatedInvoice.paidAmount >= updatedInvoice.finalAmount) {
       updatedInvoice.status = "PAID";
       const pointsEarned = Math.floor(updatedInvoice.finalAmount / 10000);
-      console.log(`[Loyalty] Customer ${invoice.customerId} earned ${pointsEarned} points`);
+      // TODO: Dispatch loyalty points event here
     }
 
     MOCK_INVOICES[invoiceIndex] = updatedInvoice;

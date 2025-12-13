@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/shared/ui/button";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/shared/ui/resizable";
 import { List as ListIcon, Plus, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useCalendarSelection } from "../hooks/use-calendar-selection";
@@ -275,26 +274,20 @@ export function ExceptionsViewManager({
                 )}
            </div>
 
-           {/* DESKTOP VIEW (Split) */}
-           <div className="hidden lg:block h-full border rounded-xl overflow-hidden bg-background shadow-sm">
-                <ResizablePanelGroup direction="horizontal">
-                    <ResizablePanel defaultSize={65} minSize={40}>
-                        <div className="h-full p-4 overflow-y-auto custom-scrollbar">
-                           {renderCalendar()}
-                        </div>
-                    </ResizablePanel>
+           {/* DESKTOP VIEW (Fixed Grid) */}
+           <div className="hidden lg:grid lg:grid-cols-[2fr_1fr] h-full border rounded-xl overflow-hidden bg-background shadow-sm">
+               {/* Calendar Panel */}
+               <div className="h-full p-4 overflow-y-auto border-r">
+                   {renderCalendar()}
+               </div>
 
-                    <ResizableHandle />
-
-                    <ResizablePanel defaultSize={35} minSize={25}>
-                        <div className="h-full flex flex-col bg-muted/5">
-                            {renderListHeader()}
-                            <div className="p-4 flex-1 overflow-y-auto custom-scrollbar">
-                                {renderList()}
-                            </div>
-                        </div>
-                    </ResizablePanel>
-                </ResizablePanelGroup>
+               {/* List Panel */}
+               <div className="h-full flex flex-col bg-muted/5">
+                   {renderListHeader()}
+                   <div className="p-4 flex-1 overflow-y-auto">
+                       {renderList()}
+                   </div>
+               </div>
            </div>
        </div>
 

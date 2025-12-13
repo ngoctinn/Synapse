@@ -3,26 +3,21 @@ export type Gender = "MALE" | "FEMALE" | "OTHER"
 
 export interface Customer {
   id: string
-  // Identity
   phone_number: string
   full_name: string
   email: string | null
-  user_id: string | null // Link to App Account (Optional)
+  user_id: string | null
 
-  // Profile Info
   avatar_url: string | null
   is_active: boolean
 
-  // CRM Data
   loyalty_points: number
   membership_tier: MembershipTier
 
-  // Demographics
   gender: Gender | null
   date_of_birth: string | null
   address: string | null
 
-  // Medical / Notes
   allergies: string | null
   medical_notes: string | null
 

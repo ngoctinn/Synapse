@@ -1,7 +1,7 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
-import { Separator } from "@/shared/ui/separator";
+import { SurfaceCard } from "@/shared/components/layout/page-layout";
+import { CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { toggleChannelAction, updateChannelConfigAction, updateTemplateAction } from "../notifications/actions";
@@ -45,7 +45,7 @@ export function NotificationsSettings({ initialChannels, initialEvents }: Notifi
         if (result.status !== "success") {
            throw new Error(result.message);
         }
-      } catch (error) {
+      } catch {
         toast.error("Không thể cập nhật cấu hình");
         // Revert state on error
         setEvents(prev => prev.map(event => {
@@ -118,45 +118,39 @@ export function NotificationsSettings({ initialChannels, initialEvents }: Notifi
     : undefined;
 
   return (
-    <div className="space-y-8 animate-in fade-in-50 slide-in-from-bottom-4 duration-500 ease-out">
+    <div className="space-y-6">
       {/* Channels Configuration */}
-      <div className="space-y-4">
-        <div>
-          <h3 className="text-lg font-medium">Kênh thông báo</h3>
-          <p className="text-sm text-muted-foreground">
+      <SurfaceCard>
+        <CardHeader>
+          <CardTitle>Kênh thông báo</CardTitle>
+          <CardDescription>
             Quản lý các kênh gửi thông báo đến khách hàng và nhân viên.
-          </p>
-        </div>
-        <NotificationChannels
-          channels={channels}
-          onConfigure={setConfiguringChannelId}
-        />
-      </div>
-
-      <Separator />
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <NotificationChannels
+            channels={channels}
+            onConfigure={setConfiguringChannelId}
+          />
+        </CardContent>
+      </SurfaceCard>
 
       {/* Events Configuration */}
-      <div className="space-y-4">
-        <div>
-          <h3 className="text-lg font-medium">Sự kiện & Mẫu tin</h3>
-          <p className="text-sm text-muted-foreground">
-            Cấu hình loại thông báo và nội dung tin nhắn cho từng sự kiện.
-          </p>
-        </div>
-        <Card>
-            <CardHeader>
-                <CardTitle>Danh sách sự kiện</CardTitle>
-                <CardDescription>Bật/tắt các kênh thông báo cho từng loại sự kiện.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <NotificationList
-                events={events}
-                onToggleChannel={handleToggleChannel}
-                onEditTemplate={(eventId, channelId) => setEditingTemplate({ eventId, channelId })}
-                />
-            </CardContent>
-        </Card>
-      </div>
+      <SurfaceCard>
+        <CardHeader>
+          <CardTitle>Sự kiện & Mẫu tin</CardTitle>
+          <CardDescription>
+            Bật/tắt các kênh thông báo cho từng loại sự kiện.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <NotificationList
+            events={events}
+            onToggleChannel={handleToggleChannel}
+            onEditTemplate={(eventId, channelId) => setEditingTemplate({ eventId, channelId })}
+          />
+        </CardContent>
+      </SurfaceCard>
 
       {/* Dialogs */}
       {activeChannelConfig && (

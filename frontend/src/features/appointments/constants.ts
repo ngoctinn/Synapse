@@ -12,9 +12,7 @@ import type {
     ZoomLevel,
 } from "./types";
 
-// ============================================
-// STATUS CONFIGURATION
-// ============================================
+
 
 /** Cấu hình hiển thị trạng thái cuộc hẹn */
 export const APPOINTMENT_STATUS_CONFIG: Record<
@@ -77,9 +75,7 @@ export const APPOINTMENT_STATUS_OPTIONS: {
   { value: "NO_SHOW", label: "Khách không đến" },
 ];
 
-// ============================================
-// CALENDAR VIEW CONFIGURATION
-// ============================================
+
 
 /** Cấu hình các chế độ xem lịch */
 export const CALENDAR_VIEW_CONFIG: Record<
@@ -131,9 +127,7 @@ export const DENSITY_MODE_OPTIONS: { value: DensityMode; label: string }[] = [
   { value: "compact", label: "Thu gọn" },
 ];
 
-// ============================================
-// TIME CONFIGURATION
-// ============================================
+
 
 /** Giờ làm việc mặc định của Spa */
 export const DEFAULT_WORKING_HOURS = {
@@ -164,9 +158,7 @@ export const WEEKDAYS = [
   { value: 0, label: "CN", fullLabel: "Chủ Nhật" },
 ] as const;
 
-// ============================================
-// RECURRENCE CONFIGURATION
-// ============================================
+
 
 /** Các tần suất lặp lại */
 export const RECURRENCE_FREQUENCY_OPTIONS = [
@@ -183,9 +175,7 @@ export const RECURRENCE_END_OPTIONS = [
   { value: "until", label: "Đến ngày" },
 ] as const;
 
-// ============================================
-// UI CONFIGURATION
-// ============================================
+
 
 /** Số events tối đa hiển thị trong ô Month View */
 export const MAX_EVENTS_IN_MONTH_CELL = 2;
@@ -203,9 +193,7 @@ export const ANIMATION_DURATION = {
   slow: 300,
 } as const;
 
-// ============================================
-// SERVICE COLORS (Sample - sẽ lấy từ services)
-// ============================================
+
 
 /** Màu mặc định cho các dịch vụ (fallback) */
 export const DEFAULT_SERVICE_COLORS = [
@@ -219,9 +207,7 @@ export const DEFAULT_SERVICE_COLORS = [
   "#607D8B", // Blue Grey - Others
 ] as const;
 
-// ============================================
-// EMPTY STATE MESSAGES
-// ============================================
+
 
 export const EMPTY_STATE_MESSAGES = {
   noAppointments: {
@@ -238,9 +224,7 @@ export const EMPTY_STATE_MESSAGES = {
   },
 } as const;
 
-// ============================================
-// KEYBOARD SHORTCUTS
-// ============================================
+
 
 export const KEYBOARD_SHORTCUTS = {
   createEvent: { key: "c", description: "Tạo lịch hẹn mới" },

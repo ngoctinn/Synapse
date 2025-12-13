@@ -43,7 +43,6 @@ export const MaskedDateInput = React.forwardRef<HTMLInputElement, MaskedDateInpu
 
     const [isShaking, setIsShaking] = React.useState(false)
 
-    // ... (existing logic)
 
     const validateDate = (val: string) => {
       const digits = val.replace(/\D/g, "")

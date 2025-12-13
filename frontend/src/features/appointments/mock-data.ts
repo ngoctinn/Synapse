@@ -5,9 +5,7 @@
 import { addDays, addHours, setHours, setMinutes, startOfWeek, subDays } from "date-fns";
 import type { Appointment, AppointmentMetrics, CalendarEvent, TimelineResource } from "./types";
 
-// ============================================
-// RESOURCES & SERVICES
-// ============================================
+
 
 export const MOCK_STAFF: TimelineResource[] = [
   { id: "staff-1", type: "staff", name: "Nguyễn Thị Thảo", avatar: "/avatars/thao.jpg", color: "#4CAF50", isActive: true, skills: ["massage", "facial", "body-treatment"] },
@@ -55,9 +53,7 @@ export const MOCK_CUSTOMERS: MockCustomer[] = [
   { id: "cust-8", name: "Bùi Thị Hương", phone: "0955 123 456", email: "huong.bui@email.com", membershipLevel: "PLATINUM" },
 ];
 
-// ============================================
-// APPOINTMENTS GENERATION
-// ============================================
+
 
 export function generateMockAppointments(baseDate: Date = new Date()): Appointment[] {
   const weekStart = startOfWeek(baseDate, { weekStartsOn: 1 });
@@ -87,35 +83,36 @@ export function generateMockAppointments(baseDate: Date = new Date()): Appointme
   };
 
   return [
-    // Mon (0)
+    // List of appointments by Day
+
     createApt(1, "cust-1", "staff-1", "svc-massage-60", 0, 9, 0, "CONFIRMED", "room-vip-1"),
     createApt(2, "cust-2", "staff-2", "svc-facial-basic", 0, 9, 30, "CONFIRMED", "room-std-1"),
     createApt(3, "cust-3", "staff-1", "svc-massage-90", 0, 11, 0, "PENDING", "room-vip-1"),
     createApt(4, "cust-4", "staff-3", "svc-combo-relax", 0, 14, 0, "CONFIRMED", "room-vip-2"),
-    // Tue (1)
+
     createApt(5, "cust-5", "staff-2", "svc-nail-gel", 1, 10, 0, "COMPLETED"),
     createApt(6, "cust-6", "staff-1", "svc-massage-60", 1, 10, 0, "IN_PROGRESS", "room-std-2"),
     createApt(7, "cust-7", "staff-3", "svc-body-scrub", 1, 13, 30, "CONFIRMED", "room-std-1"),
     createApt(8, "cust-8", "staff-4", "svc-facial-premium", 1, 15, 0, "PENDING", "room-vip-1"),
-    // Wed (2)
+
     createApt(9, "cust-1", "staff-3", "svc-sauna", 2, 8, 0, "CONFIRMED", "room-sauna"),
     createApt(10, "cust-2", "staff-1", "svc-massage-90", 2, 9, 0, "CONFIRMED", "room-vip-2"),
     createApt(11, "cust-3", "staff-2", "svc-facial-basic", 2, 11, 0, "CONFIRMED", "room-std-1"),
     createApt(12, "cust-4", "staff-2", "svc-nail-gel", 2, 11, 30, "PENDING"),
-    // Thu (3)
+
     createApt(13, "cust-5", "staff-4", "svc-nail-gel", 3, 9, 0, "CANCELLED"),
     createApt(14, "cust-6", "staff-1", "svc-combo-relax", 3, 10, 0, "CONFIRMED", "room-vip-1"),
     createApt(15, "cust-7", "staff-2", "svc-facial-premium", 3, 14, 0, "NO_SHOW", "room-std-2"),
-    // Fri (4)
+
     createApt(16, "cust-8", "staff-3", "svc-massage-60", 4, 9, 30, "CONFIRMED", "room-std-1"),
     createApt(17, "cust-1", "staff-1", "svc-facial-basic", 4, 11, 0, "CONFIRMED", "room-vip-2"),
     createApt(18, "cust-2", "staff-4", "svc-body-scrub", 4, 15, 0, "PENDING", "room-std-2"),
     createApt(19, "cust-3", "staff-2", "svc-combo-relax", 4, 16, 0, "CONFIRMED", "room-vip-1"),
-    // Sat (5)
+
     createApt(20, "cust-4", "staff-1", "svc-massage-90", 5, 9, 0, "CONFIRMED", "room-vip-1"),
     createApt(21, "cust-5", "staff-3", "svc-sauna", 5, 10, 0, "CONFIRMED", "room-sauna"),
     createApt(22, "cust-6", "staff-2", "svc-facial-basic", 5, 10, 30, "PENDING", "room-std-1"),
-    // Sun (6)
+
     createApt(23, "cust-7", "staff-1", "svc-combo-relax", 6, 10, 0, "CONFIRMED", "room-vip-2"),
   ];
 }

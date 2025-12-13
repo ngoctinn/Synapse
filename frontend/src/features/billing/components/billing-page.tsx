@@ -43,13 +43,7 @@ export function BillingPage() {
 
   const handleUpdate = () => {
     loadData();
-    // Update selected invoice to reflect changes
     if (selectedInvoice) {
-        // We need to re-fetch the specific invoice or find it in the new list
-        // Since loadData updates the list, we can just close/re-open or rely on finding it
-        // Simpler: just refresh list and close sheet or let user see updated state if we fetched single
-        // For now, loadData refreshes list.
-        // We should arguably also update the selectedInvoice state from the new list
         startTransition(async () => {
             const res = await getInvoices();
              if (res.status === "success" && res.data) {

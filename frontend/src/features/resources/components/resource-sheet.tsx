@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/shared/ui/button";
-import { showToast } from "@/shared/ui/sonner";
 import { Form } from "@/shared/ui/form";
 import {
     Sheet,
@@ -11,6 +10,7 @@ import {
     SheetHeader,
     SheetTitle
 } from "@/shared/ui/sheet";
+import { showToast } from "@/shared/ui/sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Save } from "lucide-react";
 import * as React from "react";
@@ -28,7 +28,6 @@ interface ResourceSheetProps {
   groups: ResourceGroup[]
 }
 
-// ... imports
 
 export function ResourceSheet({
   open,
@@ -56,7 +55,6 @@ export function ResourceSheet({
     },
   });
 
-  // Reset form when opening or when resource changes
   React.useEffect(() => {
     if (open) {
       if (mode === "create") {
@@ -93,11 +91,9 @@ export function ResourceSheet({
     }
   }, [state, mode, onOpenChange]);
 
-// ... rest
 
   const onSubmit = (data: ResourceFormValues) => {
     const formData = new FormData();
-    // Pass hidden fields for server action to identify mode/ID
     if (mode === "update" && resource?.id) {
         formData.append("id", resource.id);
     }

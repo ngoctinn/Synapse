@@ -7,9 +7,6 @@
 
 import { z } from "zod";
 
-// ============================================
-// FORM SCHEMAS
-// ============================================
 
 /** Schema cho form tạo/sửa cuộc hẹn */
 export const appointmentFormSchema = z.object({
@@ -83,9 +80,6 @@ export const updateAppointmentTimeSchema = z.object({
 
 export type UpdateAppointmentTimeValues = z.infer<typeof updateAppointmentTimeSchema>;
 
-// ============================================
-// FILTER SCHEMAS
-// ============================================
 
 /** Schema cho bộ lọc lịch hẹn */
 export const appointmentFilterSchema = z.object({
@@ -109,9 +103,6 @@ export const appointmentFilterSchema = z.object({
 
 export type AppointmentFilterValues = z.infer<typeof appointmentFilterSchema>;
 
-// ============================================
-// RECURRENCE SCHEMA (Riêng biệt)
-// ============================================
 
 /** Schema cho cấu hình lịch lặp lại */
 export const recurrenceSchema = z
@@ -142,9 +133,6 @@ export const recurrenceSchema = z
 
 export type RecurrenceValues = z.infer<typeof recurrenceSchema>;
 
-// ============================================
-// API REQUEST SCHEMAS
-// ============================================
 
 /** Schema cho request tạo appointment (gửi lên API) */
 export const createAppointmentRequestSchema = z.object({
@@ -166,9 +154,6 @@ export const updateAppointmentRequestSchema = createAppointmentRequestSchema.par
 
 export type UpdateAppointmentRequest = z.infer<typeof updateAppointmentRequestSchema>;
 
-// ============================================
-// VALIDATION HELPERS
-// ============================================
 
 /**
  * Validate thời gian cuộc hẹn không ở quá khứ

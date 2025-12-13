@@ -38,27 +38,23 @@ export const getStatusColor = (type: string, isClosed: boolean) => {
 };
 
 export const getStatusStyles = (type: string, isClosed: boolean) => {
-  // 1. Determine Background based on Type
   let bgClass = "bg-muted/30"; // Default
   if (type === 'holiday') bgClass = "bg-destructive/10 dark:bg-destructive/20";
   else if (type === 'maintenance') bgClass = "bg-alert-warning dark:bg-alert-warning";
   else if (type === 'custom') bgClass = "bg-alert-info dark:bg-alert-info";
 
-  // 2. Determine Border & Text based on Status
+
   let borderClass = "";
   let textClass = "";
 
   if (isClosed) {
-      // Closed: Destructive (Red) Border & Text
       borderClass = "border border-destructive/50";
       textClass = "text-destructive dark:text-destructive";
   } else {
-      // Open: Success (Green) Border & Text
       borderClass = "border border-alert-success-border";
       textClass = "text-alert-success-foreground dark:text-alert-success-foreground";
   }
 
-  // Hover Effect Base
   const hoverClass = "hover:shadow-sm hover:ring-1 hover:ring-ring/50";
 
   return {

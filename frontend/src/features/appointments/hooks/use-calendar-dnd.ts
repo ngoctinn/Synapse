@@ -12,9 +12,7 @@ import { toast } from "sonner";
 import { checkConflicts, updateAppointmentTime } from "../actions";
 import type { CalendarEvent } from "../types";
 
-// ============================================
-// TYPES
-// ============================================
+
 
 interface UseCalendarDndOptions {
   /** Callback khi event được di chuyển thành công */
@@ -42,9 +40,7 @@ interface UseCalendarDndReturn {
   setHoveredSlot: (slot: { date: Date } | null) => void;
 }
 
-// ============================================
-// HOOK
-// ============================================
+
 
 export function useCalendarDnd(
   events: CalendarEvent[],
@@ -60,13 +56,10 @@ export function useCalendarDnd(
   const [draggedEventId, setDraggedEventId] = useState<string | null>(null);
   const [hoveredSlot, setHoveredSlot] = useState<{ date: Date } | null>(null);
 
-  // ============================================
-  // HANDLE EVENT MOVE
-  // ============================================
+
 
   const handleEventMove = useCallback(
     async (eventId: string, newStart: Date, newEnd: Date) => {
-      // Find original event
       const originalEvent = events.find((e) => e.id === eventId);
       if (!originalEvent) {
         toast.error("Không tìm thấy lịch hẹn");
@@ -82,7 +75,6 @@ export function useCalendarDnd(
 
       startTransition(async () => {
         try {
-          // Check conflicts if enabled
           if (checkConflictsOnMove) {
             const conflictResult = await checkConflicts(
               originalEvent.staffId,
@@ -105,7 +97,6 @@ export function useCalendarDnd(
             }
           }
 
-          // Update appointment time
           const result = await updateAppointmentTime(
             eventId,
             newStart,

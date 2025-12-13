@@ -1,11 +1,10 @@
 "use client"
 
+import { PageContent, PageHeader, PageShell, SurfaceCard } from "@/shared/components/layout/page-layout"
 import { ActionResponse } from "@/shared/lib/action-response"
-import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
-import { Card } from "@/shared/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
-import { Bell, CalendarX, Clock, Loader2, RotateCcw, Save } from "lucide-react"
+import { Loader2, RotateCcw, Save } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Suspense, use, useCallback, useEffect, useState, useTransition } from "react"
 import { toast } from "sonner"
@@ -22,7 +21,6 @@ interface SettingsPageProps {
   eventsPromise: Promise<NotificationEvent[]>
 }
 
-// Wrapper để unwrap Promise với use()
 // Component hiển thị và quản lý state logic
 function SettingsForm({
   initialConfig,
@@ -37,10 +35,10 @@ function SettingsForm({
   const router = useRouter()
   const pathname = usePathname()
 
-  // Tab state
+  // Tab state từ URL
   const activeTab = searchParams.get("tab") || "schedule"
 
-  // Shared operating hours state
+  // Operating hours state
   const [config, setConfig] = useState<OperatingHoursConfig>(initialConfig)
   const [isDirty, setIsDirty] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -84,7 +82,7 @@ function SettingsForm({
     toast.info("Đã khôi phục cấu hình gốc")
   }, [initialConfig])
 
-  // Keyboard shortcut for Save
+  // Keyboard shortcut for Save (Ctrl+S)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
@@ -105,110 +103,100 @@ function SettingsForm({
     router.push(`${pathname}?${params.toString()}`, { scroll: false })
   }
 
-  // Check if we're on operating hours related tabs (schedule or exceptions)
+  // Chỉ hiện nút Save/Reset khi ở tab liên quan đến Operating Hours
   const showOperatingHoursActions = activeTab === "schedule" || activeTab === "exceptions"
 
   return (
-    <Tabs
-      value={activeTab}
-      className="flex flex-col flex-1 w-full gap-0"
-      onValueChange={handleTabChange}
-    >
-      {/* Sticky Header với Tabs + Actions */}
-      <div className="sticky top-0 z-40 px-4 py-2 bg-card/95 backdrop-blur-sm border-b flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-3 w-full md:w-auto">
+    <PageShell>
+      <Tabs value={activeTab} className="flex flex-col flex-1 w-full gap-0" onValueChange={handleTabChange}>
+        <PageHeader>
           <TabsList variant="default" size="default">
             <TabsTrigger value="schedule" variant="default" stretch={false}>
-              <Clock className="size-4 mr-2 hidden sm:inline-block" />
               Lịch làm việc
-              {isDirty && activeTab === "schedule" && (
-                <Badge variant="warning" className="ml-2 h-5 w-5 p-0 justify-center text-[10px]">•</Badge>
-              )}
             </TabsTrigger>
             <TabsTrigger value="exceptions" variant="default" stretch={false}>
-              <CalendarX className="size-4 mr-2 hidden sm:inline-block" />
               Ngày ngoại lệ
-              {isDirty && activeTab === "exceptions" && (
-                <Badge variant="warning" className="ml-2 h-5 w-5 p-0 justify-center text-[10px]">•</Badge>
-              )}
             </TabsTrigger>
             <TabsTrigger value="notifications" variant="default" stretch={false}>
-              <Bell className="size-4 mr-2 hidden sm:inline-block" />
               Thông báo
             </TabsTrigger>
           </TabsList>
-        </div>
 
-        {/* Save/Reset Actions - chỉ hiện khi ở tabs Operating Hours */}
-        {showOperatingHoursActions && (
-          <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-4 duration-300">
-            {isDirty && (
-              <span className="text-xs text-muted-foreground hidden sm:inline-flex items-center gap-1.5">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-warning opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-warning" />
+          {/* Save/Reset Actions - chỉ hiện khi ở tabs Operating Hours */}
+          {showOperatingHoursActions && (
+            <div className="flex items-center gap-2">
+              {isDirty && (
+                <span className="text-xs text-muted-foreground hidden sm:inline-flex items-center gap-1.5">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-warning opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-warning" />
+                  </span>
+                  Chưa lưu
                 </span>
-                Có thay đổi chưa lưu
-              </span>
-            )}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleReset}
-              disabled={!isDirty || isPending}
-              className="gap-1.5"
-            >
-              <RotateCcw className="size-4" />
-              <span className="hidden sm:inline">Khôi phục</span>
-            </Button>
-            <Button
-              size="sm"
-              onClick={handleSave}
-              disabled={!isDirty || isPending}
-              className="gap-1.5 shadow-sm"
-            >
-              {isPending ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <Save className="size-4" />
               )}
-              <span className="hidden sm:inline">Lưu thay đổi</span>
-              <span className="sm:hidden">Lưu</span>
-            </Button>
-          </div>
-        )}
-      </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleReset}
+                disabled={!isDirty || isPending}
+              >
+                <RotateCcw className="size-4 mr-1.5" />
+                <span className="hidden sm:inline">Khôi phục</span>
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleSave}
+                disabled={!isDirty || isPending}
+              >
+                {isPending ? (
+                  <Loader2 className="size-4 animate-spin mr-1.5" />
+                ) : (
+                  <Save className="size-4 mr-1.5" />
+                )}
+                <span className="hidden sm:inline">Lưu thay đổi</span>
+                <span className="sm:hidden">Lưu</span>
+              </Button>
+            </div>
+          )}
+        </PageHeader>
 
-      {/* Tab Contents */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <TabsContent
-          value="schedule"
-          className="flex-1 flex flex-col mt-0 border-0 p-4 sm:p-6 overflow-y-auto data-[state=inactive]:hidden motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 duration-300 ease-out"
-        >
-          <ScheduleEditor config={config} onConfigChange={handleConfigChange} />
-        </TabsContent>
+        {/* Tab Contents */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <TabsContent
+            value="schedule"
+            className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden"
+          >
+            <PageContent>
+              <ScheduleEditor config={config} onConfigChange={handleConfigChange} />
+            </PageContent>
+          </TabsContent>
 
-        <TabsContent
-          value="exceptions"
-          className="flex-1 flex flex-col mt-0 border-0 p-0 overflow-hidden data-[state=inactive]:hidden motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 duration-300 ease-out"
-        >
-          <Card className="flex-1 flex flex-col overflow-hidden m-4 sm:m-6">
-            <ExceptionsViewManager
-              exceptions={config.exceptions}
-              onAddExceptions={handleAddExceptions}
-              onRemoveException={handleRemoveException}
-            />
-          </Card>
-        </TabsContent>
+          <TabsContent
+            value="exceptions"
+            className="flex-1 flex flex-col mt-0 border-0 p-0 overflow-hidden data-[state=inactive]:hidden"
+          >
+            <PageContent className="h-full">
+              <SurfaceCard className="flex-1 flex flex-col overflow-hidden">
+                <ExceptionsViewManager
+                  exceptions={config.exceptions}
+                  onAddExceptions={handleAddExceptions}
+                  onRemoveException={handleRemoveException}
+                />
+              </SurfaceCard>
+            </PageContent>
+          </TabsContent>
 
-        <TabsContent
-          value="notifications"
-          className="flex-1 flex flex-col mt-0 border-0 p-4 sm:p-6 overflow-y-auto data-[state=inactive]:hidden motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 duration-300 ease-out"
-        >
-          <NotificationsSettings initialChannels={channels} initialEvents={events} />
-        </TabsContent>
-      </div>
-    </Tabs>
+          <TabsContent
+            value="notifications"
+            className="flex-1 flex flex-col mt-0 border-0 p-0 overflow-y-auto data-[state=inactive]:hidden"
+          >
+            <PageContent>
+              <NotificationsSettings initialChannels={channels} initialEvents={events} />
+            </PageContent>
+          </TabsContent>
+        </div>
+      </Tabs>
+    </PageShell>
   )
 }
 
@@ -218,19 +206,15 @@ function SettingsContent({
   channelsPromise,
   eventsPromise
 }: SettingsPageProps) {
-  // Unwrap all promises at once
   const opHoursRes = use(operatingHoursPromise)
   const channels = use(channelsPromise)
   const events = use(eventsPromise)
 
   if (opHoursRes.status !== 'success' || !opHoursRes.data) {
-     return <div className="p-4 text-destructive">Không tải được cấu hình thời gian làm việc</div>
+    return <div className="p-4 text-destructive">Không tải được cấu hình thời gian làm việc</div>
   }
 
   const initialConfig = opHoursRes.data
-
-  // Use JSON.stringify of config to force remount when data changes
-  // This avoids setState in useEffect and ensures clean state reset
   const formKey = JSON.stringify(initialConfig)
 
   return (
@@ -243,11 +227,11 @@ function SettingsContent({
   )
 }
 
-// Loading skeleton cho tabs
+// Loading skeleton
 function SettingsTabSkeleton() {
   return (
     <div className="p-6 space-y-6 animate-pulse">
-      <div className="h-8 w-48 bg-muted rounded-md" />
+      <div className="h-10 w-64 bg-muted rounded-md" />
       <div className="space-y-4">
         {[1, 2, 3, 4, 5, 6, 7].map((i) => (
           <div key={i} className="h-16 bg-muted rounded-xl" />
@@ -259,10 +243,8 @@ function SettingsTabSkeleton() {
 
 export function SettingsPage(props: SettingsPageProps) {
   return (
-    <div className="min-h-screen flex flex-col w-full">
-      <Suspense fallback={<SettingsTabSkeleton />}>
-        <SettingsContent {...props} />
-      </Suspense>
-    </div>
+    <Suspense fallback={<SettingsTabSkeleton />}>
+      <SettingsContent {...props} />
+    </Suspense>
   )
 }

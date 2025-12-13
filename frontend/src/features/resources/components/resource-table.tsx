@@ -3,21 +3,21 @@
 import { useTableSelection } from "@/shared/hooks/use-table-selection";
 import { cn } from "@/shared/lib/utils";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
 import { Badge } from "@/shared/ui/badge";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
-import { showToast } from "@/shared/ui/sonner";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
+import { showToast } from "@/shared/ui/sonner";
 import { Bed, Box } from "lucide-react";
 import { useState, useTransition } from "react";
 import { deleteResource } from "../actions";
@@ -39,13 +39,11 @@ export function ResourceTable({ data, groups, isLoading, className, variant = "d
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  // Selection state
   const selection = useTableSelection({
     data,
     keyExtractor: (item) => item.id,
   });
 
-  // Xóa nhiều tài nguyên
   const handleBulkDelete = async () => {
     const ids = Array.from(selection.selectedIds) as string[];
     if (ids.length === 0) return;
@@ -189,8 +187,6 @@ export function ResourceTable({ data, groups, isLoading, className, variant = "d
         isLoading={isLoading}
         className={cn(className)}
         variant={variant}
-
-        // Selection props
         selection={{
           isSelected: selection.isSelected,
           onToggleOne: selection.toggleOne,
@@ -198,8 +194,6 @@ export function ResourceTable({ data, groups, isLoading, className, variant = "d
           isAllSelected: selection.isAllSelected,
           isPartiallySelected: selection.isPartiallySelected,
         }}
-
-        // Row interaction
         onRowClick={(resource) => setEditResource(resource)}
 
         emptyState={
