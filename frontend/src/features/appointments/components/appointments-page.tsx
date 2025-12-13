@@ -124,7 +124,7 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
     if (appointment.status === "COMPLETED") handleReviewNeeded(appointment.id);
   };
 
-  const wrapAction = useCallback((fn: (id: string) => Promise<ActionResponse<any>>, successMsg: string, errorMsg: string) => {
+  const wrapAction = useCallback((fn: (id: string) => Promise<ActionResponse<Appointment | undefined>>, successMsg: string, errorMsg: string) => {
     return async (event: CalendarEvent) => {
       if (!event.id) return;
       startTransition(async () => {

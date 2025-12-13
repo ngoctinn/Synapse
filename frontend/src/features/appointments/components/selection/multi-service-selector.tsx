@@ -78,7 +78,8 @@ export function MultiServiceSelector({
                     className="rounded-full hover:bg-muted p-0.5 cursor-pointer"
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        handleRemove(e as any, service.id);
+                        handleSelect(service.id);
+                        e.preventDefault(); // Prevent default action for Enter key
                       }
                     }}
                     onMouseDown={(e) => {

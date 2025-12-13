@@ -1,19 +1,12 @@
 "use client";
 
-/**
- * CalendarView - Router component chuyển đổi giữa các calendar views
- *
- * Switch giữa: Day, Week, Month, Agenda, Timeline
- */
-
 import { cn } from "@/shared/lib/utils";
-
 import type {
-  CalendarEvent,
-  CalendarViewType,
-  DateRange,
-  DensityMode,
-  TimelineResource,
+    CalendarEvent,
+    CalendarViewType,
+    DateRange,
+    DensityMode,
+    TimelineResource,
 } from "../../types";
 
 import { ResourceTimeline } from "../timeline";
@@ -22,45 +15,25 @@ import { DayView } from "./day-view";
 import { MonthView } from "./month-view";
 import { WeekView } from "./week-view";
 
-// ============================================
-// TYPES
-// ============================================
-
 interface CalendarViewProps {
-  /** Loại view hiện tại */
   view: CalendarViewType;
-  /** Ngày đang xem */
   date: Date;
-  /** Khoảng thời gian được tính sẵn */
   dateRange: DateRange;
-  /** Danh sách events */
   events: CalendarEvent[];
-  /** Chế độ density */
   densityMode?: DensityMode;
-  /** Danh sách nhân viên (cho Timeline) */
   staffList?: TimelineResource[];
-  /** Danh sách phòng (cho Timeline) */
   roomList?: TimelineResource[];
-  /** Callback khi click event */
   onEventClick?: (event: CalendarEvent) => void;
-  /** Callback khi click slot trống */
   onSlotClick?: (date: Date, hour: number, minute: number) => void;
-  /** Callback khi click ngày (trong Month view) */
   onDayClick?: (date: Date) => void;
-  /** Loading state */
   isLoading?: boolean;
   className?: string;
-  // Actions
   onCheckIn?: (event: CalendarEvent) => void;
   onNoShow?: (event: CalendarEvent) => void;
   onCancel?: (event: CalendarEvent) => void;
   onDelete?: (event: CalendarEvent) => void;
   onEdit?: (event: CalendarEvent) => void;
 }
-
-// ============================================
-// COMPONENT
-// ============================================
 
 export function CalendarView({
   view,
@@ -81,7 +54,6 @@ export function CalendarView({
   onDelete,
   onEdit,
 }: CalendarViewProps) {
-  // Loading skeleton
   if (isLoading) {
     return (
       <div className={cn("flex items-center justify-center h-full", className)}>
@@ -93,7 +65,6 @@ export function CalendarView({
     );
   }
 
-  // Render view based on type
   switch (view) {
     case "day":
       return (

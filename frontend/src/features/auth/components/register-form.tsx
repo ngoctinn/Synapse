@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Lock, Mail, User } from "lucide-react";
 import Link from "next/link";
-import { startTransition, useActionState, useEffect, useRef, useState } from "react";
+import { startTransition, useActionState, useEffect } from "react"; // Removed useRef, useState
 import { useForm } from "react-hook-form";
 
 import { registerAction, resendVerificationAction } from "../actions";
@@ -24,28 +24,7 @@ import { Input } from "@/shared/ui/input";
 import { showToast } from "@/shared/ui/sonner";
 
 export function RegisterForm() {
-  const [showCheckEmailDialog, setShowCheckEmailDialog] = useState(false);
-  const [registeredEmail, setRegisteredEmail] = useState("");
-
-  const { show: showPassword, toggle: togglePassword, inputType: passwordInputType, Icon: PasswordIcon, ariaLabel: passwordAriaLabel } = usePasswordVisibility();
-  const { show: showConfirmPassword, toggle: toggleConfirmPassword, inputType: confirmPasswordInputType, Icon: ConfirmPasswordIcon, ariaLabel: confirmPasswordAriaLabel } = usePasswordVisibility();
-
   const [state, action, isPending] = useActionState(registerAction, undefined);
-  const dismissedStateRef = useRef<typeof state>(null);
-
-  useEffect(() => {
-    if (state?.status === "success" && state !== dismissedStateRef.current) {
-      showToast.success("Đăng ký thành công", state.message);
-      setShowCheckEmailDialog(true);
-      if (state.data?.email) {
-        setRegisteredEmail(state.data.email);
-      }
-    } else if (state?.status === "error" && state !== dismissedStateRef.current) {
-      showToast.error("Đăng ký thất bại", state.message);
-      // Với lỗi, chúng ta cũng đánh dấu đã dismiss để tránh toast hiện lại nếu re-render
-      dismissedStateRef.current = state;
-    }
-  }, [state]);
 
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
@@ -58,12 +37,21 @@ export function RegisterForm() {
     },
   });
 
+  // Effect to show toast messages
+  useEffect(() => {
+    if (state?.status === "success") {
+      showToast.success("Đăng ký thành công", state.message);
+    } else if (state?.status === "error") {
+      showToast.error("Đăng ký thất bại", state.message);
+    }
+  }, [state]);
+
   function onSubmit(values: RegisterInput) {
     const formData = new FormData();
     formData.append("fullName", values.fullName);
     formData.append("email", values.email);
     formData.append("password", values.password);
-    formData.append("confirmPassword", values.confirmPassword); // ARCH-01 fix
+    formData.append("confirmPassword", values.confirmPassword);
 
     startTransition(() => {
       action(formData);
@@ -71,14 +59,19 @@ export function RegisterForm() {
   }
 
   const handleResend = async () => {
-    if (!registeredEmail) return;
-    const resendState = await resendVerificationAction(registeredEmail);
+    const currentEmail = form.getValues("email");
+    if (!currentEmail) return;
+    const resendState = await resendVerificationAction(currentEmail);
     if (resendState.status === "success") {
       showToast.success("Gửi lại thành công", resendState.message);
     } else {
       showToast.error("Gửi lại thất bại", resendState.message);
     }
   };
+
+  // Refactored usePasswordVisibility destructuring
+  const { toggle: togglePassword, inputType: passwordInputType, Icon: PasswordToggleIcon, ariaLabel: passwordAriaLabel } = usePasswordVisibility();
+  const { toggle: toggleConfirmPassword, inputType: confirmPasswordInputType, Icon: ConfirmPasswordToggleIcon, ariaLabel: confirmPasswordAriaLabel } = usePasswordVisibility();
 
   return (
     <div className="w-full animate-fade-in">
@@ -147,7 +140,7 @@ export function RegisterForm() {
                           aria-label={passwordAriaLabel}
                           tabIndex={-1}
                         >
-                          <PasswordIcon className="size-4" />
+                          <PasswordToggleIcon className="size-4" />
                         </button>
                       }
                       placeholder="Tối thiểu 8 ký tự"
@@ -177,7 +170,7 @@ export function RegisterForm() {
                           aria-label={confirmPasswordAriaLabel}
                           tabIndex={-1}
                         >
-                          <ConfirmPasswordIcon className="size-4" />
+                          <ConfirmPasswordToggleIcon className="size-4" />
                         </button>
                       }
                       placeholder="Nhập lại mật khẩu"
@@ -211,12 +204,11 @@ export function RegisterForm() {
       </p>
 
       <ConfirmDialog
-        open={showCheckEmailDialog}
+        open={state?.status === "success"}
         onOpenChange={(open) => {
           if (!open) { // Dialog is closing
-            setShowCheckEmailDialog(false);
-            setRegisteredEmail(""); // Clear registered email when dialog closes
-            dismissedStateRef.current = state;
+            form.reset(); // Reset form when dialog closes
+            // No need to clear registeredEmail as it's not state managed here
           }
         }}
         variant="info"
@@ -226,10 +218,8 @@ export function RegisterForm() {
         primaryAction={{
           label: "Đã hiểu",
           onClick: () => {
-            setShowCheckEmailDialog(false);
-            form.reset(); // UX-02: Reset form after dialog close
-            setRegisteredEmail(""); // Ensure email is cleared even if closed via primary action
-            dismissedStateRef.current = state;
+            // This onClick is redundant if open is derived from state
+            // When this closes the dialog, onOpenChange will be called.
           },
         }}
         secondaryAction={{

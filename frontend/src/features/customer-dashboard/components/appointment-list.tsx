@@ -144,7 +144,7 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
                 )}
 
                 <div className="pt-2 mt-1 border-t flex gap-2 justify-end">
-                  {(appt.status === "pending" || appt.status === "confirmed") && (
+                  {(appt.status === "PENDING" || appt.status === "CONFIRMED") && (
                     <Button
                        variant="ghost"
                        size="sm"

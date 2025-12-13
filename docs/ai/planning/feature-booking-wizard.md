@@ -32,29 +32,29 @@ created: 2025-12-13
 ### Phase 1: Foundation (M1) - 2 ngày
 
 #### Nhiệm vụ 1.1: Khởi tạo Feature Structure
-- [ ] Tạo thư mục `frontend/src/features/booking-wizard/`
-- [ ] Tạo `index.ts` với public exports
-- [ ] Tạo `types.ts` với interfaces (ServiceItem, StaffItem, TimeSlot, BookingState, etc.)
-- [ ] Tạo `constants.ts` với STEP_CONFIG, HOLD_DURATION, etc.
-- [ ] Tạo `schemas.ts` với Zod validation schemas
+- [x] Tạo thư mục `frontend/src/features/booking-wizard/`
+- [x] Tạo `index.ts` với public exports
+- [x] Tạo `types.ts` với interfaces (ServiceItem, StaffItem, TimeSlot, BookingState, etc.)
+- [x] Tạo `constants.ts` với STEP_CONFIG, HOLD_DURATION, etc.
+- [x] Tạo `schemas.ts` với Zod validation schemas
 
 **Deliverable**: Feature folder với type definitions hoàn chỉnh.
 
 #### Nhiệm vụ 1.2: Zustand Store Setup
-- [ ] Tạo `hooks/use-booking-store.ts`
-- [ ] Implement state: selectedServices, staffId, selectedSlot, etc.
-- [ ] Implement actions: addService, setStaff, setSlot, reset, etc.
-- [ ] Cấu hình persist middleware (localStorage)
-- [ ] Tạo `lib/session-id.ts` để generate/persist session UUID
+- [x] Tạo `hooks/use-booking-store.ts`
+- [x] Implement state: selectedServices, staffId, selectedSlot, etc.
+- [x] Implement actions: addService, setStaff, setSlot, reset, etc.
+- [x] Cấu hình persist middleware (localStorage)
+- [x] Tạo `lib/session-id.ts` để generate/persist session UUID
 
 **Deliverable**: Zustand store hoạt động với persist.
 
 #### Nhiệm vụ 1.3: Wizard Shell UI
-- [ ] Tạo `components/booking-wizard.tsx` - Main container
-- [ ] Tạo `components/wizard-header.tsx` - Progress indicator + back button
-- [ ] Tạo `components/wizard-footer.tsx` - Fixed bottom CTA
-- [ ] Tạo `components/shared/step-indicator.tsx` - Progress dots
-- [ ] Tạo route `/booking` (page.tsx) với Wizard component
+- [x] Tạo `components/booking-wizard.tsx` - Main container
+- [x] Tạo `components/wizard-header.tsx` - Progress indicator + back button
+- [x] Tạo `components/wizard-footer.tsx` - Fixed bottom CTA
+- [x] Tạo `components/shared/step-indicator.tsx` - Progress dots
+- [x] Tạo route `/booking` (page.tsx) với Wizard component
 
 **Deliverable**: Wizard UI skeleton với step navigation.
 
@@ -63,35 +63,35 @@ created: 2025-12-13
 ### Phase 2: Services & Technician Steps (M2) - 3 ngày
 
 #### Nhiệm vụ 2.1: Server Actions - Services
-- [ ] Tạo `actions.ts` với `getServicesForBooking()`
-- [ ] Fetch từ existing services module hoặc mock data
-- [ ] Return grouped by category
+- [x] Tạo `actions.ts` với `getServicesForBooking()`
+- [x] Fetch từ existing services module hoặc mock data
+- [x] Return grouped by category
 
 **Deliverable**: Action lấy danh sách services.
 
 #### Nhiệm vụ 2.2: Step 1 - Services UI
-- [ ] Tạo `components/step-services/services-step.tsx`
-- [ ] Tạo `components/step-services/category-tabs.tsx` - Horizontal scroll tabs
-- [ ] Tạo `components/step-services/service-list.tsx` - Virtualized list
-- [ ] Tạo `components/step-services/service-card.tsx` - Selectable card
-- [ ] Tạo `components/step-services/floating-summary.tsx` - Bottom bar
-- [ ] Integrate với Zustand store (add/remove service)
+- [x] Tạo `components/step-services/services-step.tsx`
+- [x] Tạo `components/step-services/category-tabs.tsx` - Horizontal scroll tabs
+- [x] Tạo `components/step-services/service-list.tsx` - Virtualized list
+- [x] Tạo `components/step-services/service-card.tsx` - Selectable card
+- [x] Tạo `components/step-services/floating-summary.tsx` - Bottom bar
+- [x] Integrate với Zustand store (add/remove service)
 
 **Deliverable**: Step 1 hoạt động với multi-select services.
 
 #### Nhiệm vụ 2.3: Server Actions - Staff
-- [ ] Tạo `getAvailableStaff()` action
-- [ ] Filter staff by skills matching selected services
-- [ ] Return với availability indicator
+- [x] Tạo `getAvailableStaff()` action
+- [x] Filter staff by skills matching selected services
+- [x] Return với availability indicator
 
 **Deliverable**: Action lấy danh sách KTV khả dụng.
 
 #### Nhiệm vụ 2.4: Step 2 - Technician UI
-- [ ] Tạo `components/step-technician/technician-step.tsx`
-- [ ] Tạo `components/step-technician/any-option.tsx` - "Bất kỳ KTV" prominent
-- [ ] Tạo `components/step-technician/staff-list.tsx` - Staff cards
-- [ ] Show rating, avatar, "Có chỗ hôm nay" badge
-- [ ] Integrate với Zustand store
+- [x] Tạo `components/step-technician/technician-step.tsx`
+- [x] Tạo `components/step-technician/any-option.tsx` - "Bất kỳ KTV" prominent
+- [x] Tạo `components/step-technician/staff-list.tsx` - Staff cards
+- [x] Show rating, avatar, "Có chỗ hôm nay" badge
+- [x] Integrate với Zustand store
 
 **Deliverable**: Step 2 hoạt động với staff selection.
 
@@ -100,24 +100,24 @@ created: 2025-12-13
 ### Phase 3: Time Selection + Realtime (M3) - 4 ngày
 
 #### Nhiệm vụ 3.1: Backend - OR-Tools Slot Calculation (Mock)
-- [ ] Tạo mock API endpoint `/api/v1/slots/calculate`
+- [x] Tạo mock API endpoint `/api/v1/slots/calculate`
 - [ ] Return sample slots based on date + staff
 - [ ] (Future: Integrate real OR-Tools)
 
 **Deliverable**: Mock API trả về slot khả dụng.
 
 #### Nhiệm vụ 3.2: Server Actions - Slots
-- [ ] Tạo `getAvailableSlots()` action
+- [x] Tạo `getAvailableSlots()` action
 - [ ] Call backend với serviceIds, staffId, dateRange
 - [ ] Parse response và return TimeSlot[]
 
 **Deliverable**: Action lấy slots từ backend.
 
 #### Nhiệm vụ 3.3: Step 3 - Time UI (Static)
-- [ ] Tạo `components/step-time/time-step.tsx`
-- [ ] Tạo `components/step-time/date-picker.tsx` - Horizontal date selector
-- [ ] Tạo `components/step-time/time-slots.tsx` - Group by Sáng/Chiều/Tối
-- [ ] Tạo `components/step-time/slot-button.tsx` - Available/Selected/Disabled states
+- [x] Tạo `components/step-time/time-step.tsx`
+- [x] Tạo `components/step-time/date-picker.tsx` - Horizontal date selector
+- [x] Tạo `components/step-time/time-slots.tsx` - Group by Sáng/Chiều/Tối
+- [x] Tạo `components/step-time/slot-button.tsx` - Available/Selected/Disabled states
 
 **Deliverable**: Step 3 UI với date/time selection.
 
@@ -137,10 +137,10 @@ created: 2025-12-13
 **Deliverable**: Realtime sync slot availability.
 
 #### Nhiệm vụ 3.6: Hold Timer UI
-- [ ] Tạo `hooks/use-hold-timer.ts` - Countdown logic
-- [ ] Tạo `components/step-time/hold-timer.tsx` - Countdown display
-- [ ] Color coding: Green → Yellow → Red
-- [ ] Handle expiration: Show modal, release hold
+- [x] Tạo `hooks/use-hold-timer.ts` - Countdown logic
+- [x] Tạo `components/step-time/hold-timer.tsx` - Countdown display
+- [x] Color coding: Green → Yellow → Red
+- [x] Handle expiration: Show modal, release hold
 
 **Deliverable**: Countdown timer với UX handling.
 
@@ -149,11 +149,11 @@ created: 2025-12-13
 ### Phase 4: Payment & Confirmation (M4) - 3 ngày
 
 #### Nhiệm vụ 4.1: Step 4 - Payment UI
-- [ ] Tạo `components/step-payment/payment-step.tsx`
-- [ ] Tạo `components/step-payment/booking-summary.tsx` - Summary card
-- [ ] Tạo `components/step-payment/customer-form.tsx` - Name, Phone, Email (optional)
-- [ ] Tạo `components/step-payment/payment-methods.tsx` - COD / Online radio
-- [ ] Form validation với React Hook Form + Zod
+- [x] Tạo `components/step-payment/payment-step.tsx`
+- [x] Tạo `components/step-payment/booking-summary.tsx` - Summary card
+- [x] Tạo `components/step-payment/customer-form.tsx` - Name, Phone, Email (optional)
+- [x] Tạo `components/step-payment/payment-methods.tsx` - COD / Online radio
+- [x] Form validation với React Hook Form + Zod
 
 **Deliverable**: Step 4 UI với customer info + payment selection.
 
@@ -174,10 +174,10 @@ created: 2025-12-13
 **Deliverable**: Action hoàn tất booking.
 
 #### Nhiệm vụ 4.4: Success Screen
-- [ ] Tạo Success component hiển thị sau confirm
-- [ ] Show confirmation code, booking details
-- [ ] CTA: "Xem Chi tiết" → Customer Dashboard (future)
-- [ ] CTA: "Đặt lịch tiếp" → Reset và quay lại Step 1
+- [x] Tạo Success component hiển thị sau confirm
+- [x] Show confirmation code, booking details
+- [x] CTA: "Xem Chi tiết" → Customer Dashboard (future)
+- [x] CTA: "Đặt lịch tiếp" → Reset và quay lại Step 1
 
 **Deliverable**: Booking success screen.
 

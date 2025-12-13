@@ -22,12 +22,7 @@ import { forgotPasswordAction } from "../actions";
 import { forgotPasswordSchema, type ForgotPasswordInput } from "../schemas";
 
 export function ForgotPasswordForm() {
-  const [showCheckEmailDialog, setShowCheckEmailDialog] = useState(false);
-  const [lastEmailSent, setLastEmailSent] = useState<string | null>(null);
-
   const [state, action, isPending] = useActionState(forgotPasswordAction, undefined);
-
-  const dismissedStateRef = useRef<typeof state>(null);
 
   const form = useForm<ForgotPasswordInput>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -37,16 +32,14 @@ export function ForgotPasswordForm() {
     },
   });
 
+  // Effect to show toast messages
   useEffect(() => {
-    if (state?.status === "success" && state !== dismissedStateRef.current) {
+    if (state?.status === "success") {
       showToast.success("Đã gửi yêu cầu", state.message);
-      setShowCheckEmailDialog(true);
-      setLastEmailSent(form.getValues("email"));
-    } else if (state?.status === "error" && state !== dismissedStateRef.current) {
+    } else if (state?.status === "error") {
       showToast.error("Gửi yêu cầu thất bại", state.message);
-      dismissedStateRef.current = state;
     }
-  }, [state, form]);
+  }, [state]);
 
   const onSubmit = (values: ForgotPasswordInput) => {
     const formData = new FormData();
@@ -58,9 +51,10 @@ export function ForgotPasswordForm() {
   };
 
   const handleResend = () => {
-    if (lastEmailSent) {
+    const currentEmail = form.getValues("email");
+    if (currentEmail) {
       const formData = new FormData();
-      formData.append("email", lastEmailSent);
+      formData.append("email", currentEmail);
       startTransition(() => {
         action(formData);
       });
@@ -123,11 +117,10 @@ export function ForgotPasswordForm() {
       </p>
 
       <ConfirmDialog
-        open={showCheckEmailDialog}
+        open={state?.status === "success"}
         onOpenChange={(open) => {
-          setShowCheckEmailDialog(open);
           if (!open) {
-             dismissedStateRef.current = state;
+             form.reset(); // Reset form when dialog closes
           }
         }}
         variant="info"
@@ -137,10 +130,9 @@ export function ForgotPasswordForm() {
         primaryAction={{
           label: "Đã hiểu",
           onClick: () => {
-            setShowCheckEmailDialog(false);
-            form.reset(); // UX-02: Reset form after dialog close
-            setLastEmailSent(null); // Clear last sent email
-            dismissedStateRef.current = state;
+            // This onClick is redundant if open is derived from state
+            // But if it's there for explicit user action, keep it.
+            // When this closes the dialog, onOpenChange will be called.
           },
         }}
         secondaryAction={{

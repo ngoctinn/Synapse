@@ -50,12 +50,12 @@ interface EventCardProps {
 // ============================================
 
 const STATUS_ICONS: Record<AppointmentStatus, React.ReactNode> = {
-  pending: <Clock className="h-3 w-3" />,
-  confirmed: <CheckCircle2 className="h-3 w-3" />,
-  in_progress: <Play className="h-3 w-3" />,
-  completed: <CheckCircle2 className="h-3 w-3" />,
-  cancelled: <XCircle className="h-3 w-3" />,
-  no_show: <UserX className="h-3 w-3" />,
+  PENDING: <Clock className="h-3 w-3" />,
+  CONFIRMED: <CheckCircle2 className="h-3 w-3" />,
+  IN_PROGRESS: <Play className="h-3 w-3" />,
+  COMPLETED: <CheckCircle2 className="h-3 w-3" />,
+  CANCELLED: <XCircle className="h-3 w-3" />,
+  NO_SHOW: <UserX className="h-3 w-3" />,
 };
 
 // ============================================

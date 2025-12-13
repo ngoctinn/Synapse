@@ -1,0 +1,79 @@
+"use client";
+
+import { cn } from "@/shared/lib/utils";
+import { ScrollArea, ScrollBar } from "@/shared/ui/scroll-area";
+import { addDays, format, isSameDay, isToday } from "date-fns";
+import { vi } from "date-fns/locale";
+import React, { useEffect, useRef } from "react";
+
+interface DatePickerProps {
+  selectedDate: Date | null;
+  onSelectDate: (date: Date) => void;
+  availableDates: Date[]; // Dates for which slots are available
+  isLoading?: boolean;
+}
+
+export const DatePicker: React.FC<DatePickerProps> = ({
+  selectedDate,
+  onSelectDate,
+  availableDates,
+  isLoading,
+}) => {
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const selectedDateRef = useRef<HTMLButtonElement>(null);
+
+  const datesToShow = React.useMemo(() => {
+    const dates = [];
+    for (let i = 0; i < 30; i++) { // Show 30 days from today
+      dates.push(addDays(new Date(), i));
+    }
+    return dates;
+  }, []);
+
+  useEffect(() => {
+    if (selectedDateRef.current && scrollAreaRef.current) {
+      selectedDateRef.current.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+    }
+  }, [selectedDate]);
+
+  return (
+    <ScrollArea className="w-full whitespace-nowrap rounded-md border">
+      <div className="flex w-max space-x-2 p-2" ref={scrollAreaRef}>
+        {datesToShow.map((date, index) => {
+          const formattedDay = format(date, "EEE", { locale: vi }); // Mon, Tue
+          const formattedDate = format(date, "dd/MM"); // 01/12
+          const isDateAvailable = availableDates.some((d) => isSameDay(d, date));
+          const isSelected = selectedDate ? isSameDay(selectedDate, date) : false;
+          const today = isToday(date);
+
+          return (
+            <button
+              key={index}
+              ref={isSelected ? selectedDateRef : null}
+              className={cn(
+                "flex flex-col items-center justify-center p-2 rounded-md min-w-[4.5rem]",
+                "text-sm font-medium transition-colors duration-150",
+                "hover:bg-accent hover:text-accent-foreground",
+                "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
+                today && "border border-primary",
+                !isDateAvailable && "opacity-50 cursor-not-allowed",
+                isSelected && "bg-primary text-primary-foreground hover:bg-primary/90",
+                isLoading && "animate-pulse"
+              )}
+              onClick={() => onSelectDate(date)}
+              disabled={!isDateAvailable || isLoading}
+            >
+              <span className="capitalize">{today ? "Hôm nay" : formattedDay}</span>
+              <span className="text-xs text-muted-foreground">{formattedDate}</span>
+            </button>
+          );
+        })}
+      </div>
+      <ScrollBar orientation="horizontal" />
+    </ScrollArea>
+  );
+};
