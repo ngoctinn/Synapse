@@ -1,23 +1,15 @@
 "use client";
 
 import { MOCK_SERVICES } from "@/features/services/data/mocks";
-import { Service } from "@/features/services/types";
 import { Badge } from "@/shared/ui/badge";
 import { SearchX } from "lucide-react";
-import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import { ServiceCard } from "./service-card";
 import { ServiceFilter } from "./service-filter";
 
-const BookingDialog = dynamic(
-  () => import("@/features/customer-dashboard").then((mod) => mod.BookingDialog),
-  { ssr: false }
-);
-
 export function ServicesSection() {
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("All");
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
 
   const categories = useMemo(() => {
     return Array.from(
@@ -40,13 +32,6 @@ export function ServicesSection() {
       return matchesSearch && matchesCategory;
     });
   }, [searchQuery, category]);
-
-  const handleBook = (id: string) => {
-    const service = MOCK_SERVICES.find((s) => s.id === id);
-    if (service) {
-      setSelectedService(service);
-    }
-  };
 
   return (
     <section id="services" className="py-16 md:py-24">
@@ -85,20 +70,11 @@ export function ServicesSection() {
               <ServiceCard
                 key={service.id}
                 service={service}
-                onBook={handleBook}
               />
             ))}
           </div>
         )}
       </div>
-
-      {selectedService && (
-        <BookingDialog
-          open={!!selectedService}
-          onOpenChange={(open) => !open && setSelectedService(null)}
-          service={selectedService || undefined}
-        />
-      )}
     </section>
   );
 }

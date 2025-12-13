@@ -2,7 +2,6 @@
 
 import { Service } from "@/features/services/types";
 import { Badge } from "@/shared/ui/badge";
-import { Button } from "@/shared/ui/button";
 import { Clock, Tag } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -12,10 +11,9 @@ const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1544161515-4ab6ce6db87
 
 interface ServiceCardProps {
   service: Service;
-  onBook?: (serviceId: string) => void;
 }
 
-export function ServiceCard({ service, onBook }: ServiceCardProps) {
+export function ServiceCard({ service }: ServiceCardProps) {
   const [imgSrc, setImgSrc] = useState(service.image_url || FALLBACK_IMAGE);
   const [hasError, setHasError] = useState(false);
 
@@ -90,12 +88,6 @@ export function ServiceCard({ service, onBook }: ServiceCardProps) {
           </div>
         </div>
 
-        <Button
-          onClick={() => onBook?.(service.id)}
-          className="w-full rounded-xl shadow-md hover:shadow-primary/25 bg-primary hover:bg-primary/90 transition-all font-semibold"
-        >
-          Đặt lịch ngay
-        </Button>
       </div>
     </div>
   );
