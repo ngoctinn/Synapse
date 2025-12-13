@@ -11,19 +11,11 @@ import { ExceptionSheet } from "./exception-sheet";
 import { ExceptionsCalendar } from "./exceptions-calendar";
 import { ExceptionsFilterBar } from "./exceptions-filter-bar";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/shared/ui/alert-dialog";
+import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
 import { endOfYear, format, setYear, startOfYear } from "date-fns";
 import { useExceptionViewLogic } from "../hooks/use-exception-view-logic";
 import { groupExceptions } from "../utils/grouping";
+import { BulkActionToolbar } from "./bulk-action-toolbar";
 import { ExceptionListItem } from "./exception-list-item";
 import { YearViewGrid } from "./year-view-grid";
 
@@ -210,46 +202,61 @@ export function ExceptionsViewManager({
 
   return (
     <div className="h-full flex flex-col">
-         <ExceptionsFilterBar
-             activeCount={filtersActiveCount}
-             onClearFilters={clearFilters}
-             searchQuery={searchQuery}
-             setSearchQuery={setSearchQuery}
-             statusFilter={statusFilter}
-             setStatusFilter={setStatusFilter}
-             typeFilter={typeFilter}
-             setTypeFilter={setTypeFilter}
-             dateRange={dateRange}
-             setDateRange={setDateRange}
-             startContent={
-               <div className="flex items-center gap-2 p-1 bg-muted/50 rounded-lg border lg:hidden">
-                    <Button
-                        variant={viewMode === 'calendar' ? 'secondary' : 'ghost'}
-                        onClick={() => setViewMode('calendar')}
-                        className="gap-2 h-9"
-                    >
-                        {/* <CalendarIcon className="w-4 h-4" /> */}
-                        Lịch
-                    </Button>
-                    <Button
-                        variant={viewMode === 'list' ? 'secondary' : 'ghost'}
-                        onClick={() => setViewMode('list')}
-                        className="gap-2 h-9"
-                    >
-                        <ListIcon className="w-4 h-4" />
-                        Danh sách
-                    </Button>
-               </div>
-             }
-             endContent={
-               <div className="flex items-center gap-2">
-                   {/* Add Button */}
-                   <Button onClick={handleManualAdd} startContent={<Plus className="w-4 h-4" />}>
-                        Thêm ngoại lệ
-                   </Button>
-               </div>
-             }
-         />
+        {selectedDates.length > 0 ? (
+            <BulkActionToolbar
+                selectedCount={selectedDates.length}
+                onClearSelection={clearSelection}
+                onDelete={() => {
+                     const idsToDelete = exceptions
+                         .filter(e => selectedDateIds.has(format(e.date, 'yyyy-MM-dd')))
+                         .map(e => e.id);
+                     if (idsToDelete.length > 0) {
+                         setDeleteConfirmation({ isOpen: true, ids: idsToDelete });
+                     }
+                }}
+            />
+        ) : (
+             <ExceptionsFilterBar
+                 activeCount={filtersActiveCount}
+                 onClearFilters={clearFilters}
+                 searchQuery={searchQuery}
+                 setSearchQuery={setSearchQuery}
+                 statusFilter={statusFilter}
+                 setStatusFilter={setStatusFilter}
+                 typeFilter={typeFilter}
+                 setTypeFilter={setTypeFilter}
+                 dateRange={dateRange}
+                 setDateRange={setDateRange}
+                 startContent={
+                   <div className="flex items-center gap-2 p-1 bg-muted/50 rounded-lg border lg:hidden">
+                        <Button
+                            variant={viewMode === 'calendar' ? 'secondary' : 'ghost'}
+                            onClick={() => setViewMode('calendar')}
+                            className="gap-2 h-9"
+                        >
+                            {/* <CalendarIcon className="w-4 h-4" /> */}
+                            Lịch
+                        </Button>
+                        <Button
+                            variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+                            onClick={() => setViewMode('list')}
+                            className="gap-2 h-9"
+                        >
+                            <ListIcon className="w-4 h-4" />
+                            Danh sách
+                        </Button>
+                   </div>
+                 }
+                 endContent={
+                   <div className="flex items-center gap-2">
+                       {/* Add Button */}
+                       <Button onClick={handleManualAdd} startContent={<Plus className="w-4 h-4" />}>
+                            Thêm ngoại lệ
+                       </Button>
+                   </div>
+                 }
+             />
+         )}
 
        <div className="flex-1 min-h-0 relative p-4 sm:p-6">
            {/* MOBILE VIEW (Tabs) */}
@@ -317,32 +324,15 @@ export function ExceptionsViewManager({
            }}
        />
 
-       <AlertDialog
+       <DeleteConfirmDialog
           open={deleteConfirmation.isOpen}
           onOpenChange={(open) => !open && !isDeleting && setDeleteConfirmation(prev => ({ ...prev, isOpen: false }))}
-       >
-          <AlertDialogContent>
-              <AlertDialogHeader>
-                  <AlertDialogTitle>Xác nhận xóa ngoại lệ?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                      Bạn sắp xóa {deleteConfirmation.ids.length} ngoại lệ. Hành động này không thể hoàn tác.
-                  </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                  <AlertDialogCancel disabled={isDeleting}>Hủy bỏ</AlertDialogCancel>
-                  <AlertDialogAction
-                      onClick={(e) => {
-                          e.preventDefault();
-                          handleDelete();
-                      }}
-                      disabled={isDeleting}
-                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                  >
-                      {isDeleting ? "Đang xóa..." : "Xóa vĩnh viễn"}
-                  </AlertDialogAction>
-              </AlertDialogFooter>
-          </AlertDialogContent>
-       </AlertDialog>
+          onConfirm={handleDelete}
+          isDeleting={isDeleting}
+          title="Xác nhận xóa ngoại lệ?"
+          description={`Bạn sắp xóa ${deleteConfirmation.ids.length} ngoại lệ. Hành động này không thể hoàn tác.`}
+          confirmText="Xóa vĩnh viễn"
+       />
     </div>
   );
 }

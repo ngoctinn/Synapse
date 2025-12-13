@@ -269,7 +269,7 @@ export function AppointmentForm({
         startTime,
         endTime: finalEndTime,
         duration: currentTotalDuration || 60,
-        status: appointment?.status || "pending",
+        status: appointment?.status || "PENDING",
         notes: values.notes || "",
         internalNotes: "",
         isRecurring: false,

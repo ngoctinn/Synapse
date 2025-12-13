@@ -90,17 +90,17 @@ export function EventPopover({
 
   // Check-in: Khách có thể check-in từ 15 phút trước đến 30 phút sau giờ hẹn
   const canCheckIn =
-    event.status === "confirmed" &&
+    event.status === "CONFIRMED" &&
     minutesUntilStart <= 15 &&
     minutesSinceStart <= 30;
 
   // No-Show: Nếu đã quá 15 phút sau giờ hẹn mà vẫn chưa check-in
   const canMarkNoShow =
-    event.status === "confirmed" &&
+    event.status === "CONFIRMED" &&
     minutesSinceStart > 15;
 
   // Cancel: Chỉ có thể hủy pending hoặc confirmed
-  const canCancel = event.status === "pending" || event.status === "confirmed";
+  const canCancel = event.status === "PENDING" || event.status === "CONFIRMED";
 
   return (
     <Popover open={open} onOpenChange={onOpenChange}>

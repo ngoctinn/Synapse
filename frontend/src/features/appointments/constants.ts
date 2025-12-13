@@ -26,37 +26,37 @@ export const APPOINTMENT_STATUS_CONFIG: Record<
     icon: string; // Lucide icon name
   }
 > = {
-  pending: {
+  PENDING: {
     label: "Chờ xác nhận",
     color: "text-amber-600",
     bgColor: "bg-amber-50 dark:bg-amber-950/30",
     icon: "Clock",
   },
-  confirmed: {
+  CONFIRMED: {
     label: "Đã xác nhận",
     color: "text-blue-600",
     bgColor: "bg-blue-50 dark:bg-blue-950/30",
     icon: "CheckCircle2",
   },
-  in_progress: {
+  IN_PROGRESS: {
     label: "Đang thực hiện",
     color: "text-violet-600",
     bgColor: "bg-violet-50 dark:bg-violet-950/30",
     icon: "Play",
   },
-  completed: {
+  COMPLETED: {
     label: "Hoàn thành",
     color: "text-emerald-600",
     bgColor: "bg-emerald-50 dark:bg-emerald-950/30",
     icon: "CheckCheck",
   },
-  cancelled: {
+  CANCELLED: {
     label: "Đã hủy",
     color: "text-red-600",
     bgColor: "bg-red-50 dark:bg-red-950/30",
     icon: "XCircle",
   },
-  no_show: {
+  NO_SHOW: {
     label: "Khách không đến",
     color: "text-gray-500",
     bgColor: "bg-gray-100 dark:bg-gray-800",
@@ -69,12 +69,12 @@ export const APPOINTMENT_STATUS_OPTIONS: {
   value: AppointmentStatus;
   label: string;
 }[] = [
-  { value: "pending", label: "Chờ xác nhận" },
-  { value: "confirmed", label: "Đã xác nhận" },
-  { value: "in_progress", label: "Đang thực hiện" },
-  { value: "completed", label: "Hoàn thành" },
-  { value: "cancelled", label: "Đã hủy" },
-  { value: "no_show", label: "Khách không đến" },
+  { value: "PENDING", label: "Chờ xác nhận" },
+  { value: "CONFIRMED", label: "Đã xác nhận" },
+  { value: "IN_PROGRESS", label: "Đang thực hiện" },
+  { value: "COMPLETED", label: "Hoàn thành" },
+  { value: "CANCELLED", label: "Đã hủy" },
+  { value: "NO_SHOW", label: "Khách không đến" },
 ];
 
 // ============================================

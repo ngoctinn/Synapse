@@ -7,11 +7,12 @@ import { PageContent, PageHeader, PageShell, SurfaceCard } from "@/shared/compon
 import { ActionResponse } from "@/shared/lib/action-response";
 import { cn } from "@/shared/lib/utils";
 import { Button, Tooltip, TooltipContent, TooltipTrigger } from "@/shared/ui";
+import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
 import { showToast } from "@/shared/ui/sonner";
-import { Activity, CalendarCheck, Clock, Filter, LucideIcon, Plus, RefreshCw, Settings2 } from "lucide-react";
+import { Activity, CalendarCheck, Clock, LucideIcon, Plus, RefreshCw, Settings2 } from "lucide-react";
 import { use, useCallback, useEffect, useState, useTransition } from "react";
 import {
-  cancelAppointment, checkInAppointment, deleteAppointment,
+  checkInAppointment, deleteAppointment,
   getAppointmentMetrics, getAppointments, markNoShow
 } from "../actions";
 import { useCalendarState } from "../hooks/use-calendar-state";
@@ -20,9 +21,8 @@ import type { Appointment, AppointmentFilters, AppointmentMetrics, CalendarEvent
 import { CalendarView } from "./calendar";
 import { AppointmentSheet } from "./sheet";
 import { CancelDialog } from "./sheet/cancel-dialog";
-import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
-import { AppointmentsFilter } from "./toolbar/appointments-filter";
 import { DateNavigator, ViewSwitcher } from "./toolbar";
+import { AppointmentsFilter } from "./toolbar/appointments-filter";
 
 function StatBadge({ icon: Icon, value, label, highlight = false, badge = false }: { icon: LucideIcon, value: number | string, label: string, highlight?: boolean, badge?: boolean }) {
   return (
@@ -112,7 +112,7 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
 
   const handleReviewNeeded = useCallback(async (bookingId: string) => {
     const booking = events.find(e => e.id === bookingId)?.appointment;
-    if (!booking || booking.status !== "completed") return;
+    if (!booking || booking.status !== "COMPLETED") return;
     const invoiceRes = await getInvoice(bookingId);
     if (invoiceRes.status !== "success" || !invoiceRes.data || invoiceRes.data.status !== "PAID") return;
     const reviewRes = await getBookingReview(bookingId);
@@ -121,7 +121,7 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
 
   const handleSaveAppointment = (appointment: Appointment) => {
     setIsSheetOpen(false); handleRefresh();
-    if (appointment.status === "completed") handleReviewNeeded(appointment.id);
+    if (appointment.status === "COMPLETED") handleReviewNeeded(appointment.id);
   };
 
   const wrapAction = useCallback((fn: (id: string) => Promise<ActionResponse<any>>, successMsg: string, errorMsg: string) => {
@@ -174,11 +174,11 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
     const staffId = filters.staffIds?.[0] || staffList[0]?.id || "";
     setSelectedEvent({
       id: "new", start: startTime, end: endTime, title: "Lịch hẹn mới",
-      staffId, staffName: "", color: "gray", status: "pending", isRecurring: false,
+      staffId, staffName: "", color: "gray", status: "PENDING", isRecurring: false,
       appointment: {
         id: "new", customerId: "", customerName: "", customerPhone: "", items: [], totalPrice: 0, totalDuration: 60,
         staffId, staffName: "", serviceId: "", serviceName: "", serviceColor: "#gray",
-        startTime, endTime, duration: 60, status: "pending", isRecurring: false,
+        startTime, endTime, duration: 60, status: "PENDING", isRecurring: false,
         createdAt: new Date(), updatedAt: new Date(), createdBy: ""
       }
     });
@@ -233,13 +233,13 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
       {selectedEvent?.appointment && selectedBookingForReview === selectedEvent.appointment.id && (
         <ReviewPrompt bookingId={selectedBookingForReview} open={!!selectedBookingForReview} onOpenChange={(open) => { if (!open) setSelectedBookingForReview(null); }} onReviewSubmitted={() => { setSelectedBookingForReview(null); handleRefresh(); }} customerName={selectedEvent?.appointment?.customerName || ""} serviceName={selectedEvent?.appointment?.serviceName || ""} />
       )}
-      
+
       {/* Dialogs */}
-      <CancelDialog 
-        event={actionEvent} 
-        open={isCancelOpen} 
-        onOpenChange={setIsCancelOpen} 
-        onSuccess={handleRefresh} 
+      <CancelDialog
+        event={actionEvent}
+        open={isCancelOpen}
+        onOpenChange={setIsCancelOpen}
+        onSuccess={handleRefresh}
       />
       <DeleteConfirmDialog
         open={isDeleteOpen}

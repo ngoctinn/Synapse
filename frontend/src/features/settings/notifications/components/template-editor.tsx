@@ -95,7 +95,12 @@ export function TemplateEditor({
 
           {/* Content Field */}
           <div className="grid gap-2">
-            <Label htmlFor="content">Nội dung</Label>
+            <div className="flex justify-between">
+                <Label htmlFor="content">Nội dung</Label>
+                <span className="text-xs text-muted-foreground">
+                    {content.length} ký tự
+                </span>
+            </div>
             <Textarea
               id="content"
               value={content}

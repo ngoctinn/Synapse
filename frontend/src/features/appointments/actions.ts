@@ -84,7 +84,7 @@ export async function createAppointment(data: {
             serviceId: data.serviceIds[0], serviceName: service.name, serviceColor: service.color,
             resourceId: data.resourceId, resourceName: resource?.name,
             startTime: data.startTime, endTime: new Date(data.startTime.getTime() + totalDuration * 60000), duration: totalDuration,
-            status: "pending", notes: data.notes, isRecurring: data.isRecurring || false, recurrenceRule: data.recurrenceRule,
+            status: "PENDING", notes: data.notes, isRecurring: data.isRecurring || false, recurrenceRule: data.recurrenceRule,
             createdAt: new Date(), updatedAt: new Date(), createdBy: "current-user",
         };
 
@@ -128,8 +128,8 @@ export async function deleteAppointment(id: string) {
 export async function checkInAppointment(id: string) {
     return executeAction("checkInAppointment", async () => {
         const existing = MOCK_APPOINTMENTS.find(a => a.id === id);
-        if (!existing || existing.status !== "confirmed") throw new Error("Invalid state");
-        existing.status = "in_progress"; existing.updatedAt = new Date();
+        if (!existing || existing.status !== "CONFIRMED") throw new Error("Invalid state");
+        existing.status = "IN_PROGRESS"; existing.updatedAt = new Date();
         return existing;
     });
 }
@@ -137,8 +137,8 @@ export async function checkInAppointment(id: string) {
 export async function markNoShow(id: string) {
     return executeAction("markNoShow", async () => {
         const existing = MOCK_APPOINTMENTS.find(a => a.id === id);
-        if (!existing || existing.status !== "confirmed") throw new Error("Invalid state");
-        existing.status = "no_show"; existing.updatedAt = new Date();
+        if (!existing || existing.status !== "CONFIRMED") throw new Error("Invalid state");
+        existing.status = "NO_SHOW"; existing.updatedAt = new Date();
         return existing;
     });
 }
@@ -146,8 +146,8 @@ export async function markNoShow(id: string) {
 export async function cancelAppointment(id: string, reason?: string) {
     return executeAction("cancelAppointment", async () => {
         const existing = MOCK_APPOINTMENTS.find(a => a.id === id);
-        if (!existing || ["cancelled", "completed"].includes(existing.status)) throw new Error("Invalid state");
-        existing.status = "cancelled"; existing.updatedAt = new Date();
+        if (!existing || ["CANCELLED", "COMPLETED"].includes(existing.status)) throw new Error("Invalid state");
+        existing.status = "CANCELLED"; existing.updatedAt = new Date();
         if (reason) existing.notes = `${existing.notes || ""}\n[Lý do hủy]: ${reason}`.trim();
         return existing;
     });
@@ -155,7 +155,7 @@ export async function cancelAppointment(id: string, reason?: string) {
 
 async function checkConflictsLogic(staffId: string, startTime: Date, endTime: Date, excludeId?: string): Promise<ConflictInfo[]> {
     const overlapping = MOCK_APPOINTMENTS.filter(apt => {
-        if (apt.id === excludeId || apt.staffId !== staffId || ["cancelled", "no_show"].includes(apt.status)) return false;
+        if (apt.id === excludeId || apt.staffId !== staffId || ["CANCELLED", "NO_SHOW"].includes(apt.status)) return false;
         return apt.startTime < endTime && apt.endTime > startTime;
     });
 

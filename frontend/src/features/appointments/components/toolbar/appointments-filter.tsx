@@ -17,12 +17,12 @@ interface AppointmentsFilterProps {
 }
 
 const STATUS_OPTIONS: { value: AppointmentStatus; label: string; color: string }[] = [
-  { value: "pending", label: "Chờ xác nhận", color: "bg-yellow-500" },
-  { value: "confirmed", label: "Đã xác nhận", color: "bg-blue-500" },
-  { value: "in_progress", label: "Đang thực hiện", color: "bg-emerald-500" },
-  { value: "completed", label: "Hoàn thành", color: "bg-green-600" },
-  { value: "cancelled", label: "Đã hủy", color: "bg-red-500" },
-  { value: "no_show", label: "Vắng mặt", color: "bg-gray-500" },
+  { value: "PENDING", label: "Chờ xác nhận", color: "bg-yellow-500" },
+  { value: "CONFIRMED", label: "Đã xác nhận", color: "bg-blue-500" },
+  { value: "IN_PROGRESS", label: "Đang thực hiện", color: "bg-emerald-500" },
+  { value: "COMPLETED", label: "Hoàn thành", color: "bg-green-600" },
+  { value: "CANCELLED", label: "Đã hủy", color: "bg-red-500" },
+  { value: "NO_SHOW", label: "Vắng mặt", color: "bg-gray-500" },
 ];
 
 export function AppointmentsFilter({

@@ -11,12 +11,12 @@
 
 /** Trạng thái cuộc hẹn */
 export type AppointmentStatus =
-  | "pending" // Chờ xác nhận
-  | "confirmed" // Đã xác nhận
-  | "in_progress" // Đang thực hiện
-  | "completed" // Hoàn thành
-  | "cancelled" // Đã hủy
-  | "no_show"; // Khách không đến
+  | "PENDING" // Chờ xác nhận
+  | "CONFIRMED" // Đã xác nhận
+  | "IN_PROGRESS" // Đang thực hiện
+  | "COMPLETED" // Hoàn thành
+  | "CANCELLED" // Đã hủy
+  | "NO_SHOW"; // Khách không đến
 
 /** Loại chế độ xem lịch */
 export type CalendarViewType =

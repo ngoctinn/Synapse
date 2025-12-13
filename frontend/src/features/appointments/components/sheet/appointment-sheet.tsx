@@ -104,7 +104,7 @@ export function AppointmentSheet({
 
   // Effect to trigger review prompt if needed
   useEffect(() => {
-    if (open && isViewMode && appointment?.status === "completed") {
+    if (open && isViewMode && appointment?.status === "COMPLETED") {
       // In a real app, you'd check if an invoice is paid and if a review already exists
       // For mock, we just assume it might be needed for completed appointments
       // And let the parent decide when to actually trigger `onReviewNeeded` (after invoice paid)
@@ -136,12 +136,12 @@ export function AppointmentSheet({
   };
 
   const canCheckIn =
-    appointment?.status === "confirmed" ||
-    appointment?.status === "pending";
+    appointment?.status === "CONFIRMED" ||
+    appointment?.status === "PENDING";
   const canCancel =
-    appointment?.status === "pending" ||
-    appointment?.status === "confirmed";
-  const canCreateInvoice = appointment?.status === "completed";
+    appointment?.status === "PENDING" ||
+    appointment?.status === "CONFIRMED";
+  const canCreateInvoice = appointment?.status === "COMPLETED";
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>

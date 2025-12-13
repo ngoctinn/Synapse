@@ -11,7 +11,7 @@ export async function createReview(input: ReviewCreateInput): Promise<ActionResp
   try {
     const booking = MOCK_APPOINTMENTS.find((apt) => apt.id === input.bookingId);
     if (!booking) return error("Không tìm thấy lịch hẹn");
-    if (booking.status !== "completed") return error("Chỉ có thể đánh giá dịch vụ đã hoàn thành");
+    if (booking.status !== "COMPLETED") return error("Chỉ có thể đánh giá dịch vụ đã hoàn thành");
 
     const invoice = MOCK_INVOICES.find((inv) => inv.bookingId === input.bookingId);
     if (!invoice || invoice.status !== "PAID") return error("Chỉ có thể đánh giá dịch vụ đã thanh toán hóa đơn");

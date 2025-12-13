@@ -41,18 +41,18 @@ export const MOCK_SERVICES: MockService[] = [
 ];
 
 export interface MockCustomer {
-  id: string; name: string; phone: string; email?: string; avatar?: string; membershipLevel: "regular" | "silver" | "gold" | "platinum";
+  id: string; name: string; phone: string; email?: string; avatar?: string; membershipLevel: "REGULAR" | "SILVER" | "GOLD" | "PLATINUM";
 }
 
 export const MOCK_CUSTOMERS: MockCustomer[] = [
-  { id: "cust-1", name: "Nguyễn Văn An", phone: "0912 345 678", email: "an.nguyen@email.com", membershipLevel: "gold" },
-  { id: "cust-2", name: "Trần Thị Bình", phone: "0987 654 321", email: "binh.tran@email.com", membershipLevel: "platinum" },
-  { id: "cust-3", name: "Lê Văn Cường", phone: "0909 111 222", membershipLevel: "regular" },
-  { id: "cust-4", name: "Phạm Thị Dung", phone: "0918 333 444", email: "dung.pham@email.com", membershipLevel: "silver" },
-  { id: "cust-5", name: "Hoàng Minh Đức", phone: "0977 555 666", membershipLevel: "gold" },
-  { id: "cust-6", name: "Vũ Thị Hà", phone: "0933 777 888", email: "ha.vu@email.com", membershipLevel: "regular" },
-  { id: "cust-7", name: "Đặng Văn Giáp", phone: "0944 999 000", membershipLevel: "silver" },
-  { id: "cust-8", name: "Bùi Thị Hương", phone: "0955 123 456", email: "huong.bui@email.com", membershipLevel: "platinum" },
+  { id: "cust-1", name: "Nguyễn Văn An", phone: "0912 345 678", email: "an.nguyen@email.com", membershipLevel: "GOLD" },
+  { id: "cust-2", name: "Trần Thị Bình", phone: "0987 654 321", email: "binh.tran@email.com", membershipLevel: "PLATINUM" },
+  { id: "cust-3", name: "Lê Văn Cường", phone: "0909 111 222", membershipLevel: "REGULAR" },
+  { id: "cust-4", name: "Phạm Thị Dung", phone: "0918 333 444", email: "dung.pham@email.com", membershipLevel: "SILVER" },
+  { id: "cust-5", name: "Hoàng Minh Đức", phone: "0977 555 666", membershipLevel: "GOLD" },
+  { id: "cust-6", name: "Vũ Thị Hà", phone: "0933 777 888", email: "ha.vu@email.com", membershipLevel: "REGULAR" },
+  { id: "cust-7", name: "Đặng Văn Giáp", phone: "0944 999 000", membershipLevel: "SILVER" },
+  { id: "cust-8", name: "Bùi Thị Hương", phone: "0955 123 456", email: "huong.bui@email.com", membershipLevel: "PLATINUM" },
 ];
 
 // ============================================
@@ -65,7 +65,7 @@ export function generateMockAppointments(baseDate: Date = new Date()): Appointme
   const createApt = (
     idSuffix: number, cId: string, sId: string, svcId: string,
     dayOffset: number, h: number, m: number = 0,
-    status: Appointment["status"] = "confirmed", rId?: string
+    status: Appointment["status"] = "CONFIRMED", rId?: string
   ): Appointment => {
     const cust = MOCK_CUSTOMERS.find(c => c.id === cId)!;
     const staff = MOCK_STAFF.find(s => s.id === sId)!;
@@ -88,35 +88,35 @@ export function generateMockAppointments(baseDate: Date = new Date()): Appointme
 
   return [
     // Mon (0)
-    createApt(1, "cust-1", "staff-1", "svc-massage-60", 0, 9, 0, "confirmed", "room-vip-1"),
-    createApt(2, "cust-2", "staff-2", "svc-facial-basic", 0, 9, 30, "confirmed", "room-std-1"),
-    createApt(3, "cust-3", "staff-1", "svc-massage-90", 0, 11, 0, "pending", "room-vip-1"),
-    createApt(4, "cust-4", "staff-3", "svc-combo-relax", 0, 14, 0, "confirmed", "room-vip-2"),
+    createApt(1, "cust-1", "staff-1", "svc-massage-60", 0, 9, 0, "CONFIRMED", "room-vip-1"),
+    createApt(2, "cust-2", "staff-2", "svc-facial-basic", 0, 9, 30, "CONFIRMED", "room-std-1"),
+    createApt(3, "cust-3", "staff-1", "svc-massage-90", 0, 11, 0, "PENDING", "room-vip-1"),
+    createApt(4, "cust-4", "staff-3", "svc-combo-relax", 0, 14, 0, "CONFIRMED", "room-vip-2"),
     // Tue (1)
-    createApt(5, "cust-5", "staff-2", "svc-nail-gel", 1, 10, 0, "completed"),
-    createApt(6, "cust-6", "staff-1", "svc-massage-60", 1, 10, 0, "in_progress", "room-std-2"),
-    createApt(7, "cust-7", "staff-3", "svc-body-scrub", 1, 13, 30, "confirmed", "room-std-1"),
-    createApt(8, "cust-8", "staff-4", "svc-facial-premium", 1, 15, 0, "pending", "room-vip-1"),
+    createApt(5, "cust-5", "staff-2", "svc-nail-gel", 1, 10, 0, "COMPLETED"),
+    createApt(6, "cust-6", "staff-1", "svc-massage-60", 1, 10, 0, "IN_PROGRESS", "room-std-2"),
+    createApt(7, "cust-7", "staff-3", "svc-body-scrub", 1, 13, 30, "CONFIRMED", "room-std-1"),
+    createApt(8, "cust-8", "staff-4", "svc-facial-premium", 1, 15, 0, "PENDING", "room-vip-1"),
     // Wed (2)
-    createApt(9, "cust-1", "staff-3", "svc-sauna", 2, 8, 0, "confirmed", "room-sauna"),
-    createApt(10, "cust-2", "staff-1", "svc-massage-90", 2, 9, 0, "confirmed", "room-vip-2"),
-    createApt(11, "cust-3", "staff-2", "svc-facial-basic", 2, 11, 0, "confirmed", "room-std-1"),
-    createApt(12, "cust-4", "staff-2", "svc-nail-gel", 2, 11, 30, "pending"),
+    createApt(9, "cust-1", "staff-3", "svc-sauna", 2, 8, 0, "CONFIRMED", "room-sauna"),
+    createApt(10, "cust-2", "staff-1", "svc-massage-90", 2, 9, 0, "CONFIRMED", "room-vip-2"),
+    createApt(11, "cust-3", "staff-2", "svc-facial-basic", 2, 11, 0, "CONFIRMED", "room-std-1"),
+    createApt(12, "cust-4", "staff-2", "svc-nail-gel", 2, 11, 30, "PENDING"),
     // Thu (3)
-    createApt(13, "cust-5", "staff-4", "svc-nail-gel", 3, 9, 0, "cancelled"),
-    createApt(14, "cust-6", "staff-1", "svc-combo-relax", 3, 10, 0, "confirmed", "room-vip-1"),
-    createApt(15, "cust-7", "staff-2", "svc-facial-premium", 3, 14, 0, "no_show", "room-std-2"),
+    createApt(13, "cust-5", "staff-4", "svc-nail-gel", 3, 9, 0, "CANCELLED"),
+    createApt(14, "cust-6", "staff-1", "svc-combo-relax", 3, 10, 0, "CONFIRMED", "room-vip-1"),
+    createApt(15, "cust-7", "staff-2", "svc-facial-premium", 3, 14, 0, "NO_SHOW", "room-std-2"),
     // Fri (4)
-    createApt(16, "cust-8", "staff-3", "svc-massage-60", 4, 9, 30, "confirmed", "room-std-1"),
-    createApt(17, "cust-1", "staff-1", "svc-facial-basic", 4, 11, 0, "confirmed", "room-vip-2"),
-    createApt(18, "cust-2", "staff-4", "svc-body-scrub", 4, 15, 0, "pending", "room-std-2"),
-    createApt(19, "cust-3", "staff-2", "svc-combo-relax", 4, 16, 0, "confirmed", "room-vip-1"),
+    createApt(16, "cust-8", "staff-3", "svc-massage-60", 4, 9, 30, "CONFIRMED", "room-std-1"),
+    createApt(17, "cust-1", "staff-1", "svc-facial-basic", 4, 11, 0, "CONFIRMED", "room-vip-2"),
+    createApt(18, "cust-2", "staff-4", "svc-body-scrub", 4, 15, 0, "PENDING", "room-std-2"),
+    createApt(19, "cust-3", "staff-2", "svc-combo-relax", 4, 16, 0, "CONFIRMED", "room-vip-1"),
     // Sat (5)
-    createApt(20, "cust-4", "staff-1", "svc-massage-90", 5, 9, 0, "confirmed", "room-vip-1"),
-    createApt(21, "cust-5", "staff-3", "svc-sauna", 5, 10, 0, "confirmed", "room-sauna"),
-    createApt(22, "cust-6", "staff-2", "svc-facial-basic", 5, 10, 30, "pending", "room-std-1"),
+    createApt(20, "cust-4", "staff-1", "svc-massage-90", 5, 9, 0, "CONFIRMED", "room-vip-1"),
+    createApt(21, "cust-5", "staff-3", "svc-sauna", 5, 10, 0, "CONFIRMED", "room-sauna"),
+    createApt(22, "cust-6", "staff-2", "svc-facial-basic", 5, 10, 30, "PENDING", "room-std-1"),
     // Sun (6)
-    createApt(23, "cust-7", "staff-1", "svc-combo-relax", 6, 10, 0, "confirmed", "room-vip-2"),
+    createApt(23, "cust-7", "staff-1", "svc-combo-relax", 6, 10, 0, "CONFIRMED", "room-vip-2"),
   ];
 }
 
@@ -138,18 +138,18 @@ export function appointmentsToCalendarEvents(appointments: Appointment[]): Calen
 
 export function getMockMetrics(date: Date = new Date()): AppointmentMetrics {
   const todayApts = MOCK_APPOINTMENTS.filter(a => a.startTime.toDateString() === date.toDateString());
-  const pending = todayApts.filter(a => a.status === "pending").length;
+  const pending = todayApts.filter(a => a.status === "PENDING").length;
   const totalSlots = 13 * 4 * MOCK_STAFF.filter(s => s.isActive).length;
   const occupiedSlots = todayApts.reduce((acc, a) => acc + Math.ceil(a.duration / 15), 0);
   const revenue = todayApts
-    .filter(a => ["completed", "confirmed"].includes(a.status))
+    .filter(a => ["COMPLETED", "CONFIRMED"].includes(a.status))
     .reduce((acc, a) => acc + (MOCK_SERVICES.find(s => s.id === a.serviceId)?.price || 0), 0);
 
   return {
     todayTotal: todayApts.length, todayPending: pending,
-    todayCompleted: todayApts.filter(a => a.status === "completed").length,
+    todayCompleted: todayApts.filter(a => a.status === "COMPLETED").length,
     occupancyRate: Math.round((occupiedSlots / totalSlots) * 100),
     estimatedRevenue: revenue,
-    noShowRate: todayApts.length > 0 ? Math.round((todayApts.filter(a => a.status === "no_show").length / todayApts.length) * 100) : 0,
+    noShowRate: todayApts.length > 0 ? Math.round((todayApts.filter(a => a.status === "NO_SHOW").length / todayApts.length) * 100) : 0,
   };
 }

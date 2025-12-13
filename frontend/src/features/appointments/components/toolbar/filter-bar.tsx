@@ -57,12 +57,12 @@ export function FilterBar({
 
   // Status options
   const statusOptions: AppointmentStatus[] = [
-    "pending",
-    "confirmed",
-    "in_progress",
-    "completed",
-    "cancelled",
-    "no_show",
+    "PENDING",
+    "CONFIRMED",
+    "IN_PROGRESS",
+    "COMPLETED",
+    "CANCELLED",
+    "NO_SHOW",
   ];
 
   // Count active filters

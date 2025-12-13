@@ -13,7 +13,7 @@ export async function createInvoice(bookingId: string): Promise<ActionResponse<I
 
     const booking = MOCK_APPOINTMENTS.find(a => a.id === bookingId);
     if (!booking) return error("Không tìm thấy lịch hẹn");
-    if (booking.status !== "completed") return error("Chỉ có thể tạo hóa đơn cho lịch hẹn đã hoàn thành");
+    if (booking.status !== "COMPLETED") return error("Chỉ có thể tạo hóa đơn cho lịch hẹn đã hoàn thành");
 
     const service = MOCK_SERVICES.find(s => s.id === booking.serviceId);
     if (!service) return error("Không tìm thấy dịch vụ");
@@ -35,10 +35,10 @@ export async function createInvoice(bookingId: string): Promise<ActionResponse<I
 
     const customer = MOCK_CUSTOMERS.find(c => c.id === booking.customerId);
     if (customer) {
-      if (customer.membershipLevel === 'gold') {
+      if (customer.membershipLevel === 'GOLD') {
         discountAmount = amount * 0.05;
         discountReason = "Gold Member (5%)";
-      } else if (customer.membershipLevel === 'platinum') {
+      } else if (customer.membershipLevel === 'PLATINUM') {
         discountAmount = amount * 0.10;
         discountReason = "Platinum Member (10%)";
       }
