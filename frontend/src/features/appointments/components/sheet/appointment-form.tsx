@@ -13,6 +13,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
+import { AlertTriangle } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
@@ -24,19 +25,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  RequiredMark,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Textarea,
-  RequiredMark
+  Textarea
 } from "@/shared/ui";
 import { Combobox } from "@/shared/ui/custom/combobox";
 import { DatePicker } from "@/shared/ui/custom/date-picker";
+import { TimePicker } from "@/shared/ui/custom/time-picker";
 import { MultiServiceSelector } from "../selection/multi-service-selector";
 
 import {
+  checkConflicts,
   searchCustomers,
 } from "../../actions";
 import { MockService } from "../../mock-data";
@@ -44,7 +47,7 @@ import {
   quickAppointmentFormSchema,
   type QuickAppointmentFormValues,
 } from "../../schemas";
-import type { Appointment, TimelineResource } from "../../types";
+import type { Appointment, ConflictInfo, TimelineResource } from "../../types";
 
 // ============================================
 // TYPES
@@ -72,24 +75,6 @@ interface CustomerOption {
 }
 
 // ============================================
-// TIME SLOTS
-// ============================================
-
-const TIME_SLOTS = generateTimeSlots();
-
-function generateTimeSlots(): string[] {
-  const slots: string[] = [];
-  for (let hour = 8; hour <= 21; hour++) {
-    for (let minute = 0; minute < 60; minute += 15) {
-      slots.push(
-        `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`
-      );
-    }
-  }
-  return slots;
-}
-
-// ============================================
 // COMPONENT
 // ============================================
 
@@ -106,6 +91,9 @@ export function AppointmentForm({
   const [customerSearch, setCustomerSearch] = useState("");
   const [customerOptions, setCustomerOptions] = useState<CustomerOption[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  
+  const [conflicts, setConflicts] = useState<ConflictInfo[]>([]);
+  const [timeWarning, setTimeWarning] = useState<string | null>(null);
 
   // Form setup
   const form = useForm<QuickAppointmentFormValues>({
@@ -123,6 +111,58 @@ export function AppointmentForm({
       notes: appointment?.notes || "",
     },
   });
+
+  // Watch values for conflict checking
+  const watchedDate = useWatch({ control: form.control, name: "date" });
+  const watchedStartTime = useWatch({ control: form.control, name: "startTime" });
+  const watchedStaffId = useWatch({ control: form.control, name: "staffId" });
+  const watchedServiceIds = useWatch({ control: form.control, name: "serviceIds" });
+
+  // Conflict & Validation Check
+  useEffect(() => {
+    const checkIssues = async () => {
+      if (!watchedStaffId || !watchedStartTime || !watchedDate || watchedServiceIds.length === 0) {
+        setConflicts([]);
+        setTimeWarning(null);
+        return;
+      }
+
+      const [hours, minutes] = watchedStartTime.split(":").map(Number);
+      
+      // Check Operating Hours (8:00 - 21:00)
+      if (hours < 8 || hours >= 21) {
+        setTimeWarning("Ngoài giờ làm việc (08:00 - 21:00)");
+      } else {
+        setTimeWarning(null);
+      }
+
+      // Calculate Interval
+      const start = new Date(watchedDate);
+      start.setHours(hours, minutes, 0, 0);
+      
+      // Calculate duration
+      const totalDur = watchedServiceIds.reduce((acc, sId) => {
+         const s = availableServices.find(srv => srv.id === sId);
+         return acc + (s?.duration || 0);
+      }, 0);
+      
+      const end = new Date(start.getTime() + (totalDur || 60) * 60000);
+
+      // Check Conflicts
+      if (watchedStaffId) {
+         const res = await checkConflicts(watchedStaffId, start, end, appointment?.id);
+         if (res.status === "success" && res.data) {
+             setConflicts(res.data);
+         } else {
+             setConflicts([]);
+         }
+      }
+    };
+    
+    const timer = setTimeout(checkIssues, 500);
+    return () => clearTimeout(timer);
+  }, [watchedDate, watchedStartTime, watchedStaffId, watchedServiceIds, appointment?.id, availableServices]);
+
 
   // Search customers
   // Search customers with debounce
@@ -148,8 +188,7 @@ export function AppointmentForm({
   }, [customerSearch]);
 
   // Calculate end time based on services
-  const selectedServices = useWatch({ control: form.control, name: "serviceIds" });
-  const totalDuration = selectedServices.reduce(
+  const totalDuration = watchedServiceIds.reduce(
     (acc: number, serviceId: string) => {
       const service = availableServices.find((s) => s.id === serviceId);
       return acc + (service?.duration || 0);
@@ -159,6 +198,11 @@ export function AppointmentForm({
 
   // Handle form submission
   const handleSubmit = (values: QuickAppointmentFormValues) => {
+    // Block submit if critical conflicts? 
+    // Report said "Thiếu conflict checking", implied preventing error. 
+    // But forcing block might be annoying if admin wants to override. 
+    // For now, just show warning. If we want to block, check conflicts.length > 0 here.
+    
     startTransition(async () => {
       // Parse start time
       const [hours, minutes] = values.startTime.split(":").map(Number);
@@ -349,24 +393,32 @@ export function AppointmentForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Giờ bắt đầu <RequiredMark /></FormLabel>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Chọn giờ" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="max-h-60">
-                        {TIME_SLOTS.map((time) => (
-                          <SelectItem key={time} value={time}>
-                            {time}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <FormControl>
+                       <TimePicker 
+                          value={field.value} 
+                          onChange={field.onChange} 
+                        />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* Conflict Warnings */}
+              {(timeWarning || conflicts.length > 0) && (
+                <div className="col-span-2 p-3 rounded-md bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 text-sm space-y-1">
+                    {timeWarning && (
+                        <div className="flex items-center gap-2 text-amber-800 dark:text-amber-500 font-medium">
+                            <AlertTriangle className="w-4 h-4"/> {timeWarning}
+                        </div>
+                    )}
+                    {conflicts.map(c => (
+                        <div key={c.eventId} className="flex items-center gap-2 font-medium text-destructive">
+                           <AlertTriangle className="w-4 h-4"/> {c.message}
+                        </div>
+                    ))}
+                </div>
+              )}
             </div>
 
             {/* RESOURCE FIELD */}

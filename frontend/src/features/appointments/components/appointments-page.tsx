@@ -16,9 +16,12 @@ import {
 } from "../actions";
 import { useCalendarState } from "../hooks/use-calendar-state";
 import { MockService } from "../mock-data";
-import type { Appointment, AppointmentMetrics, CalendarEvent, TimelineResource } from "../types";
+import type { Appointment, AppointmentFilters, AppointmentMetrics, CalendarEvent, TimelineResource } from "../types";
 import { CalendarView } from "./calendar";
 import { AppointmentSheet } from "./sheet";
+import { CancelDialog } from "./sheet/cancel-dialog";
+import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
+import { AppointmentsFilter } from "./toolbar/appointments-filter";
 import { DateNavigator, ViewSwitcher } from "./toolbar";
 
 function StatBadge({ icon: Icon, value, label, highlight = false, badge = false }: { icon: LucideIcon, value: number | string, label: string, highlight?: boolean, badge?: boolean }) {
@@ -53,7 +56,7 @@ interface AppointmentsPageProps {
 
 export function AppointmentsPage({ appointmentsPromise, staffListPromise, resourceListPromise, serviceListPromise }: AppointmentsPageProps) {
   const { view, setView, date, dateRange, formattedDateRange, isToday, goNext, goPrev, goToday, goToDate, densityMode } = useCalendarState();
-  const currentFilters: { staffIds?: string[]; resourceIds?: string[]; statusFilter?: string[] } = {};
+  const [filters, setFilters] = useState<Partial<AppointmentFilters>>({});
 
   const appointmentsRes = use(appointmentsPromise);
   const staffRes = use(staffListPromise);
@@ -72,6 +75,12 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
   const [sheetMode, setSheetMode] = useState<"view" | "edit" | "create">("view");
   const [selectedBookingForReview, setSelectedBookingForReview] = useState<string | null>(null);
 
+  // Dialog states
+  const [actionEvent, setActionEvent] = useState<CalendarEvent | null>(null);
+  const [isCancelOpen, setIsCancelOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isDeleting, startDeleteTransition] = useTransition();
+
   useEffect(() => {
     startTransition(async () => {
       const res = await getAppointmentMetrics(date);
@@ -81,12 +90,17 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
 
   const handleRefresh = useCallback(() => {
     startTransition(async () => {
-      const result = await getAppointments(dateRange, currentFilters);
+      const result = await getAppointments(dateRange, filters);
       if (result.status === "success" && result.data) setEvents(result.data);
       const mRes = await getAppointmentMetrics(date);
       if (mRes.status === "success" && mRes.data) setMetrics(mRes.data);
     });
-  }, [dateRange, currentFilters, date]);
+  }, [dateRange, filters, date]);
+
+  // Auto-refresh when filters or dateRange change
+  useEffect(() => {
+    handleRefresh();
+  }, [handleRefresh]);
 
   const handleEventClick = (event: CalendarEvent) => {
     setSelectedEvent(event); setSheetMode("view"); setIsSheetOpen(true);
@@ -113,11 +127,6 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
   const wrapAction = useCallback((fn: (id: string) => Promise<ActionResponse<any>>, successMsg: string, errorMsg: string) => {
     return async (event: CalendarEvent) => {
       if (!event.id) return;
-      if (fn.name === "deleteAppointment" && !confirm("Bạn có chắc chắn muốn xóa lịch hẹn này?")) return;
-      if (fn.name === "cancelAppointment") {
-        const diff = (event.start.getTime() - new Date().getTime()) / 36e5;
-        if (!confirm(diff < 2 && diff > 0 ? "Cảnh báo: Hủy trước 2h có thể bị tính phí. Tiếp tục?" : "Bạn có chắc chắn muốn hủy?")) return;
-      }
       startTransition(async () => {
         const res = await fn(event.id!);
         if (res.status === "success") { showToast.success(res.message || successMsg); handleRefresh(); }
@@ -125,6 +134,31 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
       });
     };
   }, [handleRefresh]);
+
+  // Dialog Handlers
+  const handleCancelRequest = (event: CalendarEvent) => {
+    setActionEvent(event);
+    setIsCancelOpen(true);
+  };
+
+  const handleDeleteRequest = (event: CalendarEvent) => {
+    setActionEvent(event);
+    setIsDeleteOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!actionEvent?.id) return;
+    startDeleteTransition(async () => {
+      const res = await deleteAppointment(actionEvent.id!);
+      if (res.status === "success") {
+        showToast.success(res.message || "Xóa lịch hẹn thành công");
+        handleRefresh();
+        setIsDeleteOpen(false);
+      } else {
+        showToast.error(res.message || "Không thể xóa lịch hẹn");
+      }
+    });
+  };
 
   const handleCreateInvoice = useCallback(async (bookingId: string) => {
     startTransition(async () => {
@@ -137,7 +171,7 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
   const handleSlotClick = (date: Date, hour: number, minute: number) => {
     const startTime = new Date(date); startTime.setHours(hour, minute, 0, 0);
     const endTime = new Date(startTime.getTime() + 36e5);
-    const staffId = currentFilters.staffIds?.[0] || staffList[0]?.id || "";
+    const staffId = filters.staffIds?.[0] || staffList[0]?.id || "";
     setSelectedEvent({
       id: "new", start: startTime, end: endTime, title: "Lịch hẹn mới",
       staffId, staffName: "", color: "gray", status: "pending", isRecurring: false,
@@ -170,7 +204,7 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
         <div className="flex items-center gap-1.5">
           <ViewSwitcher value={view} onChange={setView} />
           <div className="hidden sm:flex items-center gap-1 pl-1">
-            <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="size-8 text-muted-foreground hover:text-foreground"><Filter className="size-4" /><span className="sr-only">Bộ lọc</span></Button></TooltipTrigger><TooltipContent>Bộ lọc</TooltipContent></Tooltip>
+            <AppointmentsFilter staffList={staffList} filters={filters} onFilterChange={setFilters} />
             <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" onClick={handleRefresh} disabled={isPending} className="size-8 text-muted-foreground hover:text-foreground"><RefreshCw className={cn("size-4", isPending && "animate-spin")} /><span className="sr-only">Làm mới</span></Button></TooltipTrigger><TooltipContent>Làm mới</TooltipContent></Tooltip>
             <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="size-8 text-muted-foreground hover:text-foreground"><Settings2 className="size-4" /><span className="sr-only">Cài đặt</span></Button></TooltipTrigger><TooltipContent>Cài đặt hiển thị</TooltipContent></Tooltip>
           </div>
@@ -188,8 +222,8 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
                 isLoading={isPending && events.length === 0} className="flex-1"
                 onCheckIn={wrapAction(checkInAppointment, "Check-in thành công", "Không thể check-in")}
                 onNoShow={wrapAction(markNoShow, "Đã đánh dấu No-show", "Không thể đánh dấu No-show")}
-                onCancel={wrapAction(cancelAppointment, "Hủy lịch hẹn thành công", "Không thể hủy lịch hẹn")}
-                onDelete={wrapAction(deleteAppointment, "Xóa lịch hẹn thành công", "Không thể xóa lịch hẹn")}
+                onCancel={handleCancelRequest}
+                onDelete={handleDeleteRequest}
                 onEdit={(e) => { setSelectedEvent(e); setSheetMode("edit"); setIsSheetOpen(true); }}
             />
             </SurfaceCard>
@@ -199,6 +233,22 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
       {selectedEvent?.appointment && selectedBookingForReview === selectedEvent.appointment.id && (
         <ReviewPrompt bookingId={selectedBookingForReview} open={!!selectedBookingForReview} onOpenChange={(open) => { if (!open) setSelectedBookingForReview(null); }} onReviewSubmitted={() => { setSelectedBookingForReview(null); handleRefresh(); }} customerName={selectedEvent?.appointment?.customerName || ""} serviceName={selectedEvent?.appointment?.serviceName || ""} />
       )}
+      
+      {/* Dialogs */}
+      <CancelDialog 
+        event={actionEvent} 
+        open={isCancelOpen} 
+        onOpenChange={setIsCancelOpen} 
+        onSuccess={handleRefresh} 
+      />
+      <DeleteConfirmDialog
+        open={isDeleteOpen}
+        onOpenChange={setIsDeleteOpen}
+        onConfirm={handleConfirmDelete}
+        isDeleting={isDeleting}
+        entityName="lịch hẹn"
+        entityLabel={actionEvent?.title}
+      />
     </PageShell>
   );
 }
