@@ -266,7 +266,7 @@ export function AppointmentTimeline({
                     {format(new Date(), "EEEE, dd/MM", { locale: vi })}
                 </Badge>
                 <Button size="sm" className="h-8" onClick={() => onSlotClick?.(new Date())}>
-                    <Plus className="h-4 w-4 mr-1" />
+                    <Plus className="size-4 mr-1" />
                     Đặt mới
                 </Button>
             </div>
@@ -384,7 +384,7 @@ export function AppointmentTimeline({
 
                                     {app.technicianName && app.height > 10 && (
                                         <div className="hidden md:flex items-center gap-1.5 mt-auto pt-2">
-                                            <Avatar className="h-4 w-4 border border-background">
+                                            <Avatar className="size-4 border border-background">
                                                 <AvatarFallback className="text-[8px] bg-primary/10 text-primary">{app.technicianName[0]}</AvatarFallback>
                                             </Avatar>
                                             <span className="text-muted-foreground truncate max-w-[120px] text-[11px]">
@@ -402,7 +402,7 @@ export function AppointmentTimeline({
                                             className="h-8 w-8 min-h-[32px] min-w-[32px] -mr-1 -mt-1 opacity-0 group-hover/item:opacity-100 transition-opacity hover:bg-black/5 focus:opacity-100"
                                             aria-label="Thêm tùy chọn"
                                         >
-                                            <MoreHorizontal className="h-4 w-4" />
+                                            <MoreHorizontal className="size-4" />
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">

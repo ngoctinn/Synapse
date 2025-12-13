@@ -16,7 +16,7 @@ import { Badge } from "@/shared/ui/badge";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
-import { showToast } from "@/shared/ui/custom/sonner";
+import { showToast } from "@/shared/ui/sonner";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import { Bed, Box } from "lucide-react";
 import { useState, useTransition } from "react";

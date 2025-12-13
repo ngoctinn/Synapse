@@ -7,10 +7,16 @@
  * Bao gồm: Dashboard Metrics, Toolbar, Calendar Views.
  */
 
-import { Filter, Plus, RefreshCw, Settings2 } from "lucide-react";
-import { use, useCallback, useEffect, useState, useTransition } from "react"; // Added `useCallback` hook
+import { Activity, CalendarCheck, Clock, Filter, Plus, RefreshCw, Settings2 } from "lucide-react";
+import { use, useCallback, useEffect, useState, useTransition } from "react";
 
-import { PageContent, PageShell, SurfaceCard } from "@/shared/components/layout/page-layout";
+import {
+  PageContent,
+  PageHeader,
+  PageShell,
+  SurfaceCard,
+} from "@/shared/components/layout/page-layout";
+
 import { cn } from "@/shared/lib/utils";
 import {
   Button,
@@ -18,12 +24,12 @@ import {
   TooltipContent,
   TooltipTrigger
 } from "@/shared/ui";
-import { showToast } from "@/shared/ui/custom/sonner";
+import { showToast } from "@/shared/ui/sonner";
 
 import { createInvoice, getInvoice } from "@/features/billing/actions";
-import { getBookingReview } from "@/features/reviews/actions"; // Import getBookingReview
-import { ReviewPrompt } from "@/features/reviews/components/review-prompt"; // Import ReviewPrompt
-import { ActionResponse } from "@/shared/lib/action-response"; // Import ActionResponse
+import { getBookingReview } from "@/features/reviews/actions";
+import { ReviewPrompt } from "@/features/reviews/components/review-prompt";
+import { ActionResponse } from "@/shared/lib/action-response";
 import {
   cancelAppointment,
   checkInAppointment,
@@ -31,14 +37,13 @@ import {
   getAppointmentMetrics,
   getAppointments,
   markNoShow
-} from "../actions"; // getStaffList, getResourceList, getServiceList are now passed as props
+} from "../actions";
 import { useCalendarState } from "../hooks/use-calendar-state";
-import { MockService } from "../mock-data"; // Import MockService, MOCK_STAFF
-import type { Appointment, AppointmentMetrics, CalendarEvent, TimelineResource } from "../types";
+import { MockService } from "../mock-data";
+import type { AppointmentMetrics, CalendarEvent, TimelineResource, Appointment } from "../types";
 import { CalendarView } from "./calendar";
 import { AppointmentSheet } from "./sheet";
 import { DateNavigator, ViewSwitcher } from "./toolbar";
-import { WalkInBookingDialog } from "./walk-in-booking-dialog";
 
 // ============================================
 // COMPONENT
@@ -49,7 +54,7 @@ interface AppointmentsPageProps {
   staffListPromise: Promise<ActionResponse<TimelineResource[]>>;
   resourceListPromise: Promise<ActionResponse<TimelineResource[]>>;
   serviceListPromise: Promise<ActionResponse<MockService[]>>;
-  fullStaffList: TimelineResource[]; // Passed directly from Server Component
+  fullStaffList: TimelineResource[];
 }
 
 export function AppointmentsPage({
@@ -57,7 +62,7 @@ export function AppointmentsPage({
   staffListPromise,
   resourceListPromise,
   serviceListPromise,
-  fullStaffList, // Data that doesn't need to be unwrapped
+  fullStaffList,
 }: AppointmentsPageProps) {
   // Calendar state hook
   const {
@@ -74,10 +79,10 @@ export function AppointmentsPage({
     densityMode,
   } = useCalendarState();
 
-  // Filters state - TODO: implement proper filter hook
+  // Filters state
   const currentFilters: { staffIds?: string[]; resourceIds?: string[]; statusFilter?: string[] } = {};
 
-  // Use the `use` hook to unwrap the promises from Server Component
+  // Unwrap promises
   const appointmentsRes = use(appointmentsPromise);
   const staffRes = use(staffListPromise);
   const resourceRes = use(resourceListPromise);
@@ -88,7 +93,6 @@ export function AppointmentsPage({
   const initialStaffList = staffRes.status === 'success' ? staffRes.data || [] : [];
   const initialRoomList = resourceRes.status === 'success' ? resourceRes.data || [] : [];
   const initialServiceList = serviceRes.status === 'success' ? serviceRes.data || [] : [];
-
 
   // Client states
   const [events, setEvents] = useState<CalendarEvent[]>(initialEvents);
@@ -101,11 +105,9 @@ export function AppointmentsPage({
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [sheetMode, setSheetMode] = useState<"view" | "edit" | "create">("view");
-  const [showWalkInDialog, setShowWalkInDialog] = useState(false);
-  const [selectedBookingForReview, setSelectedBookingForReview] = useState<string | null>(null); // State to manage review prompt
+  const [selectedBookingForReview, setSelectedBookingForReview] = useState<string | null>(null);
 
-
-  // Fetch metrics when date changes (metrics are dynamic and client-side controlled)
+  // Fetch metrics
   useEffect(() => {
     startTransition(async () => {
       const metricsResult = await getAppointmentMetrics(date);
@@ -114,7 +116,6 @@ export function AppointmentsPage({
       }
     });
   }, [date]);
-
 
   const refreshEvents = useCallback(async () => {
     const result = await getAppointments(dateRange, currentFilters);
@@ -138,31 +139,25 @@ export function AppointmentsPage({
 
   const handleReviewNeeded = useCallback(async (bookingId: string) => {
     const booking = events.find(e => e.id === bookingId)?.appointment;
-
     if (!booking || booking.status !== "completed") return;
 
-    // 1. Check if invoice exists and is paid
-    const invoiceRes = await getInvoice(bookingId); // assuming bookingId can be used to find invoice
+    const invoiceRes = await getInvoice(bookingId);
     if (invoiceRes.status !== "success" || !invoiceRes.data || invoiceRes.data.status !== "PAID") {
-        return; // Invoice not paid, or not found. Don't prompt for review.
+        return;
     }
 
-    // 2. Check if review already exists
     const reviewRes = await getBookingReview(bookingId);
     if (reviewRes.status === "success" && reviewRes.data) {
-        return; // Review already exists for this booking. Don't prompt.
+        return;
     }
 
-    // If all conditions met, show review prompt
     setSelectedBookingForReview(bookingId);
-  }, [events, getInvoice, getBookingReview]); // Added getInvoice, getBookingReview as dependencies
+  }, [events]);
 
   const handleSaveAppointment = (appointment: Appointment) => {
-    // TODO: Call API to save appointment (this will be implemented in M3.2)
     console.log("Saving appointment:", appointment);
     setIsSheetOpen(false);
     handleRefresh();
-    // After saving, if status is completed, check for review prompt
     if (appointment.status === "completed") {
         handleReviewNeeded(appointment.id);
     }
@@ -269,10 +264,6 @@ export function AppointmentsPage({
         const result = await createInvoice(bookingId);
         if (result.status === "success") {
           showToast.success(result.message || "Tạo hóa đơn thành công");
-          // Optional: Redirect to billing page or show invoice details
-          // router.push(`/admin/billing?invoiceId=${result.data.id}`);
-          setIsSheetOpen(false);
-          // After invoice creation, if booking is completed and paid, prompt for review
           handleReviewNeeded(bookingId);
         } else {
           showToast.error(result.message || "Không thể tạo hóa đơn");
@@ -283,15 +274,13 @@ export function AppointmentsPage({
   );
 
   const handleSlotClick = (date: Date, hour: number, minute: number) => {
-    // Create new event at clicked time
     const startTime = new Date(date);
     startTime.setHours(hour, minute, 0, 0);
 
-    // Mock event for creation
     const mockEvent: CalendarEvent = {
       id: "new",
       start: startTime,
-      end: new Date(startTime.getTime() + 60 * 60 * 1000), // Default 1 hour
+      end: new Date(startTime.getTime() + 60 * 60 * 1000),
       title: "Lịch hẹn mới",
       staffId: currentFilters.staffIds?.[0] || staffList[0]?.id || "",
       staffName: "",
@@ -303,18 +292,14 @@ export function AppointmentsPage({
         customerId: "",
         customerName: "",
         customerPhone: "",
-        // NEW FIELDS
         items: [],
         totalPrice: 0,
         totalDuration: 60,
-
-        // LEGACY FIELDS
         staffId: currentFilters.staffIds?.[0] || staffList[0]?.id || "",
         staffName: "",
         serviceId: "",
         serviceName: "",
         serviceColor: "#gray",
-
         startTime,
         endTime: new Date(startTime.getTime() + 60 * 60 * 1000),
         duration: 60,
@@ -331,132 +316,121 @@ export function AppointmentsPage({
     setIsSheetOpen(true);
   };
 
-  // Error handling for initial data
-  if (appointmentsRes.status === 'error') {
-    return <div className="p-4 text-destructive">Lỗi tải lịch hẹn: {appointmentsRes.message}</div>;
-  }
-  if (staffRes.status === 'error') {
-    return <div className="p-4 text-destructive">Lỗi tải danh sách nhân viên: {staffRes.message}</div>;
-  }
-  if (resourceRes.status === 'error') {
-    return <div className="p-4 text-destructive">Lỗi tải danh sách tài nguyên: {resourceRes.message}</div>;
-  }
-  if (serviceRes.status === 'error') {
-    return <div className="p-4 text-destructive">Lỗi tải danh sách dịch vụ: {serviceRes.message}</div>;
-  }
+  if (appointmentsRes.status === 'error') return <div className="p-4 text-destructive">Lỗi tải lịch hẹn: {appointmentsRes.message}</div>;
+  if (staffRes.status === 'error') return <div className="p-4 text-destructive">Lỗi tải danh sách nhân viên: {staffRes.message}</div>;
 
+  const pending = metrics?.todayPending ?? 0;
 
   return (
     <PageShell>
-      {/* ============================================ */}
-      {/* COMPACT HEADER */}
-      {/* ============================================ */}
-      <PageHeader className="py-3 shadow-none border-b">
-         <div className="flex flex-1 items-center justify-between">
-            {/* Header / Metrics Info */}
-            <div className="flex items-center gap-6">
-                <h1 className="text-xl font-bold tracking-tight">Lịch hẹn</h1>
+      <PageHeader>
+        <div className="flex items-center gap-4">
+          <DateNavigator
+            date={date}
+            formattedDateRange={formattedDateRange}
+            isToday={isToday}
+            onPrev={goPrev}
+            onNext={goNext}
+            onToday={goToday}
+            onDateSelect={goToDate}
+          />
 
-                {/* Metrics */}
-                <div className="hidden lg:flex items-center gap-6 text-sm">
-                    <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground">Hôm nay:</span>
-                        <span className="font-semibold">{metrics?.todayTotal ?? 0}</span>
+          <div className="hidden xl:flex items-center gap-2">
+             <Tooltip>
+               <TooltipTrigger asChild>
+                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-muted/50 transition-colors cursor-help border border-transparent hover:border-border/50">
+                    <CalendarCheck className="size-4 text-muted-foreground" />
+                    <span className="font-semibold tabular-nums text-sm">{metrics?.todayTotal ?? 0}</span>
+                 </div>
+               </TooltipTrigger>
+               <TooltipContent>Tổng lịch hẹn hôm nay</TooltipContent>
+             </Tooltip>
+
+             <Tooltip>
+               <TooltipTrigger asChild>
+                 <div className={cn(
+                    "flex items-center gap-2 px-3 py-1.5 rounded-md transition-colors cursor-help border",
+                    pending > 0
+                      ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-500 dark:border-amber-800"
+                      : "border-transparent hover:bg-muted/50 hover:border-border/50 text-muted-foreground"
+                 )}>
+                    <div className="relative">
+                      <Clock className="size-4" />
+                      {pending > 0 && <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-amber-500 animate-pulse border border-background" />}
                     </div>
+                    <span className="font-semibold tabular-nums text-sm">{pending}</span>
+                 </div>
+               </TooltipTrigger>
+               <TooltipContent>Lịch hẹn chờ duyệt</TooltipContent>
+             </Tooltip>
 
-                    {(metrics?.todayPending ?? 0) > 0 && (
-                        <div className="flex items-center gap-2 px-3 py-1 bg-yellow-50 text-yellow-700 rounded-full border border-yellow-200">
-                             <span className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-yellow-500"></span>
-                            </span>
-                             <span className="font-semibold">{metrics?.todayPending}</span>
-                             <span>chờ duyệt</span>
-                        </div>
-                    )}
+             <Tooltip>
+               <TooltipTrigger asChild>
+                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-muted/50 transition-colors cursor-help border border-transparent hover:border-border/50">
+                    <Activity className="size-4 text-muted-foreground" />
+                    <span className="font-semibold tabular-nums text-sm">{metrics?.occupancyRate ?? 0}%</span>
+                 </div>
+               </TooltipTrigger>
+               <TooltipContent>Công suất phục vụ</TooltipContent>
+             </Tooltip>
+          </div>
+        </div>
 
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                         <span>Công suất:</span>
-                         <span className="font-semibold text-foreground">{metrics?.occupancyRate ?? 0}%</span>
-                    </div>
-                </div>
-            </div>
+        <div className="flex items-center gap-1.5">
+          <ViewSwitcher value={view} onChange={setView} />
 
-            {/* Actions */}
-            <div className="flex items-center gap-3">
-               <Button variant="outline" size="sm" onClick={() => setShowWalkInDialog(true)}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Tạo nhanh
-               </Button>
-               <Button size="sm" onClick={handleCreateClick}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Đặt lịch
-               </Button>
-            </div>
-         </div>
+          <div className="hidden sm:flex items-center gap-1 pl-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
+                  <Filter className="size-4" />
+                  <span className="sr-only">Bộ lọc</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Bộ lọc</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleRefresh}
+                  disabled={isPending}
+                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                >
+                  <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
+                  <span className="sr-only">Làm mới</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Làm mới</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
+                  <Settings2 className="size-4" />
+                  <span className="sr-only">Cài đặt</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Cài đặt hiển thị</TooltipContent>
+            </Tooltip>
+          </div>
+
+          <div className="pl-1">
+            <Button size="sm" onClick={handleCreateClick} className="h-9 px-4 shadow-sm">
+              <Plus className="size-4 sm:mr-2" />
+              <span className="hidden sm:inline font-medium">Đặt lịch</span>
+            </Button>
+          </div>
+        </div>
       </PageHeader>
 
       <PageContent fullWidth className="p-0 gap-0">
         {/* ============================================ */}
         {/* TOOLBAR */}
         {/* ============================================ */}
-        <div className="flex-none px-4 py-2 border-b bg-background/50 backdrop-blur-sm sticky top-0 z-30">
-            <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-2">
-                    <DateNavigator
-                        date={date}
-                        formattedDateRange={formattedDateRange}
-                        isToday={isToday}
-                        onPrev={goPrev}
-                        onNext={goNext}
-                        onToday={goToday}
-                        onDateSelect={goToDate}
-                    />
-                </div>
 
-                <div className="flex items-center gap-2">
-                   <ViewSwitcher value={view} onChange={setView} hiddenViews={["timeline"]} className="mr-2" />
-
-                   <div className="hidden sm:flex items-center gap-1 border-l pl-3">
-                        <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
-                            <Filter className="h-4 w-4" />
-                            <span className="sr-only">Bộ lọc</span>
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Bộ lọc</TooltipContent>
-                        </Tooltip>
-
-                        <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={handleRefresh}
-                            disabled={isPending}
-                            className="h-8 w-8 text-muted-foreground"
-                            >
-                            <RefreshCw className={cn("h-4 w-4", isPending && "animate-spin")} />
-                            <span className="sr-only">Làm mới</span>
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Làm mới</TooltipContent>
-                        </Tooltip>
-
-                        <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
-                            <Settings2 className="h-4 w-4" />
-                            <span className="sr-only">Cài đặt</span>
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Cài đặt hiển thị</TooltipContent>
-                        </Tooltip>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         {/* ============================================ */}
         {/* MAIN CALENDAR AREA */}
@@ -501,17 +475,7 @@ export function AppointmentsPage({
         availableServices={initialServiceList}
       />
 
-      {/* ============================================ */}
-      {/* WALK-IN BOOKING DIALOG */}
-      {/* ============================================ */}
-      <WalkInBookingDialog
-        open={showWalkInDialog}
-        onOpenChange={setShowWalkInDialog}
-        availableStaff={staffList}
-        availableResources={roomList}
-        availableServices={initialServiceList}
-        onBookingSuccess={handleRefresh}
-      />
+
 
       {/* ============================================ */}
       {/* REVIEW PROMPT FOR COMPLETED BOOKINGS */}

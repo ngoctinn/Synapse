@@ -1,22 +1,12 @@
 'use client';
 
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/shared/ui/alert-dialog";
+import { DeleteConfirmDialog, showToast } from "@/shared/ui";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardDescription, CardHeader } from "@/shared/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
 import { motion } from "framer-motion";
 import { Copy } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import { OPERATING_HOURS_UI } from "../constants";
 import { DAY_LABELS } from "../model/mocks";
 import { DayOfWeek, DaySchedule, OperatingHoursConfig } from "../model/types";
@@ -53,14 +43,14 @@ export function ScheduleEditor({ config, onConfigChange }: ScheduleEditorProps) 
     if (!newSchedule) return;
 
     onConfigChange({ ...config, defaultSchedule: newSchedule });
-    toast.success(OPERATING_HOURS_UI.PASTE_SUCCESS_ALL(DAY_LABELS[copySourceDay]));
+    showToast.success(OPERATING_HOURS_UI.PASTE_SUCCESS_ALL(DAY_LABELS[copySourceDay]));
     setCopySourceDay(null);
     setPasteConfirmOpen(false);
   };
 
   const handleCopy = (day: DayOfWeek) => {
     setCopySourceDay(day);
-    toast.info(OPERATING_HOURS_UI.COPY_INFO(DAY_LABELS[day]));
+    showToast.info(OPERATING_HOURS_UI.COPY_INFO(DAY_LABELS[day]));
   };
 
   const handlePaste = (targetDay: DayOfWeek) => {
@@ -70,7 +60,7 @@ export function ScheduleEditor({ config, onConfigChange }: ScheduleEditorProps) 
     if (!newDefaultSchedule) return;
 
     onConfigChange({ ...config, defaultSchedule: newDefaultSchedule });
-    toast.success(OPERATING_HOURS_UI.PASTE_SUCCESS_SINGLE(DAY_LABELS[copySourceDay], DAY_LABELS[targetDay]));
+    showToast.success(OPERATING_HOURS_UI.PASTE_SUCCESS_SINGLE(DAY_LABELS[copySourceDay], DAY_LABELS[targetDay]));
   };
 
   const handleCancelCopy = () => {
@@ -154,21 +144,19 @@ export function ScheduleEditor({ config, onConfigChange }: ScheduleEditorProps) 
         </Card>
       </div>
 
-      <AlertDialog open={pasteConfirmOpen} onOpenChange={setPasteConfirmOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Xác nhận áp dụng tất cả?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Hành động này sẽ ghi đè lịch làm việc của tất cả các ngày khác bằng lịch của ngày {copySourceDay ? DAY_LABELS[copySourceDay] : ''}.
-              Dữ liệu cũ sẽ bị mất.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Hủy bỏ</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmPasteToAll}>Xác nhận ghi đè</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteConfirmDialog
+        open={pasteConfirmOpen}
+        onOpenChange={setPasteConfirmOpen}
+        onConfirm={confirmPasteToAll}
+        title="Xác nhận áp dụng tất cả?"
+        description={
+          <>
+            Hành động này sẽ ghi đè lịch làm việc của tất cả các ngày khác bằng lịch của ngày {copySourceDay ? DAY_LABELS[copySourceDay] : ''}.
+            Dữ liệu cũ sẽ bị mất.
+          </>
+        }
+        confirmText="Xác nhận ghi đè"
+      />
     </>
   );
 }

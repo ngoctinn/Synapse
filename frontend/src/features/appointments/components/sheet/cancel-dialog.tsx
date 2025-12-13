@@ -10,7 +10,7 @@
  * - Loading state khi submit
  */
 
-import { showToast } from "@/shared/ui/custom/sonner";
+import { showToast } from "@/shared/ui/sonner";
 import { differenceInHours, format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { AlertTriangle, Calendar, Clock, User, XCircle } from "lucide-react";
@@ -110,15 +110,15 @@ export function CancelDialog({
               {event.appointment.serviceName}
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <User className="h-4 w-4 text-muted-foreground" />
+              <User className="size-4 text-muted-foreground" />
               <span>{event.appointment.customerName}</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Calendar className="h-4 w-4" />
+              <Calendar className="size-4" />
               <span>{dateStr}</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Clock className="h-4 w-4" />
+              <Clock className="size-4" />
               <span>{timeRange}</span>
             </div>
           </div>

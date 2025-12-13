@@ -47,7 +47,7 @@ export function BookingSidebar({ service, state, className }: BookingSidebarProp
                     {/* Date & Time */}
                     <div className="space-y-3">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <CalendarIcon className="h-4 w-4" />
+                            <CalendarIcon className="size-4" />
                             <span className="font-medium text-foreground">Thời gian</span>
                         </div>
                         <div className="pl-6 space-y-1">
@@ -63,7 +63,7 @@ export function BookingSidebar({ service, state, className }: BookingSidebarProp
                     {/* Staff */}
                     <div className="space-y-3">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <User className="h-4 w-4" />
+                            <User className="size-4" />
                             <span className="font-medium text-foreground">Chuyên gia</span>
                         </div>
                         <div className="pl-6">

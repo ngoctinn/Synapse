@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { Button } from "@/shared/ui/button"
+import { RequiredMark } from "@/shared/ui"
 import { ColorSwatchGroup } from "@/shared/ui/custom/color-swatch-group"
 import { TimeInput } from "@/shared/ui/custom/time-input"
 import { DialogFooter } from "@/shared/ui/dialog"
@@ -78,7 +79,7 @@ export function ShiftForm({ onSuccess, onCancel }: ShiftFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                Tên ca <span className="text-destructive">*</span>
+                Tên ca <RequiredMark />
               </FormLabel>
               <FormControl>
                 <Input
@@ -100,7 +101,7 @@ export function ShiftForm({ onSuccess, onCancel }: ShiftFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Bắt đầu <span className="text-destructive">*</span>
+                  Bắt đầu <RequiredMark />
                 </FormLabel>
                 <FormControl>
                    <TimeInput
@@ -119,7 +120,7 @@ export function ShiftForm({ onSuccess, onCancel }: ShiftFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Kết thúc <span className="text-destructive">*</span>
+                  Kết thúc <RequiredMark />
                 </FormLabel>
                 <FormControl>
                   <TimeInput

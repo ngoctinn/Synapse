@@ -72,7 +72,7 @@ export function YearPicker({
             className="h-7 w-7"
             onClick={() => navigate("prev")}
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="size-4" />
           </Button>
           <div className="font-semibold text-sm">
             {startYear} - {startYear + 11}
@@ -83,7 +83,7 @@ export function YearPicker({
             className="h-7 w-7"
             onClick={() => navigate("next")}
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="size-4" />
           </Button>
         </div>
         <div className="grid grid-cols-3 gap-2">

@@ -1,4 +1,4 @@
-import { Button } from '@/shared/ui/button'
+import { Button } from '@/shared/ui'
 import Link from 'next/link'
 
 export default function AuthCodeError() {
@@ -11,11 +11,11 @@ export default function AuthCodeError() {
           <br />
           Vui lòng thử lại quy trình.
         </p>
-        <Button asChild className="w-full">
-          <Link href="/login">
+        <Link href="/login" className="w-full block">
+          <Button className="w-full">
             Quay lại trang đăng nhập
-          </Link>
-        </Button>
+          </Button>
+        </Link>
       </div>
     </div>
   )

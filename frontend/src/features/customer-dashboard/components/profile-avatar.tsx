@@ -42,7 +42,7 @@ export function ProfileAvatar({ user, control }: ProfileAvatarProps) {
 
                     {/* Bottom Badge (Optional - keep or remove, keeping for visibility) */}
                     <div className="absolute bottom-1 right-1 bg-primary text-primary-foreground p-2 rounded-full shadow-lg ring-2 ring-background transition-transform duration-300 group-hover/avatar:scale-110 group-hover/avatar:rotate-12">
-                      <Camera className="h-4 w-4" />
+                      <Camera className="size-4" />
                     </div>
                   </div>
                 }

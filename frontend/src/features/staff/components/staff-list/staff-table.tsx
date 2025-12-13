@@ -4,16 +4,7 @@ import { Skill } from "@/features/services/types";
 import { deleteStaff } from "@/features/staff/actions";
 import { useTableParams, useTableSelection } from "@/shared/hooks";
 import { cn } from "@/shared/lib/utils";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/shared/ui/alert-dialog";
+import { DeleteConfirmDialog } from "@/shared/ui";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
@@ -21,7 +12,7 @@ import { AnimatedUsersIcon } from "@/shared/ui/custom/animated-icon";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
-import { showToast } from "@/shared/ui/custom/sonner";
+import { showToast } from "@/shared/ui";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import {
   Tooltip,
@@ -72,7 +63,7 @@ const GroupActionButtons = ({ staff }: { staff: Staff }) => {
             className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
             onClick={handleViewSchedule}
           >
-            <Calendar className="h-4 w-4" />
+            <Calendar className="size-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>
@@ -334,42 +325,23 @@ export function StaffTable({
         isLoading={isPending}
       />
 
-      <AlertDialog
+      <DeleteConfirmDialog
         open={showBulkDeleteDialog}
         onOpenChange={setShowBulkDeleteDialog}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              Xóa {selection.selectedCount} nhân viên?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              Hành động này không thể hoàn tác.{" "}
-              <span className="font-semibold text-foreground">
-                {selection.selectedCount}
-              </span>{" "}
-              nhân viên đã chọn sẽ bị xóa vĩnh viễn khỏi hệ thống.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isPending}>Hủy</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleBulkDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              disabled={isPending}
-            >
-              {isPending ? (
-                <>
-                  <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-r-transparent" />
-                  Đang xóa...
-                </>
-              ) : (
-                `Xóa ${selection.selectedCount} mục`
-              )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        onConfirm={handleBulkDelete}
+        isDeleting={isPending}
+        title={`Xóa ${selection.selectedCount} nhân viên?`}
+        description={
+          <>
+            Hành động này không thể hoàn tác.{" "}
+            <span className="font-semibold text-foreground">
+              {selection.selectedCount}
+            </span>{" "}
+            nhân viên đã chọn sẽ bị xóa vĩnh viễn khỏi hệ thống.
+          </>
+        }
+        confirmText={`Xóa ${selection.selectedCount} mục`}
+      />
 
       {editingStaff && (
         <StaffSheet

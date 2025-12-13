@@ -1,6 +1,6 @@
 "use client";
 
-import { showToast } from "@/shared/ui/custom/sonner";
+import { showToast } from "@/shared/ui/sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useTransition } from "react";
@@ -155,7 +155,7 @@ export function PaymentForm({ invoice, onSuccess }: PaymentFormProps) {
         />
 
         <Button type="submit" className="w-full" disabled={isPending}>
-          {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
           Xác nhận thanh toán
         </Button>
       </form>

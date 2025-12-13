@@ -44,12 +44,12 @@ export function FilterButton({
             className
           )}
         >
-          <Icon className={cn("h-4 w-4", label && "mr-2")} />
+          <Icon className={cn("size-4", label && "mr-2")} />
           {label}
 
           {count > 0 && (
             <span className={cn(
-              "absolute flex h-4 w-4 animate-in zoom-in duration-300 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground shadow-sm ring-2 ring-background",
+              "absolute flex size-4 animate-in zoom-in duration-300 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground shadow-sm ring-2 ring-background",
               label ? "-right-1 -top-1" : "-right-1 -top-1"
             )}>
               {count}
@@ -70,7 +70,7 @@ export function FilterButton({
                 onClick={onClear}
                 title="Xóa bộ lọc"
               >
-                <X className="h-4 w-4" />
+                <X className="size-4" />
                 <span className="sr-only">Xóa lọc</span>
               </Button>
             )}

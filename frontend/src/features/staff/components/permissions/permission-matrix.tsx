@@ -106,7 +106,7 @@ export function PermissionMatrix({ initialPermissions, className }: PermissionMa
                               title="Chức năng bị khóa cho quyền Admin"
                               aria-label="Locked"
                             >
-                              <Lock className="h-4 w-4" />
+                              <Lock className="size-4" />
                             </div>
                           ) : (
                             <Checkbox

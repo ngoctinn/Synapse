@@ -49,7 +49,7 @@ export function ConflictWarning({
     >
       <AlertTriangle
         className={cn(
-          "h-4 w-4",
+          "size-4",
           hasError ? "text-destructive" : "text-amber-500"
         )}
       />
@@ -82,9 +82,9 @@ export function ConflictWarning({
             )}
           >
             {conflict.type === "overlap" ? (
-              <Clock className="h-4 w-4 flex-shrink-0 mt-0.5" />
+              <Clock className="size-4 flex-shrink-0 mt-0.5" />
             ) : (
-              <User className="h-4 w-4 flex-shrink-0 mt-0.5" />
+              <User className="size-4 flex-shrink-0 mt-0.5" />
             )}
             <div className="flex-1">
               <p>{conflict.message}</p>

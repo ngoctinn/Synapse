@@ -132,7 +132,7 @@ export function DatePicker({
             className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground hover:text-foreground"
             disabled={disabled}
           >
-            <Icon className="h-4 w-4" {...iconProps} />
+            <Icon className="size-4" {...iconProps} />
             <span className="sr-only">Open calendar</span>
           </Button>
         </PopoverTrigger>

@@ -2,6 +2,7 @@
 
 import { cn } from "@/shared/lib/utils"
 import * as React from "react"
+import { RequiredMark } from "./required-mark"
 
 export interface FormFieldLayoutProps {
   /** Field label text */
@@ -42,7 +43,7 @@ export function FormFieldLayout({
         )}
       >
         {label}
-        {required && <span className="text-destructive ml-0.5">*</span>}
+        {required && <RequiredMark />}
       </label>
 
       {children}

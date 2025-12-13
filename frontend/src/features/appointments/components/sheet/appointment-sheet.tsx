@@ -200,7 +200,7 @@ export function AppointmentSheet({
               {/* Time Info */}
               <div className="space-y-3">
                 <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
+                  <Calendar className="size-4" />
                   Thời gian
                 </h3>
                 <div className="bg-muted/50 rounded-lg p-4">
@@ -222,7 +222,7 @@ export function AppointmentSheet({
               {/* Customer Info */}
               <div className="space-y-3">
                 <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <User className="h-4 w-4" />
+                  <User className="size-4" />
                   Khách hàng
                 </h3>
                 <div className="flex items-start gap-4">
@@ -270,7 +270,7 @@ export function AppointmentSheet({
                   <Separator />
                   <div className="space-y-3">
                     <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                      <MapPin className="h-4 w-4" />
+                      <MapPin className="size-4" />
                       Phòng / Giường
                     </h3>
                     <div className="font-medium">{appointment!.resourceName}</div>

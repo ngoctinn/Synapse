@@ -7,8 +7,8 @@ import { startTransition, useActionState, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/shared/ui/button";
-import { CustomDialog } from "@/shared/ui/custom/dialog";
-import { showToast } from "@/shared/ui/custom/sonner";
+import { ConfirmDialog } from "@/shared/ui";
+import { showToast } from "@/shared/ui/sonner";
 import {
   Form,
   FormControl,
@@ -114,7 +114,7 @@ export function ForgotPasswordForm() {
         </Link>
       </p>
 
-      <CustomDialog
+      <ConfirmDialog
         open={showCheckEmailDialog}
         onOpenChange={setShowCheckEmailDialog}
         variant="info"

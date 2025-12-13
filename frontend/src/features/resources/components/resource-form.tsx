@@ -4,6 +4,7 @@ import { Tags } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 
 import { cn } from "@/shared/lib/utils";
+import { RequiredMark } from "@/shared/ui";
 import { TagInput } from "@/shared/ui/custom/tag-input";
 import {
   FormControl,
@@ -87,7 +88,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                 name="name"
                 render={({ field }) => (
                 <FormItem>
-                    <FormLabel>Tên tài nguyên <span className="text-destructive">*</span></FormLabel>
+                    <FormLabel>Tên tài nguyên <RequiredMark /></FormLabel>
                     <FormControl>
                     <Input
                         placeholder="Ví dụ: Phòng VIP 1"
@@ -105,7 +106,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                     name="code"
                     render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Mã định danh <span className="text-destructive">*</span></FormLabel>
+                        <FormLabel>Mã định danh <RequiredMark /></FormLabel>
                         <FormControl>
                         <Input
                             placeholder="Ví dụ: R-VIP-01"
@@ -122,7 +123,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                     name="groupId"
                     render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Nhóm tài nguyên <span className="text-destructive">*</span></FormLabel>
+                        <FormLabel>Nhóm tài nguyên <RequiredMark /></FormLabel>
                         <Select
                             onValueChange={(val) => {
                                 field.onChange(val);
@@ -183,7 +184,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                 name="status"
                 render={({ field }) => (
                 <FormItem>
-                    <FormLabel>Trạng thái hiện tại <span className="text-destructive">*</span></FormLabel>
+                    <FormLabel>Trạng thái hiện tại <RequiredMark /></FormLabel>
                     <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}

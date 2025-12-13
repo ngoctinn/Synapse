@@ -18,7 +18,7 @@ import { Staff } from "@/features/staff/model/types"
 
 
 import { Button } from "@/shared/ui/button"
-import { showToast } from "@/shared/ui/custom/sonner"
+import { showToast } from "@/shared/ui/sonner"
 import { Form } from "@/shared/ui/form"
 import {
     Sheet,

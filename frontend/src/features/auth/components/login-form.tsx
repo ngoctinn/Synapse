@@ -11,7 +11,7 @@ import { loginAction } from "../actions";
 import { loginSchema, type LoginInput } from "../schemas";
 
 import { Button } from "@/shared/ui/button";
-import { showToast } from "@/shared/ui/custom/sonner";
+import { showToast } from "@/shared/ui/sonner";
 import {
   Form,
   FormControl,

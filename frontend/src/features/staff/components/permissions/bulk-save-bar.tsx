@@ -31,12 +31,11 @@ export function BulkSaveBar({ open, changeCount, onSave, onReset }: BulkSaveBarP
                 size="sm"
                 onClick={onReset}
                 className="text-background hover:text-background/80 hover:bg-white/10"
+                startContent={<RotateCcw className="size-4" />}
               >
-                <RotateCcw className="mr-2 h-4 w-4" />
                 Hoàn tác
               </Button>
-              <Button size="sm" onClick={onSave} className="bg-primary text-primary-foreground hover:bg-primary/90">
-                <Save className="mr-2 h-4 w-4" />
+              <Button size="sm" onClick={onSave} className="bg-primary text-primary-foreground hover:bg-primary/90" startContent={<Save className="size-4" />}>
                 Lưu thay đổi
               </Button>
             </div>

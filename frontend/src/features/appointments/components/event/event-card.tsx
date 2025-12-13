@@ -179,7 +179,7 @@ export function EventCard({
 
       {/* Customer */}
       <div className="flex items-center gap-2 mb-1">
-        <User className="h-4 w-4 text-muted-foreground" />
+        <User className="size-4 text-muted-foreground" />
         <span className="font-medium text-sm">{event.appointment.customerName}</span>
       </div>
 

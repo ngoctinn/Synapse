@@ -76,7 +76,7 @@ export function DateNavigator({
         onClick={onPrev}
         title="Trước đó"
       >
-        <ChevronLeft className="h-4 w-4" />
+        <ChevronLeft className="size-4" />
         <span className="sr-only">Trước đó</span>
       </Button>
 
@@ -102,7 +102,7 @@ export function DateNavigator({
         onClick={onNext}
         title="Tiếp theo"
       >
-        <ChevronRight className="h-4 w-4" />
+        <ChevronRight className="size-4" />
         <span className="sr-only">Tiếp theo</span>
       </Button>
 
@@ -117,7 +117,7 @@ export function DateNavigator({
               "hidden xs:flex" // Ẩn trên màn hình quá nhỏ
             )}
           >
-            <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+            <CalendarIcon className="size-4 text-muted-foreground" />
             <span className="hidden sm:inline">{formattedDateRange}</span>
             <span className="sm:hidden">
               {format(date, "dd/MM", { locale: vi })}

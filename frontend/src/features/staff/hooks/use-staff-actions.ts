@@ -1,7 +1,7 @@
 "use client"
 
 import { deleteStaff } from "@/features/staff/actions"
-import { showToast } from "@/shared/ui/custom/sonner"
+import { showToast } from "@/shared/ui/sonner"
 import { useState, useTransition } from "react"
 
 interface UseStaffActionsProps {

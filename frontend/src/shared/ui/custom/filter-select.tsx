@@ -147,7 +147,7 @@ export function FilterSelect({
                   <div className="flex items-center gap-2">
                     {Icon && (
                       <Icon
-                        className={`h-4 w-4 ${
+                        className={`size-4 ${
                           option.iconClassName || "text-muted-foreground"
                         }`}
                       />

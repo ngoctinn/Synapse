@@ -49,7 +49,7 @@ export function CustomerFilter() {
               {MEMBERSHIP_TIERS.map((t) => (
                 <SelectItem key={t.id} value={t.id}>
                   <div className="flex items-center gap-2">
-                    <Crown className="h-4 w-4 text-accent-foreground" />
+                    <Crown className="size-4 text-accent-foreground" />
                     <span>{t.name}</span>
                   </div>
                 </SelectItem>

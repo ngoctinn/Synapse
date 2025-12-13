@@ -185,7 +185,7 @@ export function DateRangeFilter({
             className
           )}
         >
-          <CalendarIcon className="mr-2 h-4 w-4 shrink-0 text-muted-foreground/70" />
+          <CalendarIcon className="mr-2 size-4 shrink-0 text-muted-foreground/70" />
           <span className="truncate">{getTriggerLabel()}</span>
         </Button>
       </PopoverTrigger>
@@ -256,7 +256,7 @@ export function DateRangeFilter({
               onClick={() => setShowCalendar(true)}
             >
               Tùy chọn...
-              <ChevronRight className="h-4 w-4 opacity-50 group-hover:translate-x-0.5 transition-transform" />
+              <ChevronRight className="size-4 opacity-50 group-hover:translate-x-0.5 transition-transform" />
             </Button>
           </div>
         ) : (
@@ -268,7 +268,7 @@ export function DateRangeFilter({
                 className="h-6 w-6"
                 onClick={() => setShowCalendar(false)}
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="size-4" />
               </Button>
               <span className="text-sm font-medium">Chọn ngày</span>
             </div>

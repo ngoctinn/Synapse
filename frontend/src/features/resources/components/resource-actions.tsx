@@ -31,7 +31,7 @@ export function ResourceActions({ resource, onEdit }: ResourceActionsProps) {
           <>
             <DropdownMenuLabel>Thao tác khác</DropdownMenuLabel>
             <DropdownMenuItem>
-              <History className="mr-2 h-4 w-4" />
+              <History className="mr-2 size-4" />
               <span>Lịch sử bảo trì</span>
             </DropdownMenuItem>
           </>

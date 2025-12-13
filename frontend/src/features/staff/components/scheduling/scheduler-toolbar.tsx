@@ -43,13 +43,13 @@ export function SchedulerToolbar({
       {/* Group 1: Navigation */}
       <div className="flex items-center gap-2 bg-muted/30 p-1 rounded-lg border">
         <Button variant="ghost" size="icon" onClick={onPrevWeek} className="h-7 w-7" aria-label={SCHEDULER_UI.PREV_WEEK}>
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="size-4" />
         </Button>
         <div className="text-sm font-medium w-[140px] text-center tabular-nums">
           {format(weekStart, "dd/MM")} - {format(weekEnd, "dd/MM/yyyy")}
         </div>
         <Button variant="ghost" size="icon" onClick={onNextWeek} className="h-7 w-7" aria-label={SCHEDULER_UI.NEXT_WEEK}>
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="size-4" />
         </Button>
         <div className="w-px h-4 bg-border mx-1" />
         <Button variant="ghost" size="sm" onClick={onResetToday}>
@@ -63,7 +63,7 @@ export function SchedulerToolbar({
            <TooltipProvider>
              <Tooltip>
                <TooltipTrigger asChild>
-                 <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                 <HelpCircle className="size-4 text-muted-foreground cursor-help" />
                </TooltipTrigger>
                <TooltipContent>
                  <p>Chọn loại ca làm việc và click vào ô lịch để xếp ca</p>

@@ -23,14 +23,18 @@ export { DataTableEmptyState } from "./custom/data-table-empty-state"
 export { DataTableSkeleton } from "./custom/data-table-skeleton"
 export { DatePicker } from "./custom/date-picker"
 export { DateRangeFilter } from "./custom/date-range-filter"
-export { CustomDialog as Dialog } from "./custom/dialog"
-// Dialog sub-components từ primitive (CustomDialog không export chúng)
+export { DeleteConfirmDialog } from "./custom/delete-confirm-dialog"
+export { ConfirmDialog } from "./custom/confirm-dialog"
+// Dialog primitive
+export { Dialog } from "./dialog"
 export { DurationPicker } from "./custom/duration-picker"
 export { FilterButton } from "./custom/filter-button"
 export { MaskedDateInput } from "./custom/masked-date-input"
 export { PaginationControls } from "./custom/pagination-controls"
+export { RequiredMark } from "./custom/required-mark"
+export { OptionalMark } from "./custom/optional-mark"
 export { SettingsHeader } from "./custom/settings-header"
-export { StatusBadge } from "./custom/status-badge"
+
 export { TableActionBar } from "./custom/table-action-bar"
 export { TableRowActions } from "./custom/table-row-actions"
 export { TagInput } from "./custom/tag-input"
@@ -47,8 +51,8 @@ export {
   DialogTrigger
 } from "./dialog"
 
-// Sonner Toast - Custom wrapper
-export { showToast } from "./custom/sonner"
+// Sonner Toast
+export { Toaster, showToast } from "./sonner"
 
 // ==========================================
 // CORE COMPONENTS (Đã được chuẩn hóa)

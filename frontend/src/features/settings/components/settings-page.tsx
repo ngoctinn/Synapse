@@ -119,21 +119,21 @@ function SettingsForm({
         <div className="flex items-center gap-3 w-full md:w-auto">
           <TabsList variant="default" size="default">
             <TabsTrigger value="schedule" variant="default" stretch={false}>
-              <Clock className="h-4 w-4 mr-2 hidden sm:inline-block" />
+              <Clock className="size-4 mr-2 hidden sm:inline-block" />
               Lịch làm việc
               {isDirty && activeTab === "schedule" && (
                 <Badge variant="warning" className="ml-2 h-5 w-5 p-0 justify-center text-[10px]">•</Badge>
               )}
             </TabsTrigger>
             <TabsTrigger value="exceptions" variant="default" stretch={false}>
-              <CalendarX className="h-4 w-4 mr-2 hidden sm:inline-block" />
+              <CalendarX className="size-4 mr-2 hidden sm:inline-block" />
               Ngày ngoại lệ
               {isDirty && activeTab === "exceptions" && (
                 <Badge variant="warning" className="ml-2 h-5 w-5 p-0 justify-center text-[10px]">•</Badge>
               )}
             </TabsTrigger>
             <TabsTrigger value="notifications" variant="default" stretch={false}>
-              <Bell className="h-4 w-4 mr-2 hidden sm:inline-block" />
+              <Bell className="size-4 mr-2 hidden sm:inline-block" />
               Thông báo
             </TabsTrigger>
           </TabsList>
@@ -158,7 +158,7 @@ function SettingsForm({
               disabled={!isDirty || isPending}
               className="gap-1.5"
             >
-              <RotateCcw className="h-4 w-4" />
+              <RotateCcw className="size-4" />
               <span className="hidden sm:inline">Khôi phục</span>
             </Button>
             <Button
@@ -168,9 +168,9 @@ function SettingsForm({
               className="gap-1.5 shadow-sm"
             >
               {isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
               ) : (
-                <Save className="h-4 w-4" />
+                <Save className="size-4" />
               )}
               <span className="hidden sm:inline">Lưu thay đổi</span>
               <span className="sm:hidden">Lưu</span>

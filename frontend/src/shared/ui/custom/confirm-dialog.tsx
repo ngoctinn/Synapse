@@ -15,7 +15,7 @@ import { AlertTriangle, CheckCircle2, Info, LucideIcon, XCircle } from "lucide-r
 
 type DialogVariant = "success" | "info" | "warning" | "error"
 
-interface CustomDialogProps {
+interface ConfirmDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   variant?: DialogVariant
@@ -57,7 +57,7 @@ const variantStyles = {
   },
 }
 
-export function CustomDialog({
+export function ConfirmDialog({
   open,
   onOpenChange,
   variant = "info",
@@ -66,7 +66,7 @@ export function CustomDialog({
   description,
   primaryAction,
   secondaryAction,
-}: CustomDialogProps) {
+}: ConfirmDialogProps) {
   const style = variantStyles[variant]
   const Icon = icon || style.icon
 

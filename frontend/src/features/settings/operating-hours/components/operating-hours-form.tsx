@@ -1,23 +1,13 @@
 'use client';
 
 import { PageContent, PageHeader, PageShell, SurfaceCard } from "@/shared/components/layout/page-layout";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/shared/ui/alert-dialog";
+import { DeleteConfirmDialog, showToast } from "@/shared/ui";
 import { Button } from "@/shared/ui/button";
 import { CardContent, CardDescription, CardHeader } from "@/shared/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
 import { Copy } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
-import { toast } from "sonner";
 import { updateOperatingHours } from "../actions";
 import { OPERATING_HOURS_UI } from "../constants";
 import { DAY_LABELS } from "../model/mocks";
@@ -40,6 +30,7 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
   // Reset internal state if server data changes
   // Reset internal state if server data changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setConfig(initialConfig);
     setIsDirty(false);
 
@@ -51,9 +42,9 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
       const result = await updateOperatingHours(config);
       if (result.status === "success") {
         setIsDirty(false);
-        toast.success(result.message);
+        showToast.success(result.message || "Cập nhật thành công");
       } else {
-        toast.error(result.message || OPERATING_HOURS_UI.SAVE_ERROR);
+        showToast.error(result.message || OPERATING_HOURS_UI.SAVE_ERROR);
       }
     });
   };
@@ -87,14 +78,14 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
   const handleAddExceptions = (newExceptions: ExceptionDate[]) => {
     setConfig(prev => ({ ...prev, exceptions: [...prev.exceptions, ...newExceptions] }));
     setIsDirty(true);
-    toast.success(OPERATING_HOURS_UI.ADD_EXCEPTION_SUCCESS(newExceptions.length));
+    showToast.success(OPERATING_HOURS_UI.ADD_EXCEPTION_SUCCESS(newExceptions.length));
   };
 
   const handleRemoveException = (ids: string | string[]) => {
     const idsToRemove = Array.isArray(ids) ? ids : [ids];
     setConfig({ ...config, exceptions: config.exceptions.filter(e => !idsToRemove.includes(e.id)) });
     setIsDirty(true);
-    toast.success(OPERATING_HOURS_UI.REMOVE_EXCEPTION_SUCCESS(idsToRemove.length));
+    showToast.success(OPERATING_HOURS_UI.REMOVE_EXCEPTION_SUCCESS(idsToRemove.length));
   };
 
   const handlePasteToAll = () => {
@@ -109,14 +100,14 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
 
     setConfig({ ...config, defaultSchedule: newSchedule });
     setIsDirty(true);
-    toast.success(OPERATING_HOURS_UI.PASTE_SUCCESS_ALL(DAY_LABELS[copySourceDay]));
+    showToast.success(OPERATING_HOURS_UI.PASTE_SUCCESS_ALL(DAY_LABELS[copySourceDay]));
     setCopySourceDay(null);
     setPasteConfirmOpen(false);
   };
 
   const handleCopy = (day: DayOfWeek) => {
     setCopySourceDay(day);
-    toast.info(OPERATING_HOURS_UI.COPY_INFO(DAY_LABELS[day]));
+    showToast.info(OPERATING_HOURS_UI.COPY_INFO(DAY_LABELS[day]));
   };
 
   const handlePaste = (targetDay: DayOfWeek) => {
@@ -127,7 +118,7 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
 
     setConfig({ ...config, defaultSchedule: newDefaultSchedule });
     setIsDirty(true);
-    toast.success(OPERATING_HOURS_UI.PASTE_SUCCESS_SINGLE(DAY_LABELS[copySourceDay], DAY_LABELS[targetDay]));
+    showToast.success(OPERATING_HOURS_UI.PASTE_SUCCESS_SINGLE(DAY_LABELS[copySourceDay], DAY_LABELS[targetDay]));
   };
 
   const handleCancelCopy = () => {
@@ -138,7 +129,7 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
     setConfig(initialConfig);
     setIsDirty(false);
     setCopySourceDay(null);
-    toast.info(OPERATING_HOURS_UI.RESET);
+    showToast.info(OPERATING_HOURS_UI.RESET);
   };
 
 
@@ -245,21 +236,19 @@ export function OperatingHoursForm({ initialConfig }: OperatingHoursFormProps) {
             </TabsContent>
         </div>
 
-        <AlertDialog open={pasteConfirmOpen} onOpenChange={setPasteConfirmOpen}>
-            <AlertDialogContent>
-            <AlertDialogHeader>
-                <AlertDialogTitle>Xác nhận áp dụng tất cả?</AlertDialogTitle>
-                <AlertDialogDescription>
+        <DeleteConfirmDialog
+            open={pasteConfirmOpen}
+            onOpenChange={setPasteConfirmOpen}
+            onConfirm={confirmPasteToAll}
+            title="Xác nhận áp dụng tất cả?"
+            description={
+              <>
                 Hành động này sẽ ghi đè lịch làm việc của tất cả các ngày khác bằng lịch của ngày {copySourceDay ? DAY_LABELS[copySourceDay] : ''}.
                 Dữ liệu cũ sẽ bị mất.
-                </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-                <AlertDialogCancel>Hủy bỏ</AlertDialogCancel>
-                <AlertDialogAction onClick={confirmPasteToAll}>Xác nhận ghi đè</AlertDialogAction>
-            </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
+              </>
+            }
+            confirmText="Xác nhận ghi đè"
+        />
       </Tabs>
     </PageShell>
   );

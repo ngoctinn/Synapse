@@ -6,7 +6,7 @@ import { ProfileInput, profileSchema } from "@/features/customer-dashboard/schem
 import { UserProfile } from "@/features/customer-dashboard/types"
 import { useReducedMotion } from "@/shared/hooks"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card"
-import { showToast } from "@/shared/ui/custom/sonner"
+import { showToast } from "@/shared/ui/sonner"
 import { Form } from "@/shared/ui/form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { motion, Transition } from "framer-motion"

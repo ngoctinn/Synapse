@@ -20,7 +20,7 @@ import { getTechnicians, type TechnicianOption } from "@/features/staff/actions"
 import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
 import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs"
-import { showToast } from "@/shared/ui/custom/sonner"
+import { showToast } from "@/shared/ui/sonner"
 import { Form } from "@/shared/ui/form"
 import {
   Sheet,

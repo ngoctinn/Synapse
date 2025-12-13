@@ -62,7 +62,7 @@ export function TreatmentList({ treatments }: TreatmentListProps) {
               </div>
               {treatment.expiryDate && (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Calendar className="h-4 w-4" />
+                  <Calendar className="size-4" />
                   <span>Hết hạn: {format(new Date(treatment.expiryDate), "dd/MM/yyyy", { locale: vi })}</span>
                 </div>
               )}

@@ -10,7 +10,7 @@ import { updatePasswordAction } from "../actions";
 import { updatePasswordSchema, type UpdatePasswordInput } from "../schemas";
 
 import { Button } from "@/shared/ui/button";
-import { showToast } from "@/shared/ui/custom/sonner";
+import { showToast } from "@/shared/ui/sonner";
 import {
   Form,
   FormControl,

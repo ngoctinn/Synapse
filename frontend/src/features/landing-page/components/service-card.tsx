@@ -76,11 +76,11 @@ export function ServiceCard({ service, onBook }: ServiceCardProps) {
 
         <div className="flex items-center justify-between text-sm text-muted-foreground mb-4 pt-4 border-t border-border/50">
           <div className="flex items-center gap-1.5">
-            <Clock className="h-4 w-4 text-primary" />
+            <Clock className="size-4 text-primary" />
             <span>{service.duration} phút</span>
           </div>
           <div className="flex items-center gap-1.5 font-bold text-primary text-base">
-            <Tag className="h-4 w-4" />
+            <Tag className="size-4" />
             <span>
               {new Intl.NumberFormat("vi-VN", {
                 style: "currency",

@@ -133,16 +133,16 @@ export function AdminHeader({ className, user }: AdminHeaderProps) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="cursor-pointer group">
-              <User className="mr-2 h-4 w-4 group-hover:text-primary transition-colors" />
+              <User className="mr-2 size-4 group-hover:text-primary transition-colors" />
               <span>Hồ sơ</span>
             </DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer group">
-              <Settings className="mr-2 h-4 w-4 group-hover:text-primary transition-colors" />
+              <Settings className="mr-2 size-4 group-hover:text-primary transition-colors" />
               <span>Cài đặt</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 group" onSelect={handleLogout}>
-              <LogOut className="mr-2 h-4 w-4 text-red-600 group-hover:translate-x-1 transition-transform" />
+              <LogOut className="mr-2 size-4 text-red-600 group-hover:translate-x-1 transition-transform" />
               <span>Đăng xuất</span>
             </DropdownMenuItem>
           </DropdownMenuContent>

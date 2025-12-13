@@ -29,7 +29,7 @@ export function StaffActions({ staff, onEdit }: StaffActionsProps) {
           <>
             <DropdownMenuLabel>Thao tác khác</DropdownMenuLabel>
             <DropdownMenuItem>
-              <KeyRound className="mr-2 h-4 w-4" />
+              <KeyRound className="mr-2 size-4" />
               <span>Đổi mật khẩu</span>
             </DropdownMenuItem>
           </>

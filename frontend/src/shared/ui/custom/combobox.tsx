@@ -80,7 +80,7 @@ export function Combobox({
           ) : (
             <span className="text-muted-foreground">{placeholder}</span>
           )}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
@@ -93,7 +93,7 @@ export function Combobox({
           <CommandList>
             {isLoading ? (
                <div className="py-6 text-center text-sm text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin mx-auto mb-2" />
+                  <Loader2 className="size-4 animate-spin mx-auto mb-2" />
                   Đang tải...
                </div>
             ) : (
@@ -117,7 +117,7 @@ export function Combobox({
                         >
                         <Check
                             className={cn(
-                            "mr-2 h-4 w-4",
+                            "mr-2 size-4",
                             value === option.value ? "opacity-100" : "opacity-0"
                             )}
                         />

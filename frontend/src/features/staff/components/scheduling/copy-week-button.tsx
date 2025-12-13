@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/shared/ui/button"
-import { showToast } from "@/shared/ui/custom/sonner"
+import { showToast } from "@/shared/ui/sonner"
 import { Copy } from "lucide-react"
 
 interface CopyWeekButtonProps {
@@ -16,8 +16,7 @@ export function CopyWeekButton({ onCopy }: CopyWeekButtonProps) {
   }
 
   return (
-    <Button variant="outline" size="sm" onClick={handleCopy}>
-      <Copy className="mr-2 h-4 w-4" />
+    <Button variant="outline" size="sm" onClick={handleCopy} startContent={<Copy className="size-4" />}>
       Sao chép tuần trước
     </Button>
   )

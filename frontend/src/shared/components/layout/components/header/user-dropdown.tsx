@@ -63,19 +63,19 @@ export function HeaderUserDropdown({ user, onLogout }: HeaderUserDropdownProps) 
         <DropdownMenuGroup>
           <DropdownMenuItem asChild className="group focus:bg-primary/10 cursor-pointer">
             <Link href="/profile" className="py-2.5 w-full flex items-center transition-transform duration-200 group-hover:translate-x-1">
-              <User className="mr-2 h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
+              <User className="mr-2 size-4 text-primary group-hover:scale-110 transition-transform" />
               <span className="group-hover:text-primary transition-colors">Hồ sơ cá nhân</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild className="group focus:bg-primary/10 cursor-pointer">
             <Link href="/treatments" className="py-2.5 w-full flex items-center transition-transform duration-200 group-hover:translate-x-1">
-              <CreditCard className="mr-2 h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
+              <CreditCard className="mr-2 size-4 text-primary group-hover:scale-110 transition-transform" />
               <span className="group-hover:text-primary transition-colors">Gói dịch vụ</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild className="group focus:bg-primary/10 cursor-pointer">
             <Link href="/settings" className="py-2.5 w-full flex items-center transition-transform duration-200 group-hover:translate-x-1">
-              <Settings className="mr-2 h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
+              <Settings className="mr-2 size-4 text-primary group-hover:scale-110 transition-transform" />
               <span className="group-hover:text-primary transition-colors">Cài đặt</span>
             </Link>
           </DropdownMenuItem>
@@ -84,7 +84,7 @@ export function HeaderUserDropdown({ user, onLogout }: HeaderUserDropdownProps) 
         <DropdownMenuGroup>
           <DropdownMenuItem asChild className="group focus:bg-primary/10 cursor-pointer">
             <Link href="/" className="py-2.5 w-full flex items-center transition-transform duration-200 group-hover:translate-x-1">
-              <LayoutDashboard className="mr-2 h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
+              <LayoutDashboard className="mr-2 size-4 text-primary group-hover:scale-110 transition-transform" />
               <span className="group-hover:text-primary transition-colors">Dashboard</span>
             </Link>
           </DropdownMenuItem>
@@ -96,7 +96,7 @@ export function HeaderUserDropdown({ user, onLogout }: HeaderUserDropdownProps) 
           onClick={onLogout}
         >
           <div className="flex items-center w-full transition-transform duration-200 group-hover:translate-x-1">
-            <LogOut className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
+            <LogOut className="mr-2 size-4 group-hover:scale-110 transition-transform" />
             <span>Đăng xuất</span>
           </div>
         </DropdownMenuItem>

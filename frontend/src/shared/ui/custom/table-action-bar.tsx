@@ -85,7 +85,7 @@ export function TableActionBar({
             disabled={isLoading}
             className="h-8"
           >
-            <Download className="h-4 w-4 mr-1.5" />
+            <Download className="size-4 mr-1.5" />
             {exportLabel}
           </Button>
         )}
@@ -99,7 +99,7 @@ export function TableActionBar({
             disabled={isLoading}
             className="h-8"
           >
-            <Trash2 className="h-4 w-4 mr-1.5" />
+            <Trash2 className="size-4 mr-1.5" />
             {deleteLabel}
           </Button>
         )}
@@ -119,7 +119,7 @@ export function TableActionBar({
         disabled={isLoading}
         className="h-8 text-muted-foreground hover:text-foreground"
       >
-        <X className="h-4 w-4 mr-1" />
+        <X className="size-4 mr-1" />
         Bỏ chọn
       </Button>
     </div>

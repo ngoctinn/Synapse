@@ -113,7 +113,7 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
               <CardContent className="grid gap-3 p-4 text-sm">
                 <div className="flex items-center gap-3 text-muted-foreground">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
-                     <Calendar className="h-4 w-4" aria-hidden="true" />
+                     <Calendar className="size-4" aria-hidden="true" />
                   </div>
                   <div className="flex flex-col">
                      <span className="font-medium text-foreground">
@@ -128,7 +128,7 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
                 {appt.resourceName && (
                   <div className="flex items-center gap-3 text-muted-foreground">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground">
-                       <MapPin className="h-4 w-4" aria-hidden="true" />
+                       <MapPin className="size-4" aria-hidden="true" />
                     </div>
                     <span>{appt.resourceName || "Chưa xếp phòng"}</span>
                   </div>
@@ -137,7 +137,7 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
                 {appt.staffName && (
                   <div className="flex items-center gap-3 text-muted-foreground">
                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground">
-                       <User className="h-4 w-4" aria-hidden="true" />
+                       <User className="size-4" aria-hidden="true" />
                      </div>
                     <span>KTV: {appt.staffName}</span>
                   </div>

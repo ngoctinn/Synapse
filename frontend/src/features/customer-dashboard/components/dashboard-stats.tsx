@@ -64,7 +64,7 @@ export function DashboardStats({
             <CardTitle className="text-sm font-medium group-hover:text-primary transition-colors">
               Lịch hẹn sắp tới
             </CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" aria-hidden="true" />
+            <Calendar className="size-4 text-muted-foreground group-hover:text-primary transition-colors" aria-hidden="true" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{upcomingAppointments}</div>
@@ -81,7 +81,7 @@ export function DashboardStats({
             <CardTitle className="text-sm font-medium group-hover:text-primary transition-colors">
               Liệu trình đang dùng
             </CardTitle>
-            <Sparkles className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" aria-hidden="true" />
+            <Sparkles className="size-4 text-muted-foreground group-hover:text-primary transition-colors" aria-hidden="true" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{activeTreatments}</div>
@@ -98,7 +98,7 @@ export function DashboardStats({
             <CardTitle className="text-sm font-medium group-hover:text-primary transition-colors">
               Điểm tích lũy
             </CardTitle>
-            <User className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" aria-hidden="true" />
+            <User className="size-4 text-muted-foreground group-hover:text-primary transition-colors" aria-hidden="true" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{loyaltyPoints}</div>

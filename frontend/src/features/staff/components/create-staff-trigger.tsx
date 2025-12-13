@@ -19,8 +19,8 @@ export function CreateStaffTrigger({ skills }: CreateStaffTriggerProps) {
         size="sm"
         className="text-xs transition-all hover:scale-[1.02]"
         onClick={() => setOpen(true)}
+        startContent={<Plus className="size-3.5" />}
       >
-        <Plus className="mr-2 h-3.5 w-3.5" />
         Thêm nhân viên
       </Button>
 

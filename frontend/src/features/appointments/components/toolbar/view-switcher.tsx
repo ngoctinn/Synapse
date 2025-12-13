@@ -8,11 +8,11 @@
  */
 
 import {
-    Calendar,
-    CalendarDays,
-    CalendarRange,
-    GanttChart,
-    List,
+  Calendar,
+  CalendarDays,
+  CalendarRange,
+  GanttChart,
+  List,
 } from "lucide-react";
 
 import { cn } from "@/shared/lib/utils";
@@ -38,11 +38,11 @@ interface ViewSwitcherProps {
 // ============================================
 
 const VIEW_ICONS: Record<CalendarViewType, React.ReactNode> = {
-  day: <CalendarDays className="h-4 w-4" />,
-  week: <Calendar className="h-4 w-4" />,
-  month: <CalendarRange className="h-4 w-4" />,
-  agenda: <List className="h-4 w-4" />,
-  timeline: <GanttChart className="h-4 w-4" />,
+  day: <CalendarDays className="size-4" />,
+  week: <Calendar className="size-4" />,
+  month: <CalendarRange className="size-4" />,
+  agenda: <List className="size-4" />,
+  timeline: <GanttChart className="size-4" />,
 };
 
 // ============================================
@@ -65,13 +65,13 @@ export function ViewSwitcher({
       onValueChange={(v) => onChange(v as CalendarViewType)}
       className={className}
     >
-      <TabsList className="h-9">
+      <TabsList className="h-9 w-fit p-1 bg-muted/50">
         {visibleViews.map((view) => (
           <TabsTrigger
             key={view}
             value={view}
             className={cn(
-              "gap-1.5 px-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground",
+              "px-0 min-w-8 w-8 h-7 data-[state=active]:bg-background data-[state=active]:shadow-sm",
               "transition-all duration-200"
             )}
             title={CALENDAR_VIEW_CONFIG[view].description}

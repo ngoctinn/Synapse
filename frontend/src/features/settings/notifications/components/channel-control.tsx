@@ -28,7 +28,7 @@ export function ChannelControl({
             onClick={onEdit}
             aria-label={`Edit template for ${ariaLabel}`}
           >
-            <Edit2 className="h-4 w-4" />
+            <Edit2 className="size-4" />
           </Button>
         )}
         <Switch

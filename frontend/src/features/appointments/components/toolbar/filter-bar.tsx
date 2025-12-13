@@ -140,7 +140,7 @@ export function FilterBar({
       <div className="flex flex-wrap items-center gap-2">
         {/* Search Input */}
         <div className="relative flex-1 min-w-[200px] max-w-[300px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input
             placeholder="Tìm khách hàng, dịch vụ..."
             value={filters.searchQuery}
@@ -160,14 +160,14 @@ export function FilterBar({
                 filters.staffIds.length > 0 && "border-primary"
               )}
             >
-              <Filter className="h-4 w-4 mr-2" />
+              <Filter className="size-4 mr-2" />
               Kỹ thuật viên
               {filters.staffIds.length > 0 && (
                 <Badge variant="secondary" className="ml-2 h-5 px-1.5">
                   {filters.staffIds.length}
                 </Badge>
               )}
-              <ChevronsUpDown className="h-4 w-4 ml-2 opacity-50" />
+              <ChevronsUpDown className="size-4 ml-2 opacity-50" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0" align="start">
@@ -184,7 +184,7 @@ export function FilterBar({
                     >
                       <Check
                         className={cn(
-                          "mr-2 h-4 w-4",
+                          "mr-2 size-4",
                           filters.staffIds.includes(staff.id)
                             ? "opacity-100"
                             : "opacity-0"
@@ -210,14 +210,14 @@ export function FilterBar({
                 filters.serviceIds.length > 0 && "border-primary"
               )}
             >
-              <Filter className="h-4 w-4 mr-2" />
+              <Filter className="size-4 mr-2" />
               Dịch vụ
               {filters.serviceIds.length > 0 && (
                 <Badge variant="secondary" className="ml-2 h-5 px-1.5">
                   {filters.serviceIds.length}
                 </Badge>
               )}
-              <ChevronsUpDown className="h-4 w-4 ml-2 opacity-50" />
+              <ChevronsUpDown className="size-4 ml-2 opacity-50" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0" align="start">
@@ -234,7 +234,7 @@ export function FilterBar({
                     >
                       <Check
                         className={cn(
-                          "mr-2 h-4 w-4",
+                          "mr-2 size-4",
                           filters.serviceIds.includes(service.id)
                             ? "opacity-100"
                             : "opacity-0"
@@ -266,7 +266,7 @@ export function FilterBar({
                   {filters.statuses.length}
                 </Badge>
               )}
-              <ChevronsUpDown className="h-4 w-4 ml-2 opacity-50" />
+              <ChevronsUpDown className="size-4 ml-2 opacity-50" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0" align="start">
@@ -283,7 +283,7 @@ export function FilterBar({
                       >
                         <Check
                           className={cn(
-                            "mr-2 h-4 w-4",
+                            "mr-2 size-4",
                             filters.statuses.includes(status)
                               ? "opacity-100"
                               : "opacity-0"
@@ -313,7 +313,7 @@ export function FilterBar({
             className="h-9 text-muted-foreground"
             onClick={handleClearAll}
           >
-            <X className="h-4 w-4 mr-1" />
+            <X className="size-4 mr-1" />
             Xóa bộ lọc ({activeFilterCount})
           </Button>
         )}

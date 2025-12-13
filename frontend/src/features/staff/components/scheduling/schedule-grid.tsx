@@ -188,7 +188,7 @@ export function ScheduleGrid({
                               aria-label={`Thêm ca làm việc cho ${staff.user.full_name} vào ngày ${format(day, "dd/MM")}`}
                               className="size-10 min-h-[44px] min-w-[44px] rounded-full bg-muted/50 hover:bg-primary/10 hover:text-primary flex items-center justify-center transition-colors cursor-pointer focus:ring-2 focus:ring-primary/50 focus:outline-none focus:bg-primary/10 focus:text-primary focus-visible:ring-2 opacity-100 md:opacity-0 md:group-hover:opacity-100"
                             >
-                              <Plus className="h-4 w-4" />
+                              <Plus className="size-4" />
                             </button>
                           )}
                         </div>

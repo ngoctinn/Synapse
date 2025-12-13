@@ -136,7 +136,7 @@ export function ResourceTimeline({
             size="sm"
             className="gap-1.5 px-3 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
           >
-            <Users className="h-4 w-4" />
+            <Users className="size-4" />
             <span className="hidden sm:inline">Nhân viên</span>
           </ToggleGroupItem>
           <ToggleGroupItem
@@ -144,7 +144,7 @@ export function ResourceTimeline({
             size="sm"
             className="gap-1.5 px-3 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
           >
-            <DoorOpen className="h-4 w-4" />
+            <DoorOpen className="size-4" />
             <span className="hidden sm:inline">Phòng</span>
           </ToggleGroupItem>
         </ToggleGroup>

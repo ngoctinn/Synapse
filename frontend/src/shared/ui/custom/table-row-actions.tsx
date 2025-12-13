@@ -40,7 +40,7 @@ interface TableRowActionsProps {
  *   onDelete={() => setDeleteOpen(true)}
  *   extraActions={
  *     <DropdownMenuItem onClick={handleClone}>
- *       <Copy className="mr-2 h-4 w-4" />
+ *       <Copy className="mr-2 size-4" />
  *       Nhân bản
  *     </DropdownMenuItem>
  *   }
@@ -79,7 +79,7 @@ export function TableRowActions({
           title={editLabel}
         >
           <span className="sr-only">{editLabel}</span>
-          <Pencil className="h-4 w-4" />
+          <Pencil className="size-4" />
         </Button>
       )}
 
@@ -94,7 +94,7 @@ export function TableRowActions({
           title={deleteLabel}
         >
           <span className="sr-only">{deleteLabel}</span>
-          <Trash2 className="h-4 w-4" />
+          <Trash2 className="size-4" />
         </Button>
       )}
 
@@ -109,7 +109,7 @@ export function TableRowActions({
               disabled={disabled}
             >
               <span className="sr-only">Mở menu</span>
-              <MoreHorizontal className="h-4 w-4" />
+              <MoreHorizontal className="size-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-[160px]">

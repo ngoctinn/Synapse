@@ -19,7 +19,7 @@ export function StepConfirm({ state }: BookingStepProps) {
 
             {/* Policy Notice */}
             <Alert className="bg-orange-500/10 border-orange-500/20">
-                <Info className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                <Info className="size-4 text-orange-600 dark:text-orange-400" />
                 <AlertTitle className="text-orange-700 dark:text-orange-400 font-medium text-sm">
                     Lưu ý quan trọng
                 </AlertTitle>
@@ -32,7 +32,7 @@ export function StepConfirm({ state }: BookingStepProps) {
             {/* Privacy & Terms */}
             <div className="flex items-start gap-3 p-4 rounded-xl border bg-card">
                 <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <ShieldCheck className="h-4 w-4 text-primary" />
+                    <ShieldCheck className="size-4 text-primary" />
                 </div>
                 <div className="space-y-1">
                     <h4 className="font-medium text-sm">Chính sách bảo mật</h4>
@@ -46,7 +46,7 @@ export function StepConfirm({ state }: BookingStepProps) {
             {/* Added value */}
              <div className="flex items-start gap-3 p-4 rounded-xl border border-dashed bg-muted/30">
                 <div className="h-8 w-8 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
-                    <Check className="h-4 w-4 text-green-600" />
+                    <Check className="size-4 text-green-600" />
                 </div>
                 <div className="space-y-1">
                     <h4 className="font-medium text-sm text-foreground">Quyền lợi đặt trước</h4>

@@ -86,7 +86,7 @@ export function StepTime({ state, updateState }: BookingStepProps) {
 
                 {/* Legend/Info */}
                 <Alert className="bg-muted/50 border-muted">
-                    <Info className="h-4 w-4 text-muted-foreground" />
+                    <Info className="size-4 text-muted-foreground" />
                     <AlertDescription className="text-xs text-muted-foreground">
                         Các ngày màu xám là ngày nghỉ hoặc đã kín lịch.
                     </AlertDescription>
@@ -97,7 +97,7 @@ export function StepTime({ state, updateState }: BookingStepProps) {
             <div className="flex-1 min-w-0 flex flex-col h-full">
                 <div className="flex items-center justify-between mb-4 shrink-0">
                     <h3 className="font-serif font-medium flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-primary" />
+                        <Clock className="size-4 text-primary" />
                         Giờ trống {selectedDate && format(selectedDate, "dd/MM", { locale: vi })}
                     </h3>
                     {preference === "any" && !isLoading && (
@@ -130,7 +130,7 @@ export function StepTime({ state, updateState }: BookingStepProps) {
                                 return (
                                     <div key={section.key} className="space-y-3">
                                         <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
-                                            <Icon className="h-4 w-4" /> {section.label}
+                                            <Icon className="size-4" /> {section.label}
                                         </div>
                                         <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                                             {slots.map((slot: TimeSlot) => (

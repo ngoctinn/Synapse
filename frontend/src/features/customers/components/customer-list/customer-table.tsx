@@ -1,23 +1,13 @@
 "use client"
 
 import { useTableParams, useTableSelection } from "@/shared/hooks"
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/shared/ui/alert-dialog"
+import { DeleteConfirmDialog, showToast } from "@/shared/ui"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
 import { AnimatedUsersIcon } from "@/shared/ui/custom/animated-icon"
 import { Column, DataTable } from "@/shared/ui/custom/data-table"
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state"
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
-import { showToast } from "@/shared/ui/custom/sonner"
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar"
 import {
     Tooltip,
@@ -163,7 +153,7 @@ export function CustomerTable({
                      <TooltipProvider>
                      <Tooltip>
                          <TooltipTrigger>
-                            <AlertCircle className="h-4 w-4 text-destructive" />
+                            <AlertCircle className="size-4 text-destructive" />
                          </TooltipTrigger>
                          <TooltipContent>
                              <p className="font-semibold text-destructive">Dị ứng:</p>
@@ -176,7 +166,7 @@ export function CustomerTable({
                      <TooltipProvider>
                      <Tooltip>
                          <TooltipTrigger>
-                            <Activity className="h-4 w-4 text-info" />
+                            <Activity className="size-4 text-info" />
                          </TooltipTrigger>
                          <TooltipContent>
                              <p className="font-semibold text-info">Ghi chú y tế:</p>
@@ -244,21 +234,15 @@ export function CustomerTable({
         isLoading={isPending}
       />
 
-       <AlertDialog
+       <DeleteConfirmDialog
         open={showBulkDeleteDialog}
         onOpenChange={setShowBulkDeleteDialog}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Xóa {selection.selectedCount} khách hàng?</AlertDialogTitle>
-            <AlertDialogDescription>Hành động này không thể hoàn tác.</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Hủy</AlertDialogCancel>
-            <AlertDialogAction onClick={handleBulkDelete} className="bg-destructive hover:bg-destructive/90">Xóa</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        onConfirm={handleBulkDelete}
+        isDeleting={isPending}
+        title={`Xóa ${selection.selectedCount} khách hàng?`}
+        description="Hành động này không thể hoàn tác."
+        confirmText="Xóa"
+      />
 
       {editingCustomer && (
         <CustomerSheet

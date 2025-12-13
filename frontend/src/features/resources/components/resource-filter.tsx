@@ -47,13 +47,13 @@ export function ResourceFilter() {
               <SelectItem value="all">Tất cả loại</SelectItem>
               <SelectItem value="ROOM">
                 <div className="flex items-center gap-2">
-                  <Bed className="h-4 w-4 text-muted-foreground" />
+                  <Bed className="size-4 text-muted-foreground" />
                   <span>Phòng</span>
                 </div>
               </SelectItem>
               <SelectItem value="EQUIPMENT">
                 <div className="flex items-center gap-2">
-                  <Box className="h-4 w-4 text-muted-foreground" />
+                  <Box className="size-4 text-muted-foreground" />
                   <span>Thiết bị</span>
                 </div>
               </SelectItem>
@@ -74,19 +74,19 @@ export function ResourceFilter() {
               <SelectItem value="all">Tất cả trạng thái</SelectItem>
               <SelectItem value="ACTIVE">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-success" />
+                  <CheckCircle2 className="size-4 text-success" />
                   <span>Hoạt động</span>
                 </div>
               </SelectItem>
               <SelectItem value="MAINTENANCE">
                 <div className="flex items-center gap-2">
-                  <Settings className="h-4 w-4 text-warning" />
+                  <Settings className="size-4 text-warning" />
                   <span>Đang bảo trì</span>
                 </div>
               </SelectItem>
               <SelectItem value="INACTIVE">
                 <div className="flex items-center gap-2">
-                  <XCircle className="h-4 w-4 text-muted-foreground" />
+                  <XCircle className="size-4 text-muted-foreground" />
                   <span>Ngưng hoạt động</span>
                 </div>
               </SelectItem>

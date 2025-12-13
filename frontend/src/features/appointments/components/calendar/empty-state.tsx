@@ -106,7 +106,7 @@ export function EmptyState({
       {/* Action Button */}
       {onAction && (
         <Button onClick={onAction} className="gap-2">
-          {variant === "no-appointments" && <Plus className="h-4 w-4" />}
+          {variant === "no-appointments" && <Plus className="size-4" />}
           {actionLabel || content.actionLabel}
         </Button>
       )}

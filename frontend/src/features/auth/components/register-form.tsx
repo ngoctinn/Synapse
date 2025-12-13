@@ -10,8 +10,8 @@ import { registerAction } from "../actions";
 import { registerSchema, type RegisterInput } from "../schemas";
 
 import { Button } from "@/shared/ui/button";
-import { CustomDialog } from "@/shared/ui/custom/dialog";
-import { showToast } from "@/shared/ui/custom/sonner";
+import { ConfirmDialog } from "@/shared/ui";
+import { showToast } from "@/shared/ui/sonner";
 import {
   Form,
   FormControl,
@@ -195,7 +195,7 @@ export function RegisterForm() {
         </Link>
       </p>
 
-      <CustomDialog
+      <ConfirmDialog
         open={showCheckEmailDialog}
         onOpenChange={setShowCheckEmailDialog}
         variant="info"

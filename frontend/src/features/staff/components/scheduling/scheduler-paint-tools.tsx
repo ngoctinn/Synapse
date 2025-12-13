@@ -84,7 +84,7 @@ export function SchedulerPaintTools({ toolState }: SchedulerPaintToolsProps) {
                   : "hover:bg-muted text-foreground"}
               `}
             >
-              <Eraser className="h-4 w-4" />
+              <Eraser className="size-4" />
               {SCHEDULER_UI.ERASER_TOOL}
             </button>
             {selectedTool && (
@@ -110,7 +110,7 @@ export function SchedulerPaintTools({ toolState }: SchedulerPaintToolsProps) {
           onClick={clearTool}
           aria-label={SCHEDULER_UI.TURN_OFF_PAINT}
         >
-          <X className="h-4 w-4" />
+          <X className="size-4" />
         </Button>
       )}
 

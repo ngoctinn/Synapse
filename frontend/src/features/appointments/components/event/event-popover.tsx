@@ -145,40 +145,40 @@ export function EventPopover({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <MoreHorizontal className="h-4 w-4" />
+                  <MoreHorizontal className="size-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={onView}>
-                  <Calendar className="h-4 w-4 mr-2" />
+                  <Calendar className="size-4 mr-2" />
                   Xem chi tiết
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={onEdit}>
-                  <Edit className="h-4 w-4 mr-2" />
+                  <Edit className="size-4 mr-2" />
                   Chỉnh sửa
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 {canCheckIn && (
                   <DropdownMenuItem onClick={onCheckIn} className="text-emerald-600">
-                    <CheckCircle2 className="h-4 w-4 mr-2" />
+                    <CheckCircle2 className="size-4 mr-2" />
                     Check-in khách
                   </DropdownMenuItem>
                 )}
                 {canMarkNoShow && (
                   <DropdownMenuItem onClick={onNoShow} className="text-gray-600">
-                    <UserX className="h-4 w-4 mr-2" />
+                    <UserX className="size-4 mr-2" />
                     Đánh dấu không đến
                   </DropdownMenuItem>
                 )}
                 {canCancel && (
                   <DropdownMenuItem onClick={onCancel} className="text-amber-600">
-                    <XCircle className="h-4 w-4 mr-2" />
+                    <XCircle className="size-4 mr-2" />
                     Hủy lịch hẹn
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={onDelete} className="text-red-600">
-                  <Trash2 className="h-4 w-4 mr-2" />
+                  <Trash2 className="size-4 mr-2" />
                   Xóa
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -190,7 +190,7 @@ export function EventPopover({
         <div className="p-4 space-y-3">
           {/* Time */}
           <div className="flex items-center gap-3 text-sm">
-            <Clock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <Clock className="size-4 text-muted-foreground flex-shrink-0" />
             <div>
               <div className="font-medium">{timeRange}</div>
               <div className="text-xs text-muted-foreground">{dateStr}</div>
@@ -199,7 +199,7 @@ export function EventPopover({
 
           {/* Customer */}
           <div className="flex items-start gap-3 text-sm">
-            <User className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
+            <User className="size-4 text-muted-foreground flex-shrink-0 mt-0.5" />
             <div>
               <div className="font-medium">{event.appointment.customerName}</div>
               {event.appointment.customerPhone && (
@@ -251,7 +251,7 @@ export function EventPopover({
                 className="flex-1 bg-emerald-600 hover:bg-emerald-700"
                 onClick={onCheckIn}
               >
-                <CheckCircle2 className="h-4 w-4 mr-1.5" />
+                <CheckCircle2 className="size-4 mr-1.5" />
                 Check-in
               </Button>
             </>
@@ -271,7 +271,7 @@ export function EventPopover({
                 className="flex-1"
                 onClick={onNoShow}
               >
-                <UserX className="h-4 w-4 mr-1.5" />
+                <UserX className="size-4 mr-1.5" />
                 Không đến
               </Button>
             </>

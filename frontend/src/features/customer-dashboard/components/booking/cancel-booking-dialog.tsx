@@ -11,7 +11,7 @@ import {
   AlertDialogTitle
 } from "@/shared/ui/alert-dialog";
 import { Button } from "@/shared/ui/button";
-import { showToast } from "@/shared/ui/custom/sonner";
+import { showToast } from "@/shared/ui/sonner";
 import { Label } from "@/shared/ui/label";
 import { Textarea } from "@/shared/ui/textarea";
 import { useState, useTransition } from "react";

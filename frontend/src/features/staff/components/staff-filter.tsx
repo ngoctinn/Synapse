@@ -52,7 +52,7 @@ export function StaffFilter() {
               {ROLES.map((role) => (
                 <SelectItem key={role.id} value={role.id}>
                   <div className="flex items-center gap-2">
-                    <UserCog className="h-4 w-4 text-muted-foreground" />
+                    <UserCog className="size-4 text-muted-foreground" />
                     <span>{role.name}</span>
                   </div>
                 </SelectItem>
@@ -74,13 +74,13 @@ export function StaffFilter() {
               <SelectItem value="all">Tất cả trạng thái</SelectItem>
               <SelectItem value="true">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-success" />
+                  <CheckCircle2 className="size-4 text-success" />
                   <span>Hoạt động</span>
                 </div>
               </SelectItem>
               <SelectItem value="false">
                 <div className="flex items-center gap-2">
-                  <XCircle className="h-4 w-4 text-muted-foreground" />
+                  <XCircle className="size-4 text-muted-foreground" />
                   <span>Ngừng hoạt động</span>
                 </div>
               </SelectItem>

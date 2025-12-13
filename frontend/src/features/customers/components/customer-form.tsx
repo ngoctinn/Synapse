@@ -1,6 +1,7 @@
 "use client"
 
 import { cn } from "@/shared/lib/utils"
+import { OptionalMark, RequiredMark } from "@/shared/ui"
 import { DatePicker } from "@/shared/ui/custom/date-picker"
 import {
   FormControl,
@@ -53,7 +54,7 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
             render={({ field }) => (
             <FormItem>
                 <FormLabel>
-                    Số điện thoại <span className="text-destructive ml-0.5">*</span>
+                    Số điện thoại <RequiredMark />
                 </FormLabel>
                 <FormControl>
                 <Input
@@ -76,7 +77,7 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
             render={({ field }) => (
                 <FormItem>
                 <FormLabel>
-                    Họ và tên <span className="text-destructive ml-0.5">*</span>
+                    Họ và tên <RequiredMark />
                 </FormLabel>
                 <FormControl>
                     <Input
@@ -153,7 +154,7 @@ export function CustomerForm({ mode, className, disabled, technicians = [] }: Cu
             render={({ field }) => (
             <FormItem>
                 <FormLabel>
-                    Email <span className="text-muted-foreground font-normal text-xs ml-1">(Tùy chọn)</span>
+                    Email <OptionalMark />
                 </FormLabel>
                 <FormControl>
                 <Input

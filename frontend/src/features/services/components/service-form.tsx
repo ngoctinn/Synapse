@@ -2,6 +2,7 @@
 
 import { Resource, RoomType } from "@/features/resources"
 import { cn } from "@/shared/lib/utils"
+import { RequiredMark } from "@/shared/ui"
 import { ColorSwatchGroup } from "@/shared/ui/custom/color-swatch-group"
 import { DurationPicker } from "@/shared/ui/custom/duration-picker"
 import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs"
@@ -99,7 +100,7 @@ function ServiceBasicInfo() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Tên dịch vụ <span className="text-destructive">*</span>
+                  Tên dịch vụ <RequiredMark />
                 </FormLabel>
                 <FormControl>
                   <Input

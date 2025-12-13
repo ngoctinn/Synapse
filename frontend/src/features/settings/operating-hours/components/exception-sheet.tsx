@@ -100,8 +100,8 @@ export function ExceptionSheet({
                         variant="ghost"
                         onClick={onDelete}
                         className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                        startContent={<Trash2 className="size-4" />}
                     >
-                        <Trash2 className="w-4 h-4 mr-2" />
                         Xóa
                     </Button>
                 )}
@@ -121,16 +121,9 @@ export function ExceptionSheet({
                     form="exception-sheet-form"
                     disabled={selectedDates.length === 0}
                     className="min-w-[140px] shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
+                    startContent={isEditing ? <Save className="size-4" /> : <Send className="size-4" />}
                 >
-                    {isEditing ? (
-                         <>
-                            <Save className="mr-2 h-4 w-4" /> Lưu thay đổi
-                         </>
-                    ) : (
-                         <>
-                            <Send className="mr-2 h-4 w-4" /> Tạo ngoại lệ
-                         </>
-                    )}
+                    {isEditing ? "Lưu thay đổi" : "Tạo ngoại lệ"}
                 </Button>
             </div>
         </SheetFooter>

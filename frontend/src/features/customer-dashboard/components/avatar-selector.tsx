@@ -88,7 +88,7 @@ export function AvatarSelector({ currentAvatar, onSelect, trigger }: AvatarSelec
         </div>
         <DialogFooter className="flex sm:justify-between gap-2">
           <Button variant="ghost" size="sm" onClick={handleRefresh} className="gap-2">
-            <RefreshCw className="h-4 w-4" />
+            <RefreshCw className="size-4" />
             Làm mới
           </Button>
           <div className="flex gap-2">

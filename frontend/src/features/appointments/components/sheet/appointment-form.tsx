@@ -29,7 +29,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Textarea
+  Textarea,
+  RequiredMark
 } from "@/shared/ui";
 import { Combobox } from "@/shared/ui/custom/combobox";
 import { DatePicker } from "@/shared/ui/custom/date-picker";
@@ -246,7 +247,7 @@ export function AppointmentForm({
               name="customerId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Khách hàng <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel>Khách hàng <RequiredMark /></FormLabel>
                    <FormControl>
                       <Combobox
                         options={customerOptions.map(c => ({
@@ -274,7 +275,7 @@ export function AppointmentForm({
               name="serviceIds"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Dịch vụ trị liệu <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel>Dịch vụ trị liệu <RequiredMark /></FormLabel>
                    <FormControl>
                       <MultiServiceSelector
                         selectedIds={field.value}
@@ -296,7 +297,7 @@ export function AppointmentForm({
               name="staffId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Kỹ thuật viên <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel>Kỹ thuật viên <RequiredMark /></FormLabel>
                   <Select value={field.value} onValueChange={field.onChange}>
                     <FormControl>
                       <SelectTrigger>
@@ -328,7 +329,7 @@ export function AppointmentForm({
                   name="date"
                   render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Ngày <span className="text-destructive">*</span></FormLabel>
+                    <FormLabel>Ngày <RequiredMark /></FormLabel>
                         <FormControl>
                             <DatePicker
                                 value={field.value}
@@ -347,7 +348,7 @@ export function AppointmentForm({
                 name="startTime"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Giờ bắt đầu <span className="text-destructive">*</span></FormLabel>
+                    <FormLabel>Giờ bắt đầu <RequiredMark /></FormLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger>
