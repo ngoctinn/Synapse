@@ -3,31 +3,31 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail } from "lucide-react";
 import Link from "next/link";
-import { startTransition, useActionState, useEffect, useState } from "react";
+import { startTransition, useActionState, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { Button } from "@/shared/ui/button";
 import { ConfirmDialog } from "@/shared/ui";
-import { showToast } from "@/shared/ui/sonner";
+import { Button } from "@/shared/ui/button";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
+import { showToast } from "@/shared/ui/sonner";
 import { forgotPasswordAction } from "../actions";
 import { forgotPasswordSchema, type ForgotPasswordInput } from "../schemas";
 
 export function ForgotPasswordForm() {
-
   const [showCheckEmailDialog, setShowCheckEmailDialog] = useState(false);
-
+  const [lastEmailSent, setLastEmailSent] = useState<string | null>(null);
 
   const [state, action, isPending] = useActionState(forgotPasswordAction, undefined);
 
+  const dismissedStateRef = useRef<typeof state>(null);
 
   const form = useForm<ForgotPasswordInput>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -37,29 +37,37 @@ export function ForgotPasswordForm() {
     },
   });
 
-
   useEffect(() => {
-    if (state?.status === "success") {
-      if (!showCheckEmailDialog) {
-          showToast.success("Đã gửi yêu cầu", state.message);
-          // eslint-disable-next-line react-hooks/set-state-in-effect
-          setShowCheckEmailDialog(true);
-          form.reset();
-      }
-    } else if (state?.status === "error") {
+    if (state?.status === "success" && state !== dismissedStateRef.current) {
+      showToast.success("Đã gửi yêu cầu", state.message);
+      setShowCheckEmailDialog(true);
+      setLastEmailSent(form.getValues("email"));
+    } else if (state?.status === "error" && state !== dismissedStateRef.current) {
       showToast.error("Gửi yêu cầu thất bại", state.message);
+      dismissedStateRef.current = state;
     }
-  }, [state, form, showCheckEmailDialog]);
-
+  }, [state, form]);
 
   const onSubmit = (values: ForgotPasswordInput) => {
     const formData = new FormData();
     formData.append("email", values.email);
 
-
     startTransition(() => {
       action(formData);
     });
+  };
+
+  const handleResend = () => {
+    if (lastEmailSent) {
+      const formData = new FormData();
+      formData.append("email", lastEmailSent);
+      startTransition(() => {
+        action(formData);
+      });
+      showToast.info("Đã gửi lại", "Email đặt lại mật khẩu mới đã được gửi.");
+    } else {
+      showToast.error("Lỗi", "Không tìm thấy email để gửi lại.");
+    }
   };
 
   return (
@@ -116,20 +124,28 @@ export function ForgotPasswordForm() {
 
       <ConfirmDialog
         open={showCheckEmailDialog}
-        onOpenChange={setShowCheckEmailDialog}
+        onOpenChange={(open) => {
+          setShowCheckEmailDialog(open);
+          if (!open) {
+             dismissedStateRef.current = state;
+          }
+        }}
         variant="info"
         icon={Mail}
         title="Kiểm tra email của bạn"
         description="Chúng tôi đã gửi một liên kết đặt lại mật khẩu đến email của bạn. Vui lòng kiểm tra và làm theo hướng dẫn."
         primaryAction={{
           label: "Đã hiểu",
-          onClick: () => setShowCheckEmailDialog(false),
+          onClick: () => {
+            setShowCheckEmailDialog(false);
+            form.reset(); // UX-02: Reset form after dialog close
+            setLastEmailSent(null); // Clear last sent email
+            dismissedStateRef.current = state;
+          },
         }}
         secondaryAction={{
           label: "Gửi lại",
-          onClick: () => {
-            showToast.info("Đã gửi lại", "Email xác thực mới đã được gửi.");
-          },
+          onClick: handleResend,
         }}
       />
     </div>

@@ -1,17 +1,17 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
+import { Lock, Mail, User } from "lucide-react";
 import Link from "next/link";
-import { startTransition, useActionState, useEffect, useState } from "react";
+import { startTransition, useActionState, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { registerAction } from "../actions";
+import { registerAction, resendVerificationAction } from "../actions";
+import { usePasswordVisibility } from "../hooks/use-password-visibility";
 import { registerSchema, type RegisterInput } from "../schemas";
 
-import { Button } from "@/shared/ui/button";
 import { ConfirmDialog } from "@/shared/ui";
-import { showToast } from "@/shared/ui/sonner";
+import { Button } from "@/shared/ui/button";
 import {
   Form,
   FormControl,
@@ -21,14 +21,31 @@ import {
   FormMessage,
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
+import { showToast } from "@/shared/ui/sonner";
 
 export function RegisterForm() {
   const [showCheckEmailDialog, setShowCheckEmailDialog] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState("");
 
+  const { show: showPassword, toggle: togglePassword, inputType: passwordInputType, Icon: PasswordIcon, ariaLabel: passwordAriaLabel } = usePasswordVisibility();
+  const { show: showConfirmPassword, toggle: toggleConfirmPassword, inputType: confirmPasswordInputType, Icon: ConfirmPasswordIcon, ariaLabel: confirmPasswordAriaLabel } = usePasswordVisibility();
 
   const [state, action, isPending] = useActionState(registerAction, undefined);
+  const dismissedStateRef = useRef<typeof state>(null);
+
+  useEffect(() => {
+    if (state?.status === "success" && state !== dismissedStateRef.current) {
+      showToast.success("Đăng ký thành công", state.message);
+      setShowCheckEmailDialog(true);
+      if (state.data?.email) {
+        setRegisteredEmail(state.data.email);
+      }
+    } else if (state?.status === "error" && state !== dismissedStateRef.current) {
+      showToast.error("Đăng ký thất bại", state.message);
+      // Với lỗi, chúng ta cũng đánh dấu đã dismiss để tránh toast hiện lại nếu re-render
+      dismissedStateRef.current = state;
+    }
+  }, [state]);
 
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
@@ -41,31 +58,27 @@ export function RegisterForm() {
     },
   });
 
-
-  useEffect(() => {
-    if (state?.status === "success") {
-      // Only trigger if not already shown to avoid loops
-      if (!showCheckEmailDialog) {
-          showToast.success("Đăng ký thành công", state.message);
-          // eslint-disable-next-line react-hooks/set-state-in-effect
-          setShowCheckEmailDialog(true);
-          form.reset();
-      }
-    } else if (state?.status === "error") {
-      showToast.error("Đăng ký thất bại", state.message);
-    }
-  }, [state, form, showCheckEmailDialog]);
-
   function onSubmit(values: RegisterInput) {
     const formData = new FormData();
     formData.append("fullName", values.fullName);
     formData.append("email", values.email);
     formData.append("password", values.password);
+    formData.append("confirmPassword", values.confirmPassword); // ARCH-01 fix
 
     startTransition(() => {
       action(formData);
     });
   }
+
+  const handleResend = async () => {
+    if (!registeredEmail) return;
+    const resendState = await resendVerificationAction(registeredEmail);
+    if (resendState.status === "success") {
+      showToast.success("Gửi lại thành công", resendState.message);
+    } else {
+      showToast.error("Gửi lại thất bại", resendState.message);
+    }
+  };
 
   return (
     <div className="w-full animate-fade-in">
@@ -124,16 +137,17 @@ export function RegisterForm() {
                   <FormLabel>Mật khẩu</FormLabel>
                   <FormControl>
                     <Input
-                      type={showPassword ? "text" : "password"}
+                      type={passwordInputType}
                       startContent={<Lock className="size-4 text-muted-foreground" />}
                       endContent={
                         <button
                           type="button"
-                          onClick={() => setShowPassword(!showPassword)}
+                          onClick={togglePassword}
                           className="text-muted-foreground hover:text-foreground transition-colors"
-                          aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                          aria-label={passwordAriaLabel}
+                          tabIndex={-1}
                         >
-                          {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                          <PasswordIcon className="size-4" />
                         </button>
                       }
                       placeholder="Tối thiểu 8 ký tự"
@@ -153,16 +167,17 @@ export function RegisterForm() {
                   <FormLabel>Xác nhận mật khẩu</FormLabel>
                   <FormControl>
                     <Input
-                      type={showConfirmPassword ? "text" : "password"}
+                      type={confirmPasswordInputType}
                       startContent={<Lock className="size-4 text-muted-foreground" />}
                       endContent={
                         <button
                           type="button"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          onClick={toggleConfirmPassword}
                           className="text-muted-foreground hover:text-foreground transition-colors"
-                          aria-label={showConfirmPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                          aria-label={confirmPasswordAriaLabel}
+                          tabIndex={-1}
                         >
-                          {showConfirmPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                          <ConfirmPasswordIcon className="size-4" />
                         </button>
                       }
                       placeholder="Nhập lại mật khẩu"
@@ -197,20 +212,29 @@ export function RegisterForm() {
 
       <ConfirmDialog
         open={showCheckEmailDialog}
-        onOpenChange={setShowCheckEmailDialog}
+        onOpenChange={(open) => {
+          if (!open) { // Dialog is closing
+            setShowCheckEmailDialog(false);
+            setRegisteredEmail(""); // Clear registered email when dialog closes
+            dismissedStateRef.current = state;
+          }
+        }}
         variant="info"
         icon={Mail}
         title="Kiểm tra email của bạn"
         description="Chúng tôi đã gửi một liên kết xác thực đến email của bạn. Vui lòng kiểm tra và làm theo hướng dẫn để hoàn tất đăng ký."
         primaryAction={{
           label: "Đã hiểu",
-          onClick: () => setShowCheckEmailDialog(false),
+          onClick: () => {
+            setShowCheckEmailDialog(false);
+            form.reset(); // UX-02: Reset form after dialog close
+            setRegisteredEmail(""); // Ensure email is cleared even if closed via primary action
+            dismissedStateRef.current = state;
+          },
         }}
         secondaryAction={{
           label: "Gửi lại",
-          onClick: () => {
-            showToast.info("Đã gửi lại", "Email xác thực mới đã được gửi.");
-          },
+          onClick: handleResend,
         }}
       />
     </div>

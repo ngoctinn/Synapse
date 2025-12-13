@@ -1,29 +1,33 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
 import Link from "next/link";
-import { startTransition, useActionState, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { updatePasswordAction } from "../actions";
+import { usePasswordVisibility } from "../hooks/use-password-visibility";
 import { updatePasswordSchema, type UpdatePasswordInput } from "../schemas";
 
 import { Button } from "@/shared/ui/button";
-import { showToast } from "@/shared/ui/sonner";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
+import { showToast } from "@/shared/ui/sonner";
 
 export function UpdatePasswordForm() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const router = useRouter();
+
+  const { show: showPassword, toggle: togglePassword, inputType: passwordInputType, Icon: PasswordIcon, ariaLabel: passwordAriaLabel } = usePasswordVisibility();
+  const { show: showConfirmPassword, toggle: toggleConfirmPassword, inputType: confirmPasswordInputType, Icon: ConfirmPasswordIcon, ariaLabel: confirmPasswordAriaLabel } = usePasswordVisibility();
 
   const [state, action, isPending] = useActionState(updatePasswordAction, undefined);
 
@@ -36,19 +40,20 @@ export function UpdatePasswordForm() {
     },
   });
 
-
   useEffect(() => {
     if (state?.status === "success") {
       showToast.success("Cập nhật thành công", state.message);
       form.reset();
+      router.push("/login"); // UX-04: Redirect to login after successful password update
     } else if (state?.status === "error") {
       showToast.error("Cập nhật thất bại", state.message);
     }
-  }, [state, form]);
+  }, [state, form, router]);
 
   function onSubmit(values: UpdatePasswordInput) {
     const formData = new FormData();
     formData.append("password", values.password);
+    formData.append("confirmPassword", values.confirmPassword); // Validated on server as well
 
     startTransition(() => {
       action(formData);
@@ -76,16 +81,17 @@ export function UpdatePasswordForm() {
                   <FormLabel>Mật khẩu mới</FormLabel>
                   <FormControl>
                     <Input
-                      type={showPassword ? "text" : "password"}
+                      type={passwordInputType}
                       startContent={<Lock className="size-4 text-muted-foreground" />}
                       endContent={
                         <button
                           type="button"
-                          onClick={() => setShowPassword(!showPassword)}
+                          onClick={togglePassword}
                           className="text-muted-foreground hover:text-foreground transition-colors"
-                          aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                          aria-label={passwordAriaLabel}
+                          tabIndex={-1}
                         >
-                          {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                          <PasswordIcon className="size-4" />
                         </button>
                       }
                       placeholder="Tối thiểu 8 ký tự"
@@ -105,16 +111,17 @@ export function UpdatePasswordForm() {
                   <FormLabel>Xác nhận mật khẩu mới</FormLabel>
                   <FormControl>
                     <Input
-                      type={showConfirmPassword ? "text" : "password"}
+                      type={confirmPasswordInputType}
                       startContent={<Lock className="size-4 text-muted-foreground" />}
                       endContent={
                         <button
                           type="button"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          onClick={toggleConfirmPassword}
                           className="text-muted-foreground hover:text-foreground transition-colors"
-                          aria-label={showConfirmPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                          aria-label={confirmPasswordAriaLabel}
+                          tabIndex={-1}
                         >
-                          {showConfirmPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                          <ConfirmPasswordIcon className="size-4" />
                         </button>
                       }
                       placeholder="Nhập lại mật khẩu mới"

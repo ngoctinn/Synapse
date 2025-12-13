@@ -19,16 +19,17 @@ export async function loginAction(prevState: unknown, formData: FormData): Promi
   const supabase = await createClient();
   const { error: authError } = await supabase.auth.signInWithPassword(validatedFields.data);
 
-  if (authError) return error(authError.message);
+  if (authError) return error("Email hoặc mật khẩu không đúng");
 
   revalidatePath("/", "layout");
   return success(undefined, "Đăng nhập thành công!");
 }
 
-export async function registerAction(prevState: unknown, formData: FormData): Promise<ActionResponse> {
+export async function registerAction(prevState: unknown, formData: FormData): Promise<ActionResponse<{ email: string } | undefined>> {
   const validatedFields = registerSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
+    confirmPassword: formData.get("confirmPassword"),
     fullName: formData.get("fullName"),
   });
 
@@ -44,7 +45,18 @@ export async function registerAction(prevState: unknown, formData: FormData): Pr
   if (authError) return error(authError.message);
 
   revalidatePath("/", "layout");
-  return success(undefined, "Đăng ký thành công! Vui lòng kiểm tra email để xác thực.");
+  return success({ email }, "Đăng ký thành công! Vui lòng kiểm tra email để xác thực.");
+}
+
+export async function resendVerificationAction(email: string): Promise<ActionResponse> {
+  const supabase = await createClient();
+  const { error: authError } = await supabase.auth.resend({
+    type: 'signup',
+    email: email,
+  });
+
+  if (authError) return error(authError.message);
+  return success(undefined, "Đã gửi lại email xác thực!");
 }
 
 export async function logoutAction() {
@@ -69,7 +81,10 @@ export async function forgotPasswordAction(prevState: unknown, formData: FormDat
 }
 
 export async function updatePasswordAction(prevState: unknown, formData: FormData): Promise<ActionResponse> {
-  const validatedFields = updatePasswordSchema.safeParse({ password: formData.get("password") });
+  const validatedFields = updatePasswordSchema.safeParse({
+    password: formData.get("password"),
+    confirmPassword: formData.get("confirmPassword")
+  });
   if (!validatedFields.success) return error("Dữ liệu không hợp lệ", validatedFields.error.flatten().fieldErrors);
 
   const supabase = await createClient();

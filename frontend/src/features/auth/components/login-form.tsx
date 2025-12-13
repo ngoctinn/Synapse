@@ -1,31 +1,33 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { Lock, Mail } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { startTransition, useActionState, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { loginAction } from "../actions";
+import { usePasswordVisibility } from "../hooks/use-password-visibility";
 import { loginSchema, type LoginInput } from "../schemas";
 
 import { Button } from "@/shared/ui/button";
-import { showToast } from "@/shared/ui/sonner";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
+import { showToast } from "@/shared/ui/sonner";
 
 export function LoginForm() {
   const router = useRouter();
-  const [showPassword, setShowPassword] = useState(false);
-
+  const searchParams = useSearchParams();
+  const returnUrl = searchParams.get("returnUrl") || "/";
+  const { show, toggle, inputType, Icon, ariaLabel } = usePasswordVisibility();
 
   const [state, action, isPending] = useActionState(loginAction, undefined);
 
@@ -38,16 +40,14 @@ export function LoginForm() {
     },
   });
 
-
   useEffect(() => {
     if (state?.status === "success") {
       showToast.success("Đăng nhập thành công", "Chào mừng bạn quay trở lại hệ thống.");
-      router.push("/");
+      router.push(returnUrl);
     } else if (state?.status === "error") {
       showToast.error("Đăng nhập thất bại", state.message);
     }
-  }, [state, router]);
-
+  }, [state, router, returnUrl]);
 
   function onSubmit(values: LoginInput) {
     const formData = new FormData();
@@ -106,16 +106,17 @@ export function LoginForm() {
                   </div>
                   <FormControl>
                     <Input
-                      type={showPassword ? "text" : "password"}
+                      type={inputType}
                       startContent={<Lock className="size-4 text-muted-foreground" />}
                       endContent={
                         <button
                           type="button"
-                          onClick={() => setShowPassword(!showPassword)}
+                          onClick={toggle}
                           className="text-muted-foreground hover:text-foreground transition-colors"
-                          aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                          aria-label={ariaLabel}
+                          tabIndex={-1}
                         >
-                          {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                          <Icon className="size-4" />
                         </button>
                       }
                       placeholder="Nhập mật khẩu"
