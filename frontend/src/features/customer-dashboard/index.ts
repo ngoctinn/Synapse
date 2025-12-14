@@ -25,7 +25,6 @@ export { NavMain } from "./components/nav-main";
 export { ProfileForm } from "./components/profile-form";
 
 export { AppointmentTimeline } from "./components/appointment-timeline";
-export { BookingDialog } from "./components/booking-dialog";
 export { TreatmentList } from "./components/treatment-list";
 
 
