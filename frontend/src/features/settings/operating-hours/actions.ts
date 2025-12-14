@@ -1,13 +1,42 @@
-'use server';
+"use server";
 
-import { ActionResponse, success } from '@/shared/lib/action-response';
-import { MOCK_OPERATING_HOURS } from './model/mocks';
-import { OperatingHoursConfig } from './model/types';
+/**
+ * Operating Hours Server Actions
+ * TODO: Replace with real API calls to backend
+ */
 
+import { ActionResponse } from "@/shared/lib/action-response";
+import { MOCK_OPERATING_HOURS } from "./mocks";
+import { OperatingHoursConfig } from "./types";
+
+/**
+ * Lấy cấu hình giờ hoạt động hiện tại
+ */
 export async function getOperatingHours(): Promise<ActionResponse<OperatingHoursConfig>> {
-  return success(MOCK_OPERATING_HOURS);
+  // TODO: Replace with real API call to GET /api/operating-hours
+  // Simulate network delay
+  await new Promise(resolve => setTimeout(resolve, 100));
+
+  return {
+    status: "success",
+    data: MOCK_OPERATING_HOURS
+  };
 }
 
-export async function updateOperatingHours(data: OperatingHoursConfig): Promise<ActionResponse> {
-  return success(undefined, 'Cập nhật cấu hình thành công');
+/**
+ * Cập nhật cấu hình giờ hoạt động
+ */
+export async function updateOperatingHours(
+  config: OperatingHoursConfig
+): Promise<ActionResponse> {
+  // TODO: Replace with real API call to PUT /api/operating-hours
+  console.log("[Operating Hours] Saving config:", config);
+
+  // Simulate network delay
+  await new Promise(resolve => setTimeout(resolve, 300));
+
+  return {
+    status: "success",
+    message: "Đã lưu cấu hình giờ hoạt động thành công"
+  };
 }

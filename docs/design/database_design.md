@@ -158,7 +158,28 @@ erDiagram
     }
 
     staff_profiles ||--|{ staff_schedules : "assigned"
+    staff_profiles ||--|{ staff_schedules : "assigned"
     shifts ||--|{ staff_schedules : "defined_by"
+
+    %% === OPERATING HOURS ===
+    regular_operating_hours {
+        uuid id PK
+        int day_of_week "1=Mon, 7=Sun"
+        int period_number
+        time open_time
+        time close_time
+        boolean is_closed
+    }
+
+    exception_dates {
+        uuid id PK
+        date exception_date
+        enum type "HOLIDAY, MAINTENANCE, CUSTOM"
+        time open_time
+        time close_time
+        boolean is_closed
+        string reason
+    }
 
     %% === BOOKINGS ===
     bookings {
@@ -320,6 +341,7 @@ CREATE TYPE invoice_status AS ENUM ('PAID', 'UNPAID', 'REFUNDED');
 CREATE TYPE payment_method AS ENUM ('CASH', 'CARD', 'TRANSFER');
 CREATE TYPE treatment_status AS ENUM ('ACTIVE', 'COMPLETED', 'EXPIRED');
 CREATE TYPE schedule_status AS ENUM ('PUBLISHED', 'DRAFT');
+CREATE TYPE exception_type AS ENUM ('HOLIDAY', 'MAINTENANCE', 'SPECIAL_HOURS', 'CUSTOM');
 
 -- ============================================================
 -- HELPER FUNCTIONS (RLS Helpers)
@@ -548,6 +570,38 @@ CREATE TABLE staff_schedules (
     UNIQUE(staff_id, work_date, shift_id)
 );
 
+-- Bảng giờ hoạt động tiêu chuẩn
+CREATE TABLE regular_operating_hours (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    day_of_week SMALLINT NOT NULL CHECK (day_of_week BETWEEN 1 AND 7), -- 1=Monday, 7=Sunday
+    period_number SMALLINT NOT NULL DEFAULT 1, -- Hỗ trợ nhiều ca/ngày
+    open_time TIME NOT NULL,
+    close_time TIME NOT NULL,
+    is_closed BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+
+    CONSTRAINT chk_hours CHECK (close_time > open_time OR is_closed = TRUE),
+    UNIQUE (day_of_week, period_number)
+);
+
+-- Bảng ngày ngoại lệ
+CREATE TABLE exception_dates (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    exception_date DATE NOT NULL UNIQUE,
+    type exception_type DEFAULT 'CUSTOM' NOT NULL,
+    reason VARCHAR(255) NOT NULL,
+    is_closed BOOLEAN DEFAULT TRUE,
+    open_time TIME,
+    close_time TIME,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+
+    CONSTRAINT chk_exception_hours CHECK (
+        (is_closed = TRUE AND open_time IS NULL AND close_time IS NULL) OR
+        (is_closed = FALSE AND open_time IS NOT NULL AND close_time IS NOT NULL AND close_time > open_time)
+    )
+);
+
 -- ============================================================
 -- TABLES: BOOKING MODULE (Updated References)
 -- ============================================================
@@ -604,6 +658,10 @@ CREATE TABLE booking_items (
     CONSTRAINT chk_item_time CHECK (end_time > start_time),
     CONSTRAINT chk_item_price CHECK (original_price >= 0)
 );
+
+-- Index cho Operating Hours
+CREATE UNIQUE INDEX idx_regular_hours_day_period ON regular_operating_hours(day_of_week, period_number);
+CREATE INDEX idx_exception_dates_date ON exception_dates(exception_date);
 
 -- ============================================================
 -- TABLES: SERVICE PACKAGES & BILLING
@@ -715,7 +773,19 @@ ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE staff_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE customers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE bookings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE bookings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE regular_operating_hours ENABLE ROW LEVEL SECURITY;
+ALTER TABLE exception_dates ENABLE ROW LEVEL SECURITY;
 -- ... (Enable for others)
+
+-- === OPERATING HOURS POLICIES ===
+-- Public đọc (để hiển thị trên booking wizard)
+CREATE POLICY regular_hours_read_public ON regular_operating_hours FOR SELECT USING (true);
+CREATE POLICY exception_dates_read_public ON exception_dates FOR SELECT USING (true);
+
+-- Chỉ Admin được sửa
+CREATE POLICY regular_hours_admin_all ON regular_operating_hours FOR ALL USING (auth.role() = 'admin');
+CREATE POLICY exception_dates_admin_all ON exception_dates FOR ALL USING (auth.role() = 'admin');
 
 -- === CUSTOMERS POLICIES (Updated) ===
 

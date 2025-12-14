@@ -10,10 +10,13 @@ import { Suspense, use, useCallback, useEffect, useState, useTransition } from "
 import { toast } from "sonner"
 import { NotificationsSettings } from "../components/notifications-settings"
 import { NotificationChannel, NotificationEvent } from "../notifications/types"
-import { updateOperatingHours } from "../operating-hours/actions"
-import { ExceptionsViewManager } from "../operating-hours/components/exceptions-view-manager"
-import { ScheduleEditor } from "../operating-hours/components/schedule-editor"
-import { ExceptionDate, OperatingHoursConfig } from "../operating-hours/model/types"
+import {
+  ExceptionDate,
+  ExceptionsViewManager,
+  OperatingHoursConfig,
+  ScheduleEditor,
+  updateOperatingHours,
+} from "../operating-hours"
 
 interface SettingsPageProps {
   operatingHoursPromise: Promise<ActionResponse<OperatingHoursConfig>>
