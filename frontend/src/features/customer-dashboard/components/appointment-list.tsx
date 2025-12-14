@@ -9,9 +9,6 @@ import { format } from "date-fns"
 import { vi } from "date-fns/locale"
 import { motion, Variants } from "framer-motion"
 import { Calendar, MapPin, User } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { CancelBookingDialog } from "./booking/cancel-booking-dialog"
 
 interface AppointmentListProps {
   appointments: Appointment[]
@@ -23,7 +20,6 @@ const statusMap: Record<string, { label: string; variant: "default" | "secondary
   completed: { label: "Hoàn thành", variant: "secondary" },
   cancelled: { label: "Đã hủy", variant: "destructive" },
   no_show: { label: "Vắng mặt", variant: "destructive" },
-  // Uppercase fallback
   PENDING: { label: "Đang chờ", variant: "warning" },
   CONFIRMED: { label: "Đã xác nhận", variant: "info" },
   COMPLETED: { label: "Hoàn thành", variant: "secondary" },
@@ -48,17 +44,10 @@ const itemVariants: Variants = {
 
 export function AppointmentList({ appointments }: AppointmentListProps) {
   const prefersReducedMotion = useReducedMotion()
-  const router = useRouter()
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
-  const [isCancelOpen, setIsCancelOpen] = useState(false)
 
-  const handleCancelClick = (appointment: Appointment) => {
-    setSelectedAppointment(appointment)
-    setIsCancelOpen(true)
-  }
-
-  const handleCancelSuccess = () => {
-    router.refresh()
+  const handleCancelClick = (_appointment: Appointment) => {
+    // TODO: Tích hợp với booking-wizard để hủy lịch
+    console.log("Cancel appointment:", _appointment.id)
   }
 
   if (appointments.length === 0) {
@@ -163,13 +152,6 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
           </MotionItem>
         ))}
       </MotionContainer>
-
-      <CancelBookingDialog
-        open={isCancelOpen}
-        onOpenChange={setIsCancelOpen}
-        appointment={selectedAppointment}
-        onSuccess={handleCancelSuccess}
-      />
     </>
   )
 }
