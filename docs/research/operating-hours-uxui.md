@@ -52,7 +52,7 @@ Theo `docs/research/operating-hours-design.md`, hệ thống sử dụng 2 bản
 | **Badge status** | Hiển thị loại (Lễ/Bảo trì/Đặc biệt) | Quick recognition | ✅ Sử dụng |
 | Year-wide view | Xem cả năm 12 tháng | Quá phức tạp | ❌ Không dùng |
 | Drag selection | Kéo chọn nhiều ngày | Overkill cho use case | ❌ Không dùng |
-
+t
 **Nguồn:** Zendesk Business Hours, Google Business Profile
 
 ### 2.3. Accessibility Requirements (WCAG 2.1)
