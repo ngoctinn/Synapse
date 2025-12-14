@@ -1,7 +1,7 @@
 "use client";
 
 import { SurfaceCard } from "@/shared/components/layout/page-layout";
-import { CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import { CardContent } from "@/shared/ui/card";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { toggleChannelAction, updateChannelConfigAction, updateTemplateAction } from "../notifications/actions";
@@ -121,12 +121,7 @@ export function NotificationsSettings({ initialChannels, initialEvents }: Notifi
     <div className="space-y-6">
       {/* Channels Configuration */}
       <SurfaceCard>
-        <CardHeader>
-          <CardTitle>Kênh thông báo</CardTitle>
-          <CardDescription>
-            Quản lý các kênh gửi thông báo đến khách hàng và nhân viên.
-          </CardDescription>
-        </CardHeader>
+
         <CardContent>
           <NotificationChannels
             channels={channels}
@@ -137,12 +132,7 @@ export function NotificationsSettings({ initialChannels, initialEvents }: Notifi
 
       {/* Events Configuration */}
       <SurfaceCard>
-        <CardHeader>
-          <CardTitle>Sự kiện & Mẫu tin</CardTitle>
-          <CardDescription>
-            Bật/tắt các kênh thông báo cho từng loại sự kiện.
-          </CardDescription>
-        </CardHeader>
+
         <CardContent>
           <NotificationList
             events={events}

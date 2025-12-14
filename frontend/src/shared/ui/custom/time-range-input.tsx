@@ -1,11 +1,9 @@
-'use client';
+"use client";
 
-import * as React from "react";
-import { ArrowRight, Trash2 } from "lucide-react";
-import { TimePicker } from "@/shared/ui/custom/time-picker";
-import { Button } from "@/shared/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
 import { cn } from "@/shared/lib/utils";
+import { Button } from "@/shared/ui/button";
+import { TimePicker } from "@/shared/ui/custom/time-picker";
+import { Trash2 } from "lucide-react";
 
 interface TimeRangeInputProps {
   startTime: string;
@@ -15,6 +13,8 @@ interface TimeRangeInputProps {
   onRemove?: () => void;
   className?: string;
   showRemoveButton?: boolean;
+  /** Hiển thị warning style khi slot này overlap với slot khác */
+  hasOverlap?: boolean;
 }
 
 export function TimeRangeInput({
@@ -24,42 +24,57 @@ export function TimeRangeInput({
   onEndTimeChange,
   onRemove,
   className,
-  showRemoveButton = true
+  showRemoveButton = true,
+  hasOverlap = false,
 }: TimeRangeInputProps) {
+  // Simple string comparison works for "HH:mm" format (e.g. "09:00" < "13:00")
+  const isInvalid = startTime >= endTime;
+  const hasError = isInvalid || hasOverlap;
+
   return (
     <div className={cn(
-      "flex items-center gap-2 bg-background/80 backdrop-blur-sm p-1.5 rounded-xl border border-transparent hover:border-border/80 hover:shadow-sm transition-all duration-200 group/slot",
+      "flex items-center gap-2 p-1 border rounded-md transition-colors",
+      hasError
+        ? "border-destructive/50 bg-destructive/5"
+        : "border-border hover:border-primary/50",
+      hasOverlap && !isInvalid && "border-warning/50 bg-warning/5",
       className
     )}>
-      <TimePicker 
+      <TimePicker
         value={startTime}
         onChange={onStartTimeChange}
-        className="w-24 xs:w-28 border-none shadow-none bg-transparent focus:ring-0 text-sm font-medium"
+        hasError={hasError}
+        className="w-[100px] border-none shadow-none bg-transparent focus:ring-0 text-sm px-0 text-center font-medium"
       />
-      <ArrowRight className="w-3 h-3 text-muted-foreground/50" />
-      <TimePicker 
+
+      <span className={cn(
+        "text-sm",
+        hasError ? "text-destructive/50" : "text-muted-foreground/50"
+      )}>-</span>
+
+      <TimePicker
          value={endTime}
          onChange={onEndTimeChange}
-         className="w-24 xs:w-28 border-none shadow-none bg-transparent focus:ring-0 text-right text-sm font-medium"
+         hasError={hasError}
+         className="w-[100px] border-none shadow-none bg-transparent focus:ring-0 text-right text-sm px-0 text-center font-medium"
       />
-      
+
       {showRemoveButton && onRemove && (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={onRemove}
-                className="h-6 w-6 text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-100 sm:opacity-0 sm:group-hover/slot:opacity-100 transition-all duration-200 rounded-full ml-1"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Xóa khung giờ</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onRemove}
+          className={cn(
+            "size-6 shrink-0 rounded-full ml-1",
+            "hover:bg-destructive/10 hover:text-destructive text-muted-foreground",
+            hasError && "text-destructive/70"
+          )}
+          title="Xóa khung giờ"
+        >
+          <Trash2 className="size-3.5" />
+        </Button>
       )}
     </div>
   );
 }
+

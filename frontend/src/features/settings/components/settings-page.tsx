@@ -1,6 +1,6 @@
 "use client"
 
-import { PageContent, PageHeader, PageShell, SurfaceCard } from "@/shared/components/layout/page-layout"
+import { PageContent, PageHeader, PageShell } from "@/shared/components/layout/page-layout"
 import { ActionResponse } from "@/shared/lib/action-response"
 import { Button } from "@/shared/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
@@ -11,11 +11,11 @@ import { toast } from "sonner"
 import { NotificationsSettings } from "../components/notifications-settings"
 import { NotificationChannel, NotificationEvent } from "../notifications/types"
 import {
-  ExceptionDate,
-  ExceptionsViewManager,
-  OperatingHoursConfig,
-  ScheduleEditor,
-  updateOperatingHours,
+    ExceptionDate,
+    ExceptionsPanel,
+    OperatingHoursConfig,
+    WeeklySchedule,
+    updateOperatingHours,
 } from "../operating-hours"
 
 interface SettingsPageProps {
@@ -53,20 +53,52 @@ function SettingsForm({
   }, [])
 
   const handleAddExceptions = useCallback((newExceptions: ExceptionDate[]) => {
-    setConfig(prev => ({ ...prev, exceptions: [...prev.exceptions, ...newExceptions] }))
-    setIsDirty(true)
-    toast.success(`Đã thêm ${newExceptions.length} ngoại lệ`)
+    setConfig(prev => {
+      const updatedConfig = { ...prev, exceptions: [...prev.exceptions, ...newExceptions] };
+
+      // Auto-save exceptions
+      startTransition(async () => {
+        const result = await updateOperatingHours(updatedConfig);
+        if (result.status === "success") {
+          setIsDirty(false);
+          toast.success(`Đã thêm ${newExceptions.length} ngoại lệ`);
+        } else {
+          toast.error(result.message || "Lỗi khi lưu ngoại lệ");
+          // Revert on error? For now, keep dirty state true
+          setIsDirty(true);
+        }
+      });
+
+      return updatedConfig;
+    });
   }, [])
 
   const handleRemoveException = useCallback((ids: string | string[]) => {
-    const idsToRemove = Array.isArray(ids) ? ids : [ids]
-    setConfig(prev => ({ ...prev, exceptions: prev.exceptions.filter(e => !idsToRemove.includes(e.id)) }))
-    setIsDirty(true)
-    toast.success(`Đã xóa ${idsToRemove.length} ngoại lệ`)
+    setConfig(prev => {
+      const idsToRemove = Array.isArray(ids) ? ids : [ids];
+      const updatedConfig = {
+        ...prev,
+        exceptions: prev.exceptions.filter(e => !idsToRemove.includes(e.id))
+      };
+
+      // Auto-save exceptions
+      startTransition(async () => {
+        const result = await updateOperatingHours(updatedConfig);
+        if (result.status === "success") {
+          setIsDirty(false);
+          toast.success(`Đã xóa ${idsToRemove.length} ngoại lệ`);
+        } else {
+          toast.error(result.message || "Lỗi khi xóa ngoại lệ");
+          setIsDirty(true);
+        }
+      });
+
+      return updatedConfig;
+    });
   }, [])
 
-  // Save handler
-  const handleSave = useCallback(() => {
+  // Save handler (Manual for Schedule)
+  const handleSaveSchedule = useCallback(() => {
     startTransition(async () => {
       const result = await updateOperatingHours(config)
       if (result.status === "success") {
@@ -85,29 +117,26 @@ function SettingsForm({
     toast.info("Đã khôi phục cấu hình gốc")
   }, [initialConfig])
 
-  // Keyboard shortcut for Save (Ctrl+S)
+  // Keyboard shortcut for Save (Ctrl+S) - Only for Schedule tab now?
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault()
-        if (isDirty && !isPending) {
-          handleSave()
+        if (activeTab === 'schedule' && isDirty && !isPending) {
+          handleSaveSchedule()
         }
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isDirty, isPending, handleSave])
+  }, [isDirty, isPending, handleSaveSchedule, activeTab])
 
   const handleTabChange = (value: string) => {
     const params = new URLSearchParams(searchParams.toString())
     params.set("tab", value)
     router.push(`${pathname}?${params.toString()}`, { scroll: false })
   }
-
-  // Chỉ hiện nút Save/Reset khi ở tab liên quan đến Operating Hours
-  const showOperatingHoursActions = activeTab === "schedule" || activeTab === "exceptions"
 
   return (
     <PageShell>
@@ -125,42 +154,45 @@ function SettingsForm({
             </TabsTrigger>
           </TabsList>
 
-          {/* Save/Reset Actions - chỉ hiện khi ở tabs Operating Hours */}
-          {showOperatingHoursActions && (
-            <div className="flex items-center gap-2">
-              {isDirty && (
-                <span className="text-xs text-muted-foreground hidden sm:inline-flex items-center gap-1.5">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-warning opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-warning" />
+          <div className="flex items-center gap-2">
+            {/* Action Buttons based on Tab */}
+            {activeTab === 'schedule' && (
+              <>
+                 {isDirty && (
+                  <span className="text-xs text-muted-foreground hidden sm:inline-flex items-center gap-1.5 mr-2">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-warning opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-warning" />
+                    </span>
+                    Chưa lưu
                   </span>
-                  Chưa lưu
-                </span>
-              )}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleReset}
-                disabled={!isDirty || isPending}
-              >
-                <RotateCcw className="size-4 mr-1.5" />
-                <span className="hidden sm:inline">Khôi phục</span>
-              </Button>
-              <Button
-                size="sm"
-                onClick={handleSave}
-                disabled={!isDirty || isPending}
-              >
-                {isPending ? (
-                  <Loader2 className="size-4 animate-spin mr-1.5" />
-                ) : (
-                  <Save className="size-4 mr-1.5" />
                 )}
-                <span className="hidden sm:inline">Lưu thay đổi</span>
-                <span className="sm:hidden">Lưu</span>
-              </Button>
-            </div>
-          )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleReset}
+                  disabled={!isDirty || isPending}
+                >
+                  <RotateCcw className="size-4 mr-1.5" />
+                  <span className="hidden sm:inline">Khôi phục</span>
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={handleSaveSchedule}
+                  disabled={!isDirty || isPending}
+                >
+                  {isPending ? <Loader2 className="size-4 animate-spin mr-1.5" /> : <Save className="size-4 mr-1.5" />}
+                  Lưu thay đổi
+                </Button>
+              </>
+            )}
+
+            {/* Added: Specific save for exceptions if needed, but handled inside panel mostly?
+                Actually, previously we didnt have specific save buttons for exceptions in header,
+                it was handled inside or via auto-save.
+                Since we are reverting, we revert to no header buttons for exceptions.
+            */}
+          </div>
         </PageHeader>
 
         {/* Tab Contents */}
@@ -170,35 +202,27 @@ function SettingsForm({
             className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden"
           >
             <PageContent>
-              <ScheduleEditor config={config} onConfigChange={handleConfigChange} />
+              <WeeklySchedule config={config} onConfigChange={handleConfigChange} />
             </PageContent>
           </TabsContent>
 
-          <TabsContent
-            value="exceptions"
-            className="flex-1 flex flex-col mt-0 border-0 p-0 overflow-hidden data-[state=inactive]:hidden"
-          >
-            <PageContent className="h-full">
-              <SurfaceCard className="flex-1 flex flex-col overflow-hidden">
-                <ExceptionsViewManager
-                  exceptions={config.exceptions}
-                  onAddExceptions={handleAddExceptions}
-                  onRemoveException={handleRemoveException}
-                />
-              </SurfaceCard>
-            </PageContent>
+          <TabsContent value="exceptions" className="flex-1 h-full p-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <ExceptionsPanel
+              exceptions={config.exceptions}
+              onAddExceptions={handleAddExceptions}
+              onRemoveException={handleRemoveException}
+            />
           </TabsContent>
 
-          <TabsContent
-            value="notifications"
-            className="flex-1 flex flex-col mt-0 border-0 p-0 overflow-y-auto data-[state=inactive]:hidden"
-          >
-            <PageContent>
-              <NotificationsSettings initialChannels={channels} initialEvents={events} />
-            </PageContent>
+          <TabsContent value="notifications" className="flex-1 h-full p-6">
+            <NotificationsSettings
+               initialChannels={channels}
+               initialEvents={events}
+            />
           </TabsContent>
         </div>
       </Tabs>
+
     </PageShell>
   )
 }

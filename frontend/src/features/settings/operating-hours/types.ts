@@ -51,5 +51,13 @@ export interface OperatingHoursConfig {
   exceptions: ExceptionDate[];
 }
 
-// Backwards compatibility alias (deprecated - sẽ xóa sau khi refactor xong)
-export type { DaySchedule as DayScheduleRow };
+// ===== VALIDATION TYPES =====
+
+export interface ExceptionValidationResult {
+  isValid: boolean;
+  isDuplicate: boolean;
+  duplicateId?: string;
+  message?: string;
+}
+
+
