@@ -38,14 +38,22 @@
 | 2 | Link hết hạn | Dùng link cũ quá 24 giờ, nhấn Gửi | Mật khẩu: NewPass@123 | Hiển thị "Link đã hết hạn, vui lòng yêu cầu lại" | |
 | 3 | Mật khẩu không khớp | Nhập 2 mật khẩu khác nhau, nhấn Gửi | MK: Abc@1234, Xác nhận: Xyz@5678 | Hiển thị "Mật khẩu xác nhận không khớp" | |
 
-## 5. Đăng xuất
+## 5. Đổi mật khẩu (khi đã đăng nhập)
+
+| STT | Mục đích kiểm thử | Các bước thực hiện | Dữ liệu đầu vào | Kết quả mong đợi | Kết quả thực tế |
+|:---:|:---|:---|:---|:---|:---|
+| 1 | Đổi mật khẩu thành công | Nhập mật khẩu mới, nhấn Lưu | Mật khẩu mới: NewPass@123 | Hiển thị "Đã cập nhật mật khẩu thành công" | |
+| 2 | Mật khẩu không khớp | Nhập xác nhận khác mật khẩu mới | MK: Abc@1234, Xác nhận: Xyz@5678 | Hiển thị "Mật khẩu xác nhận không khớp" | |
+| 3 | Mật khẩu mới quá ngắn | Nhập mật khẩu dưới 8 ký tự | Mật khẩu mới: Abc123 | Hiển thị "Mật khẩu phải có tối thiểu 8 ký tự" | |
+
+## 6. Đăng xuất
 
 | STT | Mục đích kiểm thử | Các bước thực hiện | Dữ liệu đầu vào | Kết quả mong đợi | Kết quả thực tế |
 |:---:|:---|:---|:---|:---|:---|
 | 1 | Đăng xuất thành công | Nhấn nút Đăng xuất | Không | Hệ thống chuyển về trang đăng nhập | |
 | 2 | Chặn truy cập sau đăng xuất | Truy cập trực tiếp URL /dashboard | URL: /dashboard | Hệ thống tự động chuyển về trang đăng nhập | |
 
-## 6. Cập nhật thông tin
+## 7. Cập nhật thông tin cá nhân
 
 | STT | Mục đích kiểm thử | Các bước thực hiện | Dữ liệu đầu vào | Kết quả mong đợi | Kết quả thực tế |
 |:---:|:---|:---|:---|:---|:---|
