@@ -4,6 +4,7 @@ import { PROFILE_LABELS } from "@/features/customer-dashboard/constants"
 import { ProfileInput } from "@/features/customer-dashboard/schemas"
 import { UserProfile } from "@/features/customer-dashboard/types"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
+import { Badge } from "@/shared/ui/badge"
 import { FormField, FormItem, FormMessage } from "@/shared/ui/form"
 import { Camera } from "lucide-react"
 import { Control } from "react-hook-form"
@@ -58,9 +59,9 @@ export function ProfileAvatar({ user, control }: ProfileAvatarProps) {
         <h3 className="font-bold text-xl text-foreground tracking-tight">{user.fullName}</h3>
         <p className="text-sm text-muted-foreground font-medium">{user.email}</p>
         <div className="pt-1">
-            <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary ring-1 ring-inset ring-primary/20">
+            <Badge variant="soft">
             {user.membershipTier || PROFILE_LABELS.DEFAULT_TIER}
-            </span>
+            </Badge>
         </div>
       </div>
     </div>

@@ -209,7 +209,7 @@ export function MaintenanceTimeline({
                       {res.name}
                     </div>
                     <div className="flex items-center gap-1.5 mt-0.5">
-                      <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4.5 font-normal bg-muted/50 border-muted-foreground/20">
+                      <Badge variant="outline" size="xs">
                          {res.type === 'ROOM' ? 'Phòng' : 'Thiết bị'}
                       </Badge>
                       <span className="text-[10px] text-muted-foreground truncate font-mono">

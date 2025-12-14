@@ -110,7 +110,7 @@ export function TimelineRow({
           <div className="flex items-center gap-1.5">
             <span className="text-sm font-medium truncate">{resource.name}</span>
             {!resource.isActive && (
-              <Badge variant="secondary" className="text-[10px] px-1 py-0">
+              <Badge variant="secondary" size="xs">
                 Nghỉ
               </Badge>
             )}

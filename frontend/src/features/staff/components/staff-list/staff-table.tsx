@@ -3,8 +3,7 @@
 import { Skill } from "@/features/services/types";
 import { deleteStaff } from "@/features/staff/actions";
 import { useTableParams, useTableSelection } from "@/shared/hooks";
-import { cn } from "@/shared/lib/utils";
-import { DeleteConfirmDialog } from "@/shared/ui";
+import { DeleteConfirmDialog, showToast } from "@/shared/ui";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
@@ -12,7 +11,6 @@ import { AnimatedUsersIcon } from "@/shared/ui/custom/animated-icon";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
-import { showToast } from "@/shared/ui";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import {
   Tooltip,
@@ -189,14 +187,7 @@ export function StaffTable({
       id: "user.role",
       sortable: true,
       cell: (staff) => (
-        <Badge
-          variant={ROLE_CONFIG[staff.user.role]?.variant || "outline"}
-          className={cn(
-            "rounded-md px-2.5 py-1 font-medium border-transparent text-xs",
-            ROLE_CONFIG[staff.user.role]?.className ||
-              "bg-muted text-muted-foreground"
-          )}
-        >
+        <Badge variant={ROLE_CONFIG[staff.user.role]?.variant || "outline"} size="sm">
           {ROLE_CONFIG[staff.user.role]?.label || staff.user.role}
         </Badge>
       ),
@@ -208,11 +199,7 @@ export function StaffTable({
           {staff.skills.length > 0 ? (
             <>
               {staff.skills.slice(0, 2).map((skill) => (
-                <Badge
-                  key={skill.id}
-                  variant="secondary"
-                  className="text-xs px-2.5 py-1 bg-secondary/50 hover:bg-secondary/70 text-secondary-foreground border-transparent rounded-md transition-colors"
-                >
+                <Badge key={skill.id} variant="secondary" size="sm">
                   {skill.name}
                 </Badge>
               ))}
@@ -220,10 +207,7 @@ export function StaffTable({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Badge
-                        variant="secondary"
-                        className="text-xs px-2.5 py-1 bg-secondary/50 hover:bg-secondary/70 text-secondary-foreground border-transparent cursor-help rounded-md"
-                      >
+                      <Badge variant="secondary" size="sm">
                         +{staff.skills.length - 2} nữa
                       </Badge>
                     </TooltipTrigger>

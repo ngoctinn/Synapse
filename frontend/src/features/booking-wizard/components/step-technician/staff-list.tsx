@@ -1,8 +1,8 @@
-import { Card } from "@/shared/ui/card";
+import { cn } from "@/shared/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { Badge } from "@/shared/ui/badge";
+import { Card } from "@/shared/ui/card";
 import { Check, Star } from "lucide-react";
-import { cn } from "@/shared/lib/utils";
 import { StaffItem } from "../../types";
 
 interface StaffListProps {
@@ -16,7 +16,7 @@ export const StaffList = ({ staff, selectedStaffId, onSelect }: StaffListProps) 
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {staff.map((member) => {
         const isSelected = selectedStaffId === member.id;
-        
+
         return (
           <Card
             key={member.id}
@@ -34,7 +34,7 @@ export const StaffList = ({ staff, selectedStaffId, onSelect }: StaffListProps) 
                   {member.name.charAt(0)}
                 </AvatarFallback>
               </Avatar>
-              
+
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-1">
                   <h3 className="font-semibold text-base truncate pr-2">{member.name}</h3>
@@ -45,12 +45,12 @@ export const StaffList = ({ staff, selectedStaffId, onSelect }: StaffListProps) 
                     </div>
                   )}
                 </div>
-                
+
                 <p className="text-sm text-muted-foreground truncate">{member.role}</p>
-                
+
                 {member.is_available && (
                    <div className="mt-2 flex items-center">
-                     <Badge variant="secondary" className="text-[10px] h-5 font-normal px-2 bg-green-100 text-green-700 hover:bg-green-100">
+                     <Badge variant="success" size="xs">
                         Có chỗ hôm nay
                      </Badge>
                    </div>

@@ -11,18 +11,18 @@ import { useState } from "react";
 
 import { cn } from "@/shared/lib/utils";
 import {
-  Badge,
-  Button,
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  Input,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+    Badge,
+    Button,
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+    Input,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
 } from "@/shared/ui";
 
 import { APPOINTMENT_STATUS_CONFIG } from "../../constants";
@@ -163,7 +163,7 @@ export function FilterBar({
               <Filter className="size-4 mr-2" />
               Kỹ thuật viên
               {filters.staffIds.length > 0 && (
-                <Badge variant="secondary" className="ml-2 h-5 px-1.5">
+                <Badge variant="secondary" size="xs" className="ml-2">
                   {filters.staffIds.length}
                 </Badge>
               )}
@@ -213,7 +213,7 @@ export function FilterBar({
               <Filter className="size-4 mr-2" />
               Dịch vụ
               {filters.serviceIds.length > 0 && (
-                <Badge variant="secondary" className="ml-2 h-5 px-1.5">
+                <Badge variant="secondary" size="xs" className="ml-2">
                   {filters.serviceIds.length}
                 </Badge>
               )}
@@ -262,7 +262,7 @@ export function FilterBar({
             >
               Trạng thái
               {filters.statuses.length > 0 && (
-                <Badge variant="secondary" className="ml-2 h-5 px-1.5">
+                <Badge variant="secondary" size="xs" className="ml-2">
                   {filters.statuses.length}
                 </Badge>
               )}
