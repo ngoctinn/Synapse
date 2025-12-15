@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/shared/ui/select";
 import { Loader2, XCircle } from "lucide-react";
-import { useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { useDebounce } from "use-debounce";
 import { getReviews } from "../actions";
 import { REVIEW_RATING_LABELS } from "../constants";
@@ -28,7 +28,7 @@ export function ReviewsAdminPage() {
   });
   const [debouncedSearch] = useDebounce(filters.search, 500);
 
-  const loadReviews = () => {
+  const loadReviews = useCallback(() => {
     startTransition(async () => {
       const res = await getReviews({
         ...filters,
@@ -38,11 +38,11 @@ export function ReviewsAdminPage() {
         setReviews(res.data);
       }
     });
-  };
+  }, [debouncedSearch, filters]);
 
   useEffect(() => {
     loadReviews();
-  }, [debouncedSearch, filters.rating]);
+  }, [loadReviews]);
 
   const handleRatingChange = (value: string) => {
     setFilters((prev) => ({

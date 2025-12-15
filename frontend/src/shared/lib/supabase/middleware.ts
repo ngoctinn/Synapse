@@ -17,7 +17,7 @@ export async function updateSession(request: NextRequest) {
         },
         setAll(cookiesToSet) {
           // Cập nhật cookies cho request hiện tại (để Server Components đọc được)
-          cookiesToSet.forEach(({ name, value, options }) =>
+          cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           )
           // Cập nhật cookies cho response (để trình duyệt lưu lại)

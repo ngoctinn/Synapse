@@ -109,7 +109,7 @@ export function ServiceSheet({
         } else {
           showToast.error("Thất bại", result.message)
         }
-      } catch (error) {
+      } catch {
         showToast.error("Lỗi hệ thống", "Đã có lỗi xảy ra, vui lòng thử lại sau.")
       }
     })

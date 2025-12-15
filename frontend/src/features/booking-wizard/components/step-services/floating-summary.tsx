@@ -1,8 +1,5 @@
-import { Button } from "@/shared/ui/button";
 import { formatCurrency } from "@/shared/lib/utils";
 import { ChevronUp } from "lucide-react";
-import { useBookingStore } from "../../hooks/use-booking-store";
-import { cn } from "@/shared/lib/utils";
 
 interface FloatingSummaryProps {
   totalCount: number;
@@ -32,7 +29,7 @@ export const FloatingSummary = ({
               Tổng: {formatCurrency(totalPrice)}
             </span>
           </div>
-          
+
           <div className="flex items-center gap-1 text-primary-foreground font-semibold bg-white/10 px-3 py-1.5 rounded-lg hover:bg-white/20 transition-colors">
             Tiếp tục <ChevronUp className="h-4 w-4 rotate-90" />
           </div>

@@ -9,7 +9,7 @@ interface AnimatedTableRowProps extends React.HTMLAttributes<HTMLTableRowElement
 }
 
 export function AnimatedTableRow({
-  index,
+  index: _index,
   children,
   className,
   ...props

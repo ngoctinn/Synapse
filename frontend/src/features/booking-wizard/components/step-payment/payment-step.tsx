@@ -1,15 +1,15 @@
 "use client";
 
+import { Form } from "@/shared/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { useDebounce } from "use-debounce";
 import { useBookingStore } from "../../hooks/use-booking-store";
+import { customerInfoSchema, CustomerInfoSchema } from "../../schemas";
+import { BookingSummary } from "./booking-summary";
 import { CustomerForm } from "./customer-form";
 import { PaymentMethods } from "./payment-methods";
-import { BookingSummary } from "./booking-summary";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { customerInfoSchema, CustomerInfoSchema } from "../../schemas";
-import { useEffect } from "react";
-import { Form } from "@/shared/ui/form";
-import { useDebounce } from "use-debounce";
 
 export const PaymentStep = () => {
   const { customerInfo, paymentMethod, setCustomerInfo, setPaymentMethod } = useBookingStore();
@@ -25,12 +25,13 @@ export const PaymentStep = () => {
     mode: "onChange",
   });
 
-  const [debouncedValues] = useDebounce(form.watch(), 500);
+  const watchedValues = useWatch({ control: form.control });
+  const [debouncedValues] = useDebounce(watchedValues, 500);
 
   // Sync form values to store
   useEffect(() => {
-    // Only update if valid to avoid clearing store with invalid initial data unnecessarily, 
-    // but for UX, we might want to persist even partial data. 
+    // Only update if valid to avoid clearing store with invalid initial data unnecessarily,
+    // but for UX, we might want to persist even partial data.
     // Let's persist everything so user doesn't lose data when switching steps.
     const { full_name, phone_number, email, notes } = debouncedValues;
     setCustomerInfo({
@@ -47,14 +48,14 @@ export const PaymentStep = () => {
         <Form {...form}>
           <form className="space-y-8">
             <CustomerForm form={form} />
-            <PaymentMethods 
-              value={paymentMethod || "COD"} 
-              onChange={setPaymentMethod} 
+            <PaymentMethods
+              value={paymentMethod || "COD"}
+              onChange={setPaymentMethod}
             />
           </form>
         </Form>
       </div>
-      
+
       <div className="lg:col-span-2">
         <BookingSummary />
       </div>

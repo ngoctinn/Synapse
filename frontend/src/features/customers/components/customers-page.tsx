@@ -54,7 +54,8 @@ export function CustomersPage({ page, customerListPromise }: CustomersPageProps)
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const [isPending, startTransition] = useTransition()
+
+  const [, startTransition] = useTransition()
 
   // Get active tab from URL or default to 'list'
   const activeTab = searchParams.get("view") || "list"

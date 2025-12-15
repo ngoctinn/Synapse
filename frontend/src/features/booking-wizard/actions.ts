@@ -1,10 +1,10 @@
 "use server";
 
-import { addHours, format, formatISO } from "date-fns";
-import { ActionResponse, success, error } from "@/shared/lib/action-response";
-import { ServiceItem, StaffItem, TimeSlot } from "./types";
+import { ActionResponse, error, success } from "@/shared/lib/action-response";
+import { addHours, format } from "date-fns";
 import { getServices } from "../services/actions";
 import { getStaffList } from "../staff/actions";
+import { ServiceItem, StaffItem, TimeSlot } from "./types";
 
 // ... (getServicesForBooking and getAvailableStaff remain unchanged)
 
@@ -23,7 +23,7 @@ export async function getServicesForBooking(): Promise<ActionResponse<Record<str
 
     services.forEach((service) => {
       const category = service.category || "Khác";
-      
+
       if (!groupedServices[category]) {
         groupedServices[category] = [];
       }
@@ -119,7 +119,7 @@ function generateMockTimeSlots(baseDate: Date, staffId: string): TimeSlot[] {
     for (let minute = 0; minute < 60; minute += intervalMinutes) {
       const slotTime = addHours(startOfDay, hour);
       slotTime.setMinutes(minute);
-      
+
       const isBooked = Math.random() > 0.8; // 20% chance of being booked
 
       slots.push({

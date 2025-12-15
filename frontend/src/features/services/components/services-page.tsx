@@ -42,9 +42,9 @@ function ServiceListWrapper({
 }) {
   const servicesRes = use(servicesPromise)
 
-  const { data, total, page: resPage, limit: resLimit } = servicesRes.status === 'success' && servicesRes.data
+  const { data, total } = servicesRes.status === 'success' && servicesRes.data
     ? servicesRes.data
-    : { data: [], total: 0, page: page, limit: 10 }
+    : { data: [], total: 0 }
 
   const totalPages = Math.ceil(total / 10)
 

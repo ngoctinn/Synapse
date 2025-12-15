@@ -2,7 +2,6 @@
 
 import { format } from "date-fns"
 import { useState } from "react"
-import { toast } from "sonner"
 
 import { useSchedulerTools } from "../../hooks/use-scheduler-tools"
 import { useStaffSchedule } from "../../hooks/use-staff-schedule"
@@ -43,10 +42,10 @@ export function StaffScheduler({ initialSchedules, staffList, className }: Staff
     await removeSchedule(scheduleId)
   }
 
-  const handleCopyWeek = () => {
-    // Tính năng sao chép tuần đang phát triển
-    toast.info("Tính năng sao chép tuần đang phát triển")
-  }
+  // const handleCopyWeek = () => {
+  //   // Tính năng sao chép tuần đang phát triển
+  //   toast.info("Tính năng sao chép tuần đang phát triển")
+  // }
 
   const selectedStaffName = selectedCell
     ? (staffList.find(s => s.user_id === selectedCell.staffId)?.user.full_name ?? undefined)
@@ -82,7 +81,8 @@ export function StaffScheduler({ initialSchedules, staffList, className }: Staff
         onResetToday={resetToday}
         onCancelChanges={cancelChanges}
         onSaveChanges={saveChanges}
-        onCopyWeek={handleCopyWeek}
+
+        // onCopyWeek={handleCopyWeek}
         toolState={toolState}
       />
 

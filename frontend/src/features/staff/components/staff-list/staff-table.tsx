@@ -38,7 +38,7 @@ interface StaffTableProps {
   isLoading?: boolean;
 }
 
-const GroupActionButtons = ({ staff }: { staff: Staff }) => {
+const GroupActionButtons = ({ staff: _staff }: { staff: Staff }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

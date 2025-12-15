@@ -8,8 +8,8 @@ const DELAY_MS = 800;
 const delay = () => new Promise((resolve) => setTimeout(resolve, DELAY_MS));
 
 export async function toggleChannelAction(
-  eventId: string,
-  channelId: string,
+  _eventId: string,
+  _channelId: string,
   checked: boolean
 ): Promise<ActionResponse> {
   await delay();
@@ -17,17 +17,17 @@ export async function toggleChannelAction(
 }
 
 export async function updateChannelConfigAction(
-  channelId: string,
-  config: Record<string, unknown>
+  _channelId: string,
+  _config: Record<string, unknown>
 ): Promise<ActionResponse> {
   await delay();
   return success(undefined, 'Đã lưu cấu hình kênh thông báo');
 }
 
 export async function updateTemplateAction(
-  eventId: string,
-  channelId: string,
-  template: Record<string, unknown>
+  _eventId: string,
+  _channelId: string,
+  _template: Record<string, unknown>
 ): Promise<ActionResponse> {
   await delay();
   return success(undefined, 'Đã lưu mẫu tin nhắn thành công');

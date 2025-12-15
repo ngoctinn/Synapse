@@ -39,6 +39,7 @@ export const MaskedDateInput = React.forwardRef<HTMLInputElement, MaskedDateInpu
            setInputValue("")
         }
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [value])
 
     const [isShaking, setIsShaking] = React.useState(false)

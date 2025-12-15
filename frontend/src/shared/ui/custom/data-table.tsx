@@ -1,8 +1,8 @@
 "use client"
 
 import {
-  type SelectionConfig,
-  type SortConfig,
+    type SelectionConfig,
+    type SortConfig,
 } from "@/shared/lib/design-system.types"
 import { getNestedValue } from "@/shared/lib/object-utils"
 import { cn } from "@/shared/lib/utils"
@@ -11,12 +11,12 @@ import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row"
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
 import { PaginationControls } from "@/shared/ui/custom/pagination-controls"
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/shared/ui/table"
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react"
 import { ReactNode } from "react"
@@ -187,7 +187,7 @@ export function DataTable<T>({
                       isClickable && "cursor-pointer hover:bg-muted/50",
                       selected && "bg-primary/5 hover:bg-primary/10"
                     )}
-                    onClick={(e) => {
+                    onClick={() => {
                       if (onRowClick) onRowClick(item)
                     }}
                   >

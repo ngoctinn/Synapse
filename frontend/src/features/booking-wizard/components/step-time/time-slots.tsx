@@ -1,10 +1,9 @@
 "use client";
 
-import { cn } from "@/shared/lib/utils";
-import React from "react";
 import { format, parse } from "date-fns";
-import { SlotButton } from "./slot-button";
+import React from "react";
 import { TimeSlot } from "../../types";
+import { SlotButton } from "./slot-button";
 
 interface TimeSlotsProps {
   timeSlots: TimeSlot[];

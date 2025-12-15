@@ -1,12 +1,12 @@
 "use client";
 
+import { cn } from "@/shared/lib/utils";
 import { Button, buttonVariants } from "@/shared/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/shared/ui/card";
-import { CheckCircle2, Calendar, MapPin, User, Clock } from "lucide-react";
-import Link from "next/link";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { cn } from "@/shared/lib/utils";
+import { Calendar, CheckCircle2, Clock, MapPin, User } from "lucide-react";
+import Link from "next/link";
 
 interface BookingSuccessProps {
   bookingId?: string;
@@ -16,12 +16,12 @@ interface BookingSuccessProps {
   onBookAnother: () => void;
 }
 
-export const BookingSuccess = ({ 
-  bookingId = "B-123456", 
+export const BookingSuccess = ({
+  bookingId = "B-123456",
   bookingTime = new Date(),
-  serviceName = "Gội đầu dưỡng sinh",
+  serviceName: _serviceName = "Gội đầu dưỡng sinh",
   staffName = "Nguyễn Văn A",
-  onBookAnother 
+  onBookAnother
 }: BookingSuccessProps) => {
   return (
     <div className="flex items-center justify-center p-4 animate-in fade-in-50 zoom-in-95 duration-500">
@@ -35,14 +35,14 @@ export const BookingSuccess = ({
             Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi. Lịch hẹn của bạn đã được xác nhận.
           </p>
         </CardHeader>
-        
+
         <CardContent className="space-y-6">
           <div className="bg-muted/30 p-4 rounded-lg space-y-3 text-sm border border-border/50">
             <div className="flex justify-between items-center pb-2 border-b border-border/50">
               <span className="text-muted-foreground">Mã đặt lịch:</span>
               <span className="font-mono font-bold">{bookingId}</span>
             </div>
-            
+
             <div className="flex items-center gap-3 text-left">
               <Calendar className="h-4 w-4 text-primary shrink-0" />
               <span className="font-medium">
@@ -56,7 +56,7 @@ export const BookingSuccess = ({
                 {format(bookingTime, "HH:mm")}
               </span>
             </div>
-            
+
             <div className="flex items-center gap-3 text-left">
               <MapPin className="h-4 w-4 text-primary shrink-0" />
               <span>Spa Center - Chi nhánh chính</span>
@@ -74,8 +74,8 @@ export const BookingSuccess = ({
         </CardContent>
 
         <CardFooter className="flex flex-col sm:flex-row gap-3 pt-2">
-          <Link 
-            href="/profile" 
+          <Link
+            href="/profile"
             className={cn(buttonVariants({ variant: "outline" }), "w-full")}
           >
             Xem chi tiết

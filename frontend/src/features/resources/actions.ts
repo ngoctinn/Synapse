@@ -39,7 +39,7 @@ export async function manageResource(prevState: unknown, formData: FormData): Pr
             await createResource(validatedFields.data);
             return success(undefined, "Tạo tài nguyên mới thành công");
         }
-    } catch (err) {
+    } catch (_err) {
         return error("Đã có lỗi xảy ra");
     }
 }

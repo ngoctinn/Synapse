@@ -3,9 +3,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 
 import { Button } from "@/shared/ui/button";
-import { MessageCircle, Smartphone, Mail, Settings2 } from "lucide-react";
+import { Mail, MessageCircle, Settings2, Smartphone } from "lucide-react";
 import { NotificationChannel } from "../types";
-import { cn } from "@/shared/lib/utils";
 import { ChannelStatusBadge } from "./channel-status-badge";
 
 interface NotificationChannelsProps {
@@ -37,9 +36,9 @@ export function NotificationChannels({ channels, onConfigure }: NotificationChan
             <CardDescription className="min-h-[40px] mb-4 text-sm leading-relaxed">
               {channel.description}
             </CardDescription>
-            <Button 
-              variant="outline" 
-              className="w-full group-hover:border-primary/50 transition-colors" 
+            <Button
+              variant="outline"
+              className="w-full group-hover:border-primary/50 transition-colors"
               onClick={() => onConfigure(channel.id)}
             >
               <Settings2 className="mr-2 size-4" />

@@ -1,101 +1,138 @@
-# Kế Hoạch Triển Khai: Form Import Standardization (Synapse)
+# Kế Hoạch Triển Khai: Badge Color Standardization (Synapse)
 
 **Ngày tạo**: 2025-12-15
-**Cập nhật**: 2025-12-15 15:30
-**Trạng thái**: ✅ ĐÃ PHÊ DUYỆT - ĐANG THỰC THI
-**Vai trò**: Front-end Auditor & UI Consistency Specialist
+**Cập nhật**: 2025-12-15 16:10
+**Trạng thái**: 🔄 CHỜ PHÊ DUYỆT
+**Vai trò**: UI/UX Specialist & Design System Auditor
 
 ---
 
 ## 1. Vấn Đề (Problem)
 
-### 1.1. Phân Tích Tổng Quan
+### 1.1. Tình Huống Từ Người Dùng
 
-Hệ thống có **15 form components** với **93% vi phạm** barrel import convention.
+Người dùng phát hiện **màu sắc Badge không nhất quán** trong Resource Table và yêu cầu kiểm tra toàn bộ dự án.
 
-| Metric | Giá trị |
-|--------|---------|
-| Tổng forms | 15 |
-| Deep Import (SAI) | 14 (93%) |
-| Barrel Import (ĐÚNG) | 1 (7%) |
+### 1.2. Phân Tích Screenshot
 
-### 1.2. Files Vi Phạm
+| Badge | Hiển Thị | Variant Code | Vấn Đề |
+|-------|----------|--------------|--------|
+| 🔵 **Phòng** | Xanh dương nhạt | `soft` | Không khớp semantic - `soft` dùng primary color |
+| ⚪ **Thiết bị** | Xám outline | `outline` | KHÁC BIỆT với "Phòng" dù cùng cột "Loại" |
+| 🟢 **Hoạt động** | Xanh lá | `success` | ✅ OK |
+| 🟡 **Bảo trì** | Cam nhạt | `warning` | ✅ OK (nhưng cần verify toàn bộ) |
+| 🔵 **Laser, Skin Care** | Xanh dương nhạt | `secondary` | ❌ BUG: Code là `secondary` (xám) nhưng hiển thị giống `info` (xanh) |
 
-| # | Form | Feature | Trạng thái |
-|---|------|---------|------------|
-| 1 | `customer-form.tsx` | customers | ❌ Deep Import |
-| 2 | `staff-form.tsx` | staff | ❌ Deep Import |
-| 3 | `service-form.tsx` | services | ❌ Deep Import |
-| 4 | `resource-form.tsx` | resources | ❌ Deep Import |
-| 5 | `skill-form.tsx` | services | ❌ Deep Import |
-| 6 | `shift-form.tsx` | staff | ❌ Cần kiểm tra |
-| 7 | `review-form.tsx` | reviews | ❌ Cần kiểm tra |
-| 8 | `payment-form.tsx` | billing | ❌ Deep Import |
-| 9 | `profile-form.tsx` | customer-dashboard | ❌ Deep Import |
-| 10 | `login-form.tsx` | auth | ❌ Deep Import |
-| 11 | `register-form.tsx` | auth | ❌ Deep Import |
-| 12 | `forgot-password-form.tsx` | auth | ❌ Cần kiểm tra |
-| 13 | `update-password-form.tsx` | auth | ❌ Cần kiểm tra |
-| 14 | `booking-wizard/customer-form.tsx` | booking-wizard | ❌ Cần kiểm tra |
-| 15 | `appointment-form.tsx` | appointments | ✅ Barrel Import |
+### 1.3. Phạm Vi Kiểm Tra
+
+**Files chứa Badge Usage cần audit:**
+- `features/resources/components/resource-table.tsx`
+- `features/staff/components/staff-list/staff-table.tsx`
+- `features/staff/components/permissions/permission-matrix.tsx`
+- `features/settings/operating-hours/exceptions-panel.tsx`
+- `features/settings/notifications/components/`
+- `features/customers/` (customer-history.tsx, customer-table.tsx)
+- `features/appointments/` (nhiều files)
+- `features/services/` (service-table.tsx)
+- `features/billing/` (invoice-table.tsx)
+- `features/reviews/` (reviews-admin-page.tsx)
+- `shared/ui/custom/tag-input.tsx`
 
 ---
 
 ## 2. Mục Đích (Goal)
 
-1. **Refactor Import Paths**: 14 forms → Barrel Import `@/shared/ui`
-2. **Không Breaking Changes**: Chỉ thay đổi import, không đổi logic
-3. **Build phải pass**: `pnpm lint` và `pnpm build`
+1. **Audit**: Kiểm tra tất cả nơi sử dụng Badge component
+2. **Standardize**: Đảm bảo màu sắc nhất quán theo semantic meaning
+3. **Fix Bugs**: Sửa các badge sử dụng variant sai
+4. **Document**: Bổ sung preset cho Resource Type nếu cần
+
+### Quy Tắc Màu Chuẩn (Từ Design System)
+
+| Semantic | Variant | Dùng Cho |
+|----------|---------|----------|
+| 🟢 Success | `success` | Active, Available, Completed, Paid |
+| 🟡 Warning | `warning` | Pending, In Use, Maintenance |
+| 🔴 Destructive | `destructive` | Cancelled, Inactive, Refunded |
+| 🔵 Info | `info` | Confirmed, Connected |
+| ⚪ Secondary | `secondary` | Tags, Skills, No-Show, Silver Tier |
+| 🔷 Primary/Soft | `soft` | Highlighted categories |
+| 🟣 Purple | `purple` | Admin Role |
+| 🟤 Outline | `outline` | Neutral chips, Neutral status |
 
 ---
 
 ## 3. Ràng Buộc (Constraints)
 
-- ✅ Không thay đổi behavior/logic
+- ✅ Không thay đổi logic nghiệp vụ
 - ✅ Backward compatible
-- ✅ Build phải pass
-- ✅ Giữ nguyên Tiếng Việt
+- ✅ `pnpm lint` và `pnpm build` phải pass
+- ✅ Giữ nguyên text Tiếng Việt
+- ✅ Tuân thủ preset system đã có trong `badge.tsx`
 
 ---
 
-## 4. Task Breakdown
+## 4. Chiến Lược (Strategy)
 
-### Batch 1: Core Entity Forms (4 files)
-| Task | File | Priority |
-|------|------|----------|
-| F1-01 | `customers/components/customer-form.tsx` | High |
-| F1-02 | `staff/components/staff-form.tsx` | High |
-| F1-03 | `services/components/service-form.tsx` | High |
-| F1-04 | `resources/components/resource-form.tsx` | High |
+### Phase 1: Audit - Thu thập tất cả Badge usage
+1. Tìm tất cả files import Badge
+2. Liệt kê variant đang dùng
+3. So sánh với quy tắc semantic
 
-### Batch 2: Auth Forms (4 files)
-| Task | File | Priority |
-|------|------|----------|
-| F2-01 | `auth/components/login-form.tsx` | Medium |
-| F2-02 | `auth/components/register-form.tsx` | Medium |
-| F2-03 | `auth/components/forgot-password-form.tsx` | Medium |
-| F2-04 | `auth/components/update-password-form.tsx` | Medium |
+### Phase 2: Fix - Sửa các vi phạm
+1. Resource Type: Chuẩn hóa cả "Phòng" và "Thiết bị" dùng cùng 1 variant style
+2. Tags (Equipment): Đảm bảo dùng `info` nếu muốn xanh dương, hoặc `secondary` nếu muốn xám
+3. Status mapping: Verify `warning` cho "Bảo trì", `destructive` cho "Ngưng hoạt động"
 
-### Batch 3: Other Forms (6 files)
-| Task | File | Priority |
-|------|------|----------|
-| F3-01 | `services/components/skill-form.tsx` | Low |
-| F3-02 | `staff/components/scheduling/shift-form.tsx` | Low |
-| F3-03 | `billing/components/sheet/payment-form.tsx` | Low |
-| F3-04 | `customer-dashboard/components/profile-form.tsx` | Low |
-| F3-05 | `reviews/components/review-form.tsx` | Low |
-| F3-06 | `booking-wizard/.../customer-form.tsx` | Low |
+### Phase 3: Enhance Badge Presets
+1. Thêm preset cho Resource Type nếu cần
+2. Thêm preset cho Tags nếu cần
 
 ---
 
-## 5. Definition of Done
+## 5. Task Breakdown
 
-- [ ] Tất cả 14 forms sử dụng Barrel Import
+### Task 1: Full Audit (Priority: High)
+- [ ] Scan toàn bộ `*.tsx` có Badge
+- [ ] Tạo bảng tổng hợp variant usage
+
+### Task 2: Fix Resource Table Badges (Priority: High)
+- [ ] Resource Type: Đồng bộ Phòng/Thiết bị
+- [ ] Equipment Tags: Xác định màu đúng
+
+### Task 3: Fix Staff/Customer Tables (Priority: Medium)
+- [ ] Verify role badges
+- [ ] Verify tier badges
+
+### Task 4: Badge Preset Enhancement (Priority: Low)
+- [ ] Thêm preset `resource-room`, `resource-equipment` nếu cần
+- [ ] Thêm preset `tag-info`, `tag-neutral` nếu cần
+
+---
+
+## 6. Definition of Done
+
+- [ ] Tất cả Badge sử dụng đúng semantic variant
+- [ ] Không có sự khác biệt màu giữa các badge cùng loại
 - [ ] `pnpm lint` pass
 - [ ] `pnpm build` pass
-- [ ] change-log.md ghi nhận thay đổi
-- [ ] dashboard.md cập nhật
+- [ ] `change-log.md` ghi nhận thay đổi
+- [ ] `dashboard.md` cập nhật
 
 ---
 
-**✅ PLAN APPROVED - PROCEEDING TO EXECUTION**
+## ⏸️ DỪNG LẠI - CHỜ XÁC NHẬN
+
+**Câu hỏi cần làm rõ trước khi thực thi:**
+
+1. **Resource Type Badge**: Bạn muốn cả "Phòng" và "Thiết bị" dùng:
+   - **Cùng variant** (ví dụ: cả 2 dùng `info` hoặc `outline` với icon)?
+   - **Khác variant** nhưng cùng tone màu (ví dụ: `info` và `secondary`)?
+
+2. **Equipment Tags** ("Laser", "Skin Care"): Bạn muốn màu:
+   - **Xanh dương nhạt** (`info`) như trong screenshot?
+   - **Xám nhạt** (`secondary`) như code hiện tại?
+
+3. **Có scope nào cần ưu tiên** (chỉ Resources, hay toàn bộ dự án)?
+
+Xin hãy confirm để tôi tiến hành thực thi!

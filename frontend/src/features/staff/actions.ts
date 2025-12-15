@@ -37,7 +37,7 @@ export async function getTechnicians(): Promise<TechnicianOption[]> {
     .map(staff => ({ id: staff.user_id, name: staff.user.full_name ?? "Không có tên" }))
 }
 
-export async function inviteStaff(prevState: unknown, formData: FormData): Promise<ActionResponse> {
+export async function inviteStaff(_prevState: unknown, formData: FormData): Promise<ActionResponse> {
   const rawData = {
     email: formData.get("email"),
     role: formData.get("role"),
@@ -59,17 +59,17 @@ export async function inviteStaff(prevState: unknown, formData: FormData): Promi
   return success(undefined, "Đã gửi lời mời thành công")
 }
 
-export async function deleteStaff(staffId: string): Promise<ActionResponse> {
+export async function deleteStaff(_staffId: string): Promise<ActionResponse> {
   revalidatePath("/admin/staff")
   return success(undefined, "Đã xóa nhân viên thành công")
 }
 
-export async function updateStaff(staffId: string, data: StaffUpdate): Promise<ActionResponse> {
+export async function updateStaff(_staffId: string, _data: StaffUpdate): Promise<ActionResponse> {
   revalidatePath("/admin/staff")
   return success(undefined, "Cập nhật thông tin thành công")
 }
 
-export async function updateStaffSkills(staffId: string, skillIds: string[]): Promise<ActionResponse> {
+export async function updateStaffSkills(_staffId: string, _skillIds: string[]): Promise<ActionResponse> {
   revalidatePath("/admin/staff")
   return success(undefined, "Cập nhật kỹ năng thành công")
 }
@@ -99,7 +99,7 @@ export async function updateStaffAction(prevState: unknown, formData: FormData):
   return success(undefined, "Cập nhật nhân viên thành công")
 }
 
-export async function updateUser(userId: string, data: { full_name?: string; phone_number?: string }): Promise<ActionResponse> {
+export async function updateUser(_userId: string, _data: { full_name?: string; phone_number?: string }): Promise<ActionResponse> {
   return success(undefined, "Cập nhật thông tin thành công")
 }
 
@@ -115,20 +115,20 @@ export async function getPermissions(): Promise<ActionResponse<Record<string, Re
   })
 }
 
-export async function updatePermissions(permissions: Record<string, Record<string, boolean>>): Promise<ActionResponse> {
+export async function updatePermissions(_permissions: Record<string, Record<string, boolean>>): Promise<ActionResponse> {
   return success(undefined, "Cập nhật phân quyền thành công")
 }
 
-export async function getSchedules(startDate: string, endDate: string): Promise<ActionResponse<Schedule[]>> {
+export async function getSchedules(_startDate: string, _endDate: string): Promise<ActionResponse<Schedule[]>> {
   return success(MOCK_SCHEDULES)
 }
 
-export async function updateSchedule(schedule: Schedule): Promise<ActionResponse> {
+export async function updateSchedule(_schedule: Schedule): Promise<ActionResponse> {
   revalidatePath("/admin/staff")
   return success(undefined, "Cập nhật lịch làm việc thành công")
 }
 
-export async function deleteSchedule(scheduleId: string): Promise<ActionResponse> {
+export async function deleteSchedule(_scheduleId: string): Promise<ActionResponse> {
   revalidatePath("/admin/staff")
   return success(undefined, "Đã xóa lịch làm việc thành công")
 }

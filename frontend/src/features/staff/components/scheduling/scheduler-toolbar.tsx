@@ -21,7 +21,6 @@ interface SchedulerToolbarProps {
   onResetToday: () => void
   onCancelChanges: () => void
   onSaveChanges: () => void
-  onCopyWeek: () => void
   toolState: ReturnType<typeof useSchedulerTools>
 }
 
@@ -35,7 +34,6 @@ export function SchedulerToolbar({
   onResetToday,
   onCancelChanges,
   onSaveChanges,
-  onCopyWeek,
   toolState
 }: SchedulerToolbarProps) {
   return (

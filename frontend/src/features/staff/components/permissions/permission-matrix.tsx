@@ -26,7 +26,7 @@ export function PermissionMatrix({ initialPermissions, className }: PermissionMa
   const [permissions, setPermissions] = useState(initialPermissions)
   const [hasChanges, setHasChanges] = useState(false)
   const [changeCount, setChangeCount] = useState(0)
-  const [isPending, startTransition] = useTransition()
+  const [, startTransition] = useTransition()
 
   const handleToggle = (moduleId: string, roleId: string) => {
     setPermissions((prev) => {

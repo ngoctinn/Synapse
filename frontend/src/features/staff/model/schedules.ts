@@ -10,8 +10,8 @@ const getCurrentWeekDates = () => {
 };
 
 const weekDates = getCurrentWeekDates();
-const staffIds = MOCK_STAFF.map((s) => s.user_id);
-const shiftIds = MOCK_SHIFTS.map((s) => s.id);
+const _staffIds = MOCK_STAFF.map((s) => s.user_id);
+const _shiftIds = MOCK_SHIFTS.map((s) => s.id);
 
 
 export const MOCK_SCHEDULES: Schedule[] = [

@@ -1,18 +1,18 @@
 "use client";
 
+import { Alert, AlertDescription, AlertTitle } from "@/shared/ui/alert";
+import { isSameDay } from "date-fns";
 import { AlertCircle, CalendarClock } from "lucide-react";
 import React, { useEffect, useMemo, useState, useTransition } from "react";
+import { getAvailableSlots } from "../../actions";
+import { useBookingStore } from "../../hooks/use-booking-store";
+import { TimeSlot } from "../../types";
 import { DatePicker } from "./date-picker";
 import { TimeSlots } from "./time-slots";
-import { useBookingStore } from "../../hooks/use-booking-store";
-import { getAvailableSlots } from "../../actions";
-import { isSameDay } from "date-fns";
-import { Alert, AlertDescription, AlertTitle } from "@/shared/ui/alert";
-import { TimeSlot } from "../../types";
 
 export const TimeStep: React.FC = () => {
   const { selectedServices, staffId, selectedDate, selectedSlot, setSelectedDate, setSelectedSlot } = useBookingStore();
-  
+
   const [fetchedSlots, setFetchedSlots] = useState<TimeSlot[]>([]);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [isLoading, startTransition] = useTransition();
@@ -40,7 +40,7 @@ export const TimeStep: React.FC = () => {
   }, [fetchedSlots, selectedDate, shouldFetch]);
 
   // Effect for fetching data
-  // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/set-state-in-effect
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!shouldFetch) {
       // If not ready to fetch, simply return. Cleanup is handled by separate effect.
@@ -48,10 +48,10 @@ export const TimeStep: React.FC = () => {
       setSelectedDate(null); // Clear selected date in store
       return;
     }
-    
+
     setFetchError(null); // Clear any previous error before starting a new fetch
     startTransition(async () => {
-        const dateToFetch = selectedDate ? new Date(selectedDate) : new Date(); 
+        const dateToFetch = selectedDate ? new Date(selectedDate) : new Date();
         const result = await getAvailableSlots({
             serviceIds: selectedServices.map(s => s.id),
             staffId: staffId,
@@ -74,10 +74,9 @@ export const TimeStep: React.FC = () => {
             setSelectedDate(null); // Clear selected date on error
         }
     });
-  }, [selectedServices, staffId, selectedDate, setSelectedDate, getAvailableSlots, shouldFetch]);
+  }, [selectedServices, staffId, selectedDate, setSelectedDate, shouldFetch]);
 
   // Effect for clearing states when conditions for fetching are no longer met
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!shouldFetch) {
       setFetchedSlots([]);

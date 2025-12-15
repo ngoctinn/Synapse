@@ -4,10 +4,10 @@ import { cn } from "@/shared/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 import {
-  AlertCircle,
-  Calendar,
-  Info,
-  MessageSquare
+    AlertCircle,
+    Calendar,
+    Info,
+    MessageSquare
 } from "lucide-react";
 import { Notification } from "../model/types";
 
@@ -64,15 +64,15 @@ export function NotificationItem({ notification, onClick }: NotificationItemProp
   );
 }
 
-function getIcon(type: Notification['type']) {
-  switch (type) {
-    case 'booking': return Calendar;
-    case 'alert': return AlertCircle;
-    case 'system': return Info;
-    case 'staff': return MessageSquare;
-    default: return Info;
-  }
-}
+// function getIcon(type: Notification['type']) {
+//   switch (type) {
+//     case 'booking': return Calendar;
+//     case 'alert': return AlertCircle;
+//     case 'system': return Info;
+//     case 'staff': return MessageSquare;
+//     default: return Info;
+//   }
+// }
 
 function getIconColor(type: Notification['type']) {
   switch (type) {
