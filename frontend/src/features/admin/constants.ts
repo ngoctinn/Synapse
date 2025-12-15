@@ -1,30 +1,29 @@
 import {
-    Bell,
-    Box,
-    Calendar,
-    Home,
-    Layers,
-    Mail,
-    Scissors,
-    Settings,
-    User,
-    Users
-} from "lucide-react"
+  Box,
+  Calendar,
+  CreditCard,
+  Home,
+  Scissors,
+  Settings,
+  Star,
+  User,
+  Users,
+} from "lucide-react";
 
 export type SidebarItem = {
-  title: string
-  href: string
-  icon: React.ElementType
+  title: string;
+  href: string;
+  icon: React.ElementType;
   items?: {
-    title: string
-    href: string
-  }[]
-}
+    title: string;
+    href: string;
+  }[];
+};
 
 export const SIDEBAR_ITEMS: SidebarItem[] = [
   {
     title: "Tổng quan",
-    href: "/admin/overview",
+    href: "/admin/dashboard",
     icon: Home,
   },
   {
@@ -53,23 +52,18 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     icon: Box,
   },
   {
-    title: "Tin nhắn",
-    href: "/admin/messages",
-    icon: Mail,
+    title: "Hóa đơn",
+    href: "/admin/billing",
+    icon: CreditCard,
   },
   {
-    title: "Thông báo",
-    href: "/admin/notifications",
-    icon: Bell,
-  },
-  {
-    title: "Thành phần",
-    href: "/admin/components",
-    icon: Layers,
+    title: "Đánh giá",
+    href: "/admin/reviews",
+    icon: Star,
   },
   {
     title: "Cài đặt",
     href: "/admin/settings",
     icon: Settings,
   },
-]
+];
