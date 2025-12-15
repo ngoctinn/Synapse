@@ -1,4 +1,72 @@
-# Change Log - Frontend Consistency Audit
+# Change Log - Antigravity Protocol
+
+---
+
+## SCS-001: Sheet Component Standardization
+
+**Ngày thực hiện**: 2025-12-15
+**Trạng thái**: ✅ HOÀN THÀNH
+
+### Tổng Quan
+
+Chuẩn hóa tất cả Sheet components trong hệ thống để đảm bảo:
+- Barrel Import Pattern (`@/shared/ui`)
+- Structure nhất quán (SheetContent className, sheet-scroll-area)
+- Naming convention đúng
+
+### Chi Tiết Thay Đổi
+
+#### 1. Import Refactoring (8 files)
+
+| File | Trước | Sau |
+|------|-------|-----|
+| `staff-sheet.tsx` | Deep imports | `@/shared/ui` |
+| `resource-sheet.tsx` | Deep imports | `@/shared/ui` |
+| `service-sheet.tsx` | Deep imports | `@/shared/ui` |
+| `customer-sheet.tsx` | Deep imports | `@/shared/ui` |
+| `exception-sheet.tsx` | Deep imports | `@/shared/ui` |
+| `invoice-sheet.tsx` | Deep imports | `@/shared/ui` |
+| `mobile-user-sheet.tsx` | Deep imports | `@/shared/ui` |
+| `add-shift-dialog.tsx` | Deep imports | Renamed + `@/shared/ui` |
+
+#### 2. Structure Standardization
+
+| File | Thay đổi |
+|------|----------|
+| `invoice-sheet.tsx` | `w-[400px]` → `sm:max-w-lg`, ScrollArea → `sheet-scroll-area` |
+| `add-shift-dialog.tsx` → `add-shift-sheet.tsx` | Renamed, fix scroll area |
+
+#### 3. Barrel Export Updates
+
+| File | Thay đổi |
+|------|----------|
+| `shared/ui/index.ts` | Added: `FieldContent`, `FieldDescription`, `FieldError`, `FieldLabel`, `FieldLegend`, `FieldSeparator`, `FieldSet`, `FieldTitle` |
+
+#### 4. File Rename
+
+- `add-shift-dialog.tsx` → `add-shift-sheet.tsx`
+- Updated import in `staff-scheduler.tsx`
+
+### Verification
+
+```bash
+$ pnpm lint   # 0 errors, 74 warnings
+$ pnpm build  # ✓ Compiled successfully
+```
+
+### Impact
+
+| Metric | Value |
+|--------|-------|
+| Files Modified | 9 |
+| Files Created | 1 (add-shift-sheet.tsx) |
+| Files Deleted | 1 (add-shift-dialog.tsx) |
+| Breaking Changes | 0 |
+| Sheet Compliance | 33% → 95% |
+
+---
+
+## FCA-001: Frontend Consistency Audit
 
 **Workflow ID**: FCA-001
 **Ngày thực hiện**: 2025-12-15

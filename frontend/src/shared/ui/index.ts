@@ -90,7 +90,7 @@ export {
     useFormField
 } from "./form"
 
-export { Field, FieldGroup } from "./field"
+export { Field, FieldContent, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, FieldSet, FieldTitle } from "./field"
 export { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText, InputGroupTextarea } from "./input-group"
 
 // ==========================================

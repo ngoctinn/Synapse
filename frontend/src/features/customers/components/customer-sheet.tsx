@@ -8,28 +8,28 @@ import { useForm } from "react-hook-form"
 
 import { manageCustomer } from "@/features/customers/actions"
 import {
-  CustomerFormValues,
-  customerSchema,
-  CustomerUpdateFormValues,
-  customerUpdateSchema
+    CustomerFormValues,
+    customerSchema,
+    CustomerUpdateFormValues,
+    customerUpdateSchema
 } from "@/features/customers/model/schemas"
 import { Customer } from "@/features/customers/model/types"
 import { getTechnicians, type TechnicianOption } from "@/features/staff/actions"
 
 
-import { Badge } from "@/shared/ui/badge"
-import { Button } from "@/shared/ui/button"
-import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs"
-import { showToast } from "@/shared/ui/sonner"
-import { Form } from "@/shared/ui/form"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle
-} from "@/shared/ui/sheet"
+    Badge,
+    Button,
+    Form,
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
+    showToast,
+} from "@/shared/ui"
+import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs"
 
 import { CustomerForm } from "./customer-form"
 import { CustomerHistory } from "./customer-history"

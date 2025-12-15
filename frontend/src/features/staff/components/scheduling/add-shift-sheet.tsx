@@ -1,19 +1,19 @@
 "use client"
 
-import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs"
 import {
     Sheet,
     SheetContent,
     SheetDescription,
     SheetHeader,
     SheetTitle,
-} from "@/shared/ui/sheet"
+} from "@/shared/ui"
+import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs"
 import { useState } from "react"
 import { MOCK_SHIFTS } from "../../model/shifts"
 import { Shift } from "../../model/types"
 import { ShiftForm } from "./shift-form"
 
-interface AddShiftDialogProps {
+interface AddShiftSheetProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onAddShift: (shift: Shift) => void
@@ -26,13 +26,13 @@ const ADD_SHIFT_TABS = [
   { value: "custom", label: "Tùy Chỉnh" },
 ]
 
-export function AddShiftDialog({
+export function AddShiftSheet({
   open,
   onOpenChange,
   onAddShift,
   staffName,
   dateStr,
-}: AddShiftDialogProps) {
+}: AddShiftSheetProps) {
   const [activeTab, setActiveTab] = useState("template")
 
   const handleAddTemplate = (template: Shift) => {
@@ -46,14 +46,14 @@ export function AddShiftDialog({
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full sm:max-w-md p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
-        <SheetHeader className="px-6 py-4 border-b">
+        <SheetHeader>
           <SheetTitle className="text-xl font-semibold">Thêm ca làm việc</SheetTitle>
           <SheetDescription>
             {staffName && dateStr ? `${staffName} - ${dateStr}` : "Chọn ca mẫu hoặc tạo ca tùy chỉnh."}
           </SheetDescription>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="sheet-scroll-area">
           <FormTabs
             tabs={ADD_SHIFT_TABS}
             value={activeTab}
@@ -100,4 +100,3 @@ export function AddShiftDialog({
     </Sheet>
   )
 }
-

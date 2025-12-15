@@ -1,14 +1,16 @@
 "use client"
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
-import { Button } from "@/shared/ui/button"
 import {
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
+    Button,
     Sheet,
     SheetContent,
     SheetHeader,
     SheetTitle,
     SheetTrigger,
-} from "@/shared/ui/sheet"
+} from "@/shared/ui"
 import { LayoutDashboard, LogOut, Settings } from "lucide-react"
 import Link from "next/link"
 import * as React from "react"

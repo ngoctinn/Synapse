@@ -9,25 +9,25 @@ import { useForm } from "react-hook-form"
 import { Skill } from "@/features/services/types"
 import { manageStaff } from "@/features/staff/actions"
 import {
-  StaffCreateFormValues,
-  StaffUpdateFormValues,
-  staffCreateSchema,
-  staffUpdateSchema
+    StaffCreateFormValues,
+    StaffUpdateFormValues,
+    staffCreateSchema,
+    staffUpdateSchema
 } from "@/features/staff/model/schemas"
 import { Staff } from "@/features/staff/model/types"
 
 
-import { Button } from "@/shared/ui/button"
-import { Form } from "@/shared/ui/form"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle
-} from "@/shared/ui/sheet"
-import { showToast } from "@/shared/ui/sonner"
+    Button,
+    Form,
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
+    showToast,
+} from "@/shared/ui"
 import { StaffForm } from "./staff-form"
 
 interface StaffSheetProps {

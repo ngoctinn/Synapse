@@ -1,17 +1,17 @@
 "use client"
 
 import { Resource, RoomType } from "@/features/resources"
-import { Button } from "@/shared/ui/button"
-import { showToast } from "@/shared/ui/sonner"
-import { Form } from "@/shared/ui/form"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/shared/ui/sheet"
+    Button,
+    Form,
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
+    showToast,
+} from "@/shared/ui"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save, Send } from "lucide-react"
 import * as React from "react"
