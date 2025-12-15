@@ -113,89 +113,89 @@ export function ExceptionsPanel({
 
       <div className="flex-1 min-h-0">
          <div className="flex flex-col xl:flex-row gap-6 h-full">
-          {/* Left: Exceptions List */}
-          <div className="flex-1 overflow-hidden flex flex-col">
-            <div className="flex-1 min-h-0">
-              {sortedExceptions.length === 0 ? (
-                <div className="flex items-center justify-center p-12 border rounded-lg border-dashed">
-                  <div className="text-center space-y-2">
-                    <CalendarDays className="size-10 text-muted-foreground/30 mx-auto" />
-                    <p className="text-sm font-medium text-muted-foreground">Chưa có ngày ngoại lệ</p>
-                      <p className="text-xs text-muted-foreground/70">
-                        Nhấn &quot;Thêm ngày&quot; để tạo ngày nghỉ lễ hoặc giờ đặc biệt
-                      </p>
+            {/* Left: Exceptions List */}
+            <div className="flex-1 overflow-hidden flex flex-col">
+              <div className="flex-1 min-h-0">
+                {sortedExceptions.length === 0 ? (
+                  <div className="h-full flex flex-col items-center justify-center p-8 text-center border-2 border-dashed rounded-xl bg-muted/10">
+                    <CalendarDays className="size-12 text-muted-foreground/20 mb-3" />
+                    <h3 className="font-medium text-muted-foreground">Chưa có ngày ngoại lệ</h3>
+                    <p className="text-xs text-muted-foreground/60 max-w-[200px] mt-1">
+                      Thêm các ngày nghỉ lễ hoặc giờ làm việc đặc biệt tại đây.
+                    </p>
                   </div>
-                </div>
-              ) : (
-                <ScrollArea className="h-full">
-                  <div className="space-y-3 pr-4">
-                    {sortedExceptions.map((exception) => (
-                      <div
-                        key={exception.id}
-                        className="group relative flex items-center justify-between p-4 rounded-xl border bg-card hover:border-primary/50 hover:shadow-sm transition-all duration-200"
-                      >
-                        <div className="flex items-start gap-4">
-                          <div className={cn(
-                            "flex flex-col items-center justify-center w-14 h-14 rounded-lg border",
-                            exception.isClosed
-                              ? "bg-destructive/5 border-destructive/20 text-destructive"
-                              : "bg-primary/5 border-primary/20 text-primary"
-                          )}>
-                            <span className="text-xs font-medium uppercase leading-none mb-1">
-                              Tháng {format(new Date(exception.date), "MM")}
-                            </span>
-                            <span className="text-xl font-bold leading-none">
-                              {format(new Date(exception.date), "dd")}
-                            </span>
-                          </div>
-
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2">
-                              <h4 className="font-medium text-sm">
-                                {format(new Date(exception.date), "EEEE, dd/MM/yyyy", { locale: vi })}
-                              </h4>
-                              <Badge variant={getBadgeVariant(exception.type)} className="text-[10px] px-1.5 h-5">
-                                {exception.isClosed ? "Đóng cửa" : EXCEPTION_TYPE_LABELS[exception.type]}
-                              </Badge>
+                ) : (
+                  <ScrollArea className="h-full">
+                    <div className="space-y-3 pr-4 pb-4">
+                      {sortedExceptions.map((exception) => (
+                        <div
+                          key={exception.id}
+                          className="flex items-center justify-between p-4 rounded-xl border bg-card/50 transition-colors hover:bg-card hover:border-primary/20"
+                        >
+                          <div className="flex items-start gap-4">
+                            {/* Date Box */}
+                            <div className={cn(
+                              "flex flex-col items-center justify-center w-14 h-14 rounded-lg border bg-background shrink-0",
+                              exception.isClosed
+                                ? "border-destructive/20 text-destructive"
+                                : "border-primary/20 text-primary"
+                            )}>
+                              <span className="text-[10px] uppercase font-bold text-muted-foreground/70">
+                                Thg {format(new Date(exception.date), "MM")}
+                              </span>
+                              <span className="text-xl font-bold leading-none">
+                                {format(new Date(exception.date), "dd")}
+                              </span>
                             </div>
 
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <span className="text-xs line-clamp-1">{exception.reason}</span>
-                            </div>
-
-                            {!exception.isClosed && exception.openTime && exception.closeTime && (
-                              <div className="text-xs font-mono text-muted-foreground pl-1 border-l-2 border-primary/20">
-                                {exception.openTime} - {exception.closeTime}
+                            {/* Details */}
+                            <div className="space-y-1 my-auto">
+                              <div className="flex items-center gap-2">
+                                <span className="font-medium text-sm">
+                                  {format(new Date(exception.date), "EEEE, dd/MM/yyyy", { locale: vi })}
+                                </span>
+                                <Badge variant={getBadgeVariant(exception.type)} className="text-[10px] px-1.5 h-5 font-normal">
+                                  {exception.isClosed ? "Đóng cửa" : EXCEPTION_TYPE_LABELS[exception.type]}
+                                </Badge>
                               </div>
-                            )}
+
+                              <div className="text-sm text-muted-foreground line-clamp-1">
+                                {exception.reason}
+                                {!exception.isClosed && exception.openTime && exception.closeTime && (
+                                  <span className="ml-2 font-mono text-xs text-foreground/80 bg-muted px-1.5 py-0.5 rounded">
+                                    {exception.openTime} - {exception.closeTime}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Actions */}
+                          <div className="flex gap-1 shrink-0">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleEditClick(exception)}
+                              className="size-8 text-muted-foreground hover:text-foreground"
+                            >
+                               <Pencil className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDeleteClick(exception.id)}
+                              className="size-8 text-muted-foreground hover:text-destructive"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
                           </div>
                         </div>
-
-                        <div className="flex gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleEditClick(exception)}
-                            className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full"
-                          >
-                             <Pencil className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleDeleteClick(exception.id)}
-                            className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </ScrollArea>
-              )}
+                      ))}
+                    </div>
+                  </ScrollArea>
+                )}
+              </div>
             </div>
-          </div>
 
           {/* Right: Mini Calendar (Desktop only) */}
           <div className="hidden xl:block shrink-0">

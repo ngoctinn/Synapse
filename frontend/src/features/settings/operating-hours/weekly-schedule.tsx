@@ -82,7 +82,37 @@ export function WeeklySchedule({ config, onConfigChange }: WeeklyScheduleProps) 
 
   return (
     <>
-      <div className="space-y-4">
+      <div className="space-y-4 relative">
+        {/* Copy Mode Indicator - Sticky Top */}
+        {copySourceDay !== null && (
+          <div className="sticky top-0 z-20 mb-4 bg-primary/10 border border-primary/20 backdrop-blur-md text-primary rounded-lg p-3 flex items-center justify-between shadow-sm animate-in slide-in-from-top-2">
+            <div className="flex items-center gap-2">
+              <Copy className="size-4" />
+              <span className="text-sm font-medium">
+                Đang sao chép từ <span className="font-bold underline decoration-primary/50 underline-offset-2">{DAY_LABELS[copySourceDay]}</span>
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="default" // Primary action
+                size="sm"
+                onClick={() => setPasteToAllOpen(true)}
+                className="h-8 text-xs shadow-none"
+              >
+                Áp dụng tất cả
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleCancelCopy}
+                className="h-8 w-8 p-0 text-primary hover:text-primary hover:bg-primary/20"
+              >
+                <X className="size-4" />
+              </Button>
+            </div>
+          </div>
+        )}
+
         {config.weeklySchedule.map((day, index) => (
           <DayRow
             key={day.dayOfWeek}
@@ -100,40 +130,6 @@ export function WeeklySchedule({ config, onConfigChange }: WeeklyScheduleProps) 
           />
         ))}
       </div>
-
-      {/* Floating Action Bar for Copy Mode */}
-      {copySourceDay !== null && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-background/95 backdrop-blur-sm border rounded-xl shadow-lg px-5 py-3 flex items-center gap-4 animate-in slide-in-from-bottom-4 fade-in-0 duration-300">
-          <span className="text-sm font-medium whitespace-nowrap">
-            Đang sao chép từ{" "}
-            <span className="text-primary font-bold">
-              {DAY_LABELS[copySourceDay]}
-            </span>
-          </span>
-
-          <div className="h-5 w-px bg-border hidden sm:block" />
-
-          <div className="flex items-center gap-2">
-            <Button
-              size="sm"
-              onClick={() => setPasteToAllOpen(true)}
-              className="h-8 shadow-sm"
-            >
-              <Copy className="size-3.5 mr-1.5" />
-              Áp dụng tất cả
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleCancelCopy}
-              className="h-8 text-muted-foreground hover:text-foreground"
-            >
-              <X className="size-3.5 mr-1.5" />
-              Hủy
-            </Button>
-          </div>
-        </div>
-      )}
 
       {/* Confirm dialog for paste to all */}
       <ConfirmDialog
