@@ -1,141 +1,114 @@
-# Change Log - Table System Refactor
+# Antigravity Change Log - Appointments Module
 
-> **Ngày:** 2025-12-15
-> **Phiên:** Table System UX/UI Consistency Fixes
-
----
-
-## Tóm Tắt
-
-Refactor hệ thống Table để đảm bảo tính nhất quán về UX/UI trên toàn bộ dự án Synapse.
+> **Module:** Appointments
+> **Workflow:** Gap Analysis & UX Improvements
+> **Ngày bắt đầu:** 2025-12-15
 
 ---
 
-## Thay Đổi Chi Tiết
+## Session: 2025-12-15
 
-### 1. `shared/ui/custom/data-table-empty-state.tsx`
-**Issue:** T-008 - Hardcoded colors
-**Thay đổi:**
-- `bg-white/50` → `bg-background/50`
-- `border-slate-300` → `border-border`
-- `bg-blue-50` → `bg-primary/10`
-- `text-blue-500` → `text-primary`
-- `text-slate-900` → `text-foreground`
-- `text-slate-500` → `text-muted-foreground`
+### 📊 Gap Analysis Summary
 
-**Lý do:** Sử dụng CSS variables để hỗ trợ dark mode và theme customization.
+| Aspect | Score | Notes |
+|--------|-------|-------|
+| UX/UI vs Design | 7.5/10 | Tốt |
+| TypeScript vs Database | 6/10 | Legacy fields gây inconsistency |
+| Requirements vs Implementation | 6/10 | ~60% User Stories hoàn thiện |
+| API Contract | 3/10 | Mock data only |
+| **Overall** | **5.6/10** | Cần cải thiện trước production |
 
 ---
 
-### 2. `features/services/components/service-table.tsx`
-**Issues:** T-001, T-004
-**Thay đổi:**
-- Header `"Thao tác"` → `"Hành động"` (consistency)
-- Thêm `className: "pr-6 text-right"` (alignment)
-- Thay `AlertDialog` inline (31 dòng) → `DeleteConfirmDialog` (7 dòng)
-- Xóa imports không cần thiết của AlertDialog components
+### ✅ Phát Hiện Quan Trọng: Buffer Time Logic
 
-**Lý do:** Giảm code duplication, tuân thủ COMPONENT_PATTERNS.md
+**Định nghĩa đúng của `buffer_time`:**
+- Buffer time là thời gian nghỉ dành cho **KHÁCH SAU** (dọn dẹp phòng, chuẩn bị)
+- **KHÔNG** tính vào duration của booking hiện tại
+- Nếu khách làm **nhiều dịch vụ liên tiếp** → có thể **bỏ qua buffer** giữa các dịch vụ của chính họ
 
----
-
-### 3. `features/services/components/skill-table.tsx`
-**Issues:** T-001, T-004, T-010
-**Thay đổi:**
-- Header `"Thao tác"` → `"Hành động"`
-- Thêm `className: "pr-6 text-right"`
-- Thay `AlertDialog` inline → `DeleteConfirmDialog`
-- Thêm `variant` prop vào interface và component
-- Xóa imports không cần thiết
-
-**Lý do:** Consistency với các tables khác
+**Ý nghĩa cho hệ thống:**
+- Duration hiển thị = Tổng thời gian dịch vụ (không cộng buffer)
+- Buffer time chỉ quan trọng khi kiểm tra **conflict với KHÁCH KHÁC**
+- Backend cần tính buffer khi booking slot cho khách tiếp theo
 
 ---
 
-### 4. `features/resources/components/resource-table.tsx`
-**Issues:** T-004
-**Thay đổi:**
-- Thay `AlertDialog` inline → `DeleteConfirmDialog`
-- Cập nhật `className` cho action column: `"pr-6"` → `"pr-6 text-right"`
-- Xóa imports không cần thiết của AlertDialog components
+### ✅ Completed Tasks
 
-**Lý do:** Tuân thủ pattern chuẩn DeleteConfirmDialog
+#### TASK-01: Verify No-show 15min Rule
+- **Status:** ✅ Already Correct
+- **Finding:** `event-popover.tsx` line 98-100
+  ```tsx
+  const canMarkNoShow =
+    event.status === "CONFIRMED" &&
+    minutesSinceStart > 15;
+  ```
 
----
+#### TASK-02: Buffer Time Data Model
+- **Status:** ✅ DONE
+- **File:** `mock-data.ts`
+- **Change:** Thêm `buffer_time` vào MockService interface và data
+- **Note:** Buffer time được giữ lại trong data model cho future conflict detection với khách khác
 
-### 5. `features/billing/components/invoice-table.tsx`
-**Issue:** T-001
-**Thay đổi:**
-- Header `""` (empty) → `"Hành động"`
-- Thêm `className: "pr-6 text-right"`
-
-**Lý do:** Tất cả tables nên có action header nhất quán
-
----
-
-## Files Đã Sửa
-
-| File | Lines Changed | Issues Fixed |
-|------|---------------|--------------|
-| `data-table-empty-state.tsx` | 6 | T-008 |
-| `service-table.tsx` | -10 (đã giảm~35 LOC) | T-001, T-004 |
-| `skill-table.tsx` | -14 (đã giảm~30 LOC) | T-001, T-004, T-010 |
-| `resource-table.tsx` | -17 (đã giảm~28 LOC) | T-004 |
-| `invoice-table.tsx` | 2 | T-001 |
-
-**Tổng cộng:** ~93 dòng code được loại bỏ/cải thiện
+#### TASK-03: Duration Display (Reverted)
+- **Status:** ✅ Reverted to correct logic
+- **File:** `appointment-form.tsx`
+- **Change:**
+  - Duration chỉ tính service.duration (không cộng buffer)
+  - FormDescription hiển thị đơn giản: "Tổng thời lượng: X phút"
+  - Conflict check sử dụng totalDuration (không buffer)
 
 ---
 
-## Verification
+### 📝 Final Code State
 
-| Check | Status |
-|-------|--------|
-| `pnpm lint` | ✅ Pass (0 errors) |
-| `pnpm build` | ✅ Pass (Exit code: 0) |
-
----
-
-## Pattern Áp Dụng
-
-### Trước (Pattern Cũ - Không Nhất Quán)
-```tsx
-<AlertDialog open={showDialog} onOpenChange={setShowDialog}>
-  <AlertDialogContent>
-    <AlertDialogHeader>
-      <AlertDialogTitle>Xóa {count} items?</AlertDialogTitle>
-      <AlertDialogDescription>
-        Hành động này không thể hoàn tác...
-      </AlertDialogDescription>
-    </AlertDialogHeader>
-    <AlertDialogFooter>
-      <AlertDialogCancel disabled={isPending}>Hủy</AlertDialogCancel>
-      <AlertDialogAction onClick={handleDelete} disabled={isPending}>
-        {isPending ? "Đang xóa..." : `Xóa ${count} mục`}
-      </AlertDialogAction>
-    </AlertDialogFooter>
-  </AlertDialogContent>
-</AlertDialog>
+**MockService Interface:**
+```typescript
+export interface MockService {
+  id: string;
+  name: string;
+  duration: number;
+  buffer_time: number;  // Dành cho conflict detection với khách khác
+  price: number;
+  color: string;
+  category: string;
+}
 ```
 
-### Sau (Pattern Chuẩn - Nhất Quán)
+**Duration Calculation Logic:**
 ```tsx
-<DeleteConfirmDialog
-  open={showDialog}
-  onOpenChange={setShowDialog}
-  onConfirm={handleDelete}
-  isDeleting={isPending}
-  entityName={`${count} items`}
-/>
+// Buffer time là thời gian nghỉ dành cho KHÁCH SAU (dọn dẹp, chuẩn bị)
+// Không tính vào duration của booking hiện tại
+// Nếu khách làm nhiều dịch vụ liên tiếp → có thể bỏ qua buffer giữa các dịch vụ
+const totalDuration = useMemo(() => {
+  return (watchedServiceIds || []).reduce((acc, serviceId) => {
+    const service = availableServices.find((s) => s.id === serviceId);
+    return acc + (service?.duration || 0);
+  }, 0);
+}, [watchedServiceIds, availableServices]);
 ```
 
 ---
 
-## Remaining Issues (Không Trong Scope)
+### 🔍 Verification Results
 
-| ID | Vấn đề | Status |
-|----|--------|--------|
-| T-002 | Missing Sort trong ResourceTable, InvoiceTable | ⏸️ Deferred |
-| T-003 | Missing Pagination trong ResourceTable, InvoiceTable | ⏸️ Deferred |
-| T-006 | Loading Overlay Duplication | ⏸️ Deferred |
-| T-007 | Typography Inconsistency | ⏸️ Deferred |
+| Check | Status | Notes |
+|-------|--------|-------|
+| `pnpm lint` | ✅ PASS | 0 errors, 23 warnings (unrelated) |
+| `pnpm build` | ✅ PASS | Compiled in 90s, all pages generated |
+
+---
+
+### 📌 Deferred Items
+
+| Item | Reason | Priority |
+|------|--------|----------|
+| Backend API | Focus UX first (user decision) | P2 |
+| Buffer time conflict với khách khác | Backend implementation | P2 |
+| Working hours from settings | Minor UX improvement | P1 |
+
+---
+
+*Audit completed by Antigravity Workflow*
+*Updated: 2025-12-15 18:35*

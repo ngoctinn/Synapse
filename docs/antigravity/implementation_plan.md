@@ -1,259 +1,276 @@
-# Kế Hoạch Đánh Giá & Cải Thiện Hệ Thống Table
+# Kế Hoạch Đánh Giá & Đồng Bộ Hóa: Module Appointments
 
 > **Ngày tạo:** 2025-12-15
 > **Trạng thái:** 🟡 CHỜ PHÊ DUYỆT
-> **Vai trò:** UX/UI Reviewer & Front-end Design System Specialist
+> **Vai trò:** Product Analyst & UX System Architect
+> **Phạm vi:** Module Appointments + Booking Wizard
 
 ---
 
 ## 1. VẤN ĐỀ (Problem Statement)
 
-### 1.1. Phạm Vi Đánh Giá
-Hệ thống **Synapse** hiện có **7 bảng dữ liệu (DataTable)** được sử dụng trong các module khác nhau:
+### 1.1. Bối Cảnh
+Dự án **Synapse** đang trong giai đoạn **phát triển**, có thiết kế chi tiết (UI/UX specification, database design) và một phần đã được triển khai. Yêu cầu đánh giá mức độ **phù hợp giữa thiết kế và triển khai hiện tại** cho module lịch hẹn (**Appointments**).
 
-| # | Component | Vị trí | Tính năng |
-|---|-----------|--------|-----------|
-| 1 | `CustomerTable` | `features/customers/` | Selection, Sort, Pagination, Actions |
-| 2 | `StaffTable` | `features/staff/` | Selection, Sort, Pagination, Actions |
-| 3 | `ServiceTable` | `features/services/` | Selection, Sort, Pagination, Actions |
-| 4 | `SkillTable` | `features/services/` | Selection, Pagination, Actions |
-| 5 | `ResourceTable` | `features/resources/` | Selection, Actions |
-| 6 | `InvoiceTable` | `features/billing/` | View action only |
-| 7 | `DataTable` (Shared) | `shared/ui/custom/` | Core component |
+### 1.2. Phạm Vi Đánh Giá
 
-### 1.2. Các Thành Phần Liên Quan
-- **Core Table Components:** `table.tsx` (base Shadcn), `data-table.tsx` (wrapper)
-- **Supporting Components:**
-  - `animated-table-row.tsx` - Row với animation
-  - `data-table-empty-state.tsx` - Empty state
-  - `data-table-skeleton.tsx` - Loading skeleton
-  - `table-action-bar.tsx` - Floating action bar
-  - `table-row-actions.tsx` - Row-level actions
-  - `pagination-controls.tsx` - Phân trang
-- **Hooks:** `use-table-params.ts`, `use-table-selection.ts`
-- **Types:** `design-system.types.ts` (SelectionConfig, SortConfig)
+| Thành phần | Vị trí | Mô tả |
+|------------|--------|-------|
+| **Appointments Module** | `frontend/src/features/appointments/` | Quản lý lịch hẹn (Calendar, Actions, Sheet) |
+| **Booking Wizard Module** | `frontend/src/features/booking-wizard/` | Luồng đặt lịch 4 bước cho khách hàng |
+| **Database Design** | `docs/design/database_design.md` | Schema: bookings, booking_items, booking_holds |
+| **Requirements** | `docs/ai/requirements/feature-appointments-completion.md` | User Stories & Acceptance Criteria |
+| **UX Analysis** | `docs/reports/ux-appointments-analysis.md` | Báo cáo UX chuyên sâu |
 
 ---
 
 ## 2. MỤC ĐÍCH (Objectives)
 
 ### 2.1. Mục Tiêu Chính
+
 | Mục tiêu | Mô tả | Độ ưu tiên |
 |----------|-------|------------|
-| **Consistency** | Đảm bảo tất cả tables sử dụng cùng patterns và styles | 🔴 Cao |
-| **Usability** | Cải thiện trải nghiệm đọc, lọc, sắp xếp dữ liệu | 🔴 Cao |
-| **Accessibility** | Đảm bảo keyboard navigation, screen reader support | 🟠 Trung bình |
-| **Performance** | Tối ưu render, tránh re-render không cần thiết | 🟠 Trung bình |
-| **Maintainability** | Giảm code duplication, DRY principles | 🟢 Thấp |
+| **Gap Identification** | Xác định sai lệch giữa thiết kế và triển khai | 🔴 Cao |
+| **Data Model Consistency** | Đánh giá TypeScript types vs Database schema | 🔴 Cao |
+| **Feature Completeness** | So sánh User Stories vs Implementation | 🔴 Cao |
+| **UX Alignment** | Đánh giá UI patterns vs Design System | 🟠 Trung bình |
+| **API Contract Alignment** | Server Actions vs Backend API design | 🟠 Trung bình |
 
 ### 2.2. Deliverables
-1. **Báo cáo đánh giá chi tiết** với danh sách issues và severity
-2. **Recommendations** cho từng vấn đề phát hiện
-3. **Code changes** (nếu được duyệt) để fix các inconsistencies
+1. **Báo cáo Gap Analysis** với chi tiết từng điểm sai lệch
+2. **Ma trận quyết định** (Fix Design vs Fix Implementation)
+3. **Danh sách tasks** để đồng bộ hóa (nếu được duyệt)
 
 ---
 
 ## 3. PHÂN TÍCH SƠ BỘ (Initial Analysis)
 
-### 3.1. ✅ Điểm Mạnh Hiện Tại
+### 3.1. 🔴 PHÁT HIỆN NGHIÊM TRỌNG (Critical Gaps)
+
+#### GAP-001: Frontend TypeScript vs Database Schema
+
+| Field (Frontend) | Field (Database) | Vấn đề |
+|------------------|------------------|--------|
+| `Appointment.customerId` | `bookings.customer_id` | ✅ Khớp |
+| `Appointment.staffId` | `booking_items.staff_id` | ⚠️ **Sai mô hình**: Frontend có staffId cấp booking, DB thiết kế staffId per item |
+| `Appointment.serviceId` | `booking_items.service_id` | ⚠️ **Sai mô hình**: Frontend có serviceId cấp booking (legacy), DB chỉ có per item |
+| `Appointment.resourceId` | `booking_items.resource_id` | ⚠️ **Sai mô hình**: Tương tự trên |
+| `Appointment.items[]` | `booking_items` | ✅ Khớp logic (1 booking → N items) |
+| `Appointment.internalNotes` | ❌ **Không có** | DB thiếu field `internal_notes` |
+| `Appointment.check_in_time` | `bookings.check_in_time` | ✅ Khớp |
+| `Appointment.cancel_reason` | `bookings.cancel_reason` | ✅ Khớp |
+| `Appointment.isRecurring` | ❌ **Không có** | DB thiếu support cho recurring bookings |
+| `Appointment.recurrenceRule` | ❌ **Không có** | DB thiếu support cho recurring bookings |
+
+**Phân tích:**
+- Frontend types (`types.ts`) kế thừa **Legacy Fields** (`staffId`, `serviceId` ở cấp Appointment) trong khi DB thiết kế theo mô hình **Multi-Service** (`booking_items` với staffId/serviceId riêng từng item).
+- Điều này gây **inconsistency** khi triển khai API thực tế.
+
+---
+
+#### GAP-002: Mock Data vs Real API Implementation
+
+| Aspect | Trạng thái | Chi tiết |
+|--------|------------|----------|
+| `actions.ts` | ⚠️ **MOCK ONLY** | Sử dụng `MOCK_APPOINTMENTS` array, không persist |
+| `createAppointment` | ⚠️ **Không gọi API** | Push vào array local, restart = mất dữ liệu |
+| `checkConflictsLogic` | ⚠️ **Mock logic** | Không tính `buffer_time` như requirement |
+| Backend Module | ❌ **Chưa tồn tại** | Không có `/api/v1/bookings` endpoints |
+
+**Impact:** Module Appointments **không production-ready**.
+
+---
+
+#### GAP-003: Requirements vs Implementation (User Stories)
+
+| User Story | AC | Status | Gap |
+|------------|-----|--------|-----|
+| **US-A1: Xem Lịch** | AC-A1.1~5 | ✅ Done | — |
+| **US-A2: Tạo Lịch** | AC-A2.5 | ⚠️ **Partial** | Conflict check không tính buffer_time |
+| | AC-A2.6 | ⚠️ **Partial** | Resource allocation là manual, không auto-allocate |
+| | AC-A2.9 | ⚠️ **Missing** | Duration không cộng buffer_time |
+| **US-A3: Walk-in** | AC-A3.1~5 | ✅ Done | `walk-in-booking-dialog.tsx` tồn tại |
+| **US-A4: Check-in** | AC-A4.1~5 | ✅ Done | — |
+| **US-A5: No-show** | AC-A5.1 | ⚠️ **Missing** | Không check "15 phút sau start_time" |
+| **US-A6: Hủy lịch** | AC-A6.1~5 | ✅ Done | CancelDialog implemented |
+| **US-A7: Filter** | AC-A7.1~6 | ✅ Done | Filter component implemented |
+| **US-A8: Multi-Service** | AC-A8.1~5 | ⚠️ **Partial** | Cho phép chọn nhiều services, nhưng duration calculation không đúng spec |
+| **US-A9: Resource** | AC-A9.1~6 | ❌ **Not Implemented** | Thiếu hoàn toàn logic resource allocation |
+
+---
+
+#### GAP-004: Booking Wizard vs Appointments Module
+
+| Aspect | Booking Wizard | Appointments | Gap |
+|--------|----------------|--------------|-----|
+| **Entity Target** | `bookings` + `booking_holds` | `Appointment` (mapped to `bookings`) | ✅ Aligned |
+| **Hold Mechanism** | Thiết kế có `booking_holds` table | Không có hold concept | ⚠️ Wizard chưa triển khai hold |
+| **State Management** | Zustand Store | Component state | Khác pattern nhưng OK |
+| **Realtime** | Supabase Realtime (planned) | Không có | Wizard-only feature |
+| **Slot Calculation** | OR-Tools (Phase 2) | Mock conflict check | Chưa có backend |
+
+---
+
+### 3.2. 🟠 PHÁT HIỆN TRUNG BÌNH (Medium Gaps)
+
+#### GAP-005: UX Patterns không nhất quán
+
+| Issue ID | Vấn đề | File | Impact |
+|----------|--------|------|--------|
+| UX-001 | Native `confirm()` thay vì custom Dialog | `appointments-page.tsx` (đã fix) | ✅ Fixed |
+| UX-002 | Settings button không có chức năng | `appointments-page.tsx:208` | Low |
+| UX-003 | Conflict checking không real-time | `appointment-form.tsx` | High |
+| UX-004 | Không hiển thị available slots visual | `time-step.tsx` | Medium |
+| UX-005 | Customer search yêu cầu 2 ký tự | `actions.ts:186` | Low |
+
+#### GAP-006: Constants/Config Hardcoding
+
+| Constant | Định nghĩa tại | Vấn đề |
+|----------|----------------|--------|
+| `DEFAULT_WORKING_HOURS` | `constants.ts:133` | Hardcoded 8-21, nên lấy từ `regular_operating_hours` |
+| `APPOINTMENT_STATUS_CONFIG.color` | `constants.ts` | Hardcoded Tailwind classes, không dùng CSS variables |
+| `DEFAULT_SERVICE_COLORS` | `constants.ts:199` | Hardcoded hex, nên service có color trong DB |
+
+---
+
+### 3.3. ✅ ĐIỂM MẠNH (What's Working Well)
 
 | Khía cạnh | Đánh giá | Chi tiết |
 |-----------|----------|----------|
-| **Architecture** | ⭐⭐⭐⭐ | Có core `DataTable` component tái sử dụng tốt |
-| **Selection System** | ⭐⭐⭐⭐ | `useTableSelection` hook được thiết kế gọn gàng |
-| **URL State** | ⭐⭐⭐⭐ | `useTableParams` sync state với URL params |
-| **Type Safety** | ⭐⭐⭐⭐ | Generic types cho Column và DataTable |
-| **Localization** | ⭐⭐⭐⭐⭐ | Toàn bộ UI text bằng Tiếng Việt |
-| **Action Bar** | ⭐⭐⭐⭐ | Floating action bar UX hiện đại |
-
-### 3.2. ⚠️ Vấn Đề Phát Hiện
-
-#### **Mức Độ: CAO (Critical)**
-
-| ID | Vấn đề | File ảnh hưởng | Mô tả |
-|----|--------|----------------|-------|
-| T-001 | **Inconsistent Action Column Header** | Multiple tables | Một số dùng "Hành động", số khác dùng "Thao tác", hoặc "" (empty) |
-| T-002 | **Inconsistent Sort Implementation** | `ResourceTable`, `InvoiceTable` | Không có sort support mặc dù DataTable hỗ trợ |
-| T-003 | **Missing Pagination** | `ResourceTable`, `InvoiceTable` | Không có phân trang mặc dù DataTable hỗ trợ |
-| T-004 | **Dialog Pattern Inconsistency** | `service-table.tsx`, `resource-table.tsx`, `skill-table.tsx` | Sử dụng `AlertDialog` inline thay vì `DeleteConfirmDialog` wrapper |
-
-#### **Mức Độ: TRUNG BÌNH (Medium)**
-
-| ID | Vấn đề | File ảnh hưởng | Mô tả |
-|----|--------|----------------|-------|
-| T-005 | **Empty State Icon Inconsistency** | Multiple tables | Một số dùng animated icons, số khác dùng Lucide icons |
-| T-006 | **Loading Overlay Duplication** | `CustomerTable`, `StaffTable`, `ResourceTable` | Copy-paste loading overlay thay vì component chung |
-| T-007 | **Typography Inconsistency** | Multiple tables | Mix giữa `text-sm`, `text-lg font-serif`, styles khác nhau cho tên entities |
-| T-008 | **DataTableEmptyState Hardcoded Colors** | `data-table-empty-state.tsx` | Sử dụng hardcoded `bg-blue-50`, `text-blue-500` thay vì CSS variables |
-
-#### **Mức Độ: THẤP (Low)**
-
-| ID | Vấn đề | File ảnh hưởng | Mô tả |
-|----|--------|----------------|-------|
-| T-009 | **Deep Imports** | Some feature tables | Một số import trực tiếp từ `@/shared/ui/custom/*` thay vì barrel export |
-| T-010 | **Missing variant prop** | `SkillTable` | Không truyền `variant` prop cho DataTable |
-| T-011 | **Skeleton Config Mismatch** | Various `*TableSkeleton` | Column counts không match với actual columns |
-
-### 3.3. 📊 Ma Trận So Sánh Chi Tiết
-
-| Feature | CustomerTable | StaffTable | ServiceTable | SkillTable | ResourceTable | InvoiceTable |
-|---------|--------------|------------|--------------|------------|---------------|--------------|
-| **Selection** | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
-| **Sorting** | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **Pagination** | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
-| **Row Click** | ✅ Edit | ✅ Edit | ✅ Edit | ❌ | ✅ Edit | ❌ |
-| **Empty State** | ✅ Animated | ✅ Animated | ✅ Plus icon | ✅ Plus icon | ✅ Box icon | ❌ |
-| **Skeleton** | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
-| **Bulk Delete** | ✅ DeleteConfirm | ✅ DeleteConfirm | ✅ AlertDialog | ✅ AlertDialog | ✅ AlertDialog | ❌ |
-| **Variant** | ✅ | ✅ | ✅ | ❌ default | ✅ | ❌ default |
-| **Loading Overlay** | ✅ Custom | ✅ Custom | ❌ | ❌ | ✅ Custom | ❌ |
+| **Calendar Views** | ⭐⭐⭐⭐ | 5 views (Day/Week/Month/Agenda/Timeline) hoạt động tốt |
+| **Sheet UX** | ⭐⭐⭐⭐ | Appointment detail sheet có layout tốt |
+| **Status Management** | ⭐⭐⭐⭐⭐ | Color-coded status badges, transitions logic rõ ràng |
+| **TypeScript Types** | ⭐⭐⭐⭐ | Well-typed interfaces với RecurrenceConfig, ConflictInfo |
+| **Zod Schemas** | ⭐⭐⭐⭐ | Form validation với Tiếng Việt messages |
+| **Action Response Pattern** | ⭐⭐⭐⭐⭐ | Consistent ActionResponse<T> pattern |
+| **Localization** | ⭐⭐⭐⭐⭐ | 100% Tiếng Việt UI/messages |
 
 ---
 
-## 4. RÀNG BUỘC (Constraints)
+## 4. MA TRẬN QUYẾT ĐỊNH (Decision Matrix)
 
-### 4.1. Phải Tuân Thủ
-- ❌ **KHÔNG** thay đổi logic nghiệp vụ hoặc cấu trúc dữ liệu
-- ❌ **KHÔNG** thay đổi API contracts hoặc response schemas
-- ✅ Tuân thủ Design System hiện tại (colors, typography, spacing)
-- ✅ Đảm bảo Accessibility (WCAG 2.1 AA)
-- ✅ Tuân thủ FSD Import patterns (barrel exports)
+### 4.1. Fix Design vs Fix Implementation
 
-### 4.2. Technical Constraints
-- React 19 với Server Components
+| Gap ID | Mô tả | Quyết định | Lý do |
+|--------|-------|------------|-------|
+| GAP-001 | Legacy Fields (staffId/serviceId at booking level) | **Fix Implementation** | DB design đúng (per-item), Frontend cần migrate |
+| GAP-001 | Missing `internal_notes` in DB | **Fix Design (DB)** | Add column `internal_notes TEXT` to `bookings` |
+| GAP-001 | Missing recurring support in DB | **Fix Design (DB)** | Add `is_recurring`, `recurrence_rule`, `recurrence_parent_id` columns |
+| GAP-002 | Mock data only | **Fix Implementation** | Create Backend module `/modules/appointments/` |
+| GAP-003 | buffer_time not calculated | **Fix Implementation** | Update conflict checking logic |
+| GAP-003 | No-show 15min rule | **Fix Implementation** | Add time validation in UI |
+| GAP-003 | Resource auto-allocation | **Defer to Phase 2** | Complex feature, not MVP |
+| GAP-004 | Booking holds | **Defer** | Wizard feature, implement when Wizard is priority |
+| GAP-005 | Real-time conflict check | **Fix Implementation** | Use `checkConflicts` action on time/staff change |
+| GAP-006 | Hardcoded working hours | **Fix Implementation** | Fetch from `operating-hours` feature |
+
+---
+
+## 5. RÀNG BUỘC (Constraints)
+
+### 5.1. Phải Tuân Thủ
+- ❌ **KHÔNG** thay đổi phạm vi chức năng cốt lõi (MVP scope)
+- ❌ **KHÔNG** implement features Phase 2 (OR-Tools, Realtime, Recurring)
+- ✅ Đảm bảo backward compatibility với mock data
+- ✅ Tuân thủ FSD Architecture (barrel exports)
+- ✅ Tuân thủ Design System (colors, typography)
+
+### 5.2. Technical Constraints
+- React 19 + Server Components
 - Next.js 15+ App Router
-- Tailwind CSS + Shadcn/UI
-- TypeScript strict mode
+- Supabase (không có Backend FastAPI sẵn cho module này)
 
 ---
 
-## 5. CHIẾN LƯỢC (Strategy)
+## 6. CHIẾN LƯỢC (Strategy)
 
-### 5.1. Phương Pháp Tiếp Cận
+### 6.1. Phương Pháp Tiếp Cận
+
 ```
-Phase 1: AUDIT        → Đánh giá chi tiết từng table, ghi log findings
-Phase 2: STANDARDIZE  → Chuẩn hóa shared components (EmptyState, LoadingOverlay)
-Phase 3: FIX-CRITICAL → Fix các issues mức CAO
-Phase 4: FIX-MEDIUM   → Fix các issues mức TRUNG BÌNH
-Phase 5: VERIFY       → Chạy lint/build, manual testing
+Phase 1: FIX-CRITICAL   → Sửa GAP-001, GAP-003 (UX issues)
+Phase 2: ALIGN-DATA     → Chuẩn bị migration cho DB/TypeScript alignment
+Phase 3: BACKEND-PREP   → Document API contract cho future backend
+Phase 4: VERIFY         → Lint, build, manual testing
 ```
 
-### 5.2. Ưu Tiên Sửa Chữa
+### 6.2. Ưu Tiên Sửa Chữa
 
-| Thứ tự | Issue IDs | Effort | Impact |
-|--------|-----------|--------|--------|
-| 1 | T-004 | Medium | High - Pattern consistency |
-| 2 | T-001 | Low | High - UX consistency |
-| 3 | T-008 | Low | Medium - Theme support |
-| 4 | T-006 | Medium | Medium - DRY code |
-| 5 | T-005, T-007 | Medium | Medium - Visual consistency |
-| 6 | T-009 | Low | Low - Code quality |
-| 7 | T-002, T-003 | Medium | Low - Optional features |
+| Thứ tự | Gap ID | Task | Effort | Impact |
+|--------|--------|------|--------|--------|
+| 1 | GAP-003 | Thêm check "15 phút sau start_time" cho No-show button | Low | High |
+| 2 | GAP-003 | Thêm buffer_time vào duration calculation | Medium | High |
+| 3 | GAP-005 | Real-time conflict checking khi chọn time | Medium | High |
+| 4 | GAP-006 | Fetch working hours từ settings thay vì hardcode | Low | Medium |
+| 5 | GAP-001 | Document Legacy Field migration plan | Low | Planning |
+| 6 | GAP-001 | Add missing DB columns proposal | Low | Planning |
 
 ---
 
-## 6. GIẢI PHÁP ĐỀ XUẤT (Proposed Solutions)
+## 7. DANH SÁCH TASKS ĐỀ XUẤT
 
-### 6.1. T-001: Standardize Action Column Header
-```tsx
-// Đề xuất: Thống nhất sử dụng "Hành động" cho tất cả tables
-{
-  header: "Hành động",
-  className: "pr-6 text-right",
-  cell: (item) => <EntityActions ... />
-}
-```
+### 7.1. Phase 1: Quick Fixes (UX Improvements)
 
-### 6.2. T-004: Migrate to DeleteConfirmDialog Pattern
-```tsx
-// Từ: AlertDialog inline (verbose)
-<AlertDialog open={showBulkDeleteDialog} ...>
-  <AlertDialogContent>...</AlertDialogContent>
-</AlertDialog>
+| Task | Mô tả | File | Est. Effort |
+|------|-------|------|-------------|
+| TASK-01 | Add 15-minute elapsed check for No-show button | `calendar/event-popover.tsx` | 15 min |
+| TASK-02 | Include buffer_time in appointment duration display | `sheet/appointment-sheet.tsx` | 20 min |
+| TASK-03 | Trigger conflict check on staff/time change | `sheet/appointment-form.tsx` | 30 min |
+| TASK-04 | Display conflict warning inline (not just on submit) | `sheet/conflict-warning.tsx` | 20 min |
+| TASK-05 | Fetch DEFAULT_WORKING_HOURS from settings | `constants.ts`, `actions.ts` | 30 min |
 
-// Đến: DeleteConfirmDialog (consistent)
-<DeleteConfirmDialog
-  open={showBulkDeleteDialog}
-  onOpenChange={setShowBulkDeleteDialog}
-  onConfirm={handleBulkDelete}
-  isDeleting={isPending}
-  entityName={`${selection.selectedCount} dịch vụ`}
-/>
-```
+### 7.2. Phase 2: Data Model Alignment (Documentation)
 
-### 6.3. T-006: Create Shared Loading Overlay
-```tsx
-// shared/ui/custom/table-loading-overlay.tsx
-interface TableLoadingOverlayProps {
-  isVisible: boolean;
-  message?: string;
-}
+| Task | Mô tả | Deliverable | Est. Effort |
+|------|-------|-------------|-------------|
+| DOC-01 | Document Legacy Fields migration plan | `docs/ai/migrations/appointments-v2.md` | 1 hour |
+| DOC-02 | Propose DB schema additions (internal_notes, recurring) | `docs/ai/migrations/db-appointments-patch.sql` | 30 min |
+| DOC-03 | Define Backend API contract for `/api/v1/bookings` | `docs/ai/design/api-appointments.md` | 1 hour |
 
-export function TableLoadingOverlay({
-  isVisible,
-  message = "Đang xử lý..."
-}: TableLoadingOverlayProps) {
-  if (!isVisible) return null;
-
-  return (
-    <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-background/50 backdrop-blur-[2px]">
-      <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
-      <p className="text-sm font-medium text-muted-foreground animate-pulse">
-        {message}
-      </p>
-    </div>
-  );
-}
-```
-
-### 6.4. T-008: Fix DataTableEmptyState Theme Colors
-```tsx
-// Từ: Hardcoded colors
-<div className="p-4 rounded-full bg-blue-50 mb-4">
-  <Icon className="w-10 h-10 text-blue-500" />
-</div>
-
-// Đến: CSS Variables
-<div className="p-4 rounded-full bg-primary/10 mb-4">
-  <Icon className="w-10 h-10 text-primary" />
-</div>
-```
+**Tổng thời gian Phase 1:** ~2 giờ
+**Tổng thời gian Phase 2:** ~2.5 giờ
 
 ---
 
-## 7. DANH SÁCH TASKS
+## 8. TÓM TẮT ĐIỀU HÀNH (Executive Summary)
 
-| Task | Mô tả | Est. Effort |
-|------|-------|-------------|
-| TASK-01 | Fix T-008: Cập nhật `data-table-empty-state.tsx` với theme colors | 10 min |
-| TASK-02 | Fix T-001: Thống nhất header "Hành động" trong tất cả tables | 15 min |
-| TASK-03 | Fix T-004: Migrate `ServiceTable`, `ResourceTable`, `SkillTable` sang `DeleteConfirmDialog` | 30 min |
-| TASK-04 | Create `TableLoadingOverlay` component và refactor usages | 30 min |
-| TASK-05 | Fix T-009: Update deep imports to barrel exports | 15 min |
-| TASK-06 | Fix T-010, T-011: Add missing props và correct skeleton configs | 15 min |
-| TASK-07 | Run lint & build verification | 10 min |
+### 8.1. Mức Độ Phù Hợp Tổng Thể
 
-**Tổng thời gian ước tính:** ~2 giờ
+| Khía cạnh | Điểm (1-10) | Ghi chú |
+|-----------|-------------|---------|
+| **UX/UI vs Design** | 7.5/10 | Tốt, một số patterns cần cải thiện |
+| **TypeScript vs Database** | 6/10 | Legacy fields gây inconsistency |
+| **Requirements vs Implementation** | 6/10 | ~60% User Stories hoàn thiện |
+| **API Contract** | 3/10 | Mock data only, Backend chưa có |
+
+**Tổng điểm:** **5.6/10** - Cần cải thiện đáng kể trước production
+
+### 8.2. Rủi Ro Chính
+
+| Rủi ro | Likelihood | Impact | Mitigation |
+|--------|------------|--------|------------|
+| Data loss khi switch từ mock sang real DB | High | High | Document migration path |
+| Conflict detection không chính xác | High | High | Implement buffer_time logic |
+| Multi-service booking logic sai | Medium | High | Align với DB model (per-item) |
 
 ---
 
-## 8. QUYẾT ĐỊNH CẦN XÁC NHẬN
+## 9. QUYẾT ĐỊNH CẦN XÁC NHẬN
 
 > ⚠️ **CẦN PHẢN HỒI TỪ NGƯỜI DÙNG:**
 
-1. **Có đồng ý với danh sách issues đã phát hiện?**
-   - [ ] Đồng ý toàn bộ
-   - [ ] Cần bổ sung/điều chỉnh
+### 9.1. Xác nhận Gap Analysis
+- [ ] Đồng ý với danh sách gaps đã phát hiện
+- [ ] Cần bổ sung/điều chỉnh gaps
 
-2. **Có muốn thực hiện fix ngay các issues?**
-   - [ ] Thực hiện tất cả (Full refactor)
-   - [ ] Chỉ fix Critical issues (T-001, T-004)
-   - [ ] Chỉ cần báo cáo, không fix
+### 9.2. Lựa chọn Phạm vi Sửa chữa
+- [ ] **Option A:** Chỉ Phase 1 (Quick Fixes - UX) - ~2 giờ
+- [ ] **Option B:** Phase 1 + Phase 2 (Documentation) - ~4.5 giờ
+- [ ] **Option C:** Chỉ cần báo cáo, không thực hiện sửa chữa
 
-3. **Có cần thêm features mới cho tables không được hỗ trợ?**
-   - [ ] Thêm Sort cho ResourceTable, InvoiceTable
-   - [ ] Thêm Pagination cho ResourceTable, InvoiceTable
-   - [ ] Không cần, giữ nguyên scope hiện tại
+### 9.3. Ưu tiên Backend
+- [ ] Tạo Backend module cho Appointments ngay (thay thế mock)
+- [ ] Giữ mock, tập trung UX trước
+- [ ] Defer backend đến khi có backend team
 
 ---
 

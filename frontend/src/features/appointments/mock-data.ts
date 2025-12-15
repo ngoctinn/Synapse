@@ -24,18 +24,24 @@ export const MOCK_RESOURCES: TimelineResource[] = [
 ];
 
 export interface MockService {
-  id: string; name: string; duration: number; price: number; color: string; category: string;
+  id: string;
+  name: string;
+  duration: number;
+  buffer_time: number;
+  price: number;
+  color: string;
+  category: string;
 }
 
 export const MOCK_SERVICES: MockService[] = [
-  { id: "svc-massage-60", name: "Massage toàn thân 60'", duration: 60, price: 350000, color: "#4CAF50", category: "massage" },
-  { id: "svc-massage-90", name: "Massage toàn thân 90'", duration: 90, price: 500000, color: "#4CAF50", category: "massage" },
-  { id: "svc-facial-basic", name: "Chăm sóc da mặt cơ bản", duration: 45, price: 280000, color: "#2196F3", category: "facial" },
-  { id: "svc-facial-premium", name: "Chăm sóc da mặt cao cấp", duration: 75, price: 550000, color: "#2196F3", category: "facial" },
-  { id: "svc-body-scrub", name: "Tẩy tế bào chết body", duration: 45, price: 300000, color: "#9C27B0", category: "body-treatment" },
-  { id: "svc-nail-gel", name: "Sơn gel tay", duration: 60, price: 200000, color: "#FF9800", category: "nail" },
-  { id: "svc-sauna", name: "Xông hơi thảo dược", duration: 30, price: 150000, color: "#795548", category: "sauna" },
-  { id: "svc-combo-relax", name: "Combo Thư giãn (Massage + Xông hơi)", duration: 120, price: 650000, color: "#00BCD4", category: "combo" },
+  { id: "svc-massage-60", name: "Massage toàn thân 60'", duration: 60, buffer_time: 15, price: 350000, color: "#4CAF50", category: "massage" },
+  { id: "svc-massage-90", name: "Massage toàn thân 90'", duration: 90, buffer_time: 15, price: 500000, color: "#4CAF50", category: "massage" },
+  { id: "svc-facial-basic", name: "Chăm sóc da mặt cơ bản", duration: 45, buffer_time: 10, price: 280000, color: "#2196F3", category: "facial" },
+  { id: "svc-facial-premium", name: "Chăm sóc da mặt cao cấp", duration: 75, buffer_time: 15, price: 550000, color: "#2196F3", category: "facial" },
+  { id: "svc-body-scrub", name: "Tẩy tế bào chết body", duration: 45, buffer_time: 10, price: 300000, color: "#9C27B0", category: "body-treatment" },
+  { id: "svc-nail-gel", name: "Sơn gel tay", duration: 60, buffer_time: 5, price: 200000, color: "#FF9800", category: "nail" },
+  { id: "svc-sauna", name: "Xông hơi thảo dược", duration: 30, buffer_time: 10, price: 150000, color: "#795548", category: "sauna" },
+  { id: "svc-combo-relax", name: "Combo Thư giãn (Massage + Xông hơi)", duration: 120, buffer_time: 20, price: 650000, color: "#00BCD4", category: "combo" },
 ];
 
 export interface MockCustomer {

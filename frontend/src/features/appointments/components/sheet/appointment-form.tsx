@@ -91,7 +91,9 @@ export function AppointmentForm({
   const watchedStaffId = useWatch({ control: form.control, name: "staffId" });
   const watchedServiceIds = useWatch({ control: form.control, name: "serviceIds" });
 
-  // Helpers
+  // Buffer time là thời gian nghỉ dành cho KHÁCH SAU (dọn dẹp, chuẩn bị)
+  // Không tính vào duration của booking hiện tại
+  // Nếu khách làm nhiều dịch vụ liên tiếp → có thể bỏ qua buffer giữa các dịch vụ
   const totalDuration = useMemo(() => {
     return (watchedServiceIds || []).reduce((acc, serviceId) => {
       const service = availableServices.find((s) => s.id === serviceId);
