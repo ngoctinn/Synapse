@@ -3,20 +3,11 @@
 import { Resource, RoomType } from "@/features/resources"
 import { useBulkAction, useTableParams, useTableSelection } from "@/shared/hooks"
 import { formatCurrency } from "@/shared/lib/utils"
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/shared/ui/alert-dialog"
 import { Badge } from "@/shared/ui/badge"
 import { Column, DataTable } from "@/shared/ui/custom/data-table"
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state"
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
+import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog"
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar"
 import {
     Tooltip,
@@ -155,8 +146,8 @@ export function ServiceTable({
       )
     },
     {
-      header: "Thao tác",
-      className: "pr-6",
+      header: "Hành động",
+      className: "pr-6 text-right",
       cell: (service) => (
         <div onClick={(e) => e.stopPropagation()}>
             <ServiceActions
@@ -226,38 +217,13 @@ export function ServiceTable({
         />
       )}
 
-      <AlertDialog
+      <DeleteConfirmDialog
         open={showBulkDeleteDialog}
         onOpenChange={setShowBulkDeleteDialog}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              Xóa {selection.selectedCount} dịch vụ?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {(() => {
-                const selectedItems = services.filter(s => selection.isSelected(s.id))
-                const firstName = selectedItems[0]?.name || "Dịch vụ"
-                if (selection.selectedCount === 1) {
-                  return `"${firstName}" sẽ bị xóa vĩnh viễn. Hành động này không thể hoàn tác.`
-                }
-                return `"${firstName}" và ${selection.selectedCount - 1} dịch vụ khác sẽ bị xóa vĩnh viễn. Hành động này không thể hoàn tác.`
-              })()}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isPending}>Hủy</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleBulkDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              disabled={isPending}
-            >
-              {isPending ? "Đang xóa..." : `Xóa ${selection.selectedCount} mục`}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        onConfirm={handleBulkDelete}
+        isDeleting={isPending}
+        entityName={`${selection.selectedCount} dịch vụ`}
+      />
     </>
   )
 }

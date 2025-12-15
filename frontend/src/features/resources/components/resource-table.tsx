@@ -2,20 +2,11 @@
 
 import { useTableSelection } from "@/shared/hooks/use-table-selection";
 import { cn } from "@/shared/lib/utils";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/shared/ui/alert-dialog";
 import { Badge } from "@/shared/ui/badge";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
+import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import { showToast } from "@/shared/ui/sonner";
 import { Bed, Box } from "lucide-react";
@@ -166,7 +157,7 @@ export function ResourceTable({ data, groups, isLoading, className, variant = "d
     },
     {
       header: "Hành động",
-      className: "pr-6",
+      className: "pr-6 text-right",
       cell: (row) => (
          <div onClick={(e) => e.stopPropagation()}>
             <ResourceActions resource={row} onEdit={() => setEditResource(row)} />
@@ -226,32 +217,13 @@ export function ResourceTable({ data, groups, isLoading, className, variant = "d
         groups={groups}
       />
 
-      <AlertDialog
+      <DeleteConfirmDialog
         open={showBulkDeleteDialog}
         onOpenChange={setShowBulkDeleteDialog}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              Xóa {selection.selectedCount} tài nguyên?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              Hành động này không thể hoàn tác. Tất cả tài nguyên đã chọn sẽ bị
-              xóa vĩnh viễn khỏi hệ thống.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isPending}>Hủy</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleBulkDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              disabled={isPending}
-            >
-              {isPending ? "Đang xóa..." : `Xóa ${selection.selectedCount} mục`}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        onConfirm={handleBulkDelete}
+        isDeleting={isPending}
+        entityName={`${selection.selectedCount} tài nguyên`}
+      />
     </>
   );
 }

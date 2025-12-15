@@ -1,211 +1,260 @@
-# 🎯 Kế Hoạch: UI Consistency Audit - Badge/Tag Components
+# Kế Hoạch Đánh Giá & Cải Thiện Hệ Thống Table
 
-**Ngày tạo**: 2025-12-15
-**Trạng thái**: 📋 ĐANG PHÂN TÍCH
-**Độ ưu tiên**: TRUNG BÌNH
-
----
-
-## 1. Vấn Đề (Problem Statement)
-
-Hệ thống frontend Synapse hiện có **nhiều biến thể không đồng nhất** của các thành phần Badge/Tag, xuất phát từ:
-- Nhiều module/feature được phát triển theo các timeline khác nhau
-- Thiếu enforcement nghiêm ngặt về việc sử dụng Design System
-- Sự xuất hiện của các `className` overrides tùy ý
-
-### 1.1. Các Vấn Đề Cụ Thể Được Phát Hiện
-
-| # | File | Vấn đề | Mức độ |
-|---|------|--------|--------|
-| A1 | `exceptions-panel.tsx:166` | Override size/font: `className="text-[10px] px-1.5 h-5 font-normal"` | 🔴 Critical |
-| A2 | `notification-list.tsx:46` | Override layout: `className="h-6 w-6 rounded-full p-0 flex items-center justify-center"` - Badge dùng sai mục đích (icon counter) | 🔴 Critical |
-| A3 | `permission-matrix.tsx:77` | Override shape: `className="rounded-md px-3 py-1"` thay đổi từ rounded-full | 🟡 Medium |
-| A4 | `skill-table.tsx:81` | Override font: `className="font-mono"` | 🟢 Low |
-| A5 | `resource-table.tsx:95,117` | Override shadow: `className="shadow-sm"` / `"gap-1.5 font-medium border shadow-sm"` | 🟡 Medium |
-| A6 | `customer-table.tsx:133` | Override font: `className="uppercase font-bold tracking-wider"` | 🟡 Medium |
-| A7 | `customer-sheet.tsx:149,156` | Override animation/gap: `className="gap-1.5 animate-in zoom-in-50"` | 🟢 Low |
-| A8 | `notification-popover.tsx:52` | Override sizing: `className="h-5 px-1.5 min-w-[20px] justify-center"` | 🟡 Medium |
-| A9 | `invoice-details.tsx:108` | Override font-size: `className="text-[10px]"` | 🟡 Medium |
-| A10 | `filter-bar.tsx:166,216,265,387` | Multiple inconsistent usages, some with `className="ml-2"`, `"gap-1 pr-1"` | 🟢 Low |
-
-### 1.2. Custom Badge Components (Scope Creep)
-
-| File | Component | Đánh giá |
-|------|-----------|----------|
-| `invoice-status-badge.tsx` | `InvoiceStatusBadge` | ✅ **TỐT** - Sử dụng variant system đúng cách |
-| `channel-status-badge.tsx` | `ChannelStatusBadge` | ⚠️ **CẦN XEM XÉT** - Có thể migrate sang preset system |
-
-### 1.3. Constants/Config Patterns Được Phát Hiện
-
-| Feature | File | Pattern | Đánh giá |
-|---------|------|---------|----------|
-| Billing | `constants.ts` | `INVOICE_STATUS_COLORS` | ✅ Đúng chuẩn |
-| Staff | `model/constants.ts` | `ROLE_CONFIG` | ✅ Đúng chuẩn, có variant mapping |
-| Operating Hours | `constants.ts` | `EXCEPTION_TYPE_VARIANTS` | ✅ Đúng chuẩn |
-| Customers | `customer-table.tsx` | `TIER_STYLES` (inline) | ⚠️ Nên move ra constants file |
+> **Ngày tạo:** 2025-12-15
+> **Trạng thái:** 🟡 CHỜ PHÊ DUYỆT
+> **Vai trò:** UX/UI Reviewer & Front-end Design System Specialist
 
 ---
 
-## 2. Mục Đích (Goals)
+## 1. VẤN ĐỀ (Problem Statement)
 
-### 2.1. Mục tiêu Chính
-1. **Loại bỏ tất cả className overrides** làm thay đổi visual identity của Badge
-2. **Mở rộng Design System** (badge.tsx) để đáp ứng các use case hợp lệ
-3. **Đảm bảo Backward Compatibility** - không thay đổi hành vi nghiệp vụ
+### 1.1. Phạm Vi Đánh Giá
+Hệ thống **Synapse** hiện có **7 bảng dữ liệu (DataTable)** được sử dụng trong các module khác nhau:
 
-### 2.2. Mục tiêu Phụ
-1. Migrate custom badge components sang preset system (nếu phù hợp)
-2. Chuẩn hóa các constants pattern sang một vị trí tập trung
-3. Tài liệu hóa Badge usage guidelines
+| # | Component | Vị trí | Tính năng |
+|---|-----------|--------|-----------|
+| 1 | `CustomerTable` | `features/customers/` | Selection, Sort, Pagination, Actions |
+| 2 | `StaffTable` | `features/staff/` | Selection, Sort, Pagination, Actions |
+| 3 | `ServiceTable` | `features/services/` | Selection, Sort, Pagination, Actions |
+| 4 | `SkillTable` | `features/services/` | Selection, Pagination, Actions |
+| 5 | `ResourceTable` | `features/resources/` | Selection, Actions |
+| 6 | `InvoiceTable` | `features/billing/` | View action only |
+| 7 | `DataTable` (Shared) | `shared/ui/custom/` | Core component |
 
----
-
-## 3. Ràng Buộc (Constraints)
-
-- ❌ **KHÔNG** thay đổi hành vi nghiệp vụ (functional behavior)
-- ❌ **KHÔNG** thay đổi thông tin hiển thị (labels, text content)
-- ✅ **CHỈ** thay đổi tầng UI và component library
-- ✅ **ĐẢM BẢO** backward compatibility hoàn toàn
-- ✅ **TUÂN THỦ** chuẩn màu oklch, font, spacing của Design System
-
----
-
-## 4. Chiến Lược (Strategy)
-
-### Phase 1: Mở rộng Badge Component (LOW RISK)
-- Thêm các size variants còn thiếu (nếu cần)
-- Thêm các shape variants (rounded-md option)
-- Thêm `mono` variant hoặc prop cho font-mono styling
-
-### Phase 2: Tạo Presets Mới (LOW RISK)
-- `"code"` preset cho skill codes
-- `"counter"` preset cho notification counts
-- `"tier-*"` presets đã có sẵn, chỉ cần sử dụng
-
-### Phase 3: Refactor Usage Sites (MEDIUM RISK)
-- Từng file một, thay thế className overrides
-- Chạy lint + build sau mỗi file
-- Output: Zero className overrides cho Badge
-
-### Phase 4: Cleanup & Documentation (LOW RISK)
-- Move inline TIER_STYLES constants
-- Update COMPONENT_PATTERNS.md
-- Add Badge usage examples
+### 1.2. Các Thành Phần Liên Quan
+- **Core Table Components:** `table.tsx` (base Shadcn), `data-table.tsx` (wrapper)
+- **Supporting Components:**
+  - `animated-table-row.tsx` - Row với animation
+  - `data-table-empty-state.tsx` - Empty state
+  - `data-table-skeleton.tsx` - Loading skeleton
+  - `table-action-bar.tsx` - Floating action bar
+  - `table-row-actions.tsx` - Row-level actions
+  - `pagination-controls.tsx` - Phân trang
+- **Hooks:** `use-table-params.ts`, `use-table-selection.ts`
+- **Types:** `design-system.types.ts` (SelectionConfig, SortConfig)
 
 ---
 
-## 5. Giải Pháp Chi Tiết (Solution)
+## 2. MỤC ĐÍCH (Objectives)
 
-### 5.1. Badge Component Enhancements
+### 2.1. Mục Tiêu Chính
+| Mục tiêu | Mô tả | Độ ưu tiên |
+|----------|-------|------------|
+| **Consistency** | Đảm bảo tất cả tables sử dụng cùng patterns và styles | 🔴 Cao |
+| **Usability** | Cải thiện trải nghiệm đọc, lọc, sắp xếp dữ liệu | 🔴 Cao |
+| **Accessibility** | Đảm bảo keyboard navigation, screen reader support | 🟠 Trung bình |
+| **Performance** | Tối ưu render, tránh re-render không cần thiết | 🟠 Trung bình |
+| **Maintainability** | Giảm code duplication, DRY principles | 🟢 Thấp |
 
-```tsx
-// ĐỀ XUẤT: Thêm vào badgeVariants
-const badgeVariants = cva(
-  "...",
-  {
-    variants: {
-      variant: { /* existing */ },
-      size: { /* existing */ },
-      // NEW: Shape variants
-      shape: {
-        pill: "", // default rounded-full (no change needed)
-        rounded: "rounded-md",
-        square: "rounded-sm",
-      },
-      // NEW: Font variants
-      font: {
-        default: "",
-        mono: "font-mono",
-        bold: "font-bold tracking-wider uppercase",
-      },
-    },
-  }
-);
+### 2.2. Deliverables
+1. **Báo cáo đánh giá chi tiết** với danh sách issues và severity
+2. **Recommendations** cho từng vấn đề phát hiện
+3. **Code changes** (nếu được duyệt) để fix các inconsistencies
+
+---
+
+## 3. PHÂN TÍCH SƠ BỘ (Initial Analysis)
+
+### 3.1. ✅ Điểm Mạnh Hiện Tại
+
+| Khía cạnh | Đánh giá | Chi tiết |
+|-----------|----------|----------|
+| **Architecture** | ⭐⭐⭐⭐ | Có core `DataTable` component tái sử dụng tốt |
+| **Selection System** | ⭐⭐⭐⭐ | `useTableSelection` hook được thiết kế gọn gàng |
+| **URL State** | ⭐⭐⭐⭐ | `useTableParams` sync state với URL params |
+| **Type Safety** | ⭐⭐⭐⭐ | Generic types cho Column và DataTable |
+| **Localization** | ⭐⭐⭐⭐⭐ | Toàn bộ UI text bằng Tiếng Việt |
+| **Action Bar** | ⭐⭐⭐⭐ | Floating action bar UX hiện đại |
+
+### 3.2. ⚠️ Vấn Đề Phát Hiện
+
+#### **Mức Độ: CAO (Critical)**
+
+| ID | Vấn đề | File ảnh hưởng | Mô tả |
+|----|--------|----------------|-------|
+| T-001 | **Inconsistent Action Column Header** | Multiple tables | Một số dùng "Hành động", số khác dùng "Thao tác", hoặc "" (empty) |
+| T-002 | **Inconsistent Sort Implementation** | `ResourceTable`, `InvoiceTable` | Không có sort support mặc dù DataTable hỗ trợ |
+| T-003 | **Missing Pagination** | `ResourceTable`, `InvoiceTable` | Không có phân trang mặc dù DataTable hỗ trợ |
+| T-004 | **Dialog Pattern Inconsistency** | `service-table.tsx`, `resource-table.tsx`, `skill-table.tsx` | Sử dụng `AlertDialog` inline thay vì `DeleteConfirmDialog` wrapper |
+
+#### **Mức Độ: TRUNG BÌNH (Medium)**
+
+| ID | Vấn đề | File ảnh hưởng | Mô tả |
+|----|--------|----------------|-------|
+| T-005 | **Empty State Icon Inconsistency** | Multiple tables | Một số dùng animated icons, số khác dùng Lucide icons |
+| T-006 | **Loading Overlay Duplication** | `CustomerTable`, `StaffTable`, `ResourceTable` | Copy-paste loading overlay thay vì component chung |
+| T-007 | **Typography Inconsistency** | Multiple tables | Mix giữa `text-sm`, `text-lg font-serif`, styles khác nhau cho tên entities |
+| T-008 | **DataTableEmptyState Hardcoded Colors** | `data-table-empty-state.tsx` | Sử dụng hardcoded `bg-blue-50`, `text-blue-500` thay vì CSS variables |
+
+#### **Mức Độ: THẤP (Low)**
+
+| ID | Vấn đề | File ảnh hưởng | Mô tả |
+|----|--------|----------------|-------|
+| T-009 | **Deep Imports** | Some feature tables | Một số import trực tiếp từ `@/shared/ui/custom/*` thay vì barrel export |
+| T-010 | **Missing variant prop** | `SkillTable` | Không truyền `variant` prop cho DataTable |
+| T-011 | **Skeleton Config Mismatch** | Various `*TableSkeleton` | Column counts không match với actual columns |
+
+### 3.3. 📊 Ma Trận So Sánh Chi Tiết
+
+| Feature | CustomerTable | StaffTable | ServiceTable | SkillTable | ResourceTable | InvoiceTable |
+|---------|--------------|------------|--------------|------------|---------------|--------------|
+| **Selection** | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| **Sorting** | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| **Pagination** | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| **Row Click** | ✅ Edit | ✅ Edit | ✅ Edit | ❌ | ✅ Edit | ❌ |
+| **Empty State** | ✅ Animated | ✅ Animated | ✅ Plus icon | ✅ Plus icon | ✅ Box icon | ❌ |
+| **Skeleton** | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| **Bulk Delete** | ✅ DeleteConfirm | ✅ DeleteConfirm | ✅ AlertDialog | ✅ AlertDialog | ✅ AlertDialog | ❌ |
+| **Variant** | ✅ | ✅ | ✅ | ❌ default | ✅ | ❌ default |
+| **Loading Overlay** | ✅ Custom | ✅ Custom | ❌ | ❌ | ✅ Custom | ❌ |
+
+---
+
+## 4. RÀNG BUỘC (Constraints)
+
+### 4.1. Phải Tuân Thủ
+- ❌ **KHÔNG** thay đổi logic nghiệp vụ hoặc cấu trúc dữ liệu
+- ❌ **KHÔNG** thay đổi API contracts hoặc response schemas
+- ✅ Tuân thủ Design System hiện tại (colors, typography, spacing)
+- ✅ Đảm bảo Accessibility (WCAG 2.1 AA)
+- ✅ Tuân thủ FSD Import patterns (barrel exports)
+
+### 4.2. Technical Constraints
+- React 19 với Server Components
+- Next.js 15+ App Router
+- Tailwind CSS + Shadcn/UI
+- TypeScript strict mode
+
+---
+
+## 5. CHIẾN LƯỢC (Strategy)
+
+### 5.1. Phương Pháp Tiếp Cận
+```
+Phase 1: AUDIT        → Đánh giá chi tiết từng table, ghi log findings
+Phase 2: STANDARDIZE  → Chuẩn hóa shared components (EmptyState, LoadingOverlay)
+Phase 3: FIX-CRITICAL → Fix các issues mức CAO
+Phase 4: FIX-MEDIUM   → Fix các issues mức TRUNG BÌNH
+Phase 5: VERIFY       → Chạy lint/build, manual testing
 ```
 
-### 5.2. New Presets
+### 5.2. Ưu Tiên Sửa Chữa
 
+| Thứ tự | Issue IDs | Effort | Impact |
+|--------|-----------|--------|--------|
+| 1 | T-004 | Medium | High - Pattern consistency |
+| 2 | T-001 | Low | High - UX consistency |
+| 3 | T-008 | Low | Medium - Theme support |
+| 4 | T-006 | Medium | Medium - DRY code |
+| 5 | T-005, T-007 | Medium | Medium - Visual consistency |
+| 6 | T-009 | Low | Low - Code quality |
+| 7 | T-002, T-003 | Medium | Low - Optional features |
+
+---
+
+## 6. GIẢI PHÁP ĐỀ XUẤT (Proposed Solutions)
+
+### 6.1. T-001: Standardize Action Column Header
 ```tsx
-const BADGE_PRESETS = {
-  // existing...
-
-  // === CODE/TECHNICAL ===
-  "code": { variant: "outline", size: "sm", font: "mono" },
-
-  // === COUNTERS ===
-  "counter": { variant: "info", size: "xs" }, // Already exists via "count"
-  "counter-pill": { variant: "info", size: "xs", shape: "pill" },
-
-  // === EXCEPTION TYPES ===
-  "exception-holiday": { variant: "destructive", label: "Nghỉ lễ" },
-  "exception-maintenance": { variant: "secondary", label: "Bảo trì" },
-  "exception-special": { variant: "default", label: "Giờ đặc biệt" },
-};
+// Đề xuất: Thống nhất sử dụng "Hành động" cho tất cả tables
+{
+  header: "Hành động",
+  className: "pr-6 text-right",
+  cell: (item) => <EntityActions ... />
+}
 ```
 
-### 5.3. Migration Examples
-
+### 6.2. T-004: Migrate to DeleteConfirmDialog Pattern
 ```tsx
-// BEFORE (exceptions-panel.tsx:166)
-<Badge variant={getBadgeVariant(exception.type)} className="text-[10px] px-1.5 h-5 font-normal">
+// Từ: AlertDialog inline (verbose)
+<AlertDialog open={showBulkDeleteDialog} ...>
+  <AlertDialogContent>...</AlertDialogContent>
+</AlertDialog>
 
-// AFTER
-<Badge preset={`exception-${exception.type.toLowerCase()}`} size="xs">
+// Đến: DeleteConfirmDialog (consistent)
+<DeleteConfirmDialog
+  open={showBulkDeleteDialog}
+  onOpenChange={setShowBulkDeleteDialog}
+  onConfirm={handleBulkDelete}
+  isDeleting={isPending}
+  entityName={`${selection.selectedCount} dịch vụ`}
+/>
+```
 
-// BEFORE (skill-table.tsx:81)
-<Badge variant="outline" size="sm" className="font-mono">
+### 6.3. T-006: Create Shared Loading Overlay
+```tsx
+// shared/ui/custom/table-loading-overlay.tsx
+interface TableLoadingOverlayProps {
+  isVisible: boolean;
+  message?: string;
+}
 
-// AFTER
-<Badge preset="code">
+export function TableLoadingOverlay({
+  isVisible,
+  message = "Đang xử lý..."
+}: TableLoadingOverlayProps) {
+  if (!isVisible) return null;
+
+  return (
+    <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-background/50 backdrop-blur-[2px]">
+      <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
+      <p className="text-sm font-medium text-muted-foreground animate-pulse">
+        {message}
+      </p>
+    </div>
+  );
+}
+```
+
+### 6.4. T-008: Fix DataTableEmptyState Theme Colors
+```tsx
+// Từ: Hardcoded colors
+<div className="p-4 rounded-full bg-blue-50 mb-4">
+  <Icon className="w-10 h-10 text-blue-500" />
+</div>
+
+// Đến: CSS Variables
+<div className="p-4 rounded-full bg-primary/10 mb-4">
+  <Icon className="w-10 h-10 text-primary" />
+</div>
 ```
 
 ---
 
-## 6. Task Breakdown
+## 7. DANH SÁCH TASKS
 
-| Task ID | Mô tả | Ước lượng | Dependencies |
-|---------|-------|-----------|--------------|
-| T1 | Mở rộng Badge variants (shape, font) | 15 phút | - |
-| T2 | Thêm presets mới | 10 phút | T1 |
-| T3 | Refactor exceptions-panel.tsx | 5 phút | T2 |
-| T4 | Refactor notification-list.tsx (counter) | 5 phút | T2 |
-| T5 | Refactor permission-matrix.tsx | 5 phút | T1 |
-| T6 | Refactor skill-table.tsx | 3 phút | T2 |
-| T7 | Refactor resource-table.tsx | 5 phút | T1 |
-| T8 | Refactor customer-table.tsx | 5 phút | T2 |
-| T9 | Refactor các files còn lại | 10 phút | T2 |
-| T10 | Migrate ChannelStatusBadge | 5 phút | T2 |
-| T11 | Move TIER_STYLES to constants | 5 phút | - |
-| T12 | Update documentation | 10 phút | T1-T11 |
-| T13 | Final lint + build verification | 5 phút | T12 |
+| Task | Mô tả | Est. Effort |
+|------|-------|-------------|
+| TASK-01 | Fix T-008: Cập nhật `data-table-empty-state.tsx` với theme colors | 10 min |
+| TASK-02 | Fix T-001: Thống nhất header "Hành động" trong tất cả tables | 15 min |
+| TASK-03 | Fix T-004: Migrate `ServiceTable`, `ResourceTable`, `SkillTable` sang `DeleteConfirmDialog` | 30 min |
+| TASK-04 | Create `TableLoadingOverlay` component và refactor usages | 30 min |
+| TASK-05 | Fix T-009: Update deep imports to barrel exports | 15 min |
+| TASK-06 | Fix T-010, T-011: Add missing props và correct skeleton configs | 15 min |
+| TASK-07 | Run lint & build verification | 10 min |
 
-**Tổng thời gian ước lượng**: ~90 phút
+**Tổng thời gian ước tính:** ~2 giờ
 
 ---
 
-## 7. Rủi Ro & Mitigation
+## 8. QUYẾT ĐỊNH CẦN XÁC NHẬN
 
-| Rủi ro | Xác suất | Tác động | Giải pháp |
-|--------|----------|----------|-----------|
-| Breaking changes | Thấp | Cao | Thực hiện từng file, chạy lint/build ngay |
-| Visual regression | Trung bình | Trung bình | So sánh UI trước/sau bằng screenshot |
-| Missed edge cases | Thấp | Thấp | Grep search kỹ lưỡng |
+> ⚠️ **CẦN PHẢN HỒI TỪ NGƯỜI DÙNG:**
 
----
+1. **Có đồng ý với danh sách issues đã phát hiện?**
+   - [ ] Đồng ý toàn bộ
+   - [ ] Cần bổ sung/điều chỉnh
 
-## 8. Quyết Định Cần Xác Nhận Từ Người Dùng
+2. **Có muốn thực hiện fix ngay các issues?**
+   - [ ] Thực hiện tất cả (Full refactor)
+   - [ ] Chỉ fix Critical issues (T-001, T-004)
+   - [ ] Chỉ cần báo cáo, không fix
 
-> ⏸️ **CHỜ DUYỆT**: Trước khi thực thi, cần xác nhận:
-
-1. **Có nên thêm `shape` và `font` variants mới vào Badge không?**
-   - Ưu điểm: Flexibility cao hơn, giảm className overrides
-   - Nhược điểm: Tăng API surface của component
-
-2. **Mức độ ưu tiên**: Thực hiện FULL (tất cả tasks) hay PARTIAL (chỉ critical issues A1, A2)?
-
-3. **Có muốn migrate `ChannelStatusBadge` thành preset không?**
-   - Component này có icon và logic đặc thù
+3. **Có cần thêm features mới cho tables không được hỗ trợ?**
+   - [ ] Thêm Sort cho ResourceTable, InvoiceTable
+   - [ ] Thêm Pagination cho ResourceTable, InvoiceTable
+   - [ ] Không cần, giữ nguyên scope hiện tại
 
 ---
 
-**📌 TRẠNG THÁI**: Đang chờ phê duyệt kế hoạch trước khi bắt đầu Giai đoạn 2 (SPLIT).
+**⏸️ DỪNG TẠI ĐÂY - ĐANG CHỜ PHÊ DUYỆT TỪ NGƯỜI DÙNG**

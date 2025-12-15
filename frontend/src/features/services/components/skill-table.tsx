@@ -1,20 +1,11 @@
 "use client";
 
 import { useBulkAction, useTableParams, useTableSelection } from "@/shared/hooks";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/shared/ui/alert-dialog";
 import { Badge } from "@/shared/ui/badge";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
+import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import { Plus } from "lucide-react";
 import { deleteSkill } from "../actions";
@@ -28,6 +19,7 @@ interface SkillTableProps {
   totalPages?: number;
   onPageChange?: (page: number) => void;
   className?: string;
+  variant?: "default" | "flush";
   isLoading?: boolean;
 }
 
@@ -37,6 +29,7 @@ export function SkillTable({
   totalPages = 1,
   onPageChange: onPageChangeProp,
   className,
+  variant = "default",
   isLoading,
 }: SkillTableProps) {
   // Use custom hook for URL state management
@@ -92,7 +85,8 @@ export function SkillTable({
       ),
     },
     {
-      header: "Thao tác",
+      header: "Hành động",
+      className: "pr-6 text-right",
       cell: (skill) => <SkillActions skill={skill} />,
     },
   ];
@@ -107,6 +101,7 @@ export function SkillTable({
         totalPages={totalPages}
         onPageChange={handlePageChange}
         className={className}
+        variant={variant}
         isLoading={isLoading}
         skeletonCount={5}
 
@@ -134,31 +129,13 @@ export function SkillTable({
         isLoading={isPending}
       />
 
-      <AlertDialog
+      <DeleteConfirmDialog
         open={showBulkDeleteDialog}
         onOpenChange={setShowBulkDeleteDialog}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              Xóa {selection.selectedCount} kỹ năng?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              Hành động này không thể hoàn tác. Các kỹ năng sẽ bị gỡ khỏi dịch vụ và nhân viên liên quan.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isPending}>Hủy</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleBulkDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              disabled={isPending}
-            >
-              {isPending ? "Đang xóa..." : `Xóa ${selection.selectedCount} mục`}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        onConfirm={handleBulkDelete}
+        isDeleting={isPending}
+        entityName={`${selection.selectedCount} kỹ năng`}
+      />
     </>
   );
 }

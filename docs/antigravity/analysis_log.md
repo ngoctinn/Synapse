@@ -1,103 +1,95 @@
-# 📋 Analysis Log - Badge/Tag Consistency Audit
+# Analysis Log - Table System Review
 
-**Thời gian phân tích**: 2025-12-15 16:43 - 16:55
-**Người thực hiện**: Agent (Antigravity Workflow)
-
----
-
-## 1. Phạm Vi Phân Tích
-
-### Files được scan:
-- `shared/ui/badge.tsx` - Core Badge component
-- 28+ files sử dụng Badge trong `features/`
-- 2 custom Badge components
-
-### Pattern tìm kiếm:
-```
-<Badge.*className=
-Badge\s+variant=.*className=
-```
+> **Ngày:** 2025-12-15
+> **Phiên:** Table System UX/UI Audit
 
 ---
 
-## 2. Phát Hiện Chi Tiết
+## Files Đã Phân Tích
 
-### 2.1. className Overrides (10 trường hợp)
-
-| File | Line | Override | Root Cause |
-|------|------|----------|------------|
-| `exceptions-panel.tsx` | 166 | `text-[10px] px-1.5 h-5 font-normal` | Thiếu size variant phù hợp |
-| `notification-list.tsx` | 46 | `h-6 w-6 rounded-full p-0 flex...` | Sử dụng Badge sai mục đích (counter) |
-| `permission-matrix.tsx` | 77 | `rounded-md px-3 py-1` | Muốn shape khác rounded-full |
-| `skill-table.tsx` | 81 | `font-mono` | Muốn monospace font |
-| `resource-table.tsx` | 95 | `gap-1.5 font-medium border shadow-sm` | Custom styling cho type badge |
-| `resource-table.tsx` | 117 | `shadow-sm` | Decorative shadow |
-| `customer-table.tsx` | 133 | `uppercase font-bold tracking-wider` | Custom tier styling |
-| `customer-sheet.tsx` | 149 | `gap-1.5 animate-in zoom-in-50` | Animation |
-| `customer-sheet.tsx` | 156 | `gap-1.5` | Gap override |
-| `notification-popover.tsx` | 52 | `h-5 px-1.5 min-w-[20px]` | Counter sizing |
-| `invoice-details.tsx` | 108 | `text-[10px]` | Size override |
-| `filter-bar.tsx` | 166,216,265 | `ml-2` | Spacing |
-| `filter-bar.tsx` | 332,352,372,387 | `gap-1 pr-1` | Chip styling |
-
-### 2.2. Custom Badge Components
-
-| Component | Status | Notes |
-|-----------|--------|-------|
-| `InvoiceStatusBadge` | ✅ Good | Sử dụng variant system đúng cách |
-| `ChannelStatusBadge` | ⚠️ Refactored | Đã migrate sang preset system |
-
-### 2.3. Inline Constants
-
-| File | Constant | Action |
-|------|----------|--------|
-| `customer-table.tsx` | `TIER_STYLES` | ✅ Removed (sử dụng preset) |
-| `exceptions-panel.tsx` | `getBadgeVariant()` | ✅ Removed (sử dụng preset) |
+| File | Type | Findings |
+|------|------|----------|
+| `shared/ui/table.tsx` | Core | ✅ Base Shadcn component, chuẩn |
+| `shared/ui/custom/data-table.tsx` | Wrapper | ✅ Well-designed generic component |
+| `shared/ui/custom/data-table-empty-state.tsx` | Support | ⚠️ T-008: Hardcoded blue colors |
+| `shared/ui/custom/data-table-skeleton.tsx` | Support | ✅ OK |
+| `shared/ui/custom/table-action-bar.tsx` | Support | ✅ Good floating bar UX |
+| `shared/ui/custom/table-row-actions.tsx` | Support | ✅ OK |
+| `shared/ui/custom/animated-table-row.tsx` | Support | ✅ OK |
+| `shared/ui/custom/pagination-controls.tsx` | Support | ✅ OK |
+| `shared/hooks/use-table-params.ts` | Hook | ✅ Good URL state management |
+| `shared/hooks/use-table-selection.ts` | Hook | ✅ Clean selection logic |
+| `features/customers/components/customer-list/customer-table.tsx` | Feature | ✅ Good reference implementation |
+| `features/staff/components/staff-list/staff-table.tsx` | Feature | ✅ Good, has loading overlay |
+| `features/services/components/service-table.tsx` | Feature | ⚠️ T-004: AlertDialog inline |
+| `features/services/components/skill-table.tsx` | Feature | ⚠️ T-004: AlertDialog inline, T-010: missing variant |
+| `features/resources/components/resource-table.tsx` | Feature | ⚠️ T-002, T-003, T-004: Missing sort/pagination, AlertDialog |
+| `features/billing/components/invoice-table.tsx` | Feature | ⚠️ T-002, T-003: Missing sort/pagination, no empty state |
 
 ---
 
-## 3. Dependencies Affected
+## Dependencies Map
 
 ```
-shared/ui/badge.tsx
-├── features/settings/operating-hours/exceptions-panel.tsx
-├── features/settings/notifications/components/notification-list.tsx
-├── features/settings/notifications/components/channel-status-badge.tsx
-├── features/staff/components/permissions/permission-matrix.tsx
-├── features/services/components/skill-table.tsx
-├── features/resources/components/resource-table.tsx
-├── features/customers/components/customer-list/customer-table.tsx
-├── features/customers/components/customer-sheet.tsx
-├── features/notifications/components/notification-popover.tsx
-├── features/billing/components/sheet/invoice-details.tsx
-└── features/appointments/components/toolbar/filter-bar.tsx
+DataTable (shared)
+├── Table, TableHeader, TableBody, TableRow, TableCell, TableHead (shadcn)
+├── Checkbox (shadcn)
+├── AnimatedTableRow
+├── DataTableSkeleton
+├── PaginationControls
+└── design-system.types (SelectionConfig, SortConfig)
+
+Feature Tables
+├── DataTable
+├── DataTableEmptyState
+├── DataTableSkeleton
+├── TableActionBar
+├── useTableParams
+├── useTableSelection
+├── DeleteConfirmDialog OR AlertDialog (inconsistent!)
+└── Feature-specific Actions components
 ```
 
 ---
 
-## 4. Quyết Định Thiết Kế
+## Action Column Header Values
 
-### 4.1. Giữ nguyên Shape mặc định (rounded-full)
-- Không thêm shape variant
-- Badge với rounded-md cần sử dụng size sm thay vì override
-
-### 4.2. Không thêm font variant
-- Loại bỏ font-mono override
-- Badge code vẫn dùng font mặc định
-
-### 4.3. Mở rộng Preset System
-Thêm 12 presets mới:
-- `resource-room`, `resource-equipment`
-- `exception-holiday`, `exception-maintenance`, `exception-special`, `exception-custom`
-- `channel-connected`, `channel-disconnected`
-- `skill`
+| Table | Current Header | Should Be |
+|-------|---------------|-----------|
+| CustomerTable | "Hành động" | ✅ |
+| StaffTable | "Hành động" | ✅ |
+| ServiceTable | "Thao tác" | "Hành động" |
+| SkillTable | "Thao tác" | "Hành động" |
+| ResourceTable | "Hành động" | ✅ |
+| InvoiceTable | "" (empty) | "Hành động" |
 
 ---
 
-## 5. Risk Assessment
+## Dialog Pattern Comparison
 
-| Risk | Level | Mitigation |
-|------|-------|------------|
-| Visual regression | Low | Size md/sm thay thế className overrides |
-| Breaking API | None | Chỉ thêm presets, không thay đổi variants |
-| Performance | None | Không tăng bundle size đáng kể |
+| Table | Pattern Used | Should Use |
+|-------|--------------|------------|
+| CustomerTable | `DeleteConfirmDialog` | ✅ |
+| StaffTable | `DeleteConfirmDialog` | ✅ |
+| ServiceTable | `AlertDialog` inline | `DeleteConfirmDialog` |
+| SkillTable | `AlertDialog` inline | `DeleteConfirmDialog` |
+| ResourceTable | `AlertDialog` inline | `DeleteConfirmDialog` |
+| InvoiceTable | N/A (no delete) | N/A |
+
+---
+
+## Execution Plan
+
+### Phase 1: Fix Shared Components
+- [ ] T-008: Update `data-table-empty-state.tsx` theme colors
+
+### Phase 2: Fix Feature Tables
+- [ ] T-001: Standardize headers in ServiceTable, SkillTable, InvoiceTable
+- [ ] T-004: Migrate ServiceTable to DeleteConfirmDialog
+- [ ] T-004: Migrate SkillTable to DeleteConfirmDialog
+- [ ] T-004: Migrate ResourceTable to DeleteConfirmDialog
+- [ ] T-010: Add variant prop to SkillTable
+
+### Phase 3: Verify
+- [ ] pnpm lint
+- [ ] pnpm build

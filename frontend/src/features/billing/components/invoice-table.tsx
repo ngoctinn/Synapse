@@ -75,7 +75,8 @@ export function InvoiceTable({ data, onView, isLoading }: InvoiceTableProps) {
     },
     {
       id: "actions",
-      header: "",
+      header: "Hành động",
+      className: "pr-6 text-right",
       cell: (item) => (
         <Button
           variant="ghost"
