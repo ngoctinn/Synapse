@@ -12,6 +12,7 @@
 | FR-003 | Thống nhất UX/UI hộp thoại | 8. BÁO CÁO | ✅ HOÀN THÀNH | Antigravity |
 | OPT-001 | Tối ưu hóa delete-confirm-dialog.tsx | 8. BÁO CÁO | ✅ HOÀN THÀNH | Antigravity |
 | OPT-002 | Tối ưu hóa Clean Code (Dialog + ApptForm) | 8. BÁO CÁO | ✅ HOÀN THÀNH | Antigravity |
+| OPT-003 | Tối ưu hóa Clean Code (Services Module) | 8. BÁO CÁO | ✅ HOÀN THÀNH | Antigravity |
 
 
 ## 📊 Chú giải Giai đoạn

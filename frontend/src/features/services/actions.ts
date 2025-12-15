@@ -110,13 +110,13 @@ export async function deleteService(id: string): Promise<ActionResponse> {
 }
 
 export async function getSkills(page = 1, limit = 10): Promise<ActionResponse<PaginatedResponse<Skill>>> {
-    const start = (page - 1) * limit;
-    return success({
-        data: skills.slice(start, start + limit),
-        total: skills.length,
-        page,
-        limit
-    });
+  const start = (page - 1) * limit;
+  return success({
+    data: skills.slice(start, start + limit),
+    total: skills.length,
+    page,
+    limit
+  });
 }
 
 export async function createSkill(data: SkillCreateInput): Promise<ActionResponse<Skill>> {

@@ -8,11 +8,11 @@ import { DurationPicker } from "@/shared/ui/custom/duration-picker"
 import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs"
 import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/shared/ui/form"
 import { Input } from "@/shared/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select"
@@ -369,17 +369,7 @@ export function ServiceForm({
 
   const skillOptions = availableSkills.map((s) => ({ id: s.id, label: s.name }))
 
-  // Helper render functions
-  const renderBasicInfo = () => <ServiceBasicInfo />
-  const renderTimePrice = () => <ServiceTimePriceInfo duration={duration} bufferTime={bufferTime} />
-  const renderResources = () => (
-    <ServiceResourcesInfo
-      availableRoomTypes={availableRoomTypes}
-      skillOptions={skillOptions}
-      availableEquipment={availableEquipment}
-      duration={duration}
-    />
-  )
+  // Render logic simplified to direct component usage
 
   if (mode === "create") {
     return (
@@ -387,7 +377,7 @@ export function ServiceForm({
         {/* Basic Info Section */}
         <div className="space-y-4">
           <h3 className="font-semibold text-base">Thông tin cơ bản</h3>
-          {renderBasicInfo()}
+          <ServiceBasicInfo />
         </div>
 
         {/* Time & Price Section */}
@@ -395,7 +385,7 @@ export function ServiceForm({
           <div className="border-t pt-4">
             <h3 className="font-semibold text-base">Thời gian & Chi phí</h3>
           </div>
-          {renderTimePrice()}
+          <ServiceTimePriceInfo duration={duration} bufferTime={bufferTime} />
         </div>
 
         {/* Resources Section */}
@@ -403,7 +393,12 @@ export function ServiceForm({
           <div className="border-t pt-4">
             <h3 className="font-semibold text-base">Tài nguyên yêu cầu</h3>
           </div>
-          {renderResources()}
+          <ServiceResourcesInfo
+            availableRoomTypes={availableRoomTypes}
+            skillOptions={skillOptions}
+            availableEquipment={availableEquipment}
+            duration={duration}
+          />
         </div>
       </div>
     )
@@ -415,13 +410,18 @@ export function ServiceForm({
       <FormTabs tabs={SERVICE_FORM_TABS} defaultValue="basic">
          <div className="mt-4">
             <FormTabsContent value="basic" className="mt-0">
-                {renderBasicInfo()}
+                <ServiceBasicInfo />
             </FormTabsContent>
             <FormTabsContent value="time" className="mt-0">
-                {renderTimePrice()}
+                <ServiceTimePriceInfo duration={duration} bufferTime={bufferTime} />
             </FormTabsContent>
             <FormTabsContent value="resources" className="mt-0">
-                {renderResources()}
+                <ServiceResourcesInfo
+                  availableRoomTypes={availableRoomTypes}
+                  skillOptions={skillOptions}
+                  availableEquipment={availableEquipment}
+                  duration={duration}
+                />
             </FormTabsContent>
          </div>
       </FormTabs>
