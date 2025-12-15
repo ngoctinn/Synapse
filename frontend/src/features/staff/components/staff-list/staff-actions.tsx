@@ -2,9 +2,12 @@
 
 import { deleteStaff } from "@/features/staff/actions";
 import { useDeleteAction } from "@/shared/hooks";
-import { DeleteConfirmDialog } from "@/shared/ui";
-import { TableRowActions } from "@/shared/ui/custom/table-row-actions";
-import { DropdownMenuItem, DropdownMenuLabel } from "@/shared/ui/dropdown-menu";
+import {
+  DeleteConfirmDialog,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  TableRowActions,
+} from "@/shared/ui";
 import { KeyRound } from "lucide-react";
 import { Staff } from "../../model/types";
 

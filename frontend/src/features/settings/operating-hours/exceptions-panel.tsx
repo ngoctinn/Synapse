@@ -10,11 +10,20 @@
  */
 
 import { cn } from "@/shared/lib/utils";
-import { Badge } from "@/shared/ui/badge";
-import { Button } from "@/shared/ui/button";
-import { Calendar } from "@/shared/ui/calendar";
-import { ConfirmDialog } from "@/shared/ui/custom/confirm-dialog";
-import { ScrollArea } from "@/shared/ui/scroll-area";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  Badge,
+  Button,
+  Calendar,
+  ScrollArea,
+} from "@/shared/ui";
 import { format, isSameDay } from "date-fns";
 import { vi } from "date-fns/locale";
 import { CalendarDays, Pencil, Plus, Trash2 } from "lucide-react";
@@ -241,22 +250,25 @@ export function ExceptionsPanel({
         existingExceptions={exceptions}
       />
 
-      <ConfirmDialog
-        open={deleteConfirmOpen}
-        onOpenChange={setDeleteConfirmOpen}
-        title="Xóa ngày ngoại lệ?"
-        description="Hành động này không thể hoàn tác."
-        variant="error"
-        primaryAction={{
-          label: "Xóa",
-          onClick: confirmDelete,
-          variant: "destructive",
-        }}
-        secondaryAction={{
-          label: "Hủy",
-          onClick: () => setDeleteConfirmOpen(false),
-        }}
-      />
+      <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Xóa ngày ngoại lệ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Hành động này không thể hoàn tác.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Xóa
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -5,26 +5,26 @@ import { NotificationBell } from "@/features/notifications/components/notificati
 import { NotificationPopover } from "@/features/notifications/components/notification-popover"
 import { UserProfile } from "@/shared/components/layout/components/header/types"
 import { cn } from "@/shared/lib/utils"
-import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/shared/ui/breadcrumb"
-import { Button } from "@/shared/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/shared/ui/dropdown-menu"
-import { Separator } from "@/shared/ui/separator"
-import { SidebarTrigger } from "@/shared/ui/sidebar"
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+    Button,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+    Separator,
+    SidebarTrigger,
+} from "@/shared/ui"
 import { LogOut, Settings, User } from "lucide-react"
 import { usePathname } from "next/navigation"
 import React from "react"

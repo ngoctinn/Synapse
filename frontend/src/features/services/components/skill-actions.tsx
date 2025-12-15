@@ -1,15 +1,15 @@
 "use client";
 
 import { useDeleteAction } from "@/shared/hooks";
-import { DeleteConfirmDialog } from "@/shared/ui";
-import { TableRowActions } from "@/shared/ui/custom/table-row-actions";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-} from "@/shared/ui/dialog";
+  DeleteConfirmDialog,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  TableRowActions,
+} from "@/shared/ui";
 import { useState } from "react";
 import { deleteSkill } from "../actions";
 import { Skill } from "../types";

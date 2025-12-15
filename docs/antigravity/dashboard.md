@@ -1,10 +1,17 @@
 # Antigravity Dashboard
 
-## Active Workflow: VAL-001 - Validation System Refactor
+## Active Workflow: FCA-001 - Frontend Consistency Audit
 
 **Ngày bắt đầu**: 2025-12-15
 **Ngày hoàn thành**: 2025-12-15
-**Trạng thái**: ✅ HOÀN THÀNH
+**Trạng thái**: ✅ HOÀN THÀNH (bao gồm cleanup)
+
+---
+
+## Mô Tả Nhiệm Vụ
+
+**ROLE**: Front-end Architect & UX/UI Auditor
+**TASK**: Đánh giá mức độ nhất quán trên toàn bộ frontend — bao gồm cấu trúc component, pattern tái sử dụng, cách đặt tên, style guide, và logic hiển thị.
 
 ---
 
@@ -12,58 +19,109 @@
 
 | ID | Task | Status |
 |----|------|--------|
-| VAL-001-T1 | Tạo `shared/lib/validations/messages.ts` | ✅ Done |
-| VAL-001-T2 | Tạo `shared/lib/validations/primitives.ts` | ✅ Done |
-| VAL-001-T3 | Tạo `shared/lib/validations/index.ts` | ✅ Done |
-| VAL-001-T4 | Refactor `customers/model/schemas.ts` | ✅ Done |
-| VAL-001-T5 | Refactor `customer-dashboard/schemas.ts` | ✅ Done |
-| VAL-001-T6 | Refactor `booking-wizard/schemas.ts` | ✅ Done |
-| VAL-001-T7 | Refactor `staff/model/schemas.ts` | ✅ Done |
-| VAL-001-T8 | Refactor `auth/schemas.ts` | ✅ Done |
-| VAL-001-T9 | Fix `services/schemas.ts` color validation | ✅ Done |
-| VAL-001-T10 | Verify: `pnpm lint && pnpm build` | ✅ Pass |
+| FCA-001-T1 | Deep Audit: Phân tích toàn bộ features | ✅ Done |
+| FCA-001-T2 | Fix Deep Import Violations (7 files) | ✅ Done |
+| FCA-001-T3 | Verify Schema Consistency | ✅ Done |
+| FCA-001-T4 | Migrate ConfirmDialog → AlertDialog | ✅ Done |
+| FCA-001-T5 | Tạo COMPONENT_PATTERNS.md | ✅ Done |
+| FCA-001-T6 | Verify: `pnpm lint && pnpm build` | ✅ Pass |
+| FCA-001-T7 | Xóa components dư thừa (3 files) | ✅ Done |
 
 ---
 
-## Quy Tắc Chuẩn Hóa (Đã Triển Khai)
+## Kết Quả Sau Refactor
 
-| Trường | Min | Max | Format |
-|--------|-----|-----|--------|
-| full_name | 2 | 50 | Text |
-| email | - | 254 | RFC 5321 |
-| phone_number | 10 | 12 | VN Regex |
-| date_of_birth | 1900 | Today | ISO Date |
-| password | 8 | - | Text |
-| color | - | - | Hex RGB |
+### Điểm Đánh Giá: **7.5/10 → 8.5/10** ⬆️
 
----
-
-## Kết Quả
-
-| Metric | Trước | Sau |
-|--------|-------|-----|
-| Phone validation logic | 4 biến thể | 1 chuẩn |
-| Date validation logic | 2 biến thể | 1 chuẩn |
-| Shared validation library | ❌ Không có | ✅ Có |
-| Error messages | Không nhất quán | Chuẩn hóa tiếng Việt |
-| Build | Pass | Pass |
+| Tiêu chí | Trước | Sau |
+|----------|-------|-----|
+| Import Pattern | 6/10 | 9/10 |
+| Dialog System | 6/10 | 9/10 |
+| Schema Consistency | 7/10 | 9/10 |
+| Documentation | 6/10 | 8/10 |
 
 ---
 
-## Bug Đã Fix
+## Thay Đổi Thực Hiện
 
-1. **`customer-dashboard/schemas.ts`**: Email validation bị thiếu `.email()` - giờ đã có
-2. **`services/schemas.ts`**: Color validation chỉ check `^#` - giờ check full HEX
-3. **Multiple files**: `DeleteConfirmDialog` sử dụng props không tồn tại
+### A. Fix Deep Imports (7 files)
+| File | Thay đổi |
+|------|----------|
+| `staff/components/staff-list/staff-actions.tsx` | ✅ Import từ `@/shared/ui` |
+| `customers/components/customer-actions.tsx` | ✅ Import từ `@/shared/ui` |
+| `resources/components/resource-actions.tsx` | ✅ Import từ `@/shared/ui` |
+| `services/components/service-actions.tsx` | ✅ Import từ `@/shared/ui` |
+| `services/components/skill-actions.tsx` | ✅ Import từ `@/shared/ui` |
+| `admin/components/sidebar-item.tsx` | ✅ Import từ `@/shared/ui` |
+| `admin/components/header.tsx` | ✅ Import từ `@/shared/ui` |
+
+### B. Migrate Dialog System (2 files)
+| File | Thay đổi |
+|------|----------|
+| `settings/operating-hours/weekly-schedule.tsx` | ✅ `ConfirmDialog` → `AlertDialog` |
+| `settings/operating-hours/exceptions-panel.tsx` | ✅ `ConfirmDialog` → `AlertDialog` |
+
+### C. Schema Verification
+| Feature | Status |
+|---------|--------|
+| `customers/model/schemas.ts` | ✅ Sử dụng shared validations |
+| `customer-dashboard/schemas.ts` | ✅ Sử dụng shared validations |
+| `booking-wizard/schemas.ts` | ✅ Sử dụng shared validations |
+| `staff/model/schemas.ts` | ✅ Sử dụng shared validations |
+| `auth/schemas.ts` | ✅ Sử dụng shared validations |
+| `services/schemas.ts` | ✅ Sử dụng `colorHexWithDefault` |
+| `resources/schemas.ts` | ⚪ Không cần (không có phone/email/date) |
+| `reviews/schemas.ts` | ⚪ Không cần (domain-specific) |
+| `billing/schemas.ts` | ⚪ Không cần (domain-specific) |
+| `appointments/schemas.ts` | ⚪ Không cần (domain-specific) |
+
+### D. Documentation
+| File | Nội dung |
+|------|----------|
+| `docs/COMPONENT_PATTERNS.md` | ✅ Created - Import patterns, Dialog system, Table actions, Sheet pattern, Form validation |
+
+---
+
+## Stats Dự Án
+
+| Metric | Giá trị |
+|--------|---------|
+| Feature Modules | 15 |
+| Shared UI Components | 55+ (Shadcn/UI) + 31 (Custom) |
+| Shared Hooks | 11 |
+| Schema Files | 11 |
+| Deep Import Violations Fixed | 7 |
+| ConfirmDialog → AlertDialog Migrations | 2 |
+
+---
+
+## Quyết Định Kiến Trúc
+
+### Dialog System Simplification
+**Quyết định**: Chỉ sử dụng 2 Dialog chuẩn từ Shadcn:
+- `Dialog` - Modal thông thường
+- `AlertDialog` - Xác nhận hành động nguy hiểm
+
+**Lý do**:
+- Giảm complexity
+- Dễ maintain
+- Consistent với Shadcn patterns
+- Custom `ConfirmDialog` không cần thiết
+
+### Custom Components Giữ Lại
+- `DeleteConfirmDialog` - Wrapper tiện lợi, tích hợp tốt với `useDeleteAction`
+- `DataTable` - Reusable table với sorting, pagination
+- `TableRowActions` - Dropdown menu cho row actions
 
 ---
 
 ## Progress Log
 
-- `14:20` - Bắt đầu phân tích
-- `14:25` - Kế hoạch được phê duyệt
-- `14:26` - Tạo shared validation library
-- `14:28` - Refactor feature schemas
-- `14:32` - Fix TypeScript errors
-- `14:35` - Build thành công
-- `14:36` - Hoàn thành change log và report
+- `14:43` - Bắt đầu phân tích
+- `14:50` - Hoàn thành báo cáo sơ bộ
+- `14:52` - User phê duyệt Option D
+- `14:55` - Fix deep imports (7 files)
+- `15:00` - Migrate ConfirmDialog → AlertDialog
+- `15:05` - Fix build error
+- `15:10` - Tạo COMPONENT_PATTERNS.md
+- `15:12` - ✅ Build pass - Hoàn thành

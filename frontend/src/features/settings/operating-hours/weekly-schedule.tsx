@@ -5,9 +5,18 @@
  * Tham chiếu: docs/research/operating-hours-uxui.md - Section 4.1
  */
 
-import { Button } from "@/shared/ui/button";
-import { ConfirmDialog } from "@/shared/ui/custom/confirm-dialog";
-import { showToast } from "@/shared/ui/sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  Button,
+  showToast,
+} from "@/shared/ui";
 import { Copy, X } from "lucide-react";
 import { useCallback, useState } from "react";
 import { DayRow } from "./day-row";
@@ -132,21 +141,22 @@ export function WeeklySchedule({ config, onConfigChange }: WeeklyScheduleProps) 
       </div>
 
       {/* Confirm dialog for paste to all */}
-      <ConfirmDialog
-        open={pasteToAllOpen}
-        onOpenChange={setPasteToAllOpen}
-        title="Áp dụng cho tất cả các ngày?"
-        description={`Hành động này sẽ ghi đè lịch làm việc của tất cả các ngày khác bằng lịch của ngày ${copySourceDay ? DAY_LABELS[copySourceDay] : ""}. Dữ liệu cũ sẽ bị mất.`}
-        variant="warning"
-        primaryAction={{
-          label: "Xác nhận ghi đè",
-          onClick: handlePasteToAll,
-        }}
-        secondaryAction={{
-          label: "Hủy",
-          onClick: () => setPasteToAllOpen(false),
-        }}
-      />
+      <AlertDialog open={pasteToAllOpen} onOpenChange={setPasteToAllOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Áp dụng cho tất cả các ngày?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Hành động này sẽ ghi đè lịch làm việc của tất cả các ngày khác bằng lịch của ngày {copySourceDay ? DAY_LABELS[copySourceDay] : ""}. Dữ liệu cũ sẽ bị mất.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogAction onClick={handlePasteToAll}>
+              Xác nhận ghi đè
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

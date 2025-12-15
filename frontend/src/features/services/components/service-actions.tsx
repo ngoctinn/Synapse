@@ -1,9 +1,12 @@
 "use client";
 
 import { useDeleteAction } from "@/shared/hooks";
-import { DeleteConfirmDialog } from "@/shared/ui";
-import { TableRowActions } from "@/shared/ui/custom/table-row-actions";
-import { DropdownMenuItem, DropdownMenuLabel } from "@/shared/ui/dropdown-menu";
+import {
+    DeleteConfirmDialog,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    TableRowActions,
+} from "@/shared/ui";
 import { Copy } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
