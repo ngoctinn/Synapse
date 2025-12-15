@@ -370,9 +370,9 @@ export function AppointmentSheet({
             <div className="flex items-center gap-3 w-full">
               <Button
                 type="button"
-                variant="ghost"
+                variant="outline"
                 onClick={isEditMode ? handleCancelEdit : handleClose}
-                className="flex-1 h-9 text-muted-foreground hover:text-foreground"
+                className="flex-1 h-9"
               >
                 Hủy bỏ
               </Button>

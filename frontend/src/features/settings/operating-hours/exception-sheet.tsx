@@ -247,10 +247,9 @@ export function ExceptionSheet({
         <SheetFooter>
           <Button
             type="button"
-            variant="ghost"
+            variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={isSubmitting}
-            className="text-muted-foreground hover:text-foreground"
           >
             Hủy bỏ
           </Button>

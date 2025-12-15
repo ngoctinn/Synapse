@@ -139,10 +139,9 @@ export function StaffSheet({ open, onOpenChange, mode, staff, skills }: StaffShe
         <SheetFooter>
             <Button
                 type="button"
-                variant="ghost"
+                variant="outline"
                 onClick={() => !isPending && onOpenChange(false)}
                 disabled={isPending}
-                className="text-muted-foreground hover:text-foreground"
             >
                 Hủy bỏ
             </Button>

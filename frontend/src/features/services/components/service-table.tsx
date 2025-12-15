@@ -110,7 +110,7 @@ export function ServiceTable({
       cell: (service) => (
         <div className="flex flex-wrap gap-2">
           {service.skills.map((skill) => (
-            <Badge key={skill.id} variant="secondary">
+            <Badge key={skill.id} variant="violet">
               {skill.name}
             </Badge>
           ))}

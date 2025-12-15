@@ -199,7 +199,7 @@ export function StaffTable({
           {staff.skills.length > 0 ? (
             <>
               {staff.skills.slice(0, 2).map((skill) => (
-                <Badge key={skill.id} variant="secondary" size="sm">
+                <Badge key={skill.id} variant="violet" size="sm">
                   {skill.name}
                 </Badge>
               ))}
@@ -207,7 +207,7 @@ export function StaffTable({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Badge variant="secondary" size="sm">
+                      <Badge variant="violet" size="sm">
                         +{staff.skills.length - 2} nữa
                       </Badge>
                     </TooltipTrigger>

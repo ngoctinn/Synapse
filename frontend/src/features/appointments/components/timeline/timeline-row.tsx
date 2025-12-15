@@ -100,7 +100,7 @@ export function TimelineRow({
           <div className="flex items-center gap-1.5">
             <span className="text-sm font-medium truncate">{resource.name}</span>
             {!resource.isActive && (
-              <Badge variant="secondary" size="xs">
+              <Badge variant="gray" size="xs">
                 Nghỉ
               </Badge>
             )}

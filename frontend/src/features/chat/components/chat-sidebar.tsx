@@ -69,7 +69,7 @@ export function ChatSidebar({ conversations, selectedId, onSelect, className }: 
                    {conv.tags && conv.tags.length > 0 && (
                       <div className="flex gap-1 mt-2">
                         {conv.tags.map(tag => (
-                          <Badge key={tag} variant="secondary" size="xs">
+                          <Badge key={tag} variant="indigo" size="xs">
                             {tag}
                           </Badge>
                         ))}

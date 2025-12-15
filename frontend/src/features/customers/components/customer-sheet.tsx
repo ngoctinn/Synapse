@@ -194,9 +194,8 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
         <SheetFooter className="z-20">
             <Button
                 type="button"
-                variant="ghost"
+                variant="outline"
                 onClick={() => onOpenChange(false)}
-                className="text-muted-foreground hover:text-foreground"
             >
                 Hủy bỏ
             </Button>

@@ -150,9 +150,8 @@ export function ServiceSheet({
         <SheetFooter>
           <Button
             type="button"
-            variant="ghost"
+            variant="outline"
             onClick={() => onOpenChange(false)}
-            className="text-muted-foreground hover:text-foreground"
             disabled={isPending}
           >
             Hủy bỏ
