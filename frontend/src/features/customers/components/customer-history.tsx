@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { Badge, BadgeVariant } from "@/shared/ui/badge"
+import { Badge, BadgeVariant } from "@/shared/ui/badge";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/shared/ui/table"
-import { Calendar, CreditCard, Scissors } from "lucide-react"
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/shared/ui/table";
+import { Calendar, CreditCard, Scissors } from "lucide-react";
 
 // Mock Data
 const MOCK_STATS = [
@@ -34,7 +34,7 @@ const MOCK_STATS = [
     color: "text-purple-600",
     bg: "bg-purple-100",
   },
-]
+];
 
 const MOCK_HISTORY = [
   {
@@ -73,13 +73,13 @@ const MOCK_HISTORY = [
     status: "COMPLETED",
     amount: "1.200.000đ",
   },
-]
+];
 
 const STATUS_MAP: Record<string, { variant: BadgeVariant; label: string }> = {
   COMPLETED: { variant: "emerald", label: "Hoàn thành" },
   CANCELLED: { variant: "red", label: "Đã hủy" },
   PENDING: { variant: "amber", label: "Sắp tới" },
-}
+};
 
 export function CustomerHistory() {
   return (
@@ -123,16 +123,23 @@ export function CustomerHistory() {
           </TableHeader>
           <TableBody>
             {MOCK_HISTORY.map((item) => (
-              <TableRow key={item.id} className="cursor-pointer hover:bg-muted/50">
+              <TableRow
+                key={item.id}
+                className="cursor-pointer hover:bg-muted/50"
+              >
                 <TableCell className="font-medium">
                   <div className="flex flex-col">
                     <span>{item.date}</span>
-                    <span className="text-xs text-muted-foreground">{item.time}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {item.time}
+                    </span>
                   </div>
                 </TableCell>
                 <TableCell>
-                    <span className="font-medium text-foreground">{item.id}</span>
-                    <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">{item.service}</p>
+                  <span className="font-medium text-foreground">{item.id}</span>
+                  <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
+                    {item.service}
+                  </p>
                 </TableCell>
                 <TableCell className="text-sm">{item.staff}</TableCell>
                 <TableCell>
@@ -149,5 +156,5 @@ export function CustomerHistory() {
         </Table>
       </div>
     </div>
-  )
+  );
 }

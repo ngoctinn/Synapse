@@ -11,13 +11,13 @@
 
 import { format } from "date-fns";
 import {
-    CheckCircle2,
-    Clock,
-    Play,
-    Repeat,
-    User,
-    UserX,
-    XCircle
+  CheckCircle2,
+  Clock,
+  Play,
+  Repeat,
+  User,
+  UserX,
+  XCircle,
 } from "lucide-react";
 
 import { cn } from "@/shared/lib/utils";
@@ -82,7 +82,10 @@ export function EventCard({
   onClick,
   className,
 }: EventCardProps) {
-  const timeRange = `${format(event.start, "HH:mm")} - ${format(event.end, "HH:mm")}`;
+  const timeRange = `${format(event.start, "HH:mm")} - ${format(
+    event.end,
+    "HH:mm"
+  )}`;
 
   // Mini variant (dot)
   if (variant === "mini") {
@@ -133,9 +136,13 @@ export function EventCard({
       >
         {/* Time + Status */}
         <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-          <span className={statusConfig.color}>{STATUS_ICONS[event.status]}</span>
+          <span className={statusConfig.color}>
+            {STATUS_ICONS[event.status]}
+          </span>
           <span>{format(event.start, "HH:mm")}</span>
-          {event.isRecurring && <Repeat className="h-2.5 w-2.5 text-muted-foreground" />}
+          {event.isRecurring && (
+            <Repeat className="h-2.5 w-2.5 text-muted-foreground" />
+          )}
         </div>
 
         {/* Customer Name */}
@@ -186,7 +193,9 @@ export function EventCard({
       {/* Customer */}
       <div className="flex items-center gap-2 mb-1">
         <User className="size-4 text-muted-foreground" />
-        <span className="font-medium text-sm">{event.appointment.customerName}</span>
+        <span className="font-medium text-sm">
+          {event.appointment.customerName}
+        </span>
       </div>
 
       {/* Service */}

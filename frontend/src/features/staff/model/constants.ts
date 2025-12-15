@@ -1,6 +1,25 @@
 import { Role } from "./types";
 
-export const ROLE_CONFIG: Record<Role, { label: string; variant: "default" | "secondary" | "destructive" | "outline" | "success" | "warning" | "info" | "purple" | "sky" | "cyan" | "gray" | "glass"; className?: string }> = {
+export const ROLE_CONFIG: Record<
+  Role,
+  {
+    label: string;
+    variant:
+      | "default"
+      | "secondary"
+      | "destructive"
+      | "outline"
+      | "success"
+      | "warning"
+      | "info"
+      | "purple"
+      | "sky"
+      | "cyan"
+      | "gray"
+      | "glass";
+    className?: string;
+  }
+> = {
   admin: {
     label: "Quản trị viên",
     variant: "purple",
@@ -16,8 +35,8 @@ export const ROLE_CONFIG: Record<Role, { label: string; variant: "default" | "se
   customer: {
     label: "Khách hàng",
     variant: "gray",
-  }
-}
+  },
+};
 
 export const MODULES = [
   { id: "dashboard", name: "Dashboard" },
@@ -27,16 +46,15 @@ export const MODULES = [
   { id: "inventory", name: "Kho & Sản phẩm" },
   { id: "reports", name: "Báo cáo & Thống kê" },
   { id: "settings", name: "Cấu hình Hệ thống" },
-]
+];
 
 export const ROLES = [
   { id: "admin", name: "Quản trị viên", variant: "purple" },
   { id: "receptionist", name: "Lễ tân", variant: "sky" },
   { id: "technician", name: "Kỹ thuật viên", variant: "cyan" },
-] as const
+] as const;
 
-export const STAFF_HEADER_OFFSET_CLASS = "top-[105px] md:top-[53px]"
-
+export const STAFF_HEADER_OFFSET_CLASS = "top-[105px] md:top-[53px]";
 
 export const SCHEDULER_UI = {
   PREV_WEEK: "Tuần trước",

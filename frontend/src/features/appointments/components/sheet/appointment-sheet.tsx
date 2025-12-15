@@ -9,11 +9,10 @@ import {
   Phone,
   Receipt,
   User,
-  XCircle
+  XCircle,
 } from "lucide-react";
 import { useEffect, useState } from "react"; // Import useEffect
 
-import { cn } from "@/shared/lib/utils";
 import {
   Badge,
   BadgePreset,
@@ -24,12 +23,17 @@ import {
   SheetDescription,
   SheetFooter,
   SheetHeader,
-  SheetTitle
+  SheetTitle,
 } from "@/shared/ui";
 
 import { ReviewPrompt } from "@/features/reviews/components/review-prompt"; // Import ReviewPrompt
 import { MockService } from "../../mock-data";
-import type { Appointment, AppointmentStatus, CalendarEvent, TimelineResource } from "../../types";
+import type {
+  Appointment,
+  AppointmentStatus,
+  CalendarEvent,
+  TimelineResource,
+} from "../../types";
 import { AppointmentForm } from "./appointment-form";
 
 // ============================================
@@ -126,8 +130,8 @@ export function AppointmentSheet({
     onOpenChange(false);
     // Reset mode sau khi đóng
     setTimeout(() => {
-        setMode(initialMode);
-        setReviewPromptOpen(false); // Close review prompt on sheet close
+      setMode(initialMode);
+      setReviewPromptOpen(false); // Close review prompt on sheet close
     }, 300);
   };
 
@@ -145,11 +149,9 @@ export function AppointmentSheet({
   };
 
   const canCheckIn =
-    appointment?.status === "CONFIRMED" ||
-    appointment?.status === "PENDING";
+    appointment?.status === "CONFIRMED" || appointment?.status === "PENDING";
   const canCancel =
-    appointment?.status === "PENDING" ||
-    appointment?.status === "CONFIRMED";
+    appointment?.status === "PENDING" || appointment?.status === "CONFIRMED";
   const canCreateInvoice = appointment?.status === "COMPLETED";
 
   return (
@@ -165,8 +167,8 @@ export function AppointmentSheet({
                 {isCreateMode
                   ? "Tạo lịch hẹn mới"
                   : isEditMode
-                    ? "Chỉnh sửa lịch hẹn"
-                    : "Chi tiết lịch hẹn"}
+                  ? "Chỉnh sửa lịch hẹn"
+                  : "Chi tiết lịch hẹn"}
               </SheetTitle>
               <SheetDescription>
                 {isCreateMode
@@ -186,7 +188,7 @@ export function AppointmentSheet({
         {/* CONTENT */}
         {/* ============================================ */}
         <div className="sheet-scroll-area">
-          {(isCreateMode || isEditMode) ? (
+          {isCreateMode || isEditMode ? (
             // Form Mode
             <div className="space-y-6">
               <AppointmentForm
@@ -209,7 +211,8 @@ export function AppointmentSheet({
                 </h3>
                 <div className="bg-muted/50 rounded-lg p-4">
                   <div className="text-lg font-semibold">
-                    {format(event!.start, "HH:mm")} - {format(event!.end, "HH:mm")}
+                    {format(event!.start, "HH:mm")} -{" "}
+                    {format(event!.end, "HH:mm")}
                   </div>
                   <div className="text-sm text-muted-foreground">
                     {format(event!.start, "EEEE, d MMMM yyyy", { locale: vi })}
@@ -230,13 +233,13 @@ export function AppointmentSheet({
                   Khách hàng
                 </h3>
                 <div className="flex items-start gap-4">
-                  <div
-                    className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold"
-                  >
+                  <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
                     {getInitials(appointment!.customerName)}
                   </div>
                   <div className="flex-1">
-                    <div className="font-medium">{appointment!.customerName}</div>
+                    <div className="font-medium">
+                      {appointment!.customerName}
+                    </div>
                     {appointment!.customerPhone && (
                       <a
                         href={`tel:${appointment!.customerPhone}`}
@@ -277,7 +280,9 @@ export function AppointmentSheet({
                       <MapPin className="size-4" />
                       Phòng / Giường
                     </h3>
-                    <div className="font-medium">{appointment!.resourceName}</div>
+                    <div className="font-medium">
+                      {appointment!.resourceName}
+                    </div>
                   </div>
                 </>
               )}
@@ -306,70 +311,78 @@ export function AppointmentSheet({
 
         <SheetFooter className="px-6 py-3 border-t bg-background flex-col gap-3 z-20">
           {isViewMode ? (
-             <>
-                {/* Quick Actions */}
-                <div className="flex items-center gap-2 w-full">
-                  {canCreateInvoice && (
-                    <Button
-                      className="w-full bg-green-600 hover:bg-green-700 h-9"
-                      onClick={() => onCreateInvoice?.(appointment!.id)}
-                      startContent={<Receipt className="size-4" />}
-                    >
-                      Tạo hóa đơn
-                    </Button>
-                  )}
-                </div>
-                <div className="flex items-center gap-2 w-full">
-                  {canCheckIn && (
-                    <Button
-                      variant="outline"
-                      className="flex-1 text-green-600 border-green-200 hover:bg-green-50 h-9"
-                      onClick={() => onCheckIn?.(appointment!.id)}
-                      startContent={<CheckCircle2 className="size-4" />}
-                    >
-                      Check-in
-                    </Button>
-                  )}
-                  {canCancel && (
-                    <Button
-                      variant="outline"
-                      className="flex-1 text-amber-600 border-amber-200 hover:bg-amber-50 h-9"
-                      onClick={() => onCancel?.(appointment!.id)}
-                      startContent={<XCircle className="size-4" />}
-                    >
-                      Hủy lịch
-                    </Button>
-                  )}
-                </div>
+            <>
+              {/* Quick Actions */}
+              <div className="flex items-center gap-2 w-full">
+                {canCreateInvoice && (
+                  <Button
+                    className="w-full bg-green-600 hover:bg-green-700 h-9"
+                    onClick={() => onCreateInvoice?.(appointment!.id)}
+                    startContent={<Receipt className="size-4" />}
+                  >
+                    Tạo hóa đơn
+                  </Button>
+                )}
+              </div>
+              <div className="flex items-center gap-2 w-full">
+                {canCheckIn && (
+                  <Button
+                    variant="outline"
+                    className="flex-1 text-green-600 border-green-200 hover:bg-green-50 h-9"
+                    onClick={() => onCheckIn?.(appointment!.id)}
+                    startContent={<CheckCircle2 className="size-4" />}
+                  >
+                    Check-in
+                  </Button>
+                )}
+                {canCancel && (
+                  <Button
+                    variant="outline"
+                    className="flex-1 text-amber-600 border-amber-200 hover:bg-amber-50 h-9"
+                    onClick={() => onCancel?.(appointment!.id)}
+                    startContent={<XCircle className="size-4" />}
+                  >
+                    Hủy lịch
+                  </Button>
+                )}
+              </div>
 
-                {/* Main Actions */}
-                <div className="flex items-center gap-2 w-full">
-                  <Button variant="ghost" className="flex-1 h-9" onClick={handleClose}>
-                    Đóng
-                  </Button>
-                  <Button className="flex-1 h-9" onClick={handleEdit} startContent={<Edit className="size-4" />}>
-                    Chỉnh sửa
-                  </Button>
-                </div>
-             </>
+              {/* Main Actions */}
+              <div className="flex items-center gap-2 w-full">
+                <Button
+                  variant="ghost"
+                  className="flex-1 h-9"
+                  onClick={handleClose}
+                >
+                  Đóng
+                </Button>
+                <Button
+                  className="flex-1 h-9"
+                  onClick={handleEdit}
+                  startContent={<Edit className="size-4" />}
+                >
+                  Chỉnh sửa
+                </Button>
+              </div>
+            </>
           ) : (
             // Create / Edit Mode Footer
             <div className="flex items-center gap-3 w-full">
-                <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={isEditMode ? handleCancelEdit : handleClose}
-                    className="flex-1 h-9 text-muted-foreground hover:text-foreground"
-                >
-                    Hủy bỏ
-                </Button>
-                <Button
-                    type="submit"
-                    form="appointment-form"
-                    className="flex-1 h-9"
-                >
-                    {isEditMode ? "Lưu thay đổi" : "Tạo lịch hẹn"}
-                </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={isEditMode ? handleCancelEdit : handleClose}
+                className="flex-1 h-9 text-muted-foreground hover:text-foreground"
+              >
+                Hủy bỏ
+              </Button>
+              <Button
+                type="submit"
+                form="appointment-form"
+                className="flex-1 h-9"
+              >
+                {isEditMode ? "Lưu thay đổi" : "Tạo lịch hẹn"}
+              </Button>
             </div>
           )}
         </SheetFooter>
