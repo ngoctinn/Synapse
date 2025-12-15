@@ -11,17 +11,17 @@ import { updatePasswordAction } from "../actions";
 import { usePasswordVisibility } from "../hooks/use-password-visibility";
 import { updatePasswordSchema, type UpdatePasswordInput } from "../schemas";
 
-import { Button } from "@/shared/ui/button";
 import {
+    Button,
     Form,
     FormControl,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/shared/ui/form";
-import { Input } from "@/shared/ui/input";
-import { showToast } from "@/shared/ui/sonner";
+    Input,
+    showToast,
+} from "@/shared/ui";
 
 export function UpdatePasswordForm() {
   const router = useRouter();

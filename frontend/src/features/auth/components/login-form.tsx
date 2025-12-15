@@ -11,18 +11,19 @@ import { loginAction } from "../actions";
 import { usePasswordVisibility } from "../hooks/use-password-visibility";
 import { loginSchema, type LoginInput } from "../schemas";
 
-import { Alert, AlertDescription } from "@/shared/ui/alert";
-import { Button } from "@/shared/ui/button";
 import {
+    Alert,
+    AlertDescription,
+    Button,
     Form,
     FormControl,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/shared/ui/form";
-import { Input } from "@/shared/ui/input";
-import { showToast } from "@/shared/ui/sonner";
+    Input,
+    showToast,
+} from "@/shared/ui";
 
 export function LoginForm() {
   const router = useRouter();

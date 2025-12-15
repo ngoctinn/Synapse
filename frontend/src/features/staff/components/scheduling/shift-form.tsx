@@ -5,20 +5,20 @@ import { Tag } from "lucide-react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
-import { Button } from "@/shared/ui/button"
-import { RequiredMark } from "@/shared/ui"
-import { ColorSwatchGroup } from "@/shared/ui/custom/color-swatch-group"
-import { TimeInput } from "@/shared/ui/custom/time-input"
-import { DialogFooter } from "@/shared/ui/dialog"
 import {
+    Button,
+    DialogFooter,
     Form,
     FormControl,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/shared/ui/form"
-import { Input } from "@/shared/ui/input"
+    Input,
+    RequiredMark,
+    TimeInput,
+} from "@/shared/ui"
+import { ColorSwatchGroup } from "@/shared/ui/custom/color-swatch-group"
 import { Shift } from "../../model/types"
 
 const formSchema = z.object({

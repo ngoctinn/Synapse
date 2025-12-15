@@ -2,6 +2,63 @@
 
 ---
 
+## FIS-001: Form Import Standardization
+
+**Ngày thực hiện**: 2025-12-15
+**Trạng thái**: ✅ HOÀN THÀNH
+
+### Tổng Quan
+
+Chuẩn hóa imports cho tất cả **14 form components** từ Deep Import sang Barrel Import (`@/shared/ui`).
+
+### Chi Tiết Thay Đổi
+
+#### Batch 1: Core Entity Forms (4 files)
+
+| File | Feature |
+|------|---------|
+| `customer-form.tsx` | customers |
+| `staff-form.tsx` | staff |
+| `service-form.tsx` | services |
+| `resource-form.tsx` | resources |
+
+#### Batch 2: Auth Forms (4 files)
+
+| File | Feature |
+|------|---------|
+| `login-form.tsx` | auth |
+| `register-form.tsx` | auth |
+| `forgot-password-form.tsx` | auth |
+| `update-password-form.tsx` | auth |
+
+#### Batch 3: Other Forms (6 files)
+
+| File | Feature |
+|------|---------|
+| `skill-form.tsx` | services |
+| `shift-form.tsx` | staff/scheduling |
+| `payment-form.tsx` | billing |
+| `profile-form.tsx` | customer-dashboard |
+| `review-form.tsx` | reviews |
+| `customer-form.tsx` | booking-wizard |
+
+### Verification
+
+```bash
+$ pnpm lint   # 0 errors, 74 warnings
+$ pnpm build  # ✓ Compiled successfully in 47s
+```
+
+### Impact
+
+| Metric | Trước | Sau |
+|--------|-------|-----|
+| Barrel Import Compliance | 7% (1/15) | **100%** (15/15) |
+| Files Modified | - | 14 |
+| Breaking Changes | - | 0 |
+
+---
+
 ## SCS-001: Sheet Component Standardization
 
 **Ngày thực hiện**: 2025-12-15

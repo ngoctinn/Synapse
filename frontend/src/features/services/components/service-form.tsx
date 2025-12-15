@@ -2,22 +2,26 @@
 
 import { Resource, RoomType } from "@/features/resources"
 import { cn } from "@/shared/lib/utils"
-import { RequiredMark } from "@/shared/ui"
-import { ColorSwatchGroup } from "@/shared/ui/custom/color-swatch-group"
-import { DurationPicker } from "@/shared/ui/custom/duration-picker"
-import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs"
-import { TagInput } from "@/shared/ui/custom/tag-input"
 import {
     FormControl,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/shared/ui/form"
-import { Input } from "@/shared/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select"
-import { Switch } from "@/shared/ui/switch"
-import { Textarea } from "@/shared/ui/textarea"
+    Input,
+    RequiredMark,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+    Switch,
+    Textarea,
+} from "@/shared/ui"
+import { ColorSwatchGroup } from "@/shared/ui/custom/color-swatch-group"
+import { DurationPicker } from "@/shared/ui/custom/duration-picker"
+import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs"
+import { TagInput } from "@/shared/ui/custom/tag-input"
 import { useFormContext } from "react-hook-form"
 import { SERVICE_COLORS } from "../constants"
 import { Skill } from "../types"

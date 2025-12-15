@@ -4,26 +4,26 @@ import { Tags } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 
 import { cn } from "@/shared/lib/utils";
-import { RequiredMark } from "@/shared/ui";
-import { TagInput } from "@/shared/ui/custom/tag-input";
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from "@/shared/ui/form";
-import { Input } from "@/shared/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/shared/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
-
-import { Textarea } from "@/shared/ui/textarea";
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+    Input,
+    RequiredMark,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+    TagInput,
+    Textarea,
+} from "@/shared/ui";
 
 import { ResourceGroup } from "../types";
 

@@ -11,17 +11,17 @@ import { registerAction } from "../actions";
 import { usePasswordVisibility } from "../hooks/use-password-visibility";
 import { registerSchema, type RegisterInput } from "../schemas";
 
-import { Button } from "@/shared/ui/button";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/shared/ui/form";
-import { Input } from "@/shared/ui/input";
-import { showToast } from "@/shared/ui/sonner";
+    Button,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+    Input,
+    showToast,
+} from "@/shared/ui";
 
 export function RegisterForm() {
   const router = useRouter();

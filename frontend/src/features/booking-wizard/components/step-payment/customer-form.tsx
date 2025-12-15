@@ -1,10 +1,16 @@
 "use client";
 
+import {
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+    Input,
+    Textarea,
+} from "@/shared/ui";
 import { UseFormReturn } from "react-hook-form";
 import { CustomerInfoSchema } from "../../schemas";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/ui/form";
-import { Input } from "@/shared/ui/input";
-import { Textarea } from "@/shared/ui/textarea";
 
 interface CustomerFormProps {
   form: UseFormReturn<CustomerInfoSchema>;
@@ -14,7 +20,7 @@ export const CustomerForm = ({ form }: CustomerFormProps) => {
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold">Thông tin khách hàng</h3>
-      
+
       <FormField
         control={form.control}
         name="full_name"

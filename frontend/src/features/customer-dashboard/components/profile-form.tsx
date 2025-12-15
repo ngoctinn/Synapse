@@ -5,9 +5,15 @@ import { PROFILE_MESSAGES } from "@/features/customer-dashboard/constants"
 import { ProfileInput, profileSchema } from "@/features/customer-dashboard/schemas"
 import { UserProfile } from "@/features/customer-dashboard/types"
 import { useReducedMotion } from "@/shared/hooks"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card"
-import { showToast } from "@/shared/ui/sonner"
-import { Form } from "@/shared/ui/form"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+    Form,
+    showToast,
+} from "@/shared/ui"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { motion, Transition } from "framer-motion"
 import { startTransition, useActionState, useEffect } from "react"

@@ -1,7 +1,7 @@
-# Kế Hoạch Triển Khai: Sheet Component Standardization (Synapse)
+# Kế Hoạch Triển Khai: Form Import Standardization (Synapse)
 
 **Ngày tạo**: 2025-12-15
-**Cập nhật**: 2025-12-15 15:17
+**Cập nhật**: 2025-12-15 15:30
 **Trạng thái**: ✅ ĐÃ PHÊ DUYỆT - ĐANG THỰC THI
 **Vai trò**: Front-end Auditor & UI Consistency Specialist
 
@@ -9,65 +9,43 @@
 
 ## 1. Vấn Đề (Problem)
 
-### 1.1. Tổng Quan Component Sheet
+### 1.1. Phân Tích Tổng Quan
 
-Hệ thống Sheet trong Synapse có **9 files** sử dụng Sheet component:
+Hệ thống có **15 form components** với **93% vi phạm** barrel import convention.
 
-| # | File | Feature | Tuân thủ |
-|---|------|---------|----------|
-| 1 | `customer-sheet.tsx` | Customers | 75% |
-| 2 | `service-sheet.tsx` | Services | 83% |
-| 3 | `staff-sheet.tsx` | Staff | 83% |
-| 4 | `resource-sheet.tsx` | Resources | 83% |
-| 5 | `appointment-sheet.tsx` | Appointments | 92% |
-| 6 | `invoice-sheet.tsx` | Billing | **33%** ❌ |
-| 7 | `exception-sheet.tsx` | Settings | 83% |
-| 8 | `add-shift-dialog.tsx` | Staff (Scheduling) | **33%** ❌ |
-| 9 | `mobile-user-sheet.tsx` | Shared Layout | 50% |
+| Metric | Giá trị |
+|--------|---------|
+| Tổng forms | 15 |
+| Deep Import (SAI) | 14 (93%) |
+| Barrel Import (ĐÚNG) | 1 (7%) |
 
-### 1.2. Các Vấn Đề Cụ Thể
+### 1.2. Files Vi Phạm
 
-#### A. Import Pattern Không Nhất Quán (78% vi phạm)
-
-**Deep Import (SAI):**
-```tsx
-import { Sheet, SheetContent } from "@/shared/ui/sheet";
-import { Button } from "@/shared/ui/button";
-```
-
-**Barrel Import (ĐÚNG theo COMPONENT_PATTERNS.md):**
-```tsx
-import { Sheet, SheetContent, Button } from "@/shared/ui";
-```
-
-#### B. SheetContent className Không Thống Nhất
-
-| File | Vấn đề |
-|------|--------|
-| `invoice-sheet.tsx` | `w-[400px] sm:w-[540px]` - Fixed width, không theo pattern |
-| `customer-sheet.tsx` | Có thêm `transition-all duration-300` |
-
-#### C. Scroll Area Pattern
-
-| File | Cách xử lý |
-|------|-----------|
-| Đa số | `<div className="sheet-scroll-area">` ✅ |
-| `invoice-sheet.tsx` | `<ScrollArea>` component ❌ |
-| `add-shift-dialog.tsx` | Inline `overflow-y-auto` ❌ |
-
-#### D. Tên File Bất Nhất
-
-- `add-shift-dialog.tsx` dùng Sheet nhưng tên là "Dialog"
+| # | Form | Feature | Trạng thái |
+|---|------|---------|------------|
+| 1 | `customer-form.tsx` | customers | ❌ Deep Import |
+| 2 | `staff-form.tsx` | staff | ❌ Deep Import |
+| 3 | `service-form.tsx` | services | ❌ Deep Import |
+| 4 | `resource-form.tsx` | resources | ❌ Deep Import |
+| 5 | `skill-form.tsx` | services | ❌ Deep Import |
+| 6 | `shift-form.tsx` | staff | ❌ Cần kiểm tra |
+| 7 | `review-form.tsx` | reviews | ❌ Cần kiểm tra |
+| 8 | `payment-form.tsx` | billing | ❌ Deep Import |
+| 9 | `profile-form.tsx` | customer-dashboard | ❌ Deep Import |
+| 10 | `login-form.tsx` | auth | ❌ Deep Import |
+| 11 | `register-form.tsx` | auth | ❌ Deep Import |
+| 12 | `forgot-password-form.tsx` | auth | ❌ Cần kiểm tra |
+| 13 | `update-password-form.tsx` | auth | ❌ Cần kiểm tra |
+| 14 | `booking-wizard/customer-form.tsx` | booking-wizard | ❌ Cần kiểm tra |
+| 15 | `appointment-form.tsx` | appointments | ✅ Barrel Import |
 
 ---
 
 ## 2. Mục Đích (Goal)
 
-1. **Refactor Import Paths**: 8 files → Barrel Import `@/shared/ui`
-2. **Standardize SheetContent className**: Pattern nhất quán
-3. **Standardize Scroll Area**: Sử dụng `sheet-scroll-area` class
-4. **Fix Naming**: Rename `add-shift-dialog.tsx` → `add-shift-sheet.tsx`
-5. **Update Documentation**: Cập nhật COMPONENT_PATTERNS.md với Sheet Size Variants
+1. **Refactor Import Paths**: 14 forms → Barrel Import `@/shared/ui`
+2. **Không Breaking Changes**: Chỉ thay đổi import, không đổi logic
+3. **Build phải pass**: `pnpm lint` và `pnpm build`
 
 ---
 
@@ -75,76 +53,49 @@ import { Sheet, SheetContent, Button } from "@/shared/ui";
 
 - ✅ Không thay đổi behavior/logic
 - ✅ Backward compatible
-- ✅ Build phải pass (`pnpm lint`, `pnpm build`)
+- ✅ Build phải pass
 - ✅ Giữ nguyên Tiếng Việt
 
 ---
 
-## 4. Chiến Lược (Strategy)
+## 4. Task Breakdown
 
-### Phase 1: Import Refactoring (Ưu tiên Cao)
-Chuyển tất cả Deep Imports sang Barrel Imports.
+### Batch 1: Core Entity Forms (4 files)
+| Task | File | Priority |
+|------|------|----------|
+| F1-01 | `customers/components/customer-form.tsx` | High |
+| F1-02 | `staff/components/staff-form.tsx` | High |
+| F1-03 | `services/components/service-form.tsx` | High |
+| F1-04 | `resources/components/resource-form.tsx` | High |
 
-### Phase 2: Structure Standardization (Ưu tiên Trung bình)
-Fix `invoice-sheet.tsx` và `add-shift-dialog.tsx`.
+### Batch 2: Auth Forms (4 files)
+| Task | File | Priority |
+|------|------|----------|
+| F2-01 | `auth/components/login-form.tsx` | Medium |
+| F2-02 | `auth/components/register-form.tsx` | Medium |
+| F2-03 | `auth/components/forgot-password-form.tsx` | Medium |
+| F2-04 | `auth/components/update-password-form.tsx` | Medium |
 
-### Phase 3: Cleanup & Documentation (Ưu tiên Thấp)
-Loại bỏ className override thừa, cập nhật docs.
-
----
-
-## 5. Task Breakdown
-
-### Phase 1: Import Refactoring
-
-| Task | File | Trạng thái |
-|------|------|------------|
-| P1-01 | `customer-sheet.tsx` | ⏳ |
-| P1-02 | `service-sheet.tsx` | ⏳ |
-| P1-03 | `staff-sheet.tsx` | ⏳ |
-| P1-04 | `resource-sheet.tsx` | ⏳ |
-| P1-05 | `exception-sheet.tsx` | ⏳ |
-| P1-06 | `invoice-sheet.tsx` | ⏳ |
-| P1-07 | `add-shift-dialog.tsx` | ⏳ |
-| P1-08 | `mobile-user-sheet.tsx` | ⏳ |
-
-### Phase 2: Structure Standardization
-
-| Task | Description | Trạng thái |
-|------|-------------|------------|
-| P2-01 | Fix `invoice-sheet.tsx` pattern | ⏳ |
-| P2-02 | Fix `add-shift-dialog.tsx` scroll+footer | ⏳ |
-| P2-03 | Rename `add-shift-dialog.tsx` → `add-shift-sheet.tsx` | ⏳ |
-| P2-04 | Update import in `staff-scheduler.tsx` | ⏳ |
-
-### Phase 3: Documentation
-
-| Task | Description | Trạng thái |
-|------|-------------|------------|
-| P3-01 | Add Sheet Size Variants to COMPONENT_PATTERNS.md | ⏳ |
+### Batch 3: Other Forms (6 files)
+| Task | File | Priority |
+|------|------|----------|
+| F3-01 | `services/components/skill-form.tsx` | Low |
+| F3-02 | `staff/components/scheduling/shift-form.tsx` | Low |
+| F3-03 | `billing/components/sheet/payment-form.tsx` | Low |
+| F3-04 | `customer-dashboard/components/profile-form.tsx` | Low |
+| F3-05 | `reviews/components/review-form.tsx` | Low |
+| F3-06 | `booking-wizard/.../customer-form.tsx` | Low |
 
 ---
 
-## 6. Rủi Ro & Biện Pháp
+## 5. Definition of Done
 
-| Rủi Ro | Biện Pháp |
-|--------|----------|
-| Break imports | Thêm exports trước, refactor sau |
-| TypeScript errors | Build check sau mỗi phase |
-| Rename file | Update tất cả imports trước khi rename |
-
----
-
-## 7. Definition of Done
-
-- [ ] Tất cả 8 Sheet files sử dụng Barrel Import
-- [ ] `invoice-sheet.tsx` theo pattern chuẩn
-- [ ] `add-shift-sheet.tsx` (renamed) theo pattern chuẩn
+- [ ] Tất cả 14 forms sử dụng Barrel Import
 - [ ] `pnpm lint` pass
 - [ ] `pnpm build` pass
-- [ ] COMPONENT_PATTERNS.md cập nhật Sheet Size Variants
 - [ ] change-log.md ghi nhận thay đổi
+- [ ] dashboard.md cập nhật
 
 ---
 
-**✅ PLAN APPROVED - PROCEEDING TO PHASE 2: SPLIT**
+**✅ PLAN APPROVED - PROCEEDING TO EXECUTION**
