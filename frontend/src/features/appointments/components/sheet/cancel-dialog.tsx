@@ -19,12 +19,12 @@ import { useState, useTransition } from "react";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
 } from "@/shared/ui/dialog";
 import { Textarea } from "@/shared/ui/textarea";
 
@@ -91,7 +91,7 @@ export function CancelDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <XCircle className="h-5 w-5 text-amber-500" />
+            <XCircle className="h-5 w-5 text-warning" />
             Xác nhận hủy lịch hẹn
           </DialogTitle>
           <DialogDescription>
@@ -127,8 +127,8 @@ export function CancelDialog({
           <div className="p-3 rounded-lg border space-y-2">
             <div className="text-sm font-medium">📋 Chính sách hủy:</div>
             <ul className="text-sm text-muted-foreground space-y-1 ml-4">
-              <li>• Hủy trước {CANCELLATION_POLICY.freeHours} giờ: <span className="text-emerald-600 font-medium">Miễn phí</span></li>
-              <li>• Hủy trong {CANCELLATION_POLICY.freeHours} giờ: <span className="text-amber-600 font-medium">Phí {CANCELLATION_POLICY.lateFee}%</span></li>
+              <li>• Hủy trước {CANCELLATION_POLICY.freeHours} giờ: <span className="text-success font-medium">Miễn phí</span></li>
+              <li>• Hủy trong {CANCELLATION_POLICY.freeHours} giờ: <span className="text-warning font-medium">Phí {CANCELLATION_POLICY.lateFee}%</span></li>
             </ul>
           </div>
 
@@ -136,14 +136,14 @@ export function CancelDialog({
           {isLateCancel && (
             <div className={cn(
               "flex items-start gap-3 p-3 rounded-lg",
-              "bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900"
+              "bg-warning/10 border border-warning/20"
             )}>
-              <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+              <AlertTriangle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
               <div className="text-sm">
-                <div className="font-medium text-amber-800 dark:text-amber-200">
+                <div className="font-medium text-warning-foreground">
                   Cảnh báo: Hủy sát giờ
                 </div>
-                <div className="text-amber-700 dark:text-amber-300">
+                <div className="text-muted-foreground">
                   Bạn đang hủy trong vòng {CANCELLATION_POLICY.freeHours} giờ trước giờ hẹn.
                   {hoursUntilStart > 0
                     ? ` Còn ${hoursUntilStart} giờ nữa là đến giờ hẹn.`
