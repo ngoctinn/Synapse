@@ -9,3 +9,4 @@
 
 | 2025-12-15T13:45 | OPT-002 | Refactor Code (ApptForm) | APPLY | Thành công | Tối ưu hóa `appointment-form.tsx`: sử dụng absolute imports, loại bỏ comments rác, refactor `useEffect` và `handleSubmit`. |
 | 2025-12-15T14:30 | OPT-003 | Refactor Code (Services) | APPLY | Thành công | Tối ưu hóa Clean Code module `services`: chuẩn hóa indentation `actions.ts`, dọn dẹp `schemas.ts`, refactor inline render functions trong `service-form.tsx`. |
+| 2025-12-15T14:40 | BUG-001 | Fix Build Error | APPLY | Thành công | Khôi phục `shared/ui/tabs-styles.ts` và `delete-confirm-dialog.tsx`. (Fixed prop alias `isDeleting`). |
