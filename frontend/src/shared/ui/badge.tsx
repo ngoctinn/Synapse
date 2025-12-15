@@ -103,14 +103,26 @@ export type BadgePreset =
   | "resource-available"
   | "resource-in-use"
   | "resource-maintenance"
+  // Resource Types
+  | "resource-room"
+  | "resource-equipment"
   // Invoice Status
   | "invoice-unpaid"
   | "invoice-paid"
   | "invoice-refunded"
+  // Exception Types
+  | "exception-holiday"
+  | "exception-maintenance"
+  | "exception-special"
+  | "exception-custom"
+  // Channel Status
+  | "channel-connected"
+  | "channel-disconnected"
   // Generic
   | "tag"
   | "count"
   | "new"
+  | "skill"
 
 type PresetConfig = {
   variant: NonNullable<VariantProps<typeof badgeVariants>["variant"]>
@@ -132,7 +144,7 @@ const BADGE_PRESETS: Record<BadgePreset, PresetConfig> = {
   // === ROLES ===
   "role-admin": { variant: "purple", label: "Quản trị viên" },
   "role-receptionist": { variant: "info", label: "Lễ tân" },
-  "role-technician": { variant: "warning", label: "Kỹ thuật viên" },
+  "role-technician": { variant: "info", label: "Kỹ thuật viên" },
   "role-customer": { variant: "secondary", label: "Khách hàng" },
 
   // === TIERS ===
@@ -140,20 +152,35 @@ const BADGE_PRESETS: Record<BadgePreset, PresetConfig> = {
   "tier-gold": { variant: "gold", label: "Gold" },
   "tier-platinum": { variant: "platinum", label: "Platinum" },
 
-  // === RESOURCE ===
+  // === RESOURCE STATUS ===
   "resource-available": { variant: "success", label: "Sẵn sàng", withIndicator: true },
   "resource-in-use": { variant: "warning", label: "Đang sử dụng" },
   "resource-maintenance": { variant: "destructive", label: "Bảo trì" },
+
+  // === RESOURCE TYPE ===
+  "resource-room": { variant: "outline", size: "sm", label: "Phòng" },
+  "resource-equipment": { variant: "outline", size: "sm", label: "Thiết bị" },
 
   // === INVOICE ===
   "invoice-unpaid": { variant: "warning", label: "Chưa thanh toán" },
   "invoice-paid": { variant: "success", label: "Đã thanh toán" },
   "invoice-refunded": { variant: "destructive", label: "Đã hoàn tiền" },
 
+  // === EXCEPTION TYPES ===
+  "exception-holiday": { variant: "destructive", size: "xs", label: "Nghỉ lễ" },
+  "exception-maintenance": { variant: "secondary", size: "xs", label: "Bảo trì" },
+  "exception-special": { variant: "default", size: "xs", label: "Giờ đặc biệt" },
+  "exception-custom": { variant: "outline", size: "xs", label: "Tùy chỉnh" },
+
+  // === CHANNEL STATUS ===
+  "channel-connected": { variant: "success", label: "Đã kết nối" },
+  "channel-disconnected": { variant: "secondary", label: "Chưa kết nối" },
+
   // === GENERIC ===
   "tag": { variant: "secondary", size: "sm" },
   "count": { variant: "info", size: "xs" },
   "new": { variant: "success", label: "Mới", size: "sm" },
+  "skill": { variant: "secondary", size: "sm" },
 }
 
 // ============================================

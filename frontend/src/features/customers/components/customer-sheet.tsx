@@ -8,26 +8,26 @@ import { useForm } from "react-hook-form"
 
 import { manageCustomer } from "@/features/customers/actions"
 import {
-    CustomerFormValues,
-    customerSchema,
-    CustomerUpdateFormValues,
-    customerUpdateSchema
+  CustomerFormValues,
+  customerSchema,
+  CustomerUpdateFormValues,
+  customerUpdateSchema
 } from "@/features/customers/model/schemas"
 import { Customer } from "@/features/customers/model/types"
 import { getTechnicians, type TechnicianOption } from "@/features/staff/actions"
 
 
 import {
-    Badge,
-    Button,
-    Form,
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle,
-    showToast,
+  Badge,
+  Button,
+  Form,
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  showToast,
 } from "@/shared/ui"
 import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs"
 
@@ -146,16 +146,15 @@ export function CustomerSheet({ open, onOpenChange, mode, customer }: CustomerSh
                     {mode === "create" ? "Thêm khách hàng mới" : "Hồ sơ khách hàng"}
 
                     {mode === "update" && customer?.allergies && (
-                        <Badge variant="destructive" className="gap-1.5 h-6 animate-in zoom-in-50">
+                        <Badge variant="destructive" size="sm">
                              <AlertCircle className="size-3.5" />
                              Dị ứng
                         </Badge>
                     )}
 
                     {mode === "update" && customer?.membership_tier === "GOLD" && (
-                        <Badge variant="warning" className="gap-1.5 h-6">
+                        <Badge preset="tier-gold">
                              <Crown className="size-3.5" />
-                             Gold
                         </Badge>
                     )}
                  </SheetTitle>

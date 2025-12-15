@@ -28,17 +28,15 @@ import { format, isSameDay } from "date-fns";
 import { vi } from "date-fns/locale";
 import { CalendarDays, Pencil, Plus, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
-import { EXCEPTION_TYPE_LABELS, EXCEPTION_TYPE_VARIANTS } from "./constants";
+import { EXCEPTION_TYPE_LABELS } from "./constants";
 import { ExceptionSheet } from "./exception-sheet";
-import { ExceptionDate, ExceptionType } from "./types";
+import { ExceptionDate } from "./types";
 
 interface ExceptionsPanelProps {
   exceptions: ExceptionDate[];
   onAddExceptions: (exceptions: ExceptionDate[]) => void;
   onRemoveException: (id: string | string[]) => void;
 }
-
-const getBadgeVariant = (type: ExceptionType) => EXCEPTION_TYPE_VARIANTS[type] || "outline";
 
 export function ExceptionsPanel({
   exceptions,
@@ -163,7 +161,9 @@ export function ExceptionsPanel({
                                 <span className="font-medium text-sm">
                                   {format(new Date(exception.date), "EEEE, dd/MM/yyyy", { locale: vi })}
                                 </span>
-                                <Badge variant={getBadgeVariant(exception.type)} className="text-[10px] px-1.5 h-5 font-normal">
+                                <Badge
+                                  preset={exception.isClosed ? "exception-holiday" : `exception-${exception.type.toLowerCase().replace("_", "-")}` as "exception-holiday" | "exception-maintenance" | "exception-special" | "exception-custom"}
+                                >
                                   {exception.isClosed ? "Đóng cửa" : EXCEPTION_TYPE_LABELS[exception.type]}
                                 </Badge>
                               </div>

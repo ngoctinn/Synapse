@@ -1,14 +1,14 @@
 "use client";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/shared/ui/table";
 import { Badge } from "@/shared/ui/badge";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/shared/ui/table";
 import { NotificationEvent } from "../types";
 import { ChannelControl } from "./channel-control";
 
@@ -43,11 +43,11 @@ export function NotificationList({ events, onToggleChannel, onEditTemplate }: No
             <h3 className="text-lg font-semibold tracking-tight">
               {groupLabels[group] || group}
             </h3>
-            <Badge variant="outline" className="h-6 w-6 rounded-full p-0 flex items-center justify-center">
+            <Badge preset="count">
               {groupEvents.length}
             </Badge>
           </div>
-          
+
           {/* Mobile View (Cards) */}
           <div className="grid gap-4 md:hidden">
             {groupEvents.map((event) => (
@@ -56,7 +56,7 @@ export function NotificationList({ events, onToggleChannel, onEditTemplate }: No
                   <span className="font-medium text-base">{event.name}</span>
                   <span className="text-sm text-muted-foreground">{event.description}</span>
                 </div>
-                
+
                 <div className="space-y-3">
                   {channels.map((channelId) => (
                     <div key={channelId} className="flex items-center justify-between p-2 rounded-md bg-muted/50">

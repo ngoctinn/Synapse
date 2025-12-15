@@ -11,7 +11,7 @@ export const ROLE_CONFIG: Record<Role, { label: string; variant: "default" | "se
   },
   technician: {
     label: "Kỹ thuật viên",
-    variant: "warning",
+    variant: "info",
   },
   customer: {
     label: "Khách hàng",
@@ -32,7 +32,7 @@ export const MODULES = [
 export const ROLES = [
   { id: "admin", name: "Quản trị viên", variant: "purple" },
   { id: "receptionist", name: "Lễ tân", variant: "info" },
-  { id: "technician", name: "Kỹ thuật viên", variant: "warning" },
+  { id: "technician", name: "Kỹ thuật viên", variant: "info" },
 ] as const
 
 export const STAFF_HEADER_OFFSET_CLASS = "top-[105px] md:top-[53px]"

@@ -78,7 +78,7 @@ export function SkillTable({
     {
       header: "Mã kỹ năng",
       cell: (skill) => (
-        <Badge variant="outline" size="sm" className="font-mono">
+        <Badge variant="outline" size="sm">
           {skill.code}
         </Badge>
       ),

@@ -74,7 +74,7 @@ export function PermissionMatrix({ initialPermissions, className }: PermissionMa
                 <TableHead className="w-[250px] font-semibold pl-8 bg-background">Chức năng (Module)</TableHead>
                 {ROLES.map((role) => (
                   <TableHead key={role.id} className="text-center h-12 bg-background">
-                    <Badge variant={role.variant} className="rounded-md px-3 py-1">
+                    <Badge variant={role.variant} size="sm">
                       {role.name}
                     </Badge>
                   </TableHead>

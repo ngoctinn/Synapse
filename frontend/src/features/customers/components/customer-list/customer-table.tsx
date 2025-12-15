@@ -10,10 +10,10 @@ import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state"
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar"
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/shared/ui/tooltip"
 import { Activity, AlertCircle, Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
@@ -34,11 +34,6 @@ interface CustomerTableProps {
   variant?: "default" | "flush"
 }
 
-const TIER_STYLES: Record<string, "secondary" | "warning" | "default" | "outline"> = {
-    SILVER: "secondary",
-    GOLD: "warning",
-    PLATINUM: "default",
-}
 
 export function CustomerTable({
   data,
@@ -130,7 +125,7 @@ export function CustomerTable({
         header: "Hạng thành viên",
         accessorKey: "membership_tier",
         cell: (c) => (
-            <Badge variant={TIER_STYLES[c.membership_tier] || "outline"} className="text-[10px] uppercase font-bold tracking-wider">
+            <Badge preset={`tier-${c.membership_tier.toLowerCase()}` as "tier-silver" | "tier-gold" | "tier-platinum"}>
                 {c.membership_tier}
             </Badge>
         )

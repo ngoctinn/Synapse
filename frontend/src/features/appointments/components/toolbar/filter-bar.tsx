@@ -11,18 +11,18 @@ import { useState } from "react";
 
 import { cn } from "@/shared/lib/utils";
 import {
-    Badge,
-    Button,
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-    Input,
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
+  Badge,
+  Button,
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  Input,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/shared/ui";
 
 import { APPOINTMENT_STATUS_CONFIG } from "../../constants";
@@ -163,7 +163,7 @@ export function FilterBar({
               <Filter className="size-4 mr-2" />
               Kỹ thuật viên
               {filters.staffIds.length > 0 && (
-                <Badge variant="secondary" size="xs" className="ml-2">
+                <Badge preset="count">
                   {filters.staffIds.length}
                 </Badge>
               )}
@@ -213,7 +213,7 @@ export function FilterBar({
               <Filter className="size-4 mr-2" />
               Dịch vụ
               {filters.serviceIds.length > 0 && (
-                <Badge variant="secondary" size="xs" className="ml-2">
+                <Badge preset="count">
                   {filters.serviceIds.length}
                 </Badge>
               )}
@@ -262,7 +262,7 @@ export function FilterBar({
             >
               Trạng thái
               {filters.statuses.length > 0 && (
-                <Badge variant="secondary" size="xs" className="ml-2">
+                <Badge preset="count">
                   {filters.statuses.length}
                 </Badge>
               )}
@@ -328,8 +328,7 @@ export function FilterBar({
             return (
               <Badge
                 key={`staff-${staffId}`}
-                variant="secondary"
-                className="gap-1 pr-1"
+                preset="tag"
               >
                 {staff?.name || staffId}
                 <button
@@ -348,8 +347,7 @@ export function FilterBar({
             return (
               <Badge
                 key={`service-${serviceId}`}
-                variant="secondary"
-                className="gap-1 pr-1"
+                preset="tag"
               >
                 {service?.name || serviceId}
                 <button
@@ -368,8 +366,7 @@ export function FilterBar({
             return (
               <Badge
                 key={`status-${status}`}
-                variant="secondary"
-                className={cn("gap-1 pr-1", config.bgColor, config.color)}
+                preset="tag"
               >
                 {config.label}
                 <button
@@ -384,7 +381,7 @@ export function FilterBar({
 
           {/* Search chip */}
           {filters.searchQuery && (
-            <Badge variant="secondary" className="gap-1 pr-1">
+            <Badge preset="tag">
               &quot;{filters.searchQuery}&quot;
               <button
                 className="ml-1 rounded-full hover:bg-muted p-0.5"

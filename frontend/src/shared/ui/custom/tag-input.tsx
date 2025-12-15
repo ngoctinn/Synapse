@@ -124,10 +124,10 @@ export function TagInput({
                     exit={{ scale: 0.8, opacity: 0 }}
                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
                   >
-                    <Badge variant="secondary" className="mr-0 mb-0 gap-1 pr-1 pl-2.5 py-1 rounded-full border-transparent">
+                    <Badge variant="info" size="sm" className="gap-1 pr-1">
                       {opt.label}
                       <div
-                        className="rounded-full hover:bg-black/10 dark:hover:bg-white/20 p-0.5 cursor-pointer ml-1 transition-colors"
+                        className="rounded-full hover:bg-black/10 dark:hover:bg-white/20 p-0.5 cursor-pointer transition-colors"
                         onMouseDown={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
@@ -138,7 +138,7 @@ export function TagInput({
                           removeSelectedId(opt.id);
                         }}
                       >
-                        <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                        <X className="size-3 text-current" />
                       </div>
                     </Badge>
                   </motion.div>
@@ -152,10 +152,10 @@ export function TagInput({
                     exit={{ scale: 0.8, opacity: 0 }}
                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
                   >
-                    <Badge variant="info" className="mr-0 mb-0 gap-1 pr-1 pl-2.5 py-1 rounded-full border-transparent">
+                    <Badge variant="info" size="sm" className="gap-1 pr-1 border-dashed">
                       + {tag}
                       <div
-                        className="rounded-full hover:bg-black/10 dark:hover:bg-white/20 p-0.5 cursor-pointer ml-1 transition-colors"
+                        className="rounded-full hover:bg-black/10 dark:hover:bg-white/20 p-0.5 cursor-pointer transition-colors"
                         onMouseDown={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
@@ -166,7 +166,7 @@ export function TagInput({
                           removeNewTag(tag);
                         }}
                       >
-                        <X className="h-3 w-3 text-current" />
+                        <X className="size-3 text-current" />
                       </div>
                     </Badge>
                   </motion.div>

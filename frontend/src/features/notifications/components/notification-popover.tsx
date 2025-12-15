@@ -49,7 +49,7 @@ export function NotificationPopover({ children }: NotificationPopoverProps) {
           <div className="flex items-center gap-2">
             <h4 className="font-semibold text-sm">Thông báo</h4>
             {unreadCount > 0 && (
-              <Badge variant="info" className="h-5 px-1.5 min-w-[20px] justify-center">
+              <Badge preset="count">
                 {unreadCount}
               </Badge>
             )}

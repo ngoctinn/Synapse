@@ -1,11 +1,10 @@
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
-import { Invoice, InvoiceItem } from "../../types";
 import { Badge } from "@/shared/ui/badge";
 import { Separator } from "@/shared/ui/separator";
-import { ScrollArea } from "@/shared/ui/scroll-area";
-import { InvoiceStatusBadge } from "../invoice-status-badge";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 import { PAYMENT_METHOD_LABELS } from "../../constants";
+import { Invoice } from "../../types";
+import { InvoiceStatusBadge } from "../invoice-status-badge";
 
 interface InvoiceDetailsProps {
   invoice: Invoice;
@@ -105,7 +104,7 @@ export function InvoiceDetails({ invoice }: InvoiceDetailsProps) {
                     <span className="font-medium">
                       {formatCurrency(payment.amount)}
                     </span>
-                    <Badge variant="outline" className="text-[10px]">
+                    <Badge variant="outline" size="xs">
                       {PAYMENT_METHOD_LABELS[payment.method]}
                     </Badge>
                   </div>

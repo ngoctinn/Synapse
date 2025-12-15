@@ -237,6 +237,7 @@ export function StaffTable({
           variant={staff.user.is_active ? "status-active" : "status-inactive"}
           withIndicator
           indicatorPulse={staff.user.is_active}
+          size="sm"
         >
           {staff.user.is_active ? "Hoạt động" : "Ẩn"}
         </Badge>
