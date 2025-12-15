@@ -136,7 +136,7 @@ export function EventCard({
       >
         {/* Time + Status */}
         <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-          <span className={statusConfig.color}>
+          <span style={{ color: event.color }}>
             {STATUS_ICONS[event.status]}
           </span>
           <span>{format(event.start, "HH:mm")}</span>
