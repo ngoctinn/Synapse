@@ -1,10 +1,6 @@
 "use client";
 
-/**
- * TimelineRow - Một hàng trong Resource Timeline
- *
- * Hiển thị events của một resource (nhân viên hoặc phòng) theo trục ngang.
- */
+
 
 import { format } from "date-fns";
 import { useMemo } from "react";
@@ -16,9 +12,7 @@ import { DEFAULT_WORKING_HOURS } from "../../constants";
 import type { CalendarEvent, TimelineResource, ZoomLevel } from "../../types";
 import { calculateTimelinePosition, calculateTimelineWidth } from "./timeline-header";
 
-// ============================================
-// TYPES
-// ============================================
+
 
 interface TimelineRowProps {
   /** Resource (nhân viên/phòng) */
@@ -40,9 +34,7 @@ interface TimelineRowProps {
   className?: string;
 }
 
-// ============================================
-// COMPONENT
-// ============================================
+
 
 export function TimelineRow({
   resource,
@@ -60,7 +52,7 @@ export function TimelineRow({
   const totalSlots = totalHours * slotsPerHour;
   const totalWidth = totalSlots * slotWidth;
 
-  // Position events
+
   const positionedEvents = useMemo(() => {
     return events.map((event) => {
       const left = calculateTimelinePosition(
@@ -84,9 +76,7 @@ export function TimelineRow({
       className={cn("flex border-b border-border/30", className)}
       style={{ height: rowHeight }}
     >
-      {/* ============================================ */}
-      {/* RESOURCE INFO (Sticky Left) */}
-      {/* ============================================ */}
+
       <div
         className={cn(
           "sticky left-0 z-10 w-48 flex-shrink-0",
@@ -121,9 +111,7 @@ export function TimelineRow({
         </div>
       </div>
 
-      {/* ============================================ */}
-      {/* TIMELINE CONTENT */}
-      {/* ============================================ */}
+
       <div
         className="relative flex-1"
         style={{ width: totalWidth, minWidth: totalWidth }}
@@ -144,7 +132,7 @@ export function TimelineRow({
           ))}
         </div>
 
-        {/* Events */}
+
         {positionedEvents.map(({ event, left, width }) => (
           <button
             key={event.id}
@@ -177,7 +165,7 @@ export function TimelineRow({
           </button>
         ))}
 
-        {/* Empty state indicator */}
+
         {events.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-xs text-muted-foreground/50 italic">
@@ -190,9 +178,7 @@ export function TimelineRow({
   );
 }
 
-// ============================================
-// HELPERS
-// ============================================
+
 
 function getInitials(name: string): string {
   return name

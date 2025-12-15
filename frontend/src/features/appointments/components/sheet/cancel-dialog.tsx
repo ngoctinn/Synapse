@@ -1,14 +1,6 @@
 "use client";
 
-/**
- * CancelDialog - Dialog xác nhận hủy lịch hẹn với chính sách
- *
- * Features:
- * - Hiển thị thông tin cuộc hẹn
- * - Cảnh báo chính sách hủy (trước 2 giờ miễn phí)
- * - Input lý do hủy (optional)
- * - Loading state khi submit
- */
+
 
 import { showToast } from "@/shared/ui/sonner";
 import { differenceInHours, format } from "date-fns";
@@ -19,21 +11,19 @@ import { useState, useTransition } from "react";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/shared/ui/dialog";
 import { Textarea } from "@/shared/ui/textarea";
 
 import { cancelAppointment } from "../../actions";
 import type { CalendarEvent } from "../../types";
 
-// ============================================
-// TYPES
-// ============================================
+
 
 interface CancelDialogProps {
   event: CalendarEvent | null;
@@ -42,18 +32,14 @@ interface CancelDialogProps {
   onSuccess?: () => void;
 }
 
-// ============================================
-// CONSTANTS
-// ============================================
+
 
 const CANCELLATION_POLICY = {
-  freeHours: 2, // Hủy trước 2 giờ miễn phí
-  lateFee: 50, // Phí 50% nếu hủy sát giờ
+  freeHours: 2,
+  lateFee: 50,
 };
 
-// ============================================
-// COMPONENT
-// ============================================
+
 
 export function CancelDialog({
   event,
@@ -99,7 +85,7 @@ export function CancelDialog({
           </DialogDescription>
         </DialogHeader>
 
-        {/* Appointment Info */}
+
         <div className="space-y-3 py-4">
           {/* Service & Customer */}
           <div className="p-3 rounded-lg bg-muted/50 space-y-2">
@@ -123,7 +109,7 @@ export function CancelDialog({
             </div>
           </div>
 
-          {/* Cancellation Policy */}
+
           <div className="p-3 rounded-lg border space-y-2">
             <div className="text-sm font-medium">📋 Chính sách hủy:</div>
             <ul className="text-sm text-muted-foreground space-y-1 ml-4">
@@ -132,7 +118,7 @@ export function CancelDialog({
             </ul>
           </div>
 
-          {/* Late Cancel Warning */}
+
           {isLateCancel && (
             <div className={cn(
               "flex items-start gap-3 p-3 rounded-lg",
@@ -154,7 +140,7 @@ export function CancelDialog({
             </div>
           )}
 
-          {/* Reason Input */}
+
           <div className="space-y-2">
             <label className="text-sm font-medium">
               Lý do hủy <span className="text-muted-foreground font-normal">(tùy chọn)</span>

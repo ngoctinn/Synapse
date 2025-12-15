@@ -50,37 +50,6 @@ interface DeleteConfirmDialogProps {
 
 /**
  * Generic Delete Confirmation Dialog component.
- * Dùng cho tất cả các dialog xác nhận xóa trong ứng dụng.
- *
- * @example
- * ```tsx
- * // Sử dụng với useDeleteAction
- * const { handleDelete, dialogProps } = useDeleteAction({
- *   deleteAction: deleteStaff,
- *   entityName: "nhân viên",
- * })
- *
- * <DeleteConfirmDialog
- *   {...dialogProps}
- *   onConfirm={() => handleDelete(staff.id)}
- *   entityName="nhân viên"
- *   entityLabel={staff.name}
- *   additionalWarning="Các lịch làm việc sẽ bị hủy."
- * />
- * ```
- *
- * @example
- * ```tsx
- * // Sử dụng độc lập
- * <DeleteConfirmDialog
- *   open={showDialog}
- *   onOpenChange={setShowDialog}
- *   onConfirm={handleDelete}
- *   isDeleting={isPending}
- *   title="Xóa dịch vụ?"
- *   description="Bạn có chắc chắn muốn xóa dịch vụ này?"
- * />
- * ```
  */
 export function DeleteConfirmDialog({
   open,
@@ -95,10 +64,8 @@ export function DeleteConfirmDialog({
   confirmText,
   additionalWarning,
 }: DeleteConfirmDialogProps) {
-  // Tạo title mặc định nếu không có
   const dialogTitle = title || `Bạn có chắc chắn muốn xóa ${entityName}?`;
 
-  // Tạo description mặc định nếu không có
   const dialogDescription = description || (
     <>
       Hành động này không thể hoàn tác.
@@ -121,7 +88,6 @@ export function DeleteConfirmDialog({
     </>
   );
 
-  // Text cho nút confirm
   const buttonText = confirmText || `Xóa ${entityName}`;
   const loadingText = `Đang xóa...`;
 
@@ -129,7 +95,7 @@ export function DeleteConfirmDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="sm:max-w-[400px] p-6 gap-6 border-none shadow-2xl bg-background/95 backdrop-blur-xl">
         <div className="flex flex-col items-center text-center gap-2">
-          {/* Icon with subtle glow - Consistent with ConfirmDialog */}
+
           <div className="rounded-full p-3 mb-2 bg-destructive/10 animate-pulse-subtle">
             <AlertTriangle className="h-6 w-6 text-destructive" strokeWidth={2.5} />
           </div>
