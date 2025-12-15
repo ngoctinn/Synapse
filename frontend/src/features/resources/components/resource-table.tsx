@@ -9,7 +9,7 @@ import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
 import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import { showToast } from "@/shared/ui/sonner";
-import { Bed, Box } from "lucide-react";
+import { Bed, Box, Loader2 } from "lucide-react";
 import { useState, useTransition } from "react";
 import { deleteResource } from "../actions";
 import { Resource, ResourceGroup } from "../types";
@@ -25,7 +25,13 @@ interface ResourceTableProps {
   variant?: "default" | "flush";
 }
 
-export function ResourceTable({ data, groups, isLoading, className, variant = "default" }: ResourceTableProps) {
+export function ResourceTable({
+  data,
+  groups,
+  isLoading,
+  className,
+  variant = "default",
+}: ResourceTableProps) {
   const [editResource, setEditResource] = useState<Resource | null>(null);
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -56,7 +62,10 @@ export function ResourceTable({ data, groups, isLoading, className, variant = "d
           selection.clearAll();
         }
         if (successCount < ids.length) {
-          showToast.error("Lỗi", `Không thể xóa ${ids.length - successCount} tài nguyên`);
+          showToast.error(
+            "Lỗi",
+            `Không thể xóa ${ids.length - successCount} tài nguyên`
+          );
         }
       } catch (error) {
         console.error(error);
@@ -95,16 +104,19 @@ export function ResourceTable({ data, groups, isLoading, className, variant = "d
       header: "Trạng thái",
       cell: (row) => {
         const statusMap = {
-            ACTIVE: { label: "Hoạt động", variant: "success" as const },
-            MAINTENANCE: { label: "Bảo trì", variant: "warning" as const },
-            INACTIVE: { label: "Ngưng hoạt động", variant: "destructive" as const },
+          ACTIVE: { label: "Hoạt động", variant: "success" as const },
+          MAINTENANCE: { label: "Bảo trì", variant: "warning" as const },
+          INACTIVE: {
+            label: "Ngưng hoạt động",
+            variant: "destructive" as const,
+          },
         };
         const status = statusMap[row.status] || statusMap.INACTIVE;
 
         return (
-            <Badge variant={status.variant} size="sm">
-                {status.label}
-            </Badge>
+          <Badge variant={status.variant} size="sm">
+            {status.label}
+          </Badge>
         );
       },
     },
@@ -120,7 +132,8 @@ export function ResourceTable({ data, groups, isLoading, className, variant = "d
               </span>
               {row.setupTime !== undefined && row.setupTime > 0 && (
                 <span className="text-muted-foreground ml-3 border-l pl-3">
-                  Setup: <span className="text-foreground">{row.setupTime}p</span>
+                  Setup:{" "}
+                  <span className="text-foreground">{row.setupTime}p</span>
                 </span>
               )}
             </div>
@@ -133,10 +146,7 @@ export function ResourceTable({ data, groups, isLoading, className, variant = "d
               {row.tags && row.tags.length > 0 ? (
                 <div className="flex gap-1 flex-wrap">
                   {row.tags.slice(0, 2).map((tag, i) => (
-                    <Badge
-                      key={i}
-                      preset="tag"
-                    >
+                    <Badge key={i} preset="tag">
                       {tag}
                     </Badge>
                   ))}
@@ -159,9 +169,9 @@ export function ResourceTable({ data, groups, isLoading, className, variant = "d
       header: "Hành động",
       className: "pr-6 text-right",
       cell: (row) => (
-         <div onClick={(e) => e.stopPropagation()}>
-            <ResourceActions resource={row} onEdit={() => setEditResource(row)} />
-         </div>
+        <div onClick={(e) => e.stopPropagation()}>
+          <ResourceActions resource={row} onEdit={() => setEditResource(row)} />
+        </div>
       ),
     },
   ];
@@ -183,7 +193,6 @@ export function ResourceTable({ data, groups, isLoading, className, variant = "d
           isPartiallySelected: selection.isPartiallySelected,
         }}
         onRowClick={(resource) => setEditResource(resource)}
-
         emptyState={
           <DataTableEmptyState
             icon={Box}
@@ -195,12 +204,13 @@ export function ResourceTable({ data, groups, isLoading, className, variant = "d
         disabled={isPending}
       />
 
-       {/* Loading Overlay */}
-       {isPending && (
-          <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/50 backdrop-blur-[1px]">
-             {/* Optional spinner or just blocking */}
-          </div>
-       )}
+      {/* Loading Overlay */}
+      {isPending && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center gap-2 bg-background/50 backdrop-blur-[1px] text-sm text-muted-foreground">
+          <Loader2 className="size-4 animate-spin" />
+          <span>Đang xử lý...</span>
+        </div>
+      )}
 
       <TableActionBar
         selectedCount={selection.selectedCount}
@@ -237,5 +247,5 @@ export function ResourceTableSkeleton() {
       showAction={false}
       variant="flush"
     />
-  )
+  );
 }

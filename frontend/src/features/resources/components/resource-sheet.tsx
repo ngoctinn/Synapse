@@ -44,41 +44,15 @@ export function ResourceSheet({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(resourceSchema) as any,
     disabled: isPending,
-    defaultValues: {
-      name: "",
-      code: "",
-      groupId: "", // Default empty
-      type: "ROOM",
-      status: "ACTIVE",
-      capacity: 1,
-      setupTime: 0,
-      description: "",
-      tags: [],
-    },
+    defaultValues: getDefaultResourceValues("create"),
   });
 
   React.useEffect(() => {
     if (open) {
       if (mode === "create") {
-        form.reset({
-          name: "",
-          code: "",
-          groupId: "",
-          type: "ROOM",
-          status: "ACTIVE",
-          capacity: 1,
-          setupTime: 0,
-          description: "",
-          tags: [],
-        });
+        form.reset(getDefaultResourceValues("create"));
       } else if (resource) {
-        form.reset({
-          ...resource,
-          groupId: resource.groupId || "",
-          setupTime: resource.setupTime ?? 0,
-          capacity: resource.capacity ?? 1,
-          tags: resource.tags ?? [],
-        });
+        form.reset(getDefaultResourceValues("update", resource));
       }
     }
   }, [open, mode, resource, form]);
@@ -166,4 +140,31 @@ export function ResourceSheet({
       </SheetContent>
     </Sheet>
   );
+}
+
+function getDefaultResourceValues(
+  mode: "create" | "update",
+  resource?: Resource
+): ResourceFormValues {
+  if (mode === "update" && resource) {
+    return {
+      ...resource,
+      groupId: resource.groupId,
+      setupTime: resource.setupTime ?? 0,
+      capacity: resource.capacity ?? 1,
+      tags: resource.tags ?? [],
+    };
+  }
+
+  return {
+    name: "",
+    code: "",
+    groupId: "",
+    type: "ROOM",
+    status: "ACTIVE",
+    capacity: 1,
+    setupTime: 0,
+    description: "",
+    tags: [],
+  };
 }

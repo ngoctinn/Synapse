@@ -1,5 +1,5 @@
-export type ResourceType = 'ROOM' | 'EQUIPMENT';
-export type ResourceStatus = 'ACTIVE' | 'MAINTENANCE' | 'INACTIVE';
+export type ResourceType = "ROOM" | "EQUIPMENT";
+export type ResourceStatus = "ACTIVE" | "MAINTENANCE" | "INACTIVE";
 
 export interface ResourceGroup {
   id: string;
@@ -10,10 +10,10 @@ export interface ResourceGroup {
 
 export interface Resource {
   id: string;
-  groupId?: string; // Foreign Key to ResourceGroup
+  groupId: string;
   name: string;
   code: string;
-  type: ResourceType; // Helper/Derived from group
+  type: ResourceType;
   status: ResourceStatus;
   capacity?: number;
   description?: string;
@@ -26,9 +26,13 @@ export interface Resource {
 
 export type RoomType = Resource;
 
-
-export type MaintenanceStatus = 'scheduled' | 'in_progress' | 'completed' | 'overdue' | 'skipped';
-export type MaintenanceFrequency = 'daily' | 'weekly' | 'monthly' | 'yearly';
+export type MaintenanceStatus =
+  | "scheduled"
+  | "in_progress"
+  | "completed"
+  | "overdue"
+  | "skipped";
+export type MaintenanceFrequency = "daily" | "weekly" | "monthly" | "yearly";
 
 export interface MaintenanceTask {
   id: string;
