@@ -11,6 +11,7 @@
 | FR-002 | Đánh giá Kiến trúc: Thống nhất hộp thoại | 8. BÁO CÁO | ✅ HOÀN THÀNH | Antigravity |
 | FR-003 | Thống nhất UX/UI hộp thoại | 8. BÁO CÁO | ✅ HOÀN THÀNH | Antigravity |
 | OPT-001 | Tối ưu hóa delete-confirm-dialog.tsx | 8. BÁO CÁO | ✅ HOÀN THÀNH | Antigravity |
+| OPT-002 | Tối ưu hóa Clean Code (Dialog + ApptForm) | 8. BÁO CÁO | ✅ HOÀN THÀNH | Antigravity |
 
 
 ## 📊 Chú giải Giai đoạn
@@ -24,4 +25,5 @@
 8. **REPORT** 📢 (Báo cáo)
 
 ## 📜 Tạo phẩm Gần đây
-*(Liên kết đến các báo cáo được tạo sẽ xuất hiện tại đây)*
+- `docs/antigravity/analysis_log.md`
+- `docs/antigravity/change-log.md`
