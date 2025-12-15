@@ -1,15 +1,16 @@
-import { Badge } from "@/shared/ui/badge";
-import { INVOICE_STATUS_COLORS, INVOICE_STATUS_LABELS } from "../constants";
+import { Badge, BadgePreset } from "@/shared/ui/badge";
 import { InvoiceStatus } from "../types";
 
 interface InvoiceStatusBadgeProps {
   status: InvoiceStatus;
 }
 
+const STATUS_TO_PRESET: Record<InvoiceStatus, BadgePreset> = {
+  UNPAID: "invoice-unpaid",
+  PAID: "invoice-paid",
+  REFUNDED: "invoice-refunded",
+};
+
 export function InvoiceStatusBadge({ status }: InvoiceStatusBadgeProps) {
-  return (
-    <Badge variant={INVOICE_STATUS_COLORS[status]}>
-      {INVOICE_STATUS_LABELS[status]}
-    </Badge>
-  );
+  return <Badge preset={STATUS_TO_PRESET[status]} />;
 }

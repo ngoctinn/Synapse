@@ -140,7 +140,8 @@ export { Skeleton } from "./skeleton"
 export { Spinner } from "./spinner"
 
 // Badge - Export both for flexibility
-export { Badge, badgeVariants } from "./badge"
+export { Badge, badgeVariants, BADGE_PRESETS } from "./badge"
+export type { BadgePreset, BadgeVariant } from "./badge"
 
 // ==========================================
 // NAVIGATION & MENU

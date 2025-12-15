@@ -1,6 +1,6 @@
 "use client"
 
-import { Badge } from "@/shared/ui/badge"
+import { Badge, BadgeVariant } from "@/shared/ui/badge"
 import {
     Table,
     TableBody,
@@ -17,22 +17,22 @@ const MOCK_STATS = [
     label: "Tổng lượt ghé",
     value: "12",
     icon: Calendar,
-    color: "text-blue-500",
-    bg: "bg-blue-500/10",
+    color: "text-blue-600",
+    bg: "bg-blue-100",
   },
   {
     label: "Tổng chi tiêu",
     value: "15.400.000đ",
     icon: CreditCard,
-    color: "text-green-500",
-    bg: "bg-green-500/10",
+    color: "text-emerald-600",
+    bg: "bg-emerald-100",
   },
   {
     label: "Dịch vụ yêu thích",
     value: "Gội đầu dưỡng sinh",
     icon: Scissors,
-    color: "text-purple-500",
-    bg: "bg-purple-500/10",
+    color: "text-purple-600",
+    bg: "bg-purple-100",
   },
 ]
 
@@ -75,16 +75,10 @@ const MOCK_HISTORY = [
   },
 ]
 
-const STATUS_Map: Record<string, "default" | "secondary" | "destructive" | "outline" | "success" | "warning"> = {
-  COMPLETED: "success",
-  CANCELLED: "destructive",
-  PENDING: "warning",
-}
-
-const STATUS_LABEL: Record<string, string> = {
-  COMPLETED: "Hoàn thành",
-  CANCELLED: "Đã hủy",
-  PENDING: "Sắp tới",
+const STATUS_MAP: Record<string, { variant: BadgeVariant; label: string }> = {
+  COMPLETED: { variant: "emerald", label: "Hoàn thành" },
+  CANCELLED: { variant: "red", label: "Đã hủy" },
+  PENDING: { variant: "amber", label: "Sắp tới" },
 }
 
 export function CustomerHistory() {
@@ -142,8 +136,8 @@ export function CustomerHistory() {
                 </TableCell>
                 <TableCell className="text-sm">{item.staff}</TableCell>
                 <TableCell>
-                  <Badge variant={STATUS_Map[item.status]}>
-                    {STATUS_LABEL[item.status]}
+                  <Badge variant={STATUS_MAP[item.status]?.variant || "gray"}>
+                    {STATUS_MAP[item.status]?.label || item.status}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right font-medium">

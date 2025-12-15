@@ -1,8 +1,8 @@
 "use client"
 
-import { Appointment } from "@/features/appointments/types"
+import { Appointment, AppointmentStatus } from "@/features/appointments/types"
 import { useReducedMotion } from "@/shared/hooks"
-import { Badge } from "@/shared/ui/badge"
+import { Badge, BadgePreset } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card"
 import { format } from "date-fns"
@@ -14,18 +14,19 @@ interface AppointmentListProps {
   appointments: Appointment[]
 }
 
-const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" | "success" | "warning" | "info" }> = {
-  pending: { label: "Đang chờ", variant: "warning" },
-  confirmed: { label: "Đã xác nhận", variant: "info" },
-  completed: { label: "Hoàn thành", variant: "secondary" },
-  cancelled: { label: "Đã hủy", variant: "destructive" },
-  no_show: { label: "Vắng mặt", variant: "destructive" },
-  PENDING: { label: "Đang chờ", variant: "warning" },
-  CONFIRMED: { label: "Đã xác nhận", variant: "info" },
-  COMPLETED: { label: "Hoàn thành", variant: "secondary" },
-  CANCELLED: { label: "Đã hủy", variant: "destructive" },
-  NO_SHOW: { label: "Vắng mặt", variant: "destructive" },
-}
+// Map status to Badge preset (handles both uppercase and lowercase)
+const getStatusPreset = (status: string): BadgePreset => {
+  const normalized = status.toUpperCase() as AppointmentStatus;
+  const presetMap: Record<AppointmentStatus, BadgePreset> = {
+    PENDING: "appointment-pending",
+    CONFIRMED: "appointment-confirmed",
+    IN_PROGRESS: "appointment-in-progress",
+    COMPLETED: "appointment-completed",
+    CANCELLED: "appointment-cancelled",
+    NO_SHOW: "appointment-no-show",
+  };
+  return presetMap[normalized] || "appointment-pending";
+};
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -90,9 +91,7 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
               <CardHeader className="pb-3 bg-muted/30">
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
-                    <Badge variant={statusMap[appt.status]?.variant || "default"} className="mb-2">
-                      {statusMap[appt.status]?.label || appt.status}
-                    </Badge>
+                    <Badge preset={getStatusPreset(appt.status)} className="mb-2" />
                     <CardTitle className="text-base font-bold leading-tight group-hover:text-primary transition-colors">
                       {appt.serviceName}
                     </CardTitle>

@@ -1,7 +1,7 @@
 "use client"
 
 import { Treatment } from "@/features/customer-dashboard/types"
-import { Badge } from "@/shared/ui/badge"
+import { Badge, BadgeVariant } from "@/shared/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card"
 import { Progress } from "@/shared/ui/progress"
 import { format } from "date-fns"
@@ -12,10 +12,10 @@ interface TreatmentListProps {
   treatments: Treatment[]
 }
 
-const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
-  ACTIVE: { label: "Đang sử dụng", variant: "default" },
-  COMPLETED: { label: "Hoàn thành", variant: "secondary" },
-  EXPIRED: { label: "Hết hạn", variant: "destructive" },
+const statusMap: Record<string, { label: string; variant: BadgeVariant }> = {
+  ACTIVE: { label: "Đang sử dụng", variant: "violet" },
+  COMPLETED: { label: "Hoàn thành", variant: "emerald" },
+  EXPIRED: { label: "Hết hạn", variant: "red" },
 }
 
 export function TreatmentList({ treatments }: TreatmentListProps) {

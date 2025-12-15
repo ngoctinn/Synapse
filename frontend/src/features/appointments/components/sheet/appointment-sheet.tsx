@@ -16,6 +16,7 @@ import { useEffect, useState } from "react"; // Import useEffect
 import { cn } from "@/shared/lib/utils";
 import {
   Badge,
+  BadgePreset,
   Button,
   Separator,
   Sheet,
@@ -27,10 +28,21 @@ import {
 } from "@/shared/ui";
 
 import { ReviewPrompt } from "@/features/reviews/components/review-prompt"; // Import ReviewPrompt
-import { APPOINTMENT_STATUS_CONFIG } from "../../constants";
 import { MockService } from "../../mock-data";
-import type { Appointment, CalendarEvent, TimelineResource } from "../../types";
+import type { Appointment, AppointmentStatus, CalendarEvent, TimelineResource } from "../../types";
 import { AppointmentForm } from "./appointment-form";
+
+// ============================================
+// STATUS TO PRESET MAPPING
+// ============================================
+const STATUS_TO_PRESET: Record<AppointmentStatus, BadgePreset> = {
+  PENDING: "appointment-pending",
+  CONFIRMED: "appointment-confirmed",
+  IN_PROGRESS: "appointment-in-progress",
+  COMPLETED: "appointment-completed",
+  CANCELLED: "appointment-cancelled",
+  NO_SHOW: "appointment-no-show",
+};
 
 // ============================================
 // TYPES
@@ -94,9 +106,6 @@ export function AppointmentSheet({
   const [reviewPromptOpen, setReviewPromptOpen] = useState(false);
 
   const appointment = event?.appointment;
-  const statusConfig = appointment
-    ? APPOINTMENT_STATUS_CONFIG[appointment.status]
-    : null;
 
   const isCreateMode = mode === "create" || !appointment;
   const isEditMode = mode === "edit";
@@ -167,13 +176,8 @@ export function AppointmentSheet({
             </div>
 
             {/* Status Badge (View mode) */}
-            {isViewMode && statusConfig && (
-              <Badge
-                variant="secondary"
-                className={cn(statusConfig.bgColor, statusConfig.color)}
-              >
-                {statusConfig.label}
-              </Badge>
+            {isViewMode && appointment && (
+              <Badge preset={STATUS_TO_PRESET[appointment.status]} />
             )}
           </div>
         </SheetHeader>

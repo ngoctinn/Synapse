@@ -21,10 +21,21 @@ import {
 } from "lucide-react";
 
 import { cn } from "@/shared/lib/utils";
-import { Badge } from "@/shared/ui";
+import { Badge, BadgePreset } from "@/shared/ui";
 
-import { APPOINTMENT_STATUS_CONFIG } from "../../constants";
 import type { AppointmentStatus, CalendarEvent } from "../../types";
+
+// ============================================
+// STATUS TO PRESET MAPPING
+// ============================================
+const STATUS_TO_PRESET: Record<AppointmentStatus, BadgePreset> = {
+  PENDING: "appointment-pending",
+  CONFIRMED: "appointment-confirmed",
+  IN_PROGRESS: "appointment-in-progress",
+  COMPLETED: "appointment-completed",
+  CANCELLED: "appointment-cancelled",
+  NO_SHOW: "appointment-no-show",
+};
 
 // ============================================
 // TYPES
@@ -71,7 +82,6 @@ export function EventCard({
   onClick,
   className,
 }: EventCardProps) {
-  const statusConfig = APPOINTMENT_STATUS_CONFIG[event.status];
   const timeRange = `${format(event.start, "HH:mm")} - ${format(event.end, "HH:mm")}`;
 
   // Mini variant (dot)
@@ -163,12 +173,8 @@ export function EventCard({
     >
       {/* Header: Status + Time */}
       <div className="flex items-center justify-between mb-2">
-        <Badge
-          variant="secondary"
-          className={cn("text-[10px] gap-1", statusConfig.color, statusConfig.bgColor)}
-        >
+        <Badge preset={STATUS_TO_PRESET[event.status]} size="xs">
           {STATUS_ICONS[event.status]}
-          {statusConfig.label}
         </Badge>
 
         <span className="text-xs text-muted-foreground flex items-center gap-1">

@@ -1,21 +1,21 @@
 import { Role } from "./types";
 
-export const ROLE_CONFIG: Record<Role, { label: string; variant: "default" | "secondary" | "destructive" | "outline" | "success" | "warning" | "info" | "purple" | "indigo" | "glass" | "glass-light"; className?: string }> = {
+export const ROLE_CONFIG: Record<Role, { label: string; variant: "default" | "secondary" | "destructive" | "outline" | "success" | "warning" | "info" | "purple" | "sky" | "cyan" | "gray" | "glass"; className?: string }> = {
   admin: {
     label: "Quản trị viên",
     variant: "purple",
   },
   receptionist: {
     label: "Lễ tân",
-    variant: "info",
+    variant: "sky",
   },
   technician: {
     label: "Kỹ thuật viên",
-    variant: "info",
+    variant: "cyan",
   },
   customer: {
     label: "Khách hàng",
-    variant: "secondary",
+    variant: "gray",
   }
 }
 
@@ -31,8 +31,8 @@ export const MODULES = [
 
 export const ROLES = [
   { id: "admin", name: "Quản trị viên", variant: "purple" },
-  { id: "receptionist", name: "Lễ tân", variant: "info" },
-  { id: "technician", name: "Kỹ thuật viên", variant: "info" },
+  { id: "receptionist", name: "Lễ tân", variant: "sky" },
+  { id: "technician", name: "Kỹ thuật viên", variant: "cyan" },
 ] as const
 
 export const STAFF_HEADER_OFFSET_CLASS = "top-[105px] md:top-[53px]"
