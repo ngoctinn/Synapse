@@ -1,3 +1,4 @@
+import { colorHexWithDefault } from "@/shared/lib/validations";
 import * as z from "zod";
 
 // Schema cho việc sử dụng thiết bị với timeline offset
@@ -23,7 +24,7 @@ export const serviceSchema = z.object({
   price: z.coerce.number().min(0, "Giá không được âm"),
   is_active: z.boolean().default(true),
   image_url: z.string().optional(),
-  color: z.string().regex(/^#/, "Mã màu không hợp lệ").default("#3b82f6"),
+  color: colorHexWithDefault("#3b82f6"),
   description: z.string().optional(),
   category: z.string().optional(),
   resource_requirements: z.object({

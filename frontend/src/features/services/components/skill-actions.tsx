@@ -51,7 +51,6 @@ export function SkillActions({ skill }: SkillActionsProps) {
         onConfirm={() => handleDelete(skill.id)}
         entityName="kỹ năng"
         entityLabel={skill.name}
-        description="Hành động này không thể hoàn tác. Kỹ năng sẽ bị xóa khỏi hệ thống và gỡ bỏ khỏi các dịch vụ liên quan."
       />
     </>
   );

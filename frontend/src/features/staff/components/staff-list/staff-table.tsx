@@ -314,17 +314,7 @@ export function StaffTable({
         onOpenChange={setShowBulkDeleteDialog}
         onConfirm={handleBulkDelete}
         isDeleting={isPending}
-        title={`Xóa ${selection.selectedCount} nhân viên?`}
-        description={
-          <>
-            Hành động này không thể hoàn tác.{" "}
-            <span className="font-semibold text-foreground">
-              {selection.selectedCount}
-            </span>{" "}
-            nhân viên đã chọn sẽ bị xóa vĩnh viễn khỏi hệ thống.
-          </>
-        }
-        confirmText={`Xóa ${selection.selectedCount} mục`}
+        entityName={`${selection.selectedCount} nhân viên`}
       />
 
       {editingStaff && (

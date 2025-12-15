@@ -239,9 +239,7 @@ export function CustomerTable({
         onOpenChange={setShowBulkDeleteDialog}
         onConfirm={handleBulkDelete}
         isDeleting={isPending}
-        title={`Xóa ${selection.selectedCount} khách hàng?`}
-        description="Hành động này không thể hoàn tác."
-        confirmText="Xóa"
+        entityName={`${selection.selectedCount} khách hàng`}
       />
 
       {editingCustomer && (

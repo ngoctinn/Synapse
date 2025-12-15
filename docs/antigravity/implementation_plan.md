@@ -1,41 +1,147 @@
-# Kế hoạch Triển khai: Tối ưu hóa UX/UI Feature Settings
+# Kế Hoạch Triển Khai: Refactor Validation System (Frontend)
 
-## 1. Vấn đề (Problem)
-- Module `frontend/src/features/settings` (đặc biệt là `operating-hours`) đang có cấu trúc phức tạp, file lớn (`exceptions-panel.tsx` ~11KB, `exception-sheet.tsx` ~9KB).
-- UX hiện tại có thể gây khó khăn cho người dùng khi thao tác (cần kiểm tra cụ thể).
-- Yêu cầu từ User: Giảm độ phức tạp, đơn giản hóa code và giao diện, loại bỏ animation thừa.
+**Ngày tạo**: 2025-12-15
+**Trạng thái**: ⏳ CHỜ PHÊ DUYỆT
 
-## 2. Mục đích (Goal)
-- **Tối ưu UX**: Đơn giản hóa visual, giúp thao tác nhanh hơn.
-- **Tối ưu Code**: Giảm dòng code thừa, flatten component structure.
-- **Maintainability**: Tăng khả năng đọc hiểu và bảo trì.
+---
 
-## 3. Ràng buộc (Constraints)
-- **Design System**: Sử dụng Shadcn/UI & Tailwind.
-- **Language**: Tiếng Việt hoàn toàn.
-- **Complexity**: Hạn chế component lồng nhau quá sâu, không dùng animation nặng.
-- **Accessibility**: Đảm bảo tiêu chuẩn cơ bản.
+## 1. Vấn Đề (Problem)
 
-## 4. Chiến lược (Strategy)
-- **Phân tích (Analyze)**: Đánh giá chi tiết `operating-hours` và `notifications` để tìm điểm "thắt nút" (bottlenecks).
-- **Thiết kế lại (Redesign/Simplification)**:
-    - `OperatingHours`: Có thể chuyển từ dạng bảng phức tạp sang dạng list đơn giản hoặc grid thẻ.
-    - `Exceptions`: Đơn giản hóa form thêm ngoại lệ.
-- **Thực thi (Implementation)**:
-    - Refactor `day-row.tsx`: Giảm logic inline.
-    - Refactor `notifications`: Kiểm tra và dọn dẹp.
-- **Kiểm tra (Verify)**: Đảm bảo không break logic setting hiện tại.
+### 1.1. Logic Validation Bị Phân Mảnh
+Validation logic được viết lặp lại ở nhiều nơi với các biến thể khác nhau:
 
-## 5. Giải pháp (Solution) Chi tiết
-- **Giai đoạn 1: Analyze & Split**
-    - Đọc nội dung 3 file lớn trong `operating-hours`.
-    - Lên danh sách các component con cần merge hoặc tách nhẹ.
-- **Giai đoạn 2: Refactor Operating Hours**
-    - Tối ưu `weekly-schedule.tsx`.
-    - Refactor `day-row.tsx` thành pure component nếu có thể.
-    - Đơn giản hóa `exception-sheet.tsx` (có thể dùng Dialog thay Sheet nếu nhẹ hơn, hoặc tối ưu nội dung Sheet).
-- **Giai đoạn 3: Refactor Notifications**
-    - Review và cleanup.
-- **Giai đoạn 4: Visual Polish**
-    - Đảm bảo spacing, typography chuẩn (Inter/Shadcn).
-    - Remove "fancy" effects.
+| Trường | File | Logic |
+|--------|------|-------|
+| **Phone** | `customers/model/schemas.ts` | `min(10).max(15)` - kiểm tra độ dài |
+| **Phone** | `customer-dashboard/schemas.ts` | Regex VN: `/(84\|0[3\|5\|7\|8\|9])+([0-9]{8})\b/` |
+| **Phone** | `booking-wizard/schemas.ts` | Regex VN giống trên nhưng có `g` flag |
+| **Phone** | `staff/model/schemas.ts` | `min(10)` - chỉ kiểm tra min |
+
+### 1.2. Quy Tắc Nghiệp Vụ Lệch Pha
+| Trường | File | Logic |
+|--------|------|-------|
+| **date_of_birth** | `customers/model/schemas.ts` | `date <= new Date()` (không được lớn hơn hiện tại) |
+| **dateOfBirth** | `customer-dashboard/schemas.ts` | `year >= 1900 && year <= currentYear` (thêm giới hạn năm 1900) |
+
+### 1.3. Không Nhất Quán Về Naming Convention
+- **Admin modules** (customers, staff): sử dụng `snake_case` (`phone_number`, `date_of_birth`)
+- **Customer Portal** (customer-dashboard): sử dụng `camelCase` (`phone`, `dateOfBirth`)
+
+### 1.4. Không Có Shared Validation Library
+- Không tồn tại file `shared/lib/validations.ts` hoặc tương đương
+- Mỗi feature tự định nghĩa schema riêng biệt
+- Thông báo lỗi không đồng nhất (VD: "Số điện thoại ít nhất 10 số" vs "Số điện thoại không hợp lệ")
+
+---
+
+## 2. Mục Đích (Goal)
+
+1. **Tập trung hóa (Centralization)**: Tạo thư viện validation chung tại `shared/lib/validations.ts`
+2. **Nhất quán (Consistency)**: Thống nhất quy tắc nghiệp vụ cho phone, email, date, v.v.
+3. **Tái sử dụng (Reusability)**: Các feature chỉ compose từ building blocks chung
+4. **Dễ bảo trì (Maintainability)**: Thay đổi quy tắc 1 lần, áp dụng toàn bộ
+5. **Localization**: Thông báo lỗi tiếng Việt chuẩn hóa
+
+---
+
+## 3. Ràng Buộc (Constraints)
+
+- **Zod**: Tiếp tục sử dụng Zod làm validation library
+- **Naming Convention**:
+  - Admin modules: `snake_case` (phù hợp API Backend)
+  - Customer Portal: `camelCase` (nếu bắt buộc) - nhưng logic validate phải giống nhau
+- **Backward Compatible**: Không làm break các form đang hoạt động
+- **Type-Safe**: Export type inference từ schema
+
+---
+
+## 4. Chiến Lược (Strategy)
+
+### 4.1. Thiết Kế Thư Viện Validation Chung
+
+```
+shared/lib/validations/
+├── index.ts              # Public API
+├── primitives.ts         # Atomic validators (phone, email, date, etc.)
+├── messages.ts           # Thông báo lỗi tiếng Việt chuẩn hóa
+└── presets.ts            # Pre-built schemas (personInfo, contactInfo, etc.)
+```
+
+### 4.2. Quy Tắc Nghiệp Vụ Chuẩn Hóa
+
+| Trường | Quy Tắc Thống Nhất |
+|--------|-------------------|
+| **Phone (VN)** | Regex: `/^(0|\+84)(3\|5\|7\|8\|9)[0-9]{8}$/` |
+| **Email** | `z.string().email()` - Zod built-in |
+| **Date of Birth** | `year >= 1900 && date <= today` |
+| **Full Name** | `min(2).max(100)` - không chứa số/ký tự đặc biệt |
+| **Password** | `min(8)` - có thể thêm regex uppercase/number sau |
+| **Color Code** | `/^#([A-Fa-f0-9]{6}\|[A-Fa-f0-9]{3})$/` |
+
+---
+
+## 5. Giải Pháp Chi Tiết (Solution)
+
+### Giai Đoạn 1: Tạo Shared Validation Library
+**Files cần tạo:**
+- `frontend/src/shared/lib/validations/index.ts`
+- `frontend/src/shared/lib/validations/primitives.ts`
+- `frontend/src/shared/lib/validations/messages.ts`
+
+### Giai Đoạn 2: Refactor Feature Schemas
+**Files cần sửa:**
+1. `features/customers/model/schemas.ts` - Import từ shared
+2. `features/customer-dashboard/schemas.ts` - Import từ shared
+3. `features/booking-wizard/schemas.ts` - Import từ shared
+4. `features/staff/model/schemas.ts` - Import từ shared
+5. `features/auth/schemas.ts` - Import từ shared (password, email)
+
+### Giai Đoạn 3: Xử Lý Naming Convention
+- Tạo helper function để transform `snake_case` ↔ `camelCase` schema
+- Hoặc tạo 2 phiên bản schema cho cùng 1 entity (admin vs customer-facing)
+
+### Giai Đoạn 4: Verify & Test
+- Chạy `pnpm lint` và `pnpm build`
+- Test thủ công các form chính
+
+---
+
+## 6. Danh Sách Files Ảnh Hưởng
+
+| File | Thao tác | Độ ưu tiên |
+|------|----------|-----------|
+| `shared/lib/validations/index.ts` | **CREATE** | P0 |
+| `shared/lib/validations/primitives.ts` | **CREATE** | P0 |
+| `shared/lib/validations/messages.ts` | **CREATE** | P0 |
+| `features/customers/model/schemas.ts` | MODIFY | P1 |
+| `features/customer-dashboard/schemas.ts` | MODIFY | P1 |
+| `features/booking-wizard/schemas.ts` | MODIFY | P1 |
+| `features/staff/model/schemas.ts` | MODIFY | P2 |
+| `features/auth/schemas.ts` | MODIFY | P2 |
+| `features/services/schemas.ts` | REVIEW | P3 |
+| `features/resources/schemas.ts` | REVIEW | P3 |
+
+---
+
+## 7. Rủi Ro & Biện Pháp Giảm Thiểu
+
+| Rủi Ro | Biện Pháp |
+|--------|----------|
+| Break form đang hoạt động | Áp dụng từng file, test ngay sau mỗi thay đổi |
+| Naming conflict (snake vs camel) | Tạo 2 phiên bản export rõ ràng |
+| Thông báo lỗi khác với trước | Document rõ để QA biết |
+
+---
+
+## 8. Tiêu Chí Hoàn Thành (Definition of Done)
+
+- [ ] Thư viện `shared/lib/validations` đã được tạo
+- [ ] Tất cả phone validation dùng chung 1 regex
+- [ ] Tất cả date_of_birth validation dùng chung 1 logic
+- [ ] `pnpm lint` pass
+- [ ] `pnpm build` pass
+- [ ] Không có lỗi TypeScript
+
+---
+
+**⏸️ DỪNG LẠI - Chờ phê duyệt từ User trước khi tiến hành Giai đoạn 2**

@@ -41,7 +41,6 @@ export function StaffActions({ staff, onEdit }: StaffActionsProps) {
         onConfirm={() => handleDelete(staff.user_id)}
         entityName="nhân viên"
         entityLabel={staff.user.full_name ?? undefined}
-        additionalWarning="Lưu ý: Các lịch làm việc đã phân công cho nhân viên này trong tương lai cũng sẽ bị hủy bỏ."
       />
     </>
   );
