@@ -1,5 +1,5 @@
 ---
-description: Kích hoạt quy trình kỹ thuật 8 giai đoạn Antigravity (Tham chiếu: docs/antigravity/execution.md)
+description: Quy trình
 ---
 
 # Quy Trình Thực Thi Antigravity
@@ -9,7 +9,7 @@ description: Kích hoạt quy trình kỹ thuật 8 giai đoạn Antigravity (Th
 ## Hướng dẫn cho Agent
 Khi thực hiện quy trình này, bạn phải:
 
-1.  **Đọc file hướng dẫn**: `read_file("docs/antigravity/execution.md")`.
+1.  **Đọc file hướng dẫn**:    `read_file("docs/antigravity/execution.md")`.
 2.  **Làm theo từng bước** từ 1 đến 8 theo hướng dẫn.
 3.  **Lưu trữ tài liệu** vào thư mục `docs/antigravity/`.
 

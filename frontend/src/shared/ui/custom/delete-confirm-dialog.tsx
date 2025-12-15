@@ -14,43 +14,19 @@ import { AlertTriangle, Loader2 } from "lucide-react";
 import { ReactNode } from "react";
 
 interface DeleteConfirmDialogProps {
-  /** Dialog có đang mở không */
   open: boolean;
-
-  /** Handler khi dialog đóng/mở */
   onOpenChange: (open: boolean) => void;
-
-  /** Handler khi confirm xóa */
   onConfirm: () => void;
-
-  /** Có đang xóa không (hiển thị loading) */
   isDeleting?: boolean;
-
-  /** Tiêu đề dialog */
   title?: string;
-
-  /** Mô tả/cảnh báo */
   description?: ReactNode;
-
-  /** Tên entity để hiển thị (VD: "nhân viên", "dịch vụ") */
   entityName?: string;
-
-  /** Tên cụ thể của entity đang xóa (VD: "Nguyễn Văn A") */
   entityLabel?: string;
-
-  /** Text cho nút Cancel */
   cancelText?: string;
-
-  /** Text cho nút Confirm */
   confirmText?: string;
-
-  /** Thông tin bổ sung (warnings) */
   additionalWarning?: ReactNode;
 }
 
-/**
- * Generic Delete Confirmation Dialog component.
- */
 export function DeleteConfirmDialog({
   open,
   onOpenChange,
@@ -65,8 +41,9 @@ export function DeleteConfirmDialog({
   additionalWarning,
 }: DeleteConfirmDialogProps) {
   const dialogTitle = title || `Bạn có chắc chắn muốn xóa ${entityName}?`;
+  const buttonText = confirmText || `Xóa ${entityName}`;
 
-  const dialogDescription = description || (
+  const defaultDescription = (
     <>
       Hành động này không thể hoàn tác.
       {entityLabel && (
@@ -88,14 +65,10 @@ export function DeleteConfirmDialog({
     </>
   );
 
-  const buttonText = confirmText || `Xóa ${entityName}`;
-  const loadingText = `Đang xóa...`;
-
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="sm:max-w-[400px] p-6 gap-6 border-none shadow-2xl bg-background/95 backdrop-blur-xl">
         <div className="flex flex-col items-center text-center gap-2">
-
           <div className="rounded-full p-3 mb-2 bg-destructive/10 animate-pulse-subtle">
             <AlertTriangle className="h-6 w-6 text-destructive" strokeWidth={2.5} />
           </div>
@@ -105,7 +78,7 @@ export function DeleteConfirmDialog({
               {dialogTitle}
             </AlertDialogTitle>
             <AlertDialogDescription className="text-sm text-center text-muted-foreground leading-relaxed max-w-[300px] mx-auto">
-              {dialogDescription}
+              {description || defaultDescription}
             </AlertDialogDescription>
           </AlertDialogHeader>
         </div>
@@ -128,7 +101,7 @@ export function DeleteConfirmDialog({
             {isDeleting ? (
               <>
                 <Loader2 className="mr-2 size-4 animate-spin" />
-                {loadingText}
+                Đang xóa...
               </>
             ) : (
               buttonText

@@ -2,7 +2,7 @@
 description: Hướng dẫn chi tiết thực thi quy trình Antigravity cho Agent
 ---
 
-# Quy Trình Thực Thi Antigravity (Antigravity Execution)
+# Quy Trình Thực Thi Antigravity
 
 Quy trình này thực thi nghiêm ngặt giao thức được định nghĩa tại `docs/antigravity/antigravity-protocol.md`.
 
@@ -23,7 +23,7 @@ Quy trình này thực thi nghiêm ngặt giao thức được định nghĩa t�
 
 ## Giai đoạn 4: DIFF (Đề xuất)
 1.  Trình bày chi tiết thay đổi sẽ thực hiện (tên file, nội dung sửa đổi).
-2.  Viết mã giả hoặc plan chi tiết.
+2.  Viết mã giả hoặc kế hoạch chi tiết.
 
 ## Giai đoạn 5: APPLY (Thực thi)
 1.  Thực hiện thay đổi code (`write_file`, `replace`).
@@ -34,15 +34,15 @@ Quy trình này thực thi nghiêm ngặt giao thức được định nghĩa t�
 ## Giai đoạn 6: VERIFY (Kiểm tra)
 1.  **Frontend**:
     *   `cd frontend && pnpm lint`
-    *   `cd frontend && pnpm build` (Kiểm tra Type Safety)
+    *   `cd frontend && pnpm build` (Kiểm tra An toàn kiểu dữ liệu)
 2.  **Backend**:
     *   Chạy kiểm tra cú pháp/linting backend.
 3.  Nếu lỗi: Sửa ngay lập tức.
 
 ## Giai đoạn 7: AUDIT (Kiểm toán)
-1.  Review lại code (không hardcode secret, đúng convention).
+1.  Review lại code (không hardcode bí mật, đúng quy ước).
 2.  Ghi lại thay đổi vào `docs/antigravity/change-log.md`.
 
 ## Giai đoạn 8: REPORT (Báo cáo)
-1.  Cập nhật trạng thái task thành **DONE** trong `docs/antigravity/dashboard.md`.
+1.  Cập nhật trạng thái task thành **HOÀN THÀNH** trong `docs/antigravity/dashboard.md`.
 2.  Báo cáo tóm tắt cho người dùng.

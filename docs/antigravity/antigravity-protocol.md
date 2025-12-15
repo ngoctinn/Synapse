@@ -17,7 +17,7 @@ Tài liệu này định nghĩa quy trình kỹ thuật 8 giai đoạn nghiêm n
 ## 2. SPLIT (Chia nhỏ & Lên kế hoạch)
 - **Đầu vào:** Kế hoạch triển khai đã duyệt.
 - **Hành động:** Chia nhỏ tác vụ thành các sub-tasks nguyên tử, dễ quản lý.
-- **Đầu ra:** Cập nhật danh sách `todo` qua công cụ CLI và `docs/antigravity/dashboard.md`.
+- **Đầu ra:** Cập nhật danh sách việc cần làm qua công cụ CLI và `docs/antigravity/dashboard.md`.
 - **Ràng buộc:** Các tác vụ nên độc lập nhau nếu có thể.
 
 ## 3. ANALYZE (Đánh giá Tác động)
@@ -49,5 +49,5 @@ Tài liệu này định nghĩa quy trình kỹ thuật 8 giai đoạn nghiêm n
 
 ## 8. REPORT (Báo cáo)
 - **Đầu vào:** Quy trình hoàn tất.
-- **Hành động:** Cập nhật `docs/antigravity/dashboard.md` (Mark Complete) và tạo báo cáo tóm tắt.
+- **Hành động:** Cập nhật `docs/antigravity/dashboard.md` (Đánh dấu Hoàn thành) và tạo báo cáo tóm tắt.
 - **Đầu ra:** Thông báo cho người dùng.
