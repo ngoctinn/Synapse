@@ -1,35 +1,35 @@
-"use client"
+"use client";
 
-import { Resource, RoomType } from "@/features/resources"
+import { Resource, RoomType } from "@/features/resources";
 import {
-    Button,
-    Form,
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle,
-    showToast,
-} from "@/shared/ui"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Save, Send } from "lucide-react"
-import * as React from "react"
-import { Resolver, useForm } from "react-hook-form"
-import { createService, updateService } from "../actions"
-import { SERVICE_DEFAULT_VALUES } from "../constants"
-import { ServiceFormValues, serviceSchema } from "../schemas"
-import { Service, Skill } from "../types"
-import { ServiceForm } from "./service-form"
+  Button,
+  Form,
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  showToast,
+} from "@/shared/ui";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Save, Send } from "lucide-react";
+import * as React from "react";
+import { Resolver, useForm } from "react-hook-form";
+import { createService, updateService } from "../actions";
+import { SERVICE_DEFAULT_VALUES } from "../constants";
+import { ServiceFormValues, serviceSchema } from "../schemas";
+import { Service, Skill } from "../types";
+import { ServiceForm } from "./service-form";
 
 interface ServiceSheetProps {
-  mode: "create" | "update"
-  initialData?: Service
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  availableSkills: Skill[]
-  availableRoomTypes: RoomType[]
-  availableEquipment: Resource[]
+  mode: "create" | "update";
+  initialData?: Service;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  availableSkills: Skill[];
+  availableRoomTypes: RoomType[];
+  availableEquipment: Resource[];
 }
 
 export function ServiceSheet({
@@ -41,8 +41,8 @@ export function ServiceSheet({
   availableRoomTypes,
   availableEquipment,
 }: ServiceSheetProps) {
-  const [isPending, startTransition] = React.useTransition()
-  const isUpdateMode = mode === "update"
+  const [isPending, startTransition] = React.useTransition();
+  const isUpdateMode = mode === "update";
 
   const form = useForm<ServiceFormValues>({
     resolver: zodResolver(serviceSchema) as Resolver<ServiceFormValues>,
@@ -51,21 +51,24 @@ export function ServiceSheet({
     defaultValues: {
       name: initialData?.name || "",
       duration: initialData?.duration || SERVICE_DEFAULT_VALUES.duration,
-      buffer_time: initialData?.buffer_time || SERVICE_DEFAULT_VALUES.buffer_time,
+      buffer_time:
+        initialData?.buffer_time || SERVICE_DEFAULT_VALUES.buffer_time,
       price: initialData?.price || SERVICE_DEFAULT_VALUES.price,
       is_active: initialData?.is_active ?? true,
       image_url: initialData?.image_url || "",
       color: initialData?.color || SERVICE_DEFAULT_VALUES.color,
       description: initialData?.description || "",
       resource_requirements: {
-        room_type_id: initialData?.resource_requirements?.room_type_id || undefined,
+        room_type_id:
+          initialData?.resource_requirements?.room_type_id || undefined,
         equipment_ids: initialData?.resource_requirements?.equipment_ids || [],
-        equipment_usage: initialData?.resource_requirements?.equipment_usage || [],
+        equipment_usage:
+          initialData?.resource_requirements?.equipment_usage || [],
       },
       skill_ids: initialData?.skills?.map((s) => s.id) || [],
       new_skills: [],
     },
-  })
+  });
 
   // Reset form when opening
   React.useEffect(() => {
@@ -73,22 +76,26 @@ export function ServiceSheet({
       form.reset({
         name: initialData?.name || "",
         duration: initialData?.duration || SERVICE_DEFAULT_VALUES.duration,
-        buffer_time: initialData?.buffer_time || SERVICE_DEFAULT_VALUES.buffer_time,
+        buffer_time:
+          initialData?.buffer_time || SERVICE_DEFAULT_VALUES.buffer_time,
         price: initialData?.price || SERVICE_DEFAULT_VALUES.price,
         is_active: initialData?.is_active ?? true,
         image_url: initialData?.image_url || "",
         color: initialData?.color || SERVICE_DEFAULT_VALUES.color,
         description: initialData?.description || "",
         resource_requirements: {
-          room_type_id: initialData?.resource_requirements?.room_type_id || undefined,
-          equipment_ids: initialData?.resource_requirements?.equipment_ids || [],
-          equipment_usage: initialData?.resource_requirements?.equipment_usage || [],
+          room_type_id:
+            initialData?.resource_requirements?.room_type_id || undefined,
+          equipment_ids:
+            initialData?.resource_requirements?.equipment_ids || [],
+          equipment_usage:
+            initialData?.resource_requirements?.equipment_usage || [],
         },
         skill_ids: initialData?.skills?.map((s) => s.id) || [],
         new_skills: [],
-      })
+      });
     }
-  }, [open, initialData, form])
+  }, [open, initialData, form]);
 
   const onSubmit = (data: ServiceFormValues) => {
     startTransition(async () => {
@@ -96,7 +103,7 @@ export function ServiceSheet({
         const result =
           isUpdateMode && initialData
             ? await updateService(initialData.id, data)
-            : await createService(data)
+            : await createService(data);
 
         if (result.status === "success") {
           showToast.success(
@@ -104,16 +111,19 @@ export function ServiceSheet({
             `Dịch vụ "${data.name}" đã được ${
               isUpdateMode ? "cập nhật" : "thêm vào hệ thống"
             }.`
-          )
-          onOpenChange(false)
+          );
+          onOpenChange(false);
         } else {
-          showToast.error("Thất bại", result.message)
+          showToast.error("Thất bại", result.message);
         }
       } catch {
-        showToast.error("Lỗi hệ thống", "Đã có lỗi xảy ra, vui lòng thử lại sau.")
+        showToast.error(
+          "Lỗi hệ thống",
+          "Đã có lỗi xảy ra, vui lòng thử lại sau."
+        );
       }
-    })
-  }
+    });
+  };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -131,18 +141,18 @@ export function ServiceSheet({
 
         <div className="sheet-scroll-area">
           <Form {...form}>
-              <form
+            <form
               id="service-form"
               onSubmit={form.handleSubmit(onSubmit)}
               className="h-full flex flex-col"
             >
-                <ServiceForm
-                  mode={mode}
-                  availableSkills={availableSkills}
-                  availableRoomTypes={availableRoomTypes}
-                  availableEquipment={availableEquipment}
-                  className="flex-1"
-                />
+              <ServiceForm
+                mode={mode}
+                availableSkills={availableSkills}
+                availableRoomTypes={availableRoomTypes}
+                availableEquipment={availableEquipment}
+                className="flex-1"
+              />
             </form>
           </Form>
         </div>
@@ -161,12 +171,18 @@ export function ServiceSheet({
             form="service-form"
             isLoading={isPending}
             className="min-w-[140px]"
-            startContent={isUpdateMode ? <Save className="size-4" /> : <Send className="size-4" />}
+            startContent={
+              isUpdateMode ? (
+                <Save className="size-4" />
+              ) : (
+                <Send className="size-4" />
+              )
+            }
           >
             {isUpdateMode ? "Lưu thay đổi" : "Tạo dịch vụ"}
           </Button>
         </SheetFooter>
       </SheetContent>
     </Sheet>
-  )
+  );
 }

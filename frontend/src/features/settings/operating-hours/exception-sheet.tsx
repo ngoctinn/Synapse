@@ -12,31 +12,35 @@
  */
 
 import {
-    Button,
-    DatePicker,
-    Field,
-    FieldDescription,
-    FieldError,
-    FieldLabel,
-    Input,
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle,
-    Switch,
-    TimeRangeInput,
+  Button,
+  DatePicker,
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+  Input,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  Switch,
+  TimeRangeInput,
 } from "@/shared/ui";
 import { isSameDay } from "date-fns";
 import { AlertTriangle, Plus, Save } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { DEFAULT_EXCEPTION_CLOSE, DEFAULT_EXCEPTION_OPEN, EXCEPTION_TYPE_LABELS } from "./constants";
+import {
+  DEFAULT_EXCEPTION_CLOSE,
+  DEFAULT_EXCEPTION_OPEN,
+  EXCEPTION_TYPE_LABELS,
+} from "./constants";
 import { ExceptionDate, ExceptionType } from "./types";
 
 interface ExceptionSheetProps {
@@ -135,7 +139,8 @@ export function ExceptionSheet({
   };
 
   // Validation
-  const isValid = date && reason.trim().length > 0 && !duplicateCheck.isDuplicate;
+  const isValid =
+    date && reason.trim().length > 0 && !duplicateCheck.isDuplicate;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -177,16 +182,22 @@ export function ExceptionSheet({
               <FieldLabel>
                 Loại ngoại lệ <span className="text-destructive">*</span>
               </FieldLabel>
-              <Select value={type} onValueChange={(v) => setType(v as ExceptionType)} disabled={isSubmitting}>
+              <Select
+                value={type}
+                onValueChange={(v) => setType(v as ExceptionType)}
+                disabled={isSubmitting}
+              >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Chọn loại" />
                 </SelectTrigger>
                 <SelectContent>
-                  {(Object.keys(EXCEPTION_TYPE_LABELS) as ExceptionType[]).map((t) => (
-                    <SelectItem key={t} value={t}>
-                      {EXCEPTION_TYPE_LABELS[t]}
-                    </SelectItem>
-                  ))}
+                  {(Object.keys(EXCEPTION_TYPE_LABELS) as ExceptionType[]).map(
+                    (t) => (
+                      <SelectItem key={t} value={t}>
+                        {EXCEPTION_TYPE_LABELS[t]}
+                      </SelectItem>
+                    )
+                  )}
                 </SelectContent>
               </Select>
             </Field>
@@ -258,7 +269,13 @@ export function ExceptionSheet({
             disabled={!isValid || isSubmitting}
             isLoading={isSubmitting}
             className="min-w-[120px]"
-            startContent={isEditMode ? <Save className="size-4" /> : <Plus className="size-4" />}
+            startContent={
+              isEditMode ? (
+                <Save className="size-4" />
+              ) : (
+                <Plus className="size-4" />
+              )
+            }
           >
             {isEditMode ? "Cập nhật" : "Thêm ngày"}
           </Button>

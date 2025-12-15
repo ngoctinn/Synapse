@@ -1,39 +1,43 @@
-"use client"
+"use client";
 
-import { Resource, RoomType } from "@/features/resources"
-import { useBulkAction, useTableParams, useTableSelection } from "@/shared/hooks"
-import { formatCurrency } from "@/shared/lib/utils"
-import { Badge } from "@/shared/ui/badge"
-import { Column, DataTable } from "@/shared/ui/custom/data-table"
-import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state"
-import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton"
-import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog"
-import { TableActionBar } from "@/shared/ui/custom/table-action-bar"
+import { Resource, RoomType } from "@/features/resources";
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/shared/ui/tooltip"
-import { Plus } from "lucide-react"
-import { useState } from "react"
-import { deleteService } from "../actions"
-import { Service, Skill } from "../types"
-import { CreateServiceWizard } from "./create-service-wizard"
-import { ServiceActions } from "./service-actions"
-import { ServiceSheet } from "./service-sheet"
+  useBulkAction,
+  useTableParams,
+  useTableSelection,
+} from "@/shared/hooks";
+import { formatCurrency } from "@/shared/lib/utils";
+import { Badge } from "@/shared/ui/badge";
+import { Column, DataTable } from "@/shared/ui/custom/data-table";
+import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
+import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
+import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
+import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/shared/ui/tooltip";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import { deleteService } from "../actions";
+import { Service, Skill } from "../types";
+import { CreateServiceWizard } from "./create-service-wizard";
+import { ServiceActions } from "./service-actions";
+import { ServiceSheet } from "./service-sheet";
 
 interface ServiceTableProps {
-  services: Service[]
-  availableSkills: Skill[]
-  availableRoomTypes: RoomType[]
-  availableEquipment: Resource[]
-  page?: number
-  totalPages?: number
-  onPageChange?: (page: number) => void
-  className?: string
-  variant?: "default" | "flush"
-  isLoading?: boolean
+  services: Service[];
+  availableSkills: Skill[];
+  availableRoomTypes: RoomType[];
+  availableEquipment: Resource[];
+  page?: number;
+  totalPages?: number;
+  onPageChange?: (page: number) => void;
+  className?: string;
+  variant?: "default" | "flush";
+  isLoading?: boolean;
 }
 
 export function ServiceTable({
@@ -46,45 +50,48 @@ export function ServiceTable({
   onPageChange: onPageChangeProp,
   className,
   variant = "default",
-  isLoading
+  isLoading,
 }: ServiceTableProps) {
-  const [editingService, setEditingService] = useState<Service | null>(null)
+  const [editingService, setEditingService] = useState<Service | null>(null);
 
   // Use custom hook for URL state management
-  const { page: urlPage, handlePageChange: urlPageChange } = useTableParams()
+  const { page: urlPage, handlePageChange: urlPageChange } = useTableParams();
 
   // Support both controlled and uncontrolled modes
-  const page = pageProp ?? urlPage
-  const handlePageChange = onPageChangeProp ?? urlPageChange
+  const page = pageProp ?? urlPage;
+  const handlePageChange = onPageChangeProp ?? urlPageChange;
 
   const selection = useTableSelection({
     data: services,
     keyExtractor: (item) => item.id,
-  })
+  });
 
   // Use custom hook for bulk delete
-  const { execute: executeBulkDelete, isPending, showDialog: showBulkDeleteDialog, setShowDialog: setShowBulkDeleteDialog } = useBulkAction(
-    deleteService,
-    {
-      successMessage: (count) => `Đã xóa ${count} dịch vụ`,
-      errorMessage: (count) => `Không thể xóa ${count} dịch vụ`,
-    }
-  )
+  const {
+    execute: executeBulkDelete,
+    isPending,
+    showDialog: showBulkDeleteDialog,
+    setShowDialog: setShowBulkDeleteDialog,
+  } = useBulkAction(deleteService, {
+    successMessage: (count) => `Đã xóa ${count} dịch vụ`,
+    errorMessage: (count) => `Không thể xóa ${count} dịch vụ`,
+  });
 
   const handleBulkDelete = () => {
-    const ids = Array.from(selection.selectedIds) as string[]
-    executeBulkDelete(ids, selection.clearAll)
-  }
+    const ids = Array.from(selection.selectedIds) as string[];
+    executeBulkDelete(ids, selection.clearAll);
+  };
 
   const columns: Column<Service>[] = [
-
     {
       header: "Tên dịch vụ",
       cell: (service) => (
         <div className="flex flex-col">
-          <span className="text-lg font-serif text-foreground group-hover:text-primary transition-colors tracking-tight">{service.name}</span>
+          <span className="text-lg font-serif text-foreground group-hover:text-primary transition-colors tracking-tight">
+            {service.name}
+          </span>
         </div>
-      )
+      ),
     },
     {
       header: "Thời lượng",
@@ -98,12 +105,12 @@ export function ServiceTable({
             Nghỉ: {service.buffer_time}p
           </span>
         </div>
-      )
+      ),
     },
     {
       header: "Giá",
       className: "font-medium text-foreground text-base",
-      cell: (service) => formatCurrency(service.price)
+      cell: (service) => formatCurrency(service.price),
     },
     {
       header: "Kỹ năng yêu cầu",
@@ -115,10 +122,12 @@ export function ServiceTable({
             </Badge>
           ))}
           {service.skills.length === 0 && (
-            <span className="text-xs text-muted-foreground italic pl-1">Không yêu cầu</span>
+            <span className="text-xs text-muted-foreground italic pl-1">
+              Không yêu cầu
+            </span>
           )}
         </div>
-      )
+      ),
     },
     {
       header: "Trạng thái",
@@ -128,7 +137,9 @@ export function ServiceTable({
             <TooltipTrigger asChild>
               <span>
                 <Badge
-                  variant={service.is_active ? "status-active" : "status-inactive"}
+                  variant={
+                    service.is_active ? "status-active" : "status-inactive"
+                  }
                   withIndicator
                   indicatorPulse={service.is_active}
                 >
@@ -143,21 +154,21 @@ export function ServiceTable({
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      )
+      ),
     },
     {
       header: "Hành động",
       className: "pr-6 text-right",
       cell: (service) => (
         <div onClick={(e) => e.stopPropagation()}>
-            <ServiceActions
-              service={service}
-              onEdit={() => setEditingService(service)}
-            />
+          <ServiceActions
+            service={service}
+            onEdit={() => setEditingService(service)}
+          />
         </div>
-      )
-    }
-  ]
+      ),
+    },
+  ];
 
   return (
     <>
@@ -172,7 +183,6 @@ export function ServiceTable({
         variant={variant}
         isLoading={isLoading}
         skeletonCount={6}
-
         selection={{
           isSelected: selection.isSelected,
           onToggleOne: (id) => !isPending && selection.toggleOne(id),
@@ -180,7 +190,6 @@ export function ServiceTable({
           isAllSelected: selection.isAllSelected,
           isPartiallySelected: selection.isPartiallySelected,
         }}
-
         onRowClick={(service) => setEditingService(service)}
         emptyState={
           <DataTableEmptyState
@@ -207,13 +216,13 @@ export function ServiceTable({
 
       {editingService && (
         <ServiceSheet
-            mode="update"
-            initialData={editingService}
-            open={!!editingService}
-            onOpenChange={(open) => !open && setEditingService(null)}
-            availableSkills={availableSkills}
-            availableRoomTypes={availableRoomTypes}
-            availableEquipment={availableEquipment}
+          mode="update"
+          initialData={editingService}
+          open={!!editingService}
+          onOpenChange={(open) => !open && setEditingService(null)}
+          availableSkills={availableSkills}
+          availableRoomTypes={availableRoomTypes}
+          availableEquipment={availableEquipment}
         />
       )}
 
@@ -225,7 +234,7 @@ export function ServiceTable({
         entityName={`${selection.selectedCount} dịch vụ`}
       />
     </>
-  )
+  );
 }
 
 export function ServiceTableSkeleton() {
@@ -238,5 +247,5 @@ export function ServiceTableSkeleton() {
       showAction={false}
       variant="flush"
     />
-  )
+  );
 }

@@ -1,7 +1,5 @@
 "use client";
 
-
-
 import { format } from "date-fns";
 import { useMemo } from "react";
 
@@ -10,9 +8,10 @@ import { Avatar, AvatarFallback, AvatarImage, Badge } from "@/shared/ui";
 
 import { DEFAULT_WORKING_HOURS } from "../../constants";
 import type { CalendarEvent, TimelineResource, ZoomLevel } from "../../types";
-import { calculateTimelinePosition, calculateTimelineWidth } from "./timeline-header";
-
-
+import {
+  calculateTimelinePosition,
+  calculateTimelineWidth,
+} from "./timeline-header";
 
 interface TimelineRowProps {
   /** Resource (nhân viên/phòng) */
@@ -34,8 +33,6 @@ interface TimelineRowProps {
   className?: string;
 }
 
-
-
 export function TimelineRow({
   resource,
   events,
@@ -51,7 +48,6 @@ export function TimelineRow({
   const slotsPerHour = 60 / zoomLevel;
   const totalSlots = totalHours * slotsPerHour;
   const totalWidth = totalSlots * slotWidth;
-
 
   const positionedEvents = useMemo(() => {
     return events.map((event) => {
@@ -76,7 +72,6 @@ export function TimelineRow({
       className={cn("flex border-b border-border/30", className)}
       style={{ height: rowHeight }}
     >
-
       <div
         className={cn(
           "sticky left-0 z-10 w-48 flex-shrink-0",
@@ -89,7 +84,10 @@ export function TimelineRow({
           <AvatarImage src={resource.avatar} alt={resource.name} />
           <AvatarFallback
             className="text-xs font-medium"
-            style={{ backgroundColor: resource.color + "20", color: resource.color }}
+            style={{
+              backgroundColor: resource.color + "20",
+              color: resource.color,
+            }}
           >
             {getInitials(resource.name)}
           </AvatarFallback>
@@ -98,7 +96,9 @@ export function TimelineRow({
         {/* Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
-            <span className="text-sm font-medium truncate">{resource.name}</span>
+            <span className="text-sm font-medium truncate">
+              {resource.name}
+            </span>
             {!resource.isActive && (
               <Badge variant="gray" size="xs">
                 Nghỉ
@@ -110,7 +110,6 @@ export function TimelineRow({
           </span>
         </div>
       </div>
-
 
       <div
         className="relative flex-1"
@@ -131,7 +130,6 @@ export function TimelineRow({
             />
           ))}
         </div>
-
 
         {positionedEvents.map(({ event, left, width }) => (
           <button
@@ -165,7 +163,6 @@ export function TimelineRow({
           </button>
         ))}
 
-
         {events.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-xs text-muted-foreground/50 italic">
@@ -177,8 +174,6 @@ export function TimelineRow({
     </div>
   );
 }
-
-
 
 function getInitials(name: string): string {
   return name

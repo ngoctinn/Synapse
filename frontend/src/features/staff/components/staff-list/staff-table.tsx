@@ -187,7 +187,10 @@ export function StaffTable({
       id: "user.role",
       sortable: true,
       cell: (staff) => (
-        <Badge variant={ROLE_CONFIG[staff.user.role]?.variant || "outline"} size="sm">
+        <Badge
+          variant={ROLE_CONFIG[staff.user.role]?.variant || "outline"}
+          size="sm"
+        >
           {ROLE_CONFIG[staff.user.role]?.label || staff.user.role}
         </Badge>
       ),

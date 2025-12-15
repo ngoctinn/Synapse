@@ -20,13 +20,17 @@
 ## 3. Phân loại Button
 
 ### A. Destructive Actions (Hành động nguy hiểm)
+
 Cần màu đỏ/destructive:
+
 - Xóa (Delete)
 - Hủy đơn hàng/cuộc hẹn (Cancel booking)
 - Remove item
 
 ### B. Cancel/Close Actions (Đóng/Hủy thao tác)
+
 Giữ neutral:
+
 - Đóng dialog
 - Hủy (form cancellation)
 - Quay lại
