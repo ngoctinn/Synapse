@@ -1,7 +1,13 @@
-# Tiến Độ Dự Án Synapse: TIME DOMAIN
+# Tiến Độ Dự Án Synapse: BOOKING DOMAIN
 
-**Giai đoạn:** 2 - Lịch Làm Việc & Khung Thời Gian
-**Cập nhật lần cuối:** 2025-12-16 21:45
+**Giai đoạn:** 3 - Đặt Lịch Cơ Bản (CỐT LÕI NHẤT)
+**Cập nhật lần cuối:** 2025-12-16 22:00
+
+---
+
+## 🔥 ĐÂY LÀ GIAI ĐOẠN QUAN TRỌNG NHẤT
+
+> Toàn bộ hệ thống xoay quanh `booking_item` - đây chính là **Activity** trong mô hình RCPSP.
 
 ---
 
@@ -21,75 +27,110 @@
 
 | ID | Tác Vụ | Trạng Thái |
 |:---|:---|:---:|
-| DB-01 | `add_shifts_table` | ✅ Done |
-| DB-02 | `add_staff_schedules_table` + ENUM | ✅ Done |
+| DB-01 | `add_bookings_table` + ENUM | ✅ Done |
+| DB-02 | `add_booking_items_table` | ✅ Done |
 
 ### ⚙️ Giai Đoạn 2: Backend Implementation
 
 | ID | Tác Vụ | Trạng Thái |
 |:---|:---|:---:|
-| BE-01 | Module `schedules`: Models | ✅ Done |
-| BE-02 | Module `schedules`: Schemas | ✅ Done |
-| BE-03 | Module `schedules`: Service | ✅ Done |
-| BE-04 | Module `schedules`: Router | ✅ Done |
-| BE-05 | Module `schedules`: __init__.py | ✅ Done |
-| BE-06 | Update Staff model + main.py | ✅ Done |
+| BE-01 | Module `bookings`: Models | ✅ Done |
+| BE-02 | Module `bookings`: Conflict Checker ⚡ | ✅ Done |
+| BE-03 | Module `bookings`: Schemas | ✅ Done |
+| BE-04 | Module `bookings`: Service | ✅ Done |
+| BE-05 | Module `bookings`: Router | ✅ Done |
+| BE-06 | Đăng ký router + __init__.py | ✅ Done |
 
 ### 🧪 Giai Đoạn 3: Verification
 
 | ID | Tác Vụ | Trạng Thái |
 |:---|:---|:---:|
 | V-01 | Backend Import Test | ✅ Pass |
-| V-02 | Seed Data | ✅ 4 shifts + 11 schedules |
+| V-02 | Seed Data | ✅ 3 bookings + 4 items |
 
 ---
 
-## API Endpoints Hoàn Thành
+## API Endpoints Hoàn Thành (16 endpoints)
 
-### Shifts CRUD (5 endpoints)
-- `GET /api/v1/shifts`
-- `POST /api/v1/shifts`
-- `GET /api/v1/shifts/{id}`
-- `PATCH /api/v1/shifts/{id}`
-- `DELETE /api/v1/shifts/{id}`
+### Bookings CRUD
+- `GET /api/v1/bookings`
+- `POST /api/v1/bookings`
+- `GET /api/v1/bookings/{id}`
+- `PATCH /api/v1/bookings/{id}`
 
-### Staff Schedules CRUD (7 endpoints)
-- `GET /api/v1/schedules`
-- `POST /api/v1/schedules`
-- `POST /api/v1/schedules/bulk`
-- `GET /api/v1/schedules/{id}`
-- `PATCH /api/v1/schedules/{id}`
-- `DELETE /api/v1/schedules/{id}`
-- `PATCH /api/v1/schedules/{id}/publish`
+### Booking Items
+- `POST /api/v1/bookings/{id}/items`
+- `PATCH /api/v1/bookings/{id}/items/{item_id}` ⚡
+- `DELETE /api/v1/bookings/{id}/items/{item_id}`
 
-### Availability Query (2 endpoints)
-- `GET /api/v1/staff/{id}/availability?date=YYYY-MM-DD`
-- `GET /api/v1/schedules/by-date/{YYYY-MM-DD}`
+### Status Transitions
+- `PATCH /api/v1/bookings/{id}/confirm`
+- `PATCH /api/v1/bookings/{id}/check-in`
+- `PATCH /api/v1/bookings/{id}/complete`
+- `PATCH /api/v1/bookings/{id}/cancel`
+- `PATCH /api/v1/bookings/{id}/no-show`
+
+### Conflict Check
+- `POST /api/v1/bookings/check-conflicts` ⚡
+- `GET /api/v1/bookings/staff/{id}/bookings`
+- `GET /api/v1/bookings/resource/{id}/bookings`
+
+---
+
+## ⚡ Core Logic: Conflict Checker
+
+### Kiểm tra 3 loại xung đột:
+
+| Loại | Mô tả | Status |
+|:---|:---|:---:|
+| Staff Conflict | KTV đã có booking khác | ✅ |
+| Resource Conflict | Phòng đã được sử dụng | ✅ |
+| Schedule Conflict | KTV không có trong ca | ✅ |
+
+### Nguyên tắc:
+```
+2 khoảng thời gian CHỒNG CHÉO nếu:
+    new_start < existing_end AND new_end > existing_start
+```
 
 ---
 
 ## Kết Quả Đạt Được
 
 ### ✅ Mục tiêu hoàn thành:
-1. **Miền thời gian hợp lệ cho Solver** - API `/staff/{id}/availability` trả về khung giờ làm việc
-2. **Không gán lịch ngoài ca** - Constraint được enforce tại database và application layer
-3. **Truy vấn "KTV A làm việc lúc nào?"** - Đã implement hoàn chỉnh
+1. **Luồng đặt lịch hoàn chỉnh** - PENDING → CONFIRMED → IN_PROGRESS → COMPLETED
+2. **Kiểm tra xung đột chính xác** - Không trùng KTV, không trùng Phòng
+3. **Dữ liệu thực để test solver** - 3 bookings, 4 items mẫu
 
-### 📊 Dữ liệu mẫu:
-| Ca | Thời gian | Màu |
-|:---|:---|:---|
-| Ca sáng | 08:00-12:00 | 🟢 Xanh lá |
-| Ca chiều | 13:00-17:00 | 🔵 Xanh dương |
-| Ca tối | 18:00-21:00 | 🟣 Tím |
-| Full day | 08:00-17:00 | 🟠 Cam |
+### 📊 Booking Lifecycle:
+```
+[Tạo] PENDING → [Xác nhận] CONFIRMED → [Check-in] IN_PROGRESS → [Hoàn thành] COMPLETED
+                    ↓                      ↓
+                 NO_SHOW               CANCELLED
+```
+
+---
+
+## Tổng Kết 3 Giai Đoạn Hoàn Thành
+
+| Giai đoạn | Phạm vi | Trạng thái |
+|:---|:---|:---:|
+| 1. Core Data | services, resources, skills | ✅ |
+| 2. Time Domain | shifts, staff_schedules | ✅ |
+| 3. Booking Domain | bookings, booking_items | ✅ |
 
 ---
 
 ## Bước Tiếp Theo (Gợi ý)
 
-1. **Giai đoạn 3: BOOKING DOMAIN** - Đặt lịch hẹn
-   - Bảng `bookings`, `booking_items`
-   - Tích hợp kiểm tra availability
+1. **Giai đoạn 4: SOLVER** - Tự động gán KTV + Phòng
+   - Sử dụng Google OR-Tools CP-SAT
+   - Tích hợp tất cả constraints
 
-2. **Giai đoạn 4: MATCHING LOGIC** - Ghép KTV + Phòng với Dịch vụ
-   - Sử dụng dữ liệu từ Giai đoạn 1 (skills, resources) + Giai đoạn 2 (schedules)
+2. **Frontend Integration** - Giao diện đặt lịch
+   - Calendar view
+   - Drag & drop gán KTV
+
+3. **Testing** - Viết test cases
+   - Unit test cho conflict checker
+   - Integration test cho booking flow

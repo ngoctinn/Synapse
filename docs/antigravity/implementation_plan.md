@@ -1,9 +1,18 @@
-# Kế Hoạch Triển Khai: TIME DOMAIN (Lịch Làm Việc & Khung Thời Gian)
+# Kế Hoạch Triển Khai: BOOKING DOMAIN (Đặt Lịch Cơ Bản)
+
+## 🔥 ĐÂY LÀ GIAI ĐOẠN QUAN TRỌNG NHẤT
+
+> **Vì sao:** Toàn bộ hệ thống xoay quanh `booking_item` - đây chính là **Activity** trong mô hình toán RCPSP.
+
+---
 
 ## 1. Mục Tiêu Giai Đoạn
-Xác định **KHI NÀO** nhân viên có thể làm việc, tạo miền thời gian hợp lệ cho thuật toán lập lịch.
 
-**Câu hỏi cần trả lời:** *"KTV A làm việc lúc nào trong ngày X?"*
+Xây dựng luồng đặt lịch hoàn chỉnh với khả năng **kiểm tra xung đột** (KTV và Phòng).
+
+**Câu hỏi cần trả lời:**
+- *"KTV A có rảnh lúc 10:00 ngày X không?"*
+- *"Phòng VIP 1 có trống lúc 14:00 ngày X không?"*
 
 ---
 
@@ -12,165 +21,228 @@ Xác định **KHI NÀO** nhân viên có thể làm việc, tạo miền thời
 ### Database Audit
 | Bảng | Trạng Thái | Ghi Chú |
 |:---|:---:|:---|
-| `shifts` | ❌ Chưa có | Cần tạo mới |
-| `staff_schedules` | ❌ Chưa có | Cần tạo mới |
-| ENUM `schedule_status` | ❌ Chưa có | Cần tạo: DRAFT, PUBLISHED |
+| `bookings` | ❌ Chưa có | Cần tạo mới |
+| `booking_items` | ❌ Chưa có | Cần tạo mới |
+| ENUM `booking_status` | ❌ Chưa có | 6 giá trị |
 
 ### Đặc Tả (Theo `data_specification.md`)
 
-**Bảng `shifts`** - Định nghĩa các ca làm việc cố định:
+**Bảng `bookings`** - Lịch hẹn tổng:
 | Cột | Kiểu | Mô tả |
 |:---|:---|:---|
 | `id` | UUID | PK |
-| `name` | VARCHAR(100) | Tên ca (Ca sáng, Ca chiều...) |
-| `start_time` | TIME | Giờ bắt đầu (08:00) |
-| `end_time` | TIME | Giờ kết thúc (12:00) |
-| `color_code` | VARCHAR(7) | Mã màu hiển thị (#FF5722) |
+| `customer_id` | UUID (nullable) | FK → users (khách) |
+| `created_by` | UUID (nullable) | FK → users (lễ tân tạo) |
+| `start_time` | TIMESTAMPTZ | Thời gian bắt đầu |
+| `end_time` | TIMESTAMPTZ | Thời gian kết thúc |
+| `status` | ENUM | PENDING → CONFIRMED → IN_PROGRESS → COMPLETED |
+| `notes` | TEXT | Ghi chú |
+| `cancel_reason` | TEXT | Lý do hủy |
+| `check_in_time` | TIMESTAMPTZ | Thời điểm check-in |
+| `total_price` | DECIMAL | Tổng giá |
 
-**Bảng `staff_schedules`** - Phân công ca cho KTV theo ngày:
+**Bảng `booking_items`** - Chi tiết từng dịch vụ trong booking:
 | Cột | Kiểu | Mô tả |
 |:---|:---|:---|
 | `id` | UUID | PK |
-| `staff_id` | UUID | FK → staff.user_id |
-| `shift_id` | UUID | FK → shifts.id |
-| `work_date` | DATE | Ngày làm việc |
-| `status` | ENUM | DRAFT / PUBLISHED |
-| `created_at` | TIMESTAMPTZ | Thời điểm tạo |
-
-**Ràng buộc:** UNIQUE(staff_id, work_date, shift_id) - Một KTV không thể có 2 bản ghi trùng ca trong cùng ngày.
+| `booking_id` | UUID | FK → bookings |
+| `service_id` | UUID | FK → services |
+| `staff_id` | UUID (nullable) | FK → staff (KTV được gán) |
+| `resource_id` | UUID (nullable) | FK → resources (Phòng được gán) |
+| `start_time` | TIMESTAMPTZ | Thời gian bắt đầu item |
+| `end_time` | TIMESTAMPTZ | Thời gian kết thúc item |
+| `original_price` | DECIMAL | Giá gốc tại thời điểm đặt |
+| `service_name_snapshot` | VARCHAR | Snapshot tên dịch vụ |
 
 ---
 
-## 3. Kế Hoạch Thực Thi
+## 3. Luồng Nghiệp Vụ
+
+```
+[Khách/Lễ tân] Tạo Booking (PENDING)
+        ↓
+[Lễ tân] Thêm booking_items (dịch vụ)
+        ↓
+[Lễ tân] Gán staff + resource cho từng item
+        ↓
+[Hệ thống] Kiểm tra xung đột
+    - KTV đã có booking khác?
+    - Phòng đã được sử dụng?
+        ↓
+[Lễ tân] Xác nhận booking (CONFIRMED)
+        ↓
+[Khách đến] Check-in → IN_PROGRESS
+        ↓
+[Hoàn thành] → COMPLETED
+```
+
+---
+
+## 4. Kế Hoạch Thực Thi
 
 ### Giai Đoạn 1: Database Migration
 
-#### Migration 2.1: `add_shifts_table`
+#### Migration 3.1: `add_bookings_table`
 ```sql
-CREATE TABLE shifts (
+CREATE TYPE booking_status AS ENUM (
+    'PENDING', 'CONFIRMED', 'IN_PROGRESS',
+    'COMPLETED', 'CANCELLED', 'NO_SHOW'
+);
+
+CREATE TABLE bookings (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(100) NOT NULL,
-    start_time TIME NOT NULL,
-    end_time TIME NOT NULL,
-    color_code VARCHAR(7),
+    customer_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+    start_time TIMESTAMPTZ NOT NULL,
+    end_time TIMESTAMPTZ NOT NULL,
+    status booking_status NOT NULL DEFAULT 'PENDING',
+    notes TEXT,
+    cancel_reason TEXT,
+    check_in_time TIMESTAMPTZ,
+    actual_start_time TIMESTAMPTZ,
+    actual_end_time TIMESTAMPTZ,
+    total_price DECIMAL(12,2) DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    CONSTRAINT shifts_time_check CHECK (end_time > start_time)
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    CONSTRAINT bookings_time_check CHECK (end_time > start_time)
 );
 ```
 
-#### Migration 2.2: `add_staff_schedules_table`
+#### Migration 3.2: `add_booking_items_table`
 ```sql
-CREATE TYPE schedule_status AS ENUM ('DRAFT', 'PUBLISHED');
-
-CREATE TABLE staff_schedules (
+CREATE TABLE booking_items (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    staff_id UUID NOT NULL REFERENCES staff(user_id) ON DELETE CASCADE,
-    shift_id UUID NOT NULL REFERENCES shifts(id) ON DELETE CASCADE,
-    work_date DATE NOT NULL,
-    status schedule_status NOT NULL DEFAULT 'DRAFT',
+    booking_id UUID NOT NULL REFERENCES bookings(id) ON DELETE CASCADE,
+    service_id UUID REFERENCES services(id) ON DELETE SET NULL,
+    staff_id UUID REFERENCES staff(user_id) ON DELETE SET NULL,
+    resource_id UUID REFERENCES resources(id) ON DELETE SET NULL,
+    service_name_snapshot VARCHAR(255),
+    start_time TIMESTAMPTZ NOT NULL,
+    end_time TIMESTAMPTZ NOT NULL,
+    original_price DECIMAL(12,2) NOT NULL DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    CONSTRAINT staff_schedules_unique UNIQUE (staff_id, work_date, shift_id)
+    CONSTRAINT booking_items_time_check CHECK (end_time > start_time)
 );
-
-CREATE INDEX ix_staff_schedules_staff_date ON staff_schedules(staff_id, work_date);
-CREATE INDEX ix_staff_schedules_date ON staff_schedules(work_date);
 ```
 
 ---
 
-### Giai Đoạn 2: Backend Module `schedules`
+### Giai Đoạn 2: Backend Module `bookings`
 
-#### Cấu trúc thư mục:
+#### Cấu trúc:
 ```
-src/modules/schedules/
-├── __init__.py       # Public API
-├── models.py         # Shift, StaffSchedule, ScheduleStatus
+src/modules/bookings/
+├── __init__.py
+├── models.py         # Booking, BookingItem, BookingStatus
 ├── schemas.py        # DTOs
 ├── router.py         # API Endpoints
-└── service.py        # Business Logic
+├── service.py        # Business Logic
+└── conflict_checker.py  # ⚡ CORE: Kiểm tra xung đột
 ```
-
-#### Models:
-
-**`Shift`**
-- Định nghĩa ca làm việc (Ca sáng, Ca chiều, Ca tối...)
-- Là dữ liệu master, ít thay đổi
-
-**`StaffSchedule`**
-- Phân công KTV vào ca nào, ngày nào
-- Có trạng thái DRAFT/PUBLISHED (cho phép lên lịch trước rồi công bố)
-
-**`ScheduleStatus`** (Enum)
-- DRAFT: Bản nháp, chưa công bố
-- PUBLISHED: Đã công bố, KTV có thể nhìn thấy
 
 ---
 
 ### Giai Đoạn 3: API Endpoints
 
-#### Shifts CRUD:
+#### Bookings CRUD:
 | Method | Endpoint | Mô tả |
 |:---|:---|:---|
-| GET | `/shifts` | Lấy danh sách ca làm việc |
-| POST | `/shifts` | Tạo ca mới |
-| PATCH | `/shifts/{id}` | Cập nhật ca |
-| DELETE | `/shifts/{id}` | Xóa ca |
+| GET | `/bookings` | Danh sách (filter: date, status, customer) |
+| POST | `/bookings` | Tạo booking mới (PENDING) |
+| GET | `/bookings/{id}` | Chi tiết + items |
+| PATCH | `/bookings/{id}` | Cập nhật thông tin |
+| DELETE | `/bookings/{id}` | Hủy booking |
 
-#### Staff Schedules:
+#### Booking Items:
 | Method | Endpoint | Mô tả |
 |:---|:---|:---|
-| GET | `/schedules` | Lấy lịch làm việc (filter by date range, staff_id) |
-| POST | `/schedules` | Tạo lịch làm việc cho KTV |
-| POST | `/schedules/bulk` | Tạo nhiều lịch cùng lúc (batch) |
-| DELETE | `/schedules/{id}` | Xóa lịch |
-| PATCH | `/schedules/{id}/publish` | Công bố lịch (DRAFT → PUBLISHED) |
+| POST | `/bookings/{id}/items` | Thêm dịch vụ |
+| PATCH | `/bookings/{id}/items/{item_id}` | Cập nhật (assign staff/resource) |
+| DELETE | `/bookings/{id}/items/{item_id}` | Xóa dịch vụ |
 
-#### Query Logic (Core):
+#### Status Transitions:
 | Method | Endpoint | Mô tả |
 |:---|:---|:---|
-| GET | `/staff/{staff_id}/availability` | Lấy khung giờ làm việc của KTV trong ngày/tuần |
-| GET | `/schedules/by-date/{date}` | Lấy tất cả KTV làm việc trong ngày |
+| PATCH | `/bookings/{id}/confirm` | PENDING → CONFIRMED |
+| PATCH | `/bookings/{id}/check-in` | CONFIRMED → IN_PROGRESS |
+| PATCH | `/bookings/{id}/complete` | IN_PROGRESS → COMPLETED |
+| PATCH | `/bookings/{id}/cancel` | → CANCELLED |
+| PATCH | `/bookings/{id}/no-show` | → NO_SHOW |
+
+#### Conflict Check (CORE):
+| Method | Endpoint | Mô tả |
+|:---|:---|:---|
+| GET | `/availability/staff/{id}` | Kiểm tra KTV rảnh không |
+| GET | `/availability/resource/{id}` | Kiểm tra Phòng trống không |
+| POST | `/availability/check` | Kiểm tra nhiều slots cùng lúc |
 
 ---
 
-## 4. Tiêu Chí Nghiệm Thu
+## 5. ⚡ CORE LOGIC: Conflict Checker
+
+### Nguyên tắc kiểm tra xung đột:
+
+```python
+def is_conflicting(new_start, new_end, existing_start, existing_end):
+    """
+    True nếu 2 khoảng thời gian CHỒNG CHÉO.
+    """
+    return new_start < existing_end and new_end > existing_start
+```
+
+### Query kiểm tra KTV:
+```sql
+SELECT COUNT(*) FROM booking_items bi
+JOIN bookings b ON bi.booking_id = b.id
+WHERE bi.staff_id = :staff_id
+  AND b.status NOT IN ('CANCELLED', 'NO_SHOW', 'COMPLETED')
+  AND bi.start_time < :new_end
+  AND bi.end_time > :new_start
+```
+
+### Query kiểm tra Phòng:
+```sql
+SELECT COUNT(*) FROM booking_items bi
+JOIN bookings b ON bi.booking_id = b.id
+WHERE bi.resource_id = :resource_id
+  AND b.status NOT IN ('CANCELLED', 'NO_SHOW', 'COMPLETED')
+  AND bi.start_time < :new_end
+  AND bi.end_time > :new_start
+```
+
+---
+
+## 6. Tiêu Chí Nghiệm Thu
 
 ### Database
-- [ ] Bảng `shifts` tồn tại với constraint thời gian
-- [ ] Bảng `staff_schedules` tồn tại với unique constraint
-- [ ] ENUM `schedule_status` được tạo
+- [ ] Bảng `bookings` với constraints
+- [ ] Bảng `booking_items` với FKs
+- [ ] ENUM `booking_status`
+- [ ] Indexes cho query thường dùng
 
 ### Backend
-- [ ] CRUD shifts hoạt động
-- [ ] CRUD staff_schedules hoạt động
-- [ ] API `/staff/{id}/availability` trả về đúng khung giờ
+- [ ] CRUD bookings + items
+- [ ] Status transitions
+- [ ] **Conflict checker hoạt động chính xác**
 
 ### Integration Test
-- [ ] Tạo ca "Sáng" (08:00-12:00) và "Chiều" (13:00-17:00)
-- [ ] Phân công KTV A làm ca Sáng ngày 2025-12-17
-- [ ] Query `/staff/{ktv_a}/availability?date=2025-12-17` → Trả về 08:00-12:00
+- [ ] Tạo booking với 2 services
+- [ ] Gán staff + resource
+- [ ] Thử gán KTV đang bận → Lỗi
+- [ ] Thử gán Phòng đang dùng → Lỗi
+- [ ] Confirm → Check-in → Complete
 
 ---
 
-## 5. Seed Data Mẫu
+## 7. Thứ Tự Thực Thi
 
-### Shifts (Ca làm việc)
-| Tên ca | Bắt đầu | Kết thúc | Màu |
-|:---|:---:|:---:|:---|
-| Ca sáng | 08:00 | 12:00 | #4CAF50 (Xanh lá) |
-| Ca chiều | 13:00 | 17:00 | #2196F3 (Xanh dương) |
-| Ca tối | 18:00 | 21:00 | #9C27B0 (Tím) |
-| Full day | 08:00 | 17:00 | #FF9800 (Cam) |
-
----
-
-## 6. Thứ Tự Thực Thi
-
-1. **[DB]** Migration 2.1: `add_shifts_table`
-2. **[DB]** Migration 2.2: `add_staff_schedules_table`
-3. **[BE]** Tạo Module `schedules` (models, schemas)
-4. **[BE]** Implement Shifts CRUD
-5. **[BE]** Implement StaffSchedules CRUD
-6. **[BE]** Implement Availability Query Logic
-7. **[DB]** Seed Data mẫu
-8. **[TEST]** Verify toàn bộ API
+1. **[DB]** Migration 3.1: `add_bookings_table`
+2. **[DB]** Migration 3.2: `add_booking_items_table`
+3. **[BE]** Module `bookings`: models.py
+4. **[BE]** Module `bookings`: conflict_checker.py ⚡
+5. **[BE]** Module `bookings`: schemas.py
+6. **[BE]** Module `bookings`: service.py
+7. **[BE]** Module `bookings`: router.py
+8. **[BE]** Đăng ký router
+9. **[DB]** Seed data mẫu
+10. **[TEST]** Verify conflict checking
