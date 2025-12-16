@@ -119,7 +119,7 @@ export function ResourceTimeline({
   };
 
   return (
-    <div className={cn("flex flex-col h-full", className)}>
+    <div className={cn("flex flex-col h-full min-h-0", className)}>
       {/* ============================================ */}
       {/* TOOLBAR */}
       {/* ============================================ */}

@@ -175,12 +175,12 @@ export function WeekView({
   }, [eventsByDay, startHour, hourHeight]);
 
   return (
-    <div className={cn("flex flex-col h-full", className)}>
+    <div className={cn("flex flex-col h-full min-h-0", className)}>
       {/* Date Header */}
       <DateHeader startDate={dateRange.start} numberOfDays={numberOfDays} />
 
       {/* Scrollable Grid Area */}
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 min-h-0">
         <div
           className="grid"
           style={{

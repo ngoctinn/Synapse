@@ -11,8 +11,8 @@ import { showToast } from "@/shared/ui/sonner";
 import { Activity, CalendarCheck, Clock, LucideIcon, Plus, RefreshCw, Settings2 } from "lucide-react";
 import { use, useCallback, useEffect, useState, useTransition } from "react";
 import {
-    checkInAppointment, deleteAppointment,
-    getAppointmentMetrics, getAppointments, markNoShow
+  checkInAppointment, deleteAppointment,
+  getAppointmentMetrics, getAppointments, markNoShow
 } from "../actions";
 import { useCalendarState } from "../hooks/use-calendar-state";
 import { MockService } from "../mock-data";
@@ -212,13 +212,13 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
           </div>
         </div>
       </PageHeader>
-      <PageContent fullWidth className="p-0 gap-0">
-        <div className="flex-1 p-4 overflow-hidden h-full">
-            <SurfaceCard className="h-full rounded-lg border overflow-hidden">
+      <PageContent fullWidth className="p-0 gap-0 flex flex-col">
+        <div className="flex-1 p-4 min-h-0 flex flex-col">
+            <SurfaceCard className="flex-1 min-h-0 rounded-lg border flex flex-col overflow-hidden">
             <CalendarView
                 view={view} date={date} dateRange={dateRange} events={events} densityMode={densityMode}
                 staffList={staffList} roomList={roomList} onEventClick={handleEventClick} onSlotClick={handleSlotClick}
-                isLoading={isPending && events.length === 0} className="flex-1"
+                isLoading={isPending && events.length === 0} className="flex-1 min-h-0"
                 onCheckIn={wrapAction(checkInAppointment, "Check-in thành công", "Không thể check-in")}
                 onNoShow={wrapAction(markNoShow, "Đã đánh dấu No-show", "Không thể đánh dấu No-show")}
                 onCancel={handleCancelRequest}

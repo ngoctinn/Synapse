@@ -92,7 +92,7 @@ export function MonthView({
   }, [dateRange, currentMonth, events]);
 
   return (
-    <div className={cn("flex flex-col h-full", className)}>
+    <div className={cn("flex flex-col h-full min-h-0", className)}>
       {/* Weekday Header */}
       <div className="grid grid-cols-7 border-b border-border/50">
         {WEEKDAYS.map((day) => (

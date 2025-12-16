@@ -7,7 +7,7 @@ type PageShellProps = React.HTMLAttributes<HTMLDivElement>
 export function PageShell({ className, ...props }: PageShellProps) {
   return (
     <div
-      className={cn("flex flex-col min-h-screen w-full bg-background", className)}
+      className={cn("flex flex-col h-screen w-full bg-background overflow-hidden", className)}
       {...props}
     />
   )
