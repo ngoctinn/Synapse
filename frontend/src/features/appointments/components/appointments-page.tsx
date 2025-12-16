@@ -190,7 +190,7 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
   const pending = metrics?.todayPending ?? 0;
 
   return (
-    <PageShell>
+    <PageShell className="h-screen overflow-hidden">
       <PageHeader>
         <div className="flex items-center gap-4">
           <DateNavigator date={date} formattedDateRange={formattedDateRange} isToday={isToday} onPrev={goPrev} onNext={goNext} onToday={goToday} onDateSelect={goToDate} />

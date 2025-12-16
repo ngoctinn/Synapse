@@ -112,7 +112,7 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
   }, 300)
 
   return (
-    <PageShell>
+    <PageShell className={activeTab === "scheduling" ? "h-screen overflow-hidden" : undefined}>
       <Tabs value={activeTab} className="flex flex-col flex-1 w-full gap-0" onValueChange={handleTabChange}>
 
         <PageHeader>
