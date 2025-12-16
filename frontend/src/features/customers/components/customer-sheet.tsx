@@ -7,27 +7,27 @@ import { useForm } from "react-hook-form";
 
 import { manageCustomer } from "@/features/customers/actions";
 import {
-    CustomerFormValues,
-    customerSchema,
-    CustomerUpdateFormValues,
-    customerUpdateSchema,
+  CustomerFormValues,
+  customerSchema,
+  CustomerUpdateFormValues,
+  customerUpdateSchema,
 } from "@/features/customers/model/schemas";
 import { Customer } from "@/features/customers/model/types";
 import {
-    getTechnicians,
-    type TechnicianOption,
+  getTechnicians,
+  type TechnicianOption,
 } from "@/features/staff/actions";
 
 import {
-    Badge,
-    Button,
-    Form,
-    Sheet,
-    SheetContent,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle,
-    showToast
+  Badge,
+  Button,
+  Form,
+  Sheet,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  showToast,
 } from "@/shared/ui";
 import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs";
 
@@ -165,8 +165,16 @@ export function CustomerSheet({
               {mode === "update" && customer?.membership_tier === "GOLD" && (
                 <Badge preset="tier-gold">
                   <Crown className="size-3.5" />
+                  Gold
                 </Badge>
               )}
+              {mode === "update" &&
+                customer?.membership_tier === "PLATINUM" && (
+                  <Badge preset="tier-platinum">
+                    <Crown className="size-3.5" />
+                    Platinum
+                  </Badge>
+                )}
             </div>
           </div>
         </SheetHeader>
