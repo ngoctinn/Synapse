@@ -166,7 +166,7 @@ export function StaffSchedulingPage({
     : undefined;
 
   return (
-    <div className={cn("flex flex-col h-full", className)}>
+    <div className={cn("flex flex-col h-full min-h-0", className)}>
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="flex items-center gap-2 flex-wrap">
@@ -212,7 +212,7 @@ export function StaffSchedulingPage({
       </div>
 
       {/* Calendar View */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 min-h-0 overflow-auto">
         {view === "week" ? (
           <WeekView
             staffList={filteredStaff}
