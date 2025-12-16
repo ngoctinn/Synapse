@@ -5,6 +5,12 @@ export interface Skill {
   description?: string | null;
 }
 
+export interface ServiceCategory {
+  id: string;
+  name: string;
+  sort_order: number;
+}
+
 /** Cấu hình thời gian sử dụng thiết bị trong timeline dịch vụ */
 export interface EquipmentUsage {
   equipment_id: string;
@@ -31,6 +37,8 @@ export interface Service {
   image_url?: string | null;
   color: string;
   description?: string | null;
+  category_id?: string | null;
+  // @deprecated use category_id
   category?: string | null;
   resource_requirements?: ResourceRequirements;
   is_active: boolean;
@@ -48,7 +56,7 @@ export interface ServiceCreateInput {
   image_url?: string;
   color?: string;
   description?: string;
-  category?: string;
+  category_id?: string;
   resource_requirements?: ResourceRequirements;
   is_active?: boolean;
   skill_ids: string[];
@@ -63,7 +71,7 @@ export interface ServiceUpdateInput {
   image_url?: string;
   color?: string;
   description?: string;
-  category?: string;
+  category_id?: string;
   resource_requirements?: ResourceRequirements;
   is_active?: boolean;
   skill_ids?: string[];

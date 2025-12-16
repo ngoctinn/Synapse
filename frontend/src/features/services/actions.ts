@@ -50,7 +50,7 @@ export async function createService(data: ServiceCreateInput): Promise<ActionRes
     updated_at: new Date().toISOString(),
     skills: data.skill_ids ? skills.filter(s => data.skill_ids?.includes(s.id)) : [],
     image_url: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000",
-    category: data.category || "Uncategorized",
+    category_id: data.category_id,
     is_popular: false
   };
 
@@ -73,7 +73,7 @@ export async function cloneService(id: string): Promise<ActionResponse> {
       is_active: false,
       skill_ids: service.skills.map((s) => s.id),
       new_skills: [],
-      category: service.category || undefined,
+      category_id: service.category_id || undefined,
       description: service.description || undefined,
     });
 

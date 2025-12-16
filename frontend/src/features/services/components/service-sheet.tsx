@@ -18,6 +18,7 @@ import * as React from "react";
 import { Resolver, useForm } from "react-hook-form";
 import { createService, updateService } from "../actions";
 import { SERVICE_DEFAULT_VALUES } from "../constants";
+import { MOCK_CATEGORIES } from "../data/mocks";
 import { ServiceFormValues, serviceSchema } from "../schemas";
 import { Service, Skill } from "../types";
 import { ServiceForm } from "./service-form";
@@ -151,6 +152,7 @@ export function ServiceSheet({
                 availableSkills={availableSkills}
                 availableRoomTypes={availableRoomTypes}
                 availableEquipment={availableEquipment}
+                availableCategories={MOCK_CATEGORIES}
                 className="flex-1"
               />
             </form>

@@ -7,14 +7,15 @@ import { TagInput } from "@/shared/ui/custom/tag-input"
 import { Input } from "@/shared/ui/input"
 import { Label } from "@/shared/ui/label"
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/shared/ui/select"
 import { Slider } from "@/shared/ui/slider"
 import { useEffect, useState } from "react"
+import { MOCK_CATEGORIES } from "../data/mocks"
 
   interface ServiceFilterProps {
     availableSkills: Skill[]
@@ -23,7 +24,7 @@ import { useEffect, useState } from "react"
   export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
     const { searchParams, activeCount, updateParam, updateParams, clearFilters } =
       useFilterParams({
-        filterKeys: ["min_price", "max_price", "duration", "skill_ids"],
+        filterKeys: ["min_price", "max_price", "duration", "skill_ids", "category_id"],
       })
 
 
@@ -32,6 +33,7 @@ import { useEffect, useState } from "react"
     const duration = searchParams.get("duration")
     const skillIds =
       searchParams.get("skill_ids")?.split(",").filter(Boolean) || []
+    const categoryId = searchParams.get("category_id")
 
 
     const [localPriceRange, setLocalPriceRange] = useState([minPrice, maxPrice])
@@ -78,6 +80,10 @@ import { useEffect, useState } from "react"
 
     const handleSkillsChange = (ids: string[]) => {
       updateParam("skill_ids", ids.length > 0 ? ids.join(",") : null)
+    }
+
+    const handleCategoryChange = (value: string) => {
+      updateParam("category_id", value === "all" ? null : value)
     }
 
     const skillOptions = availableSkills.map((s) => ({ id: s.id, label: s.name }))
@@ -142,6 +148,25 @@ import { useEffect, useState } from "react"
 
 
           <div className="space-y-3">
+             <Label className="text-sm font-medium">Danh mục</Label>
+             <Select value={categoryId || "all"} onValueChange={handleCategoryChange}>
+               <SelectTrigger className="h-10 w-full bg-background">
+                 <SelectValue placeholder="Tất cả danh mục" />
+               </SelectTrigger>
+               <SelectContent>
+                 <SelectItem value="all">Tất cả danh mục</SelectItem>
+                 {MOCK_CATEGORIES.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id}>
+                        {cat.name}
+                    </SelectItem>
+                 ))}
+               </SelectContent>
+             </Select>
+           </div>
+
+           <div className="h-[1px] bg-border/50" />
+
+           <div className="space-y-3">
             <Label className="text-sm font-medium">Thời lượng</Label>
             <Select value={duration || "all"} onValueChange={handleDurationChange}>
               <SelectTrigger className="h-10 w-full bg-background">

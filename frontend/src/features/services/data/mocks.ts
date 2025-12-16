@@ -1,4 +1,4 @@
-import { Service, Skill } from "../types";
+import { Service, ServiceCategory, Skill } from "../types";
 
 export const MOCK_SKILLS: Skill[] = [
   { id: "s1", name: "Facial", code: "FACIAL" },
@@ -12,6 +12,14 @@ export const MOCK_SKILLS: Skill[] = [
   { id: "s9", name: "Triệt lông", code: "HAIR_REMOVAL" },
 ];
 
+export const MOCK_CATEGORIES: ServiceCategory[] = [
+  { id: "cat_massage", name: "Massage", sort_order: 0 },
+  { id: "cat_facial", name: "Facial", sort_order: 1 },
+  { id: "cat_hair", name: "Hair Care", sort_order: 2 },
+  { id: "cat_sauna", name: "Sauna", sort_order: 3 },
+  { id: "cat_package", name: "Package", sort_order: 4 },
+];
+
 export const MOCK_SERVICES: Service[] = [
   {
     id: "svc_01",
@@ -20,7 +28,7 @@ export const MOCK_SERVICES: Service[] = [
     duration: 60,
     buffer_time: 15,
     price: 590000,
-    category: "Massage",
+    category_id: "cat_massage",
     image_url: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=1000",
     color: "#3b82f6",
     is_active: true,
@@ -36,7 +44,7 @@ export const MOCK_SERVICES: Service[] = [
     duration: 90,
     buffer_time: 20,
     price: 1200000,
-    category: "Facial",
+    category_id: "cat_facial",
     image_url: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&q=80&w=1000",
     color: "#ef4444",
     is_active: true,
@@ -52,7 +60,7 @@ export const MOCK_SERVICES: Service[] = [
     duration: 45,
     buffer_time: 10,
     price: 250000,
-    category: "Hair Care",
+    category_id: "cat_hair",
     image_url: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?auto=format&fit=crop&q=80&w=1000",
     color: "#10b981",
     is_active: true,
@@ -67,7 +75,7 @@ export const MOCK_SERVICES: Service[] = [
     duration: 30,
     buffer_time: 15,
     price: 150000,
-    category: "Sauna",
+    category_id: "cat_sauna",
     image_url: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000",
     color: "#f59e0b",
     is_active: true,
@@ -82,7 +90,7 @@ export const MOCK_SERVICES: Service[] = [
     duration: 45,
     buffer_time: 10,
     price: 350000,
-    category: "Massage",
+    category_id: "cat_massage",
     image_url: "https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&q=80&w=1000",
     color: "#8b5cf6",
     is_active: true,
@@ -97,7 +105,7 @@ export const MOCK_SERVICES: Service[] = [
     duration: 150,
     buffer_time: 30,
     price: 2500000,
-    category: "Package",
+    category_id: "cat_package",
     image_url: "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?auto=format&fit=crop&q=80&w=1000",
     color: "#ec4899",
     is_active: true,

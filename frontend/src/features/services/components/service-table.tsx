@@ -2,9 +2,9 @@
 
 import { Resource, RoomType } from "@/features/resources";
 import {
-  useBulkAction,
-  useTableParams,
-  useTableSelection,
+    useBulkAction,
+    useTableParams,
+    useTableSelection,
 } from "@/shared/hooks";
 import { formatCurrency } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
@@ -14,14 +14,15 @@ import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
 import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
 } from "@/shared/ui/tooltip";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { deleteService } from "../actions";
+import { MOCK_CATEGORIES } from "../data/mocks";
 import { Service, Skill } from "../types";
 import { CreateServiceWizard } from "./create-service-wizard";
 import { ServiceActions } from "./service-actions";
@@ -92,6 +93,19 @@ export function ServiceTable({
           </span>
         </div>
       ),
+    },
+    {
+        header: "Danh mục",
+        cell: (service) => {
+            const category = MOCK_CATEGORIES.find(c => c.id === service.category_id);
+            return category ? (
+                <Badge variant="secondary" className="font-normal">
+                    {category.name}
+                </Badge>
+            ) : (
+                <span className="text-muted-foreground text-xs italic">Chưa phân loại</span>
+            );
+        }
     },
     {
       header: "Thời lượng",

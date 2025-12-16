@@ -26,7 +26,8 @@ export const serviceSchema = z.object({
   image_url: z.string().optional(),
   color: colorHexWithDefault("#3b82f6"),
   description: z.string().optional(),
-  category: z.string().optional(),
+  category_id: z.string().optional(),
+  category: z.string().optional(), // @deprecated
   resource_requirements: z.object({
     room_type_id: z.string().optional(),
     equipment_ids: z.array(z.string()).default([]), // Legacy: backward compatible

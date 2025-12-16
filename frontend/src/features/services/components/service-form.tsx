@@ -3,28 +3,32 @@
 import { Resource, RoomType } from "@/features/resources"
 import { cn } from "@/shared/lib/utils"
 import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-    Input,
-    RequiredMark,
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-    Switch,
-    Textarea,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+  RequiredMark,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Switch,
+  Textarea,
 } from "@/shared/ui"
+import { Button } from "@/shared/ui/button"
 import { ColorSwatchGroup } from "@/shared/ui/custom/color-swatch-group"
 import { DurationPicker } from "@/shared/ui/custom/duration-picker"
 import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs"
 import { TagInput } from "@/shared/ui/custom/tag-input"
+import { Settings2 } from "lucide-react"
+import { useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { SERVICE_COLORS } from "../constants"
-import { Skill } from "../types"
+import { ServiceCategory, Skill } from "../types"
+import { CategoryManagerDialog } from "./category-manager/category-manager-dialog"
 import { EquipmentTimelineEditor } from "./equipment-timeline-editor"
 import { ImageUpload } from "./image-upload"
 import { ServiceTimeVisualizer } from "./service-time-visualizer"
@@ -34,19 +38,28 @@ interface ServiceFormProps {
   availableSkills: Skill[]
   availableRoomTypes: RoomType[]
   availableEquipment: Resource[]
+  availableCategories: ServiceCategory[]
   className?: string
 }
 
 
 
-// --- SUB-COMPONENTS ---
+  // --- SUB-COMPONENTS ---
 
-function ServiceBasicInfo() {
-  const form = useFormContext()
-  return (
-    <div className="space-y-6">
-      {/* Active Toggle */}
-      <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border">
+  function ServiceBasicInfo({ categories, onCategoriesChange }: { categories: ServiceCategory[], onCategoriesChange: (cats: ServiceCategory[]) => void }) {
+    const form = useFormContext()
+    const [isCategoryManagerOpen, setCategoryManagerOpen] = useState(false)
+
+    return (
+      <div className="space-y-6">
+        <CategoryManagerDialog
+          open={isCategoryManagerOpen}
+          onOpenChange={setCategoryManagerOpen}
+          onCategoriesChange={onCategoriesChange}
+        />
+
+        {/* Active Toggle */}
+        <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border">
         <div>
           <span className="text-sm font-medium">Trạng thái</span>
           <p className="text-xs text-muted-foreground">
@@ -68,6 +81,48 @@ function ServiceBasicInfo() {
               <FormLabel className="cursor-pointer font-normal text-sm">
                 {field.value ? "Hoạt động" : "Tạm ẩn"}
               </FormLabel>
+            </FormItem>
+          )}
+        />
+      </div>
+
+      {/* Category Selection */}
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+            <FormLabel className="text-sm font-medium">Danh mục dịch vụ</FormLabel>
+            <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-6 text-xs text-muted-foreground hover:text-primary gap-1"
+                onClick={() => setCategoryManagerOpen(true)}
+            >
+                <Settings2 className="w-3 h-3" /> Quản lý danh mục
+            </Button>
+        </div>
+        <FormField
+          control={form.control}
+          name="category_id"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <Select
+                value={field.value}
+                onValueChange={field.onChange}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Chọn danh mục" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -365,15 +420,17 @@ export function ServiceForm({
   availableSkills,
   availableRoomTypes,
   availableEquipment,
+  availableCategories,
   className,
 }: ServiceFormProps) {
   const form = useFormContext()
   const duration = form.watch("duration")
   const bufferTime = form.watch("buffer_time")
 
-  const skillOptions = availableSkills.map((s) => ({ id: s.id, label: s.name }))
+  // Local state for categories to support "Quick Add" updates
+  const [categories, setCategories] = useState(availableCategories)
 
-  // Render logic simplified to direct component usage
+  const skillOptions = availableSkills.map((s) => ({ id: s.id, label: s.name }))
 
   if (mode === "create") {
     return (
@@ -381,7 +438,7 @@ export function ServiceForm({
         {/* Basic Info Section */}
         <div className="space-y-4">
           <h3 className="font-semibold text-base">Thông tin cơ bản</h3>
-          <ServiceBasicInfo />
+          <ServiceBasicInfo categories={categories} onCategoriesChange={setCategories} />
         </div>
 
         {/* Time & Price Section */}
@@ -414,7 +471,7 @@ export function ServiceForm({
       <FormTabs tabs={SERVICE_FORM_TABS} defaultValue="basic">
          <div className="mt-4">
             <FormTabsContent value="basic" className="mt-0">
-                <ServiceBasicInfo />
+                <ServiceBasicInfo categories={categories} onCategoriesChange={setCategories} />
             </FormTabsContent>
             <FormTabsContent value="time" className="mt-0">
                 <ServiceTimePriceInfo duration={duration} bufferTime={bufferTime} />
