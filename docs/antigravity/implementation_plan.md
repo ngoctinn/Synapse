@@ -1,368 +1,294 @@
-# Kế hoạch Triển khai: Thiết Kế Lại Staff Scheduling (Version 2.0)
+# Kế Hoạch Triển Khai: Core Scheduling Data (Database & Backend)
 
-**Ngày tạo**: 2025-12-16
-**Trạng thái**: 🟡 ĐANG CHỜ DUYỆT
-**Tham khảo**: Giao diện `features/appointments` (Calendar pattern)
+## 1. Mục Tiêu Giai Đoạn
+Thiết lập và đồng bộ hóa cấu trúc dữ liệu nền tảng từ **Tài liệu Đặc tả** (`data_specification.md`) lên Database thực tế.
+Mục tiêu cuối: Hệ thống Backend có thể trả lời câu hỏi:
 
----
-
-## 1. Yêu Cầu Nghiệp Vụ (Requirements)
-
-### 1.1. Khu vực điều hướng
-- ✅ Bộ chọn **Tuần/Tháng** (view switcher)
-- ✅ **Date Navigator**: Trước | Hôm nay | Sau + DatePicker
-- ✅ Bộ lọc theo **Nhân viên** (multi-select)
-- ✅ Bộ lọc theo **Vai trò** (admin/receptionist/technician)
-
-### 1.2. Dữ liệu nền
-- ✅ Danh sách **Ca làm việc** (Master Data)
-- ✅ Danh sách **Nhân viên** (từ API/Mock)
-- ✅ Phân biệt **DRAFT** vs **PUBLISHED**
-
-### 1.3. Khu vực hiển thị chính
-- ✅ **Week View**: Grid ma trận (Hàng = Nhân viên, Cột = Ngày)
-- ✅ **Month View**: Grid tháng tổng quan (mỗi ô hiển thị tổng số ca)
-- ✅ Mỗi ô hiển thị: Ca + Trạng thái (DRAFT có viền nét đứt)
-- ✅ Hỗ trợ **nhiều ca/ngày** cho 1 nhân viên
-
-### 1.4. Chỉnh sửa lịch
-- ✅ Click ô trống → **Sheet chọn ca**
-- ✅ Click ca → **Sheet chi tiết** (xem/xóa/đổi trạng thái)
-- ✅ Tùy chọn trạng thái: **DRAFT** ↔ **PUBLISHED**
-
-### 1.5. Thao tác hàng loạt
-- ✅ **Chọn nhiều ô** (Selection Mode)
-- ✅ **Áp dụng ca cho nhiều ô** cùng lúc
-- ✅ **Công bố lịch hàng loạt** (DRAFT → PUBLISHED)
-
-### 1.6. Ràng buộc hiển thị
-- ✅ Phân biệt **DRAFT** (opacity thấp, viền nét đứt) vs **PUBLISHED**
-- ⚠️ Cảnh báo khi lịch liên quan đến booking (future)
-- ⚠️ Trạng thái khóa chỉnh sửa (future)
-
-### 1.7. Thông tin hỗ trợ
-- ✅ **Legend** (Chú giải màu ca làm việc)
-- ✅ **Toast notifications** (thành công/lỗi)
+> **"Dịch vụ X cần AI (kỹ năng gì, mức độ bao nhiêu) và cần TÀI NGUYÊN nào (loại phòng, loại máy)? Ai + Phòng nào có thể làm?"**
 
 ---
 
-## 2. Kiến Trúc Tham Khảo (Appointments Pattern)
+## 2. Phân Tích GAP: Đặc Tả vs. Hiện Trạng
 
-```
-appointments/
-├── components/
-│   ├── appointments-page.tsx       # Main page orchestrator
-│   ├── toolbar/
-│   │   ├── view-switcher.tsx       # Tabs: Day|Week|Month|...
-│   │   ├── date-navigator.tsx      # [<] [Today] [>] + DatePicker
-│   │   ├── filter-bar.tsx          # Staff/Status filters
-│   │   └── index.ts
-│   ├── calendar/
-│   │   ├── week-view.tsx           # Grid tuần
-│   │   ├── month-view.tsx          # Grid tháng
-│   │   └── ...
-│   ├── sheet/
-│   │   ├── appointment-sheet.tsx   # Create/Edit sheet
-│   │   └── ...
-│   └── selection/
-│       └── ...                     # Selection mode
-├── hooks/
-│   ├── use-calendar-navigation.ts
-│   └── ...
-├── types.ts
-└── constants.ts
-```
+### 2.1. Bảng `services`
+| Cột (Theo Đặc tả) | Hiện Trạng DB | Trạng Thái | Hành động |
+|:---|:---|:---:|:---|
+| `id` (UUID) | ✅ Có | OK | - |
+| `category_id` (FK) | ❌ Thiếu | **GAP** | Thêm cột |
+| `name` | ✅ Có | OK | - |
+| `duration_minutes` | ✅ Có (`duration`) | Mismatch | Rename |
+| `buffer_time_minutes` | ✅ Có (`buffer_time`) | Mismatch | Rename |
+| `price` (DECIMAL) | ✅ Có (`float`) | Mismatch | Đổi kiểu |
+| `description` | ❌ Thiếu | **GAP** | Thêm cột |
+| `deleted_at` (Soft Delete) | ❌ Thiếu | **GAP** | Thêm cột |
 
----
+### 2.2. Bảng Mới Cần Tạo
+| Bảng | Mô tả | Ưu tiên |
+|:---|:---|:---:|
+| `service_categories` | Danh mục dịch vụ (Massage, Skincare...) | **P0** |
+| `resource_groups` | Nhóm tài nguyên logic (Phòng đơn, Phòng đôi...) | **P0** |
+| `resources` | Thực thể vật lý (Phòng VIP 1, Ghế 03...) | **P0** |
+| `service_resource_requirements` | Dịch vụ A cần 1 tài nguyên thuộc nhóm B | **P0** |
+| `customer_profiles` | Hồ sơ khách hàng (điểm, hạng, ghi chú y tế) | P1 |
+| `staff_profiles` | Hồ sơ nhân viên (thay thế bảng `staff` hiện tại) | P1 |
 
-## 3. Cấu Trúc Mới Cho Staff Scheduling
-
-```
-features/staff/
-├── components/
-│   ├── scheduling/
-│   │   ├── index.ts                        # Public exports
-│   │   ├── staff-scheduling-page.tsx       # Main orchestrator
-│   │   │
-│   │   ├── toolbar/
-│   │   │   ├── index.ts
-│   │   │   ├── view-switcher.tsx           # Tabs: Tuần | Tháng
-│   │   │   ├── date-navigator.tsx          # [<] [Hôm nay] [>]
-│   │   │   ├── staff-filter.tsx            # Multi-select nhân viên
-│   │   │   └── action-bar.tsx              # Buttons: Quản lý ca, Công bố
-│   │   │
-│   │   ├── calendar/
-│   │   │   ├── index.ts
-│   │   │   ├── week-view.tsx               # Grid tuần (Staff × Days)
-│   │   │   ├── month-view.tsx              # Grid tháng tổng quan
-│   │   │   ├── schedule-cell.tsx           # Ô đơn lẻ (hiển thị ca)
-│   │   │   └── shift-chip.tsx              # Component hiển thị 1 ca
-│   │   │
-│   │   ├── sheets/
-│   │   │   ├── index.ts
-│   │   │   ├── add-schedule-sheet.tsx      # Thêm ca cho 1 slot
-│   │   │   ├── schedule-detail-sheet.tsx   # Chi tiết + Edit + Delete
-│   │   │   └── shift-manager-sheet.tsx     # CRUD Master Data ca
-│   │   │
-│   │   ├── selection/
-│   │   │   ├── index.ts
-│   │   │   ├── selection-toolbar.tsx       # Floating bar khi chọn nhiều
-│   │   │   └── use-selection.ts            # Hook quản lý selection
-│   │   │
-│   │   └── legend/
-│   │       └── shift-legend.tsx            # Chú giải màu
-│   │
-│   └── staff-page.tsx                      # (Existing) Tab container
-│
-├── hooks/
-│   ├── use-schedule-navigation.ts          # Week/Month navigation
-│   ├── use-schedule-filters.ts             # Filter state
-│   └── use-schedules.ts                    # Data fetching + mutations
-│
-├── model/
-│   ├── types.ts                            # Types
-│   ├── constants.ts                        # View configs, labels
-│   ├── shifts.ts                           # Mock shifts
-│   └── schedules.ts                        # Mock schedules
-│
-└── actions.ts                              # Server actions
-```
-
----
-
-## 4. Types (Phù hợp DB Design 100%)
-
-```typescript
-// ============================================================================
-// ENUMS & BASIC TYPES
-// ============================================================================
-
-export type ScheduleViewType = 'week' | 'month';
-export type ScheduleStatus = 'DRAFT' | 'PUBLISHED';
-
-// ============================================================================
-// SHIFT (Master Data - DB: shifts)
-// ============================================================================
-
-export interface Shift {
-  id: string;
-  name: string;           // "Ca Sáng", "Ca Chiều"
-  startTime: string;      // "08:00"
-  endTime: string;        // "12:00"
-  colorCode: string;      // "#D97706"
-}
-
-// ============================================================================
-// SCHEDULE (Transaction - DB: staff_schedules)
-// ============================================================================
-
-export interface Schedule {
-  id: string;
-  staffId: string;        // FK → staff_profiles
-  shiftId: string;        // FK → shifts
-  workDate: string;       // "2025-12-16"
-  status: ScheduleStatus;
-}
-
-export interface ScheduleWithShift extends Schedule {
-  shift: Shift;
-}
-
-// ============================================================================
-// UI TYPES
-// ============================================================================
-
-export interface ScheduleFilters {
-  staffIds: string[];
-  roles: Role[];
-  status?: ScheduleStatus;
-}
-
-export interface DateRange {
-  start: Date;
-  end: Date;
-}
-
-export interface ScheduleCell {
-  staffId: string;
-  date: Date;
-  schedules: ScheduleWithShift[];
-}
-
-// Selection Mode
-export interface SelectedSlot {
-  staffId: string;
-  date: string;  // "yyyy-MM-dd"
-}
-```
-
----
-
-## 5. Kế Hoạch Triển Khai Chi Tiết
-
-### Phase 1: Foundation (Nền tảng) - 20 phút
-
-| # | Task | File | Mô tả |
-|:---:|:---|:---|:---|
-| 1.1 | Tạo thư mục | - | Tạo cấu trúc thư mục mới |
-| 1.2 | Types & Constants | `model/*.ts` | Cập nhật types, view configs, labels |
-| 1.3 | Hook Navigation | `use-schedule-navigation.ts` | Week/Month nav, date range calculation |
-| 1.4 | Hook Filters | `use-schedule-filters.ts` | Filter state management |
-| 1.5 | Hook Data | `use-schedules.ts` | CRUD schedules (mock) |
-
-### Phase 2: Toolbar (Thanh công cụ) - 15 phút
-
-| # | Task | File | Mô tả |
-|:---:|:---|:---|:---|
-| 2.1 | View Switcher | `toolbar/view-switcher.tsx` | Tabs: Tuần \| Tháng |
-| 2.2 | Date Navigator | `toolbar/date-navigator.tsx` | Prev/Today/Next + DatePicker |
-| 2.3 | Staff Filter | `toolbar/staff-filter.tsx` | Multi-select nhân viên & vai trò |
-| 2.4 | Action Bar | `toolbar/action-bar.tsx` | Buttons: Quản lý ca, Công bố |
-| 2.5 | Toolbar Index | `toolbar/index.ts` | Exports |
-
-### Phase 3: Calendar Views (Lịch) - 30 phút
-
-| # | Task | File | Mô tả |
-|:---:|:---|:---|:---|
-| 3.1 | Shift Chip | `calendar/shift-chip.tsx` | Component hiển thị 1 ca |
-| 3.2 | Schedule Cell | `calendar/schedule-cell.tsx` | Ô chứa nhiều ca |
-| 3.3 | Week View | `calendar/week-view.tsx` | Grid Staff × Days |
-| 3.4 | Month View | `calendar/month-view.tsx` | Grid tháng tổng quan |
-| 3.5 | Calendar Index | `calendar/index.ts` | Exports |
-
-### Phase 4: Sheets (Form) - 20 phút
-
-| # | Task | File | Mô tả |
-|:---:|:---|:---|:---|
-| 4.1 | Add Schedule Sheet | `sheets/add-schedule-sheet.tsx` | Chọn ca cho slot |
-| 4.2 | Detail Sheet | `sheets/schedule-detail-sheet.tsx` | View/Edit/Delete/Status |
-| 4.3 | Shift Manager | `sheets/shift-manager-sheet.tsx` | CRUD Master Data |
-| 4.4 | Sheets Index | `sheets/index.ts` | Exports |
-
-### Phase 5: Selection Mode (Chọn nhiều) - 15 phút
-
-| # | Task | File | Mô tả |
-|:---:|:---|:---|:---|
-| 5.1 | Use Selection | `selection/use-selection.ts` | Hook quản lý selection |
-| 5.2 | Selection Toolbar | `selection/selection-toolbar.tsx` | Floating action bar |
-| 5.3 | Selection Index | `selection/index.ts` | Exports |
-
-### Phase 6: Integration (Tích hợp) - 15 phút
-
-| # | Task | File | Mô tả |
-|:---:|:---|:---|:---|
-| 6.1 | Legend | `legend/shift-legend.tsx` | Chú giải màu |
-| 6.2 | Main Page | `staff-scheduling-page.tsx` | Orchestrator |
-| 6.3 | Staff Page | `staff-page.tsx` | Tích hợp vào Tab |
-| 6.4 | Index | `scheduling/index.ts` | Public exports |
-
-### Phase 7: Verify - 10 phút
-
-| # | Task |
-|:---:|:---|
-| 7.1 | `pnpm lint` |
-| 7.2 | `pnpm build` |
-| 7.3 | Test UI trên browser |
-
----
-
-## 6. Tổng Thời Gian Ước Tính
-
-| Phase | Thời gian |
-|:---|:---:|
-| Phase 1: Foundation | 20 phút |
-| Phase 2: Toolbar | 15 phút |
-| Phase 3: Calendar Views | 30 phút |
-| Phase 4: Sheets | 20 phút |
-| Phase 5: Selection Mode | 15 phút |
-| Phase 6: Integration | 15 phút |
-| Phase 7: Verify | 10 phút |
-| **Tổng** | **~125 phút (~2 giờ)** |
-
----
-
-## 7. Wireframe UI
-
-### 7.1. Week View
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ [Tuần|Tháng]  [<] [Hôm nay] [>] 16/12 - 22/12/2025  [🎨 Legend]  [⚙️ Quản lý ca] [📢 Công bố] │
-│ [Lọc: Tất cả ▾]  [Vai trò: Tất cả ▾]                                        │
-├─────────────────────────────────────────────────────────────────────────────┤
-│              │    T2     │    T3     │    T4     │    T5     │    T6     │  │
-│              │   16/12   │   17/12   │   18/12   │   19/12   │   20/12   │  │
-├──────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼──┤
-│ 👤 Nguyễn A  │ ┌───────┐ │ ┌───────┐ │           │ ┌───────┐ │ ┌───────┐ │  │
-│ KTV          │ │Ca Sáng│ │ │Ca Sáng│ │    ➕     │ │Ca Tối │ │ │Ca Sáng│ │  │
-│              │ └───────┘ │ ├───────┤ │           │ └───────┘ │ └───────┘ │  │
-│              │           │ │Ca Chiều│ │           │           │           │  │
-│              │           │ └───────┘ │           │           │           │  │
-├──────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼──┤
-│ 👤 Trần B    │ ┌·······┐ │           │ ┌───────┐ │ ┌───────┐ │           │  │
-│ Lễ tân       │ │Ca Chiều│ │    ➕     │ │Ca Sáng│ │ │Ca Sáng│ │    ➕     │  │
-│              │ │ DRAFT │ │           │ └───────┘ │ └───────┘ │           │  │
-│              │ └·······┘ │           │           │           │           │  │
-└──────────────┴───────────┴───────────┴───────────┴───────────┴───────────┴──┘
-  Legend: ● Ca Sáng (8-12h)  ● Ca Chiều (13-17h)  ● Ca Tối (17-21h)
-          [---] DRAFT (nháp)  [═══] PUBLISHED (đã công bố)
-```
-
-### 7.2. Month View
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ [Tuần|Tháng]  [<] [Hôm nay] [>] Tháng 12, 2025                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│   T2     T3     T4     T5     T6     T7     CN                              │
-├──────┬──────┬──────┬──────┬──────┬──────┬──────┤
-│  1   │  2   │  3   │  4   │  5   │  6   │  7   │
-│ ●3   │ ●5   │ ●4   │ ●2   │ ●6   │      │      │  ← Số ca trong ngày
-├──────┼──────┼──────┼──────┼──────┼──────┼──────┤
-│  8   │  9   │  10  │  11  │  12  │  13  │  14  │
-│ ●4   │ ●3   │ ●5   │ ●4   │ ●3   │      │      │
-├──────┼──────┼──────┼──────┼──────┼──────┼──────┤
-│ ...  │      │      │      │      │      │      │
-└──────┴──────┴──────┴──────┴──────┴──────┴──────┘
-```
-
-### 7.3. Selection Mode
-
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ Đã chọn 5 ô  │ [Áp dụng Ca Sáng ▾] [Công bố tất cả] [Xóa tất cả] [✕ Hủy]    ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-Grid với các ô được chọn có highlight ring-2 ring-primary
-```
-
----
-
-## 8. So sánh với Version 1.0
-
-| Tiêu chí | Version 1.0 | Version 2.0 |
+### 2.3. Bảng Cần Điều Chỉnh
+| Bảng | Vấn đề | Hành động |
 |:---|:---|:---|
-| View modes | Week only | Week + Month |
-| Filters | Không | Staff + Role |
-| Selection Mode | Không | Có |
-| Batch Actions | Không | Công bố / Áp dụng ca hàng loạt |
-| Shift Manager | Không | Có (CRUD Master Data) |
-| Legend | Không | Có |
-| Số files | 7 | ~20 |
-| LOC ước tính | ~350 | ~800-1000 |
+| `service_skills` | Thiếu `min_proficiency_level` | Thêm cột (Default: 1) |
+| `staff_skills` | Thiếu `proficiency_level` | Thêm cột (Default: 1) |
+
+### 2.4. ENUM Cần Tạo
+| ENUM Name | Giá trị | Bảng Liên quan |
+|:---|:---|:---|
+| `resource_type` | ROOM, EQUIPMENT | `resource_groups` |
+| `resource_status` | ACTIVE, MAINTENANCE, INACTIVE | `resources` |
 
 ---
 
-## 9. Tiêu chí Hoàn thành (DoD)
+## 3. Kế Hoạch Thực Thi (Execution Plan)
 
-- [ ] Week View hoạt động (hiển thị, thêm, xóa, sửa trạng thái)
-- [ ] Month View hoạt động (hiển thị tổng quan)
-- [ ] Date Navigator hoạt động (prev/next/today/datepicker)
-- [ ] View Switcher hoạt động (Week ↔ Month)
-- [ ] Staff Filter hoạt động (multi-select)
-- [ ] Selection Mode hoạt động (chọn nhiều, batch actions)
-- [ ] Shift Manager hoạt động (CRUD shifts)
-- [ ] Legend hiển thị đúng
-- [ ] Types phù hợp DB 100%
-- [ ] `pnpm lint` pass
-- [ ] `pnpm build` pass
+### Giai Đoạn 1: Database Schema Migration (Alembic)
+
+#### Migration 1.1: `add_service_categories`
+```sql
+-- Tạo bảng service_categories
+CREATE TABLE service_categories (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT,
+    sort_order INTEGER DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Thêm FK vào services
+ALTER TABLE services ADD COLUMN category_id UUID REFERENCES service_categories(id) ON DELETE SET NULL;
+ALTER TABLE services ADD COLUMN description TEXT;
+ALTER TABLE services ADD COLUMN deleted_at TIMESTAMPTZ;
+
+-- Rename cột duration -> duration_minutes (tuân thủ đặc tả)
+-- (Cân nhắc: Nếu Frontend đang dùng "duration" thì cần đồng bộ)
+```
+
+#### Migration 1.2: `add_resource_system`
+```sql
+-- Tạo ENUM
+CREATE TYPE resource_type AS ENUM ('ROOM', 'EQUIPMENT');
+CREATE TYPE resource_status AS ENUM ('ACTIVE', 'MAINTENANCE', 'INACTIVE');
+
+-- Tạo resource_groups
+CREATE TABLE resource_groups (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(100) NOT NULL,
+    type resource_type NOT NULL,
+    description TEXT,
+    deleted_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Tạo resources
+CREATE TABLE resources (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    group_id UUID REFERENCES resource_groups(id) ON DELETE SET NULL,
+    name VARCHAR(100) NOT NULL,
+    code VARCHAR(50) UNIQUE,
+    status resource_status NOT NULL DEFAULT 'ACTIVE',
+    capacity INTEGER DEFAULT 1,
+    setup_time_minutes INTEGER DEFAULT 0,
+    description TEXT,
+    image_url TEXT,
+    deleted_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+#### Migration 1.3: `add_service_resource_requirements`
+```sql
+CREATE TABLE service_resource_requirements (
+    service_id UUID NOT NULL REFERENCES services(id) ON DELETE CASCADE,
+    group_id UUID NOT NULL REFERENCES resource_groups(id) ON DELETE CASCADE,
+    quantity INTEGER DEFAULT 1,
+    PRIMARY KEY (service_id, group_id)
+);
+```
+
+#### Migration 1.4: `add_proficiency_levels`
+```sql
+-- Thêm cột vào service_skills (Yêu cầu kỹ năng của dịch vụ)
+ALTER TABLE service_skills
+ADD COLUMN min_proficiency_level INTEGER DEFAULT 1
+CHECK (min_proficiency_level BETWEEN 1 AND 3);
+
+-- Thêm cột vào staff_skills (Trình độ kỹ năng của nhân viên)
+ALTER TABLE staff_skills
+ADD COLUMN proficiency_level INTEGER DEFAULT 1
+CHECK (proficiency_level BETWEEN 1 AND 3);
+```
+
+---
+
+### Giai Đoạn 2: Backend Models & Schemas (FastAPI/SQLModel)
+
+#### Task 2.1: Tạo Module `src/modules/resources/`
+Cấu trúc:
+```
+src/modules/resources/
+├── __init__.py       # Public API
+├── models.py         # ResourceGroup, Resource
+├── schemas.py        # DTOs
+├── router.py         # CRUD Endpoints
+└── service.py        # Business Logic
+```
+
+**Models:**
+- `ResourceGroup`: Nhóm tài nguyên (type ENUM).
+- `Resource`: Tài nguyên cụ thể (status ENUM).
+
+**API Endpoints:**
+- `GET /api/resource-groups` - Lấy danh sách nhóm.
+- `POST /api/resource-groups` - Tạo nhóm mới.
+- `GET /api/resources` - Lấy DS tài nguyên (filter by group).
+- `POST /api/resources` - Tạo tài nguyên.
+
+#### Task 2.2: Tạo Module `src/modules/categories/`
+Hoặc tích hợp vào Module `services`.
+
+**Models:**
+- `ServiceCategory`
+
+**API Endpoints:**
+- `GET /api/service-categories` - Lấy danh sách danh mục.
+- `POST /api/service-categories` - Tạo danh mục.
+
+#### Task 2.3: Update Module `services`
+- Thêm relationship `category: ServiceCategory`.
+- Thêm relationship `resource_requirements: list[ServiceResourceRequirement]`.
+- Update Schemas (`ServiceRead`, `ServiceCreate`).
+
+#### Task 2.4: Tạo Model `ServiceResourceRequirement`
+- Link Model giữa `Service` và `ResourceGroup`.
+
+#### Task 2.5: Update `ServiceSkill` và `StaffSkill`
+- Thêm trường `min_proficiency_level` / `proficiency_level`.
+
+---
+
+### Giai Đoạn 3: Matching Logic (Core Business)
+
+#### Task 3.1: `MatchingService.get_qualified_staff(service_id)`
+Logic:
+1. Lấy `service_required_skills` của dịch vụ (kèm `min_proficiency_level`).
+2. Lấy tất cả Staff có `staff_skills` thỏa mãn:
+   - Có tất cả skill yêu cầu.
+   - Với `proficiency_level >= min_proficiency_level`.
+3. Return danh sách Staff ID hợp lệ.
+
+```python
+# Pseudo-code
+async def get_qualified_staff(service_id: UUID) -> list[Staff]:
+    required_skills = await db.exec(
+        select(ServiceSkill)
+        .where(ServiceSkill.service_id == service_id)
+    )
+
+    # Tìm staff có TẤT CẢ các skills yêu cầu với level đủ
+    qualified_staff = ...  # Complex query với HAVING COUNT
+    return qualified_staff
+```
+
+#### Task 3.2: `MatchingService.get_available_resources(service_id)`
+Logic:
+1. Lấy `service_resource_requirements` (nhóm tài nguyên + số lượng).
+2. Lấy tất cả `resources` thuộc các nhóm đó với `status = ACTIVE`.
+3. Return grouped theo nhóm.
+
+```python
+async def get_available_resources(service_id: UUID) -> dict[UUID, list[Resource]]:
+    requirements = await db.exec(
+        select(ServiceResourceRequirement)
+        .where(ServiceResourceRequirement.service_id == service_id)
+    )
+
+    result = {}
+    for req in requirements:
+        resources = await db.exec(
+            select(Resource)
+            .where(Resource.group_id == req.group_id)
+            .where(Resource.status == 'ACTIVE')
+        )
+        result[req.group_id] = resources.all()
+    return result
+```
+
+#### Task 3.3: API Endpoint `/services/{id}/candidates`
+Response Schema:
+```json
+{
+  "qualified_staff": [
+    { "id": "...", "name": "Nguyễn Văn A", "skills": [...] }
+  ],
+  "available_resources": {
+    "group_id_1": [
+      { "id": "...", "name": "Phòng VIP 1", "status": "ACTIVE" }
+    ]
+  }
+}
+```
+
+---
+
+## 4. Thứ Tự Ưu Tiên (Execution Order)
+
+1. **[DB]** Migration 1.1: `add_service_categories` ✅
+2. **[DB]** Migration 1.2: `add_resource_system` ✅
+3. **[DB]** Migration 1.3: `add_service_resource_requirements` ✅
+4. **[DB]** Migration 1.4: `add_proficiency_levels` ✅
+5. **[BE]** Task 2.2: Module `categories` (hoặc trong services)
+6. **[BE]** Task 2.1: Module `resources`
+7. **[BE]** Task 2.3-2.4: Update `services` + Link Models
+8. **[BE]** Task 2.5: Update Skill tables
+9. **[BE]** Task 3.1-3.3: Matching Service + API
+
+---
+
+## 5. Tiêu Chí Nghiệm Thu (Definition of Done)
+
+### Database
+- [ ] Tất cả bảng mới tồn tại trên Supabase.
+- [ ] Constraints và FK hoạt động đúng.
+- [ ] ENUM types được tạo.
+
+### Backend
+- [ ] Tất cả Modules mới có đủ CRUD API.
+- [ ] API `/services/{id}/candidates` trả về đúng dữ liệu.
+- [ ] Không có lỗi lint (`ruff check`).
+
+### Integration Test
+- [ ] Tạo Dịch vụ "Massage Body" yêu cầu Skill "Massage" (Level 2) + ResourceGroup "Phòng Đơn".
+- [ ] Tạo KTV "Nguyễn A" có Skill "Massage" (Level 3).
+- [ ] Tạo Resource "Phòng VIP 1" thuộc nhóm "Phòng Đơn".
+- [ ] Call API `/services/{massage_id}/candidates` → Nhận được KTV "Nguyễn A" + "Phòng VIP 1".
+
+---
+
+## 6. Rủi Ro & Giảm Thiểu
+
+| Rủi Ro | Xác suất | Giảm Thiểu |
+|:---|:---:|:---|
+| Rename cột `duration` → `duration_minutes` gây lỗi Frontend | Cao | Giữ nguyên tên cột hiện tại, chỉ thêm cột mới. Hoặc update đồng thời FE. |
+| Migration conflict với data hiện có | Trung bình | Chạy migration trên branch dev trước. Backup data. |
+| Bảng `staff` hiện tại khác với `staff_profiles` trong đặc tả | Cao | Quyết định: Migrate hay song song? → **Đề xuất giữ nguyên `staff`, align đặc tả sau.** |
+
+---
+
+## 7. Ghi Chú Kỹ Thuật
+
+### Về tên bảng `service_skills` vs `service_required_skills`
+- Hiện tại DB có `service_skills` (đúng với code).
+- Đặc tả gọi là `service_required_skills`.
+- **Quyết định:** Giữ `service_skills`, update đặc tả để khớp với thực tế.
+
+### Về bảng `staff` vs `staff_profiles`
+- Hiện tại DB có `staff`.
+- Đặc tả gọi là `staff_profiles`.
+- **Quyết định:** Giữ `staff`, có thể rename sau khi ổn định.

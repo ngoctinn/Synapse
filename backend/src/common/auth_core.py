@@ -17,9 +17,14 @@ def get_token_payload(
             settings.SUPABASE_JWT_SECRET,
             algorithms=[settings.JWT_ALGORITHM],
             audience=settings.JWT_AUDIENCE,
-            leeway=60  # Cho phép lệch đồng hồ 60 giây
+            leeway=60
         )
         return payload
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token đã hết hạn. Vui lòng đăng nhập lại.",
+        )
     except jwt.PyJWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

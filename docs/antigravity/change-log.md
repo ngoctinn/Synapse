@@ -1,81 +1,83 @@
-# Change Log - Staff Scheduling Redesign
+# Nhật Ký Thay Đổi (Change Log)
 
-## Ngày: 2025-12-16
+## Phiên Làm Việc: 2025-12-16
 
-### Tóm tắt
-Xóa hoàn toàn và thiết kế lại module Staff Scheduling để phù hợp với Database Design.
-
----
-
-### Files Đã XÓA (12 files)
-
-**Components (7 files):**
-- `frontend/src/features/staff/components/scheduling/add-shift-sheet.tsx`
-- `frontend/src/features/staff/components/scheduling/copy-week-button.tsx`
-- `frontend/src/features/staff/components/scheduling/schedule-grid.tsx`
-- `frontend/src/features/staff/components/scheduling/scheduler-paint-tools.tsx`
-- `frontend/src/features/staff/components/scheduling/scheduler-toolbar.tsx`
-- `frontend/src/features/staff/components/scheduling/shift-form.tsx`
-- `frontend/src/features/staff/components/scheduling/staff-scheduler.tsx`
-
-**Hooks (5 files):**
-- `frontend/src/features/staff/hooks/use-grid-paint.ts`
-- `frontend/src/features/staff/hooks/use-schedule-calculation.ts`
-- `frontend/src/features/staff/hooks/use-scheduler-tools.ts`
-- `frontend/src/features/staff/hooks/use-staff-actions.ts`
-- `frontend/src/features/staff/hooks/use-staff-schedule.ts`
+### Tóm Tắt
+Triển khai thành công giai đoạn **Core Scheduling Data** - Ổn định dữ liệu nền cho lập lịch.
 
 ---
 
-### Files MỚI TẠO (7 files)
+### 1. Database Migrations (Supabase Cloud)
 
-| File | Mô tả |
+| Migration | Trạng Thái | Mô Tả |
+|:---|:---:|:---|
+| `add_service_categories` | ✅ | Tạo bảng `service_categories`, thêm `category_id`, `description`, `deleted_at` vào `services` |
+| `add_resource_system` | ✅ | Tạo ENUMs, bảng `resource_groups` và `resources` |
+| `add_service_resource_requirements` | ✅ | Tạo bảng liên kết N-N |
+| `add_proficiency_levels` | ✅ | Thêm `min_proficiency_level` và `proficiency_level` |
+
+### 2. Backend Code Changes
+
+#### Module Mới: `src/modules/resources/`
+| File | Mô Tả |
 |:---|:---|
-| `hooks/use-week-navigation.ts` | Hook điều hướng tuần |
-| `scheduling/schedule-cell.tsx` | Component ô đơn lẻ |
-| `scheduling/schedule-calendar.tsx` | Grid chính |
-| `scheduling/schedule-toolbar.tsx` | Thanh công cụ |
-| `scheduling/add-schedule-sheet.tsx` | Sheet thêm ca |
-| `scheduling/schedule-detail-sheet.tsx` | Sheet xem chi tiết |
-| `scheduling/staff-scheduler.tsx` | Component tổng hợp |
-| `scheduling/index.ts` | Public exports |
+| `models.py` | Định nghĩa `ResourceGroup`, `Resource`, `ServiceResourceRequirement` với ENUMs |
+| `schemas.py` | Pydantic V2 DTOs cho CRUD operations |
+| `service.py` | Business logic với Dependency Injection pattern |
+| `router.py` | API endpoints với docstrings tiếng Việt |
+| `__init__.py` | Public API (Gatekeeper pattern) |
 
----
-
-### Files ĐÃ SỬA ĐỔI (4 files)
-
-| File | Thay đổi |
+#### Module Cập Nhật: `src/modules/services/`
+| File | Thay Đổi |
 |:---|:---|
-| `model/types.ts` | Xóa `ShiftType`, cập nhật `Shift` và `Schedule` interface phù hợp DB |
-| `model/shifts.ts` | Xóa shift "Nghỉ Phép", đổi `color` → `colorCode` |
-| `model/schedules.ts` | Cập nhật mock với nhiều ca/ngày, đổi `date` → `workDate` |
-| `components/staff-page.tsx` | Cập nhật import component mới |
+| `models.py` | Thêm `ServiceCategory`, `min_proficiency_level`, `category_id`, `description`, `deleted_at` |
+| `schemas.py` | Thêm `ServiceCategoryRead`, cập nhật `ServiceCreate/Update/Read` |
+| `__init__.py` | Export các thực thể mới |
 
----
+#### Entry Point: `src/app/main.py`
+- Đăng ký `resources_router` vào app.
 
-### Thay đổi chính về logic
+### 3. Kiểm Tra Bảo Mật
 
-| Trước | Sau |
+| Hạng Mục | Kết Quả |
 |:---|:---|
-| `ShiftType = 'WORK' \| 'OFF'` | Xóa, DB không có |
-| Shift "Nghỉ Phép" | Xóa, ô trống = không làm |
-| `date: string` | `workDate: string` |
-| `color: string` | `colorCode: string` |
-| `shift?: Shift; customShift?: Shift` | Xóa, không cần |
-| 1 ca/ngày | Nhiều ca/ngày (đúng DB constraint) |
-| Paint mode phức tạp | Click đơn giản |
+| Không hardcode secrets | ✅ Pass |
+| Sử dụng RLS Injection | ✅ Pass (get_db_session) |
+| Soft Delete thay vì Hard Delete | ✅ Pass |
+| Validation đầu vào (Pydantic) | ✅ Pass |
+
+### 4. Tuân Thủ Backend Rules
+
+| Quy Tắc | Tuân Thủ |
+|:---|:---:|
+| Vertical Slice Architecture | ✅ |
+| Async All The Way | ✅ |
+| Pydantic V2 (ConfigDict) | ✅ |
+| Guard Clauses / Early Return | ✅ |
+| Public API (__init__.py Gatekeeper) | ✅ |
+| Docstrings Tiếng Việt | ✅ |
+| Type Hints Python 3.12+ | ✅ |
 
 ---
 
-### Kết quả kiểm tra
+### 5. Các File Đã Tạo/Sửa
 
-- ✅ `pnpm lint`: 0 errors, 1 warning (không liên quan)
-- ✅ `pnpm build`: Success (Exit code: 0)
+**Tạo mới:**
+- `backend/src/modules/resources/models.py`
+- `backend/src/modules/resources/schemas.py`
+- `backend/src/modules/resources/service.py`
+- `backend/src/modules/resources/router.py`
+- `backend/src/modules/resources/__init__.py`
+
+**Sửa đổi:**
+- `backend/src/modules/services/models.py`
+- `backend/src/modules/services/schemas.py`
+- `backend/src/modules/services/__init__.py`
+- `backend/src/app/main.py`
 
 ---
 
-### Ghi chú bảo mật
-
-- Không có sensitive data trong code
-- Không có hardcoded secrets
-- Sử dụng mock data (không truy cập DB thực)
+### 6. Pending Items
+- [ ] Tạo API endpoints cho ServiceCategory CRUD (trong services router).
+- [ ] Implement Matching Logic (ML-01, ML-02, ML-03).
+- [ ] Sync Alembic migrations với Supabase cloud migrations.

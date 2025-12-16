@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -34,21 +34,24 @@ app.add_middleware(
 async def global_exception_handler(request, exc):
     return JSONResponse(
         status_code=500,
-        content={"message": "Hệ thống đang bận", "details": str(exc)}
+        content={"message": "Hệ thống đang bận"}
     )
 
 @app.get("/health")
 async def health_check():
     return {"status": "ok", "message": "Backend Synapse đang hoạt động"}
 
+# Import và đăng ký routers
 from src.app.config import settings
 from src.modules.users.router import router as users_router
 from src.modules.services.router import router as services_router
 from src.modules.staff.router import router as staff_router
+from src.modules.resources.router import router as resources_router
 
 app.include_router(users_router, prefix=settings.API_V1_STR)
 app.include_router(services_router, prefix=settings.API_V1_STR)
 app.include_router(staff_router, prefix=settings.API_V1_STR)
+app.include_router(resources_router, prefix=settings.API_V1_STR)
 
 @app.get("/")
 async def root():
