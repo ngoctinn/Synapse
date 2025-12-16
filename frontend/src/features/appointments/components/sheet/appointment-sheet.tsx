@@ -1,17 +1,18 @@
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import {
+    ArrowLeft,
     Calendar,
     CheckCircle2,
     Clock,
+    CreditCard,
     Edit,
     MapPin,
     Phone,
-    Receipt,
     User,
     XCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react"; // Import useEffect
+import { useEffect, useState } from "react";
 
 import {
     Badge,
@@ -25,7 +26,12 @@ import {
     SheetTitle
 } from "@/shared/ui";
 
-import { ReviewPrompt } from "@/features/reviews/components/review-prompt"; // Import ReviewPrompt
+// Import billing components for inline payment
+import { InvoiceDetails } from "@/features/billing/components/sheet/invoice-details";
+import { PaymentForm } from "@/features/billing/components/sheet/payment-form";
+import { Invoice } from "@/features/billing/types";
+
+import { ReviewPrompt } from "@/features/reviews/components/review-prompt";
 import { MockService } from "../../mock-data";
 import type {
     Appointment,
@@ -51,7 +57,7 @@ const STATUS_TO_PRESET: Record<AppointmentStatus, BadgePreset> = {
 // TYPES
 // ============================================
 
-type SheetMode = "view" | "edit" | "create";
+type SheetMode = "view" | "edit" | "create" | "payment";
 
 interface AppointmentSheetProps {
   /** Có mở sheet không */
@@ -70,8 +76,10 @@ interface AppointmentSheetProps {
   onCheckIn?: (id: string) => void;
   /** Callback khi cancel */
   onCancel?: (id: string) => void;
-  /** Callback tạo hóa đơn */
-  onCreateInvoice?: (id: string) => void;
+  /** Callback tạo hóa đơn - returns Invoice data for inline payment */
+  onCreateInvoice?: (id: string) => Promise<Invoice | null>;
+  /** Callback khi thanh toán thành công */
+  onPaymentSuccess?: (bookingId: string) => void;
   /** Callback khi cần đánh giá */
   onReviewNeeded?: (bookingId: string) => void;
   /** Default values cho create mode */
@@ -95,10 +103,11 @@ export function AppointmentSheet({
   mode: initialMode = "view",
   event,
   onSave,
-  onDelete,
+  onDelete: _onDelete,
   onCheckIn,
   onCancel,
   onCreateInvoice,
+  onPaymentSuccess,
   onReviewNeeded,
   defaultValues,
   availableStaff,
@@ -107,12 +116,15 @@ export function AppointmentSheet({
 }: AppointmentSheetProps) {
   const [mode, setMode] = useState<SheetMode>(initialMode);
   const [reviewPromptOpen, setReviewPromptOpen] = useState(false);
+  const [invoice, setInvoice] = useState<Invoice | null>(null);
+  const [isCreatingInvoice, setIsCreatingInvoice] = useState(false);
 
   const appointment = event?.appointment;
 
   const isCreateMode = mode === "create" || !appointment;
   const isEditMode = mode === "edit";
   const isViewMode = mode === "view" && !!appointment;
+  const isPaymentMode = mode === "payment" && !!invoice;
 
   // Effect to trigger review prompt if needed
   useEffect(() => {
@@ -130,7 +142,9 @@ export function AppointmentSheet({
     // Reset mode sau khi đóng
     setTimeout(() => {
       setMode(initialMode);
-      setReviewPromptOpen(false); // Close review prompt on sheet close
+      setReviewPromptOpen(false);
+      setInvoice(null);
+      setIsCreatingInvoice(false);
     }, 300);
   };
 
@@ -147,6 +161,36 @@ export function AppointmentSheet({
     setMode("view");
   };
 
+  // Handle "Tạo hóa đơn & Thanh toán" - switch to payment mode
+  const handleCreateInvoiceAndPay = async () => {
+    if (!appointment?.id || !onCreateInvoice) return;
+    setIsCreatingInvoice(true);
+    try {
+      const createdInvoice = await onCreateInvoice(appointment.id);
+      if (createdInvoice) {
+        setInvoice(createdInvoice);
+        setMode("payment");
+      }
+    } finally {
+      setIsCreatingInvoice(false);
+    }
+  };
+
+  // Handle payment success - trigger review prompt
+  const handlePaymentSuccess = () => {
+    if (appointment?.id) {
+      onPaymentSuccess?.(appointment.id);
+      // Trigger review prompt after successful payment
+      setReviewPromptOpen(true);
+    }
+  };
+
+  // Handle back from payment to view mode
+  const handleBackToView = () => {
+    setMode("view");
+    setInvoice(null);
+  };
+
   const canCheckIn =
     appointment?.status === "CONFIRMED" || appointment?.status === "PENDING";
   const canCancel =
@@ -161,17 +205,37 @@ export function AppointmentSheet({
         {/* ============================================ */}
         <SheetHeader className="px-6 py-4 border-b shrink-0 space-y-0">
           <div className="flex items-center justify-between">
-            <SheetTitle className="text-lg font-semibold">
-              {isCreateMode
-                ? "Tạo lịch hẹn mới"
-                : isEditMode
-                ? "Chỉnh sửa lịch hẹn"
-                : "Chi tiết lịch hẹn"}
-            </SheetTitle>
+            <div className="flex items-center gap-2">
+              {isPaymentMode && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-8"
+                  onClick={handleBackToView}
+                >
+                  <ArrowLeft className="size-4" />
+                </Button>
+              )}
+              <SheetTitle className="text-lg font-semibold">
+                {isCreateMode
+                  ? "Tạo lịch hẹn mới"
+                  : isEditMode
+                  ? "Chỉnh sửa lịch hẹn"
+                  : isPaymentMode
+                  ? "Thanh toán hóa đơn"
+                  : "Chi tiết lịch hẹn"}
+              </SheetTitle>
+            </div>
 
             {/* Status Badge (View mode) */}
             {isViewMode && appointment && (
               <Badge preset={STATUS_TO_PRESET[appointment.status]} />
+            )}
+            {/* Payment Badge (Payment mode) */}
+            {isPaymentMode && invoice && (
+              <Badge variant={invoice.status === "PAID" ? "emerald" : "amber"}>
+                {invoice.status === "PAID" ? "Đã thanh toán" : "Chờ thanh toán"}
+              </Badge>
             )}
           </div>
         </SheetHeader>
@@ -191,6 +255,13 @@ export function AppointmentSheet({
                 availableResources={availableResources}
                 availableServices={availableServices}
               />
+            </div>
+          ) : isPaymentMode && invoice ? (
+            // Payment Mode - Inline Invoice & Payment
+            <div className="space-y-6">
+              <InvoiceDetails invoice={invoice} />
+              <Separator />
+              <PaymentForm invoice={invoice} onSuccess={handlePaymentSuccess} />
             </div>
           ) : (
             // View Mode
@@ -302,17 +373,38 @@ export function AppointmentSheet({
         {/* ============================================ */}
 
         <SheetFooter className="px-6 py-3 border-t bg-background flex-col gap-3 z-20">
-          {isViewMode ? (
+          {isPaymentMode ? (
+            // Payment Mode Footer
+            <div className="flex items-center gap-2 w-full">
+              <Button
+                variant="outline"
+                className="flex-1 h-9"
+                onClick={handleBackToView}
+                startContent={<ArrowLeft className="size-4" />}
+              >
+                Quay lại
+              </Button>
+              <Button
+                variant="ghost"
+                className="flex-1 h-9"
+                onClick={handleClose}
+              >
+                Đóng
+              </Button>
+            </div>
+          ) : isViewMode ? (
             <>
               {/* Quick Actions */}
               <div className="flex items-center gap-2 w-full">
                 {canCreateInvoice && (
                   <Button
                     className="w-full bg-green-600 hover:bg-green-700 h-9"
-                    onClick={() => onCreateInvoice?.(appointment!.id)}
-                    startContent={<Receipt className="size-4" />}
+                    onClick={handleCreateInvoiceAndPay}
+                    disabled={isCreatingInvoice}
+                    isLoading={isCreatingInvoice}
+                    startContent={!isCreatingInvoice && <CreditCard className="size-4" />}
                   >
-                    Tạo hóa đơn
+                    Tạo hóa đơn & Thanh toán
                   </Button>
                 )}
               </div>

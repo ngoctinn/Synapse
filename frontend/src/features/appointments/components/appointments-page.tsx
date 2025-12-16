@@ -160,12 +160,21 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
   };
 
   const handleCreateInvoice = useCallback(async (bookingId: string) => {
-    startTransition(async () => {
-      const res = await createInvoice(bookingId);
-      if (res.status === "success") { showToast.success(res.message || "Tạo hóa đơn thành công"); handleReviewNeeded(bookingId); }
-      else showToast.error(res.message || "Không thể tạo hóa đơn");
-    });
-  }, [handleReviewNeeded]);
+    const res = await createInvoice(bookingId);
+    if (res.status === "success" && res.data) {
+      showToast.success(res.message || "Tạo hóa đơn thành công");
+      return res.data; // Return invoice for inline payment
+    } else {
+      showToast.error(res.message || "Không thể tạo hóa đơn");
+      return null;
+    }
+  }, []);
+
+  // Called after payment success from AppointmentSheet
+  const handlePaymentSuccess = useCallback((_bookingId: string) => {
+    handleRefresh();
+    // Review prompt is now handled inside AppointmentSheet after payment
+  }, [handleRefresh]);
 
   const handleSlotClick = (date: Date, hour: number, minute: number) => {
     const startTime = new Date(date); startTime.setHours(hour, minute, 0, 0);
@@ -228,7 +237,7 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
             </SurfaceCard>
         </div>
       </PageContent>
-      <AppointmentSheet open={isSheetOpen} onOpenChange={setIsSheetOpen} mode={sheetMode} event={selectedEvent} onSave={handleSaveAppointment} onCreateInvoice={handleCreateInvoice} onReviewNeeded={handleReviewNeeded} availableStaff={staffList} availableResources={roomList} availableServices={serviceList} />
+      <AppointmentSheet open={isSheetOpen} onOpenChange={setIsSheetOpen} mode={sheetMode} event={selectedEvent} onSave={handleSaveAppointment} onCreateInvoice={handleCreateInvoice} onPaymentSuccess={handlePaymentSuccess} onReviewNeeded={handleReviewNeeded} availableStaff={staffList} availableResources={roomList} availableServices={serviceList} />
       {selectedEvent?.appointment && selectedBookingForReview === selectedEvent.appointment.id && (
         <ReviewPrompt bookingId={selectedBookingForReview} open={!!selectedBookingForReview} onOpenChange={(open) => { if (!open) setSelectedBookingForReview(null); }} onReviewSubmitted={() => { setSelectedBookingForReview(null); handleRefresh(); }} customerName={selectedEvent?.appointment?.customerName || ""} serviceName={selectedEvent?.appointment?.serviceName || ""} />
       )}
