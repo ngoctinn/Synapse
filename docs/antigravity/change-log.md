@@ -1,9 +1,9 @@
 # Nhật Ký Thay Đổi (Change Log)
 
-## Phiên Làm Việc: 2025-12-16
+## Phiên Làm Việc: 2025-12-16 (Giai đoạn 2)
 
 ### Tóm Tắt
-Triển khai thành công giai đoạn **Core Scheduling Data** - Ổn định dữ liệu nền cho lập lịch.
+Triển khai thành công **TIME DOMAIN** - Lịch làm việc & Khung thời gian.
 
 ---
 
@@ -11,73 +11,82 @@ Triển khai thành công giai đoạn **Core Scheduling Data** - Ổn định d
 
 | Migration | Trạng Thái | Mô Tả |
 |:---|:---:|:---|
-| `add_service_categories` | ✅ | Tạo bảng `service_categories`, thêm `category_id`, `description`, `deleted_at` vào `services` |
-| `add_resource_system` | ✅ | Tạo ENUMs, bảng `resource_groups` và `resources` |
-| `add_service_resource_requirements` | ✅ | Tạo bảng liên kết N-N |
-| `add_proficiency_levels` | ✅ | Thêm `min_proficiency_level` và `proficiency_level` |
+| `add_shifts_table` | ✅ Done | Bảng `shifts` với constraint time |
+| `add_staff_schedules_table` | ✅ Done | Bảng `staff_schedules`, ENUM `schedule_status`, indexes |
 
 ### 2. Backend Code Changes
 
-#### Module Mới: `src/modules/resources/`
+#### Module Mới: `src/modules/schedules/`
 | File | Mô Tả |
 |:---|:---|
-| `models.py` | Định nghĩa `ResourceGroup`, `Resource`, `ServiceResourceRequirement` với ENUMs |
-| `schemas.py` | Pydantic V2 DTOs cho CRUD operations |
-| `service.py` | Business logic với Dependency Injection pattern |
-| `router.py` | API endpoints với docstrings tiếng Việt |
+| `models.py` | `Shift`, `StaffSchedule`, `ScheduleStatus` Enum |
+| `schemas.py` | DTOs cho CRUD + `StaffAvailability`, `TimeSlot` |
+| `service.py` | Logic nghiệp vụ: CRUD, bulk create, availability query |
+| `router.py` | 13 API endpoints với docstrings tiếng Việt |
 | `__init__.py` | Public API (Gatekeeper pattern) |
 
-#### Module Cập Nhật: `src/modules/services/`
+#### Module Cập Nhật: `src/modules/staff/`
 | File | Thay Đổi |
 |:---|:---|
-| `models.py` | Thêm `ServiceCategory`, `min_proficiency_level`, `category_id`, `description`, `deleted_at` |
-| `schemas.py` | Thêm `ServiceCategoryRead`, cập nhật `ServiceCreate/Update/Read` |
-| `__init__.py` | Export các thực thể mới |
+| `models.py` | Thêm relationship `schedules` sang `StaffSchedule` |
 
 #### Entry Point: `src/app/main.py`
-- Đăng ký `resources_router` vào app.
+- Đăng ký `schedules_router` vào app
 
-### 3. Kiểm Tra Bảo Mật
+### 3. API Endpoints Mới
+
+#### Shifts (Ca làm việc):
+| Method | Endpoint | Mô tả |
+|:---|:---|:---|
+| GET | `/shifts` | Danh sách ca |
+| POST | `/shifts` | Tạo ca mới |
+| GET | `/shifts/{id}` | Chi tiết ca |
+| PATCH | `/shifts/{id}` | Cập nhật ca |
+| DELETE | `/shifts/{id}` | Xóa ca |
+
+#### Staff Schedules (Lịch làm việc):
+| Method | Endpoint | Mô tả |
+|:---|:---|:---|
+| GET | `/schedules` | Danh sách lịch (có filter) |
+| POST | `/schedules` | Tạo lịch |
+| POST | `/schedules/bulk` | Tạo nhiều lịch |
+| GET | `/schedules/{id}` | Chi tiết lịch |
+| PATCH | `/schedules/{id}` | Cập nhật lịch |
+| DELETE | `/schedules/{id}` | Xóa lịch |
+| PATCH | `/schedules/{id}/publish` | Công bố lịch |
+
+#### Availability Query (Core):
+| Method | Endpoint | Mô tả |
+|:---|:---|:---|
+| GET | `/staff/{id}/availability?date=` | Khung giờ làm việc của KTV |
+| GET | `/schedules/by-date/{date}` | Tất cả lịch trong ngày |
+
+### 4. Seed Data
+
+| Bảng | Số lượng | Mô tả |
+|:---|:---:|:---|
+| `shifts` | 4 | Ca sáng, Chiều, Tối, Full day |
+| `staff_schedules` | 11 | Lịch làm việc tuần 17-21/12/2025 |
+
+### 5. Kiểm Tra
 
 | Hạng Mục | Kết Quả |
-|:---|:---|
-| Không hardcode secrets | ✅ Pass |
-| Sử dụng RLS Injection | ✅ Pass (get_db_session) |
-| Soft Delete thay vì Hard Delete | ✅ Pass |
-| Validation đầu vào (Pydantic) | ✅ Pass |
-
-### 4. Tuân Thủ Backend Rules
-
-| Quy Tắc | Tuân Thủ |
 |:---|:---:|
-| Vertical Slice Architecture | ✅ |
-| Async All The Way | ✅ |
-| Pydantic V2 (ConfigDict) | ✅ |
-| Guard Clauses / Early Return | ✅ |
-| Public API (__init__.py Gatekeeper) | ✅ |
-| Docstrings Tiếng Việt | ✅ |
-| Type Hints Python 3.12+ | ✅ |
+| Database Schema | ✅ Pass |
+| Backend Import | ✅ Pass |
+| Seed Data | ✅ Pass |
 
 ---
 
-### 5. Các File Đã Tạo/Sửa
+### 6. Các File Đã Tạo/Sửa
 
 **Tạo mới:**
-- `backend/src/modules/resources/models.py`
-- `backend/src/modules/resources/schemas.py`
-- `backend/src/modules/resources/service.py`
-- `backend/src/modules/resources/router.py`
-- `backend/src/modules/resources/__init__.py`
+- `backend/src/modules/schedules/models.py`
+- `backend/src/modules/schedules/schemas.py`
+- `backend/src/modules/schedules/service.py`
+- `backend/src/modules/schedules/router.py`
+- `backend/src/modules/schedules/__init__.py`
 
 **Sửa đổi:**
-- `backend/src/modules/services/models.py`
-- `backend/src/modules/services/schemas.py`
-- `backend/src/modules/services/__init__.py`
+- `backend/src/modules/staff/models.py`
 - `backend/src/app/main.py`
-
----
-
-### 6. Pending Items
-- [ ] Tạo API endpoints cho ServiceCategory CRUD (trong services router).
-- [ ] Implement Matching Logic (ML-01, ML-02, ML-03).
-- [ ] Sync Alembic migrations với Supabase cloud migrations.

@@ -1,7 +1,7 @@
-# Tiến Độ Dự Án Synapse: Core Scheduling Data
+# Tiến Độ Dự Án Synapse: TIME DOMAIN
 
-**Giai đoạn:** Database & Backend Foundation
-**Cập nhật lần cuối:** 2025-12-16 20:15
+**Giai đoạn:** 2 - Lịch Làm Việc & Khung Thời Gian
+**Cập nhật lần cuối:** 2025-12-16 21:45
 
 ---
 
@@ -9,9 +9,9 @@
 
 | Giai đoạn | Tiến độ | Trạng thái |
 |:---|:---:|:---|
-| 1. Database Migration | 4/4 | ✅ Hoàn thành |
-| 2. Backend Models/API | 4/5 | 🟡 Đang tiến hành |
-| 3. Matching Logic | 0/3 | 🔴 Chưa bắt đầu |
+| 1. Database Migration | 2/2 | ✅ Hoàn thành |
+| 2. Backend Module | 6/6 | ✅ Hoàn thành |
+| 3. Seed Data | 1/1 | ✅ Hoàn thành |
 
 ---
 
@@ -19,56 +19,77 @@
 
 ### 📦 Giai Đoạn 1: Database Migration
 
-| ID | Tác Vụ | Trạng Thái | Ghi Chú |
-|:---|:---|:---:|:---|
-| DB-01 | Migration: `add_service_categories` | ✅ Done | Bảng + FK vào services |
-| DB-02 | Migration: `add_resource_system` | ✅ Done | ENUMs + groups/resources |
-| DB-03 | Migration: `add_service_resource_requirements` | ✅ Done | Bảng link N-N |
-| DB-04 | Migration: `add_proficiency_levels` | ✅ Done | proficiency_level columns |
+| ID | Tác Vụ | Trạng Thái |
+|:---|:---|:---:|
+| DB-01 | `add_shifts_table` | ✅ Done |
+| DB-02 | `add_staff_schedules_table` + ENUM | ✅ Done |
 
 ### ⚙️ Giai Đoạn 2: Backend Implementation
 
-| ID | Tác Vụ | Trạng Thái | Ghi Chú |
-|:---|:---|:---:|:---|
-| BE-01 | Module `categories`: Models + CRUD | ✅ Done | Tích hợp vào services |
-| BE-02 | Module `resources`: Models + CRUD | ✅ Done | Full CRUD API |
-| BE-03 | Update Module `services` | ✅ Done | Relationships updated |
-| BE-04 | Model `ServiceResourceRequirement` | ✅ Done | Link model |
-| BE-05 | API CRUD cho ServiceCategory | ⬜ Pending | Cần thêm endpoints |
+| ID | Tác Vụ | Trạng Thái |
+|:---|:---|:---:|
+| BE-01 | Module `schedules`: Models | ✅ Done |
+| BE-02 | Module `schedules`: Schemas | ✅ Done |
+| BE-03 | Module `schedules`: Service | ✅ Done |
+| BE-04 | Module `schedules`: Router | ✅ Done |
+| BE-05 | Module `schedules`: __init__.py | ✅ Done |
+| BE-06 | Update Staff model + main.py | ✅ Done |
 
-### 🧠 Giai Đoạn 3: Matching Logic
+### 🧪 Giai Đoạn 3: Verification
 
-| ID | Tác Vụ | Trạng Thái | Ghi Chú |
-|:---|:---|:---:|:---|
-| ML-01 | `MatchingService.get_qualified_staff()` | ⬜ | Core logic |
-| ML-02 | `MatchingService.get_available_resources()` | ⬜ | Core logic |
-| ML-03 | API `/services/{id}/candidates` | ⬜ | Endpoint |
-
----
-
-## Kết Quả Kiểm Tra
-
-| Hạng Mục | Kết Quả |
-|:---|:---:|
-| Database Schema | ✅ Pass |
-| Backend Import | ✅ Pass |
-| Ruff Lint | ⚠️ Minor warnings (F401) |
+| ID | Tác Vụ | Trạng Thái |
+|:---|:---|:---:|
+| V-01 | Backend Import Test | ✅ Pass |
+| V-02 | Seed Data | ✅ 4 shifts + 11 schedules |
 
 ---
 
-## Ghi Chú Phiên Làm Việc
+## API Endpoints Hoàn Thành
 
-### 2025-12-16
-- ✅ **DB-01 đến DB-04**: Hoàn thành tất cả Database Migrations lên Supabase Cloud.
-- ✅ **BE-01 đến BE-04**: Tạo Module `resources`, cập nhật Module `services`.
-- ✅ Đăng ký router mới vào `main.py`.
-- ✅ Backend import test passed.
-- ⏳ Còn lại: ServiceCategory CRUD endpoints, Matching Logic.
+### Shifts CRUD (5 endpoints)
+- `GET /api/v1/shifts`
+- `POST /api/v1/shifts`
+- `GET /api/v1/shifts/{id}`
+- `PATCH /api/v1/shifts/{id}`
+- `DELETE /api/v1/shifts/{id}`
+
+### Staff Schedules CRUD (7 endpoints)
+- `GET /api/v1/schedules`
+- `POST /api/v1/schedules`
+- `POST /api/v1/schedules/bulk`
+- `GET /api/v1/schedules/{id}`
+- `PATCH /api/v1/schedules/{id}`
+- `DELETE /api/v1/schedules/{id}`
+- `PATCH /api/v1/schedules/{id}/publish`
+
+### Availability Query (2 endpoints)
+- `GET /api/v1/staff/{id}/availability?date=YYYY-MM-DD`
+- `GET /api/v1/schedules/by-date/{YYYY-MM-DD}`
 
 ---
 
-## Bước Tiếp Theo
+## Kết Quả Đạt Được
 
-1. **BE-05**: Thêm API endpoints cho ServiceCategory trong services router.
-2. **ML-01 đến ML-03**: Implement Matching Logic để trả lời câu hỏi "Ai + Phòng nào làm được dịch vụ này?"
-3. **Frontend Integration**: Cập nhật types và UI để sử dụng dữ liệu mới.
+### ✅ Mục tiêu hoàn thành:
+1. **Miền thời gian hợp lệ cho Solver** - API `/staff/{id}/availability` trả về khung giờ làm việc
+2. **Không gán lịch ngoài ca** - Constraint được enforce tại database và application layer
+3. **Truy vấn "KTV A làm việc lúc nào?"** - Đã implement hoàn chỉnh
+
+### 📊 Dữ liệu mẫu:
+| Ca | Thời gian | Màu |
+|:---|:---|:---|
+| Ca sáng | 08:00-12:00 | 🟢 Xanh lá |
+| Ca chiều | 13:00-17:00 | 🔵 Xanh dương |
+| Ca tối | 18:00-21:00 | 🟣 Tím |
+| Full day | 08:00-17:00 | 🟠 Cam |
+
+---
+
+## Bước Tiếp Theo (Gợi ý)
+
+1. **Giai đoạn 3: BOOKING DOMAIN** - Đặt lịch hẹn
+   - Bảng `bookings`, `booking_items`
+   - Tích hợp kiểm tra availability
+
+2. **Giai đoạn 4: MATCHING LOGIC** - Ghép KTV + Phòng với Dịch vụ
+   - Sử dụng dữ liệu từ Giai đoạn 1 (skills, resources) + Giai đoạn 2 (schedules)

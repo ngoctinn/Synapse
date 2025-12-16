@@ -47,11 +47,13 @@ from src.modules.users.router import router as users_router
 from src.modules.services.router import router as services_router
 from src.modules.staff.router import router as staff_router
 from src.modules.resources.router import router as resources_router
+from src.modules.schedules.router import router as schedules_router
 
 app.include_router(users_router, prefix=settings.API_V1_STR)
 app.include_router(services_router, prefix=settings.API_V1_STR)
 app.include_router(staff_router, prefix=settings.API_V1_STR)
 app.include_router(resources_router, prefix=settings.API_V1_STR)
+app.include_router(schedules_router, prefix=settings.API_V1_STR)
 
 @app.get("/")
 async def root():

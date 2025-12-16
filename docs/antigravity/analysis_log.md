@@ -1,68 +1,67 @@
 # Nhật Ký Phân Tích (Analysis Log)
 
-## Phiên Phân Tích: 2025-12-16
+## Phiên Phân Tích: 2025-12-16 - TIME DOMAIN
 
 ### 1. Phạm Vi Kiểm Tra
 - Supabase Project: `pvyngyztqwytkhpqpyyy` (Synapse)
-- Tài liệu tham chiếu: `docs/design/data_specification.md` (v2.1)
+- Giai đoạn: 2 - Lịch làm việc & Khung thời gian
 
-### 2. Phương Pháp
-Sử dụng Supabase MCP để truy xuất trực tiếp metadata của Database, so sánh với tài liệu đặc tả.
+### 2. Kết Quả Kiểm Tra Database
 
-### 3. Kết Quả Kiểm Tra
+#### Bảng CHƯA CÓ (cần tạo):
+- `shifts` - Định nghĩa ca làm việc
+- `staff_schedules` - Phân công lịch làm việc
 
-#### 3.1. Các bảng HIỆN CÓ trong Database
-| Bảng | Rows | RLS | Ghi Chú |
-|:---|:---:|:---:|:---|
-| `users` | 4 | ✅ | Bảng căn bản đã ổn định. |
-| `staff` | 4 | ❌ | Đặc tả gọi là `staff_profiles`. |
-| `services` | 16 | ❌ | Thiếu `category_id`, `description`, `deleted_at`. |
-| `skills` | ? | ❌ | Có đủ `id`, `name`, `code`, `description`. |
-| `staff_skills` | 0 | ❌ | Thiếu `proficiency_level`. |
-| `service_skills` | ? | ❌ | Thiếu `min_proficiency_level`. |
+#### ENUM CHƯA CÓ:
+- `schedule_status` (DRAFT, PUBLISHED)
 
-#### 3.2. Các bảng THIẾU (so với đặc tả)
-- `service_categories`
-- `resource_groups`
-- `resources`
-- `service_resource_requirements`
-- `customer_profiles`
-- `shifts`
-- `staff_schedules`
-- `bookings`, `booking_items`
-- `invoices`, `payments`
-- ... (và nhiều bảng khác)
+### 3. Dependency Map
 
-#### 3.3. ENUM Types
-Kiểm tra cho thấy **KHÔNG CÓ ENUM nào được định nghĩa** trong DB hiện tại.
-Cần tạo: `resource_type`, `resource_status`, `booking_status`, ...
+```
+shifts (Master Data)
+    ↓
+staff_schedules ←→ staff (FK: staff_id → staff.user_id)
+    |
+    └── Cung cấp miền thời gian cho:
+            - Thuật toán lập lịch (Solver)
+            - Kiểm tra xung đột booking
+```
 
 ### 4. Phân Tích Tác Động
 
-#### Rủi ro khi thêm `category_id` vào `services`:
-- Cột nullable, không ảnh hưởng data hiện có.
-- Frontend cần cập nhật để hiển thị/chọn category.
+#### Tác động lên Module hiện có:
+- **Module `staff`**: Không cần sửa, chỉ thêm relationship sang `schedules`
+- **Module `resources`**: Không ảnh hưởng
+- **Module `services`**: Không ảnh hưởng
 
-#### Rủi ro khi đổi tên cột (`duration` → `duration_minutes`):
-- **CAO**: Toàn bộ Frontend và Backend đang dùng `duration`.
-- **Khuyến nghị:** KHÔNG rename, thêm alias hoặc giữ nguyên.
+#### Tác động tương lai:
+- Module `bookings` sẽ cần kiểm tra `staff_schedules` trước khi tạo lịch hẹn
+- Solver sẽ query `staff_schedules` để lấy miền thời gian hợp lệ
 
-### 5. Dependency Map
+### 5. Rủi Ro & Giảm Thiểu
 
-```
-services
-├── service_categories (FK: category_id)
-├── service_skills → skills
-└── service_resource_requirements → resource_groups
-                                        └── resources
-```
+| Rủi Ro | Xác suất | Giải pháp |
+|:---|:---:|:---|
+| FK `staff_id` tham chiếu sai bảng | Thấp | Tham chiếu đúng `staff.user_id` |
+| Timezone mismatch giữa TIME và TIMESTAMPTZ | Trung bình | Sử dụng TIME cho giờ, DATE cho ngày (không có timezone) |
+| Ca làm việc kéo dài qua đêm | Thấp | Thêm note trong docs, xử lý ở application layer nếu cần |
 
-```
-staff
-├── users (FK: user_id, 1-1)
-└── staff_skills → skills
-```
+### 6. Quyết Định Thiết Kế
 
-### 6. Kết Luận
-Cần thực hiện **4 Migration** để đưa Database lên chuẩn đặc tả cho phase "Core Data".
-Các bảng liên quan đến Booking/Scheduling sẽ triển khai ở phase sau.
+1. **Sử dụng TIME thay vì TIMESTAMPTZ cho ca làm việc**
+   - Lý do: Ca "08:00-12:00" không phụ thuộc ngày, áp dụng cho mọi ngày
+
+2. **Unique constraint trên (staff_id, work_date, shift_id)**
+   - Cho phép 1 KTV làm nhiều ca trong cùng 1 ngày (VD: Ca sáng + Ca chiều)
+   - Không cho phép duplicate cùng ca
+
+3. **Status DRAFT/PUBLISHED**
+   - Cho phép Manager lên lịch tuần trước, sau đó công bố
+   - KTV chỉ thấy lịch PUBLISHED
+
+### 7. Kết Luận
+
+Cần thực hiện:
+- 2 Database Migrations
+- 1 Module Backend mới (`schedules`)
+- Seed data mẫu cho testing

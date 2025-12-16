@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from src.modules.users.models import User
     from src.modules.services.models import Skill
+    from src.modules.schedules.models import StaffSchedule
 
 
 class StaffSkill(SQLModel, table=True):
@@ -74,3 +75,5 @@ class Staff(SQLModel, table=True):
     skills: list["Skill"] = Relationship(
         link_model=StaffSkill
     )
+    schedules: list["StaffSchedule"] = Relationship(back_populates="staff")
+
