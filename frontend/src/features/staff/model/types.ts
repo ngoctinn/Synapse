@@ -14,13 +14,12 @@ export interface User {
 
 export interface Staff {
   user_id: string;
-  hired_at: string; // Date string
-  created_at: string; // Date string
+  hired_at: string;
+  created_at: string;
   bio: string | null;
   title: string;
   color_code: string;
   commission_rate: number;
-
 
   user: User;
   skills: Skill[];
@@ -48,29 +47,82 @@ export interface StaffListResponse {
   limit: number;
 }
 
+// ============================================================================
+// SCHEDULING TYPES - Phù hợp với Database Design
+// ============================================================================
 
-export type ShiftType = 'WORK' | 'OFF';
+/** Chế độ xem lịch */
+export type ScheduleViewType = 'week' | 'month';
 
+/** Trạng thái lịch */
+export type ScheduleStatus = 'DRAFT' | 'PUBLISHED';
+
+/**
+ * Ca làm việc (Master Data)
+ * Maps to DB table: shifts
+ */
 export interface Shift {
   id: string;
-  name: string;
-  color: string;
-  startTime: string;
-  endTime: string;
-  type: ShiftType;
+  name: string;           // "Ca Sáng", "Ca Chiều", "Ca Tối"
+  startTime: string;      // "08:00" (DB: start_time TIME)
+  endTime: string;        // "12:00" (DB: end_time TIME)
+  colorCode: string;      // "#3b82f6" (DB: color_code VARCHAR(7))
 }
 
-export type ScheduleStatus = 'PUBLISHED' | 'DRAFT';
-
+/**
+ * Phân công lịch làm việc
+ * Maps to DB table: staff_schedules
+ * UNIQUE constraint: (staff_id, work_date, shift_id) - Cho phép nhiều ca/ngày
+ */
 export interface Schedule {
   id: string;
-  staffId: string;
-  date: string;
-  shiftId: string;
-  status: ScheduleStatus;
-  shift?: Shift;
-  customShift?: Shift; // For optimistic UI when shift doesn't exist in DB yet
+  staffId: string;        // DB: staff_id UUID FK → staff_profiles
+  shiftId: string;        // DB: shift_id UUID FK → shifts
+  workDate: string;       // DB: work_date DATE (format: "2025-12-16")
+  status: ScheduleStatus; // DB: status schedule_status
 }
+
+/**
+ * Schedule với thông tin Shift đầy đủ (cho UI)
+ */
+export interface ScheduleWithShift extends Schedule {
+  shift: Shift;
+}
+
+// ============================================================================
+// UI TYPES
+// ============================================================================
+
+/** Khoảng thời gian */
+export interface DateRange {
+  start: Date;
+  end: Date;
+}
+
+/** Bộ lọc lịch */
+export interface ScheduleFilters {
+  staffIds: string[];
+  roles: Role[];
+  status?: ScheduleStatus;
+}
+
+/** Ô lịch (1 ngày x 1 nhân viên) */
+export interface ScheduleCell {
+  staffId: string;
+  date: Date;
+  dateStr: string;  // "yyyy-MM-dd"
+  schedules: ScheduleWithShift[];
+}
+
+/** Slot đã chọn (Selection Mode) */
+export interface SelectedSlot {
+  staffId: string;
+  dateStr: string;  // "yyyy-MM-dd"
+}
+
+// ============================================================================
+// PERMISSION TYPES
+// ============================================================================
 
 export interface Permission {
   moduleId: string;
