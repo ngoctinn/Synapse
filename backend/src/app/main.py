@@ -49,6 +49,7 @@ from src.modules.staff.router import router as staff_router
 from src.modules.resources.router import router as resources_router
 from src.modules.schedules.router import router as schedules_router
 from src.modules.bookings.router import router as bookings_router
+from src.modules.scheduling.router import router as scheduling_router
 
 app.include_router(users_router, prefix=settings.API_V1_STR)
 app.include_router(services_router, prefix=settings.API_V1_STR)
@@ -56,6 +57,7 @@ app.include_router(staff_router, prefix=settings.API_V1_STR)
 app.include_router(resources_router, prefix=settings.API_V1_STR)
 app.include_router(schedules_router, prefix=settings.API_V1_STR)
 app.include_router(bookings_router, prefix=settings.API_V1_STR)
+app.include_router(scheduling_router, prefix=settings.API_V1_STR)
 
 @app.get("/")
 async def root():

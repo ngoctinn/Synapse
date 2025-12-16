@@ -1,248 +1,272 @@
-# Kế Hoạch Triển Khai: BOOKING DOMAIN (Đặt Lịch Cơ Bản)
+# Kế Hoạch Triển Khai: SOLVER/RCPSP (Lập Lịch Thông Minh)
 
-## 🔥 ĐÂY LÀ GIAI ĐOẠN QUAN TRỌNG NHẤT
+## 🎓 GIAI ĐOẠN ĂN ĐIỂM HỌC THUẬT
 
-> **Vì sao:** Toàn bộ hệ thống xoay quanh `booking_item` - đây chính là **Activity** trong mô hình toán RCPSP.
-
----
-
-## 1. Mục Tiêu Giai Đoạn
-
-Xây dựng luồng đặt lịch hoàn chỉnh với khả năng **kiểm tra xung đột** (KTV và Phòng).
-
-**Câu hỏi cần trả lời:**
-- *"KTV A có rảnh lúc 10:00 ngày X không?"*
-- *"Phòng VIP 1 có trống lúc 14:00 ngày X không?"*
+> **Chuyển từ:** "Lập lịch đúng" → "Lập lịch tốt"
 
 ---
 
-## 2. Phân Tích Hiện Trạng
+## 1. Nghiên Cứu Công Nghệ
 
-### Database Audit
-| Bảng | Trạng Thái | Ghi Chú |
-|:---|:---:|:---|
-| `bookings` | ❌ Chưa có | Cần tạo mới |
-| `booking_items` | ❌ Chưa có | Cần tạo mới |
-| ENUM `booking_status` | ❌ Chưa có | 6 giá trị |
+### 1.1 Google OR-Tools CP-SAT
 
-### Đặc Tả (Theo `data_specification.md`)
+**Tổng quan:**
+- **CP-SAT** = Constraint Programming + Satisfiability
+- Phiên bản mới nhất: OR-Tools 9.11 (2024)
+- Hỗ trợ Python, C++, Java, C#
+- **Miễn phí** và Open Source (Apache License 2.0)
 
-**Bảng `bookings`** - Lịch hẹn tổng:
-| Cột | Kiểu | Mô tả |
+**Tại sao chọn CP-SAT thay vì Genetic Algorithm:**
+| Tiêu chí | CP-SAT | Genetic Algorithm |
 |:---|:---|:---|
-| `id` | UUID | PK |
-| `customer_id` | UUID (nullable) | FK → users (khách) |
-| `created_by` | UUID (nullable) | FK → users (lễ tân tạo) |
-| `start_time` | TIMESTAMPTZ | Thời gian bắt đầu |
-| `end_time` | TIMESTAMPTZ | Thời gian kết thúc |
-| `status` | ENUM | PENDING → CONFIRMED → IN_PROGRESS → COMPLETED |
-| `notes` | TEXT | Ghi chú |
-| `cancel_reason` | TEXT | Lý do hủy |
-| `check_in_time` | TIMESTAMPTZ | Thời điểm check-in |
-| `total_price` | DECIMAL | Tổng giá |
+| Đảm bảo tối ưu | ✅ Toàn cục | ❌ Cục bộ |
+| Xử lý ràng buộc | ✅ Native | ❌ Phải encode penalty |
+| Khả năng giải thích | ✅ Cao | ❌ "Black box" |
+| Tốc độ | ✅ Nhanh với bài toán nhỏ-vừa | ✅ Ổn định |
+| Độ phức tạp triển khai | ✅ Đơn giản | ❌ Phức tạp |
 
-**Bảng `booking_items`** - Chi tiết từng dịch vụ trong booking:
-| Cột | Kiểu | Mô tả |
-|:---|:---|:---|
-| `id` | UUID | PK |
-| `booking_id` | UUID | FK → bookings |
-| `service_id` | UUID | FK → services |
-| `staff_id` | UUID (nullable) | FK → staff (KTV được gán) |
-| `resource_id` | UUID (nullable) | FK → resources (Phòng được gán) |
-| `start_time` | TIMESTAMPTZ | Thời gian bắt đầu item |
-| `end_time` | TIMESTAMPTZ | Thời gian kết thúc item |
-| `original_price` | DECIMAL | Giá gốc tại thời điểm đặt |
-| `service_name_snapshot` | VARCHAR | Snapshot tên dịch vụ |
+### 1.2 Các Khái Niệm Quan Trọng
+
+#### Interval Variables (Biến Khoảng)
+```python
+# Đại diện cho một task có start, duration, end
+start = model.NewIntVar(0, horizon, 'start')
+duration = 60  # 60 phút
+end = model.NewIntVar(0, horizon, 'end')
+interval = model.NewIntervalVar(start, duration, end, 'task')
+```
+
+#### NoOverlap Constraint (Ràng buộc Không Chồng Lấp)
+```python
+# Các task sử dụng cùng resource không được overlap
+model.AddNoOverlap([interval1, interval2, interval3])
+```
+
+#### Optional Intervals (Biến Tuỳ Chọn)
+```python
+# Task có thể được gán cho resource này HOẶC không
+is_present = model.NewBoolVar('is_present')
+optional_interval = model.NewOptionalIntervalVar(
+    start, duration, end, is_present, 'optional_task'
+)
+```
+
+### 1.3 Mô Hình Toán Học (Theo althorism.md)
+
+**Biến quyết định:**
+$$x_{c,s,r,t} \in \{0, 1\}$$
+
+Trong đó:
+- $c$: Customer/Booking item
+- $s$: Staff (KTV)
+- $r$: Resource (Phòng)
+- $t$: Time slot
+
+**Ràng buộc cứng:**
+1. **Unicité (Duy nhất):** Mỗi KTV chỉ phục vụ 1 khách tại 1 thời điểm
+2. **Skill Matching:** KTV phải có skill phù hợp với dịch vụ
+3. **Resource Capacity:** Phòng chỉ chứa 1 khách tại 1 thời điểm
+4. **Schedule Bound:** KTV chỉ làm việc trong ca đã đăng ký
+
+**Hàm mục tiêu:**
+$$\text{Minimize } Z = \alpha \cdot C_{wait} + \beta \cdot C_{pref} + \gamma \cdot C_{idle}$$
 
 ---
 
-## 3. Luồng Nghiệp Vụ
+## 2. Kiến Trúc Module
 
+### 2.1 Cấu Trúc Thư Mục
 ```
-[Khách/Lễ tân] Tạo Booking (PENDING)
-        ↓
-[Lễ tân] Thêm booking_items (dịch vụ)
-        ↓
-[Lễ tân] Gán staff + resource cho từng item
-        ↓
-[Hệ thống] Kiểm tra xung đột
-    - KTV đã có booking khác?
-    - Phòng đã được sử dụng?
-        ↓
-[Lễ tân] Xác nhận booking (CONFIRMED)
-        ↓
-[Khách đến] Check-in → IN_PROGRESS
-        ↓
-[Hoàn thành] → COMPLETED
-```
-
----
-
-## 4. Kế Hoạch Thực Thi
-
-### Giai Đoạn 1: Database Migration
-
-#### Migration 3.1: `add_bookings_table`
-```sql
-CREATE TYPE booking_status AS ENUM (
-    'PENDING', 'CONFIRMED', 'IN_PROGRESS',
-    'COMPLETED', 'CANCELLED', 'NO_SHOW'
-);
-
-CREATE TABLE bookings (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    customer_id UUID REFERENCES users(id) ON DELETE SET NULL,
-    created_by UUID REFERENCES users(id) ON DELETE SET NULL,
-    start_time TIMESTAMPTZ NOT NULL,
-    end_time TIMESTAMPTZ NOT NULL,
-    status booking_status NOT NULL DEFAULT 'PENDING',
-    notes TEXT,
-    cancel_reason TEXT,
-    check_in_time TIMESTAMPTZ,
-    actual_start_time TIMESTAMPTZ,
-    actual_end_time TIMESTAMPTZ,
-    total_price DECIMAL(12,2) DEFAULT 0,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW(),
-    CONSTRAINT bookings_time_check CHECK (end_time > start_time)
-);
-```
-
-#### Migration 3.2: `add_booking_items_table`
-```sql
-CREATE TABLE booking_items (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    booking_id UUID NOT NULL REFERENCES bookings(id) ON DELETE CASCADE,
-    service_id UUID REFERENCES services(id) ON DELETE SET NULL,
-    staff_id UUID REFERENCES staff(user_id) ON DELETE SET NULL,
-    resource_id UUID REFERENCES resources(id) ON DELETE SET NULL,
-    service_name_snapshot VARCHAR(255),
-    start_time TIMESTAMPTZ NOT NULL,
-    end_time TIMESTAMPTZ NOT NULL,
-    original_price DECIMAL(12,2) NOT NULL DEFAULT 0,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    CONSTRAINT booking_items_time_check CHECK (end_time > start_time)
-);
-```
-
----
-
-### Giai Đoạn 2: Backend Module `bookings`
-
-#### Cấu trúc:
-```
-src/modules/bookings/
+src/modules/scheduling/
 ├── __init__.py
-├── models.py         # Booking, BookingItem, BookingStatus
-├── schemas.py        # DTOs
-├── router.py         # API Endpoints
-├── service.py        # Business Logic
-└── conflict_checker.py  # ⚡ CORE: Kiểm tra xung đột
+├── models.py           # SchedulingRequest, SchedulingSolution
+├── data_extractor.py   # Trích xuất dữ liệu từ DB → Problem Instance
+├── solver.py           # ⚡ CORE: OR-Tools CP-SAT Solver
+├── evaluator.py        # Đánh giá chất lượng lịch
+├── router.py           # API Endpoints
+└── schemas.py          # DTOs
 ```
 
----
-
-### Giai Đoạn 3: API Endpoints
-
-#### Bookings CRUD:
-| Method | Endpoint | Mô tả |
-|:---|:---|:---|
-| GET | `/bookings` | Danh sách (filter: date, status, customer) |
-| POST | `/bookings` | Tạo booking mới (PENDING) |
-| GET | `/bookings/{id}` | Chi tiết + items |
-| PATCH | `/bookings/{id}` | Cập nhật thông tin |
-| DELETE | `/bookings/{id}` | Hủy booking |
-
-#### Booking Items:
-| Method | Endpoint | Mô tả |
-|:---|:---|:---|
-| POST | `/bookings/{id}/items` | Thêm dịch vụ |
-| PATCH | `/bookings/{id}/items/{item_id}` | Cập nhật (assign staff/resource) |
-| DELETE | `/bookings/{id}/items/{item_id}` | Xóa dịch vụ |
-
-#### Status Transitions:
-| Method | Endpoint | Mô tả |
-|:---|:---|:---|
-| PATCH | `/bookings/{id}/confirm` | PENDING → CONFIRMED |
-| PATCH | `/bookings/{id}/check-in` | CONFIRMED → IN_PROGRESS |
-| PATCH | `/bookings/{id}/complete` | IN_PROGRESS → COMPLETED |
-| PATCH | `/bookings/{id}/cancel` | → CANCELLED |
-| PATCH | `/bookings/{id}/no-show` | → NO_SHOW |
-
-#### Conflict Check (CORE):
-| Method | Endpoint | Mô tả |
-|:---|:---|:---|
-| GET | `/availability/staff/{id}` | Kiểm tra KTV rảnh không |
-| GET | `/availability/resource/{id}` | Kiểm tra Phòng trống không |
-| POST | `/availability/check` | Kiểm tra nhiều slots cùng lúc |
-
----
-
-## 5. ⚡ CORE LOGIC: Conflict Checker
-
-### Nguyên tắc kiểm tra xung đột:
+### 2.2 Các Class Chính
 
 ```python
-def is_conflicting(new_start, new_end, existing_start, existing_end):
-    """
-    True nếu 2 khoảng thời gian CHỒNG CHÉO.
-    """
-    return new_start < existing_end and new_end > existing_start
-```
+class SchedulingProblem:
+    """Bài toán lập lịch đã được trích xuất."""
+    booking_items: list[BookingItemData]
+    available_staff: list[StaffData]
+    available_resources: list[ResourceData]
+    staff_schedules: list[StaffScheduleData]
+    staff_skills: list[StaffSkillData]
+    time_horizon: tuple[datetime, datetime]
 
-### Query kiểm tra KTV:
-```sql
-SELECT COUNT(*) FROM booking_items bi
-JOIN bookings b ON bi.booking_id = b.id
-WHERE bi.staff_id = :staff_id
-  AND b.status NOT IN ('CANCELLED', 'NO_SHOW', 'COMPLETED')
-  AND bi.start_time < :new_end
-  AND bi.end_time > :new_start
-```
+class SchedulingSolution:
+    """Kết quả giải bài toán."""
+    assignments: list[Assignment]  # (item_id, staff_id, resource_id, start_time)
+    objective_value: float
+    solve_time_ms: int
+    status: str  # OPTIMAL, FEASIBLE, INFEASIBLE
+    metrics: SolutionMetrics
 
-### Query kiểm tra Phòng:
-```sql
-SELECT COUNT(*) FROM booking_items bi
-JOIN bookings b ON bi.booking_id = b.id
-WHERE bi.resource_id = :resource_id
-  AND b.status NOT IN ('CANCELLED', 'NO_SHOW', 'COMPLETED')
-  AND bi.start_time < :new_end
-  AND bi.end_time > :new_start
+class SolutionMetrics:
+    """Các chỉ số đánh giá."""
+    total_wait_time: int
+    preference_satisfaction: float
+    staff_utilization: float
+    resource_utilization: float
+    jain_fairness_index: float
 ```
 
 ---
 
-## 6. Tiêu Chí Nghiệm Thu
+## 3. API Endpoints
 
-### Database
-- [ ] Bảng `bookings` với constraints
-- [ ] Bảng `booking_items` với FKs
-- [ ] ENUM `booking_status`
-- [ ] Indexes cho query thường dùng
-
-### Backend
-- [ ] CRUD bookings + items
-- [ ] Status transitions
-- [ ] **Conflict checker hoạt động chính xác**
-
-### Integration Test
-- [ ] Tạo booking với 2 services
-- [ ] Gán staff + resource
-- [ ] Thử gán KTV đang bận → Lỗi
-- [ ] Thử gán Phòng đang dùng → Lỗi
-- [ ] Confirm → Check-in → Complete
+| Method | Endpoint | Mô tả |
+|:---|:---|:---|
+| POST | `/scheduling/solve` | Giải bài toán cho các booking items chưa gán |
+| POST | `/scheduling/evaluate` | Đánh giá chất lượng lịch hiện tại |
+| POST | `/scheduling/compare` | So sánh lịch thủ công vs tối ưu |
+| GET | `/scheduling/suggestions/{booking_id}` | Gợi ý KTV + Phòng cho booking |
 
 ---
 
-## 7. Thứ Tự Thực Thi
+## 4. Chi Tiết Thuật Toán
 
-1. **[DB]** Migration 3.1: `add_bookings_table`
-2. **[DB]** Migration 3.2: `add_booking_items_table`
-3. **[BE]** Module `bookings`: models.py
-4. **[BE]** Module `bookings`: conflict_checker.py ⚡
-5. **[BE]** Module `bookings`: schemas.py
-6. **[BE]** Module `bookings`: service.py
-7. **[BE]** Module `bookings`: router.py
-8. **[BE]** Đăng ký router
-9. **[DB]** Seed data mẫu
-10. **[TEST]** Verify conflict checking
+### 4.1 Data Extraction Flow
+
+```
+Database Tables → Data Extractor → SchedulingProblem
+    ↓
+booking_items (chưa gán staff/resource)
+    ↓
+staff (available) + staff_schedules (working today)
+    ↓
+resources (available) + service_resource_requirements
+    ↓
+staff_skills + service_skills (matching)
+```
+
+### 4.2 CP-SAT Model Building
+
+```python
+# 1. Tạo biến cho mỗi booking_item
+for item in booking_items:
+    # Với mỗi KTV phù hợp, tạo optional interval
+    for staff in qualified_staff:
+        is_assigned = model.NewBoolVar(f'assign_{item.id}_{staff.id}')
+        interval = model.NewOptionalIntervalVar(
+            item.start_slot, item.duration_slots, item.end_slot,
+            is_assigned, f'interval_{item.id}_{staff.id}'
+        )
+        # Lưu lại để add constraints
+
+# 2. Ràng buộc: Mỗi item chỉ gán cho 1 KTV
+model.AddExactlyOne(assignment_vars[item.id])
+
+# 3. Ràng buộc: KTV không overlap
+for staff_id in all_staff:
+    intervals = get_intervals_for_staff(staff_id)
+    model.AddNoOverlap(intervals)
+
+# 4. Ràng buộc: Resource không overlap
+for resource_id in all_resources:
+    intervals = get_intervals_for_resource(resource_id)
+    model.AddNoOverlap(intervals)
+
+# 5. Ràng buộc: KTV phải trong ca làm việc
+for item in booking_items:
+    for staff in qualified_staff:
+        if not is_staff_working(staff, item.time):
+            model.Add(assignment_vars[item.id][staff.id] == 0)
+
+# 6. Hàm mục tiêu: Tối thiểu hóa cost
+# - Preference cost (KTV ưu tiên)
+# - Idle time cost
+# - Load balancing cost
+model.Minimize(total_cost)
+```
+
+### 4.3 Evaluation Metrics
+
+```python
+def calculate_metrics(solution):
+    # 1. Staff Utilization
+    utilization = sum(staff_busy_time) / sum(staff_available_time)
+
+    # 2. Resource Utilization
+    resource_util = sum(resource_busy_time) / sum(resource_available_time)
+
+    # 3. Jain Fairness Index (KTV workload)
+    workloads = [get_workload(staff) for staff in all_staff]
+    jain_index = (sum(workloads)**2) / (n * sum(w**2 for w in workloads))
+
+    # 4. Preference Satisfaction
+    pref_score = matched_preferences / total_preferences
+
+    return SolutionMetrics(...)
+```
+
+---
+
+## 5. Kịch Bản So Sánh (Cho Khóa Luận)
+
+### 5.1 Scenario 1: Ngày bận (Peak Day)
+- 20 booking items
+- 5 KTV
+- 8 phòng
+- So sánh: Manual vs Optimized
+
+### 5.2 Scenario 2: Ràng buộc skill chặt
+- 15 booking items (dịch vụ chuyên môn cao)
+- 5 KTV (chỉ 2 có đủ skill)
+- So sánh khả năng đáp ứng
+
+### 5.3 Scenario 3: Reactive Scheduling
+- Giả lập sự cố: 1 KTV nghỉ đột xuất
+- So sánh thời gian reschedule
+
+---
+
+## 6. Thứ Tự Thực Thi
+
+### Phase 1: Foundation
+1. **[BE]** Cài đặt OR-Tools (`pip install ortools`)
+2. **[BE]** Tạo module `scheduling` với data structures
+3. **[BE]** Implement `data_extractor.py`
+
+### Phase 2: Core Solver
+4. **[BE]** Implement `solver.py` - CP-SAT model
+5. **[BE]** Implement `evaluator.py` - Metrics
+
+### Phase 3: API
+6. **[BE]** Tạo `router.py` - Endpoints
+7. **[BE]** Đăng ký router
+
+### Phase 4: Testing & Demo
+8. **[TEST]** Tạo test scenarios
+9. **[DOC]** Ghi lại kết quả so sánh
+
+---
+
+## 7. Tiêu Chí Nghiệm Thu
+
+### Chức năng
+- [ ] Solver trả về solution khả thi
+- [ ] Không vi phạm hard constraints
+- [ ] Có thể đánh giá solution
+
+### Học thuật
+- [ ] Có số liệu so sánh Manual vs Optimized
+- [ ] Có Jain Fairness Index
+- [ ] Có đồ thị/bảng biểu cho báo cáo
+
+### Performance
+- [ ] Giải được 20 items trong < 5 giây
+- [ ] Có time limit option
+
+---
+
+## 8. Dependencies Mới
+
+```txt
+ortools>=9.10  # Google OR-Tools
+```

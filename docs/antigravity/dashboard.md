@@ -1,13 +1,15 @@
-# Tiến Độ Dự Án Synapse: BOOKING DOMAIN
+# Tiến Độ Dự Án Synapse: SOLVER/RCPSP
 
-**Giai đoạn:** 3 - Đặt Lịch Cơ Bản (CỐT LÕI NHẤT)
-**Cập nhật lần cuối:** 2025-12-16 22:00
+**Giai đoạn:** 4 - Lập Lịch Thông Minh (ĂN ĐIỂM HỌC THUẬT)
+**Cập nhật lần cuối:** 2025-12-16 22:30
 
 ---
 
-## 🔥 ĐÂY LÀ GIAI ĐOẠN QUAN TRỌNG NHẤT
+## 🎓 ĐÓNG GÓP NGHIÊN CỨU
 
-> Toàn bộ hệ thống xoay quanh `booking_item` - đây chính là **Activity** trong mô hình RCPSP.
+> **Chuyển từ:** "Lập lịch đúng" → "Lập lịch tốt"
+>
+> **Công nghệ:** Google OR-Tools CP-SAT Solver
 
 ---
 
@@ -15,122 +17,136 @@
 
 | Giai đoạn | Tiến độ | Trạng thái |
 |:---|:---:|:---|
-| 1. Database Migration | 2/2 | ✅ Hoàn thành |
-| 2. Backend Module | 6/6 | ✅ Hoàn thành |
-| 3. Seed Data | 1/1 | ✅ Hoàn thành |
+| 1. Research | 1/1 | ✅ Hoàn thành |
+| 2. Core Solver | 5/5 | ✅ Hoàn thành |
+| 3. API | 5/5 | ✅ Hoàn thành |
 
 ---
 
 ## Chi Tiết Tác Vụ
 
-### 📦 Giai Đoạn 1: Database Migration
-
+### 📚 Phase 1: Research
 | ID | Tác Vụ | Trạng Thái |
 |:---|:---|:---:|
-| DB-01 | `add_bookings_table` + ENUM | ✅ Done |
-| DB-02 | `add_booking_items_table` | ✅ Done |
+| R-01 | Nghiên cứu OR-Tools CP-SAT | ✅ Done |
+| R-02 | Áp dụng mô hình RCPSP từ althorism.md | ✅ Done |
 
-### ⚙️ Giai Đoạn 2: Backend Implementation
-
+### ⚙️ Phase 2: Core Solver
 | ID | Tác Vụ | Trạng Thái |
 |:---|:---|:---:|
-| BE-01 | Module `bookings`: Models | ✅ Done |
-| BE-02 | Module `bookings`: Conflict Checker ⚡ | ✅ Done |
-| BE-03 | Module `bookings`: Schemas | ✅ Done |
-| BE-04 | Module `bookings`: Service | ✅ Done |
-| BE-05 | Module `bookings`: Router | ✅ Done |
-| BE-06 | Đăng ký router + __init__.py | ✅ Done |
+| S-01 | Cài đặt OR-Tools | ✅ Done |
+| S-02 | Data Structures (models.py) | ✅ Done |
+| S-03 | Data Extractor | ✅ Done |
+| S-04 | CP-SAT Solver | ✅ Done |
+| S-05 | Evaluator | ✅ Done |
 
-### 🧪 Giai Đoạn 3: Verification
-
+### 🌐 Phase 3: API
 | ID | Tác Vụ | Trạng Thái |
 |:---|:---|:---:|
-| V-01 | Backend Import Test | ✅ Pass |
-| V-02 | Seed Data | ✅ 3 bookings + 4 items |
+| A-01 | POST /solve | ✅ Done |
+| A-02 | POST /evaluate | ✅ Done |
+| A-03 | POST /compare | ✅ Done |
+| A-04 | GET /suggestions | ✅ Done |
+| A-05 | GET /health | ✅ Done |
 
 ---
 
-## API Endpoints Hoàn Thành (16 endpoints)
+## API Endpoints Hoàn Thành
 
-### Bookings CRUD
-- `GET /api/v1/bookings`
-- `POST /api/v1/bookings`
-- `GET /api/v1/bookings/{id}`
-- `PATCH /api/v1/bookings/{id}`
-
-### Booking Items
-- `POST /api/v1/bookings/{id}/items`
-- `PATCH /api/v1/bookings/{id}/items/{item_id}` ⚡
-- `DELETE /api/v1/bookings/{id}/items/{item_id}`
-
-### Status Transitions
-- `PATCH /api/v1/bookings/{id}/confirm`
-- `PATCH /api/v1/bookings/{id}/check-in`
-- `PATCH /api/v1/bookings/{id}/complete`
-- `PATCH /api/v1/bookings/{id}/cancel`
-- `PATCH /api/v1/bookings/{id}/no-show`
-
-### Conflict Check
-- `POST /api/v1/bookings/check-conflicts` ⚡
-- `GET /api/v1/bookings/staff/{id}/bookings`
-- `GET /api/v1/bookings/resource/{id}/bookings`
+### Scheduling (5 endpoints)
+- `POST /api/v1/scheduling/solve` 🎓 **CORE**
+- `POST /api/v1/scheduling/evaluate`
+- `POST /api/v1/scheduling/compare` 🎓 **SO SÁNH**
+- `GET /api/v1/scheduling/suggestions/{booking_id}`
+- `GET /api/v1/scheduling/health`
 
 ---
 
-## ⚡ Core Logic: Conflict Checker
+## Mô Hình Toán Học (RCPSP)
 
-### Kiểm tra 3 loại xung đột:
+### Biến Quyết Định
+```
+x[c,s,r] ∈ {0,1}
+```
+- c: Booking item (Customer request)
+- s: Staff (KTV)
+- r: Resource (Phòng)
 
-| Loại | Mô tả | Status |
+### Ràng Buộc Cứng
+1. **Exactly One:** Mỗi item được gán cho đúng 1 (staff, resource)
+2. **NoOverlap (Staff):** KTV không thể phục vụ 2 khách cùng lúc
+3. **NoOverlap (Resource):** Phòng không thể chứa 2 khách cùng lúc
+4. **Skill Matching:** KTV phải có skill yêu cầu
+5. **Schedule Bound:** KTV phải trong ca làm việc
+
+### Hàm Mục Tiêu
+```
+Minimize Z = Σ penalty(not_matching_preference)
+```
+
+---
+
+## Metrics Đánh Giá
+
+| Metric | Ý nghĩa | Range |
 |:---|:---|:---:|
-| Staff Conflict | KTV đã có booking khác | ✅ |
-| Resource Conflict | Phòng đã được sử dụng | ✅ |
-| Schedule Conflict | KTV không có trong ca | ✅ |
-
-### Nguyên tắc:
-```
-2 khoảng thời gian CHỒNG CHÉO nếu:
-    new_start < existing_end AND new_end > existing_start
-```
+| `staff_utilization` | % thời gian KTV làm việc | 0-1 |
+| `resource_utilization` | % thời gian Phòng được dùng | 0-1 |
+| `jain_fairness_index` | Công bằng phân chia workload | 0-1 (1=perfect) |
+| `preference_satisfaction` | Đáp ứng sở thích KTV | 0-1 |
 
 ---
 
-## Kết Quả Đạt Được
+## Tổng Kết 4 Giai Đoạn Hoàn Thành
 
-### ✅ Mục tiêu hoàn thành:
-1. **Luồng đặt lịch hoàn chỉnh** - PENDING → CONFIRMED → IN_PROGRESS → COMPLETED
-2. **Kiểm tra xung đột chính xác** - Không trùng KTV, không trùng Phòng
-3. **Dữ liệu thực để test solver** - 3 bookings, 4 items mẫu
+| Giai đoạn | Module | Endpoints | Status |
+|:---|:---|:---:|:---:|
+| 1. Core Data | services, resources | ~15 | ✅ |
+| 2. Time Domain | schedules | ~14 | ✅ |
+| 3. Booking | bookings | ~16 | ✅ |
+| 4. Solver | scheduling | ~5 | ✅ |
 
-### 📊 Booking Lifecycle:
-```
-[Tạo] PENDING → [Xác nhận] CONFIRMED → [Check-in] IN_PROGRESS → [Hoàn thành] COMPLETED
-                    ↓                      ↓
-                 NO_SHOW               CANCELLED
-```
+**Tổng: ~50 API endpoints**
 
 ---
 
-## Tổng Kết 3 Giai Đoạn Hoàn Thành
+## Ứng Dụng Cho Khóa Luận
 
-| Giai đoạn | Phạm vi | Trạng thái |
-|:---|:---|:---:|
-| 1. Core Data | services, resources, skills | ✅ |
-| 2. Time Domain | shifts, staff_schedules | ✅ |
-| 3. Booking Domain | bookings, booking_items | ✅ |
+### Kịch Bản So Sánh
+
+```bash
+# 1. Tạo dữ liệu test
+POST /bookings với 10+ items chưa gán
+
+# 2. Giải bằng solver
+POST /scheduling/solve
+→ Lấy optimized_metrics
+
+# 3. So sánh
+POST /scheduling/compare
+→ Bảng so sánh Manual vs Optimized
+```
+
+### Dữ Liệu Để Thảo Luận
+- **Staff Utilization:** Optimized cao hơn?
+- **Jain Fairness:** Workload đều hơn?
+- **Preference:** Đáp ứng sở thích tốt hơn?
 
 ---
 
 ## Bước Tiếp Theo (Gợi ý)
 
-1. **Giai đoạn 4: SOLVER** - Tự động gán KTV + Phòng
-   - Sử dụng Google OR-Tools CP-SAT
-   - Tích hợp tất cả constraints
+1. **Testing** - Tạo test scenarios
+   - Peak day (20+ bookings)
+   - Skill-constrained
+   - Staff absent (reactive)
 
-2. **Frontend Integration** - Giao diện đặt lịch
-   - Calendar view
-   - Drag & drop gán KTV
+2. **Visualization** - Biểu đồ cho KLTN
+   - Gantt chart
+   - Load distribution chart
+   - Comparison table
 
-3. **Testing** - Viết test cases
-   - Unit test cho conflict checker
-   - Integration test cho booking flow
+3. **Documentation** - Ghi chép học thuật
+   - Mô tả thuật toán
+   - Phân tích độ phức tạp
+   - Kết quả thực nghiệm
