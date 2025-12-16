@@ -1,11 +1,10 @@
 "use client"
 
 import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle
 } from "@/shared/ui"
 import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs"
 import { useState } from "react"
@@ -45,12 +44,9 @@ export function AddShiftSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-md p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
-        <SheetHeader>
-          <SheetTitle className="text-xl font-semibold">Thêm ca làm việc</SheetTitle>
-          <SheetDescription>
-            {staffName && dateStr ? `${staffName} - ${dateStr}` : "Chọn ca mẫu hoặc tạo ca tùy chỉnh."}
-          </SheetDescription>
+      <SheetContent className="w-full sm:max-w-lg p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
+        <SheetHeader className="px-6 py-4 border-b shrink-0 space-y-0">
+          <SheetTitle className="text-lg font-semibold">Thêm ca làm việc</SheetTitle>
         </SheetHeader>
 
         <div className="sheet-scroll-area">

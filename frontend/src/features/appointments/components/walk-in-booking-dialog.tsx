@@ -5,11 +5,10 @@ import { AppointmentForm } from "@/features/appointments/components/sheet/appoin
 import { MockService } from "@/features/appointments/mock-data";
 import { Appointment, TimelineResource } from "@/features/appointments/types";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle
 } from "@/shared/ui/dialog";
 import { showToast } from "@/shared/ui/sonner";
 import { Loader2 } from "lucide-react";
@@ -57,14 +56,11 @@ export function WalkInBookingDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-xl">
-        <DialogHeader>
-          <DialogTitle>Tạo lịch hẹn nhanh (Walk-in)</DialogTitle>
-          <DialogDescription>
-            Tạo một lịch hẹn mới cho khách hàng vãng lai hoặc đặt nhanh.
-          </DialogDescription>
+      <DialogContent className="sm:max-w-xl p-0 gap-0">
+        <DialogHeader className="px-6 py-4 border-b shrink-0 space-y-0">
+          <DialogTitle className="text-lg">Tạo lịch hẹn nhanh (Walk-in)</DialogTitle>
         </DialogHeader>
-        <div className="relative">
+        <div className="relative p-6">
           <AppointmentForm
             onSubmit={handleCreateAppointment}
             availableStaff={availableStaff}

@@ -1,10 +1,9 @@
 import {
-    Separator,
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
+  Separator,
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle
 } from "@/shared/ui";
 import { Invoice } from "../../types";
 import { InvoiceDetails } from "./invoice-details";
@@ -28,11 +27,8 @@ export function InvoiceSheet({
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full sm:max-w-lg p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
-        <SheetHeader>
-          <SheetTitle>Chi tiết hóa đơn {invoice.id}</SheetTitle>
-          <SheetDescription>
-            Xem chi tiết hóa đơn và thực hiện thanh toán.
-          </SheetDescription>
+        <SheetHeader className="px-6 py-4 border-b shrink-0 space-y-0">
+          <SheetTitle className="text-lg font-semibold">Chi tiết hóa đơn {invoice.id}</SheetTitle>
         </SheetHeader>
 
         <div className="sheet-scroll-area">

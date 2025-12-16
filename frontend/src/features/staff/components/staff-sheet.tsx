@@ -8,23 +8,22 @@ import { useForm } from "react-hook-form";
 import { Skill } from "@/features/services/types";
 import { manageStaff } from "@/features/staff/actions";
 import {
-  StaffCreateFormValues,
-  StaffUpdateFormValues,
-  staffCreateSchema,
-  staffUpdateSchema,
+    StaffCreateFormValues,
+    StaffUpdateFormValues,
+    staffCreateSchema,
+    staffUpdateSchema,
 } from "@/features/staff/model/schemas";
 import { Staff } from "@/features/staff/model/types";
 
 import {
-  Button,
-  Form,
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  showToast,
+    Button,
+    Form,
+    Sheet,
+    SheetContent,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
+    showToast
 } from "@/shared/ui";
 import { StaffForm } from "./staff-form";
 
@@ -123,18 +122,11 @@ export function StaffSheet({
 
   return (
     <Sheet open={open} onOpenChange={(val) => !isPending && onOpenChange(val)}>
-      <SheetContent className="w-full sm:max-w-md p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
-        <SheetHeader>
-          <div className="flex items-center justify-between">
-            <SheetTitle className="text-xl font-semibold text-foreground">
-              {mode === "create" ? "Mời nhân viên" : "Hồ sơ nhân viên"}
-            </SheetTitle>
-          </div>
-          <SheetDescription className="text-muted-foreground text-sm">
-            {mode === "create"
-              ? "Tạo tài khoản mới và gửi email mời tham gia hệ thống."
-              : "Quản lý thông tin cá nhân, vai trò và chuyên môn."}
-          </SheetDescription>
+      <SheetContent className="w-full sm:max-w-lg p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
+        <SheetHeader className="px-6 py-4 border-b shrink-0 space-y-0">
+          <SheetTitle className="text-lg font-semibold text-foreground">
+            {mode === "create" ? "Mời nhân viên" : "Hồ sơ nhân viên"}
+          </SheetTitle>
         </SheetHeader>
 
         <div className="sheet-scroll-area" id="sheet-scroll-container">

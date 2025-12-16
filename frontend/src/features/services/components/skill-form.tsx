@@ -72,7 +72,7 @@ export function SkillForm({ skill, onSuccess }: SkillFormProps) {
                 <FormItem>
                 <FormLabel>Tên kỹ năng</FormLabel>
                 <FormControl>
-                    <Input startContent={<Tag className="w-4 h-4 text-muted-foreground" />} placeholder="VD: Massage Body" {...field} />
+                    <Input startContent={<Tag className="size-4" />} placeholder="VD: Massage Body" {...field} />
                 </FormControl>
                 <FormMessage />
                 </FormItem>
@@ -85,7 +85,7 @@ export function SkillForm({ skill, onSuccess }: SkillFormProps) {
                 <FormItem>
                 <FormLabel>Mã kỹ năng</FormLabel>
                 <FormControl>
-                    <Input startContent={<Code className="w-4 h-4 text-muted-foreground" />} placeholder="VD: SK_MASSAGE_BODY" {...field} />
+                    <Input startContent={<Code className="size-4" />} placeholder="VD: SK_MASSAGE_BODY" {...field} />
                 </FormControl>
                 <FormDescription>
                     Mã duy nhất, viết hoa, không dấu cách.

@@ -1,38 +1,37 @@
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import {
-  Calendar,
-  CheckCircle2,
-  Clock,
-  Edit,
-  MapPin,
-  Phone,
-  Receipt,
-  User,
-  XCircle,
+    Calendar,
+    CheckCircle2,
+    Clock,
+    Edit,
+    MapPin,
+    Phone,
+    Receipt,
+    User,
+    XCircle,
 } from "lucide-react";
 import { useEffect, useState } from "react"; // Import useEffect
 
 import {
-  Badge,
-  BadgePreset,
-  Button,
-  Separator,
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
+    Badge,
+    BadgePreset,
+    Button,
+    Separator,
+    Sheet,
+    SheetContent,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle
 } from "@/shared/ui";
 
 import { ReviewPrompt } from "@/features/reviews/components/review-prompt"; // Import ReviewPrompt
 import { MockService } from "../../mock-data";
 import type {
-  Appointment,
-  AppointmentStatus,
-  CalendarEvent,
-  TimelineResource,
+    Appointment,
+    AppointmentStatus,
+    CalendarEvent,
+    TimelineResource,
 } from "../../types";
 import { AppointmentForm } from "./appointment-form";
 
@@ -160,22 +159,15 @@ export function AppointmentSheet({
         {/* ============================================ */}
         {/* HEADER */}
         {/* ============================================ */}
-        <SheetHeader>
+        <SheetHeader className="px-6 py-4 border-b shrink-0 space-y-0">
           <div className="flex items-center justify-between">
-            <div>
-              <SheetTitle className="text-xl">
-                {isCreateMode
-                  ? "Tạo lịch hẹn mới"
-                  : isEditMode
-                  ? "Chỉnh sửa lịch hẹn"
-                  : "Chi tiết lịch hẹn"}
-              </SheetTitle>
-              <SheetDescription>
-                {isCreateMode
-                  ? "Điền thông tin để tạo lịch hẹn"
-                  : appointment?.serviceName}
-              </SheetDescription>
-            </div>
+            <SheetTitle className="text-lg font-semibold">
+              {isCreateMode
+                ? "Tạo lịch hẹn mới"
+                : isEditMode
+                ? "Chỉnh sửa lịch hẹn"
+                : "Chi tiết lịch hẹn"}
+            </SheetTitle>
 
             {/* Status Badge (View mode) */}
             {isViewMode && appointment && (

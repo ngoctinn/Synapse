@@ -6,11 +6,10 @@ import {
   Form,
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  showToast,
+  showToast
 } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Save, Send } from "lucide-react";
@@ -129,15 +128,10 @@ export function ServiceSheet({
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full sm:max-w-lg p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
-        <SheetHeader>
-          <SheetTitle className="text-xl font-semibold text-foreground">
+        <SheetHeader className="px-6 py-4 border-b shrink-0 space-y-0">
+          <SheetTitle className="text-lg font-semibold text-foreground">
             {isUpdateMode ? "Chỉnh sửa dịch vụ" : "Tạo dịch vụ mới"}
           </SheetTitle>
-          <SheetDescription className="text-muted-foreground text-sm">
-            {isUpdateMode
-              ? "Cập nhật thông tin dịch vụ, giá và tài nguyên."
-              : "Thêm dịch vụ mới vào hệ thống của bạn."}
-          </SheetDescription>
         </SheetHeader>
 
         <div className="sheet-scroll-area">

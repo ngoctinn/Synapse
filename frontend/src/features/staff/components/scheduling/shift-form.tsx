@@ -83,7 +83,7 @@ export function ShiftForm({ onSuccess, onCancel }: ShiftFormProps) {
               </FormLabel>
               <FormControl>
                 <Input
-                  startContent={<Tag size={18} />}
+                  startContent={<Tag className="size-4" />}
                   placeholder="Ví dụ: Ca gãy, Tăng ca..."
                   className="h-11 rounded-lg"
                   {...field}

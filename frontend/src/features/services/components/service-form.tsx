@@ -17,6 +17,7 @@ import {
   SelectValue,
   Switch,
   Textarea,
+  showToast,
 } from "@/shared/ui"
 import { Button } from "@/shared/ui/button"
 import { ColorSwatchGroup } from "@/shared/ui/custom/color-swatch-group"
@@ -32,6 +33,7 @@ import { CategoryManagerDialog } from "./category-manager/category-manager-dialo
 import { EquipmentTimelineEditor } from "./equipment-timeline-editor"
 import { ImageUpload } from "./image-upload"
 import { ServiceTimeVisualizer } from "./service-time-visualizer"
+import { SkillManagerDialog } from "./skill-manager/skill-manager-dialog"
 
 interface ServiceFormProps {
   mode: "create" | "update"
@@ -311,18 +313,29 @@ function ServiceTimePriceInfo({ duration, bufferTime }: { duration: number; buff
 
 function ServiceResourcesInfo({
   availableRoomTypes,
-  skillOptions,
+  skills,
+  onSkillsChange,
   availableEquipment,
   duration
 }: {
   availableRoomTypes: RoomType[]
-  skillOptions: { id: string; label: string }[]
+  skills: Skill[]
+  onSkillsChange: (skills: Skill[]) => void
   availableEquipment: Resource[]
   duration: number
 }) {
   const form = useFormContext()
+  const [isSkillManagerOpen, setSkillManagerOpen] = useState(false)
+  const skillOptions = skills.map((s) => ({ id: s.id, label: s.name }))
+
   return (
     <div className="space-y-6">
+      <SkillManagerDialog
+        open={isSkillManagerOpen}
+        onOpenChange={setSkillManagerOpen}
+        onSkillsChange={onSkillsChange}
+      />
+
       <FormField
         control={form.control}
         name="resource_requirements.room_type_id"
@@ -357,29 +370,40 @@ function ServiceResourcesInfo({
         )}
       />
 
-      <FormField
-        control={form.control}
-        name="skill_ids"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>
-              Kỹ năng yêu cầu
-            </FormLabel>
-            <FormControl>
-              <TagInput
-                options={skillOptions}
-                selectedIds={field.value}
-                newTags={form.watch("new_skills")}
-                onSelectedChange={field.onChange}
-                onNewTagsChange={(tags) => form.setValue("new_skills", tags)}
-                placeholder="Chọn kỹ năng..."
-                className="min-h-[40px] text-sm bg-background"
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+            <FormLabel className="text-sm font-medium">Kỹ năng yêu cầu</FormLabel>
+            <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-6 text-xs text-muted-foreground hover:text-primary gap-1"
+                onClick={() => setSkillManagerOpen(true)}
+            >
+                <Settings2 className="w-3 h-3" /> Quản lý kỹ năng
+            </Button>
+        </div>
+        <FormField
+            control={form.control}
+            name="skill_ids"
+            render={({ field }) => (
+            <FormItem>
+                <FormControl>
+                <TagInput
+                    options={skillOptions}
+                    selectedIds={field.value}
+                    newTags={[]}
+                    onSelectedChange={field.onChange}
+                    onNewTagsChange={() => showToast.info("Vui lòng dùng nút 'Quản lý kỹ năng' để thêm mới")}
+                    placeholder="Chọn kỹ năng..."
+                    className="min-h-[40px] text-sm bg-background"
+                />
+                </FormControl>
+                <FormMessage />
+            </FormItem>
+            )}
+        />
+      </div>
 
       <div className="space-y-3 pt-2 border-t">
         <FormLabel>
@@ -429,8 +453,7 @@ export function ServiceForm({
 
   // Local state for categories to support "Quick Add" updates
   const [categories, setCategories] = useState(availableCategories)
-
-  const skillOptions = availableSkills.map((s) => ({ id: s.id, label: s.name }))
+  const [skills, setSkills] = useState(availableSkills)
 
   if (mode === "create") {
     return (
@@ -456,7 +479,8 @@ export function ServiceForm({
           </div>
           <ServiceResourcesInfo
             availableRoomTypes={availableRoomTypes}
-            skillOptions={skillOptions}
+            skills={skills}
+            onSkillsChange={setSkills}
             availableEquipment={availableEquipment}
             duration={duration}
           />
@@ -479,7 +503,8 @@ export function ServiceForm({
             <FormTabsContent value="resources" className="mt-0">
                 <ServiceResourcesInfo
                   availableRoomTypes={availableRoomTypes}
-                  skillOptions={skillOptions}
+                  skills={skills}
+                  onSkillsChange={setSkills}
                   availableEquipment={availableEquipment}
                   duration={duration}
                 />

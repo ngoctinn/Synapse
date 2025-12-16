@@ -26,12 +26,11 @@ import {
   SelectValue,
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
   Switch,
-  TimeRangeInput,
+  TimeRangeInput
 } from "@/shared/ui";
 import { isSameDay } from "date-fns";
 import { AlertTriangle, Plus, Save } from "lucide-react";
@@ -144,14 +143,11 @@ export function ExceptionSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-md p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
-        <SheetHeader>
-          <SheetTitle className="text-xl font-semibold text-foreground">
+      <SheetContent className="w-full sm:max-w-lg p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
+        <SheetHeader className="px-6 py-4 border-b shrink-0 space-y-0">
+          <SheetTitle className="text-lg font-semibold text-foreground">
             {isEditMode ? "Sửa ngày ngoại lệ" : "Thêm ngày ngoại lệ"}
           </SheetTitle>
-          <SheetDescription className="text-muted-foreground text-sm">
-            Cấu hình ngày nghỉ lễ hoặc giờ hoạt động đặc biệt
-          </SheetDescription>
         </SheetHeader>
 
         <div className="sheet-scroll-area">

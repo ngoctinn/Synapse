@@ -1,30 +1,34 @@
 "use client"
 
+import { SkillManagerDialog } from "@/features/services/components/skill-manager/skill-manager-dialog"
 import { Skill } from "@/features/services/types"
 import { cn } from "@/shared/lib/utils"
 import {
-    DatePicker,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-    Input,
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-    TagInput,
-    Textarea,
+  Button,
+  DatePicker,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  showToast,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  TagInput,
+  Textarea,
 } from "@/shared/ui"
 import { format, parse } from "date-fns"
-import { Briefcase, Check, Mail, Phone, User } from "lucide-react"
+import { Briefcase, Check, Mail, Phone, Settings2, User } from "lucide-react"
+import { useState } from "react"
 import { useFormContext, useWatch } from "react-hook-form"
 
 interface StaffFormProps {
@@ -48,10 +52,16 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
   const form = useFormContext()
   const control = form.control
   const role = useWatch({ control, name: "role" })
-
+  const [availableSkills, setAvailableSkills] = useState<Skill[]>(skills)
+  const [isSkillManagerOpen, setSkillManagerOpen] = useState(false)
 
   return (
     <div className={cn("w-full", className)}>
+         <SkillManagerDialog
+            open={isSkillManagerOpen}
+            onOpenChange={setSkillManagerOpen}
+            onSkillsChange={setAvailableSkills}
+        />
         {mode === "create" ? (
              <div className="space-y-6">
                  {renderGeneralInfo()}
@@ -105,7 +115,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                 <FormLabel>Họ và tên</FormLabel>
                 <FormControl>
                     <Input
-                    startContent={<User size={18} />}
+                    startContent={<User className="size-4" />}
                     placeholder="Nguyễn Văn A"
                     {...field}
                     className="bg-background"
@@ -125,7 +135,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                     <FormLabel>Email</FormLabel>
                     <FormControl>
                     <Input
-                        startContent={<Mail size={18} />}
+                        startContent={<Mail className="size-4" />}
                         type="email"
                         placeholder="email@example.com"
                         {...field}
@@ -145,7 +155,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                     <FormLabel>Số điện thoại</FormLabel>
                     <FormControl>
                     <Input
-                        startContent={<Phone size={18} />}
+                        startContent={<Phone className="size-4" />}
                         type="tel"
                         placeholder="0912 345 678"
                         {...field}
@@ -194,7 +204,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                     defaultValue={field.value}
                     disabled={mode === "update"}
                   >
-                    <SelectTrigger startContent={<Briefcase size={18} />}>
+                    <SelectTrigger startContent={<Briefcase className="size-4" />}>
                       <SelectValue placeholder="Chọn vai trò" />
                     </SelectTrigger>
                     <SelectContent>
@@ -216,7 +226,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
                   <FormLabel>Chức danh</FormLabel>
                   <FormControl>
                     <Input
-                      startContent={<Briefcase size={18} />}
+                      startContent={<Briefcase className="size-4" />}
                       placeholder="VD: Senior Tech"
                       {...field}
                       className="bg-background"
@@ -267,22 +277,34 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
       />
 
       {(role === "technician") && (
-        <div className="space-y-2 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-2 duration-300 pt-2">
+        <div className="space-y-3 pt-2 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-2 duration-300">
+            <div className="flex items-center justify-between px-1">
+                <FormLabel className="text-sm font-medium">Kỹ năng chuyên môn</FormLabel>
+                <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 text-xs text-muted-foreground hover:text-primary gap-1 px-2"
+                    onClick={() => setSkillManagerOpen(true)}
+                >
+                    <Settings2 className="w-3 h-3" /> Quản lý kỹ năng
+                </Button>
+            </div>
             <FormField
                 control={control}
                 name="skill_ids"
                 render={({ field, fieldState }) => (
-                    <FormItem>
-                        <FormLabel>Kỹ năng chuyên môn</FormLabel>
+                    <FormItem className="space-y-0">
                         <FormControl>
                             <TagInput
-                                options={skills.map(s => ({ id: s.id, label: s.name }))}
+                                options={availableSkills.map(s => ({ id: s.id, label: s.name }))}
                                 selectedIds={field.value || []}
                                 newTags={[]}
                                 onSelectedChange={(ids) => field.onChange(ids)}
-                                onNewTagsChange={() => {}}
-                                placeholder="Nhập tên kỹ năng rồi nhấn Enter..."
+                                onNewTagsChange={() => showToast.info("Vui lòng dùng nút 'Quản lý kỹ năng' để thêm mới")}
+                                placeholder="Chọn kỹ năng..."
                                 isError={fieldState.invalid}
+                                className="min-h-[40px] text-sm bg-background"
                             />
                         </FormControl>
                         <FormMessage />

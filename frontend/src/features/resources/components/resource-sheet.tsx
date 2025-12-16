@@ -1,15 +1,14 @@
 "use client";
 
 import {
-  Button,
-  Form,
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  showToast,
+    Button,
+    Form,
+    Sheet,
+    SheetContent,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
+    showToast
 } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Save } from "lucide-react";
@@ -90,20 +89,13 @@ export function ResourceSheet({
 
   return (
     <Sheet open={open} onOpenChange={(val) => !isPending && onOpenChange(val)}>
-      <SheetContent className="w-full sm:max-w-md p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
-        <SheetHeader>
-          <div className="flex items-center justify-between">
-            <SheetTitle className="text-xl font-semibold text-foreground">
-              {mode === "update"
-                ? "Chỉnh sửa tài nguyên"
-                : "Thêm tài nguyên mới"}
-            </SheetTitle>
-          </div>
-          <SheetDescription className="text-muted-foreground text-sm">
+      <SheetContent className="w-full sm:max-w-lg p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
+        <SheetHeader className="px-6 py-4 border-b shrink-0 space-y-0">
+          <SheetTitle className="text-lg font-semibold text-foreground">
             {mode === "update"
-              ? "Cập nhật thông tin chi tiết cho tài nguyên này."
-              : "Điền thông tin để tạo tài nguyên mới vào hệ thống."}
-          </SheetDescription>
+              ? "Chỉnh sửa tài nguyên"
+              : "Thêm tài nguyên mới"}
+          </SheetTitle>
         </SheetHeader>
 
         <div className="sheet-scroll-area">

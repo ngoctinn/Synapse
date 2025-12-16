@@ -7,28 +7,27 @@ import { useForm } from "react-hook-form";
 
 import { manageCustomer } from "@/features/customers/actions";
 import {
-  CustomerFormValues,
-  customerSchema,
-  CustomerUpdateFormValues,
-  customerUpdateSchema,
+    CustomerFormValues,
+    customerSchema,
+    CustomerUpdateFormValues,
+    customerUpdateSchema,
 } from "@/features/customers/model/schemas";
 import { Customer } from "@/features/customers/model/types";
 import {
-  getTechnicians,
-  type TechnicianOption,
+    getTechnicians,
+    type TechnicianOption,
 } from "@/features/staff/actions";
 
 import {
-  Badge,
-  Button,
-  Form,
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  showToast,
+    Badge,
+    Button,
+    Form,
+    Sheet,
+    SheetContent,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
+    showToast
 } from "@/shared/ui";
 import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs";
 
@@ -151,30 +150,25 @@ export function CustomerSheet({
           mode === "update" ? "sm:max-w-3xl" : "sm:max-w-lg"
         )}
       >
-        <SheetHeader>
+        <SheetHeader className="px-6 py-4 border-b shrink-0 space-y-0">
           <div className="flex items-center justify-between">
-            <SheetTitle className="text-xl font-semibold text-foreground flex items-center gap-3">
+            <SheetTitle className="text-lg font-semibold text-foreground flex items-center gap-3">
               {mode === "create" ? "Thêm khách hàng mới" : "Hồ sơ khách hàng"}
-
+            </SheetTitle>
+            <div className="flex items-center gap-2">
               {mode === "update" && customer?.allergies && (
                 <Badge variant="destructive" size="sm">
                   <AlertCircle className="size-3.5" />
                   Dị ứng
                 </Badge>
               )}
-
               {mode === "update" && customer?.membership_tier === "GOLD" && (
                 <Badge preset="tier-gold">
                   <Crown className="size-3.5" />
                 </Badge>
               )}
-            </SheetTitle>
+            </div>
           </div>
-          <SheetDescription className="text-muted-foreground text-sm">
-            {mode === "create"
-              ? "Tạo hồ sơ khách hàng mới để bắt đầu đặt lịch và theo dõi liệu trình."
-              : "Quản lý thông tin cá nhân và hồ sơ sức khỏe."}
-          </SheetDescription>
         </SheetHeader>
 
         <div className="sheet-scroll-area" id="sheet-scroll-container">

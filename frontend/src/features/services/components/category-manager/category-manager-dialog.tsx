@@ -2,12 +2,11 @@
 
 import { Button } from "@/shared/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
 } from "@/shared/ui/dialog";
 import { Input } from "@/shared/ui/input";
 import { Loader2, Plus, Save } from "lucide-react";
@@ -97,15 +96,12 @@ export function CategoryManagerDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[500px] flex flex-col max-h-[80vh]">
-        <DialogHeader>
-          <DialogTitle>Quản lý Danh mục Dịch vụ</DialogTitle>
-          <DialogDescription>
-             Sắp xếp, thêm mới hoặc chỉnh sửa danh mục hiển thị trên ứng dụng.
-          </DialogDescription>
+      <DialogContent className="sm:max-w-md flex flex-col max-h-[80vh] p-0 gap-0">
+        <DialogHeader className="px-6 py-4 border-b shrink-0 space-y-0">
+          <DialogTitle className="text-lg">Quản lý Danh mục Dịch vụ</DialogTitle>
         </DialogHeader>
 
-        <div className="flex gap-2 py-4">
+        <div className="flex gap-2 p-4 border-b">
           <Input
             placeholder="Tên danh mục mới..."
             value={newCategoryName}

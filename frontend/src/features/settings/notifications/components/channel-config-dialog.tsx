@@ -4,10 +4,9 @@ import { Button } from "@/shared/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from "@/shared/ui/dialog";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
@@ -59,14 +58,11 @@ export function ChannelConfigDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Cấu hình {channel.name}</DialogTitle>
-          <DialogDescription>
-            Nhập thông tin xác thực để kết nối với dịch vụ {channel.name}.
-          </DialogDescription>
+      <DialogContent className="sm:max-w-md p-0 gap-0">
+        <DialogHeader className="px-6 py-4 border-b shrink-0 space-y-0">
+          <DialogTitle className="text-lg">Cấu hình {channel.name}</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+        <div className="grid gap-4 p-6">
           {Object.keys(channel.config).length > 0 ? (
             Object.keys(channel.config).map((key) => (
               <div key={key} className="grid grid-cols-1 sm:grid-cols-4 items-start sm:items-center gap-2 sm:gap-4">
