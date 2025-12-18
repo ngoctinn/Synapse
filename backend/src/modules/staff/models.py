@@ -7,7 +7,7 @@ Staff Module - Database Models
 """
 
 import uuid
-from datetime import date, datetime, timezone
+from datetime import date, datetime
 from sqlmodel import SQLModel, Field, Relationship
 from typing import TYPE_CHECKING
 

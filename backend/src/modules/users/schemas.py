@@ -1,3 +1,9 @@
+"""
+Users Module - Pydantic Schemas (DTOs)
+
+Các Data Transfer Objects để validate request/response.
+"""
+
 import uuid
 from datetime import date, datetime
 from sqlmodel import SQLModel
@@ -28,8 +34,6 @@ class UserUpdate(SQLModel):
     address: str | None = None
     date_of_birth: date | None = None
 
-class UpdateSkillsRequest(SQLModel):
-    skill_ids: list[uuid.UUID]
 
 class UserFilter(SQLModel):
     role: UserRole | None = None

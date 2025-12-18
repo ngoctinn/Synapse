@@ -1,3 +1,9 @@
+"""
+Common Module - Database Configuration
+
+Quản lý kết nối Database, Async Engine và cơ chế RLS Context Injection.
+"""
+
 from typing import AsyncGenerator, Annotated
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker

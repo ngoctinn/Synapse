@@ -5,7 +5,7 @@ Trích xuất dữ liệu từ Database → SchedulingProblem instance.
 """
 
 import uuid
-from datetime import datetime, date, time, timezone, timedelta
+from datetime import datetime, date, time, timezone
 from sqlalchemy import text
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -78,7 +78,7 @@ class DataExtractor:
                 bi.id,
                 bi.booking_id,
                 bi.service_id,
-                COALESCE(bi.service_name_snapshot, s.name) as service_name,
+                s.name as service_name,
                 bi.start_time,
                 bi.end_time,
                 EXTRACT(EPOCH FROM (bi.end_time - bi.start_time)) / 60 as duration_minutes
@@ -87,8 +87,7 @@ class DataExtractor:
             LEFT JOIN services s ON bi.service_id = s.id
             WHERE bi.start_time >= :start_of_day
               AND bi.start_time < :end_of_day
-              AND bi.staff_id IS NULL
-              AND b.status NOT IN ('CANCELLED', 'NO_SHOW', 'COMPLETED')
+              AND b.status NOT IN ('CANCELLED', 'NO_SHOW')
             ORDER BY bi.start_time
         """)
 
@@ -142,7 +141,7 @@ class DataExtractor:
     ) -> list[uuid.UUID]:
         """Lấy danh sách resource group IDs cần cho service."""
         query = text("""
-            SELECT resource_group_id FROM service_resource_requirements
+            SELECT group_id FROM service_resource_requirements
             WHERE service_id = :service_id
         """)
         result = await self.session.execute(query, {"service_id": str(service_id)})
@@ -162,7 +161,6 @@ class DataExtractor:
             FROM staff_schedules ss
             JOIN shifts s ON ss.shift_id = s.id
             WHERE ss.work_date = :target_date
-              AND ss.status = 'PUBLISHED'
             ORDER BY s.start_time
         """)
         result = await self.session.execute(query, {"target_date": target_date})
@@ -232,7 +230,7 @@ class DataExtractor:
                 rg.name as group_name
             FROM resources r
             JOIN resource_groups rg ON r.group_id = rg.id
-            WHERE r.status = 'AVAILABLE'
+            WHERE r.status = 'ACTIVE'
             ORDER BY rg.name, r.name
         """)
         result = await self.session.execute(query)

@@ -8,8 +8,7 @@ Request/Response giữa Client và Server.
 import uuid
 from datetime import date, datetime
 from pydantic import BaseModel, EmailStr, Field, ConfigDict, field_validator
-from typing import Literal
-
+from src.modules.users.constants import UserRole
 
 # ===== BASE SCHEMAS =====
 
@@ -53,8 +52,6 @@ class StaffBase(BaseModel):
             raise ValueError("Mã màu phải có định dạng #RRGGBB")
         return v
 
-
-from src.modules.users.constants import UserRole
 
 class StaffInvite(BaseModel):
     """

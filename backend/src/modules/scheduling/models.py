@@ -6,7 +6,6 @@ Scheduling Module - Data Structures
 
 import uuid
 from datetime import datetime, date, time
-from decimal import Decimal
 from enum import Enum
 from pydantic import BaseModel, Field
 

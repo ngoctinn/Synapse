@@ -1,116 +1,29 @@
-# Nhật Ký Thay Đổi (Change Log)
+# Nhật Ký Thay Đổi: Đánh Giá & Chuẩn Hóa Backend
 
-## Phiên Làm Việc: 2025-12-16 (Giai đoạn 4)
+## [2025-12-18] - Đợt Cải Thiện Kiến Trúc Toàn Diện
 
-### 🎓 GIAI ĐOẠN ĂN ĐIỂM HỌC THUẬT - SOLVER/RCPSP
+### Thay Đổi (Changes)
+- **Kiến trúc (Architectural)**:
+    - Triển khai **Gatekeeper Pattern** cho các module `users`, `staff`, `services` bằng cách cập nhật `__init__.py`.
+    - Refactor `src/app/main.py` để loại bỏ **Deep Imports** xuyên module.
+    - Chuẩn hóa việc sử dụng `relative imports` trong nội bộ các module.
+- **Tài liệu & Chuẩn hóa (Documentation & Standardization)**:
+    - Bổ sung Module Docstrings cho toàn bộ module `users` (`models`, `service`, `router`, `schemas`).
+    - Bổ sung Module Docstrings cho `services/service.py` và `common/database.py`.
+    - Thêm Class-level docstrings cho `UserService` và `ServiceManagementService`.
+    - **Nâng cấp Swagger UI (Senior Standard)**: Áp dụng chuẩn Docstring Markdown chuyên sâu cho tất cả các endpoint trong 7 module nghiệp vụ. Tài liệu giờ đây bao gồm chi tiết về **Logic Flow**, **Tham số**, và **Các kịch bản lỗi**, giúp lập trình viên Frontend và các bên liên quan hiểu sâu về cơ chế vận hành của API.
+- **Tính năng & Sửa lỗi (Features & Fixes)**:
+    - Sửa lỗi **MissingGreenlet** tiềm ẩn trong `StaffService.get_staff_by_id` bằng cách thêm `selectinload(Staff.user, Staff.skills)`.
+    - Cập nhật `User` model: Đồng bộ các trường `created_at` và `updated_at` sử dụng `sa_type=DateTime(timezone=True)`.
+    - Sửa lỗi Indentation và tách helper `simple_slugify` trong `ServiceManagementService`.
+- **Dọn dẹp (Cleanup)**:
+    - Loại bỏ module trống `employees`.
 
----
+### Kiểm Audit (Audit)
+- Tuân thủ **Vertical Slice Architecture**: ĐẠT.
+- Bảo mật **RLS Injection**: ĐẠT (Kiểm tra trong `database.py`).
+- Syntax **Python 3.12**: ĐẠT.
+- Encapsulation: ĐẠT (Sau khi refactor `__init__.py`).
 
-### 1. Nghiên Cứu Công Nghệ
-
-#### Google OR-Tools CP-SAT
-- **Phiên bản:** 9.14.6206
-- **Công nghệ:** Constraint Programming + Satisfiability
-- **Nguồn tham khảo:**
-  - [CP-SAT Primer](https://d-krupke.github.io/cpsat-primer/)
-  - [Google Developer Docs - Employee Scheduling](https://developers.google.com/optimization/scheduling)
-  - Khung lý thuyết từ `althorism.md`
-
-#### Các khái niệm được áp dụng:
-| Khái niệm | Ứng dụng trong Synapse |
-|:---|:---|
-| IntervalVar | Đại diện cho booking item (start, duration, end) |
-| NoOverlap | Ràng buộc KTV và Phòng không overlap |
-| OptionalInterval | Cho phép gán item cho nhiều KTV khác nhau |
-| BoolVar | Biến quyết định x[item, staff, resource] |
-
----
-
-### 2. Backend Code Changes
-
-#### Module Mới: `src/modules/scheduling/`
-| File | Mô Tả | Dòng Code |
-|:---|:---|:---:|
-| `models.py` | Data structures (Problem, Solution, Metrics) | ~180 |
-| `data_extractor.py` | Trích xuất data từ DB | ~200 |
-| `solver.py` | ⚡ **CORE**: OR-Tools CP-SAT Solver | ~300 |
-| `evaluator.py` | Đánh giá và so sánh lịch | ~150 |
-| `router.py` | API Endpoints | ~200 |
-| `__init__.py` | Public API | ~50 |
-
-**Tổng:** ~1,080 dòng code mới
-
----
-
-### 3. Mô Hình Toán Học
-
-```
-Minimize Z = α·C_pref + β·C_idle + γ·C_fairness
-
-Subject to:
-1. ∀ item: exactly one (staff, resource) assignment
-2. ∀ staff: NoOverlap(intervals)
-3. ∀ resource: NoOverlap(intervals)
-4. ∀ (item, staff): skill matching
-5. ∀ (item, resource): resource group matching
-6. ∀ (staff, time): within working schedule
-```
-
----
-
-### 4. API Endpoints Mới
-
-| Method | Endpoint | Mô tả |
-|:---|:---|:---|
-| POST | `/scheduling/solve` | Giải bài toán lập lịch |
-| POST | `/scheduling/evaluate` | Đánh giá lịch hiện tại |
-| POST | `/scheduling/compare` | So sánh Manual vs Optimized |
-| GET | `/scheduling/suggestions/{booking_id}` | Gợi ý cho booking cụ thể |
-| GET | `/scheduling/health` | Kiểm tra OR-Tools |
-
----
-
-### 5. Metrics Được Tính Toán
-
-| Metric | Mô tả | Công thức |
-|:---|:---|:---|
-| `staff_utilization` | Tỷ lệ sử dụng KTV | assigned_time / available_time |
-| `resource_utilization` | Tỷ lệ sử dụng Phòng | resource_time / total_time |
-| `jain_fairness_index` | Công bằng workload | (Σx)² / (n·Σx²) |
-| `preference_satisfaction` | Đáp ứng sở thích | matched / total_with_pref |
-| `load_distribution` | Max/Min/Avg workload | Phút làm việc mỗi KTV |
-
----
-
-### 6. Dependencies Mới
-
-```txt
-ortools>=9.10
-```
-
-**Cài đặt thành công:** ✅
-
----
-
-### 7. Kiểm Tra
-
-| Hạng Mục | Kết Quả |
-|:---|:---:|
-| OR-Tools Install | ✅ Pass |
-| Backend Import | ✅ Pass |
-| Module Structure | ✅ Complete |
-
----
-
-### 8. Các File Đã Tạo
-
-**Tạo mới:**
-- `backend/src/modules/scheduling/models.py`
-- `backend/src/modules/scheduling/data_extractor.py`
-- `backend/src/modules/scheduling/solver.py`
-- `backend/src/modules/scheduling/evaluator.py`
-- `backend/src/modules/scheduling/router.py`
-- `backend/src/modules/scheduling/__init__.py`
-
-**Sửa đổi:**
-- `backend/src/app/main.py`
+### Ghi Chú (Notes)
+- Cần lưu ý các module mới phát sinh sau này phải tuân thủ việc export Router và Service trong `__init__.py`.

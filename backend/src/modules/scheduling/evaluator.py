@@ -4,7 +4,6 @@ Scheduling Module - Solution Evaluator
 Đánh giá chất lượng lịch hiện tại (Manual) và so sánh với lịch tối ưu.
 """
 
-import uuid
 from datetime import datetime, date, time, timezone
 from sqlalchemy import text
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -156,7 +155,6 @@ class ScheduleEvaluator:
             FROM staff_schedules ss
             JOIN shifts s ON ss.shift_id = s.id
             WHERE ss.work_date = :target_date
-              AND ss.status = 'PUBLISHED'
         """)
         result = await self.session.execute(query, {"target_date": target_date})
         row = result.fetchone()
@@ -164,7 +162,7 @@ class ScheduleEvaluator:
 
     async def _count_available_resources(self) -> int:
         """Đếm số resources khả dụng."""
-        query = text("SELECT COUNT(*) FROM resources WHERE status = 'AVAILABLE'")
+        query = text("SELECT COUNT(*) FROM resources WHERE status = 'ACTIVE'")
         result = await self.session.execute(query)
         row = result.fetchone()
         return int(row[0]) if row else 0

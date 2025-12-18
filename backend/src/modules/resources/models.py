@@ -10,7 +10,7 @@ Resources Module - Database Models
 import uuid
 from datetime import datetime, timezone
 from enum import Enum
-from sqlalchemy import DateTime
+from sqlalchemy import DateTime, Enum as SAEnum
 from sqlmodel import SQLModel, Field, Relationship
 from typing import TYPE_CHECKING
 
@@ -68,7 +68,9 @@ class ResourceGroup(SQLModel, table=True):
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     name: str = Field(max_length=100)
-    type: ResourceType
+    type: ResourceType = Field(
+        sa_type=SAEnum(ResourceType, name="resource_type")
+    )
     description: str | None = None
     deleted_at: datetime | None = None
     created_at: datetime = Field(
@@ -100,7 +102,10 @@ class Resource(SQLModel, table=True):
     )
     name: str = Field(max_length=100)
     code: str | None = Field(default=None, max_length=50, unique=True)
-    status: ResourceStatus = Field(default=ResourceStatus.ACTIVE)
+    status: ResourceStatus = Field(
+        default=ResourceStatus.ACTIVE,
+        sa_type=SAEnum(ResourceStatus, name="resource_status")
+    )
     capacity: int = Field(default=1, ge=1)
     setup_time_minutes: int = Field(default=0, ge=0)
     description: str | None = None

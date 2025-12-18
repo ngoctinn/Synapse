@@ -8,9 +8,6 @@ from sqlmodel import SQLModel
 
 from alembic import context
 from src.app.config import settings
-from src.modules.users.models import User  # Import models to register them
-from src.modules.services.models import Service, Skill, ServiceSkill
-from src.modules.staff.models import Staff, StaffSkill
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

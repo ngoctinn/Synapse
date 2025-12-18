@@ -1,6 +1,12 @@
+"""
+Users Module - Database Models
+
+Định nghĩa cấu trúc bảng người dùng trong hệ thống.
+"""
+
 from datetime import date, datetime, timezone
 import uuid
-from sqlmodel import SQLModel, Field, Relationship
+from sqlmodel import SQLModel, Field, Relationship, DateTime
 from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
@@ -19,8 +25,14 @@ class User(SQLModel, table=True):
     role: str = Field(default="customer")
     is_active: bool = Field(default=True)  # Vô hiệu hóa tài khoản
 
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(
+        sa_type=DateTime(timezone=True),
+        default_factory=lambda: datetime.now(timezone.utc)
+    )
+    updated_at: datetime = Field(
+        sa_type=DateTime(timezone=True),
+        default_factory=lambda: datetime.now(timezone.utc)
+    )
 
     # Relationship với Staff (1-1, optional)
     # Chỉ User có role != "customer" mới có staff_profile

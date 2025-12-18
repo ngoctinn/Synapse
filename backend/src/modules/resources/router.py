@@ -1,10 +1,7 @@
 """
-Resources Module - API Endpoints (Router)
+Resources Module - API Endpoints
 
-Tuân thủ Backend Rules:
-- Docstring Markdown cho Swagger UI (Tiếng Việt)
-- Service as Dependency
-- Response models rõ ràng
+Quản lý cơ sở hạ tầng spa bao gồm các Nhóm tài nguyên (Phòng, Máy móc) và các tài nguyên cụ thể.
 """
 
 import uuid
@@ -20,7 +17,7 @@ from .schemas import (
     ResourceRead,
 )
 
-router = APIRouter(prefix="/resources", tags=["Tài Nguyên"])
+router = APIRouter(prefix="/resources", tags=["Resources"])
 
 
 # ============================================================================
@@ -29,19 +26,19 @@ router = APIRouter(prefix="/resources", tags=["Tài Nguyên"])
 
 @router.get(
     "/groups",
-    response_model=list[ResourceGroupRead],
-    summary="Lấy danh sách nhóm tài nguyên"
+    response_model=list[ResourceGroupRead]
 )
 async def list_resource_groups(
     service: ResourceGroupService = Depends()
 ) -> list[ResourceGroupRead]:
     """
-    Lấy tất cả nhóm tài nguyên trong hệ thống.
+    **Lấy danh sách các nhóm tài nguyên.**
 
-    **Ví dụ nhóm tài nguyên:**
-    - Phòng đơn (ROOM)
-    - Phòng VIP (ROOM)
-    - Máy Laser (EQUIPMENT)
+    Truy vấn toàn bộ các danh mục tài nguyên hiện có (Vd: Nhóm "Giường đơn", Nhóm "Phòng VIP").
+
+    ### Logic Flow:
+    1. Truy vấn Database bảng `resource_groups`.
+    2. Trả về danh sách object `ResourceGroupRead`.
     """
     return await service.get_all()
 
@@ -49,55 +46,54 @@ async def list_resource_groups(
 @router.post(
     "/groups",
     response_model=ResourceGroupRead,
-    status_code=status.HTTP_201_CREATED,
-    summary="Tạo nhóm tài nguyên mới"
+    status_code=status.HTTP_201_CREATED
 )
 async def create_resource_group(
     data: ResourceGroupCreate,
     service: ResourceGroupService = Depends()
 ) -> ResourceGroupRead:
     """
-    Tạo nhóm tài nguyên mới.
+    **Định nghĩa một nhóm tài nguyên mới.**
 
-    **Các trường bắt buộc:**
-    - `name`: Tên nhóm (VD: "Phòng đơn")
-    - `type`: Loại nhóm (ROOM hoặc EQUIPMENT)
+    Tạo các cấp danh mục để phân loại tài nguyên vật lý trong trung tâm Spa.
 
-    **Lỗi có thể xảy ra:**
-    - `400`: Dữ liệu không hợp lệ
+    ### Logic Flow:
+    1. Nhận dữ liệu `name`, `description`.
+    2. Lưu bản ghi mới vào Database.
+    3. Trả về thông tin nhóm vừa tạo.
     """
     return await service.create(data)
 
 
 @router.get(
     "/groups/{group_id}",
-    response_model=ResourceGroupRead,
-    summary="Lấy chi tiết nhóm tài nguyên"
+    response_model=ResourceGroupRead
 )
 async def get_resource_group(
     group_id: uuid.UUID,
     service: ResourceGroupService = Depends()
 ) -> ResourceGroupRead:
     """
-    Lấy thông tin chi tiết một nhóm tài nguyên.
+    **Xem chi tiết nhóm tài nguyên.**
 
-    **Lỗi có thể xảy ra:**
-    - `404`: Không tìm thấy nhóm tài nguyên
+    Truy vấn thông tin chi tiết của một nhóm cụ thể theo ID.
+
+    ### Lỗi có thể xảy ra:
+    - `404 Not Found`: Nếu ID nhóm không tồn tại.
     """
     group = await service.get_by_id(group_id)
     if not group:
         from fastapi import HTTPException
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Không tìm thấy nhóm tài nguyên"
+            detail="Resource group not found"
         )
     return group
 
 
 @router.patch(
     "/groups/{group_id}",
-    response_model=ResourceGroupRead,
-    summary="Cập nhật nhóm tài nguyên"
+    response_model=ResourceGroupRead
 )
 async def update_resource_group(
     group_id: uuid.UUID,
@@ -105,32 +101,25 @@ async def update_resource_group(
     service: ResourceGroupService = Depends()
 ) -> ResourceGroupRead:
     """
-    Cập nhật thông tin nhóm tài nguyên.
+    **Cập nhật thông tin nhóm tài nguyên.**
 
-    **Lưu ý:** Chỉ cần gửi các trường muốn thay đổi.
-
-    **Lỗi có thể xảy ra:**
-    - `404`: Không tìm thấy nhóm tài nguyên
+    Chỉnh sửa tên hoặc mô tả của nhóm hiện có (Cập nhật từng phần - Partial update).
     """
     return await service.update(group_id, data)
 
 
 @router.delete(
     "/groups/{group_id}",
-    status_code=status.HTTP_204_NO_CONTENT,
-    summary="Xóa nhóm tài nguyên"
+    status_code=status.HTTP_204_NO_CONTENT
 )
 async def delete_resource_group(
     group_id: uuid.UUID,
     service: ResourceGroupService = Depends()
 ) -> None:
     """
-    Xóa mềm nhóm tài nguyên (Soft Delete).
+    **Xóa nhóm tài nguyên (Soft Delete).**
 
-    **Lưu ý:** Các tài nguyên thuộc nhóm này sẽ có `group_id = NULL`.
-
-    **Lỗi có thể xảy ra:**
-    - `404`: Không tìm thấy nhóm tài nguyên
+    Đánh dấu nhóm tài nguyên là đã bị xóa để đảm bảo toàn vẹn dữ liệu cho các bản ghi liên quan (Vd: các Resource con).
     """
     await service.soft_delete(group_id)
 
@@ -141,23 +130,19 @@ async def delete_resource_group(
 
 @router.get(
     "",
-    response_model=list[ResourceRead],
-    summary="Lấy danh sách tài nguyên"
+    response_model=list[ResourceRead]
 )
 async def list_resources(
     group_id: uuid.UUID | None = None,
     service: ResourceService = Depends()
 ) -> list[ResourceRead]:
     """
-    Lấy tất cả tài nguyên trong hệ thống.
+    **Lấy danh sách các tài nguyên spa cụ thể.**
 
-    **Query Parameters:**
-    - `group_id` (optional): Lọc theo nhóm tài nguyên
+    Truy vấn các tài nguyên vật lý (Vd: "Phòng VIP 1", "Máy triệt lông Apollo"). Có hỗ trợ lọc nhanh theo nhóm.
 
-    **Ví dụ tài nguyên:**
-    - Phòng VIP 1
-    - Phòng 02
-    - Máy Laser 01
+    ### Tham số lọc:
+    - **group_id**: Nếu cung cấp, chỉ lấy các tài nguyên thuộc nhóm này.
     """
     return await service.get_all(group_id=group_id)
 
@@ -165,61 +150,48 @@ async def list_resources(
 @router.post(
     "",
     response_model=ResourceRead,
-    status_code=status.HTTP_201_CREATED,
-    summary="Tạo tài nguyên mới"
+    status_code=status.HTTP_201_CREATED
 )
 async def create_resource(
     data: ResourceCreate,
     service: ResourceService = Depends()
 ) -> ResourceRead:
     """
-    Tạo tài nguyên mới.
+    **Đăng ký tài nguyên mới vào hệ thống.**
 
-    **Các trường bắt buộc:**
-    - `name`: Tên tài nguyên (VD: "Phòng VIP 1")
+    Khởi tạo một tài nguyên vật lý và gán nó vào một nhóm quản lý cụ thể.
 
-    **Các trường tùy chọn:**
-    - `group_id`: ID nhóm tài nguyên
-    - `code`: Mã định danh (unique)
-    - `capacity`: Sức chứa
-    - `setup_time_minutes`: Thời gian chuẩn bị
-
-    **Lỗi có thể xảy ra:**
-    - `400`: Dữ liệu không hợp lệ
-    - `409`: Mã code đã tồn tại
+    ### Logic Flow:
+    1. Kiểm tra sự tồn tại của `group_id`.
+    2. Lưu bản ghi tài nguyên mới.
     """
     return await service.create(data)
 
 
 @router.get(
     "/{resource_id}",
-    response_model=ResourceRead,
-    summary="Lấy chi tiết tài nguyên"
+    response_model=ResourceRead
 )
 async def get_resource(
     resource_id: uuid.UUID,
     service: ResourceService = Depends()
 ) -> ResourceRead:
     """
-    Lấy thông tin chi tiết một tài nguyên.
-
-    **Lỗi có thể xảy ra:**
-    - `404`: Không tìm thấy tài nguyên
+    **Xem thông tin chi tiết một tài nguyên cụ thể.**
     """
     resource = await service.get_by_id(resource_id)
     if not resource:
         from fastapi import HTTPException
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Không tìm thấy tài nguyên"
+            detail="Resource not found"
         )
     return resource
 
 
 @router.patch(
     "/{resource_id}",
-    response_model=ResourceRead,
-    summary="Cập nhật tài nguyên"
+    response_model=ResourceRead
 )
 async def update_resource(
     resource_id: uuid.UUID,
@@ -227,31 +199,20 @@ async def update_resource(
     service: ResourceService = Depends()
 ) -> ResourceRead:
     """
-    Cập nhật thông tin tài nguyên.
-
-    **Lưu ý:** Chỉ cần gửi các trường muốn thay đổi.
-
-    **Lỗi có thể xảy ra:**
-    - `404`: Không tìm thấy tài nguyên
+    **Cập nhật trạng thái hoặc thông tin tài nguyên.**
     """
     return await service.update(resource_id, data)
 
 
 @router.delete(
     "/{resource_id}",
-    status_code=status.HTTP_204_NO_CONTENT,
-    summary="Xóa tài nguyên"
+    status_code=status.HTTP_204_NO_CONTENT
 )
 async def delete_resource(
     resource_id: uuid.UUID,
     service: ResourceService = Depends()
 ) -> None:
     """
-    Xóa mềm tài nguyên (Soft Delete).
-
-    **Lưu ý:** Các lịch hẹn đã đặt với tài nguyên này vẫn được giữ.
-
-    **Lỗi có thể xảy ra:**
-    - `404`: Không tìm thấy tài nguyên
+    **Xóa tài nguyên khỏi hệ thống (Soft Delete).**
     """
     await service.soft_delete(resource_id)

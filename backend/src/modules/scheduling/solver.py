@@ -9,7 +9,7 @@ cho nghiệp vụ Spa - gán KTV và Phòng cho booking items.
 
 import uuid
 import time as time_module
-from datetime import datetime, date, time, timezone, timedelta
+from datetime import datetime, time
 from ortools.sat.python import cp_model
 
 from .models import (
@@ -187,7 +187,6 @@ class SpaSolver:
                     # Tạo interval variable (optional)
                     start_minutes = self._time_to_minutes(item.start_time)
                     duration = item.duration_minutes
-                    end_minutes = start_minutes + duration
 
                     interval = self.model.NewOptionalFixedSizeIntervalVar(
                         start_minutes, duration, is_assigned,

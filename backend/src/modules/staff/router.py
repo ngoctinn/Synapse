@@ -1,7 +1,7 @@
 """
-Staff Module - API Router (Presentation Layer)
+Staff Module - API Endpoints
 
-Định nghĩa các API endpoints để quản lý nhân viên.
+Quản lý hồ sơ chuyên môn của nhân viên, bao gồm quy trình mời nhân viên mới, phân vai trò và gán kỹ năng.
 """
 
 import uuid
@@ -19,9 +19,7 @@ from .schemas import (
 )
 from .exceptions import StaffNotFound, StaffAlreadyExists, StaffOperationError
 
-
-router = APIRouter(prefix="/staff", tags=["Staff Management"])
-
+router = APIRouter(prefix="/staff", tags=["Staff"])
 
 @router.post("/invite", status_code=status.HTTP_201_CREATED)
 async def invite_staff(
@@ -29,24 +27,28 @@ async def invite_staff(
     service: StaffService = Depends(StaffService)
 ) -> dict:
     """
-    Mời nhân viên mới.
+    **Mời nhân viên mới tham gia hệ thống.**
 
-    Tạo User qua Supabase (gửi email invite) và Staff profile tương ứng.
+    Gửi email mời thông qua Supabase Auth và tự động khởi tạo hồ sơ Staff trong Database.
 
-    - **Request Body**:
-        - `email`: Email nhân viên (sẽ nhận email mời).
-        - `role`: Vai trò (admin, receptionist, technician).
-        - `full_name`: Họ tên đầy đủ.
-        - `title`: Chức danh (VD: "Kỹ thuật viên cao cấp").
-        - `bio`: Giới thiệu (tùy chọn).
+    ### Logic Flow:
+    1. Gọi Supabase Auth Admin API để mời User bằng Email.
+    2. Nếu User đã tồn tại, thực hiện nâng cấp (Promote) role của User đó.
+    3. Bypass RLS bằng `service_role` để lưu thông tin cơ bản vào bảng `users`.
+    4. Khởi tạo bản ghi trong bảng `staff` với các thông tin nghiệp vụ ban đầu (Title, Hired date, v.v.).
 
-    - **Response**:
-        - `message`: Thông báo đã gửi email.
-        - `user_id`: UUID của user vừa tạo.
+    ### Tham số đầu vào:
+    - **email**: Địa chỉ nhận thư mời.
+    - **role**: Phân quyền (`admin`, `receptionist`, `technician`).
+    - **full_name**: Tên hiển thị.
+    - **title**: Chức danh chuyên môn.
 
-    - **Errors**:
-        - `400`: Email đã tồn tại.
-        - `500`: Lỗi khi gọi Supabase API.
+    ### Chú ý:
+    - Sau khi mời thành công, nhân viên sẽ nhận được email để thiết lập mật khẩu.
+
+    ### Lỗi có thể xảy ra:
+    - `400 Bad Request`: Email đã được đăng ký làm nhân viên trước đó.
+    - `500 Internal Server Error`: Lỗi kết nối với nhà cung cấp dịch vụ xác thực (Supabase).
     """
     try:
         return await service.invite_staff(data)
@@ -54,7 +56,6 @@ async def invite_staff(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.detail)
     except StaffOperationError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.detail)
-
 
 @router.get("/", response_model=StaffListResponse)
 async def list_staff(
@@ -65,21 +66,23 @@ async def list_staff(
     service: StaffService = Depends(StaffService)
 ) -> StaffListResponse:
     """
-    Lấy danh sách nhân viên.
+    **Lấy danh sách nhân viên hệ thống.**
 
-    Hỗ trợ phân trang và lọc theo role/trạng thái.
+    Truy vấn danh sách nhân viên kèm theo thông tin tài khoản và kỹ năng. Hỗ trợ phân trang và lọc nâng cao.
 
-    - **Query Parameters**:
-        - `page`: Trang hiện tại (mặc định: 1).
-        - `limit`: Số lượng mỗi trang (mặc định: 10, tối đa: 100).
-        - `role`: Lọc theo vai trò (admin, receptionist, technician).
-        - `is_active`: Lọc theo trạng thái hoạt động (true/false).
+    ### Logic Flow:
+    1. Join bảng `staff` với bảng `users` để lấy thông tin cá nhân.
+    2. Áp dụng filter theo `role` (vai trò) hoặc `is_active` (trạng thái hoạt động).
+    3. Thực hiện Eager Loading (`selectinload`) cho các quan hệ `user` và `skills` để tối ưu performance.
+    4. Trả về kết quả phân trang.
 
-    - **Response**:
-        - `data`: Danh sách staff.
-        - `total`: Tổng số staff.
-        - `page`: Trang hiện tại.
-        - `limit`: Số lượng mỗi trang.
+    ### Tham số query:
+    - **role**: admin, receptionist, technician.
+    - **is_active**: true/false.
+    - **page / limit**: Các thông số phân trang chuẩn.
+
+    ### Lỗi có thể xảy ra:
+    - `400 Bad Request`: Tham số phân trang không hợp lệ.
     """
     return await service.get_staff_list(
         page=page,
@@ -88,30 +91,30 @@ async def list_staff(
         is_active=is_active
     )
 
-
 @router.get("/{user_id}", response_model=StaffRead)
 async def get_staff_detail(
     user_id: uuid.UUID,
     service: StaffService = Depends(StaffService)
 ) -> StaffRead:
     """
-    ## Lấy chi tiết 1 nhân viên
+    **Xem chi tiết hồ sơ công việc của nhân viên.**
 
-    Trả về thông tin đầy đủ kèm User info và Skills.
+    Lấy toàn bộ thông tin nghiệp vụ, tài khoản và các kỹ năng chuyên môn của một nhân viên cụ thể.
 
-    **Path Parameters**:
-    - `user_id`: UUID của user
+    ### Logic Flow:
+    1. Tìm kiếm bản ghi trong bảng `staff` theo ID.
+    2. Tải trước thông tin User và Skills đi kèm.
 
-    **Response**: Thông tin staff đầy đủ
+    ### Tham số đầu vào:
+    - **user_id**: ID của nhân viên (trùng với User ID).
 
-    **Errors**:
-    - `404`: Không tìm thấy nhân viên
+    ### Lỗi có thể xảy ra:
+    - `404 Not Found`: Không tìm thấy ID nhân viên yêu cầu.
     """
     try:
         return await service.get_staff_by_id(user_id)
     except StaffNotFound as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.detail)
-
 
 @router.post("/", response_model=StaffRead, status_code=status.HTTP_201_CREATED)
 async def create_staff(
@@ -119,19 +122,23 @@ async def create_staff(
     service: StaffService = Depends(StaffService)
 ) -> StaffRead:
     """
-    ## Tạo Staff profile cho User đã tồn tại
+    **Thiết lập hồ sơ Staff cho User sẵn có.**
 
-    Dùng khi User đã được tạo từ nguồn khác (không qua invite).
+    Chỉ sử dụng khi một User đã tồn tại (Vd: Khách hàng cũ) được tuyển dụng và cần tạo hồ sơ nhân viên.
 
-    **Request Body**:
-    - `user_id`: UUID của user đã tồn tại
-    - `hired_at`: Ngày vào làm
-    - `title`: Chức danh
-    - `bio`, `color_code`, `commission_rate`: Tùy chọn
+    ### Logic Flow:
+    1. Kiểm tra User ID có tồn tại trong hệ thống không.
+    2. Đảm bảo User không phải là `CUSTOMER` (Khách hàng không được trực tiếp làm staff).
+    3. Kiểm tra xem profile staff đã tồn tại chưa để tránh trùng lặp.
+    4. Khởi tạo dữ liệu nghiệp vụ (Title, hired date...).
 
-    **Errors**:
-    - `404`: User không tồn tại
-    - `400`: User đã có Staff profile hoặc là customer
+    ### Tham số đầu vào:
+    - **user_id**: ID của User hiện tại.
+    - **title**: Chức danh được bổ nhiệm.
+
+    ### Lỗi có thể xảy ra:
+    - `404 Not Found`: Không tìm thấy User ID.
+    - `400 Bad Request`: User đã có profile staff hoặc tài khoản đang ở role Customer.
     """
     try:
         return await service.create_staff(data)
@@ -142,7 +149,6 @@ async def create_staff(
     except StaffOperationError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.detail)
 
-
 @router.put("/{user_id}", response_model=StaffRead)
 async def update_staff(
     user_id: uuid.UUID,
@@ -150,27 +156,26 @@ async def update_staff(
     service: StaffService = Depends(StaffService)
 ) -> StaffRead:
     """
-    ## Cập nhật thông tin nhân viên
+    **Cập nhật thông tin công việc của nhân viên.**
 
-    Partial update (chỉ cập nhật các trường được gửi lên).
+    Cho phép chỉnh sửa các thông tin như Chức danh, Tiểu sử, Màu sắc hiển thị trên lịch điều phối.
 
-    **Path Parameters**:
-    - `user_id`: UUID của user
+    ### Logic Flow:
+    1. Kiểm tra sự tồn tại của Staff.
+    2. Cập nhật các trường dữ liệu mới (chỉ cập nhật những gì được gửi lên).
+    3. Ghi nhận thời gian cập nhật `updated_at`.
 
-    **Request Body** (tất cả optional):
-    - `title`: Chức danh mới
-    - `bio`: Giới thiệu mới
-    - `color_code`: Màu mới
-    - `commission_rate`: Tỷ lệ hoa hồng mới
+    ### Tham số đầu vào:
+    - **user_id**: ID nhân viên cần chỉnh sửa.
+    - **data**: Model chứa các trường cần thay đổi.
 
-    **Errors**:
-    - `404`: Không tìm thấy nhân viên
+    ### Lỗi có thể xảy ra:
+    - `404 Not Found`: Không tìm thấy nhân viên.
     """
     try:
         return await service.update_staff(user_id, data)
     except StaffNotFound as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.detail)
-
 
 @router.delete("/{user_id}", status_code=status.HTTP_200_OK)
 async def deactivate_staff(
@@ -178,24 +183,25 @@ async def deactivate_staff(
     service: StaffService = Depends(StaffService)
 ) -> dict:
     """
-    ## Vô hiệu hóa tài khoản nhân viên (Soft Delete)
+    **Vô hiệu hóa tài khoản nhân viên (Soft Delete).**
 
-    Không xóa khỏi database mà chỉ set `is_active = False`.
-    Nhân viên không thể đăng nhập nhưng dữ liệu vẫn được giữ lại.
+    Thay vì xóa dữ liệu, API này sẽ đánh dấu nhân viên không còn hoạt động.
 
-    **Path Parameters**:
-    - `user_id`: UUID của user
+    ### Logic Flow:
+    1. Tìm User tương ứng với ID được cung cấp.
+    2. Set `is_active = False` để ngăn đăng nhập và hiển thị trên các ứng dụng.
+    3. Giữ nguyên dữ liệu lịch sử (Bookings, Schedules) để phục vụ báo cáo.
 
-    **Response**: Thông báo thành công
+    ### Chú ý:
+    - Tài khoản bị vô hiệu hóa sẽ không thể đăng nhập vào Dashboard.
 
-    **Errors**:
-    - `404`: Không tìm thấy nhân viên
+    ### Lỗi có thể xảy ra:
+    - `404 Not Found`: ID nhân viên không tồn tại.
     """
     try:
         return await service.deactivate_staff(user_id)
     except StaffNotFound as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.detail)
-
 
 @router.put("/{user_id}/skills", response_model=StaffRead)
 async def update_staff_skills(
@@ -204,22 +210,25 @@ async def update_staff_skills(
     service: StaffService = Depends(StaffService)
 ) -> StaffRead:
     """
-    ## Gán kỹ năng cho Kỹ thuật viên
+    **Gán kỹ năng chuyên môn cho Kỹ thuật viên.**
 
-    Chỉ User có role = 'technician' mới được gán skills.
-    Thay thế toàn bộ skills cũ bằng danh sách mới (replace strategy).
+    Quản lý danh sách các dịch vụ mà Kỹ thuật viên có khả năng thực hiện.
 
-    **Path Parameters**:
-    - `user_id`: UUID của user
+    ### Logic Flow:
+    1. Xác thực: Chỉ User có role `TECHNICIAN` mới được phép gán kỹ năng.
+    2. Xóa bỏ toàn bộ các kỹ năng cũ đã gán.
+    3. Kiểm tra tính hợp lệ của danh sách Skill ID mới.
+    4. Thiết lập quan hệ Many-to-Many mới giữa Staff và Skills.
 
-    **Request Body**:
-    - `skill_ids`: Danh sách UUID của skills (không được rỗng)
+    ### Tại sao cần API này?
+    - Dùng để hệ thống Lập lịch (Scheduling) biết KTV nào có thể thực hiện dịch vụ nào.
 
-    **Response**: Staff với skills đã cập nhật
+    ### Tham số đầu vào:
+    - **skill_ids**: Danh sách UUID của các kỹ năng trong danh mục.
 
-    **Errors**:
-    - `404`: Không tìm thấy nhân viên hoặc skill
-    - `400`: Không phải Kỹ thuật viên
+    ### Lỗi có thể xảy ra:
+    - `400 Bad Request`: Không phải là Kỹ thuật viên hoặc Skill ID không hợp lệ.
+    - `404 Not Found`: Không tìm thấy nhân viên.
     """
     try:
         return await service.update_staff_skills(user_id, data)

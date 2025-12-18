@@ -6,9 +6,8 @@ Chứa toàn bộ logic nghiệp vụ liên quan đến quản lý nhân viên.
 
 import uuid
 import random
-import asyncio
 from datetime import date, datetime, timezone
-from fastapi import Depends, HTTPException
+from fastapi import Depends
 from sqlmodel import select, func, text
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -225,6 +224,7 @@ class StaffService:
         query = (
             select(Staff)
             .where(Staff.user_id == user_id)
+            .options(selectinload(Staff.user), selectinload(Staff.skills))
         )
 
         result = await self.session.exec(query)

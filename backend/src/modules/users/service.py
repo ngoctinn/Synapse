@@ -1,17 +1,25 @@
+"""
+Users Module - Business Logic (Service Layer)
+
+Quản lý hồ sơ người dùng, phân quyền và tích hợp với Supabase Auth.
+"""
+
 from typing import Annotated
 import uuid
-from datetime import datetime, timezone
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends
 from starlette.concurrency import run_in_threadpool
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.common.database import get_db_session
 from src.modules.users.models import User
-from sqlmodel import select, delete, func, or_, col
+from sqlmodel import select, func, or_, col
 from src.common.supabase_admin import get_supabase_admin
 from src.modules.users.schemas import UserUpdate, UserFilter, UserListResponse
 from src.modules.users.exceptions import UserNotFound, UserOperationError
 
 class UserService:
+    """
+    Service xử lý các nghiệp vụ cốt lõi về người dùng.
+    """
     def __init__(self, session: Annotated[AsyncSession, Depends(get_db_session)]):
         self.session = session
 
@@ -43,8 +51,6 @@ class UserService:
         await self.session.commit()
         await self.session.refresh(user)
         return user
-
-
 
     async def get_users(self, filter: UserFilter) -> UserListResponse:
         """Lấy danh sách người dùng (có phân trang & lọc)."""

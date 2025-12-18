@@ -9,7 +9,7 @@ Schedules Module - Database Models
 import uuid
 from datetime import datetime, time, date, timezone
 from enum import Enum
-from sqlalchemy import DateTime, Time, Date
+from sqlalchemy import DateTime, Time, Date, Enum as SAEnum
 from sqlmodel import SQLModel, Field, Relationship
 from typing import TYPE_CHECKING
 
@@ -71,7 +71,10 @@ class StaffSchedule(SQLModel, table=True):
         ondelete="CASCADE"
     )
     work_date: date = Field(sa_type=Date())
-    status: ScheduleStatus = Field(default=ScheduleStatus.DRAFT)
+    status: ScheduleStatus = Field(
+        default=ScheduleStatus.DRAFT,
+        sa_type=SAEnum(ScheduleStatus, name="schedule_status")
+    )
     notes: str | None = None
     created_at: datetime = Field(
         sa_type=DateTime(timezone=True),

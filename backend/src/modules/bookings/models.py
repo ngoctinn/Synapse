@@ -13,7 +13,7 @@ import uuid
 from datetime import datetime, timezone
 from decimal import Decimal
 from enum import Enum
-from sqlalchemy import DateTime, DECIMAL
+from sqlalchemy import DateTime, DECIMAL, Enum as SAEnum
 from sqlmodel import SQLModel, Field, Relationship
 from typing import TYPE_CHECKING
 
@@ -111,7 +111,10 @@ class Booking(SQLModel, table=True):
     )
     start_time: datetime = Field(sa_type=DateTime(timezone=True))
     end_time: datetime = Field(sa_type=DateTime(timezone=True))
-    status: BookingStatus = Field(default=BookingStatus.PENDING)
+    status: BookingStatus = Field(
+        default=BookingStatus.PENDING,
+        sa_type=SAEnum(BookingStatus, name="booking_status")
+    )
     notes: str | None = None
     cancel_reason: str | None = None
     check_in_time: datetime | None = Field(

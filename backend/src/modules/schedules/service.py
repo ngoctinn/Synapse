@@ -9,6 +9,7 @@ Tuân thủ Backend Rules:
 
 import uuid
 from datetime import date
+from sqlalchemy.orm import selectinload
 from sqlmodel import select, and_
 from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import Depends, HTTPException, status
@@ -114,7 +115,10 @@ class StaffScheduleService:
         status_filter: ScheduleStatus | None = None
     ) -> list[StaffSchedule]:
         """Lấy danh sách lịch làm việc với filter."""
-        query = select(StaffSchedule)
+        query = select(StaffSchedule).options(
+            selectinload(StaffSchedule.shift),
+            selectinload(StaffSchedule.staff)
+        )
 
         conditions = []
         if staff_id:
@@ -135,7 +139,12 @@ class StaffScheduleService:
 
     async def get_by_id(self, schedule_id: uuid.UUID) -> StaffSchedule | None:
         """Lấy lịch làm việc theo ID."""
-        return await self.session.get(StaffSchedule, schedule_id)
+        query = select(StaffSchedule).where(StaffSchedule.id == schedule_id).options(
+            selectinload(StaffSchedule.shift),
+            selectinload(StaffSchedule.staff)
+        )
+        result = await self.session.exec(query)
+        return result.first()
 
     async def create(self, data: StaffScheduleCreate) -> StaffSchedule:
         """Tạo lịch làm việc mới."""
@@ -254,6 +263,7 @@ class StaffScheduleService:
                     StaffSchedule.status == ScheduleStatus.PUBLISHED
                 )
             )
+            .options(selectinload(StaffSchedule.shift))
         )
         result = await self.session.exec(query)
         schedules = result.all()
@@ -285,6 +295,10 @@ class StaffScheduleService:
         query = (
             select(StaffSchedule)
             .where(StaffSchedule.work_date == work_date)
+            .options(
+                selectinload(StaffSchedule.shift),
+                selectinload(StaffSchedule.staff)
+            )
             .order_by(StaffSchedule.shift_id)
         )
         result = await self.session.exec(query)

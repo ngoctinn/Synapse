@@ -13,6 +13,7 @@ Tuân thủ Backend Rules:
 import uuid
 from datetime import datetime, date, timezone
 from decimal import Decimal
+from sqlalchemy.orm import selectinload
 from sqlmodel import select, and_, func
 from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import Depends, HTTPException, status
@@ -25,9 +26,8 @@ from .schemas import (
     BookingUpdate,
     BookingItemCreate,
     BookingItemUpdate,
-    BookingCancel,
 )
-from .conflict_checker import ConflictChecker, ConflictResult
+from .conflict_checker import ConflictChecker
 
 
 class BookingService:
@@ -47,7 +47,7 @@ class BookingService:
         offset: int = 0
     ) -> tuple[list[Booking], int]:
         """Lấy danh sách bookings với filter và pagination."""
-        query = select(Booking)
+        query = select(Booking).options(selectinload(Booking.items))
         count_query = select(func.count(Booking.id))
 
         conditions = []
@@ -76,7 +76,9 @@ class BookingService:
 
     async def get_by_id(self, booking_id: uuid.UUID) -> Booking | None:
         """Lấy booking theo ID, bao gồm items."""
-        return await self.session.get(Booking, booking_id)
+        query = select(Booking).where(Booking.id == booking_id).options(selectinload(Booking.items))
+        result = await self.session.exec(query)
+        return result.first()
 
     async def create(
         self,

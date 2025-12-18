@@ -14,7 +14,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import Depends, HTTPException, status
 
 from src.common.database import get_db_session
-from .models import ResourceGroup, Resource, ServiceResourceRequirement
+from .models import ResourceGroup, Resource
 from .schemas import (
     ResourceGroupCreate,
     ResourceGroupUpdate,

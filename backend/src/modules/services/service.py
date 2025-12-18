@@ -1,3 +1,9 @@
+"""
+Services Module - Business Logic (Service Layer)
+
+Quản lý danh mục dịch vụ, kỹ năng và quy trình Smart Tagging.
+"""
+
 from typing import Annotated
 import uuid
 import re
@@ -12,11 +18,18 @@ from src.modules.services.models import Service, Skill, ServiceSkill
 from src.modules.services.schemas import ServiceCreate, ServiceUpdate
 from src.modules.services.exceptions import ServiceNotFoundError
 
+def simple_slugify(text: str) -> str:
+    """Helper: Chuyển đổi chuỗi thành slug đơn giản (không dấu, snake_case)."""
+    text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('utf-8')
+    text = re.sub(r'[^\w\s-]', '', text).strip().lower()
+    return re.sub(r'[-\s]+', '_', text)
+
 class ServiceManagementService:
+    """
+    Service quản lý danh mục dịch vụ và kỹ năng đi kèm.
+    """
     def __init__(self, session: Annotated[AsyncSession, Depends(get_db_session)]):
         self.session = session
-
-
 
     # --- SERVICES ---
     async def get_services(
@@ -43,7 +56,7 @@ class ServiceManagementService:
         )
 
         if only_active:
-            query = query.where(Service.is_active == True)
+            query = query.where(Service.is_active)
 
         if search:
             # Tìm kiếm theo tên dịch vụ (case-insensitive)
@@ -52,7 +65,7 @@ class ServiceManagementService:
         # Count total
         count_query = select(func.count()).select_from(Service)
         if only_active:
-            count_query = count_query.where(Service.is_active == True)
+            count_query = count_query.where(Service.is_active)
         if search:
             count_query = count_query.where(Service.name.ilike(f"%{search}%"))
 
@@ -95,11 +108,6 @@ class ServiceManagementService:
         """Helper: Lấy hoặc tạo kỹ năng theo tên."""
         if not skill_names:
             return []
-
-        def simple_slugify(text):
-            text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('utf-8')
-            text = re.sub(r'[^\w\s-]', '', text).strip().lower()
-            return re.sub(r'[-\s]+', '_', text)
 
         # 1. Prepare codes
         name_map = {f"SK_{simple_slugify(name).upper()}": name for name in skill_names}
