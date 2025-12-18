@@ -22,7 +22,7 @@ export const AnyOption = ({ isSelected, onSelect }: AnyOptionProps) => {
         </div>
         
         <div className="flex-1">
-          <h3 className="font-semibold text-base">Bất kỳ Kỹ thuật viên nào</h3>
+          <h3 className="font-semibold text-base">Bất kỳ kỹ thuật viên nào</h3>
           <p className="text-sm text-muted-foreground">
             Được đề xuất để có nhiều khung giờ trống nhất
           </p>
