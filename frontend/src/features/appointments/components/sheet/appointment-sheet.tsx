@@ -40,9 +40,7 @@ import type {
 } from "../../types";
 import { AppointmentForm } from "./appointment-form";
 
-// ============================================
 // TYPES
-// ============================================
 
 type SheetMode = "view" | "edit" | "create" | "payment";
 
@@ -80,9 +78,7 @@ interface AppointmentSheetProps {
   availableServices: MockService[];
 }
 
-// ============================================
 // COMPONENT
-// ============================================
 
 export function AppointmentSheet({
   open,
@@ -475,9 +471,7 @@ export function AppointmentSheet({
   );
 }
 
-// ============================================
 // HELPERS
-// ============================================
 
 function getInitials(name: string): string {
   return name

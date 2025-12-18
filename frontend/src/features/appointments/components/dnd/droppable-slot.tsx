@@ -13,9 +13,6 @@ import { cn } from "@/shared/lib/utils";
 
 import type { DropData } from "./calendar-dnd-context";
 
-// ============================================
-// TYPES
-// ============================================
 
 interface DroppableSlotProps {
   /** ID duy nhất cho slot */
@@ -35,9 +32,6 @@ interface DroppableSlotProps {
   className?: string;
 }
 
-// ============================================
-// COMPONENT
-// ============================================
 
 export function DroppableSlot({
   id,

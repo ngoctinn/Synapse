@@ -31,9 +31,6 @@ import { useCallback, useState } from "react";
 import type { CalendarEvent, ZoomLevel } from "../../types";
 import { EventCard } from "../event/event-card";
 
-// ============================================
-// TYPES
-// ============================================
 
 interface CalendarDndContextProps {
   children: React.ReactNode;
@@ -63,9 +60,7 @@ export interface DropData {
   minute: number;
 }
 
-// ============================================
 // CUSTOM MODIFIER: Grid Snapping
-// ============================================
 
 function createGridSnapModifier(zoomLevel: ZoomLevel): Modifier {
   const minuteHeight = 60 / zoomLevel; // pixels per minute based on zoom
@@ -81,9 +76,6 @@ function createGridSnapModifier(zoomLevel: ZoomLevel): Modifier {
   };
 }
 
-// ============================================
-// COMPONENT
-// ============================================
 
 export function CalendarDndContext({
   children,
@@ -212,9 +204,6 @@ export function CalendarDndContext({
   );
 }
 
-// ============================================
-// CONTEXT EXPORTS
-// ============================================
 
 export { useDraggable, useDroppable } from "@dnd-kit/core";
 

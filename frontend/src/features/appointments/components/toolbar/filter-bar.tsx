@@ -28,9 +28,7 @@ import {
 import { APPOINTMENT_STATUS_CONFIG } from "../../constants";
 import type { AppointmentFilters, AppointmentStatus } from "../../types";
 
-// ============================================
 // TYPES
-// ============================================
 
 interface FilterBarProps {
   filters: AppointmentFilters;
@@ -40,9 +38,7 @@ interface FilterBarProps {
   className?: string;
 }
 
-// ============================================
 // COMPONENT
-// ============================================
 
 export function FilterBar({
   filters,

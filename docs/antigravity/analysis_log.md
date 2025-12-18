@@ -1,47 +1,88 @@
-# Analysis Log - Code Review Features
+# Analysis Log - Staff Feature Deep Review
 
-## Session: 2025-12-18
+## Session: 2025-12-18 (Staff Feature)
 
-### 1. formatCurrency Duplicate Analysis
+### 1. Type Safety Analysis
 
-**File 1**: `billing/components/sheet/invoice-details.tsx` (Line 14-17)
+#### Issue 1: `any` type cast for role (Line 91)
 ```typescript
-const formatCurrency = (amount: number) =>
-  new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(amount);
+role: staff?.user.role as any,
 ```
-- **Vấn đề**: Định nghĩa local, giống y hệt shared utils
-- **Hành động**: Xóa, import từ `@/shared/lib/utils`
 
-**File 2**: `appointments/components/dashboard/metrics-cards.tsx` (Line 103-111)
+**Nguyên nhân:**
+- `staff.user.role` có type `Role = 'admin' | 'receptionist' | 'technician' | 'customer'`
+- Nhưng schema `staffUpdateSchema.role` chỉ accept: `'admin' | 'receptionist' | 'technician'`
+- Thiếu type `'customer'` trong schema → Type mismatch
+
+**Giải pháp:**
+1. Filter ra `customer` trong schema (role của staff không thể là customer)
+2. Hoặc tạo `StaffRole` type riêng trong types.ts
+
+#### Issue 2: `any` in onSubmit (Line 104)
 ```typescript
-const formatCurrency = (value: number): string => {
-  if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
-  if (value >= 1000) return `${(value / 1000).toFixed(0)}K`;
-  return value.toLocaleString("vi-VN");
-};
+function onSubmit(data: any) {...}
 ```
-- **Vấn đề**: Định nghĩa local KHÁC với shared (có abbreviated format)
-- **Quyết định**: GIỮ NGUYÊN vì logic khác (abbreviated format cho metrics dashboard)
-- **Giải pháp tốt hơn**: Đổi tên thành `formatCompactCurrency` để tránh nhầm lẫn
 
-### 2. STATUS_TO_PRESET Duplicate Analysis
+**Nguyên nhân:**
+- Form có thể là `StaffCreateFormValues | StaffUpdateFormValues`
+- Cần type union đúng cách
 
-3 nơi định nghĩa mapping giống nhau:
-- `appointments/components/sheet/appointment-sheet.tsx` (Line 47)
-- `appointments/components/event/event-card.tsx` (Line 31)
-- `billing/components/invoice-status-badge.tsx` (Line 8)
+**Giải pháp:**
+```typescript
+type StaffFormValues = StaffCreateFormValues | StaffUpdateFormValues;
+function onSubmit(data: StaffFormValues) {...}
+```
 
-**Quyết định**: Tạo file constants chung cho STATUS mapping
+**Vấn đề tiếp theo:** Line 114 `value as string` cũng cần sửa vì value có thể là:
+- `string` (text fields)
+- `number` (commission_rate)
+- `string[]` (skill_ids)
 
-### 3. Customer Dashboard Structure Analysis
+**Giải pháp hoàn chỉnh:**
+```typescript
+function onSubmit(data: StaffCreateFormValues | StaffUpdateFormValues) {
+  const formData = new FormData();
+  formData.append("form_mode", mode);
+  if (staff?.user_id) formData.append("staff_id", staff.user_id);
 
-Hiện tại:
-- `schemas.ts` (root) - ProfileSchema
-- `schemas/booking-schema.ts` - BookingSchema
-- `constants.ts` (root) - re-exports + PROFILE_* constants
-- `constants/nav-items.ts` - NAV_ITEMS
+  Object.entries(data).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
 
-**Quyết định**:
-- Gộp `schemas/booking-schema.ts` vào `schemas.ts`
-- Xóa thư mục `schemas/`
-- Giữ nguyên pattern constants/ (barrel export hợp lý)
+    if (Array.isArray(value)) {
+      formData.append(key, JSON.stringify(value));
+    } else if (typeof value === 'number') {
+      formData.append(key, String(value));
+    } else {
+      formData.append(key, value);
+    }
+  });
+
+  React.startTransition(() => dispatch(formData));
+}
+```
+
+### 2. Console.log Analysis
+
+**File:** `actions.ts` Line 137
+```typescript
+console.log(`[Batch Update] Created ${creates.length} schedules, Deleted ${deletes.length} schedules`)
+```
+
+**Đánh giá:** Debug log còn sót, nên xóa hoặc thay bằng structured logging.
+
+### 3. Index.ts Export Analysis
+
+**Hiện tại export:**
+- `* from "./actions"` ✅
+- `StaffPage` ✅
+- `* from "./model/constants"` ✅
+- `MOCK_STAFF` ✅
+- `* from "./model/schemas"` ✅
+- `* from "./model/types"` ✅
+
+**Thiếu:**
+- Hooks: `useScheduleFilters`, `useSchedules`, `useScheduleNavigation`
+- Scheduling: `StaffSchedulingPage`, calendar components
+- Other components: `StaffSheet`, `StaffForm`, `StaffFilter`
+
+**Quyết định:** Thêm các exports cần thiết cho external consumption

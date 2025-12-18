@@ -16,9 +16,6 @@ import { cn } from "@/shared/lib/utils";
 import { DEFAULT_WORKING_HOURS, HOUR_HEIGHT } from "../../constants";
 import type { DensityMode } from "../../types";
 
-// ============================================
-// TYPES
-// ============================================
 
 interface TimeGridProps {
   /** Ngày để xác định current time indicator */
@@ -45,9 +42,6 @@ interface TimeSlotInternal {
   isHourStart: boolean;
 }
 
-// ============================================
-// COMPONENT
-// ============================================
 
 export function TimeGrid({
   date,
@@ -178,9 +172,6 @@ export function TimeGrid({
   );
 }
 
-// ============================================
-// HELPER EXPORTS
-// ============================================
 
 /**
  * Tính vị trí top và height cho một event dựa trên thời gian

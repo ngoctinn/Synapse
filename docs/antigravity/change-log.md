@@ -124,3 +124,97 @@
 *Người thực hiện: Antigravity Agent*
 *Ngày: 2025-12-18* (Refactor Session 3 - Code Review)
 
+# Antigravity Change Log: Staff Feature Deep Review
+
+## Tóm tắt thay đổi
+Đã phân tích chuyên sâu feature `staff` (43 files) và sửa các vấn đề về type safety, clean code.
+
+## Chi tiết thay đổi
+
+### 1. Type Safety Fixes
+
+#### 1.1. Sửa `any` types trong `staff-sheet.tsx`
+- **Thêm type alias:**
+  ```typescript
+  type StaffFormValues = StaffCreateFormValues | StaffUpdateFormValues;
+  ```
+- **Sửa `role` type cast (Line 91):**
+  - Trước: `role: staff?.user.role as any`
+  - Sau: `role: staff?.user.role === 'customer' ? 'technician' : staff?.user.role || 'technician'`
+- **Sửa `onSubmit` function:**
+  - Trước: `function onSubmit(data: any)`
+  - Sau: `function onSubmit(data: StaffFormValues)` với type-safe FormData handling
+
+### 2. Clean Code
+- **Xóa `console.log`** trong `actions.ts` Line 137
+
+### 3. Index.ts Enhancement
+- **Thêm exports cho:**
+  - Components: `StaffSheet`, `StaffFilter`, `StaffSchedulingPage`
+  - Hooks: `useScheduleFilters`, `useScheduleNavigation`, `useSchedules`
+- **Cải thiện DX:** External consumers giờ có thể import từ `@/features/staff`
+
+### 4. Verification
+- `pnpm lint`: Passed (0 errors, 0 warnings)
+- `pnpm build`: Passed
+
+## Đánh giá
+- **Type Safety:** Cải thiện đáng kể, loại bỏ 2 eslint-disable
+- **Clean Code:** Xóa debug log
+- **DX (Developer Experience):** Index.ts now exports đầy đủ public API
+
+---
+*Người thực hiện: Antigravity Agent*
+*Ngày: 2025-12-18* (Refactor Session 4 - Staff Deep Review)
+
+# Antigravity Change Log: Comment Cleanup
+
+## Tóm tắt thay đổi
+Đã xóa toàn bộ decorative comments dạng `// ====...` và section headers trong `features/`.
+
+## Chi tiết thay đổi
+
+### 1. Xóa Decorative Section Comments
+
+**Pattern đã xóa:**
+```
+// ============================================
+// TYPES
+// ============================================
+```
+
+**Files đã xử lý (appointments/components/):**
+- `event/event-card.tsx` - 3 sections
+- `event/event-popover.tsx` - 2 sections
+- `dashboard/metrics-cards.tsx` - 3 sections
+- `toolbar/date-navigator.tsx` - 2 sections
+- `toolbar/view-switcher.tsx` - 3 sections
+- `toolbar/filter-bar.tsx` - 3 sections
+- `dnd/droppable-slot.tsx` - 2 sections
+- `dnd/draggable-event-card.tsx` - 2 sections
+- `dnd/calendar-dnd-context.tsx` - 4 sections
+- `calendar/agenda-view.tsx` - 3 sections
+- `calendar/time-grid.tsx` - 3 sections
+- `calendar/date-header.tsx` - 2 sections
+- `timeline/timeline-header.tsx` - 3 sections
+- `timeline/resource-timeline.tsx` - 2 sections
+- `sheet/conflict-warning.tsx` - 3 sections
+- `sheet/appointment-sheet.tsx` - 3 sections
+- `calendar/empty-state.tsx` - 2 sections
+
+**Files khác:**
+- `settings/operating-hours/constants.ts`
+- `staff/components/scheduling/calendar/month-view.tsx`
+
+### 2. Verification
+- `pnpm lint`: Passed (0 errors, 0 warnings)
+- `pnpm build`: Passed
+
+## Đánh giá
+- **Code Quality:** Giảm noise, tăng readability
+- **Maintainability:** Dễ đọc hơn khi không có decorative comments
+- **Consistency:** Tuân thủ best practice "code should be self-documenting"
+
+---
+*Người thực hiện: Antigravity Agent*
+*Ngày: 2025-12-18* (Refactor Session 5 - Comment Cleanup)

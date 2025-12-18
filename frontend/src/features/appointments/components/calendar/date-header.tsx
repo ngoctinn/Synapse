@@ -13,9 +13,6 @@ import { useMemo } from "react";
 import { cn } from "@/shared/lib/utils";
 import { WEEKDAYS } from "../../constants";
 
-// ============================================
-// TYPES
-// ============================================
 
 interface DateHeaderProps {
   /** Ngày bắt đầu của tuần/khoảng thời gian */
@@ -37,9 +34,6 @@ interface DayInfo {
   isWeekend: boolean;
 }
 
-// ============================================
-// COMPONENT
-// ============================================
 
 export function DateHeader({
   startDate,

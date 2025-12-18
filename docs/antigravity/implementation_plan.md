@@ -1,108 +1,109 @@
-# Frontend Features Code Review & Refactor Plan
+# Frontend Features Deep Review Plan - Staff Feature
 
 ## Mục tiêu
-Dọn dẹp code dư thừa, logic trùng lặp, và gộp file phân mảnh trong `frontend/src/features`.
+Phân tích chuyên sâu feature `staff` (43 files) để tìm các vấn đề code quality, type safety, và duplications.
 
 ---
 
-## 1. VẤN ĐỀ PHÁT HIỆN
+## 1. TỔNG QUAN FEATURE STAFF
 
-### 1.1. Mock Data phân tán (12 file)
-| Feature | File Mock | Vấn đề |
-|---------|-----------|--------|
-| appointments | `mock-data.ts` | OK - Tập trung |
-| billing | `mock-data.ts` | OK |
-| chat | `data/mock-data.ts` | Tổ chức khác biệt (`data/` subfolder) |
-| customer-dashboard | `services/mock-data.ts` | OK - Đã gộp |
-| customers | `model/mocks.ts` | Tổ chức khác biệt (`model/` subfolder) |
-| notifications | `model/mocks.ts` | Tổ chức khác biệt |
-| resources | `data/mocks.ts` | Tổ chức khác biệt |
-| reviews | `mock-data.ts` | OK |
-| services | `data/mocks.ts` | Tổ chức khác biệt |
-| settings/notifications | `data/mock-data.ts` | Nested feature |
-| settings/operating-hours | `mocks.ts` | Khác naming convention |
-| staff | `model/mocks.ts` | Tổ chức khác biệt |
-
-**Hành động**: Chuẩn hóa tất cả về convention `mock-data.ts` ở root của feature.
-
-### 1.2. Logic `formatCurrency` trùng lặp
-| File | Vấn đề |
-|------|--------|
-| `billing/components/sheet/invoice-details.tsx` | **Tự định nghĩa lại** `formatCurrency` local |
-| `appointments/components/dashboard/metrics-cards.tsx` | **Tự định nghĩa lại** `formatCurrency` local |
-| `booking-wizard/components/step-services/*.tsx` | ✅ Dùng từ `@/shared/lib/utils` |
-| `services/components/service-table.tsx` | ✅ Dùng từ `@/shared/lib/utils` |
-
-**Hành động**: Xóa `formatCurrency` local, import từ `@/shared/lib/utils`.
-
-### 1.3. STATUS_TO_PRESET trùng lặp
-3 file định nghĩa `STATUS_TO_PRESET` giống nhau:
-- `appointments/components/sheet/appointment-sheet.tsx` (Line 47)
-- `appointments/components/event/event-card.tsx` (Line 31)
-- `billing/components/invoice-status-badge.tsx` (Line 8)
-
-**Hành động**: Gộp vào constants chung.
-
-### 1.4. Cấu trúc thư mục không nhất quán
-| Pattern | Features áp dụng |
-|---------|-----------------|
-| `model/` subfolder | customers, notifications, staff |
-| `data/` subfolder | chat, resources, services, settings |
-| Root level | appointments, billing, reviews |
-| `services/` subfolder | customer-dashboard |
-
-**Hành động**: Không cần thay đổi (chấp nhận sự linh hoạt theo FSD).
-
-### 1.5. File `schemas.ts` + `schemas/` subfolder
-`customer-dashboard` có cả:
-- `schemas.ts` (root)
-- `schemas/booking-schema.ts` (subfolder)
-
-**Hành động**: Gộp vào một nơi.
-
-### 1.6. File `constants.ts` + `constants/` subfolder
-`customer-dashboard` có cả:
-- `constants.ts` (root) - export từ `constants/nav-items.ts` + định nghĩa PROFILE_*
-- `constants/nav-items.ts`
-
-**Hành động**: Giữ nguyên pattern này (barrel export đúng).
+### Cấu trúc thư mục
+```
+staff/
+├── actions.ts              (5.9KB) - Server Actions
+├── index.ts                (225B)  - Public API (thiếu nhiều export)
+├── model/
+│   ├── constants.ts        (3.7KB)
+│   ├── mocks.ts            (8.6KB)
+│   ├── schedules.ts        (3.3KB)
+│   ├── schemas.ts          (1KB)
+│   ├── shifts.ts           (0.9KB)
+│   └── types.ts            (2.9KB)
+├── hooks/
+│   ├── use-schedule-filters.ts
+│   ├── use-schedule-navigation.ts
+│   └── use-schedules.ts
+└── components/
+    ├── staff-form.tsx      (367 lines) ⚠️ LỚN
+    ├── staff-sheet.tsx     (174 lines)
+    ├── staff-page.tsx      (7KB)
+    ├── staff-filter.tsx
+    ├── create-staff-trigger.tsx
+    ├── invite-staff-trigger.tsx
+    ├── staff-list/
+    ├── permissions/
+    └── scheduling/         (21 files) ⚠️ LỚN
+```
 
 ---
 
-## 2. KẾ HOẠCH THỰC THI
+## 2. VẤN ĐỀ PHÁT HIỆN
 
-### Phase 1: Xử lý Logic Trùng Lặp (High Priority)
-- [ ] **Task 1.1**: Xóa `formatCurrency` local trong `invoice-details.tsx`
-- [ ] **Task 1.2**: Xóa `formatCurrency` local trong `metrics-cards.tsx`
-- [ ] **Task 1.3**: Tạo `appointments/constants/status-presets.ts` để gộp `STATUS_TO_PRESET`
+### 2.1. Type Safety Issues 🔴
 
-### Phase 2: Gộp File Schemas (Medium Priority)
-- [ ] **Task 2.1**: Gộp `customer-dashboard/schemas/booking-schema.ts` vào `schemas.ts`
-- [ ] **Task 2.2**: Xóa folder `schemas/` sau khi gộp
+| File | Line | Vấn đề |
+|------|------|--------|
+| `staff-sheet.tsx` | 91 | `as any` type assertion cho role |
+| `staff-sheet.tsx` | 104 | `function onSubmit(data: any)` |
 
-### Phase 3: Chuẩn hóa Mock Data Naming (Low Priority)
-- [ ] **Task 3.1**: Rename `mocks.ts` → `mock-data.ts` trong các feature còn lại
-  - `settings/operating-hours/mocks.ts`
-  - `customers/model/mocks.ts`
-  - `notifications/model/mocks.ts`
-  - `staff/model/mocks.ts`
-  - Cập nhật imports tương ứng
+**Nguyên nhân**: Union types giữa `StaffCreateFormValues` và `StaffUpdateFormValues`.
+
+### 2.2. Console.log còn sót 🟠
+
+| File | Line | Code |
+|------|------|------|
+| `actions.ts` | 137 | `console.log(\`[Batch Update] Created...`)` |
+
+### 2.3. File lớn cần chia nhỏ 🟡
+
+| File | Lines | Vấn đề |
+|------|-------|--------|
+| `staff-form.tsx` | 367 | Chứa 3 render functions lớn |
+
+### 2.4. Index.ts không export đầy đủ 🟡
+
+Hiện tại `index.ts` chỉ export:
+- `StaffPage`
+- `MOCK_STAFF`
+- `model/*` (schemas, types, constants)
+
+**Thiếu export:**
+- Hooks (`useScheduleFilters`, `useSchedules`, `useScheduleNavigation`)
+- Components scheduling (`StaffSchedulingPage`, etc.)
+
+### 2.5. Eslint-disable comments
+
+| File | Line | Reason |
+|------|------|--------|
+| `staff-sheet.tsx` | 90, 103 | `@typescript-eslint/no-explicit-any` |
+| `scheduling/calendar/week-view.tsx` | 106 | `@next/next/no-img-element` |
 
 ---
 
-## 3. ƯU TIÊN THỰC THI
+## 3. KẾ HOẠCH THỰC THI
 
-| Priority | Task | Lý do |
-|----------|------|-------|
-| 🔴 High | Task 1.1, 1.2 | Code trùng lặp rõ ràng, dễ gây bug khi update |
-| 🟡 Medium | Task 1.3, 2.1, 2.2 | Cải thiện maintainability |
-| 🟢 Low | Task 3.1 | Chỉ là naming convention |
+### Phase 1: Fix Type Safety (High Priority)
+- [ ] **Task 1.1**: Sửa `any` type trong `staff-sheet.tsx`
+  - Tạo union type đúng cách cho onSubmit
+  - Sử dụng type narrowing thay vì `as any`
+
+### Phase 2: Clean Code (Medium Priority)
+- [ ] **Task 2.1**: Xóa `console.log` trong `actions.ts`
+- [ ] **Task 2.2**: Thêm exports vào `index.ts` cho hooks và scheduling components
+
+### Phase 3: Refactor Large File (Low Priority)
+- [ ] **Task 3.1**: Tách `staff-form.tsx` thành 3 files:
+  - `staff-form-general.tsx`
+  - `staff-form-professional.tsx`
+  - `staff-form-hr.tsx`
+  - `staff-form.tsx` (container)
 
 ---
 
-## 4. KHÔNG CẦN THAY ĐỔI
+## 4. ƯU TIÊN
 
-- **Billing feature**: Thiếu `index.ts` nhưng không export public API nên OK.
-- **Notifications feature**: Thiếu `index.ts` nhưng chỉ dùng internal.
-- **EmptyState components**: Mỗi feature có EmptyState riêng là hợp lý (customization khác nhau).
-- **Skeleton components**: Pattern `*TableSkeleton` nhất quán, không cần thay đổi.
+| Priority | Task | Ảnh hưởng |
+|----------|------|-----------|
+| 🔴 High | Task 1.1 | Type safety, giảm eslint-disable |
+| 🟠 Medium | Task 2.1, 2.2 | Clean code, DX |
+| 🟡 Low | Task 3.1 | Maintainability |

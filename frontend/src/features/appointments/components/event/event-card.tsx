@@ -26,10 +26,6 @@ import { Badge } from "@/shared/ui";
 import type { AppointmentStatus, CalendarEvent } from "../../types";
 import { STATUS_TO_BADGE_PRESET } from "../../constants";
 
-// ============================================
-// TYPES
-// ============================================
-
 interface EventCardProps {
   event: CalendarEvent;
   /** Variant hiển thị */
@@ -45,10 +41,6 @@ interface EventCardProps {
   className?: string;
 }
 
-// ============================================
-// STATUS ICONS
-// ============================================
-
 const STATUS_ICONS: Record<AppointmentStatus, React.ReactNode> = {
   PENDING: <Clock className="h-3 w-3" />,
   CONFIRMED: <CheckCircle2 className="h-3 w-3" />,
@@ -57,10 +49,6 @@ const STATUS_ICONS: Record<AppointmentStatus, React.ReactNode> = {
   CANCELLED: <XCircle className="h-3 w-3" />,
   NO_SHOW: <UserX className="h-3 w-3" />,
 };
-
-// ============================================
-// COMPONENT
-// ============================================
 
 export function EventCard({
   event,

@@ -31,9 +31,7 @@ import type {
 import { TimelineHeader } from "./timeline-header";
 import { TimelineRow } from "./timeline-row";
 
-// ============================================
 // TYPES
-// ============================================
 
 interface ResourceTimelineProps {
   /** Ngày đang xem */
@@ -49,9 +47,7 @@ interface ResourceTimelineProps {
   className?: string;
 }
 
-// ============================================
 // COMPONENT
-// ============================================
 
 export function ResourceTimeline({
   date,

@@ -134,7 +134,6 @@ export async function deleteSchedule(_scheduleId: string): Promise<ActionRespons
 }
 
 export async function batchUpdateSchedule(creates: Schedule[], deletes: string[]): Promise<ActionResponse> {
-  console.log(`[Batch Update] Created ${creates.length} schedules, Deleted ${deletes.length} schedules`)
   revalidatePath("/admin/staff")
   return success(undefined, `Đã lưu ${creates.length + deletes.length} thay đổi`)
 }

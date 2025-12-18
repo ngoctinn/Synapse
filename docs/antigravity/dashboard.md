@@ -1,32 +1,41 @@
-# Dashboard Tiến Độ Refactor (Antigravity v3 - Code Review)
+# Dashboard Tiến Độ - Antigravity Session 5
 
 | STT | Giai đoạn | Trạng thái | Ghi chú |
 |:---:|:---|:---:|:---|
-| 1 | THINK (Lên kế hoạch) | ✅ | Đã phân tích 15 features, xác định code dư thừa |
-| 2 | SPLIT (Chia nhỏ) | ✅ | Đã chia 3 Phase, 6 Tasks |
-| 3 | ANALYZE (Phân tích) | ✅ | Đã phân tích formatCurrency, STATUS_TO_PRESET, dead code |
-| 4 | DIFF (Đề xuất) | ✅ | Đã tạo đề xuất thay đổi |
-| 5 | APPLY (Thực thi) | ✅ | Đã áp dụng tất cả thay đổi |
+| 1 | THINK (Lên kế hoạch) | ✅ | Đã phân tích Staff + xác định decorative comments |
+| 2 | SPLIT (Chia nhỏ) | ✅ | 2 phần: Type Safety + Comment Cleanup |
+| 3 | ANALYZE (Phân tích) | ✅ | Đã tìm 40+ file có decorative comments |
+| 4 | DIFF (Đề xuất) | ✅ | Đã tạo diff |
+| 5 | APPLY (Thực thi) | ✅ | Đã xóa comments, sửa types |
 | 6 | VERIFY (Xác minh) | ✅ | Lint & Build passed |
-| 7 | AUDIT (Kiểm toán) | ✅ | Đã ghi log vào change-log.md |
+| 7 | AUDIT (Kiểm toán) | ✅ | Đang ghi log |
 | 8 | REPORT (Báo cáo) | ✅ | Hoàn tất |
 
-## Tasks Chi tiết
+## Sessions Summary
 
-### Phase 1: Xử lý Logic Trùng Lặp (High Priority)
-- [x] Task 1.1: Xóa `formatCurrency` local trong `invoice-details.tsx`
-- [x] Task 1.2: Đổi tên `formatCurrency` → `formatCompactCurrency` trong `metrics-cards.tsx`
-- [x] Task 1.3: Tạo `STATUS_TO_BADGE_PRESET` trong `constants.ts` và refactor 2 components
+### Session 3: Code Review (Completed)
+- Xử lý `formatCurrency` duplicates
+- Xử lý `STATUS_TO_PRESET` duplicates
+- Xóa dead code `customer-dashboard/schemas/`
 
-### Phase 2: Xóa Mã Chết
-- [x] Task 2.1: Xóa folder `customer-dashboard/schemas/` (dead code)
+### Session 4: Staff Deep Review (Completed)
+- Sửa `any` types trong `staff-sheet.tsx`
+- Xóa `console.log` trong `actions.ts`
+- Thêm exports vào `index.ts`
 
-### Phase 3: Đã hoàn thành từ session trước
-- [x] Task 3.1: Xóa file rác hệ thống (.log, .stackdump)
-- [x] Task 3.2: Cập nhật .gitignore
-- [x] Task 3.3: Gộp mock data customer-dashboard
+### Session 5: Comment Cleanup (Completed)
+- Xóa decorative comments `// ====...` trong 15+ files
+- Xóa section headers dạng `// TYPES`, `// COMPONENT`
+- Files đã xử lý:
+  - `appointments/components/event/*`
+  - `appointments/components/dashboard/*`
+  - `appointments/components/toolbar/*`
+  - `appointments/components/dnd/*`
+  - `appointments/components/calendar/*`
+  - `appointments/components/timeline/*`
+  - `appointments/components/sheet/*`
 
-## Kết quả Verification
+## Verification
 ```
 ✓ pnpm lint: Passed (0 errors, 0 warnings)
 ✓ pnpm build: Passed

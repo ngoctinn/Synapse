@@ -1,12 +1,10 @@
 import { ExceptionType, TimeSlot } from "./types";
 
-// ===== TIME DEFAULTS =====
 export const DEFAULT_OPEN_TIME = "08:00";
 export const DEFAULT_CLOSE_TIME = "21:00";
 export const DEFAULT_EXCEPTION_OPEN = "09:00";
 export const DEFAULT_EXCEPTION_CLOSE = "18:00";
 
-// ===== EXCEPTION TYPE LABELS (Centralized) =====
 export const EXCEPTION_TYPE_LABELS: Record<ExceptionType, string> = {
   HOLIDAY: "Nghỉ lễ",
   MAINTENANCE: "Bảo trì",
@@ -21,7 +19,6 @@ export const EXCEPTION_TYPE_VARIANTS: Record<ExceptionType, "destructive" | "sec
   CUSTOM: "outline",
 };
 
-// ===== TIME SLOT VALIDATION UTILITIES =====
 
 /**
  * Chuyển đổi time string "HH:mm" thành số phút từ 00:00

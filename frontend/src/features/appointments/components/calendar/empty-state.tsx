@@ -11,9 +11,7 @@ import { Calendar, Filter, Plus, Search } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui";
 
-// ============================================
 // TYPES
-// ============================================
 
 type EmptyStateVariant = "no-appointments" | "no-results" | "no-filters" | "error";
 
@@ -26,9 +24,7 @@ interface EmptyStateProps {
   className?: string;
 }
 
-// ============================================
 // CONTENT CONFIG
-// ============================================
 
 const EMPTY_STATE_CONTENT: Record<
   EmptyStateVariant,
@@ -69,9 +65,7 @@ const EMPTY_STATE_CONTENT: Record<
   },
 };
 
-// ============================================
 // COMPONENT
-// ============================================
 
 export function EmptyState({
   variant = "no-appointments",

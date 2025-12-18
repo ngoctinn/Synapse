@@ -39,10 +39,6 @@ import {
 import { APPOINTMENT_STATUS_CONFIG } from "../../constants";
 import type { CalendarEvent } from "../../types";
 
-// ============================================
-// TYPES
-// ============================================
-
 interface EventPopoverProps {
   event: CalendarEvent;
   children: React.ReactNode;
@@ -63,10 +59,6 @@ interface EventPopoverProps {
   /** Callback khi đổi trạng thái mở */
   onOpenChange?: (open: boolean) => void;
 }
-
-// ============================================
-// COMPONENT
-// ============================================
 
 export function EventPopover({
   event,

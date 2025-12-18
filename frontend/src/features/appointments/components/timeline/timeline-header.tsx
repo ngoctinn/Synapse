@@ -13,9 +13,7 @@ import { cn } from "@/shared/lib/utils";
 import { DEFAULT_WORKING_HOURS } from "../../constants";
 import type { ZoomLevel } from "../../types";
 
-// ============================================
 // TYPES
-// ============================================
 
 interface TimelineHeaderProps {
   /** Ngày đang xem */
@@ -38,9 +36,7 @@ interface TimeSlot {
   isHourStart: boolean;
 }
 
-// ============================================
 // COMPONENT
-// ============================================
 
 export function TimelineHeader({
   date,
@@ -114,9 +110,7 @@ export function TimelineHeader({
   );
 }
 
-// ============================================
 // HELPER: Calculate slot position from time
-// ============================================
 
 export function calculateTimelinePosition(
   eventTime: Date,

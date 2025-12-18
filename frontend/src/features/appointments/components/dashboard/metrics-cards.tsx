@@ -20,10 +20,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui";
 
 import type { AppointmentMetrics } from "../../types";
 
-// ============================================
-// TYPES
-// ============================================
-
 interface MetricsCardsProps {
   metrics: AppointmentMetrics | null;
   isLoading?: boolean;
@@ -41,10 +37,6 @@ interface MetricCardData {
   };
   color: string;
 }
-
-// ============================================
-// NUMBER ANIMATION HOOK
-// ============================================
 
 function useAnimatedNumber(targetValue: number, duration: number = 500): number {
   const [displayValue, setDisplayValue] = useState(0);
@@ -83,10 +75,6 @@ function useAnimatedNumber(targetValue: number, duration: number = 500): number 
 
   return displayValue;
 }
-
-// ============================================
-// COMPONENT
-// ============================================
 
 export function MetricsCards({
   metrics,

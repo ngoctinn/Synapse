@@ -13,9 +13,7 @@ import { Alert, AlertDescription, AlertTitle, Button } from "@/shared/ui";
 
 import type { ConflictInfo } from "../../types";
 
-// ============================================
 // TYPES
-// ============================================
 
 interface ConflictWarningProps {
   conflicts: ConflictInfo[];
@@ -24,9 +22,7 @@ interface ConflictWarningProps {
   className?: string;
 }
 
-// ============================================
 // COMPONENT
-// ============================================
 
 export function ConflictWarning({
   conflicts,
@@ -105,9 +101,7 @@ export function ConflictWarning({
   );
 }
 
-// ============================================
 // INLINE CONFLICT INDICATOR
-// ============================================
 
 interface ConflictIndicatorProps {
   hasConflict: boolean;

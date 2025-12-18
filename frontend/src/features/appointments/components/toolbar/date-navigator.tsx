@@ -21,10 +21,6 @@ import {
     PopoverTrigger,
 } from "@/shared/ui";
 
-// ============================================
-// TYPES
-// ============================================
-
 interface DateNavigatorProps {
   /** Ngày hiện tại đang hiển thị */
   date: Date;
@@ -42,10 +38,6 @@ interface DateNavigatorProps {
   onDateSelect?: (date: Date) => void;
   className?: string;
 }
-
-// ============================================
-// COMPONENT
-// ============================================
 
 export function DateNavigator({
   date,

@@ -27,6 +27,9 @@ import {
 } from "@/shared/ui";
 import { StaffForm } from "./staff-form";
 
+/** Union type cho cả Create và Update form values */
+type StaffFormValues = StaffCreateFormValues | StaffUpdateFormValues;
+
 interface StaffSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -87,8 +90,7 @@ export function StaffSheet({
           : {
               full_name: staff?.user.full_name || "",
               phone_number: staff?.user.phone_number || "",
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              role: staff?.user.role as any,
+              role: staff?.user.role === 'customer' ? 'technician' : staff?.user.role || 'technician',
               title: staff?.title || "",
               bio: staff?.bio || "",
               color_code: staff?.color_code || "#3B82F6",
@@ -100,18 +102,21 @@ export function StaffSheet({
     }
   }, [open, mode, staff, form]);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function onSubmit(data: any) {
+  function onSubmit(data: StaffFormValues) {
     const formData = new FormData();
 
     formData.append("form_mode", mode);
     if (staff?.user_id) formData.append("staff_id", staff.user_id);
 
     Object.entries(data).forEach(([key, value]) => {
-      if (key === "skill_ids") {
+      if (value === undefined || value === null) return;
+
+      if (Array.isArray(value)) {
         formData.append(key, JSON.stringify(value));
-      } else if (value !== undefined && value !== null) {
-        formData.append(key, value as string);
+      } else if (typeof value === 'number') {
+        formData.append(key, String(value));
+      } else {
+        formData.append(key, value);
       }
     });
 

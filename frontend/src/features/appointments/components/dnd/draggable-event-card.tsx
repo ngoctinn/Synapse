@@ -15,9 +15,6 @@ import type { CalendarEvent } from "../../types";
 import { EventCard } from "../event/event-card";
 import type { DragData } from "./calendar-dnd-context";
 
-// ============================================
-// TYPES
-// ============================================
 
 interface DraggableEventCardProps {
   event: CalendarEvent;
@@ -30,9 +27,6 @@ interface DraggableEventCardProps {
   className?: string;
 }
 
-// ============================================
-// COMPONENT
-// ============================================
 
 export function DraggableEventCard({
   event,

@@ -115,9 +115,7 @@ export function MonthView({
   );
 }
 
-// ============================================
 // DAY CELL SUB-COMPONENT
-// ============================================
 
 interface DayCellComponentProps {
   dayCell: DayCell;

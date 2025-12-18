@@ -21,9 +21,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/shared/ui";
 import { CALENDAR_VIEW_CONFIG } from "../../constants";
 import type { CalendarViewType } from "../../types";
 
-// ============================================
 // TYPES
-// ============================================
 
 interface ViewSwitcherProps {
   value: CalendarViewType;
@@ -33,9 +31,7 @@ interface ViewSwitcherProps {
   hiddenViews?: CalendarViewType[];
 }
 
-// ============================================
 // VIEW ICONS
-// ============================================
 
 const VIEW_ICONS: Record<CalendarViewType, React.ReactNode> = {
   day: <CalendarDays className="size-4" />,
@@ -45,9 +41,7 @@ const VIEW_ICONS: Record<CalendarViewType, React.ReactNode> = {
   timeline: <GanttChart className="size-4" />,
 };
 
-// ============================================
 // COMPONENT
-// ============================================
 
 export function ViewSwitcher({
   value,

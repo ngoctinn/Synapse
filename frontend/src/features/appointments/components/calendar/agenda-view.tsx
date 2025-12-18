@@ -18,9 +18,6 @@ import { EMPTY_STATE_MESSAGES } from "../../constants";
 import type { CalendarEvent, DateRange } from "../../types";
 import { EventCard } from "../event/event-card";
 
-// ============================================
-// TYPES
-// ============================================
 
 interface AgendaViewProps {
   /** Khoảng thời gian hiển thị */
@@ -38,9 +35,6 @@ interface DayGroup {
   events: CalendarEvent[];
 }
 
-// ============================================
-// COMPONENT
-// ============================================
 
 export function AgendaView({
   dateRange,
@@ -104,9 +98,7 @@ export function AgendaView({
   );
 }
 
-// ============================================
 // DAY GROUP SUB-COMPONENT
-// ============================================
 
 interface DayGroupSectionProps {
   group: DayGroup;
