@@ -1,4 +1,4 @@
-import { Appointment, Treatment, UserProfile } from '../types';
+import { Appointment, TimeSlot, Treatment, UserProfile } from '../types';
 
 export const MOCK_USER: UserProfile = {
   id: 'user-123',
@@ -57,4 +57,17 @@ export const MOCK_TREATMENTS: Treatment[] = [
     status: 'COMPLETED',
     purchaseDate: '2023-08-01T00:00:00Z',
   },
+];
+
+export const MOCK_SLOTS: TimeSlot[] = [
+  { time: "09:00" },
+  { time: "09:30", isHighDemand: true },
+  { time: "10:00", isRecommended: true },
+  { time: "10:30" },
+  { time: "11:00", isRecommended: true },
+  { time: "13:30" },
+  { time: "14:00", isRecommended: true },
+  { time: "14:30", isHighDemand: true },
+  { time: "15:00" },
+  { time: "16:00", isRecommended: true },
 ];

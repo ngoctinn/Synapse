@@ -21,21 +21,10 @@ import {
 } from "lucide-react";
 
 import { cn } from "@/shared/lib/utils";
-import { Badge, BadgePreset } from "@/shared/ui";
+import { Badge } from "@/shared/ui";
 
 import type { AppointmentStatus, CalendarEvent } from "../../types";
-
-// ============================================
-// STATUS TO PRESET MAPPING
-// ============================================
-const STATUS_TO_PRESET: Record<AppointmentStatus, BadgePreset> = {
-  PENDING: "appointment-pending",
-  CONFIRMED: "appointment-confirmed",
-  IN_PROGRESS: "appointment-in-progress",
-  COMPLETED: "appointment-completed",
-  CANCELLED: "appointment-cancelled",
-  NO_SHOW: "appointment-no-show",
-};
+import { STATUS_TO_BADGE_PRESET } from "../../constants";
 
 // ============================================
 // TYPES
@@ -180,7 +169,7 @@ export function EventCard({
     >
       {/* Header: Status + Time */}
       <div className="flex items-center justify-between mb-2">
-        <Badge preset={STATUS_TO_PRESET[event.status]} size="xs">
+        <Badge preset={STATUS_TO_BADGE_PRESET[event.status]} size="xs">
           {STATUS_ICONS[event.status]}
         </Badge>
 

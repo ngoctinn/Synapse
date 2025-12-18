@@ -49,3 +49,10 @@ build/
 # OS
 .DS_Store
 Thumbs.db
+
+# System Logs & Temp Files
+*.log
+*.stackdump
+build_output.txt
+lint_report.txt
+tsc_errors.txt

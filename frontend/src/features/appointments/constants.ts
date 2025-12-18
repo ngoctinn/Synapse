@@ -5,12 +5,25 @@
  * Tất cả labels đều bằng Tiếng Việt.
  */
 
+import type { BadgePreset } from "@/shared/ui";
+
 import type {
     AppointmentStatus,
     CalendarViewType,
     DensityMode,
     ZoomLevel,
 } from "./types";
+
+/** Mapping từ AppointmentStatus sang BadgePreset để hiển thị badge */
+export const STATUS_TO_BADGE_PRESET: Record<AppointmentStatus, BadgePreset> = {
+  PENDING: "appointment-pending",
+  CONFIRMED: "appointment-confirmed",
+  IN_PROGRESS: "appointment-in-progress",
+  COMPLETED: "appointment-completed",
+  CANCELLED: "appointment-cancelled",
+  NO_SHOW: "appointment-no-show",
+};
+
 
 
 

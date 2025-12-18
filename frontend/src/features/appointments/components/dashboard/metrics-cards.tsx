@@ -100,7 +100,7 @@ export function MetricsCards({
   const animatedRevenue = useAnimatedNumber(metrics?.estimatedRevenue || 0);
 
   // Format currency
-  const formatCurrency = (value: number): string => {
+  const formatCompactCurrency = (value: number): string => {
     if (value >= 1000000) {
       return `${(value / 1000000).toFixed(1)}M`;
     }
@@ -139,7 +139,7 @@ export function MetricsCards({
     },
     {
       title: "Doanh thu dự kiến",
-      value: formatCurrency(animatedRevenue),
+      value: formatCompactCurrency(animatedRevenue),
       subValue: "VNĐ",
       icon: <DollarSign className="h-5 w-5" />,
       color: "text-info",

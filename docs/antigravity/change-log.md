@@ -77,3 +77,50 @@
 ---
 *Người thực hiện: Antigravity Agent*
 *Ngày: 2025-12-18* (Refactor Session 2)
+
+# Antigravity Change Log: Code Review & Duplicate Cleanup
+
+## Tóm tắt thay đổi
+Đã thực hiện review code toàn bộ `features/` và xử lý các vấn đề: loại bỏ logic trùng lặp, xóa mã chết, gộp file phân mảnh.
+
+## Chi tiết thay đổi
+
+### 1. Xử lý Logic Trùng Lặp
+
+#### 1.1. `formatCurrency` Duplicates
+- **Đã sửa:** `billing/components/sheet/invoice-details.tsx`
+  - Xóa định nghĩa local `formatCurrency`, import từ `@/shared/lib/utils`
+- **Đã đổi tên:** `appointments/components/dashboard/metrics-cards.tsx`
+  - Đổi `formatCurrency` → `formatCompactCurrency` (logic khác: abbreviated format cho metrics)
+
+#### 1.2. `STATUS_TO_PRESET` Duplicates
+- **Tạo mới:** `appointments/constants.ts` → `STATUS_TO_BADGE_PRESET`
+- **Đã refactor:**
+  - `appointments/components/event/event-card.tsx`: Xóa local, import từ constants
+  - `appointments/components/sheet/appointment-sheet.tsx`: Xóa local, import từ constants
+- **Export thêm:** `appointments/index.ts` → `STATUS_TO_BADGE_PRESET`
+
+### 2. Xóa Mã Chết (Dead Code)
+- **Xóa folder:** `customer-dashboard/schemas/` (chứa `booking-schema.ts` không được sử dụng)
+
+### 3. Xóa File Rác (Session trước)
+- `bash.exe.stackdump`
+- `frontend/build_err.log`, `build_error.log`, `build_output.txt`, `lint_report.txt`, `tsc_errors.txt`
+- **Cập nhật:** `.gitignore` - thêm patterns cho `*.log`, `*.stackdump`
+
+### 4. Gộp Mock Data (Session trước)
+- Gộp `customer-dashboard/mocks.ts` → `services/mock-data.ts`
+
+### 5. Verification
+- `pnpm lint`: Passed (0 errors, 0 warnings)
+- `pnpm build`: Passed
+
+## Đánh giá
+- **Bảo mật:** Không phát hiện rò rỉ secret
+- **Tuân thủ:** Đạt chuẩn DRY (Don't Repeat Yourself)
+- **Tác động:** Giảm code trùng lặp, cải thiện maintainability
+
+---
+*Người thực hiện: Antigravity Agent*
+*Ngày: 2025-12-18* (Refactor Session 3 - Code Review)
+

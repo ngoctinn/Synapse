@@ -16,7 +16,6 @@ import { useEffect, useState } from "react";
 
 import {
     Badge,
-    BadgePreset,
     Button,
     Separator,
     Sheet,
@@ -32,26 +31,14 @@ import { PaymentForm } from "@/features/billing/components/sheet/payment-form";
 import { Invoice } from "@/features/billing/types";
 
 import { ReviewPrompt } from "@/features/reviews/components/review-prompt";
+import { STATUS_TO_BADGE_PRESET } from "../../constants";
 import { MockService } from "../../mock-data";
 import type {
     Appointment,
-    AppointmentStatus,
     CalendarEvent,
     TimelineResource,
 } from "../../types";
 import { AppointmentForm } from "./appointment-form";
-
-// ============================================
-// STATUS TO PRESET MAPPING
-// ============================================
-const STATUS_TO_PRESET: Record<AppointmentStatus, BadgePreset> = {
-  PENDING: "appointment-pending",
-  CONFIRMED: "appointment-confirmed",
-  IN_PROGRESS: "appointment-in-progress",
-  COMPLETED: "appointment-completed",
-  CANCELLED: "appointment-cancelled",
-  NO_SHOW: "appointment-no-show",
-};
 
 // ============================================
 // TYPES
@@ -229,7 +216,7 @@ export function AppointmentSheet({
 
             {/* Status Badge (View mode) */}
             {isViewMode && appointment && (
-              <Badge preset={STATUS_TO_PRESET[appointment.status]} />
+              <Badge preset={STATUS_TO_BADGE_PRESET[appointment.status]} />
             )}
             {/* Payment Badge (Payment mode) */}
             {isPaymentMode && invoice && (

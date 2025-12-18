@@ -1,5 +1,6 @@
 import { Badge } from "@/shared/ui/badge";
 import { Separator } from "@/shared/ui/separator";
+import { formatCurrency } from "@/shared/lib/utils";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { PAYMENT_METHOD_LABELS } from "../../constants";
@@ -11,11 +12,6 @@ interface InvoiceDetailsProps {
 }
 
 export function InvoiceDetails({ invoice }: InvoiceDetailsProps) {
-  const formatCurrency = (amount: number) =>
-    new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(
-      amount
-    );
-
   return (
     <div className="flex flex-col h-full space-y-6">
       {/* Header Info */}
