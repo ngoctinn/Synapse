@@ -28,6 +28,14 @@ const buttonVariants = cva(
         soft: "bg-primary/10 text-primary hover:bg-primary/20 hover:shadow-sm",
         "ghost-destructive":
           "text-destructive hover:bg-destructive/10 hover:text-destructive",
+        success:
+          "bg-alert-success text-alert-success-foreground border-alert-success-border shadow-sm hover:bg-alert-success/90",
+        warning:
+          "bg-alert-warning text-alert-warning-foreground border-alert-warning-border shadow-sm hover:bg-alert-warning/90",
+        "outline-success":
+          "border-alert-success-border text-alert-success-foreground bg-transparent hover:bg-alert-success/10",
+        "outline-warning":
+          "border-alert-warning-border text-alert-warning-foreground bg-transparent hover:bg-alert-warning/10",
       },
       size: {
         default: "h-9 px-4 py-2",

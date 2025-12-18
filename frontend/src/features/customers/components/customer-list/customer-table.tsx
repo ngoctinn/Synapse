@@ -172,7 +172,7 @@ export function CustomerTable({
       header: "Trạng thái",
       accessorKey: "is_active",
       cell: (c) => (
-        <Badge variant={c.is_active ? "emerald" : "secondary"}>
+        <Badge variant={c.is_active ? "success" : "secondary"}>
           {c.is_active ? "Hoạt động" : "Ngưng"}
         </Badge>
       ),

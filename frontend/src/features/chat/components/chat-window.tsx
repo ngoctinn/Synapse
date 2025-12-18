@@ -68,7 +68,10 @@ export function ChatWindow({ conversation, messages, currentUserId, onSendMessag
             <div>
               <h3 className="font-semibold text-sm flex items-center gap-2">
                 {conversation.user.name}
-                <span className={cn("w-2 h-2 rounded-full ring-2 ring-white dark:ring-card", conversation.user.status === 'online' ? "bg-green-500" : "bg-gray-300")} />
+                <span className={cn(
+                  "w-2.5 h-2.5 rounded-full",
+                  conversation.user.status === 'online' ? "indicator-online" : "indicator-offline"
+                )} />
               </h3>
               <p className="text-xs text-muted-foreground">Khách hàng {conversation.user.role === 'customer' ? 'Thân thiết' : ''}</p>
             </div>

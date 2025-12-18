@@ -19,7 +19,7 @@ export function Hero() {
 
           <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground">
             Quản lý Spa chuyên nghiệp <br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-500 to-pink-500">
+            <span className="text-gradient-premium">
               Đơn giản hóa vận hành
             </span>
           </h1>
@@ -34,7 +34,7 @@ export function Hero() {
             <Link href="/register">
               <Button
                 size="lg"
-                className="h-12 px-8 text-lg rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all hover:scale-105"
+                className="btn-hero shadow-premium-primary"
               >
                 Bắt đầu miễn phí
               </Button>
@@ -43,7 +43,7 @@ export function Hero() {
               <Button
                 variant="outline"
                 size="lg"
-                className="h-12 px-8 text-lg rounded-full border-2 hover:bg-muted transition-all"
+                className="btn-hero border-2"
               >
                 Liên hệ tư vấn
               </Button>
@@ -92,10 +92,10 @@ export function Hero() {
       </div>
 
       {/* Simple Background - No heavy animations */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl -z-10 opacity-20 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] bg-purple-500/20 rounded-full blur-2xl" />
-        <div className="absolute top-[-10%] right-[-10%] w-[40rem] h-[40rem] bg-primary/20 rounded-full blur-2xl" />
-        <div className="absolute bottom-[-20%] left-[20%] w-[50rem] h-[50rem] bg-pink-500/20 rounded-full blur-2xl" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl -z-10 pointer-events-none overflow-hidden">
+        <div className="bg-blob top-[-10%] left-[-10%] w-[40rem] h-[40rem] bg-purple-500/20" />
+        <div className="bg-blob top-[-10%] right-[-10%] w-[40rem] h-[40rem] bg-primary/20" />
+        <div className="bg-blob bottom-[-20%] left-[20%] w-[50rem] h-[50rem] bg-pink-500/20" />
       </div>
     </section>
   );

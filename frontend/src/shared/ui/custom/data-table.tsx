@@ -137,8 +137,8 @@ export function DataTable<T>({
                       key={index}
                       className={cn(
                         "h-12 font-medium text-muted-foreground transition-colors hover:text-foreground/80",
-                        index === 0 && !selection ? "pl-6" : "",
-                        index === columns.length - 1 ? "pr-6 text-right" : "",
+                        index === 0 && !selection ? "table-first-cell-padding" : "",
+                        index === columns.length - 1 ? "table-last-cell-padding" : "",
                         col.sortable ? "cursor-pointer select-none" : "",
                         col.headerClassName
                       )}
@@ -208,9 +208,9 @@ export function DataTable<T>({
                         key={colIndex}
                         className={cn(
                           "py-4",
-                          colIndex === 0 && !selection ? "pl-6 font-medium text-foreground" : "",
+                          colIndex === 0 && !selection ? "table-first-cell-padding font-medium text-foreground" : "",
                           colIndex === 0 && selection ? "font-medium text-foreground" : "",
-                          colIndex === columns.length - 1 ? "pr-6 text-right" : "text-muted-foreground",
+                          colIndex === columns.length - 1 ? "table-last-cell-padding" : "text-muted-foreground",
                           col.className
                         )}
                       >

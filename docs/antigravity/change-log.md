@@ -1,29 +1,39 @@
-# Nhật Ký Thay Đổi: Đánh Giá & Chuẩn Hóa Backend
+# Antigravity Change Log: CSS/Tailwind Refactor
 
-## [2025-12-18] - Đợt Cải Thiện Kiến Trúc Toàn Diện
+## Tóm tắt thay đổi
+Đã thực hiện tái cấu trúc hệ thống CSS/Tailwind nhằm loại bỏ việc ghi đè class thủ công, chuẩn hóa Tokens và cải thiện tính nhất quán giữa Light/Dark mode.
 
-### Thay Đổi (Changes)
-- **Kiến trúc (Architectural)**:
-    - Triển khai **Gatekeeper Pattern** cho các module `users`, `staff`, `services` bằng cách cập nhật `__init__.py`.
-    - Refactor `src/app/main.py` để loại bỏ **Deep Imports** xuyên module.
-    - Chuẩn hóa việc sử dụng `relative imports` trong nội bộ các module.
-- **Tài liệu & Chuẩn hóa (Documentation & Standardization)**:
-    - Bổ sung Module Docstrings cho toàn bộ module `users` (`models`, `service`, `router`, `schemas`).
-    - Bổ sung Module Docstrings cho `services/service.py` và `common/database.py`.
-    - Thêm Class-level docstrings cho `UserService` và `ServiceManagementService`.
-    - **Nâng cấp Swagger UI (Senior Standard)**: Áp dụng chuẩn Docstring Markdown chuyên sâu cho tất cả các endpoint trong 7 module nghiệp vụ. Tài liệu giờ đây bao gồm chi tiết về **Logic Flow**, **Tham số**, và **Các kịch bản lỗi**, giúp lập trình viên Frontend và các bên liên quan hiểu sâu về cơ chế vận hành của API.
-- **Tính năng & Sửa lỗi (Features & Fixes)**:
-    - Sửa lỗi **MissingGreenlet** tiềm ẩn trong `StaffService.get_staff_by_id` bằng cách thêm `selectinload(Staff.user, Staff.skills)`.
-    - Cập nhật `User` model: Đồng bộ các trường `created_at` và `updated_at` sử dụng `sa_type=DateTime(timezone=True)`.
-    - Sửa lỗi Indentation và tách helper `simple_slugify` trong `ServiceManagementService`.
-- **Dọn dẹp (Cleanup)**:
-    - Loại bỏ module trống `employees`.
+## Chi tiết thay đổi
 
-### Kiểm Audit (Audit)
-- Tuân thủ **Vertical Slice Architecture**: ĐẠT.
-- Bảo mật **RLS Injection**: ĐẠT (Kiểm tra trong `database.py`).
-- Syntax **Python 3.12**: ĐẠT.
-- Encapsulation: ĐẠT (Sau khi refactor `__init__.py`).
+### 1. Hệ thống Tokens và Utilities (`globals.css`)
+- **Tokens:** Map đầy đủ các biến `--alert-*` và `--status-*` vào Tailwind `@theme`.
+- **Utilities:**
+    - Thêm `.shadow-premium-primary`, `.shadow-premium-lg` cho các hiệu ứng cao cấp.
+    - Thêm `.text-gradient-premium` cho các tiêu đề quan trọng.
+    - Thêm `.btn-hero` để chuẩn hóa các nút lớn trên Landing page.
+    - Thêm `.bg-blob` cho các hiệu ứng nền decor.
+    - Thêm `.table-first-cell-padding` và `.table-last-cell-padding` cho DataTable.
+    - Thêm hệ thống `.indicator-online`, `.indicator-offline`, `.indicator-busy`.
 
-### Ghi Chú (Notes)
-- Cần lưu ý các module mới phát sinh sau này phải tuân thủ việc export Router và Service trong `__init__.py`.
+### 2. Base UI Components nâng cấp
+- **Alert.tsx:** Bổ sung các variant: `success`, `warning`, `info`. Các variant này tự động sử dụng màu sắc từ theme tokens.
+- **Badge.tsx:** Đồng bộ các variant `success`, `warning`, `info`, `destructive` với theme tokens (loại bỏ hardcoded emerald/amber/red).
+- **Button.tsx:** Bổ sung các variant: `success`, `warning`, `outline-success`, `outline-warning`.
+
+### 3. Refactor Features
+- **LoginForm.tsx:** Chuyển sang sử dụng `Alert` variant thay vì ghi đè màu thủ công.
+- **Hero.tsx:** Thu gọn JSX bằng cách sử dụng các utility class mới (`.text-gradient-premium`, `.btn-hero`, v.v.).
+- **DataTable.tsx:** Chuẩn hóa padding bằng utility class thay vì hardcoded `pl-6`/`pr-6`.
+- **HoldTimer.tsx:** Chuyển sang sử dụng `Badge` component với variant động.
+- **ChatWindow.tsx:** Sử dụng `.indicator-online`/`.indicator-offline`.
+
+## Đánh giá Bảo mật & Tuân thủ
+- **Bảo mật:** Không phát hiện rò rỉ secret hoặc lỗi bảo mật CSS.
+- **Tuân thủ:**
+    - Tuân thủ chuẩn Tailwind v4 (CSS-first).
+    - Tuân thủ quy tắc viết code của dự án (OKLCH, Tiếng Việt).
+    - Cải thiện đáng kể khả năng bảo trì giao diện.
+
+---
+*Người thực hiện: Antigravity Agent*
+*Ngày: 2025-12-18*

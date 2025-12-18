@@ -1,27 +1,35 @@
-# Nhật Ký Phân Tích: Rà Soát Chất Lượng Backend
+# Nhật ký Phân tích: CSS/Tailwind Refactor
 
-## 1. Vấn Đề Về Documentation (Headers/Summaries)
-- **Module `users`**:
-    - `models.py`: Thiếu module docstring.
-    - `service.py`: Thiếu module docstring và class docstring.
-    - `router.py`: Thiếu module docstring.
-    - `schemas.py`: Thiếu module docstring.
-    - `constants.py`: Thiếu module docstring.
-- **Module `services`**:
-    - `service.py`: Thiếu module docstring.
-- **Module `common`**:
-    - `database.py`: Cần bổ sung header chuẩn dự án.
+## 1. Khảo sát Hệ thống Token (`globals.css`)
+- **Phát hiện:** Dự án đã có hệ thống OKLCH tokens rất tốt cho `primary`, `secondary`, `alert-success`, `status-pending`, v.v.
+- **Vấn đề:** Các component hiện tại (`Badge`, `Alert`) chưa sử dụng triệt để các token này mà vẫn dùng hardcoded Tailwind colors (ví dụ: `bg-emerald-100`).
 
-## 2. Vấn Đề Về Clean Code & Logic
-- **`ServiceManagementService`**:
-    - Hàm `_get_or_create_skills` chứa hàm lồng `simple_slugify`. Cần tách ra thành utility function dùng chung hoặc đặt ở mức module để Code Path rõ ràng hơn.
-    - Cần bổ sung thêm log cơ bản cho các tác vụ quan trọng như `delete_user` (khi tương tác với hệ thống bên ngoài như Supabase).
-- **`UserService`**:
-    - Logic trong `delete_user` khi gọi `supabase.auth.admin.delete_user` nên được bọc trong một phương thức riêng của Service hoặc Utility để dễ test.
+## 2. Rà soát UI Components (`shared/ui/`)
+- **Alert.tsx:**
+    - Chỉ có variant `default` và `destructive`.
+    - Cần bổ sung `success`, `warning`, `info` sử dụng các biến `--alert-*`.
+- **Badge.tsx:**
+    - Có hệ thống preset và variant đồ sộ nhưng đang sử dụng hardcoded colors.
+    - Cần chuyển sang sử dụng theme variables để đảm bảo đồng bộ với `globals.css` và dễ bảo trì Dark mode.
+- **Button.tsx:**
+    - Cấu trúc tốt, nhưng cần kiểm tra xem variant `soft` có đồng bộ với hệ thống màu mới không.
 
-## 3. Kiến Trúc & Encapsulation
-- Đã sửa lỗi `__init__.py` và `main.py` ở bước trước, hiện tại các module đã cơ bản tuân thủ Gatekeeper Pattern.
-- Cần kiểm tra kỹ các module `resources` và `bookings` xem có phát sinh Deep Import mới không.
+## 3. Phân tích Feature Components
+- **LoginForm.tsx:**
+    - Đang ghi đè thủ công class cho Alert dựa trên trạng thái `registered` hoặc `passwordReset`.
+    - Sau khi nâng cấp `Alert`, cần chuyển sang dùng `variant="success"` hoặc `variant="info"`.
+- **Hero.tsx (Landing Page):**
+    - Chứa nhiều tổ hợp class phức tạp cho hiệu ứng shadow và gradient.
+    - Có thể tách thành các utility class `@layer utilities` trong `globals.css` (ví dụ: `.shadow-premium-primary`).
+- **DataTable.tsx:**
+    - Nhiều logic hiển thị padding (`pl-6`, `pr-6`) nằm trực tiếp trong JSX.
+    - Nên được chuẩn hóa qua các utility hoặc config chung để tránh lặp lại logic `index === 0`.
 
-## 4. Tối Ưu Hóa Hiệu Năng
-- Phát hiện một số truy vấn có thể tối ưu bằng cách sử dụng `exists()` thay vì `count() > 0` nếu chỉ cần kiểm tra sự tồn tại.
+## 4. Tác động lên Dark Mode
+- Việc chuyển từ hardcoded colors (`bg-emerald-100 dark:bg-emerald-950`) sang CSS variables (`bg-alert-success`) sẽ giúp quản lý Dark mode tập trung hoàn toàn tại `globals.css`.
+- Điều này giảm rủi ro quên cập nhật Dark mode khi thêm component mới.
+
+## 5. Kết luận & Ưu tiên
+1. **Ưu tiên 1:** Đồng bộ hóa `Alert` và `Badge` với theme tokens.
+2. **Ưu tiên 2:** Thay thế các đoạn code "hardcoded logic" tại Features bằng các variant mới.
+3. **Ưu tiên 3:** Tinh gọn `globals.css` bằng cách gom các hiệu ứng premium thành utilities.

@@ -14,7 +14,6 @@ import type {
 
 
 
-/** Cấu hình hiển thị trạng thái cuộc hẹn */
 export const APPOINTMENT_STATUS_CONFIG: Record<
   AppointmentStatus,
   {
@@ -26,38 +25,38 @@ export const APPOINTMENT_STATUS_CONFIG: Record<
 > = {
   PENDING: {
     label: "Chờ xác nhận",
-    color: "text-amber-600",
-    bgColor: "bg-amber-50 dark:bg-amber-950/30",
+    color: "text-warning",
+    bgColor: "bg-warning/10 border-warning/20",
     icon: "Clock",
   },
   CONFIRMED: {
     label: "Đã xác nhận",
-    color: "text-blue-600",
-    bgColor: "bg-blue-50 dark:bg-blue-950/30",
+    color: "text-info",
+    bgColor: "bg-info/10 border-info/20",
     icon: "CheckCircle2",
   },
   IN_PROGRESS: {
     label: "Đang thực hiện",
-    color: "text-violet-600",
-    bgColor: "bg-violet-50 dark:bg-violet-950/30",
+    color: "text-primary",
+    bgColor: "bg-primary/10 border-primary/20",
     icon: "Play",
   },
   COMPLETED: {
     label: "Hoàn thành",
-    color: "text-emerald-600",
-    bgColor: "bg-emerald-50 dark:bg-emerald-950/30",
+    color: "text-success",
+    bgColor: "bg-success/10 border-success/20",
     icon: "CheckCheck",
   },
   CANCELLED: {
     label: "Đã hủy",
-    color: "text-red-600",
-    bgColor: "bg-red-50 dark:bg-red-950/30",
+    color: "text-destructive",
+    bgColor: "bg-destructive/10 border-destructive/20",
     icon: "XCircle",
   },
   NO_SHOW: {
     label: "Khách không đến",
-    color: "text-gray-500",
-    bgColor: "bg-gray-100 dark:bg-gray-800",
+    color: "text-muted-foreground",
+    bgColor: "bg-muted/50 border-muted",
     icon: "UserX",
   },
 };

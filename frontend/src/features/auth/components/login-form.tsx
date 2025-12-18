@@ -75,14 +75,14 @@ export function LoginForm() {
       </div>
 
       {registered && (
-        <Alert className="mb-4 border-green-200 bg-green-50 text-green-800 dark:border-green-800 dark:bg-green-950 dark:text-green-200">
+        <Alert variant="success" className="mb-4">
           <AlertDescription>
             Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.
           </AlertDescription>
         </Alert>
       )}
       {passwordReset && (
-        <Alert className="mb-4 border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-200">
+        <Alert variant="info" className="mb-4">
           <AlertDescription>
             Email đặt lại mật khẩu đã được gửi. Vui lòng kiểm tra hộp thư.
           </AlertDescription>

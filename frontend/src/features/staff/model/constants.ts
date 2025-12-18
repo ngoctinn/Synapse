@@ -16,29 +16,25 @@ export const ROLE_CONFIG: Record<
       | "success"
       | "warning"
       | "info"
-      | "purple"
-      | "sky"
-      | "cyan"
-      | "gray"
-      | "glass";
+      | "soft";
     className?: string;
   }
 > = {
   admin: {
     label: "Quản trị viên",
-    variant: "purple",
+    variant: "secondary",
   },
   receptionist: {
     label: "Lễ tân",
-    variant: "sky",
+    variant: "info",
   },
   technician: {
     label: "Kỹ thuật viên",
-    variant: "cyan",
+    variant: "info",
   },
   customer: {
     label: "Khách hàng",
-    variant: "gray",
+    variant: "outline",
   },
 };
 
@@ -53,9 +49,9 @@ export const MODULES = [
 ];
 
 export const ROLES = [
-  { id: "admin", name: "Quản trị viên", variant: "purple" },
-  { id: "receptionist", name: "Lễ tân", variant: "sky" },
-  { id: "technician", name: "Kỹ thuật viên", variant: "cyan" },
+  { id: "admin", name: "Quản trị viên", variant: "secondary" },
+  { id: "receptionist", name: "Lễ tân", variant: "info" },
+  { id: "technician", name: "Kỹ thuật viên", variant: "info" },
 ] as const;
 
 export const STAFF_HEADER_OFFSET_CLASS = "top-[105px] md:top-[53px]";

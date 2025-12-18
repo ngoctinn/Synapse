@@ -124,7 +124,7 @@ export function MetricsCards({
       value: animatedPending,
       subValue: "cần xử lý",
       icon: <Clock className="h-5 w-5" />,
-      color: "text-amber-500",
+      color: "text-warning",
     },
     {
       title: "Tỷ lệ lấp đầy",
@@ -135,14 +135,14 @@ export function MetricsCards({
         value: 5,
         isPositive: true,
       },
-      color: "text-emerald-500",
+      color: "text-success",
     },
     {
       title: "Doanh thu dự kiến",
       value: formatCurrency(animatedRevenue),
       subValue: "VNĐ",
       icon: <DollarSign className="h-5 w-5" />,
-      color: "text-violet-500",
+      color: "text-info",
     },
   ];
 
@@ -181,7 +181,7 @@ export function MetricsCards({
               <div
                 className={cn(
                   "flex items-center gap-1 mt-2 text-xs font-medium",
-                  card.trend.isPositive ? "text-emerald-600" : "text-red-600"
+                  card.trend.isPositive ? "text-success" : "text-destructive"
                 )}
               >
                 <TrendingUp

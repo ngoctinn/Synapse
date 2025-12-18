@@ -4,239 +4,126 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* --- Premium Spa Palette (Light) --- */
-  /* Background: Pure Neutral White/Gray */
   --background: oklch(1 0 0);
-  /* Foreground: Deep Slate for readability */
   --foreground: oklch(0.25 0.02 260);
 
-  /* Card: Pure White */
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.25 0.02 260);
 
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.25 0.02 260);
 
-  /* Layout Variables */
-
-  --appointment-header-height: 53px;
-  --appointment-header-height-mobile: 130px;
-  --calendar-header-height: 53px;
-  --calendar-header-height-mobile: 130px;
-  --timeline-header-offset: calc(
-    var(--appointment-header-height) + var(--calendar-header-height)
-  );
-  --timeline-header-offset-mobile: calc(
-    var(--appointment-header-height-mobile) +
-      var(--calendar-header-height-mobile)
-  );
-
-  --staff-header-height: 53px;
-  --staff-header-height-mobile: 105px;
-
-  /* Primary: Deep Teal/Ocean (Sophisticated, Calming) */
   --primary: oklch(0.48 0.14 200);
   --primary-foreground: oklch(0.98 0.01 200);
 
-  /* Secondary: Soft Sage/Mist (Tăng chroma để nổi bật hơn) */
-  --secondary: oklch(0.93 0.06 160);
-  --secondary-foreground: oklch(0.3 0.1 160);
+  --secondary: oklch(0.96 0.01 260);
+  --secondary-foreground: oklch(0.3 0.02 260);
 
-  /* Muted: Neutral Gray for dividers/subtext */
-  --muted: oklch(0.96 0.01 260);
-  --muted-foreground: oklch(0.55 0.03 260);
+  --muted: oklch(0.97 0.01 260);
+  --muted-foreground: oklch(0.5 0.03 260);
 
-  /* Accent: Champagne Gold (Luxury Highlight) */
-  --accent: oklch(0.97 0.02 85);
+  --accent: oklch(0.97 0.03 85);
   --accent-foreground: oklch(0.45 0.12 85);
 
-  /* Destructive: Soft Red */
-  --destructive: oklch(0.65 0.22 25);
+  --destructive: oklch(0.6 0.18 25);
   --destructive-foreground: oklch(1 0 0);
 
-  /* Border: Subtle Gray - Premium Light */
-  --border: oklch(0.94 0.01 260); /* Lighter than before (0.92) */
-  --input: oklch(0.94 0.01 260); /* Softens the default border */
-  --ring: oklch(0.48 0.14 200); /* Keep Primary Teal */
+  --border: oklch(0.92 0.01 260);
+  --input: oklch(0.92 0.01 260);
+  --ring: oklch(0.48 0.14 200);
 
-  /* Charts: Harmonious Nature Tones */
-  --chart-1: oklch(0.48 0.14 200); /* Teal */
-  --chart-2: oklch(0.6 0.15 160); /* Green */
-  --chart-3: oklch(0.55 0.12 240); /* Blue */
-  --chart-4: oklch(0.7 0.15 85); /* Gold */
-  --chart-5: oklch(0.65 0.2 25); /* Coral */
+  --chart-1: oklch(0.48 0.14 200);
+  --chart-2: oklch(0.65 0.15 160);
+  --chart-3: oklch(0.6 0.12 240);
+  --chart-4: oklch(0.75 0.15 85);
+  --chart-5: oklch(0.65 0.2 25);
 
-  /* Sidebar: Glassy White */
-  --sidebar: oklch(1 0 0); /* Match global background */
+  --sidebar: oklch(1 0 0);
   --sidebar-foreground: oklch(0.25 0.02 260);
   --sidebar-primary: oklch(0.48 0.14 200);
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.96 0 0); /* Neutral accent */
+  --sidebar-accent: oklch(0.97 0.01 260);
   --sidebar-accent-foreground: oklch(0.25 0.02 260);
-  --sidebar-border: oklch(0.94 0 0); /* Neutral border */
+  --sidebar-border: oklch(0.94 0 0);
   --sidebar-ring: oklch(0.48 0.14 200);
 
-  /* Typography */
   --font-sans: Be Vietnam Pro, ui-sans-serif, sans-serif, system-ui;
   --font-serif: Source Serif 4, serif;
   --font-mono: JetBrains Mono, monospace;
 
-  /* Radius: Modern & Soft */
   --radius: 0.5rem;
 
-  /* Shadows: Soft & Diffused */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 0.05);
+  --shadow: 0 4px 6px -1px oklch(0 0 0 / 0.05), 0 2px 4px -2px oklch(0 0 0 / 0.03);
 
-  /* Alert Colors: Warning (Amber) */
   --alert-warning: oklch(0.96 0.08 85);
-  --alert-warning-foreground: oklch(0.45 0.12 50);
-  --alert-warning-border: oklch(0.88 0.1 85);
+  --alert-warning-foreground: oklch(0.4 0.1 50);
+  --alert-warning-border: oklch(0.9 0.08 85);
 
-  /* Alert Colors: Success (Green) */
-  --alert-success: oklch(0.96 0.05 155);
-  --alert-success-foreground: oklch(0.35 0.1 155);
-  --alert-success-border: oklch(0.88 0.08 155);
+  --alert-success: oklch(0.96 0.06 155);
+  --alert-success-foreground: oklch(0.3 0.1 155);
+  --alert-success-border: oklch(0.9 0.08 155);
 
-  /* Alert Colors: Info (Blue) */
-  --alert-info: oklch(0.96 0.05 240);
-  --alert-info-foreground: oklch(0.4 0.12 240);
-  --alert-info-border: oklch(0.88 0.08 240);
-
-  /* Vibrant Alert Colors (Mid-tone for UI Elements like Sonner) */
-  /* Mimics Destructive behavior: High Chroma, Mid Lightness */
-  --alert-warning-vibrant: oklch(0.75 0.16 70);
-  --alert-success-vibrant: oklch(0.65 0.2 150);
-  --alert-info-vibrant: oklch(0.6 0.18 240);
-
-  /* --- Appointment Status Colors (Premium Pastel) --- */
-  /* Pending: Amber-like */
-  --status-pending: oklch(0.96 0.08 85);
-  --status-pending-foreground: oklch(0.45 0.12 50);
-  --status-pending-border: oklch(0.88 0.1 85);
-
-  /* Confirmed: Sky-like */
-  --status-confirmed: oklch(0.96 0.05 240);
-  --status-confirmed-foreground: oklch(0.4 0.12 240);
-  --status-confirmed-border: oklch(0.88 0.08 240);
-
-  /* Serving: Emerald-like */
-  --status-serving: oklch(0.96 0.05 155);
-  --status-serving-foreground: oklch(0.35 0.1 155);
-  --status-serving-border: oklch(0.88 0.08 155);
-
-  /* Completed: Slate-like */
-  --status-completed: oklch(0.97 0.01 260);
-  --status-completed-foreground: oklch(0.45 0.02 260);
-  --status-completed-border: oklch(0.92 0.01 260);
-
-  /* Cancelled: Rose-like */
-  --status-cancelled: oklch(0.96 0.05 15);
-  --status-cancelled-foreground: oklch(0.45 0.12 15);
-  --status-cancelled-border: oklch(0.88 0.08 15);
-
-  /* No-Show: Red-like */
-  --status-noshow: oklch(0.95 0.1 25);
-  --status-noshow-foreground: oklch(0.4 0.15 25);
-  --status-noshow-border: oklch(0.88 0.1 25);
+  --alert-info: oklch(0.96 0.06 240);
+  --alert-info-foreground: oklch(0.3 0.12 240);
+  --alert-info-border: oklch(0.9 0.08 240);
 }
 
 .dark {
-  /* --- Premium Dark Spa Palette --- */
-  /* Background: Deep Charcoal/Midnight */
   --background: oklch(0.15 0.02 260);
-  --foreground: oklch(0.95 0.01 260);
+  --foreground: oklch(0.97 0.01 260);
 
-  /* Card: Slightly Lighter Charcoal */
   --card: oklch(0.18 0.02 260);
-  --card-foreground: oklch(0.95 0.01 260);
+  --card-foreground: oklch(0.97 0.01 260);
 
   --popover: oklch(0.18 0.02 260);
-  --popover-foreground: oklch(0.95 0.01 260);
+  --popover-foreground: oklch(0.97 0.01 260);
 
-  /* Primary: Luminous Teal */
-  --primary: oklch(0.65 0.15 200);
+  --primary: oklch(0.68 0.15 200);
   --primary-foreground: oklch(0.15 0.02 260);
 
-  /* Secondary: Deep Sage (Tăng chroma để nổi bật hơn) */
-  --secondary: oklch(0.28 0.08 160);
-  --secondary-foreground: oklch(0.92 0.06 160);
+  --secondary: oklch(0.25 0.02 260);
+  --secondary-foreground: oklch(0.95 0.01 260);
 
-  /* Muted: Dark Gray */
-  --muted: oklch(0.25 0.02 260);
+  --muted: oklch(0.22 0.02 260);
   --muted-foreground: oklch(0.7 0.02 260);
 
-  /* Accent: Deep Gold/Bronze */
-  --accent: oklch(0.3 0.1 85);
-  --accent-foreground: oklch(0.9 0.1 85);
+  --accent: oklch(0.3 0.08 85);
+  --accent-foreground: oklch(0.95 0.05 85);
 
-  --destructive: oklch(0.65 0.22 25);
+  --destructive: oklch(0.55 0.22 25);
   --destructive-foreground: oklch(1 0 0);
 
-  --border: oklch(0.28 0.02 260);
-  --input: oklch(0.28 0.02 260);
-  --ring: oklch(0.65 0.15 200);
+  --border: oklch(0.25 0.02 260);
+  --input: oklch(0.25 0.02 260);
+  --ring: oklch(0.68 0.15 200);
 
-  --chart-1: oklch(0.65 0.15 200);
-  --chart-2: oklch(0.6 0.15 160);
-  --chart-3: oklch(0.55 0.12 240);
-  --chart-4: oklch(0.7 0.15 85);
+  --chart-1: oklch(0.68 0.15 200);
+  --chart-2: oklch(0.65 0.15 160);
+  --chart-3: oklch(0.6 0.12 240);
+  --chart-4: oklch(0.75 0.15 85);
   --chart-5: oklch(0.65 0.2 25);
 
   --sidebar: oklch(0.15 0.02 260);
-  --sidebar-foreground: oklch(0.95 0.01 260);
-  --sidebar-primary: oklch(0.65 0.15 200);
+  --sidebar-foreground: oklch(0.97 0.01 260);
+  --sidebar-primary: oklch(0.68 0.15 200);
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.25 0.05 200);
-  --sidebar-accent-foreground: oklch(0.9 0.05 200);
-  --sidebar-border: oklch(0.28 0.02 260);
-  --sidebar-ring: oklch(0.65 0.15 200);
+  --sidebar-accent: oklch(0.22 0.02 260);
+  --sidebar-accent-foreground: oklch(0.95 0.01 260);
+  --sidebar-border: oklch(0.25 0.02 260);
+  --sidebar-ring: oklch(0.68 0.15 200);
 
-  /* Alert Colors: Warning (Amber) - Dark */
-  --alert-warning: oklch(0.25 0.08 50);
-  --alert-warning-foreground: oklch(0.9 0.08 85);
-  --alert-warning-border: oklch(0.35 0.08 50);
+  --alert-warning: oklch(0.28 0.06 85);
+  --alert-warning-foreground: oklch(0.95 0.08 85);
+  --alert-warning-border: oklch(0.35 0.06 85);
 
-  /* Alert Colors: Success (Green) - Dark */
-  --alert-success: oklch(0.22 0.06 155);
-  --alert-success-foreground: oklch(0.88 0.08 155);
+  --alert-success: oklch(0.25 0.06 155);
+  --alert-success-foreground: oklch(0.9 0.08 155);
   --alert-success-border: oklch(0.32 0.06 155);
 
-  /* Alert Colors: Info (Blue) - Dark */
-  --alert-info: oklch(0.22 0.06 240);
-  --alert-info-foreground: oklch(0.88 0.08 240);
+  --alert-info: oklch(0.25 0.06 240);
+  --alert-info-foreground: oklch(0.9 0.08 240);
   --alert-info-border: oklch(0.32 0.06 240);
-
-  /* --- Appointment Status Colors (Premium Pastel) - Dark --- */
-  /* Pending: Amber-like */
-  --status-pending: oklch(0.25 0.08 50);
-  --status-pending-foreground: oklch(0.9 0.08 85);
-  --status-pending-border: oklch(0.35 0.08 50);
-
-  /* Confirmed: Sky-like */
-  --status-confirmed: oklch(0.22 0.06 240);
-  --status-confirmed-foreground: oklch(0.88 0.08 240);
-  --status-confirmed-border: oklch(0.32 0.06 240);
-
-  /* Serving: Emerald-like */
-  --status-serving: oklch(0.22 0.06 155);
-  --status-serving-foreground: oklch(0.88 0.08 155);
-  --status-serving-border: oklch(0.32 0.06 155);
-
-  /* Completed: Slate-like */
-  --status-completed: oklch(0.15 0.02 260);
-  --status-completed-foreground: oklch(0.7 0.02 260);
-  --status-completed-border: oklch(0.28 0.02 260);
-
-  /* Cancelled: Rose-like */
-  --status-cancelled: oklch(0.22 0.06 15);
-  --status-cancelled-foreground: oklch(0.88 0.08 15);
-  --status-cancelled-border: oklch(0.32 0.06 15);
-
-  /* No-Show: Red-like */
-  --status-noshow: oklch(0.25 0.1 25);
-  --status-noshow-foreground: oklch(0.9 0.1 25);
-  --status-noshow-border: oklch(0.35 0.1 25);
 }
 
 @theme inline {
@@ -273,7 +160,6 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* Alert Colors - Export cho Tailwind utilities */
   --color-alert-warning: var(--alert-warning);
   --color-alert-warning-foreground: var(--alert-warning-foreground);
   --color-alert-warning-border: var(--alert-warning-border);
@@ -283,34 +169,6 @@
   --color-alert-info: var(--alert-info);
   --color-alert-info-foreground: var(--alert-info-foreground);
   --color-alert-info-border: var(--alert-info-border);
-
-  /* Short aliases for convenience - Mapping to VIBRANT for shared UI components */
-  --color-warning: var(--alert-warning-vibrant);
-  --color-warning-foreground: var(--alert-warning-foreground);
-  --color-success: var(--alert-success-vibrant);
-  --color-success-foreground: var(--alert-success-foreground);
-  --color-info: var(--alert-info-vibrant);
-  --color-info-foreground: var(--alert-info-foreground);
-
-  /* Status Colors - Export cho Tailwind utilities */
-  --color-status-pending: var(--status-pending);
-  --color-status-pending-foreground: var(--status-pending-foreground);
-  --color-status-pending-border: var(--status-pending-border);
-  --color-status-confirmed: var(--status-confirmed);
-  --color-status-confirmed-foreground: var(--status-confirmed-foreground);
-  --color-status-confirmed-border: var(--status-confirmed-border);
-  --color-status-serving: var(--status-serving);
-  --color-status-serving-foreground: var(--status-serving-foreground);
-  --color-status-serving-border: var(--status-serving-border);
-  --color-status-completed: var(--status-completed);
-  --color-status-completed-foreground: var(--status-completed-foreground);
-  --color-status-completed-border: var(--status-completed-border);
-  --color-status-cancelled: var(--status-cancelled);
-  --color-status-cancelled-foreground: var(--status-cancelled-foreground);
-  --color-status-cancelled-border: var(--status-cancelled-border);
-  --color-status-noshow: var(--status-noshow);
-  --color-status-noshow-foreground: var(--status-noshow-foreground);
-  --color-status-noshow-border: var(--status-noshow-border);
 
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
@@ -338,31 +196,26 @@
     scroll-behavior: smooth;
   }
 
-  /* Selection Highlight */
   ::selection {
     @apply bg-primary/20 text-primary;
   }
 }
 
 @layer utilities {
-  /* Glassmorphism Utilities */
   .glass {
-    @apply bg-white/70 dark:bg-black/40 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-sm;
+    @apply bg-background border border-border shadow-sm;
   }
 
-  /* Premium Form Focus Ring - Soft Glow */
-  /* Only apply Primary Teal glow if NOT invalid (Error state handles its own Red glow) */
   .focus-premium:not([aria-invalid="true"]) {
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/50 transition-all duration-200;
   }
 
-  /* Ensure Error State Focus is Red */
   .focus-premium[aria-invalid="true"] {
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/20 focus-visible:border-destructive transition-all duration-200;
   }
 
   .glass-card {
-    @apply bg-white/80 dark:bg-card/80 backdrop-blur-sm border border-white/20 dark:border-white/10 shadow-md hover:shadow-lg transition-all duration-300;
+    @apply bg-card border border-border shadow-md transition-all duration-300;
   }
 
   .surface-card {
@@ -370,10 +223,55 @@
   }
 
   .header-sticky {
-    @apply sticky top-0 z-50 w-full border-b transition-all duration-200;
+    @apply sticky top-0 z-50 w-full border-b transition-all duration-200 bg-background/95;
   }
 
-  /* Animation Utilities */
+  .shadow-premium-sm {
+    box-shadow: 0 1px 3px 0 oklch(0 0 0 / 0.05);
+  }
+
+  .shadow-premium-md {
+    box-shadow: 0 4px 6px -1px oklch(0 0 0 / 0.06);
+  }
+
+  .shadow-premium-lg {
+    box-shadow: 0 10px 15px -3px oklch(0 0 0 / 0.08);
+  }
+
+  .shadow-premium-primary {
+    box-shadow: 0 8px 12px -3px var(--primary-shadow, oklch(0.48 0.14 200 / 0.1));
+  }
+
+  .text-gradient-premium {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-500 to-pink-500;
+  }
+
+  .btn-hero {
+    @apply h-12 px-8 text-lg rounded-full transition-all hover:scale-105 active:scale-95;
+  }
+
+  .bg-blob {
+    @apply absolute rounded-full blur-[80px] -z-10 opacity-30 pointer-events-none;
+  }
+
+  .table-first-cell-padding {
+    @apply pl-6;
+  }
+
+  .table-last-cell-padding {
+    @apply pr-6 text-right;
+  }
+
+  .indicator-online {
+    @apply bg-emerald-500 ring-2 ring-background;
+  }
+  .indicator-offline {
+    @apply bg-slate-300 ring-2 ring-background dark:bg-slate-600;
+  }
+  .indicator-busy {
+    @apply bg-amber-500 ring-2 ring-background;
+  }
+
   .animate-fade-in {
     animation: fadeIn 0.5s ease-out forwards;
   }
@@ -405,7 +303,6 @@
     animation: pulseHorizontal 1.5s infinite ease-in-out;
   }
 
-  /* Shared Sheet Layout Classes - Chuẩn hóa LO-035→040, LO-076→078 */
   .sheet-header {
     @apply px-6 py-3 border-b;
   }
@@ -419,7 +316,6 @@
   }
 }
 
-/* Keyframes */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -482,11 +378,6 @@
   }
 }
 
-
-
-
-
-/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

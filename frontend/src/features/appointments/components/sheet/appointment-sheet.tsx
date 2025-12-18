@@ -203,7 +203,7 @@ export function AppointmentSheet({
         {/* ============================================ */}
         {/* HEADER */}
         {/* ============================================ */}
-        <SheetHeader className="px-6 py-4 border-b shrink-0 space-y-0">
+        <SheetHeader className="sheet-header shrink-0 space-y-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {isPaymentMode && (
@@ -233,7 +233,7 @@ export function AppointmentSheet({
             )}
             {/* Payment Badge (Payment mode) */}
             {isPaymentMode && invoice && (
-              <Badge variant={invoice.status === "PAID" ? "emerald" : "amber"}>
+              <Badge variant={invoice.status === "PAID" ? "success" : "warning"}>
                 {invoice.status === "PAID" ? "Đã thanh toán" : "Chờ thanh toán"}
               </Badge>
             )}
@@ -398,7 +398,8 @@ export function AppointmentSheet({
               <div className="flex items-center gap-2 w-full">
                 {canCreateInvoice && (
                   <Button
-                    className="w-full bg-green-600 hover:bg-green-700 h-9"
+                    variant="success"
+                    className="w-full h-9"
                     onClick={handleCreateInvoiceAndPay}
                     disabled={isCreatingInvoice}
                     isLoading={isCreatingInvoice}
@@ -411,8 +412,8 @@ export function AppointmentSheet({
               <div className="flex items-center gap-2 w-full">
                 {canCheckIn && (
                   <Button
-                    variant="outline"
-                    className="flex-1 text-green-600 border-green-200 hover:bg-green-50 h-9"
+                    variant="outline-success"
+                    className="flex-1 h-9"
                     onClick={() => onCheckIn?.(appointment!.id)}
                     startContent={<CheckCircle2 className="size-4" />}
                   >
@@ -421,8 +422,8 @@ export function AppointmentSheet({
                 )}
                 {canCancel && (
                   <Button
-                    variant="outline"
-                    className="flex-1 text-amber-600 border-amber-200 hover:bg-amber-50 h-9"
+                    variant="outline-warning"
+                    className="flex-1 h-9"
                     onClick={() => onCancel?.(appointment!.id)}
                     startContent={<XCircle className="size-4" />}
                   >
