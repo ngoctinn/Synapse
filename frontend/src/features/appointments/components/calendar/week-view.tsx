@@ -1,12 +1,6 @@
 "use client";
 
-/**
- * WeekView - Hiển thị lịch hẹn theo tuần
- *
- * 7 columns (T2-CN), TimeGrid shared, events positioned theo ngày và giờ.
- */
-
-import { addDays, isSameDay } from "date-fns";
+import { addDays } from "date-fns";
 import { useMemo } from "react";
 
 import { cn } from "@/shared/lib/utils";
@@ -17,11 +11,8 @@ import type { CalendarEvent, DateRange, DensityMode } from "../../types";
 import { EventPopover } from "../event";
 import { EventCard } from "../event/event-card";
 import { DateHeader } from "./date-header";
-import { TimeGrid, calculateEventPosition } from "./time-grid";
-
-// ============================================
-// TYPES
-// ============================================
+import { TimeGrid } from "./time-grid";
+import { useWeekEventLayout } from "./use-week-event-layout";
 
 interface WeekViewProps {
   /** Khoảng thời gian tuần */
@@ -44,10 +35,6 @@ interface WeekViewProps {
   onDelete?: (event: CalendarEvent) => void;
   onEdit?: (event: CalendarEvent) => void;
 }
-
-// ============================================
-// COMPONENT
-// ============================================
 
 export function WeekView({
   dateRange,
@@ -86,92 +73,12 @@ export function WeekView({
 
   const numberOfDays = weekDays.length;
 
-  // Group events by day
-  const eventsByDay = useMemo(() => {
-    const map = new Map<string, CalendarEvent[]>();
-
-    for (const day of weekDays) {
-      const key = day.toISOString().split("T")[0];
-      const dayEvents = events.filter((event) => isSameDay(event.start, day));
-      map.set(key, dayEvents);
-    }
-
-    return map;
-  }, [weekDays, events]);
-
-  // Position events với overlap handling
-  const positionedEventsByDay = useMemo(() => {
-    const result = new Map<
-      string,
-      Array<{
-        event: CalendarEvent;
-        column: number;
-        totalColumns: number;
-        position: { top: number; height: number };
-      }>
-    >();
-
-    for (const [dateKey, dayEvents] of eventsByDay) {
-      if (dayEvents.length === 0) {
-        result.set(dateKey, []);
-        continue;
-      }
-
-      const sorted = [...dayEvents].sort(
-        (a, b) => a.start.getTime() - b.start.getTime()
-      );
-
-      const positioned: Array<{
-        event: CalendarEvent;
-        column: number;
-        totalColumns: number;
-        position: { top: number; height: number };
-      }> = [];
-
-      for (const event of sorted) {
-        const position = calculateEventPosition(
-          event.start,
-          event.end,
-          startHour,
-          hourHeight
-        );
-
-        const overlapping = positioned.filter(
-          (p) =>
-            p.position.top < position.top + position.height &&
-            p.position.top + p.position.height > position.top
-        );
-
-        if (overlapping.length === 0) {
-          positioned.push({ event, column: 0, totalColumns: 1, position });
-        } else {
-          const usedColumns = new Set(overlapping.map((p) => p.column));
-          let column = 0;
-          while (usedColumns.has(column)) column++;
-
-          const newTotalColumns = Math.max(
-            column + 1,
-            ...overlapping.map((p) => p.totalColumns)
-          );
-
-          for (const p of overlapping) {
-            p.totalColumns = newTotalColumns;
-          }
-
-          positioned.push({
-            event,
-            column,
-            totalColumns: newTotalColumns,
-            position,
-          });
-        }
-      }
-
-      result.set(dateKey, positioned);
-    }
-
-    return result;
-  }, [eventsByDay, startHour, hourHeight]);
+  const positionedEventsByDay = useWeekEventLayout({
+    weekDays,
+    events,
+    startHour,
+    hourHeight,
+  });
 
   return (
     <div className={cn("flex flex-col h-full min-h-0", className)}>

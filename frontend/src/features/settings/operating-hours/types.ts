@@ -4,7 +4,7 @@
  * Tham chiếu: docs/research/operating-hours-uxui.md (UX/UI Patterns - Section 5)
  */
 
-// ===== WEEKLY SCHEDULE =====
+// Weekly Schedule
 
 export type DayOfWeek = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
@@ -30,7 +30,7 @@ export interface DaySchedule {
   timeSlots: TimeSlot[]; // multiple periods support (period_number)
 }
 
-// ===== EXCEPTIONS =====
+// Exceptions
 
 export type ExceptionType = "HOLIDAY" | "MAINTENANCE" | "SPECIAL_HOURS" | "CUSTOM";
 
@@ -44,14 +44,14 @@ export interface ExceptionDate {
   closeTime?: string;   // maps to close_time (when isClosed=false)
 }
 
-// ===== CONFIG (Aggregate for Frontend State) =====
+// Config
 
 export interface OperatingHoursConfig {
   weeklySchedule: DaySchedule[];
   exceptions: ExceptionDate[];
 }
 
-// ===== VALIDATION TYPES =====
+// Validation Types
 
 export interface ExceptionValidationResult {
   isValid: boolean;

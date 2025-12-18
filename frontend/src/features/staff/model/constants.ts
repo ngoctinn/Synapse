@@ -1,8 +1,6 @@
 import { Role, ScheduleViewType } from "./types";
 
-// ============================================================================
-// ROLE CONFIG
-// ============================================================================
+// Role Configuration
 
 export const ROLE_CONFIG: Record<
   Role,
@@ -56,9 +54,7 @@ export const ROLES = [
 
 export const STAFF_HEADER_OFFSET_CLASS = "top-[105px] md:top-[53px]";
 
-// ============================================================================
-// SCHEDULE VIEW CONFIG
-// ============================================================================
+// Schedule View Configuration
 
 export const SCHEDULE_VIEW_CONFIG: Record<
   ScheduleViewType,
@@ -77,9 +73,7 @@ export const SCHEDULE_VIEW_CONFIG: Record<
   },
 };
 
-// ============================================================================
-// WEEKDAYS
-// ============================================================================
+// Weekdays
 
 export const WEEKDAYS = [
   { value: 1, label: "T2", fullLabel: "Thứ 2" },
@@ -91,9 +85,7 @@ export const WEEKDAYS = [
   { value: 0, label: "CN", fullLabel: "Chủ Nhật" },
 ] as const;
 
-// ============================================================================
-// SCHEDULER UI LABELS
-// ============================================================================
+// Scheduler UI Labels
 
 export const SCHEDULER_UI = {
   // Navigation
@@ -148,9 +140,7 @@ export const SCHEDULER_UI = {
   SUCCESS_PUBLISH: "Đã công bố lịch",
 } as const;
 
-// ============================================================================
-// SCHEDULE CONSTANTS
-// ============================================================================
+// Schedule Constants
 
 export const MAX_SHIFTS_PER_DAY = 3;
 export const DEFAULT_WEEK_START = 1; // Monday

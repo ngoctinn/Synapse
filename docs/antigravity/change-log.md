@@ -37,3 +37,43 @@
 ---
 *Người thực hiện: Antigravity Agent*
 *Ngày: 2025-12-18*
+
+# Antigravity Change Log: Frontend Clean Code Refactor
+
+## Tóm tắt thay đổi
+Đã thực hiện tái cấu trúc "Clean Code" cho Frontend: xóa bỏ các comments trang trí thừa, giảm nesting, tách logic phức tạp ra khỏi components.
+
+## Chi tiết thay đổi
+
+### 1. Xóa Comments Thừa & Trang Trí (`features/**`)
+- Xóa bỏ các headers dạng `==== ROLE CONFIG ====` trong:
+    - `features/staff/model/types.ts`
+    - `features/staff/model/constants.ts`
+    - `features/settings/operating-hours/types.ts`
+    - `features/appointments/components/calendar/month-view.tsx`
+    - `features/appointments/components/calendar/week-view.tsx`
+    - `features/appointments/components/calendar/day-view.tsx`
+
+### 2. Refactor Components (Giảm Nesting & Tách File)
+- **MonthView.tsx:**
+    - Tách component con `DayCellComponent` ra thành file riêng `day-cell.tsx`.
+    - Định nghĩa lại `DayModel` interface.
+- **WeekView.tsx:**
+    - Tách logic tính toán vị trí sự kiện (event positioning) ra custom hook `useWeekEventLayout`.
+    - Tách thuật toán cốt lõi ra `layout-utils.ts` để tái sử dụng.
+- **DayView.tsx:**
+    - Loại bỏ logic lặp lại, tái sử dụng `calculateEventLayout` từ `layout-utils.ts`.
+    - Component trở nên gọn gàng hơn (< 200 dòng).
+
+### 3. Verification
+- `pnpm lint`: Passed.
+- `pnpm build`: Passed.
+
+## Đánh giá
+- **Độ phức tạp:** Giảm đáng kể độ phức tạp nhận thức (cognitive complexity) của các file View.
+- **Tính tái sử dụng:** Logic layout sự kiện giờ đây có thể tái sử dụng dễ dàng.
+- **Tuân thủ:** Đạt tiêu chuẩn Clean Code và Single Responsibility.
+
+---
+*Người thực hiện: Antigravity Agent*
+*Ngày: 2025-12-18* (Refactor Session 2)

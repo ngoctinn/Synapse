@@ -47,9 +47,7 @@ export interface StaffListResponse {
   limit: number;
 }
 
-// ============================================================================
-// SCHEDULING TYPES - Phù hợp với Database Design
-// ============================================================================
+// Scheduling Types - Maps to Database Design
 
 /** Chế độ xem lịch */
 export type ScheduleViewType = 'week' | 'month';
@@ -89,9 +87,7 @@ export interface ScheduleWithShift extends Schedule {
   shift: Shift;
 }
 
-// ============================================================================
-// UI TYPES
-// ============================================================================
+// UI Types
 
 /** Khoảng thời gian */
 export interface DateRange {
@@ -120,9 +116,7 @@ export interface SelectedSlot {
   dateStr: string;  // "yyyy-MM-dd"
 }
 
-// ============================================================================
-// PERMISSION TYPES
-// ============================================================================
+// Permission Types
 
 export interface Permission {
   moduleId: string;

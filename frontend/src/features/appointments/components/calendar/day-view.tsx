@@ -1,11 +1,5 @@
 "use client";
 
-/**
- * DayView - Hiển thị lịch hẹn theo ngày
- *
- * Single column với TimeGrid, events positioned theo thời gian.
- */
-
 import { isSameDay } from "date-fns";
 import { useMemo } from "react";
 
@@ -17,11 +11,8 @@ import type { CalendarEvent, DensityMode } from "../../types";
 import { EventPopover } from "../event";
 import { EventCard } from "../event/event-card";
 import { DateHeader } from "./date-header";
-import { TimeGrid, calculateEventPosition } from "./time-grid";
-
-// ============================================
-// TYPES
-// ============================================
+import { TimeGrid } from "./time-grid";
+import { calculateEventLayout } from "./layout-utils";
 
 interface DayViewProps {
   /** Ngày đang xem */
@@ -42,10 +33,6 @@ interface DayViewProps {
   onDelete?: (event: CalendarEvent) => void;
   onEdit?: (event: CalendarEvent) => void;
 }
-
-// ============================================
-// COMPONENT
-// ============================================
 
 export function DayView({
   date,
@@ -69,64 +56,7 @@ export function DayView({
 
   // Group overlapping events
   const positionedEvents = useMemo(() => {
-    if (dayEvents.length === 0) return [];
-
-    // Sort by start time
-    const sorted = [...dayEvents].sort(
-      (a, b) => a.start.getTime() - b.start.getTime()
-    );
-
-    // Find overlapping groups and assign columns
-    const positioned: Array<{
-      event: CalendarEvent;
-      column: number;
-      totalColumns: number;
-      position: { top: number; height: number };
-    }> = [];
-
-    for (const event of sorted) {
-      const position = calculateEventPosition(
-        event.start,
-        event.end,
-        startHour,
-        hourHeight
-      );
-
-      // Find overlapping events already positioned
-      const overlapping = positioned.filter(
-        (p) =>
-          p.position.top < position.top + position.height &&
-          p.position.top + p.position.height > position.top
-      );
-
-      if (overlapping.length === 0) {
-        positioned.push({ event, column: 0, totalColumns: 1, position });
-      } else {
-        // Find available column
-        const usedColumns = new Set(overlapping.map((p) => p.column));
-        let column = 0;
-        while (usedColumns.has(column)) column++;
-
-        // Update total columns for all overlapping
-        const newTotalColumns = Math.max(
-          column + 1,
-          ...overlapping.map((p) => p.totalColumns)
-        );
-
-        for (const p of overlapping) {
-          p.totalColumns = newTotalColumns;
-        }
-
-        positioned.push({
-          event,
-          column,
-          totalColumns: newTotalColumns,
-          position,
-        });
-      }
-    }
-
-    return positioned;
+    return calculateEventLayout(dayEvents, startHour, hourHeight);
   }, [dayEvents, startHour, hourHeight]);
 
   return (
