@@ -45,6 +45,7 @@ const BREADCRUMB_MAP: Record<string, string> = {
   settings: "Cài đặt",
   "operating-hours": "Thời gian hoạt động",
   resources: "Tài nguyên",
+  customers: "Khách hàng",
 }
 
 interface AdminHeaderProps {
