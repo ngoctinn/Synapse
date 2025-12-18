@@ -67,7 +67,7 @@ export async function createInvoice(bookingId: string): Promise<ActionResponse<I
     revalidatePath("/admin/billing");
 
     return success(newInvoice, "Tạo hóa đơn thành công");
-  } catch (e) {
+  } catch {
     return error("Lỗi khi tạo hóa đơn");
   }
 }
@@ -91,7 +91,7 @@ export async function getInvoices(filters?: InvoiceFilters): Promise<ActionRespo
     }
     invoices.sort((a, b) => b.issuedAt.getTime() - a.issuedAt.getTime());
     return success(invoices);
-  } catch (e) {
+  } catch {
     return error("Không thể tải danh sách hóa đơn");
   }
 }
@@ -100,7 +100,7 @@ export async function getInvoice(id: string): Promise<ActionResponse<Invoice>> {
   try {
     const invoice = MOCK_INVOICES.find((inv) => inv.id === id);
     return invoice ? success(invoice) : error("Không tìm thấy hóa đơn");
-  } catch (e) {
+  } catch {
     return error("Lỗi khi tải chi tiết hóa đơn");
   }
 }
@@ -132,14 +132,14 @@ export async function createPayment(payload: CreatePaymentPayload): Promise<Acti
 
     if (updatedInvoice.paidAmount >= updatedInvoice.finalAmount) {
       updatedInvoice.status = "PAID";
-      const pointsEarned = Math.floor(updatedInvoice.finalAmount / 10000);
+      // const pointsEarned = Math.floor(updatedInvoice.finalAmount / 10000);
       // TODO: Dispatch loyalty points event here
     }
 
     MOCK_INVOICES[invoiceIndex] = updatedInvoice;
     revalidatePath("/admin/billing");
     return success(updatedInvoice, "Thanh toán thành công");
-  } catch (e) {
+  } catch {
     return error("Lỗi khi xử lý thanh toán");
   }
 }
@@ -152,7 +152,7 @@ export async function getBillingMetrics(): Promise<ActionResponse<InvoiceMetrics
     const unpaidInvoices = MOCK_INVOICES.filter((inv) => inv.status === "UNPAID").length;
 
     return success({ totalRevenue, pendingAmount, paidInvoices, unpaidInvoices });
-  } catch (e) {
+  } catch {
     return error("Không thể tải thống kê");
   }
 }

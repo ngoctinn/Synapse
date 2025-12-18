@@ -46,12 +46,11 @@ export async function getServicesForBooking(): Promise<ActionResponse<Record<str
   }
 }
 
-export async function getAvailableStaff(params: {
+export async function getAvailableStaff(_params: {
   serviceIds: string[];
   date?: Date;
 }): Promise<ActionResponse<StaffItem[]>> {
   try {
-    const { serviceIds } = params;
 
     // Fetch all staff
     const staffResponse = await getStaffList(1, 100);

@@ -157,9 +157,9 @@ export function DataTable<T>({
                           <span className="flex flex-col items-center justify-center w-4 h-4">
                             {isSorted ? (
                               sort?.direction === "asc" ? (
-                                <ArrowUp className="h-3.5 w-3.5 text-primary animate-in fade-in zoom-in duration-200" />
+                                <ArrowUp className="h-3.5 w-3.5 text-primary animate-fade-zoom" />
                               ) : (
-                                <ArrowDown className="h-3.5 w-3.5 text-primary animate-in fade-in zoom-in duration-200" />
+                                <ArrowDown className="h-3.5 w-3.5 text-primary animate-fade-zoom" />
                               )
                             ) : (
                               <ArrowUpDown className="h-3 w-3 text-muted-foreground/30 opacity-0 group-hover:opacity-100 transition-opacity" />

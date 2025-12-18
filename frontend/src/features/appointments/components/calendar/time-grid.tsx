@@ -56,7 +56,6 @@ export function TimeGrid({
   interval = 30,
   densityMode = "comfortable",
   children,
-  columns = 1,
   className,
 }: TimeGridProps) {
   // Tính chiều cao mỗi giờ

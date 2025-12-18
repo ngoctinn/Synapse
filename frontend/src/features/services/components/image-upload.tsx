@@ -38,7 +38,7 @@ export function ImageUpload({ value, onChange, disabled, className }: ImageUploa
     <div className={cn("flex flex-col gap-4", className)}>
       <div className="flex items-center gap-4">
         {preview ? (
-          <div className="relative w-[160px] h-[160px] rounded-xl overflow-hidden border border-border group shrink-0 shadow-sm">
+          <div className="upload-preview-container group">
             <Image
               src={preview}
               alt="Service preview"
@@ -62,7 +62,7 @@ export function ImageUpload({ value, onChange, disabled, className }: ImageUploa
         ) : (
           <div
             onClick={() => fileInputRef.current?.click()}
-            className="w-[160px] h-[160px] rounded-xl border-2 border-dashed border-muted-foreground/20 flex flex-col items-center justify-center cursor-pointer hover:bg-primary/5 hover:border-primary/50 transition-all duration-300 shrink-0 group bg-muted/5 relative overflow-hidden"
+            className="upload-trigger-dashed group"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-transparent to-muted/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="p-4 rounded-full bg-background shadow-sm mb-3 group-hover:scale-110 group-hover:shadow-md transition-all duration-300 relative z-10">

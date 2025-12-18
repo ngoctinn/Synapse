@@ -54,7 +54,6 @@ export function WeekView({
   events,
   densityMode = "comfortable",
   onEventClick,
-  onSlotClick,
   hideWeekends = false,
   className,
   onCheckIn,
@@ -197,7 +196,7 @@ export function WeekView({
           />
 
           {/* Day Columns */}
-          {weekDays.map((day, dayIndex) => {
+          {weekDays.map((day) => {
             const dateKey = day.toISOString().split("T")[0];
             const dayPositionedEvents = positionedEventsByDay.get(dateKey) || [];
             const isWeekend = day.getDay() === 0 || day.getDay() === 6;

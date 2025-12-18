@@ -53,7 +53,7 @@ export function useCalendarDnd(
   } = options;
 
   const [isMoving, startTransition] = useTransition();
-  const [draggedEventId, setDraggedEventId] = useState<string | null>(null);
+  const [draggedEventId] = useState<string | null>(null);
   const [hoveredSlot, setHoveredSlot] = useState<{ date: Date } | null>(null);
 
 
@@ -110,7 +110,7 @@ export function useCalendarDnd(
             toast.error(result.message || "Không thể cập nhật lịch hẹn");
             onMoveError?.(result.message || "Không thể cập nhật lịch hẹn");
           }
-        } catch (error) {
+        } catch {
           const message = "Đã xảy ra lỗi khi di chuyển lịch hẹn";
           toast.error(message);
           onMoveError?.(message);

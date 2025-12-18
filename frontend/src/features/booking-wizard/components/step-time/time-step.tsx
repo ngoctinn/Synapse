@@ -40,17 +40,18 @@ export const TimeStep: React.FC = () => {
   }, [fetchedSlots, selectedDate, shouldFetch]);
 
   // Effect for fetching data
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!shouldFetch) {
-      // If not ready to fetch, simply return. Cleanup is handled by separate effect.
-      setFetchedSlots([]); // Clear any old fetched data
-      setSelectedDate(null); // Clear selected date in store
+      // Clear data inside a transition to avoid performance warnings
+      startTransition(() => {
+        setFetchedSlots([]);
+        setSelectedDate(null);
+      });
       return;
     }
 
-    setFetchError(null); // Clear any previous error before starting a new fetch
     startTransition(async () => {
+        setFetchError(null);
         const dateToFetch = selectedDate ? new Date(selectedDate) : new Date();
         const result = await getAvailableSlots({
             serviceIds: selectedServices.map(s => s.id),
@@ -75,15 +76,6 @@ export const TimeStep: React.FC = () => {
         }
     });
   }, [selectedServices, staffId, selectedDate, setSelectedDate, shouldFetch]);
-
-  // Effect for clearing states when conditions for fetching are no longer met
-  useEffect(() => {
-    if (!shouldFetch) {
-      setFetchedSlots([]);
-      setSelectedDate(null);
-      // setFetchError(null); // fetchError is already reset before new fetch
-    }
-  }, [shouldFetch, setSelectedDate]); // setSelectedDate is from store, so it's stable.
 
   return (
     <div className="space-y-6 p-4">

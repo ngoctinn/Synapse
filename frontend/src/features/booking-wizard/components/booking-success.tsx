@@ -24,7 +24,7 @@ export const BookingSuccess = ({
   onBookAnother
 }: BookingSuccessProps) => {
   return (
-    <div className="flex items-center justify-center p-4 animate-in fade-in-50 zoom-in-95 duration-500">
+    <div className="flex items-center justify-center p-4 animate-in fade-in zoom-in-95 duration-500">
       <Card className="w-full max-w-md text-center border-green-200 shadow-lg">
         <CardHeader className="flex flex-col items-center space-y-4 pb-2">
           <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center text-green-600 mb-2">

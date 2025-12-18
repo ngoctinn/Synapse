@@ -1,47 +1,44 @@
-# Kế hoạch Triển khai: Phân tích và Tái cấu trúc Hệ thống CSS/Tailwind (Antigravity)
+# Kế hoạch Refactor Hệ Thống (Antigravity Mode - Revised)
 
-## 1. Mục tiêu (Objectives)
-- **Chuẩn hóa Token:** Đảm bảo toàn bộ hệ thống màu sắc, spacing, typography được định nghĩa qua CSS Variables trong `globals.css` và map vào Tailwind theme.
-- **Giảm ghi đè lặp lại:** Chuyển các tổ hợp class lặp lại nhiều lần vào `alertVariants`, `buttonVariants` hoặc `@layer utilities`.
-- **Tăng tính nhất quán:** Sử dụng variants cho các trạng thái `success`, `warning`, `info` thay vì viết thủ công class.
-- **Tối ưu hóa Tailwind v4:** Tận dụng các tính năng mới của v4 (CSS-first config, auto-apply base styles).
+## 1. TƯ DUY (THINK)
+- **Mục tiêu**: Làm sạch Tailwind CSS, chuẩn hóa UI abstraction, giảm độ phức tạp của JSX mà không làm hỏng tính toàn vẹn của shadcn/ui.
+- **Chiến lược**:
+    - **Hạn chế can thiệp trực tiếp vào `shared/ui/*.tsx`**: Tuân thủ chuẩn mặc định của shadcn. Nếu cần refactor, phải đối chiếu với `@mcp:shadcn`.
+    - **Tập trung vào Feature Components**: Trích xuất các class wrapper, layout, và animation phức tạp tại tầng `features/` vào các CSS utilities hoặc shared components.
+    - **Sử dụng MCP shadcn**: Để quyết định cách refactor tốt nhất cho các component UI core.
+    - **Audit & Cleanup Dependency**: Loại bỏ các thư viện trùng lặp hoặc không sử dụng (e.g., `tw-animate-css` nếu đã có `tailwindcss-animate`).
+    - **Fix Linting & Shadow Code**: Dọn dẹp các biến chưa sử dụng và warnings từ `pnpm lint`.
 
-## 2. Phạm vi (Scope)
-- `frontend/src/app/globals.css`: Trung tâm quản lý token và utilities.
-- `frontend/src/shared/ui/`: Cập nhật các component nền tảng (Alert, Button, Badge, Input, v.v.).
-- `frontend/src/shared/ui/custom/`: Refactor các component phức tạp (DataTable, FormTabs).
-- `frontend/src/features/`: Quét và thay thế các đoạn mã CSS ghi đè thủ công.
+- [x] **Task 1: Dependency & Configuration Audit**
+    - Kiểm tra `package.json` & `globals.css` cho các bộ animation trùng lặp.
+    - Đối chiếu cấu hình Tailwind.
+- [x] **Task 2: Feature Refactoring (Long ClassNames focus)**
+    - Refactor `features/staff`, `features/customers`, `features/appointments`.
+    - Trích xuất layout patterns và animation clusters vào `globals.css`.
+- [x] **Task 3: Shadcn/UI Alignment**
+    - Sử dụng `mcp_shadcn` để kiểm tra các components `shared/ui` đã refactor (Sheet, Dialog, Sidebar).
+    - Khôi phục về chuẩn nếu việc refactor trước đó quá xa rời logic shadcn gốc.
+- [x] **Task 4: Clean Code & Linting**
+    - Fix toàn bộ warnings từ `pnpm lint` báo cáo.
+- [x] **Task 5: Verification & Reporting**
+    - `pnpm build` & `pnpm lint`.
+    - Sinh `CLEANUP_REPORT.md`.
 
-## 3. Các bước thực hiện (Execution Steps)
+## 3. PHÂN TÍCH (ANALYZE) - Đang thực hiện
+- Sẽ sử dụng `grep` để tìm các class lặp lại trong `features/`.
+- Sử dụng `mcp_shadcn` để lấy reference code.
 
-### Giai đoạn 1: Chuẩn hóa System Tokens & Utilities
-- Rà soát `globals.css`.
-- Đảm bảo các biến `--alert-*` và `--status-*` được map đầy đủ vào `@theme`.
-- Thêm các utility class cho các pattern phổ biến (ví dụ: `flex-center`, `absolute-center`, hoặc các pattern shadow luxury).
+## 4. ĐỀ XUẤT (DIFF)
+- Liệt kê các class sẽ trích xuất vào `globals.css`.
 
-### Giai đoạn 2: Cải tiến Base UI Components (Variants)
-- **Alert**: Thêm `success`, `warning`, `info`.
-- **Badge**: Đồng bộ variants với Alert.
-- **Button**: Chuẩn hóa các variant `soft`, `ghost`, `outline` để tránh phải thêm class ngoài.
-- **Input**: Đảm bảo style focus đồng nhất qua `focus-premium`.
+## 5. THỰC THI (APPLY)
+- Ưu tiên Feature layer -> Shared layer.
 
-### Giai đoạn 3: Refactor Features & Layouts
-- Quét toàn bộ `src/features` để tìm các đoạn code có style chồng chéo.
-- Thay thế các đoạn CSS "hardcoded" bằng các component variants mới.
-- Đặc biệt ưu tiên refactor `LoginForm`, `Hero`, `DataTable`.
+## 6. KIỂM TRA (VERIFY)
+- `cd frontend && pnpm lint && pnpm build`.
 
-### Giai đoạn 4: Kiểm tra & Tối ưu
-- Chạy `pnpm lint` và `pnpm build`.
-- Kiểm tra tính tương thích Dark mode.
-- Đảm bảo không có Regression (lỗi hiển thị mới).
+## 7. KIỂM TOÁN (AUDIT)
+- Nhật ký thay đổi tại `change-log.md`.
 
-## 4. Rủi ro & Giải pháp (Risks & Mitigations)
-- **Rủi ro:** Làm vỡ giao diện ở những chỗ không test kỹ.
-- **Giải pháp:** Thực hiện thay đổi từng bước nhỏ (Atomic updates), kiểm tra trực quan sau mỗi bước.
-- **Rủi ro:** Xung đột giữa các utility mới và cũ.
-- **Giải pháp:** Sử dụng `tailwind-merge` (`cn` helper) một cách triệt để.
-
-## 5. Định nghĩa Hoàn thành (Definition of Done)
-- Không còn các đoạn ghi đè màu sắc (bg-green-50, text-green-800...) thủ công cho Alert/Badge.
-- Mã nguồn gọn gàng hơn, số lượng class trong JSX giảm ít nhất 20% ở các file được refactor.
-- Build thành công không có lỗi CSS.
+## 8. BÁO CÁO (REPORT)
+- `dashboard.md` & `CLEANUP_REPORT.md`.

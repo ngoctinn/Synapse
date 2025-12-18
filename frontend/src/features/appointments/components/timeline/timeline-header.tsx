@@ -87,7 +87,7 @@ export function TimelineHeader({
 
       {/* Time slots */}
       <div className="flex" style={{ width: totalWidth }}>
-        {timeSlots.map((slot, index) => (
+        {timeSlots.map((slot) => (
           <div
             key={`${slot.hour}-${slot.minute}`}
             className={cn(

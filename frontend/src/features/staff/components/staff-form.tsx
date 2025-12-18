@@ -277,7 +277,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
       />
 
       {(role === "technician") && (
-        <div className="space-y-3 pt-2 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-2 duration-300">
+        <div className="space-y-3 pt-2 animate-in-top">
             <div className="flex items-center justify-between px-1">
                 <FormLabel className="text-sm font-medium">Kỹ năng chuyên môn</FormLabel>
                 <Button

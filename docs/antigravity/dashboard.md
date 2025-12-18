@@ -1,36 +1,20 @@
-# Antigravity Dashboard: CSS/Tailwind Refactor
+# Dashboard Tiến Độ Refactor (Antigravity v2)
 
-**Trạng thái tổng thể:** 🔵 HOÀN THÀNH
+| STT | Giai đoạn | Trạng thái | Ghi chú |
+|:---:|:---|:---:|:---|
+| 1 | THINK (Lên kế hoạch) | ✅ | Đã cập nhật hướng tiếp cận mới |
+| 2 | SPLIT (Chia nhỏ) | ✅ | Task đã được định nghĩa lại |
+| 3 | ANALYZE (Phân tích) | ✅ | Đã audit xong feature classes & lint |
+| 4 | DIFF (Đề xuất) | ✅ | Đã trích xuất các utilities chính |
+| 5 | APPLY (Thực thi) | ✅ | Đã áp dụng refactor feature components |
+| 6 | VERIFY (Xác minh) | ✅ | Đã chạy pnpm build |
+| 7 | AUDIT (Kiểm toán) | ⏳ | |
+| 8 | REPORT (Báo cáo) | ⏳ | |
 
-## Danh sách công việc (Tasks)
-
-### ✅ 1. THINK & SPLIT
-- [x] Phân tích hiện trạng mã nguồn.
-- [x] Lập kế hoạch triển khai (`implementation_plan.md`).
-- [x] Khởi tạo Dashboard.
-
-### ✅ 2. ANALYZE (Khảo sát chi tiết)
-- [x] Quét các file UI components cần nâng cấp variant.
-- [x] Tìm kiếm các pattern style lặp lại trong features.
-- [x] Đánh giá tác động thay đổi lên Dark mode.
-
-### ✅ 3. DIFF & APPLY (Thực thi)
-- [x] Refactor `globals.css` (Tokens & Utilities).
-- [x] Nâng cấp `Alert`, `Badge`, `Button` components.
-- [x] Refactor `shared/ui/custom` (DataTable, etc.).
-- [x] Dọn dẹp `features/auth` (LoginForm).
-- [x] Dọn dẹp `features/landing-page` (Hero).
-- [x] Dọn dẹp `features/booking-wizard` (HoldTimer).
-- [x] Dọn dẹp `features/chat` (ChatWindow).
-
-### ✅ 4. VERIFY & AUDIT
-- [x] Chạy `pnpm lint` -> Thành công (Exit 0).
-- [x] Chạy `pnpm build` -> Thành công (Exit 0).
-- [x] Kiểm tra bảo mật & Style guide -> Đã ghi log vào `change-log.md`.
-
-### ✅ 5. REPORT
-- [x] Tổng kết thay đổi vào `change-log.md`.
-- [x] Hoàn tất báo cáo cho người dùng.
-
----
-*Cập nhật lần cuối: 2025-12-18 14:30*
+## Danh sách Task chi tiết
+- [x] Cập nhật Implementation Plan (Tuân thủ shadcn integrity)
+- [x] Task 1: Audit dependencies (`baseline-browser-mapping`, `tw-animate-css`).
+- [x] Task 2: Refactor `globals.css` & component class strings.
+- [x] Task 3: Final Build Verification (`pnpm build`).
+- [x] Task 4: Fix all Linting issues (`pnpm tsc`).
+- [ ] Task 5: Final Build & Report

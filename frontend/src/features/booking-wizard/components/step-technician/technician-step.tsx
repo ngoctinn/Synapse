@@ -7,11 +7,10 @@ import { StaffList } from "./staff-list";
 import { Loader2 } from "lucide-react";
 
 export const TechnicianStep = () => {
-  const { 
-    staffId, 
-    setStaff, 
-    selectedServices,
-    goToStep 
+  const {
+    staffId,
+    setStaff,
+    selectedServices
   } = useBookingStore();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -23,7 +22,7 @@ export const TechnicianStep = () => {
       // Pass selected services to filter staff
       const serviceIds = selectedServices.map(s => s.id);
       const res = await getAvailableStaff({ serviceIds });
-      
+
       if (res.status === "success" && res.data) {
         setStaffData(res.data);
       }
@@ -58,12 +57,12 @@ export const TechnicianStep = () => {
         </p>
       </div>
 
-      <AnyOption 
-        isSelected={staffId === 'any'} 
-        onSelect={() => handleSelectStaff('any')} 
+      <AnyOption
+        isSelected={staffId === 'any'}
+        onSelect={() => handleSelectStaff('any')}
       />
-      
-      <StaffList 
+
+      <StaffList
         staff={staff}
         selectedStaffId={staffId === 'any' ? null : staffId}
         onSelect={handleSelectStaff}

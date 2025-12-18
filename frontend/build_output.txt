@@ -1,0 +1,51 @@
+
+> frontend@0.1.0 build D:\ReactJSLearning\Synapse\frontend
+> next build
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of D:\ReactJSLearning\Synapse\pnpm-lock.yaml as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * D:\ReactJSLearning\Synapse\frontend\pnpm-lock.yaml
+
+   ▲ Next.js 16.0.5 (Turbopack)
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+Error: Cannot apply unknown utility class `motion-safe:fade-in`
+    [2m[at onInvalidCandidate (D:\ReactJSLearning\Synapse\frontend\node_modules\.pnpm\tailwindcss@4.1.17\node_modules\tailwindcss\dist\lib.js:21:1511)][0m
+    [2m[at Te (D:\ReactJSLearning\Synapse\frontend\node_modules\.pnpm\tailwindcss@4.1.17\node_modules\tailwindcss\dist\lib.js:16:36038)][0m
+    [2m[at D:\ReactJSLearning\Synapse\frontend\node_modules\.pnpm\tailwindcss@4.1.17\node_modules\tailwindcss\dist\lib.js:21:355][0m
+    [2m[at Tr (D:\ReactJSLearning\Synapse\frontend\node_modules\.pnpm\tailwindcss@4.1.17\node_modules\tailwindcss\dist\lib.js:3:1718)][0m
+    [2m[at _ (D:\ReactJSLearning\Synapse\frontend\node_modules\.pnpm\tailwindcss@4.1.17\node_modules\tailwindcss\dist\lib.js:3:1377)][0m
+    [2m[at Se (D:\ReactJSLearning\Synapse\frontend\node_modules\.pnpm\tailwindcss@4.1.17\node_modules\tailwindcss\dist\lib.js:21:172)][0m
+    [2m[at ln (D:\ReactJSLearning\Synapse\frontend\node_modules\.pnpm\tailwindcss@4.1.17\node_modules\tailwindcss\dist\lib.js:38:294)][0m
+    [2m[at async sn (D:\ReactJSLearning\Synapse\frontend\node_modules\.pnpm\tailwindcss@4.1.17\node_modules\tailwindcss\dist\lib.js:38:631)][0m
+    [2m[at async Qr (D:\ReactJSLearning\Synapse\frontend\node_modules\.pnpm\@tailwindcss+node@4.1.17\node_modules\@tailwindcss\node\dist\index.js:10:3385)][0m
+    [2m[at async I (D:\ReactJSLearning\Synapse\frontend\node_modules\.pnpm\@tailwindcss+postcss@4.1.17\node_modules\@tailwindcss\postcss\dist\index.js:10:3978)][0m
+
+> Build error occurred
+Error: Turbopack build failed with 1 errors:
+./frontend/src/app/globals.css
+Error evaluating Node.js code
+CssSyntaxError: tailwindcss: D:\ReactJSLearning\Synapse\frontend\src\app\globals.css:1:1: Cannot apply unknown utility class `motion-safe:fade-in`
+    at Input.error (frontend/node_modules/.pnpm/postcss@8.4.31/node_modules/postcss/lib/input.js:106:16) [D:\ReactJSLearning\Synapse\frontend\.next\build\chunks\9e883__pnpm_9553e888._.js:4132:22]
+    at Root.error (frontend/node_modules/.pnpm/postcss@8.4.31/node_modules/postcss/lib/node.js:115:32) [D:\ReactJSLearning\Synapse\frontend\.next\build\chunks\9e883__pnpm_9553e888._.js:895:38]
+    [at Object.Once (D:\ReactJSLearning\Synapse\frontend\node_modules\.pnpm\@tailwindcss+postcss@4.1.17\node_modules\@tailwindcss\postcss\dist\index.js:10:6912)]
+    at async LazyResult.runAsync (frontend/node_modules/.pnpm/postcss@8.4.31/node_modules/postcss/lib/lazy-result.js:261:11) [D:\ReactJSLearning\Synapse\frontend\.next\build\chunks\9e883__pnpm_9553e888._.js:6052:21]
+    at async transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:34) [D:\ReactJSLearning\Synapse\frontend\.next\build\chunks\[root-of-the-server]__188e9cb8._.js:146:36]
+    at async run (turbopack:///[turbopack-node]/ipc/evaluate.ts:92:23) [D:\ReactJSLearning\Synapse\frontend\.next\build\chunks\[root-of-the-server]__3b54a99d._.js:443:31]
+
+Import trace:
+  Client Component Browser:
+    ./frontend/src/app/globals.css [Client Component Browser]
+    ./frontend/src/app/layout.tsx [Server Component]
+
+
+    at async transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:34) [D:\ReactJSLearning\Synapse\frontend\.next\build\chunks\[root-of-the-server]__188e9cb8._.js:146:36])
+    at async run (turbopack:///[turbopack-node]/ipc/evaluate.ts:92:23) [D:\ReactJSLearning\Synapse\frontend\.next\build\chunks\[root-of-the-server]__3b54a99d._.js:443:31])
+ ELIFECYCLE  Command failed with exit code 1.

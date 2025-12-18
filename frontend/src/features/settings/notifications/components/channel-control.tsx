@@ -53,7 +53,7 @@ export function ChannelControl({
           <Button
             variant="ghost"
             size="sm"
-            className="h-6 text-xs text-muted-foreground hover:text-primary animate-in fade-in zoom-in duration-200"
+            className="h-6 text-xs text-muted-foreground hover:text-primary animate-fade-zoom"
             onClick={onEdit}
           >
             <Edit2 className="h-3 w-3 mr-1" />

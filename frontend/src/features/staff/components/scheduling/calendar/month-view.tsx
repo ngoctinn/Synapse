@@ -42,10 +42,9 @@ export function MonthView({
   onScheduleClick,
   className,
 }: MonthViewProps) {
-  const today = new Date();
-
   // Generate all days in the grid
   const weeks = useMemo(() => {
+    const today = new Date();
     const result: DayCell[][] = [];
     let currentWeek: DayCell[] = [];
     let day = dateRange.start;
@@ -77,7 +76,7 @@ export function MonthView({
     }
 
     return result;
-  }, [dateRange, currentMonth, schedules, today]);
+  }, [dateRange, currentMonth, schedules]);
 
   return (
     <div className={cn("flex flex-col h-full", className)}>

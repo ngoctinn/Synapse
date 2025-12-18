@@ -168,7 +168,7 @@ export function StaffSchedulingPage({
   return (
     <div className={cn("flex flex-col h-full min-h-0", className)}>
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 sticky-header-blur">
         <div className="flex items-center gap-2 flex-wrap">
           <ViewSwitcher value={view} onChange={changeView} />
           <DateNavigator

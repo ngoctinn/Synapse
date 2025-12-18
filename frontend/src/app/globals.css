@@ -178,6 +178,10 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  --animate-fade-in: fadeIn 0.5s ease-out forwards;
+  --animate-slide-up: slideUp 0.5s ease-out forwards;
+  --animate-scale-in: scaleIn 0.3s ease-out forwards;
 }
 
 @layer base {
@@ -280,6 +284,14 @@
     animation: slideUp 0.5s ease-out forwards;
   }
 
+  .page-entry-animation {
+    @apply motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 duration-300 ease-out;
+  }
+
+  .animate-fade-zoom {
+    @apply animate-in fade-in zoom-in duration-200;
+  }
+
   .animate-scale-in {
     animation: scaleIn 0.3s ease-out forwards;
   }
@@ -311,8 +323,99 @@
     @apply px-6 py-3 border-t sm:justify-between flex-row items-center gap-4 bg-background;
   }
 
+  .sidebar-inner-base {
+    @apply bg-sidebar group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm;
+  }
+
+  .empty-state-container {
+    @apply flex flex-col items-center justify-center py-16 text-center border rounded-xl bg-background/50 backdrop-blur-sm border-dashed border-border;
+  }
+
+  .close-button-base {
+    @apply absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none ring-offset-background focus:ring-ring;
+  }
+
+  .command-dialog-styling {
+    [cmdk-group-heading] {
+      @apply text-muted-foreground px-2 font-medium;
+    }
+    [cmdk-group] {
+      @apply px-2;
+    }
+    [cmdk-group]:not([hidden]) ~ [cmdk-group] {
+      @apply pt-0;
+    }
+    [data-slot="command-input-wrapper"] {
+      @apply h-12;
+      svg {
+        @apply h-5 w-5;
+      }
+    }
+    [cmdk-input] {
+      @apply h-12;
+    }
+    [cmdk-item] {
+      @apply px-2 py-3;
+      svg {
+        @apply h-5 w-5;
+      }
+    }
+  }
+
+  .slider-thumb-base {
+    @apply border-primary ring-ring/50 block size-4 shrink-0 rounded-full border bg-white shadow-sm transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .scroll-area-viewport-base {
+    @apply focus-visible:ring-ring/50 size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:outline-1;
+  }
+
+  .permission-checkbox {
+    @apply h-5 w-5 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground pointer-events-none;
+  }
+
+  .permission-locked-icon {
+    @apply h-8 w-8 flex items-center justify-center text-muted-foreground/30 bg-muted/10 rounded-md;
+  }
+
+  .sticky-header-blur {
+    @apply sticky top-0 z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b;
+  }
+
+  .sidebar-rail-styling {
+    @apply hover:after:bg-sidebar-border absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] sm:flex;
+  }
+
   .sheet-scroll-area {
     @apply flex-1 overflow-y-auto px-6 py-4 [scrollbar-gutter:stable];
+  }
+
+  .stats-card-premium {
+    @apply relative overflow-hidden border border-white/20 shadow-lg bg-card/80 backdrop-blur-2xl ring-1 ring-black/5 dark:bg-card/30 dark:ring-white/10 hover:scale-[1.01] hover:shadow-xl transition-all duration-200 cursor-pointer;
+  }
+
+  .hover-info-badge {
+    @apply flex items-center gap-1.5 py-1 px-2 rounded-md hover:bg-muted/50 transition-colors cursor-help border border-transparent hover:border-border;
+  }
+
+  .selection-card-ring {
+    @apply flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer;
+  }
+
+  .animate-in-top {
+    @apply motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-2 duration-300;
+  }
+
+  .upload-preview-container {
+    @apply w-[160px] h-[160px] rounded-xl overflow-hidden border border-border shrink-0 shadow-sm relative;
+  }
+
+  .upload-trigger-dashed {
+    @apply w-[160px] h-[160px] rounded-xl border-2 border-dashed border-muted-foreground/20 flex flex-col items-center justify-center cursor-pointer hover:bg-primary/5 hover:border-primary/50 transition-all duration-300 shrink-0 bg-muted/5 relative overflow-hidden;
+  }
+
+  .sticky-alert-top {
+    @apply sticky top-0 z-20 mb-4 bg-primary/10 border border-primary/20 backdrop-blur-md text-primary rounded-lg p-3 flex items-center justify-between shadow-sm animate-in slide-in-from-top-2;
   }
 }
 

@@ -116,19 +116,19 @@ export function MaintenanceTimeline({
 
         {/* Legend */}
         <div className="flex flex-wrap gap-2 text-xs">
-          <div className="flex items-center gap-1.5 py-1 px-2 rounded-md hover:bg-muted/50 transition-colors cursor-help border border-transparent hover:border-border">
+          <div className="hover-info-badge">
             <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
             <span className="text-muted-foreground">Sắp tới</span>
           </div>
-          <div className="flex items-center gap-1.5 py-1 px-2 rounded-md hover:bg-muted/50 transition-colors cursor-help border border-transparent hover:border-border">
+          <div className="hover-info-badge">
             <div className="w-2.5 h-2.5 rounded-full bg-orange-500" />
             <span className="text-muted-foreground">Đang xử lý</span>
           </div>
-          <div className="flex items-center gap-1.5 py-1 px-2 rounded-md hover:bg-muted/50 transition-colors cursor-help border border-transparent hover:border-border">
+          <div className="hover-info-badge">
             <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
             <span className="text-muted-foreground">Hoàn thành</span>
           </div>
-           <div className="flex items-center gap-1.5 py-1 px-2 rounded-md hover:bg-muted/50 transition-colors cursor-help border border-transparent hover:border-border">
+           <div className="hover-info-badge">
             <div className="w-2.5 h-2.5 rounded-full bg-destructive" />
             <span className="text-muted-foreground">Quá hạn</span>
           </div>

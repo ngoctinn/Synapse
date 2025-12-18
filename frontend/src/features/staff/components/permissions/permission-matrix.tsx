@@ -102,7 +102,7 @@ export function PermissionMatrix({ initialPermissions, className }: PermissionMa
                         <div className="flex justify-center items-center h-full w-full py-2">
                           {isDisabled ? (
                             <div
-                              className="h-8 w-8 flex items-center justify-center text-muted-foreground/30 bg-muted/10 rounded-md"
+                              className="permission-locked-icon"
                               title="Chức năng bị khóa cho quyền Admin"
                               aria-label="Locked"
                             >
@@ -112,7 +112,7 @@ export function PermissionMatrix({ initialPermissions, className }: PermissionMa
                             <Checkbox
                               checked={permissions[module.id]?.[role.id] || false}
                               onCheckedChange={() => handleToggle(module.id, role.id)}
-                              className="h-5 w-5 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground pointer-events-none"
+                              className="permission-checkbox"
                               aria-label={`Toggle ${module.name} for ${role.name}`}
                             />
                           )}

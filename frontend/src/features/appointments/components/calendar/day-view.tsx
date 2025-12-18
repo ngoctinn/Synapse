@@ -52,7 +52,6 @@ export function DayView({
   events,
   densityMode = "comfortable",
   onEventClick,
-  onSlotClick,
   className,
   onCheckIn,
   onNoShow,

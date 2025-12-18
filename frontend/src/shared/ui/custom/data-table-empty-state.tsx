@@ -1,11 +1,13 @@
 import { LucideIcon } from "lucide-react"
 import { ReactNode } from "react"
+import { cn } from "@/shared/lib/utils"
 
 interface DataTableEmptyStateProps {
   icon: LucideIcon
   title: string
   description: string
   action?: ReactNode
+  className?: string
 }
 
 export function DataTableEmptyState({
@@ -13,9 +15,10 @@ export function DataTableEmptyState({
   title,
   description,
   action,
+  className,
 }: DataTableEmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center border rounded-xl bg-background/50 backdrop-blur-sm border-dashed border-border">
+    <div className={cn("empty-state-container", className)}>
       <div className="p-4 rounded-full bg-primary/10 mb-4 animate-in zoom-in duration-500">
         <Icon className="w-10 h-10 text-primary" />
       </div>

@@ -141,7 +141,7 @@ export function StaffPage({ page, skills, staffListPromise, initialPermissions, 
           </div>
         </PageHeader>
 
-        <div className="flex-1 flex flex-col overflow-hidden min-h-0 motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-4 duration-300 ease-out">
+        <div className="flex-1 flex flex-col overflow-hidden min-h-0 page-entry-animation">
           <TabsContent value="list" className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden">
             <PageContent>
               <SurfaceCard>

@@ -31,7 +31,7 @@ export function LoginForm() {
   const returnUrl = searchParams.get("returnUrl") || "/";
   const registered = searchParams.get("registered");
   const passwordReset = searchParams.get("password_reset");
-  const { show, toggle, inputType, Icon, ariaLabel } = usePasswordVisibility();
+  const { toggle, inputType, Icon, ariaLabel } = usePasswordVisibility();
 
   const [state, action, isPending] = useActionState(loginAction, undefined);
 

@@ -94,7 +94,7 @@ export function WeeklySchedule({ config, onConfigChange }: WeeklyScheduleProps) 
       <div className="space-y-4 relative">
         {/* Copy Mode Indicator - Sticky Top */}
         {copySourceDay !== null && (
-          <div className="sticky top-0 z-20 mb-4 bg-primary/10 border border-primary/20 backdrop-blur-md text-primary rounded-lg p-3 flex items-center justify-between shadow-sm animate-in slide-in-from-top-2">
+          <div className="sticky-alert-top">
             <div className="flex items-center gap-2">
               <Copy className="size-4" />
               <span className="text-sm font-medium">

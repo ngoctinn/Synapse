@@ -148,7 +148,7 @@ export function MetricsCards({
 
   return (
     <div className={cn("grid gap-4 md:grid-cols-2 lg:grid-cols-4", className)}>
-      {cards.map((card, index) => (
+      {cards.map((card) => (
         <Card
           key={card.title}
           className={cn(

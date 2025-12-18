@@ -1,35 +1,20 @@
-# Nhật ký Phân tích: CSS/Tailwind Refactor
+# Nhật ký phân tích (ANALYZE) - Antigravity v2
 
-## 1. Khảo sát Hệ thống Token (`globals.css`)
-- **Phát hiện:** Dự án đã có hệ thống OKLCH tokens rất tốt cho `primary`, `secondary`, `alert-success`, `status-pending`, v.v.
-- **Vấn đề:** Các component hiện tại (`Badge`, `Alert`) chưa sử dụng triệt để các token này mà vẫn dùng hardcoded Tailwind colors (ví dụ: `bg-emerald-100`).
+## 1. Audit Dependency & Style
+- **Tailwind Version**: 4.0 (phát hiện trong `package.json` và `@import "tailwindcss"`).
+- **Animation**: Đang sử dụng `tw-animate-css`. Cần kiểm tra xem có xung đột với các class `animate-*` mặc định của Tailwind 4 không.
+- **Lặp lại Class**:
+    - Pattern "Premium Card": `relative overflow-hidden border border-white/20 shadow-lg bg-card/80 backdrop-blur-2xl ring-1 ring-black/5 dark:bg-card/30 dark:ring-white/10 hover:scale-[1.01] hover:shadow-xl transition-all duration-200 cursor-pointer group`. Xuất hiện 3 lần trong Feature layer.
+    - Pattern "Hover Info Badge": `flex items-center gap-1.5 py-1 px-2 rounded-md hover:bg-muted/50 transition-colors cursor-help border border-transparent hover:border-border`. Xuất hiện 4 lần.
+    - Pattern "Selection Card/Radio": `flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer`. Xuất hiện 2 lần.
 
-## 2. Rà soát UI Components (`shared/ui/`)
-- **Alert.tsx:**
-    - Chỉ có variant `default` và `destructive`.
-    - Cần bổ sung `success`, `warning`, `info` sử dụng các biến `--alert-*`.
-- **Badge.tsx:**
-    - Có hệ thống preset và variant đồ sộ nhưng đang sử dụng hardcoded colors.
-    - Cần chuyển sang sử dụng theme variables để đảm bảo đồng bộ với `globals.css` và dễ bảo trì Dark mode.
-- **Button.tsx:**
-    - Cấu trúc tốt, nhưng cần kiểm tra xem variant `soft` có đồng bộ với hệ thống màu mới không.
+## 2. Rà soát Shadcn/UI (MCP Verification)
+- `SheetContent`, `DialogContent`, `Sidebar` đã được refactor trước đó sang các utility classes (`.close-button-base`, `.sidebar-inner-base`, ...).
+- **Đánh giá**: Mặc dù làm gọn JSX, nhưng việc tách quá nhiều logic style ra khỏi component shadcn gốc có thể gây khó khăn khi cập nhật components từ registry.
+- **Hành động**: Giữ nguyên các utilities đã tách nếu chúng mang tính "xuyên suốt" (cross-cutting), nhưng hạn chế tách thêm các logic "unique" của riêng component đó.
 
-## 3. Phân tích Feature Components
-- **LoginForm.tsx:**
-    - Đang ghi đè thủ công class cho Alert dựa trên trạng thái `registered` hoặc `passwordReset`.
-    - Sau khi nâng cấp `Alert`, cần chuyển sang dùng `variant="success"` hoặc `variant="info"`.
-- **Hero.tsx (Landing Page):**
-    - Chứa nhiều tổ hợp class phức tạp cho hiệu ứng shadow và gradient.
-    - Có thể tách thành các utility class `@layer utilities` trong `globals.css` (ví dụ: `.shadow-premium-primary`).
-- **DataTable.tsx:**
-    - Nhiều logic hiển thị padding (`pl-6`, `pr-6`) nằm trực tiếp trong JSX.
-    - Nên được chuẩn hóa qua các utility hoặc config chung để tránh lặp lại logic `index === 0`.
-
-## 4. Tác động lên Dark Mode
-- Việc chuyển từ hardcoded colors (`bg-emerald-100 dark:bg-emerald-950`) sang CSS variables (`bg-alert-success`) sẽ giúp quản lý Dark mode tập trung hoàn toàn tại `globals.css`.
-- Điều này giảm rủi ro quên cập nhật Dark mode khi thêm component mới.
-
-## 5. Kết luận & Ưu tiên
-1. **Ưu tiên 1:** Đồng bộ hóa `Alert` và `Badge` với theme tokens.
-2. **Ưu tiên 2:** Thay thế các đoạn code "hardcoded logic" tại Features bằng các variant mới.
-3. **Ưu tiên 3:** Tinh gọn `globals.css` bằng cách gom các hiệu ứng premium thành utilities.
+## 3. Kế hoạch trích xuất (Stage 4 - DIFF)
+- Trích xuất `.card-premium-interact`.
+- Trích xuất `.item-hover-shallow`.
+- Trích xuất `.selection-card-ring`.
+- Thống nhất các animation `motion-safe` vào `.page-entry-animation`.

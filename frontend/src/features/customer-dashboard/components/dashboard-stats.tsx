@@ -59,7 +59,7 @@ export function DashboardStats({
       className="grid auto-rows-min gap-4 md:grid-cols-3"
     >
       <MotionItem {...itemProps}>
-        <Card className="relative overflow-hidden border border-white/20 shadow-lg bg-card/80 backdrop-blur-2xl ring-1 ring-black/5 dark:bg-card/30 dark:ring-white/10 hover:scale-[1.01] hover:shadow-xl transition-all duration-200 cursor-pointer group">
+        <Card className="stats-card-premium group">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium group-hover:text-primary transition-colors">
               Lịch hẹn sắp tới
@@ -76,7 +76,7 @@ export function DashboardStats({
       </MotionItem>
 
       <MotionItem {...itemProps}>
-        <Card className="relative overflow-hidden border border-white/20 shadow-lg bg-card/80 backdrop-blur-2xl ring-1 ring-black/5 dark:bg-card/30 dark:ring-white/10 hover:scale-[1.01] hover:shadow-xl transition-all duration-200 cursor-pointer group">
+        <Card className="stats-card-premium group">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium group-hover:text-primary transition-colors">
               Liệu trình đang dùng
@@ -93,7 +93,7 @@ export function DashboardStats({
       </MotionItem>
 
       <MotionItem {...itemProps}>
-        <Card className="relative overflow-hidden border border-white/20 shadow-lg bg-card/80 backdrop-blur-2xl ring-1 ring-black/5 dark:bg-card/30 dark:ring-white/10 hover:scale-[1.01] hover:shadow-xl transition-all duration-200 cursor-pointer group">
+        <Card className="stats-card-premium group">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium group-hover:text-primary transition-colors">
               Điểm tích lũy

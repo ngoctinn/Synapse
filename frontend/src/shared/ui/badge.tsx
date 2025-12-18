@@ -35,6 +35,24 @@ const badgeVariants = cva(
 
         // === SOFT VARIANT ===
         soft: "bg-primary/10 text-primary border-primary/20 dark:bg-primary/20 dark:border-primary/30",
+
+        // === COLORS ===
+        violet:
+          "bg-violet-500/10 text-violet-600 border-violet-500/20 dark:bg-violet-500/20 dark:border-violet-500/30",
+        indigo:
+          "bg-indigo-500/10 text-indigo-600 border-indigo-500/20 dark:bg-indigo-500/20 dark:border-indigo-500/30",
+        emerald:
+          "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:bg-emerald-500/20 dark:border-emerald-500/30",
+        red: "bg-red-500/10 text-red-600 border-red-500/20 dark:bg-red-500/20 dark:border-red-500/30",
+        amber:
+          "bg-amber-500/10 text-amber-600 border-amber-500/20 dark:bg-amber-500/20 dark:border-amber-500/30",
+        gray: "bg-muted text-muted-foreground border-border",
+        glass: "bg-white/10 backdrop-blur-md text-white border-white/20",
+
+        // === SPECIFIC STATUS ===
+        "status-active":
+          "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:bg-emerald-500/20 dark:border-emerald-500/30",
+        "status-inactive": "bg-muted text-muted-foreground border-border",
       },
       size: {
         xs: "text-[10px] px-2 py-0.5 h-5 [&>svg]:size-3",
@@ -161,7 +179,7 @@ const BADGE_PRESETS: Record<BadgePreset, PresetConfig> = {
   tag: { variant: "info", size: "sm" },
   count: { variant: "secondary", size: "xs" },
   new: { variant: "success", label: "Mới", size: "sm" },
-  skill: { variant: "info", size: "sm" },
+  skill: { variant: "violet", size: "sm" },
 };
 
 // ============================================

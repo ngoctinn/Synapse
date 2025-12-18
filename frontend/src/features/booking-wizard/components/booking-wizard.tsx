@@ -55,13 +55,13 @@ export const BookingWizard = () => {
       const result = customerInfoSchema.safeParse(customerInfo);
       return result.success;
     }
-    return true; 
+    return true;
   };
 
   if (isSuccess) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center">
-        <BookingSuccess 
+        <BookingSuccess
           onBookAnother={() => {
             setIsSuccess(false);
             reset();
@@ -80,24 +80,24 @@ export const BookingWizard = () => {
         <WizardHeader />
         {holdExpiresAt && (
           <div className="container max-w-2xl mx-auto px-4 py-2 flex justify-center">
-            <HoldTimer 
-              expiresAt={holdExpiresAt} 
+            <HoldTimer
+              expiresAt={holdExpiresAt}
               onExpire={() => {
                 clearHold();
                 // Optionally show a toast or modal here
-              }} 
+              }}
             />
           </div>
         )}
       </div>
-      
-      <main className="flex-1 container max-w-2xl mx-auto px-4 py-6 pb-24 animate-in fade-in-50 duration-500">
+
+      <main className="flex-1 container max-w-2xl mx-auto px-4 py-6 pb-24 animate-in fade-in duration-500">
         {renderStep()}
       </main>
 
       {showMainFooter && (
-        <WizardFooter 
-          onNext={handleNext} 
+        <WizardFooter
+          onNext={handleNext}
           nextLabel={currentStep === 4 ? "Xác nhận" : "Tiếp tục"}
           isDisabled={!canProceed()}
         />

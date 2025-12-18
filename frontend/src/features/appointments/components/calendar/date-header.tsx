@@ -119,7 +119,7 @@ export function DateHeader({
       <div className="border-r border-border/50" />
 
       {/* Day headers */}
-      {days.map((day, index) => (
+      {days.map((day) => (
         <div
           key={day.date.toISOString()}
           className={cn(
