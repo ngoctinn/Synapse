@@ -1,123 +1,224 @@
-# Sơ đồ Tuần tự: Hoạt động Khách hàng (Chuẩn học thuật)
-
-Tài liệu này chi tiết hóa trình tự liên lạc giữa các tác nhân và thành phần hệ thống cho các nghiệp vụ dành cho Khách hàng.
+# Sequence Diagram: Customer Module (Simplified)
 
 ---
 
-### 3.1. Tìm kiếm và Lựa chọn khung giờ (A2.4)
+### 3.1. Browse Services & Details (A2.1, A2.2)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant FE as Giao diện (Frontend)
-    participant BE as Hệ thống (Backend)
-    participant DB as Cơ sở dữ liệu
+    actor KH as Customer
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
 
-    KH->>FE: chọn_dịch_ vụ_và_ngày()
+    KH->>FE: View Service List / Detail
     activate FE
-    FE->>BE: yêu_cầu_tìm_khung_giờ_khả_dụng()
+    FE->>BE: fetchServices()
+    activate BE
+    BE->>DB: SELECT * FROM services
+    activate DB
+    DB-->>BE: Service Data
+    deactivate DB
+    BE-->>FE: Response Data
+    deactivate BE
+    FE-->>KH: Display information
+    deactivate FE
+```
+
+---
+
+### 3.2. Intelligent Slot Searching (A2.4)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor KH as Customer
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
+
+    KH->>FE: Select Service & Date
+    activate FE
+    FE->>BE: getAvailableSlots()
     activate BE
 
-    BE->>DB: truy_vấn_dữ_liệu_tài_nguyên()
+    BE->>DB: queryResourceData()
     activate DB
-    DB-->>BE: trả_về_dữ_liệu_trống
+    DB-->>BE: Staff/Room/Booking Data
     deactivate DB
 
-    Note right of BE: Thực hiện thuật toán SISF (RCPSP & Jain's Fairness)
+    Note right of BE: SISF Algorithm (RCPSP & Jain's Fairness Index)
 
-    BE-->>FE: danh_sách_khung_giờ_tối_ưu
+    BE-->>FE: Optimized Slots List
     deactivate BE
-    FE-->>KH: hiển_thị_kết_quả_cho_khách_hàng
+    FE-->>KH: Display available slots
     deactivate FE
 ```
 
 ---
 
-### 3.2. Hoàn tất đặt lịch hẹn (A2.5)
+### 3.3. Create Booking (A2.5)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant FE as Giao diện (Frontend)
-    participant BE as Hệ thống (Backend)
-    participant DB as Cơ sở dữ liệu
+    actor KH as Customer
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
 
-    KH->>FE: xác_nhận_thanh_toán_và_đặt_lịch()
+    KH->>FE: Confirm Booking
     activate FE
-    FE->>BE: yêu_cầu_tạo_lịch_hẹn()
+    FE->>BE: createBooking(data)
     activate BE
 
-    critical Giao dịch ACID (Atomic)
-        BE->>DB: kiểm_tra_xung_đột_giờ_chót (Exclusion)
-        BE->>DB: ghi_dữ_liệu_lịch_hẹn (INSERT bookings)
+    critical Atomic Transaction
+        BE->>DB: Exclusion Constraint Check
+        BE->>DB: INSERT INTO bookings
         activate DB
-        DB-->>BE: xác_nhận_lưu_thành_công
+        DB-->>BE: Booking Created
         deactivate DB
     end
 
-    Note right of BE: Kích hoạt gửi thông báo qua Email/SMS
+    Note right of BE: Trigger Notification Logic (Email/App)
 
-    BE-->>FE: mã_số_lịch_hẹn_và_trạng_thái
+    BE-->>FE: Booking ID & Status
     deactivate BE
-    FE-->>KH: hiển_thị_thông_báo_hoàn_tất
+    FE-->>KH: Show success message
     deactivate FE
 ```
 
 ---
 
-### 3.3. Hỗ trợ qua trò chuyện (A2.7)
+### 3.4. Join Waitlist (A2.6)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant FE as Giao diện (Frontend)
-    participant BE as Hệ thống (Backend)
-    participant DB as Cơ sở dữ liệu
+    actor KH as Customer
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
 
-    KH->>FE: gửi_tin_nhắn_tư_vấn()
+    KH->>FE: Join Waitlist for full slot
     activate FE
-    FE->>BE: chuyển_tiếp_tin_nhắn()
+    FE->>BE: joinWaitlist()
     activate BE
-
-    BE->>DB: lưu_trữ_tin_nhắn (INSERT chat_messages)
-    Note right of DB: Phân quyền truy cập theo RLS chính sách
-
-    BE-->>FE: trạng_thái_đã_gửi
+    BE->>DB: INSERT INTO waitlist_entries
+    activate DB
+    DB-->>BE: Success
+    deactivate DB
+    BE-->>FE: Confirmed
     deactivate BE
-    FE-->>KH: cập_nhật_khung_trò_chuyện
+    FE-->>KH: Notify registration success
     deactivate FE
 ```
 
 ---
 
-### 3.4. Quản lý và Hủy lịch hẹn (A3.1, A3.2)
+### 3.5. Live Chat Support (A2.7)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant FE as Giao diện (Frontend)
-    participant BE as Hệ thống (Backend)
-    participant DB as Cơ sở dữ liệu
+    actor KH as Customer
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
 
-    KH->>FE: yêu_cầu_hủy_lịch_hẹn()
+    KH->>FE: Send support message
     activate FE
-    FE->>BE: kiểm_tra_điều_kiện_hủy()
+    FE->>BE: sendMessage()
     activate BE
 
-    alt [Trong thời hạn cho phép]
-        BE->>DB: cập_nhật_trạng_thái_hủy (CANCELLED)
+    BE->>DB: INSERT INTO chat_messages
+    Note right of DB: Protected by RLS Policy (auth.uid())
+
+    BE-->>FE: Status: Sent
+    deactivate BE
+    FE-->>KH: Wait for receptionist response
+    deactivate FE
+```
+
+---
+
+### 3.6. View History & Request Cancellation (A3.1, A3.2)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor KH as Customer
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
+
+    KH->>FE: View History / Cancel Booking
+    activate FE
+    FE->>BE: requestAction()
+    activate BE
+
+    alt Action: Cancellation
+        BE->>BE: validatePolicy(TimeLimit)
+        BE->>DB: UPDATE booking_status = 'CANCELLED'
         activate DB
-        DB-->>BE: hoàn_tất_cập_nhật
+        DB-->>BE: Success
         deactivate DB
-        BE-->>FE: thông_báo_hủy_thành_công
-    else [Quá hạn quy định]
-        BE-->>FE: từ_chối_hủy (Vi phạm chính sách)
+    else Action: View
+        BE->>DB: SELECT * FROM bookings WHERE customer_id = ?
     end
+
+    BE-->>FE: Response result
     deactivate BE
-    FE-->>KH: hiển_thị_kết_quả_thực_hiện
+    FE-->>KH: Update UI
+    deactivate FE
+```
+
+---
+
+### 3.7. Receive Reminder Notification (A3.3)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant BE as Backend
+    participant DB as Database
+    actor KH as Customer
+
+    Note left of BE: Scheduled Task (Cron)
+    BE->>DB: findUpcomingBookings()
+    DB-->>BE: Remind List
+
+    BE->>KH: Push Notification (Email/SMS/App)
+
+    KH-->>BE: Response: Confirm / Cancel
+    BE->>DB: Update confirmed status
+```
+
+---
+
+### 3.8. Warranty Request (A3.6)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor KH as Customer
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
+
+    KH->>FE: Submit warranty info
+    activate FE
+    FE->>BE: createWarrantyRequest()
+    activate BE
+
+    BE->>DB: INSERT INTO warranty_tickets
+    activate DB
+    DB-->>BE: Ticket Created
+    deactivate DB
+
+    BE-->>FE: Success
+    deactivate BE
+    FE-->>KH: Show "Pending" status
     deactivate FE
 ```

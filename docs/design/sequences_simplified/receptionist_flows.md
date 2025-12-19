@@ -1,103 +1,201 @@
-# Sơ đồ Tuần tự: Hoạt động Lễ tân (Chuẩn học thuật)
-
-Tài liệu này trình bày các luồng thông điệp cho công tác quản lý và vận hành Spa của nhân viên Lễ tân.
+# Sequence Diagram: Receptionist Module (Simplified)
 
 ---
 
-### 3.1. Tiếp nhận và Check-in khách hàng (B1.4)
+### 3.1. Dashboard & Customer Profile (B1.1, B1.2)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor LT as Lễ tân
-    participant FE as Giao diện (Frontend)
-    participant BE as Hệ thống (Backend)
-    participant DB as Cơ sở dữ liệu
+    actor LT as Receptionist
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
 
-    LT->>FE: chọn_lịch_hẹn_và_checkin()
+    LT->>FE: View Overview / Search Customer
     activate FE
-    FE->>BE: yêu_cầu_xác_nhận_khách_đến()
+    FE->>BE: fetchDashboardData()
     activate BE
-
-    critical Giao dịch đồng bộ
-        BE->>DB: cập_nhật_trạng_thái_phục_vụ (IN_PROGRESS)
-        Note right of DB: Tự động trừ buổi liệu trình trong thẻ (used_sessions)
-        BE->>DB: lưu_vết_thời_gian_đến (check_in_time)
-        activate DB
-        DB-->>BE: xác_nhận_cập_nhật
-        deactivate DB
-    end
-
-    BE-->>FE: trả_về_trạng_thái_mới
-    deactivate BE
-    FE-->>LT: hiển_thị_thông_báo_phục_vụ
-    deactivate FE
-```
-
----
-
-### 3.2. Xử lý thanh toán và In hóa đơn (B1.5)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor LT as Lễ tân
-    participant FE as Giao diện (Frontend)
-    participant BE as Hệ thống (Backend)
-    participant DB as Cơ sở dữ liệu
-
-    LT->>FE: yêu_cầu_thanh_toán()
-    activate FE
-    FE->>BE: tổng_hợp_dữ_liệu_billing()
-    activate BE
-
-    critical Hoàn tất tài chính
-        BE->>DB: tạo_hóa_đơn_mới (invoices)
-        BE->>DB: đánh_dấu_lịch_hẹn_hoàn_tất (COMPLETED)
-        activate DB
-        DB-->>BE: dữ_liệu_hóa_đơn_đã_lưu
-        deactivate DB
-    end
-
-    BE-->>FE: trả_về_thông_tin_hóa_đơn
-    deactivate BE
-    FE-->>LT: hiển_thị_hóa_đơn_và_lệnh_in
-    deactivate FE
-```
-
----
-
-### 3.3. Tái lập lịch tự động (B1.8)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor QTV as Quản trị viên
-    participant FE as Giao diện (Frontend)
-    participant BE as Hệ thống (Backend)
-    participant DB as Cơ sở dữ liệu
-
-    QTV->>FE: cập_nhật_lịch_nghỉ_nhân_viên()
-    activate FE
-    FE->>BE: thông_báo_nhân_sự_vắng_mặt()
-    activate BE
-
-    BE->>DB: truy_vấn_danh_sách_xung_đột()
+    BE->>DB: SELECT * FROM bookings / customers
     activate DB
-    DB-->>BE: các_lịch_hẹn_bị_ảnh_hưởng
+    DB-->>BE: Results
+    deactivate DB
+    BE-->>FE: Response Data
+    deactivate BE
+
+    alt Create New Customer
+        LT->>FE: Input New Customer Info
+        FE->>BE: createCustomer()
+        activate BE
+        BE->>DB: INSERT INTO customers
+        BE-->>FE: Profile Created
+        deactivate BE
+    end
+
+    FE-->>LT: Display result
+    deactivate FE
+```
+
+---
+
+### 3.2. Manual Booking at Front Desk (B1.3)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor LT as Receptionist
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
+
+    LT->>FE: Input Booking Details
+    activate FE
+    FE->>BE: checkAvailability()
+    activate BE
+    Note right of BE: Backend validates resource constraints (SISF)
+    BE-->>FE: Slot Available
+
+    LT->>FE: Confirm Manual Booking
+    FE->>BE: createManualBooking()
+    activate BE
+
+    critical DB Transaction
+        BE->>DB: INSERT INTO bookings
+        activate DB
+        DB-->>BE: Success
+        deactivate DB
+    end
+
+    BE-->>FE: Update Overview Dashboard
+    deactivate BE
+    FE-->>LT: Display new appointment
+    deactivate FE
+```
+
+---
+
+### 3.3. Customer Check-in & Treatment Deduction (B1.4)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor LT as Receptionist
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
+
+    LT->>FE: Click "Check-in"
+    activate FE
+    FE->>BE: confirmArrival()
+    activate BE
+
+    critical Atomic Sync
+        BE->>DB: UPDATE booking_status = 'IN_PROGRESS'
+        Note right of DB: Automatically deduct session if linked to treatment card
+        BE->>DB: UPDATE customer_treatments SET used_sessions += 1
+        activate DB
+        DB-->>BE: Updated
+        deactivate DB
+    end
+
+    BE-->>FE: OK
+    deactivate BE
+    FE-->>LT: Show status "Serving"
+    deactivate FE
+```
+
+---
+
+### 3.4. Payment Processing & Billing (B1.5)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor LT as Receptionist
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
+
+    LT->>FE: Confirm Payment
+    activate FE
+    FE->>BE: processPayment()
+    activate BE
+
+    critical Billing Transaction
+        BE->>DB: INSERT INTO invoices
+        BE->>DB: UPDATE booking_status = 'COMPLETED'
+        activate DB
+        DB-->>BE: Invoice Data
+        deactivate DB
+    end
+
+    BE-->>FE: Return E-Invoice
+    deactivate BE
+    FE-->>LT: Show Print Preview & Finish
+    deactivate FE
+```
+
+---
+
+### 3.5. Treatment Progress Tracking (B1.7)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor LT as Receptionist
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
+
+    LT->>FE: Query Customer Treatment
+    activate FE
+    FE->>BE: getCustomerTreatments()
+    activate BE
+    BE->>DB: SELECT * FROM customer_treatments WHERE customer_id = ?
+    activate DB
+    DB-->>BE: Progress Data (remaining sessions, history)
+    deactivate DB
+    BE-->>FE: Response
+    deactivate BE
+    FE-->>LT: Display info
+    deactivate FE
+```
+
+---
+
+### 3.6. Auto Reschedule on Conflict (B1.8)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Admin as Administrator
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
+
+    Admin->>FE: Update Staff Schedule (Unavailable)
+    activate FE
+    FE->>BE: updateSchedule()
+    activate BE
+
+    BE->>DB: findConflictingBookings()
+    activate DB
+    DB-->>BE: Conflict List
     deactivate DB
 
-    loop Xử lý từng khách hàng
-        BE->>BE: tìm_giải_pháp_tái_lập_lịch()
-        alt Có KTV thay thế
-            BE->>DB: cập_nhật_kỹ_ thuật_viên_mới
-        else Cần dời giờ
-            Note right of BE: Gửi đề xuất giờ mới cho khách hàng
+    loop Process Conflicts
+        BE->>BE: findAlternativeOption()
+        alt Option Found
+            BE->>DB: UPDATE booking (staff_id/time)
+            Note right of BE: Send reschedule notification to customer
+        else Critical Conflict
+            BE->>BE: markForManualAction()
+            Note right of BE: Notify receptionist for manual fix
         end
     end
 
-    BE-->>FE: báo_cáo_kết_quả_tự_động
+    BE-->>FE: Reschedule Summary Report
     deactivate BE
-    FE-->>QTV: hiển_thị_trạng_thái_xử_lý_sự_cố
+    FE-->>Admin: Show auto-fix report
     deactivate FE
 ```

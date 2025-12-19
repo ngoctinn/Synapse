@@ -1,91 +1,138 @@
-# Sơ đồ Tuần tự: Phân hệ Xác thực (Chuẩn học thuật)
-
-Tài liệu này trình bày quy trình trao đổi thông điệp cho các chức năng xác thực, phân định rõ ranh giới giữa Frontend, Backend và Dịch vụ hạ tầng.
+# Sequence Diagram: Authentication (Simplified)
 
 ---
 
-### 3.1. Đăng ký tài khoản khách hàng (A1.1)
+### 3.1. Register Account (A1.1)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant FE as Giao diện (Frontend)
-    participant SUPA as Dịch vụ xác thực (Supabase)
-    participant BE as Hệ thống (Backend)
-    participant DB as Cơ sở dữ liệu
+    actor User as Customer
+    participant FE as Frontend
+    participant Auth as Supabase Auth
+    participant BE as Backend
+    participant DB as Database
 
-    KH->>FE: yêu_cầu_đăng_ký(email, password)
+    User->>FE: Input registration data
     activate FE
-    FE->>SUPA: tạo_tài_khoản_mới()
-    activate SUPA
-    SUPA-->>FE: thông_báo_chờ_xác_thực_email
-    deactivate SUPA
+    FE->>Auth: signUp(email, password)
+    activate Auth
+    Auth-->>FE: Response (Pending confirmation)
+    deactivate Auth
 
-    FE->>BE: khởi_tạo_hồ_sơ_khách_hàng()
+    FE->>BE: createCustomerProfile()
     activate BE
-    critical Giao dịch lưu trữ
-        BE->>DB: INSERT INTO customers (profile)
+    critical Database Transaction
+        BE->>DB: INSERT INTO customers
         activate DB
-        DB-->>BE: hoàn_tất
+        DB-->>BE: Success
         deactivate DB
     end
-    BE-->>FE: phản_hồi_thành_công
+    BE-->>FE: Profile created
     deactivate BE
 
-    FE-->>KH: hiển_thị_thông_báo_thành_công
+    FE-->>User: Show "Check Email" notification
     deactivate FE
 ```
 
 ---
 
-### 3.2. Đăng nhập hệ thống (A1.2)
+### 3.2. Login (A1.2)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor ND as Người dùng
-    participant FE as Giao diện (Frontend)
-    participant SUPA as Dịch vụ xác thực (Supabase)
+    actor User as User (All roles)
+    participant FE as Frontend
+    participant Auth as Supabase Auth
 
-    ND->>FE: cung_cấp_thông_tin_đăng_nhập()
+    User->>FE: Input credentials (Email/Pass)
     activate FE
-    FE->>SUPA: xác_thực_thông_tin()
-    activate SUPA
+    FE->>Auth: signInWithPassword()
+    activate Auth
 
-    alt [Thông tin hợp lệ]
-        SUPA-->>FE: trả_về_phiên_làm_việc (JWT)
-        FE-->>ND: chuyển_hướng_đến_Dashboard
-    else [Thông tin sai]
-        SUPA-->>FE: thông_báo_lỗi_xác_thực
-        deactivate SUPA
-        FE-->>ND: hiển_thị_lỗi_đăng_nhập
+    alt Valid Credentials
+        Auth-->>FE: Session (JWT)
+        FE-->>User: Redirect to Dashboard
+    else Invalid Credentials
+        Auth-->>FE: Error (Unauthorized)
+        deactivate Auth
+        FE-->>User: Show error message
     end
     deactivate FE
 ```
 
 ---
 
-### 3.3. Cập nhật thông tin cá nhân (A1.4)
+### 3.3. Password Recovery (A1.3)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor ND as Người dùng
-    participant FE as Giao diện (Frontend)
-    participant BE as Hệ thống (Backend)
-    participant DB as Cơ sở dữ liệu
+    actor User as User
+    participant FE as Frontend
+    participant Auth as Supabase Auth
 
-    ND->>FE: thay_đổi_thông_tin_hồ_sơ()
+    User->>FE: Request password reset
     activate FE
-    FE->>BE: yêu_cầu_cập_nhật(data)
+    FE->>Auth: resetPasswordForEmail()
+    activate Auth
+    Auth-->>FE: OK (Email sent)
+    deactivate Auth
+    FE-->>User: Notify check email
+
+    User->>FE: Input new password (from link)
+    FE->>Auth: updatePassword()
+    activate Auth
+    Auth-->>FE: Password updated
+    deactivate Auth
+    FE-->>User: Notify success
+    deactivate FE
+```
+
+---
+
+### 3.4. Update Profile (A1.4)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as User
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
+
+    User->>FE: Change profile information
+    activate FE
+    FE->>BE: updateProfile(data)
     activate BE
     BE->>DB: UPDATE users SET ... WHERE id = ?
     activate DB
-    DB-->>BE: kết_quả_cập_nhật
+    DB-->>BE: Updated User
     deactivate DB
-    BE-->>FE: xác_nhận_thành_công
+    BE-->>FE: Success
     deactivate BE
-    FE-->>ND: hiển_thị_thông_tin_mới
+    FE-->>User: Show updated info
+    deactivate FE
+```
+
+---
+
+### 3.5. Logout (A1.5)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as User
+    participant FE as Frontend
+    participant Auth as Supabase Auth
+
+    User->>FE: Action: Logout
+    activate FE
+    FE->>Auth: signOut()
+    activate Auth
+    Auth-->>FE: OK
+    deactivate Auth
+    FE-->>User: Redirect to Login/Home
     deactivate FE
 ```

@@ -1,55 +1,56 @@
-# Sơ đồ Tuần tự: Hoạt động Kỹ thuật viên (Chuẩn học thuật)
-
-Tài liệu này trình bày các luồng thông tin phản hồi giữa Kỹ thuật viên và hệ thống trong quá trình phục vụ khách hàng.
+# Sequence Diagram: Technician Module (Simplified)
 
 ---
 
-### 3.1. Xem lịch phân công cá nhân (B2.1)
+### 3.1. View Personal Work Schedule (B2.1)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KTV as Kỹ thuật viên
-    participant FE as Giao diện (Frontend)
-    participant BE as Hệ thống (Backend)
-    participant DB as Cơ sở dữ liệu
+    actor KTV as Technician
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
 
-    KTV->>FE: yêu_cầu_xem_lịch_trình()
+    KTV->>FE: Access work schedule
     activate FE
-    FE->>BE: truy_vấn_lịch_làm_việc()
+    FE->>BE: getStaffSchedule()
     activate BE
     BE->>DB: SELECT bookings WHERE staff_id = ?
     activate DB
-    DB-->>BE: danh_sách_khách_hàng_phân_công
+    DB-->>BE: Assigned Booking List
     deactivate DB
-    BE-->>FE: dữ_liệu_lịch_trình
+    BE-->>FE: Schedule Data
     deactivate BE
-    FE-->>KTV: hiển_thị_danh_sách_chi_tiết
+    FE-->>KTV: Display detailed list
     deactivate FE
 ```
 
 ---
 
-### 3.2. Ghi chú chuyên môn sau buổi hẹn (B2.3)
+### 3.2. Record Treatment Note (B2.3)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KTV as Kỹ thuật viên
-    participant FE as Giao diện (Frontend)
-    participant BE as Hệ thống (Backend)
-    participant DB as Cơ sở dữ liệu
+    actor KTV as Technician
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
 
-    KTV->>FE: nhập_ghi_chú_phục_vụ()
+    KTV->>FE: Select booking & Input note
     activate FE
-    FE->>BE: yêu_cầu_lưu_trình_trạng_khách()
+    FE->>BE: saveTreatmentNote()
     activate BE
 
-    BE->>DB: lưu_ghi_chú (INSERT treatment_notes)
-    Note right of DB: Dữ liệu được bảo vệ bằng chính sách RLS
+    BE->>DB: INSERT INTO treatment_notes
+    activate DB
+    Note right of DB: Metadata protected by RLS Policy
 
-    BE-->>FE: thông_báo_lưu_thành_công
+    DB-->>BE: Success
+    deactivate DB
+    BE-->>FE: Saved
     deactivate BE
-    FE-->>KTV: hiển_thị_xác_nhận_hoàn_tất
+    FE-->>KTV: Confirm successful record
     deactivate FE
 ```

@@ -1,65 +1,153 @@
-# Sơ đồ Tuần tự: Hoạt động Quản trị viên (Chuẩn học thuật)
-
-Tài liệu này trình bày các luồng quản lý hệ thống cho Quản trị viên, bao gồm thiết lập tài nguyên và nhân sự.
+# Sequence Diagram: Administrator Module (Simplified)
 
 ---
 
-### 3.1. Thiết lập Lịch làm việc nhân sự (C4)
+### 3.1. Staff Shift Management & Scheduling (C4)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor QTV as Quản trị viên
-    participant FE as Giao diện (Frontend)
-    participant BE as Hệ thống (Backend)
-    participant DB as Cơ sở dữ liệu
+    actor Admin as Administrator
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
 
-    QTV->>FE: cấu_hình_ca_làm_việc()
+    Admin->>FE: Select staff & Assign shift
     activate FE
-    FE->>BE: yêu_cầu_phân_ca(staff_id, schedule)
+    FE->>BE: assignStaffShift(data)
     activate BE
 
-    BE->>BE: kiểm_tra_ràng_buộc_lịch_trình()
-    Note right of BE: Module Solver kiểm tra xung đột thời gian
+    BE->>BE: checkScheduleConstraints()
+    Note right of BE: Solver checks for existing booking overlaps
 
-    alt [Lịch trình hợp lệ]
-        BE->>DB: lưu_lịch_trình (INSERT staff_schedules)
+    alt Valid Schedule
+        BE->>DB: INSERT INTO staff_schedules
         activate DB
-        DB-->>BE: hoàn_tất
+        DB-->>BE: Success
         deactivate DB
-        BE-->>FE: thông_báo_thành_công
-    else [Xảy ra xung đột]
-        BE-->>FE: báo_lỗi_trùng_lịch (Conflict)
+        BE-->>FE: Confirmed
+        FE-->>Admin: Show updated schedule
+    else Schedule Conflict
+        BE-->>FE: Error (Shift Overlap)
+        FE-->>Admin: Show conflict warning
     end
     deactivate BE
-    FE-->>QTV: cập_nhật_trạng_ thái_giao_diện
     deactivate FE
 ```
 
 ---
 
-### 3.2. Quản lý Tài nguyên và Dịch vụ (C5, C7)
+### 3.2. Service Catalog Management (C5)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor QTV as Quản trị viên
-    participant FE as Giao diện (Frontend)
-    participant BE as Hệ thống (Backend)
-    participant DB as Cơ sở dữ liệu
+    actor Admin as Administrator
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
 
-    QTV->>FE: yêu_cầu_thay_đổi_danh_mục()
+    Admin->>FE: Input New Service Data
     activate FE
-    FE->>BE: xử_lý_thông_tin_tài_nguyên()
+    FE->>BE: createService(payload)
     activate BE
 
-    BE->>DB: cập_nhật_cơ_sở_dữ_liệu (SQL DML)
+    BE->>DB: INSERT INTO services
     activate DB
-    DB-->>BE: kết_quả_thực_thi
+    DB-->>BE: Service Record
     deactivate DB
 
-    BE-->>FE: phản_hồi_thành_công
+    BE-->>FE: Success response
     deactivate BE
-    FE-->>QTV: làm_mới_danh_sách_hiển_thị
+    FE-->>Admin: Update catalog view
+    deactivate FE
+```
+
+---
+
+### 3.3. Resource & Maintenance Management (C7)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Admin as Administrator
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
+
+    Admin->>FE: Update Resource Status (Room/Bed)
+    activate FE
+    FE->>BE: updateResourceStatus()
+    activate BE
+
+    alt Maintenance Mode
+        BE->>DB: UPDATE resources SET status = 'MAINTENANCE'
+        Note right of BE: System auto-excludes from future booking slots
+    else Soft Delete
+        BE->>DB: UPDATE resources SET is_active = false
+    end
+
+    activate DB
+    DB-->>BE: DB Record Updated
+    deactivate DB
+    BE-->>FE: Confirmed
+    deactivate BE
+    FE-->>Admin: Show new resource status
+    deactivate FE
+```
+
+---
+
+### 3.4. Treatment Package Configuration (Punch Card) (C6)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Admin as Administrator
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
+
+    Admin->>FE: Create New Treatment Package
+    activate FE
+    FE->>BE: createPackage(rules)
+    activate BE
+
+    BE->>DB: INSERT INTO treatment_packages
+    activate DB
+    DB-->>BE: Package Created
+    deactivate DB
+
+    BE-->>FE: Success
+    deactivate BE
+    FE-->>Admin: Show new package list
+    deactivate FE
+```
+
+---
+
+### 3.5. Promotion & Voucher Campaign (C8)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Admin as Administrator
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
+
+    Admin->>FE: Set up promo code/deadline
+    activate FE
+    FE->>BE: activatePromotion()
+    activate BE
+
+    BE->>DB: INSERT INTO promotions
+    activate DB
+    DB-->>BE: Promo Campaign Active
+    deactivate DB
+
+    BE-->>FE: Confirmed
+    deactivate BE
+    FE-->>Admin: Show campaign details
     deactivate FE
 ```
