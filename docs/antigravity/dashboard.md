@@ -1,16 +1,27 @@
 # Dashboard Theo Dõi Antigravity - Synapse
 
 ## Thông tin Phiên
-- **Mã phiên:** `DESIGN-PATCH-20251219`
-- **Trạng thái:** 🟡 ĐANG THỰC HIỆN (Phase 1: THINK)
+- **Mã phiên:** `DESIGN-REFINE-SEQUENCES-20251219`
+- **Trạng thái:** 🔵 ĐANG THỰC HIỆN (Phase 1: THINK)
 - **Ngày bắt đầu:** 2025-12-19
-- **Mục tiêu:** Chỉnh sửa và đồng bộ hóa 10 lỗi không nhất quán trong thiết kế UML.
+- **Mục tiêu:** Rút gọn và chuẩn hóa toàn bộ Sequence Diagrams theo tiêu chuẩn báo cáo học thuật.
 
 ---
 
 ## Kết quả Thực hiện
 
-### DESIGN-PATCH: Đồng bộ UML (10 Lỗi) 🟡
+### DESIGN-PATCH: Đồng bộ UML (10 Lỗi) ✅ HOÀN THÀNH
+
+### DESIGN-REFINE: Rút gọn Sequence Diagram 🔵
+**Thư mục đầu ra:** `docs/design/sequences_simplified/`
+
+| STT | File cần Refactor | Trạng thái |
+| :--- | :--- | :--- |
+| 1.1 | `authentication.md` | ✅ HOÀN THÀNH |
+| 1.2 | `customer_flows.md` | ✅ HOÀN THÀNH |
+| 1.3 | `receptionist_flows.md` | ✅ HOÀN THÀNH |
+| 1.4 | `technician_flows.md` | ✅ HOÀN THÀNH |
+| 1.5 | `admin_flows.md` | ✅ HOÀN THÀNH |
 
 | STT | Nhiệm vụ | Tài liệu liên quan | Trạng thái |
 | :--- | :--- | :--- | :--- |
