@@ -18,10 +18,12 @@ from sqlmodel import SQLModel, Field, Relationship
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from src.modules.customers.models import Customer
     from src.modules.users.models import User
     from src.modules.services.models import Service
     from src.modules.staff.models import Staff
     from src.modules.resources.models import Resource
+    from src.modules.customer_treatments.models import CustomerTreatment
 
 
 class BookingStatus(str, Enum):
@@ -65,6 +67,11 @@ class BookingItem(SQLModel, table=True):
         foreign_key="resources.id",
         ondelete="SET NULL"
     )
+    treatment_id: uuid.UUID | None = Field(
+        default=None,
+        foreign_key="customer_treatments.id",
+        ondelete="SET NULL"
+    )
     service_name_snapshot: str | None = Field(default=None, max_length=255)
     start_time: datetime = Field(sa_type=DateTime(timezone=True))
     end_time: datetime = Field(sa_type=DateTime(timezone=True))
@@ -82,6 +89,7 @@ class BookingItem(SQLModel, table=True):
     service: "Service" = Relationship()
     staff: "Staff" = Relationship()
     resource: "Resource" = Relationship()
+    treatment: "CustomerTreatment" = Relationship()
 
     @property
     def duration_minutes(self) -> int:
@@ -101,7 +109,7 @@ class Booking(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     customer_id: uuid.UUID | None = Field(
         default=None,
-        foreign_key="users.id",
+        foreign_key="customers.id",
         ondelete="SET NULL"
     )
     created_by: uuid.UUID | None = Field(
@@ -144,7 +152,7 @@ class Booking(SQLModel, table=True):
 
     # Relationships
     items: list[BookingItem] = Relationship(back_populates="booking")
-    customer: "User" = Relationship(
+    customer: "Customer" = Relationship(
         sa_relationship_kwargs={
             "foreign_keys": "[Booking.customer_id]"
         }

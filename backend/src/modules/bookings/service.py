@@ -21,6 +21,7 @@ from fastapi import Depends, HTTPException, status
 from src.common.database import get_db_session
 from src.modules.services.models import Service
 from .models import Booking, BookingItem, BookingStatus
+from src.modules.customer_treatments.models import CustomerTreatment, TreatmentStatus
 from .schemas import (
     BookingCreate,
     BookingUpdate,
@@ -140,11 +141,21 @@ class BookingService:
                         detail=conflicts[0].message
                     )
 
+            # Validate Treatment
+            if item_data.treatment_id:
+                if not data.customer_id:
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="Cần thông tin khách hàng để sử dụng liệu trình"
+                    )
+                await self._validate_treatment(item_data.treatment_id, data.customer_id)
+
             item = BookingItem(
                 booking_id=booking.id,
                 service_id=item_data.service_id,
                 staff_id=item_data.staff_id,
                 resource_id=item_data.resource_id,
+                treatment_id=item_data.treatment_id,
                 service_name_snapshot=service.name,
                 start_time=item_data.start_time,
                 end_time=item_data.end_time,
@@ -232,11 +243,21 @@ class BookingService:
                     detail=conflicts[0].message
                 )
 
+        # Validate Treatment
+        if data.treatment_id:
+            if not booking.customer_id:
+                 raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="Booking chưa có khách hàng, không thể dùng liệu trình"
+                    )
+            await self._validate_treatment(data.treatment_id, booking.customer_id)
+
         item = BookingItem(
             booking_id=booking_id,
             service_id=data.service_id,
             staff_id=data.staff_id,
             resource_id=data.resource_id,
+            treatment_id=data.treatment_id,
             service_name_snapshot=service.name,
             start_time=data.start_time,
             end_time=data.end_time,
@@ -290,6 +311,19 @@ class BookingService:
         new_resource_id = update_data.get("resource_id", item.resource_id)
         new_start = update_data.get("start_time", item.start_time)
         new_end = update_data.get("end_time", item.end_time)
+
+        # Validate treatment if changed
+        if "treatment_id" in update_data:
+            new_tid = update_data["treatment_id"]
+            if new_tid:
+                if not booking.customer_id:
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="Booking chưa có khách hàng"
+                    )
+                # Check if changed
+                if new_tid != item.treatment_id:
+                    await self._validate_treatment(new_tid, booking.customer_id)
 
         # Check conflicts (exclude current item)
         conflicts = await self.conflict_checker.check_all_conflicts(
@@ -421,6 +455,13 @@ class BookingService:
                 detail=f"Chỉ có thể hoàn thành từ IN_PROGRESS, hiện tại là {booking.status}"
             )
 
+        # Punch treatments
+        # Reload items just in case they are not loaded (though get_by_id loads them)
+        if booking.items:
+            for item in booking.items:
+                if item.treatment_id:
+                    await self._punch_treatment(item.treatment_id)
+
         booking.status = BookingStatus.COMPLETED
         booking.actual_end_time = actual_end_time or datetime.now(timezone.utc)
         booking.updated_at = datetime.now(timezone.utc)
@@ -495,3 +536,39 @@ class BookingService:
         result = await self.session.exec(query)
         services = result.all()
         return {s.id: s for s in services}
+
+    async def _validate_treatment(
+        self, treatment_id: uuid.UUID, customer_id: uuid.UUID
+    ) -> None:
+        """Kiểm tra tính hợp lệ của liệu trình."""
+        treatment = await self.session.get(CustomerTreatment, treatment_id)
+        if not treatment:
+            raise HTTPException(status_code=400, detail="Liệu trình không tồn tại")
+
+        if treatment.customer_id != customer_id:
+            raise HTTPException(status_code=400, detail="Liệu trình không thuộc về khách hàng này")
+
+        if treatment.status != TreatmentStatus.ACTIVE:
+            raise HTTPException(status_code=400, detail=f"Liệu trình không khả dụng ({treatment.status})")
+
+        if treatment.expiry_date and treatment.expiry_date < date.today():
+            raise HTTPException(status_code=400, detail="Liệu trình đã hết hạn")
+
+        if treatment.used_sessions >= treatment.total_sessions:
+            raise HTTPException(status_code=400, detail="Liệu trình đã hết số buổi")
+
+    async def _punch_treatment(self, treatment_id: uuid.UUID) -> None:
+        """Trừ buổi liệu trình (Punch logic)."""
+        treatment = await self.session.get(CustomerTreatment, treatment_id)
+        if not treatment:
+            # Should have been validated, but just in case
+            return
+
+        if treatment.used_sessions < treatment.total_sessions:
+            treatment.used_sessions += 1
+            if treatment.used_sessions >= treatment.total_sessions:
+                treatment.status = TreatmentStatus.COMPLETED
+
+            treatment.updated_at = datetime.now(timezone.utc)
+            self.session.add(treatment)
+            # Commit handled by caller

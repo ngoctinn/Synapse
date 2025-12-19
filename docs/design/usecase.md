@@ -545,10 +545,6 @@ Các chức năng sau được xác định nằm ngoài phạm vi khóa luận 
 |----|---------------|------------|
 | A3.4 | Đánh giá dịch vụ | Khách hàng phản hồi sau khi sử dụng dịch vụ |
 | A3.5 | Tích lũy và đổi điểm thưởng | Chương trình khách hàng thân thiết |
-| A3.6 | Gửi yêu cầu bảo hành | Yêu cầu kiểm tra lại trong thời hạn bảo hành |
-| B1.8 | Tái lập lịch tự động | Tự động sắp xếp lại khi có sự cố |
-| C6 | Quản lý gói liệu trình | Tạo và quản lý các gói dịch vụ nhiều buổi |
-| C8 | Quản lý chương trình khuyến mãi | Tạo mã giảm giá và sự kiện ưu đãi |
 | C12 | Tính toán hoa hồng nhân viên | Báo cáo tiền thưởng theo doanh số |
 
 ---

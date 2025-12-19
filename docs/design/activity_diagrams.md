@@ -1,113 +1,308 @@
-# Sơ đồ Hoạt động (Activity Diagrams) - Synapse
+# Tổng hợp Sơ đồ Hoạt động (Activity Diagrams) - Synapse
 
-Tài liệu này mô tả logic luồng xử lý của các tính năng phức tạp trong hệ thống, đặc biệt là các phần liên quan đến thuật toán tối ưu hóa.
+Tài liệu này mô tả chi tiết các luồng quy trình nghiệp vụ (Business Process Flows) của hệ thống, bao phủ toàn bộ các Ca sử dụng (Use Cases) và Sơ đồ tuần tự (Sequence Diagrams) đã thiết kế.
 
-## 1. Luồng Tìm kiếm khung giờ khả dụng (Smart Scheduling Search)
+---
 
-Sơ đồ này mô tả cách hệ thống xử lý các ràng buộc (Constraints) để đưa ra danh sách giờ trống cho khách hàng.
+## 1. Phân hệ Xác thực (Authentication)
 
-```mermaid
-activityDiagram
-    start
-    :Nhận yêu cầu: Dịch vụ, Ngày, KTV (tùy chọn);
-    :Truy xuất dữ liệu cơ bản;
-    partition "Xử lý Ràng buộc (Constraint Solving)" {
-        :Lấy giờ mở cửa Spa trong ngày;
-        :Lấy lịch trực của toàn bộ nhân viên có kỹ năng phù hợp;
-        :Lấy danh sách các lịch hẹn đã đặt (Booked slots);
-        :Lấy danh sách các tài nguyên yêu cầu (Phòng/Thiết bị);
-        :Chạy thuật toán OR-Tools CP-SAT;
-        if (Tìm thấy khung giờ trống?) then (Có)
-            :Tính toán các khung giờ tối ưu (Khít lịch);
-        else (Không)
-            :Đề xuất các ngày/giờ lân cận;
-        endif
-    }
-    :Trả về danh sách khung giờ (Slots);
-    stop
-```
-
-## 2. Luồng Tái lập lịch tự động (Automatic Rescheduling)
-
-Mô tả cách hệ thống phản ứng khi có tài nguyên (Staff/Room) đột ngột không khả dụng.
+### 1.1. Quy trình Đăng ký & Kích hoạt (A1.1)
+Mô tả quy trình khách hàng tạo tài khoản và xác thực qua email.
 
 ```mermaid
 activityDiagram
     start
-    :Ghi nhận sự cố Tài nguyên (Staff/Room Off);
-    :Xác định khoảng thời gian bị ảnh hưởng;
-    :Truy vấn danh sách Bookings bị xung đột;
-    :Khởi tạo Job tối ưu hóa lại (Reschedule Job);
-    fork
-        :Tìm KTV thay thế có cùng kỹ năng;
-    fork again
-        :Tìm phòng trống cùng loại;
-    fork again
-        :Tìm khung giờ trống gần nhất cho khách;
-    end fork
-    :Cân đối hàm mục tiêu (Objective Function);
-    note right: Giảm thiểu sự thay đổi<br/>Tối đa hóa sự hài lòng
-    if (Tìm được phương án thay thế?) then (Có)
-        :Cập nhật trạng thái Booking;
-        :Gửi thông báo thay đổi cho Khách & Nhân viên;
+    :Khách hàng nhập thông tin Đăng ký\n(Email, Tên, Mật khẩu);
+    :Hệ thống kiểm tra Email tồn tại?;
+    if (Đã tồn tại?) then (Có)
+        :Báo lỗi: Email đã được sử dụng;
+        stop
     else (Không)
-        :Báo cho Lễ tân xử lý thủ công (Gọi điện);
+        :Mã hóa mật khẩu;
+        :Tạo User & Customer Profile (Trạng thái: PENDING);
+        :Gửi Email xác thực (Link/Token);
+        :Hiển thị thông báo: "Vui lòng kiểm tra email";
+    endif
+
+    :Khách hàng click Link xác thực;
+    :Hệ thống kiểm tra Token hợp lệ?;
+    if (Hợp lệ?) then (Có)
+        :Kích hoạt Tài khoản (Status: ACTIVE);
+        :Chuyển hướng đến trang Đăng nhập;
+    else (Không/Hết hạn)
+        :Báo lỗi: Link không hợp lệ hoặc hết hạn;
     endif
     stop
 ```
 
-## 3. Luồng Tính toán và Chốt hoa hồng (Monthly Commission Closing)
+### 1.2. Quy trình Đăng nhập & Phân quyền (A1.2)
 
 ```mermaid
 activityDiagram
     start
-    :Admin chọn kỳ tính lương (Tháng/Năm);
-    :Lấy danh sách Invoices đã thanh toán (PAID);
-    :Duyệt qua từng Booking Item trong Invoice;
-    while (Còn Item?) is (Có)
-        :Xác định KTV thực hiện;
-        :Lấy Tỷ lệ hoa hồng (rate) của KTV tại thời điểm đó;
-        :Tính tiền hoa hồng = Giá trị dịch vụ * rate;
-        :Cộng dồn vào tổng theo Staff_ID;
-    endwhile (Hết Item)
-    :Tạo bản ghi Báo cáo hoa hồng tạm tính;
-    :Admin phê duyệt;
-    :Lưu lịch sử chi trả;
-    stop
-
-## 4. Luồng Quản lý và Trừ buổi liệu trình (Treatment Punch Card)
-
-Mô tả cách hệ thống quản lý gói nhiều buổi theo mô hình đơn giản và chính xác nhất.
-
-```mermaid
-activityDiagram
-    start
-    :Khách hàng mua Gói Combo (Liệu trình X buổi);
-    :Thanh toán Invoice cho toàn bộ Gói;
-    :Hệ thống khởi tạo Thẻ liệu trình (customer_treatments);
-    note right: total_sessions = X<br/>used_sessions = 0
-    repeat
-        :Khách đặt lịch sử dụng dịch vụ trong Gói;
-        :Hệ thống kiểm tra số buổi còn lại;
-        if (Còn buổi trống? (used < total)) then (Có)
-            :Tạo Booking (Gắn kèm treatment_id);
-            :Khách đến Spa;
-            :Lễ tân thực hiện **Check-in**;
-            partition "Hành động Tự động" {
-                :Tăng used_sessions thêm 1;
-                :Đánh dấu Booking Item là 'Đã trừ buổi';
-            }
-            :KTV thực hiện dịch vụ;
-        else (Hết buổi)
-            :Thông báo khách cần mua thêm Gói mới;
-            :Yêu cầu thanh toán lẻ nếu vẫn muốn làm;
+    :Người dùng nhập Email & Mật khẩu;
+    :Hệ thống tìm User theo Email;
+    if (Tồn tại User?) then (Có)
+        :Kiểm tra Mật khẩu (Hash compare);
+        if (Đúng mật khẩu?) then (Có)
+            if (Tài khoản Active?) then (Có)
+                :Lấy thông tin Role & Permissions;
+                :Tạo Session/Token (JWT);
+                :Chuyển hướng đến Dashboard theo Role;
+            else (Không)
+                :Báo lỗi: Tài khoản chưa kích hoạt hoặc bị khóa;
+            endif
+        else (Sai)
+            :Báo lỗi: Sai thông tin đăng nhập;
         endif
-    repeat while (Khách muốn làm tiếp?)
-    :Đóng Thẻ liệu trình (Status = COMPLETED);
+    else (Không)
+        :Báo lỗi: Sai thông tin đăng nhập;
+    endif
     stop
-```
-
 ```
 
 ---
-*Ghi chú: Các sơ đồ trên mô tả logic mức cao. Việc triển khai chi tiết nằm trong service layer của Backend.*
+
+## 2. Phân hệ Khách hàng (Customer)
+
+### 2.1. Quy trình Đặt lịch Thông minh (Smart Booking Flow) (A2.4, A2.5)
+Bao gồm tìm kiếm khung giờ (Algorithm) và hoàn tất đặt hẹn.
+
+```mermaid
+activityDiagram
+    start
+    :Khách hàng chọn Dịch vụ & Ngày mong muốn;
+    :Hệ thống lấy dữ liệu (Lịch nhân viên, Tài nguyên, Bookings);
+    partition "Core: Constraint Solver" {
+        :Chạy thuật toán tìm khung giờ trống;
+        :Kiểm tra ràng buộc (Kỹ năng KTV, Phòng trống);
+    }
+    if (Có khung giờ trống?) then (Có)
+        :Hiển thị danh sách khung giờ (Slots);
+        :Khách hàng chọn Slot;
+        :Khách hàng chọn KTV (Tùy chọn);
+        :Hệ thống giữ chỗ (Temporary Hold);
+
+        partition "Thanh toán/Đặt cọc" {
+            if (Cần đặt cọc?) then (Có)
+                :Chuyển sang cổng thanh toán;
+                if (Thanh toán thành công?) then (Có)
+                    :Xác nhận Booking;
+                else (Thất bại/Hủy)
+                    :Hủy giữ chỗ;
+                    stop
+                endif
+            else (Không)
+                :Tự động xác nhận;
+            endif
+        }
+
+        :Tạo Booking (Status: CONFIRMED);
+        :Gửi Email/Notif xác nhận;
+    else (Không)
+        :Gợi ý ngày khác hoặc Tham gia Waitlist (A2.6);
+        if (Chọn Waitlist?) then (Có)
+            :Thêm vào Danh sách chờ;
+        endif
+    endif
+    stop
+```
+
+### 2.2. Quy trình Gửi yêu cầu Bảo hành (Warranty Request) (A3.6)
+
+```mermaid
+activityDiagram
+    start
+    :Khách hàng xem Lịch sử Booking;
+    :Chọn Booking đã hoàn thành (COMPLETED);
+    :Hệ thống kiểm tra Chính sách bảo hành;
+    note right: Check: Service có bảo hành? \nCheck: Thời gian <= Thời hạn bảo hành?
+
+    if (Đủ điều kiện?) then (Có)
+        :Hiển thị Form yêu cầu bảo hành;
+        :Khách hàng nhập Lý do & Hình ảnh (nếu có);
+        :Gửi yêu cầu;
+        :Hệ thống tạo Ticket Bảo hành (PENDING);
+        :Thông báo cho CSKH/Quản lý;
+
+        partition "Xử lý nội bộ" {
+            :Quản lý xem xét yêu cầu;
+            if (Chấp thuận?) then (Có)
+                :Tạo Booking 0đ (Loại: Bảo hành);
+                :Thông báo lịch hẹn cho khách;
+                :Update Ticket: APPROVED;
+            else (Từ chối)
+                :Gửi phản hồi từ chối;
+                :Update Ticket: REJECTED;
+            endif
+        }
+    else (Không)
+        :Thông báo: Không đủ điều kiện bảo hành;
+    endif
+    stop
+```
+
+---
+
+## 3. Phân hệ Lễ tân (Receptionist)
+
+### 3.1. Quy trình Check-in & Trừ liệu trình (Service Usage) (B1.4, C6)
+Mô tả xử lý khi khách đến, bao gồm logic xử lý gói liệu trình (Punch Card).
+
+```mermaid
+activityDiagram
+    start
+    :Khách hàng đến Spa;
+    :Lễ tân tìm Booking trên Dashboard (B1.1);
+    :Lễ tân bấm "Check-in";
+
+    if (Booking thuộc Gói liệu trình?) then (Có)
+        :Hệ thống kiểm tra số buổi còn lại;
+        if (Còn buổi?) then (Có)
+            :Trừ 1 buổi (used_sessions += 1);
+            :Đánh dấu Booking Item: "Đã trừ";
+            note right: Auto Punch Logic
+        else (Hết buổi)
+            :Cảnh báo: Gói đã hết buổi;
+            :Yêu cầu thanh toán lẻ hoặc Mua gói mới;
+            if (Khách đồng ý mua/trả lẻ?) then (Có)
+                :Cập nhật Booking Item (Chuyển sang trả phí);
+            else (Không)
+                :Hủy Check-in;
+                stop
+            endif
+        endif
+    endif
+
+    :Cập nhật trạng thái Booking: IN_PROGRESS;
+    :Thông báo KTV chuẩn bị;
+    :Khách hàng sử dụng dịch vụ;
+    stop
+```
+
+### 3.2. Quy trình Thanh toán & Checkout (B1.5, C8)
+Bao gồm áp dụng khuyến mãi.
+
+```mermaid
+activityDiagram
+    start
+    :Lễ tân chọn Booking "IN_PROGRESS";
+    :Bấm "Hoàn thành dịch vụ";
+    :Cập nhật trạng thái: COMPLETED;
+
+    partition "Billing" {
+        :Tạo Invoice nháp;
+        :Load các Item chưa thanh toán;
+
+        if (Có mã khuyến mãi?) then (Có)
+            :Nhập Voucher Code (C12);
+            :Validate Code (Hạn dùng, Điều kiện);
+            if (Hợp lệ?) then (Có)
+                :Trừ tiền (Discount);
+            endif
+        endif
+
+        :Hiển thị Tổng tiền phải trả;
+        :Khách hàng thanh toán (Tiền mặt/Thẻ/CK);
+        :Lễ tân xác nhận "Đã thanh toán";
+    }
+
+    :Cập nhật Invoice: PAID;
+    :Cập nhật Doanh số & Hoa hồng (Log);
+    :Gửi Hóa đơn điện tử (Email);
+    stop
+```
+
+### 3.3. Quy trình Tái lập lịch tự động (Auto Rescheduling) (B1.8)
+
+```mermaid
+activityDiagram
+    start
+    :Sự kiện: KTV/Phòng báo nghỉ đột xuất (Unavailable);
+    :Hệ thống quét các Booking bị ảnh hưởng (Conflict);
+
+    while (Còn Booking conflict?) is (Có)
+        :Lấy thông tin Booking (Khách, Dịch vụ, Giờ);
+        partition "Reschedule Solver" {
+            :Tìm KTV thay thế (Cùng Skill);
+            if (Tìm thấy KTV?) then (Có)
+                :Gán KTV mới;
+                :Log thay đổi (Change Log);
+                :Notify: "Đã đổi sang KTV X";
+            else (Không)
+                :Tìm Giờ khác trong ngày (Same KTV);
+                if (Tìm thấy?) then (Có)
+                    :Đề xuất giờ mới cho Khách;
+                    if (Khách đồng ý?) then (Có)
+                        :Dời lịch;
+                    else (Không)
+                         :Đánh dấu: "Cần xử lý thủ công";
+                    endif
+                else (Không)
+                     :Đánh dấu: "Critical Conflict";
+                endif
+            endif
+        }
+    endwhile
+
+    :Lễ tân nhận danh sách "Cần xử lý thủ công";
+    :Lễ tân gọi điện thương lượng với khách;
+    stop
+```
+
+---
+
+## 4. Phân hệ Quản trị (Admin)
+
+### 4.1. Quy trình Chốt Hoa hồng & Lương (Commission) (C12)
+
+```mermaid
+activityDiagram
+    start
+    :Đến kỳ chốt lương (Tháng);
+    :Admin chạy "Tính toán hoa hồng";
+
+    :Hệ thống lấy danh sách Invoice (Status: PAID) trong kỳ;
+    while (Duyệt từng Item?)
+        if (Có KTV thực hiện?) then (Có)
+            :Lấy Config Hoa hồng (Theo Service/Staff Level);
+            :Tính: Tiền hoa hồng = Giá trị * %Rate;
+            :Cộng vào Bảng lương tạm tính;
+        endif
+    endwhile
+
+    :Hiển thị Báo cáo chi tiết;
+    :Admin Review & Điều chỉnh (nếu cần);
+    :Admin Chốt (Approve);
+    :Lưu lịch sử chi trả (Payout History);
+    stop
+```
+
+### 4.2. Quản lý Tài nguyên & Cấu hình (C4, C7)
+Quy trình chung cho thiết lập dữ liệu nền (Master Data).
+
+```mermaid
+activityDiagram
+    start
+    :Admin truy cập trang Quản lý (Resource/Staff);
+    :Thực hiện Thêm/Sửa/Xóa;
+
+    if (Hành động ảnh hưởng lịch?) then (Có)
+        :Hệ thống check Dependencies (Booking tồn tại?);
+        if (Có Booking xung đột?) then (Có)
+            :Cảnh báo: "Không thể xóa vì có Booking";
+            :Yêu cầu: Hủy/Dời Booking trước;
+            stop
+        else (Không)
+            :Thực hiện cập nhật DB;
+        endif
+    else (Không)
+        :Cập nhật DB;
+    endif
+
+    :Cập nhật Cache/Search Index của Bộ giải (Solver);
+    stop
+```
+
+---
+*Các sơ đồ trên đảm bảo phủ kín các luồng nghiệp vụ trong tài liệu Use Case và Sequence Diagrams.*

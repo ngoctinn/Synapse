@@ -13,7 +13,9 @@ from src.modules import (
     resources,
     schedules,
     bookings,
+    customers,
     scheduling_engine,
+    customer_treatments,
 )
 
 @asynccontextmanager
@@ -59,8 +61,11 @@ app.include_router(staff.router, prefix=settings.API_V1_STR)
 app.include_router(resources.router, prefix=settings.API_V1_STR)
 app.include_router(schedules.router, prefix=settings.API_V1_STR)
 app.include_router(bookings.router, prefix=settings.API_V1_STR)
+app.include_router(customers.router, prefix=settings.API_V1_STR)
 app.include_router(scheduling_engine.router, prefix=settings.API_V1_STR)
+app.include_router(customer_treatments.router, prefix=settings.API_V1_STR)
 
 @app.get("/")
 async def root():
     return {"message": "Chào mừng đến với Synapse API"}
+```

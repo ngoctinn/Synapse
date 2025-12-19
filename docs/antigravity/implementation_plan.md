@@ -1,6 +1,6 @@
-# Kế hoạch Đồng nhất Tài liệu Thiết kế KLTN
+# Kế Hoạch Triển Khai Backend - Giai Đoạn 2: Module Customer Treatments
 
-**Mã phiên:** `KLTN-SYNC-20251219`
+**Mã phiên:** `BACKEND-P2-TREATMENTS-20251219`
 **Ngày tạo:** 2025-12-19
 **Trạng thái:** THINK (Chờ phê duyệt)
 
@@ -8,144 +8,153 @@
 
 ## 1. Vấn đề (Problem Statement)
 
-Tài liệu thiết kế trong thư mục `docs/design/` hiện tại có các vấn đề sau:
-
-1. **Không đồng nhất thuật ngữ**: Sử dụng lẫn lộn "phòng", "tài nguyên", "giường", viết tắt không thống nhất.
-2. **Quá nhiều tính năng**: Một số tính năng nằm ngoài phạm vi khóa luận (Chatbot AI, Khuyến mãi, Hoa hồng).
-3. **Usecase rườm rà**: Mô tả dài dòng, nhiều luồng phụ không cần thiết.
-4. **Sequence thiếu/thừa**: Không khớp 1-1 với Usecase cốt lõi.
-5. **Ngôn ngữ không học thuật**: Sử dụng ngôn ngữ đời thường thay vì học thuật.
+Hệ thống Spa cần quản lý các gói liệu trình (Treatments) mà khách hàng đã mua (ví dụ: Gói massage 10 buổi). Hiện tại:
+1.  Chưa có bảng `customer_treatments` để lưu trữ thông tin gói đã mua.
+2.  Booking không có liên kết với Treatment, dẫn đến không thể tự động trừ buổi khi khách sử dụng dịch vụ.
+3.  Không thể kiểm tra hạn sử dụng của liệu trình.
 
 ---
 
 ## 2. Mục đích (Goals)
 
-1. **Xác định phạm vi MVP** rõ ràng cho khóa luận "Xây dựng hệ thống chăm sóc khách hàng trực tuyến cho Spa".
-2. **Đồng nhất thuật ngữ** theo Quy ước đã định trong `database_design.md`.
-3. **Đơn giản hóa Usecase** với ngôn ngữ học thuật, ngắn gọn.
-4. **Đồng bộ Sequence Diagrams** với Usecase MVP.
-5. **Loại bỏ tính năng ngoài phạm vi**: Chatbot AI, Khuyến mãi (C8), Hoa hồng (C12).
-6. **Giữ lại tính năng cốt lõi**: Trò chuyện trực tuyến (Live Chat), Cá nhân hóa liệu trình.
+1.  **Tạo module `treatments`** (hoặc `customer_treatments`): Quản lý các gói liệu trình của khách hàng.
+2.  **Logic Punch Card**: Trừ số buổi (`used_sessions`) khi Booking Item hoàn thành (`COMPLETED`).
+3.  **Tích hợp Booking**: `booking_items` cần có trường `treatment_id` (optional) để biết item này thuộc về gói nào.
+4.  **Kiểm tra hợp lệ**: Chặn sử dụng nếu hết buổi hoặc hết hạn (`expiry_date`).
 
 ---
 
 ## 3. Ràng buộc (Constraints)
 
-- **Ngôn ngữ**: Tiếng Việt học thuật, không viết tắt, không dùng ngôn ngữ đời thường.
-- **Phạm vi**: Chỉ chỉnh sửa tài liệu thiết kế, không chỉnh sửa mã nguồn.
-- **Tính nhất quán**: Thuật ngữ phải thống nhất trên toàn bộ tài liệu.
+### 3.1 Kỹ thuật
+- Tuân thủ Backend Rules (Async, Pydantic V2, SQLModel).
+- Quan hệ: `customers` 1-N `customer_treatments`.
+- Quan hệ: `booking_items` N-1 `customer_treatments` (đã có trong design, cần thêm FK).
+- `treatment_id` trong `booking_items` là nullable (khách có thể đặt lẻ, không dùng gói).
+
+### 3.2 Nghiệp vụ
+- **Mua gói**: Khi khách mua gói, tạo record trong `customer_treatments` (chưa làm Billing, nên tạm thời API tạo thủ công).
+- **Sử dụng**: Khi tạo Booking, nếu chọn dùng gói -> check `used_sessions < total_sessions` và `expiry_date >= today`.
+- **Trừ buổi**: Khi Booking chuyển sang `COMPLETED`, tăng `used_sessions`.
+- **Hủy Booking**: Nếu Booking bị hủy hoặc No-show (tùy chính sách), có thể hoàn lại buổi (giảm `used_sessions`). *Tạm thời: Cancel -> hoàn buổi; No-show -> mất buổi (cần confirm policy, MVP: Cancel hoàn, No-show chưa xử lý tự động).*
 
 ---
 
-## 4. Phạm vi Tính năng Khóa luận
+## 4. Chiến lược (Strategy)
 
-### 4.1 Tính năng CỐT LÕI (Bắt buộc)
+### Phase 2A: Tạo Module Customer Treatments
+```
+src/modules/customer_treatments/
+├── __init__.py
+├── models.py
+├── schemas.py
+├── service.py
+├── router.py
+└── exceptions.py
+```
 
-| Nhóm | Mã | Tên chức năng | Ghi chú |
-|------|----|---------------|---------|
-| **Xác thực** | A1.1 | Đăng ký tài khoản khách hàng | |
-| | A1.2 | Đăng nhập | |
-| | A1.3 | Khôi phục mật khẩu | |
-| | A1.4 | Cập nhật thông tin cá nhân | |
-| | A1.5 | Đăng xuất | |
-| **Khách hàng** | A2.1 | Xem danh sách dịch vụ | |
-| | A2.2 | Xem chi tiết dịch vụ | |
-| | A2.4 | Tìm kiếm khung giờ khả dụng | Thuật toán thông minh |
-| | A2.5 | Hoàn tất đặt lịch hẹn | |
-| | A2.7 | Nhận hỗ trợ qua Trò chuyện trực tuyến | Live Chat (không AI) |
-| | A3.1 | Xem lịch sử đặt lịch | |
-| | A3.2 | Hủy lịch hẹn | |
-| | B1.7 | Theo dõi tiến độ liệu trình | Cá nhân hóa |
-| **Lễ tân** | B1.1 | Xem lịch hẹn tổng quan | |
-| | B1.2 | Quản lý hồ sơ khách hàng | |
-| | B1.3 | Tạo lịch hẹn thủ công | |
-| | B1.4 | Xác nhận khách đến (Check-in) | Trừ buổi liệu trình |
-| | B1.5 | Xử lý thanh toán | |
-| | B1.6 | Phản hồi hỗ trợ qua Trò chuyện trực tuyến | |
-| **Kỹ thuật viên** | B2.1 | Xem lịch làm việc cá nhân | |
-| | B2.3 | Ghi chú chuyên môn sau buổi hẹn | |
-| **Quản trị** | C4 | Cấu hình lịch làm việc nhân viên | |
-| | C5 | Quản lý danh mục dịch vụ | |
-| | C7 | Quản lý tài nguyên | |
+### Phase 2B: Cập nhật Module Bookings
+- Thêm trường `treatment_id` vào `BookingItem` (DB Migration).
+- Cập nhật `BookingItemCreate` schema.
+- Logic Service:
+    - Khi tạo booking: Validate treatment (còn buổi, chưa hết hạn).
+    - Khi `complete` booking: Gọi service treatment để trừ buổi (`punch`).
 
-**Tổng: 22 chức năng cốt lõi**
-
-### 4.2 Tính năng LOẠI BỎ (Ngoài phạm vi)
-
-| Mã | Tên chức năng | Lý do loại bỏ |
-|----|---------------|---------------|
-| A2.6 | Tham gia danh sách chờ | Phức tạp, ngoài phạm vi |
-| A3.3 | Nhận thông báo tự động | Cơ chế nền, không cần sơ đồ |
-| A3.4 | Đánh giá dịch vụ | Chức năng phụ trợ |
-| A3.5 | Tích lũy và đổi điểm thưởng | Ngoài phạm vi |
-| A3.6 | Gửi yêu cầu bảo hành | Ngoài phạm vi |
-| B1.8 | Tái lập lịch tự động | Phức tạp, ghi nhận hướng phát triển |
-| C1 | Quản lý tài khoản người dùng | Supabase Auth xử lý |
-| C2 | Phân quyền hệ thống | RLS xử lý ngầm |
-| C3 | Quản lý nhân viên | Gộp vào C4 |
-| C6 | Quản lý gói liệu trình | Phức tạp |
-| **C8** | **Quản lý chương trình khuyến mãi** | **Ngoài phạm vi** |
-| **C12** | **Tính toán hoa hồng nhân viên** | **Ngoài phạm vi** |
+### Phase 2C: Integration
+- Đăng ký router.
 
 ---
 
-## 5. Chiến lược Thực hiện
+## 5. Giải pháp Chi tiết (Solution)
 
-### Phase A: Chuẩn hóa Usecase
-- [ ] **A.1**: Loại bỏ các Usecase ngoài phạm vi (C8, C12, A2.6, A3.3-6, B1.8, C1-3, C6)
-- [ ] **A.2**: Viết lại mô tả theo ngôn ngữ học thuật, không viết tắt
-- [ ] **A.3**: Rút gọn luồng sự kiện (tối đa 1 luồng thay thế + 1 luồng ngoại lệ)
-- [ ] **A.4**: Thống nhất thuật ngữ (Tài nguyên, Lịch hẹn, Khách hàng...)
+### 5.1 Entity (models.py)
 
-### Phase B: Chuẩn hóa Sequence Diagrams
-- [ ] **B.1**: Xóa sơ đồ của C8, C12 trong `sequences/admin_flows.md`
-- [ ] **B.2**: Đổi tên hàm/API sang tiếng Việt học thuật (participant labels)
-- [ ] **B.3**: Bổ sung sơ đồ còn thiếu (B1.2, B1.6, B1.7)
-- [ ] **B.4**: Thống nhất thuật ngữ trong mô tả
+```python
+class TreatmentStatus(str, Enum):
+    ACTIVE = "ACTIVE"
+    COMPLETED = "COMPLETED"
+    EXPIRED = "EXPIRED"
 
-### Phase C: Chuẩn hóa các tài liệu khác
-- [ ] **C.1**: Cập nhật `architecture_v2.md` - Loại bỏ module không dùng
-- [ ] **C.2**: Cập nhật `data_specification.md` - Thống nhất thuật ngữ
-- [ ] **C.3**: Cập nhật `ui_design.md` - Chỉ giữ màn hình MVP
-- [ ] **C.4**: Cập nhật `activity_diagrams.md` - Loại bỏ luồng ngoài phạm vi
+class CustomerTreatment(SQLModel, table=True):
+    __tablename__ = "customer_treatments"
 
----
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    customer_id: uuid.UUID = Field(foreign_key="customers.id")
+    service_id: uuid.UUID | None = Field(default=None, foreign_key="services.id")
 
-## 6. Quy ước Thuật ngữ Học thuật
+    name: str  # Tên gói (Lấy snapshot từ Service Package hoặc nhập tay)
+    total_sessions: int
+    used_sessions: int = Field(default=0)
+    expiry_date: date | None = None
 
-| Thuật ngữ Cũ | Thuật ngữ Mới (Học thuật) |
-|--------------|---------------------------|
-| Phòng/Giường | Tài nguyên |
-| Thợ/KTV | Kỹ thuật viên |
-| Khách | Khách hàng |
-| Lịch | Lịch hẹn |
-| Check-in | Xác nhận khách đến |
-| No-show | Khách không đến |
-| Slot | Khung giờ |
-| Booking | Đặt lịch hẹn |
-| Live Chat | Trò chuyện trực tuyến |
-| Chatbot | (Loại bỏ - không dùng AI) |
+    status: TreatmentStatus = Field(default=TreatmentStatus.ACTIVE)
 
----
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
-## 7. Danh sách File Cần Sửa
+    # Constraints
+    # used <= total
+```
 
-| File | Hành động |
-|------|-----------|
-| `usecase.md` | Loại bỏ, viết lại, rút gọn |
-| `sequences/admin_flows.md` | Xóa C8, C12; chuẩn hóa |
-| `sequences/authentication.md` | Chuẩn hóa thuật ngữ |
-| `sequences/customer_flows.md` | Chuẩn hóa thuật ngữ |
-| `sequences/receptionist_flows.md` | Thêm B1.2, B1.6, B1.7; chuẩn hóa |
-| `sequences/technician_flows.md` | Chuẩn hóa thuật ngữ |
-| `sequence_diagrams.md` | Cập nhật mục lục |
-| `architecture_v2.md` | Loại bỏ module không dùng |
-| `data_specification.md` | Chuẩn hóa thuật ngữ |
-| `ui_design.md` | Chỉ giữ màn hình MVP |
-| `activity_diagrams.md` | Loại bỏ luồng ngoài phạm vi |
-| `database_design.md` | Đã chuẩn (giữ nguyên) |
-| `algorithm_spec.md` | Đã chuẩn (giữ nguyên) |
+### 5.2 API Endpoints
+
+| Method | Endpoint | Mô tả |
+|--------|----------|-------|
+| GET | `/treatments/customer/{customer_id}` | Lấy liệu trình của khách |
+| GET | `/treatments/{id}` | Chi tiết liệu trình |
+| POST | `/treatments` | Tạo liệu trình mới (Mua gói - Admin/Recep ONLY) |
+| PUT | `/treatments/{id}` | Cập nhật (gia hạn, sửa lỗi) |
+| POST | `/treatments/{id}/punch` | Internal API: Trừ buổi (dùng bởi Booking Service) |
 
 ---
 
-**⏸️ TRẠNG THÁI: Đang chờ phê duyệt từ người dùng để tiếp tục.**
+## 6. Danh sách Task Chi Tiết (SPLIT)
+
+### 2.1 Khởi tạo Module (Basic)
+- [ ] **2.1.1** Tạo folder `src/modules/customer_treatments/`
+- [ ] **2.1.2** `exceptions.py` (TreatmentNotFound, TreatmentExpired, TreatmentOutOfSessions)
+- [x] **2.1** Khởi tạo Module `customer_treatments` (Entity, Schema, Exception).
+- [x] **2.2** Logic Service (CRUD + `punch` method + `refund` method).
+- [x] **2.3** API Router cho Treatments.
+- [x] **2.4** Database Migration (Tạo bảng `customer_treatments` + Update `booking_items`).
+- [x] **2.5** Tích hợp vào Module `bookings`:
+    - Logic Validate Treatment (`used < total`).
+    - Logic Auto-Punch khi `COMPLETED`.
+    - Logic Refund khi `CANCELLED`.
+- [x] **2.6** Đăng ký Router chính.
+- [ ] **2.1.3** `models.py` (CustomerTreatment, TreatmentStatus)
+- [ ] **2.1.4** `schemas.py` (Create/Read/Update)
+
+### 2.2 Logic Service
+- [ ] **2.2.1** CRUD cơ bản (Get Customer Treatments)
+- [ ] **2.2.2** Method `validate_availability(treatment_id)`: Check còn hạn & còn buổi
+- [ ] **2.2.3** Method `punch_session(treatment_id)`: used_sessions += 1
+- [ ] **2.2.4** Method `refund_session(treatment_id)`: used_sessions -= 1
+
+### 2.3 Router & Integration
+- [ ] **2.3.1** API Endpoints cho Treatments
+- [ ] **2.3.2** Register Router in `main.py`
+- [ ] **2.3.3** Export module in `src/modules/__init__.py`
+
+### 2.4 Database Migration
+- [ ] **2.4.1** Update `BookingItem` model (Add `treatment_id`)
+- [ ] **2.4.2** Alembic Revision (Create table + Add Foreign Key)
+
+### 2.5 Tích hợp Bookings Logic
+- [ ] **2.5.1** Update `BookingItemCreate` schema (Add `treatment_id`)
+- [ ] **2.5.2** Update `BookingService.create` & `add_item`: Call `validate_availability`
+- [ ] **2.5.3** Update `BookingService.complete`: Call `punch_session`
+- [ ] **2.5.4** Update `BookingService.cancel`: Call `refund_session` (nếu booking đã completed hoặc logic khác - *Lưu ý: Nếu cancel từ CONFIRMED thì ko cần refund vì chưa trừ, chỉ trừ khi COMPLETED. Nhưng nếu lỡ complete nhầm rồi cancel thì cần refund.*)
+  * *Quyết định:* Chỉ gọi refund khi revert từ COMPLETED -> CANCELLED/OTHER. Với luồng chuẩn (PENDING -> CONFIRMED -> COMPLETED), ta sẽ trừ ở bước cuối.
+
+---
+
+## 7. Kiểm tra Thành công
+
+- [ ] Tạo được Treatment cho Customer.
+- [ ] Tạo Booking với `treatment_id`.
+- [ ] Booking hoàn thành -> `used_sessions` tăng lên 1.
+- [ ] Không thể đặt nếu `used_sessions` == `total_sessions`.
+
+---
+
+**⏸️ TRẠNG THÁI: Chờ phê duyệt để tiếp tục sang giai đoạn SPLIT.**

@@ -35,12 +35,14 @@ class BookingItemCreate(BookingItemBase):
     """Schema tạo BookingItem."""
     staff_id: uuid.UUID | None = None
     resource_id: uuid.UUID | None = None
+    treatment_id: uuid.UUID | None = None
 
 
 class BookingItemUpdate(BaseModel):
     """Schema cập nhật BookingItem."""
     staff_id: uuid.UUID | None = None
     resource_id: uuid.UUID | None = None
+    treatment_id: uuid.UUID | None = None
     start_time: datetime | None = None
     end_time: datetime | None = None
 
@@ -52,6 +54,7 @@ class BookingItemRead(BaseModel):
     service_id: uuid.UUID | None
     staff_id: uuid.UUID | None
     resource_id: uuid.UUID | None
+    treatment_id: uuid.UUID | None
     service_name_snapshot: str | None
     start_time: datetime
     end_time: datetime

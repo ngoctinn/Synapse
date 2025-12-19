@@ -1,26 +1,37 @@
 # Dashboard Theo Dõi Antigravity - Synapse
 
 ## Thông tin Phiên
-- **Mã phiên:** `KLTN-SYNC-20251219`
+- **Mã phiên:** `BACKEND-P1-CUSTOMERS-20251219`
 - **Trạng thái:** ✅ HOÀN THÀNH
 - **Ngày bắt đầu:** 2025-12-19
 - **Ngày hoàn thành:** 2025-12-19
-- **Mục tiêu:** Đồng nhất toàn bộ tài liệu thiết kế theo ngôn ngữ học thuật và phạm vi MVP
+- **Mục tiêu:** Triển khai Module Customers (Backend Phase 1)
 
 ---
 
 ## Kết quả Thực hiện
 
-### Phase A: Chuẩn hóa Usecase ✅
+### Backend Phase 1: Customers Module ✅
 
 | STT | Nhiệm vụ | Trạng thái |
 | :--- | :--- | :--- |
-| A.1 | Loại bỏ 10 Usecase ngoài phạm vi | ✅ HOÀN THÀNH |
-| A.2 | Viết lại mô tả học thuật | ✅ HOÀN THÀNH |
-| A.3 | Rút gọn luồng sự kiện | ✅ HOÀN THÀNH |
-| A.4 | Thống nhất thuật ngữ | ✅ HOÀN THÀNH |
-| A.5 | Bổ sung A2.6 (Danh sách chờ) | ✅ HOÀN THÀNH |
-| A.6 | Bổ sung A3.3 (Thông báo) | ✅ HOÀN THÀNH |
+| 1.1 | Tạo module `customers` | ✅ HOÀN THÀNH |
+| 1.2 | Migration & API | ✅ HOÀN THÀNH |
+
+### Backend Phase 2: Treatments Module ✅
+
+| STT | Nhiệm vụ | Trạng thái |
+| :--- | :--- | :--- |
+| 2.1 | Khởi tạo Module (Models, Schemas) | ✅ HOÀN THÀNH |
+| 2.2 | Logic Service (Punch/Refund) | ✅ HOÀN THÀNH |
+| 2.3 | Router & Integration | ✅ HOÀN THÀNH |
+| 2.4 | DB Migration | ✅ HOÀN THÀNH |
+| 2.5 | Tích hợp Bookings | ✅ HOÀN THÀNH |
+
+### Tiếp theo: Phase 3...
+
+### Lịch sử Phiên Trước
+- ✅ KLTN-SYNC-20251219: Đồng nhất tài liệu thiết kế
 
 ### Phase B: Chuẩn hóa Sequence Diagrams ✅
 
