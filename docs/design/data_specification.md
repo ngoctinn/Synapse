@@ -156,20 +156,24 @@ Thông tin chi tiết nhân viên. Quan hệ 1-1 với bảng users.
 | commission_rate | DECIMAL(5,2) | Có | 0.0 | Tỷ lệ hoa hồng (0-100) |
 | hired_at | DATE | Có | CURRENT_DATE | Ngày vào làm |
 
-### 3.3. Bảng customer_profiles
+### 3.3. Bảng customers (Core CRM)
 
-Thông tin chi tiết khách hàng. Quan hệ 1-1 với bảng users.
+Lưu trữ thông tin khách hàng. Định danh chính qua số điện thoại. Có thể liên kết với tài khoản ứng dụng (users) nếu khách đăng ký App.
 
 | Tên cột | Kiểu dữ liệu | Null | Mặc định | Mô tả |
 |:---|:---|:---:|:---|:---|
-| user_id | UUID | Không | - | Khóa chính, FK users |
+| id | UUID | Không | auto | Khóa chính |
+| phone_number | VARCHAR(50) | Không | - | Số điện thoại (UNIQUE) |
+| full_name | VARCHAR(255) | Không | - | Họ và tên |
+| email | VARCHAR(255) | Có | NULL | Email liên hệ |
+| user_id | UUID | Có | NULL | FK users (Nếu có tài khoản App) |
 | loyalty_points | INTEGER | Có | 0 | Điểm tích lũy |
 | membership_tier | membership_tier | Có | SILVER | Hạng thành viên |
 | gender | gender | Có | NULL | Giới tính |
 | date_of_birth | DATE | Có | NULL | Ngày sinh |
 | address | TEXT | Có | NULL | Địa chỉ |
-| allergies | TEXT | Có | NULL | Dị ứng (tinh dầu, mỹ phẩm...) |
-| medical_notes | TEXT | Có | NULL | Ghi chú y tế (bệnh nền, có thai...) |
+| allergies | TEXT | Có | NULL | Dị ứng |
+| medical_notes | TEXT | Có | NULL | Ghi chú y tế |
 | preferred_staff_id | UUID | Có | NULL | FK staff_profiles - KTV yêu thích |
 
 ### 3.4. Bảng skills
@@ -191,7 +195,6 @@ Liên kết nhân viên với kỹ năng (N-N).
 |:---|:---|:---:|:---|:---|
 | staff_id | UUID | Không | - | FK staff_profiles |
 | skill_id | UUID | Không | - | FK skills |
-| proficiency_level | INTEGER | Có | 1 | Mức thành thạo (1-3) |
 
 Khóa chính: (staff_id, skill_id)
 
@@ -233,7 +236,6 @@ Kỹ năng yêu cầu cho mỗi dịch vụ (N-N).
 |:---|:---|:---:|:---|:---|
 | service_id | UUID | Không | - | FK services |
 | skill_id | UUID | Không | - | FK skills |
-| min_proficiency_level | INTEGER | Có | 1 | Mức tối thiểu (1-3) |
 
 Khóa chính: (service_id, skill_id)
 
@@ -313,8 +315,8 @@ Thông tin lịch hẹn.
 | Tên cột | Kiểu dữ liệu | Null | Mặc định | Mô tả |
 |:---|:---|:---:|:---|:---|
 | id | UUID | Không | auto | Khóa chính |
-| customer_id | UUID | Có | NULL | FK users - khách hàng |
-| created_by | UUID | Có | NULL | FK users - người tạo booking |
+| customer_id | UUID | Có | NULL | FK customers - khách hàng |
+| created_by | UUID | Có | NULL | FK users - nhân viên hoặc khách tạo |
 | start_time | TIMESTAMPTZ | Không | - | Thời gian bắt đầu |
 | end_time | TIMESTAMPTZ | Không | - | Thời gian kết thúc |
 | status | booking_status | Không | PENDING | Trạng thái |
@@ -351,7 +353,7 @@ Gói liệu trình của khách hàng.
 | Tên cột | Kiểu dữ liệu | Null | Mặc định | Mô tả |
 |:---|:---|:---:|:---|:---|
 | id | UUID | Không | auto | Khóa chính |
-| customer_id | UUID | Không | - | FK users |
+| customer_id | UUID | Không | - | FK customers |
 | service_id | UUID | Có | NULL | FK services |
 | name | VARCHAR(255) | Không | - | Tên gói |
 | total_sessions | INTEGER | Không | - | Tổng số buổi |
@@ -420,7 +422,7 @@ Giao dịch thanh toán.
 |:---|:---|:---:|:---|:---|
 | id | UUID | Không | auto | Khóa chính |
 | booking_id | UUID | Không | - | FK bookings |
-| customer_id | UUID | Không | - | FK users |
+| customer_id | UUID | Không | - | FK customers |
 | rating | INTEGER | Không | - | Điểm (1-5) |
 | comment | TEXT | Có | NULL | Nội dung |
 | created_at | TIMESTAMPTZ | Không | NOW() | Thời điểm |
@@ -476,16 +478,16 @@ Nhật ký thay đổi.
 | Bảng cha | Bảng con | Khóa liên kết |
 |:---|:---|:---|
 | users | staff_profiles | user_id |
-| users | customer_profiles | user_id |
+| customers | users | user_id (Optional) |
 | bookings | invoices | booking_id |
 
 ### 4.2. Quan hệ 1-N
 
 | Bảng cha | Bảng con | Khóa liên kết |
 |:---|:---|:---|
-| users | bookings | customer_id |
+| customers | bookings | customer_id |
 | users | notifications | user_id |
-| users | customer_treatments | customer_id |
+| customers | customer_treatments | customer_id |
 | bookings | booking_items | booking_id |
 | invoices | payments | invoice_id |
 | service_categories | services | category_id |
@@ -510,8 +512,7 @@ Nhật ký thay đổi.
 | Bảng | Cột | Điều kiện |
 |:---|:---|:---|
 | staff_profiles | commission_rate | 0 <= x <= 100 |
-| customer_profiles | loyalty_points | x >= 0 |
-| staff_skills | proficiency_level | 1 <= x <= 3 |
+| customers | loyalty_points | x >= 0 |
 | services | duration_minutes | x > 0 |
 | services | price | x >= 0 |
 | shifts | end_time | end_time > start_time |

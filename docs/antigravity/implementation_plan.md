@@ -1,52 +1,24 @@
-# Backend Module Refactoring - Scheduling Module Renaming
+# Kế hoạch triển khai Antigravity (Implementation Plan) - Synapse
 
-## Vấn đề
-Hiện tại trong `backend/src/modules/` tồn tại hai module có tên gần giống nhau dễ gây nhầm lẫn:
-- `schedules`: Quản lý dữ liệu lịch làm việc (Shifts, Staff Assignments).
-- `scheduling`: Chứa logic thuật toán tối ưu hóa (OR-Tools, Solver).
+## 1. Phân tích bối cảnh
+Sau khi thực hiện audit so khớp giữa Use Case (`usecase.md`) và Thiết kế (`architecture_v2.md`, `data_specification.md`, `database_design.md`), chúng tôi xác định các thay đổi cần thiết để đạt tới sự nhất quán cao và chuẩn hóa học thuật.
 
-Sự tương đồng về tên gọi (`schedule` vs `scheduling`) dẫn đến khó khăn trong việc phân biệt trách nhiệm của từng module và dễ gây lỗi khi import.
+## 2. Các quyết định đã xác nhận
+- **Chatbot (A2.7)**: Chuyển thành "Live Chat" kèm kịch bản trả lời tự động (Script-based).
+- **Vật tư (Consumables)**: Loại bỏ hoàn toàn việc quản lý vật tư tiêu hao.
+- **Kỹ năng (Skill Level)**: Loại bỏ hoàn toàn khái niệm `proficiency_level`. Chỉ quan tâm KTV có kỹ năng đó hay không.
+- **Tính năng mới**: Bổ sung "Rescheduling" (Xử lý sự cố lịch) và "Staff Commission" (Tính hoa hồng KTV).
 
-## Mục đích
-- Làm rõ trách nhiệm (Single Responsibility) của từng module.
-- `schedules` -> Tập trung vào Dữ liệu (State/Data).
-- `scheduling_engine` -> Tập trung vào Tính toán (Logic/Solver).
+## 3. Checklist chuẩn hóa Use Case
+- [x] Tên: Động từ + Danh từ (Tên hành động nghiệp vụ).
+- [x] Không chi tiết UI (Không dùng từ "nút", "màn hình", "click").
+- [x] Ngôn ngữ học thuật: "Hệ thống hiển thị...", "Actor tìm kiếm...", "Hệ thống xác nhận...".
+- [x] Ranh giới Actor và System rõ ràng.
+- [x] Luồng sự kiện: Có Luồng chính (Basic), Thay thế (Alternative) và Ngoại lệ (Exception) rõ ràng.
 
-## Mục tiêu (Requirements)
-- [ ] Đổi tên module `scheduling` thành `scheduling_engine`.
-- [ ] Cập nhật toàn bộ các tham chiếu import trong codebase Backend.
-- [ ] Cấu hình lại Router trong `main.py`.
-- [ ] Đảm bảo tính nhất quán trong Frontend (nếu có gọi API cụ thể hoặc types liên quan).
-
-## Phân tích tác động (Impact Analysis)
-- **Files bị ảnh hưởng**:
-  - Toàn bộ files trong `src/modules/scheduling/` (nội bộ).
-  - `src/app/main.py` (Router registration).
-  - Các module khác có import từ `scheduling` (ví dụ: `bookings` hoặc `staff` nếu có).
-- **Broken links**: Đường dẫn API prefix có thể thay đổi nếu không được giữ nguyên. Cần giữ prefix `/scheduling` cho API để không làm hỏng Frontend, nhưng tên biến/module trong code đổi thành `scheduling_engine`.
-
-## Giải pháp (Solution Design)
-1. **Giai đoạn chuẩn bị**: Tìm tất cả các vị trí sử dụng `src.modules.scheduling`.
-2. **Thực thi**:
-   - Sử dụng lệnh `mv` hoặc `rename` để đổi tên folder.
-   - Sử dụng regex replace để cập nhật các câu lệnh import.
-   - Sửa biến module trong `main.py`.
-3. **Kiểm tra**:
-   - Chạy test (nếu có).
-   - Kiểm tra API Health.
-
----
-
-## Kế hoạch chi tiết (Task Breakdown)
-
-### Phase 1: Preparation & Renaming
-- [ ] 1.1. Rename folder `backend/src/modules/scheduling` -> `backend/src/modules/scheduling_engine`.
-
-### Phase 2: Code Updates
-- [ ] 2.1. Cập nhật `src/modules/scheduling_engine/__init__.py`.
-- [ ] 2.2. Update imports trong `backend/src/app/main.py`.
-- [ ] 2.3. Tìm và sửa các câu lệnh `from src.modules import scheduling` hoặc `from src.modules.scheduling import ...` trong toàn bộ backend.
-
-### Phase 3: Verification
-- [ ] 3.1. Kiểm tra API documentation (Swagger) xem router có hoạt động đúng không.
-- [ ] 3.2. Cập nhật các tài liệu liên quan (nếu có).
+## 4. Danh sách nhiệm vụ thực thi (Task List)
+- [x] **Cập nhật UseCase.md (Standardization)**: Áp dụng format học thuật, tinh giản AI thành Live Chat, thêm Rescheduling & Commission.
+- [x] **Cập nhật Data Specification**: Loại bỏ Proficiency Level, đồng bộ cấu trúc Customer.
+- [x] **Review Database Design**: Đảm bảo SQL script khớp với đặc tả mới.
+- [x] **Cập nhật Implementation Plan**: Ghi nhận trạng thái hoàn thành.
+- [x] **Hoàn tất báo cáo (REPORT)**.
