@@ -108,7 +108,29 @@ activityDiagram
     stop
 ```
 
-### 2.2. Quy trình Gửi yêu cầu Bảo hành (Warranty Request) (A3.6)
+### 2.2. Quy trình Hủy lịch hẹn (A3.2)
+
+```mermaid
+activityDiagram
+    start
+    :Khách hàng chọn Lịch hẹn (Status: CONFIRMED);
+    :Yêu cầu hủy lịch;
+    :Hệ thống kiểm tra Chính sách thời gian;
+    if (Quá thời hạn hủy (2a)?) then (Có)
+        :Hiển thị thông báo lỗi (Violation);
+        :Hướng dẫn liên hệ Hotline hỗ trợ;
+        stop
+    else (Không)
+        :Hiển thị điều kiện hoàn tiền/phí (nếu có);
+        :Khách hàng xác nhận lần cuối;
+        :Cập nhật trạng thái: CANCELLED;
+        :Giải phóng KTV & Tài nguyên;
+        :Gửi thông báo xác nhận hủy;
+    endif
+    stop
+```
+
+### 2.3. Quy trình Gửi yêu cầu Bảo hành (Warranty Request) (A3.6)
 
 ```mermaid
 activityDiagram
@@ -254,31 +276,7 @@ activityDiagram
 
 ## 4. Phân hệ Quản trị (Admin)
 
-### 4.1. Quy trình Chốt Hoa hồng & Lương (Commission) (C12)
-
-```mermaid
-activityDiagram
-    start
-    :Đến kỳ chốt lương (Tháng);
-    :Admin chạy "Tính toán hoa hồng";
-
-    :Hệ thống lấy danh sách Invoice (Status: PAID) trong kỳ;
-    while (Duyệt từng Item?)
-        if (Có KTV thực hiện?) then (Có)
-            :Lấy Config Hoa hồng (Theo Service/Staff Level);
-            :Tính: Tiền hoa hồng = Giá trị * %Rate;
-            :Cộng vào Bảng lương tạm tính;
-        endif
-    endwhile
-
-    :Hiển thị Báo cáo chi tiết;
-    :Admin Review & Điều chỉnh (nếu cần);
-    :Admin Chốt (Approve);
-    :Lưu lịch sử chi trả (Payout History);
-    stop
-```
-
-### 4.2. Quản lý Tài nguyên & Cấu hình (C4, C7)
+### 4.1. Quản lý Tài nguyên & Cấu hình (C4, C7)
 Quy trình chung cho thiết lập dữ liệu nền (Master Data).
 
 ```mermaid

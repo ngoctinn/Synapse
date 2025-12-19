@@ -252,3 +252,5 @@ sequenceDiagram
     deactivate UI
 ```
 **Hình 3.24: Sơ đồ tuần tự chức năng Cấu hình lịch làm việc nhân viên**
+
+---

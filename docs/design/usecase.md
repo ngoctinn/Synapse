@@ -254,7 +254,7 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 ---
 
-### Bảng 3.12: Hủy lịch hẹn
+### Bảng 3.13: Hủy lịch hẹn
 
 | Thuộc tính | Nội dung |
 |------------|----------|
@@ -262,16 +262,45 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 | **Tên chức năng** | Hủy lịch hẹn |
 | **Mô tả** | Khách hàng hủy một lịch hẹn đã đặt theo chính sách của Spa. |
 | **Tác nhân** | Khách hàng |
+| **Mức độ ưu tiên** | Cao |
+| **Sự kiện kích hoạt** | Khách hàng yêu cầu hủy một lịch hẹn. |
+| **Tiền điều kiện** | Lịch hẹn đang ở trạng thái "Đã xác nhận" (CONFIRMED). |
+| **Hậu điều kiện** | Lịch hẹn chuyển sang trạng thái "Đã hủy" (CANCELLED), khung giờ và tài nguyên được giải phóng. |
 
 **Luồng sự kiện chính:**
 
 | Bước | Tác nhân | Hành động |
 |------|----------|-----------|
 | 1 | Khách hàng | Chọn lịch hẹn cần hủy và xác nhận yêu cầu. |
-| 2 | Hệ thống | Kiểm tra chính sách hủy lịch và thông báo điều kiện áp dụng. |
+| 2 | Hệ thống | Kiểm tra chính sách hủy lịch và thông báo điều kiện áp dụng (phí hủy, hoàn cọc). |
 | 3 | Hệ thống | Cập nhật trạng thái lịch hẹn và giải phóng tài nguyên. |
 
-**Luồng ngoại lệ:** Nếu thời gian hủy quá gần với giờ hẹn, hệ thống từ chối hoặc áp dụng phí theo chính sách.
+**Luồng ngoại lệ (2a): Quá thời hạn hủy**
+- 2a.1: Hệ thống kiểm tra thấy thời gian hủy vi phạm chính sách (quá sát giờ hẹn).
+- 2a.2: Hệ thống hiển thị thông báo lỗi từ chối hủy trực tuyến và hướng dẫn khách hàng liên hệ hotline.
+
+---
+
+### Bảng 3.14: Gửi yêu cầu bảo hành
+
+| Thuộc tính | Nội dung |
+|------------|----------|
+| **Mã chức năng** | A3.6 |
+| **Tên chức năng** | Gửi yêu cầu bảo hành |
+| **Mô tả** | Khách hàng gửi yêu cầu hỗ trợ bảo hành cho các dịch vụ đã thực hiện không đạt yêu cầu. |
+| **Tác nhân** | Khách hàng |
+| **Mức độ ưu tiên** | Trung bình |
+| **Tiền điều kiện** | Booking đã ở trạng thái "Hoàn thành" (COMPLETED) và còn trong thời hạn bảo hành. |
+
+**Luồng sự kiện chính:**
+
+| Bước | Tác nhân | Hành động |
+|------|----------|-----------|
+| 1 | Khách hàng | Chọn lịch hẹn đã hoàn thành và chọn chức năng "Yêu cầu bảo hành". |
+| 2 | Khách hàng | Nhập mô tả vấn đề và tải lên hình ảnh minh họa (nếu có). |
+| 3 | Hệ thống | Ghi nhận yêu cầu, tạo Ticket bảo hành và thông báo cho quản trị viên. |
+
+---
 
 ---
 
@@ -418,7 +447,7 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 ---
 
-### Bảng 3.19: Phản hồi hỗ trợ qua trò chuyện trực tuyến
+### Bảng 3.20: Phản hồi hỗ trợ qua trò chuyện trực tuyến
 
 | Thuộc tính | Nội dung |
 |------------|----------|
@@ -434,6 +463,30 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 | 1 | Hệ thống | Thông báo có khách hàng đang yêu cầu hỗ trợ. |
 | 2 | Lễ tân | Mở phiên trò chuyện và phản hồi khách hàng. |
 | 3 | Hệ thống | Lưu lịch sử hội thoại vào hồ sơ khách hàng. |
+
+---
+
+### Bảng 3.21: Tái lập lịch tự động khi có sự cố
+
+| Thuộc tính | Nội dung |
+|------------|----------|
+| **Mã chức năng** | B1.8 |
+| **Tên chức năng** | Tái lập lịch tự động khi có sự cố |
+| **Mô tả** | Hệ thống tự động xử lý các lịch hẹn bị xung đột do KTV báo nghỉ đột xuất hoặc tài nguyên bị bảo trì. |
+| **Tác nhân** | Hệ thống |
+
+**Luồng sự kiện chính:**
+
+| Bước | Tác nhân | Hành động |
+|------|----------|-----------|
+| 1 | Hệ thống | Phát hiện sự kiện thay đổi lịch làm việc hoặc trạng thái tài nguyên. |
+| 2 | Hệ thống | Quét và xác định các lịch hẹn bị ảnh hưởng (Conflict). |
+| 3 | Hệ thống | Chạy thuật toán tìm phương án thay thế tốt nhất (KTV khác cùng kỹ năng hoặc dời giờ). |
+| 4 | Hệ thống | Cập nhật lịch mới và tự động gửi thông báo điều chỉnh lịch cho khách hàng. |
+
+**Luồng ngoại lệ:** Nếu không tìm được phương án thay thế tự động, hệ thống đánh dấu "Critical" và thông báo cho lễ tân xử lý thủ công.
+
+---
 
 ---
 
@@ -537,6 +590,42 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 ---
 
+### Bảng 3.25: Quản lý thẻ liệu trình
+
+| Thuộc tính | Nội dung |
+|------------|----------|
+| **Mã chức năng** | C6 |
+| **Tên chức năng** | Quản lý thẻ liệu trình |
+| **Mô tả** | Quản trị viên thiết lập các gói liệu trình dịch vụ (Punch Card) cho khách hàng. |
+| **Tác nhân** | Quản trị viên |
+
+**Luồng sự kiện chính:**
+
+| Bước | Tác nhân | Hành động |
+|------|----------|-----------|
+| 1 | Quản trị viên | Định nghĩa gói dịch vụ (ví dụ: Mua 10 tặng 2). |
+| 2 | Hệ thống | Khởi tạo cấu hình và cho phép lễ tân bán gói cho khách hàng. |
+
+---
+
+### Bảng 3.26: Quản lý chương trình khuyến mãi
+
+| Thuộc tính | Nội dung |
+|------------|----------|
+| **Mã chức năng** | C8 |
+| **Tên chức năng** | Quản lý chương trình khuyến mãi |
+| **Mô tả** | Quản trị viên thiết lập các mã giảm giá, Voucher hoặc chiến dịch khuyến mãi theo thời điểm. |
+| **Tác nhân** | Quản trị viên |
+
+**Luồng sự kiện chính:**
+
+| Bước | Tác nhân | Hành động |
+|------|----------|-----------|
+| 1 | Quản trị viên | Thiết lập mã khuyến mãi (Mã, Mức giảm, Hạn dùng, Điều kiện áp dụng). |
+| 2 | Hệ thống | Lưu trữ và xác thực mã khi áp dụng tại quầy thanh toán. |
+
+---
+
 ## Phụ lục: Hướng phát triển
 
 Các chức năng sau được xác định nằm ngoài phạm vi khóa luận hiện tại và được ghi nhận để phát triển trong tương lai:
@@ -545,7 +634,6 @@ Các chức năng sau được xác định nằm ngoài phạm vi khóa luận 
 |----|---------------|------------|
 | A3.4 | Đánh giá dịch vụ | Khách hàng phản hồi sau khi sử dụng dịch vụ |
 | A3.5 | Tích lũy và đổi điểm thưởng | Chương trình khách hàng thân thiết |
-| C12 | Tính toán hoa hồng nhân viên | Báo cáo tiền thưởng theo doanh số |
 
 ---
 

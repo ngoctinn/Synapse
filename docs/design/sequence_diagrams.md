@@ -29,6 +29,7 @@ Tài liệu này tổng hợp toàn bộ sơ đồ tuần tự của hệ thốn
 | 3.14 | Xem lịch sử đặt lịch hẹn | A3.1 | [customer_flows.md](sequences/customer_flows.md) |
 | 3.15 | Hủy lịch hẹn | A3.2 | [customer_flows.md](sequences/customer_flows.md) |
 | 3.16 | Nhận thông báo nhắc lịch | A3.3 | [customer_flows.md](sequences/customer_flows.md) |
+| 3.17 | Gửi yêu cầu bảo hành | A3.6 | [customer_flows.md](sequences/customer_flows.md) |
 
 ### 3. Phân hệ Lễ tân
 | Số hình | Chức năng | Mã | File |
@@ -40,6 +41,7 @@ Tài liệu này tổng hợp toàn bộ sơ đồ tuần tự của hệ thốn
 | 3.18 | Xử lý thanh toán | B1.5 | [receptionist_flows.md](sequences/receptionist_flows.md) |
 | 3.19 | Phản hồi hỗ trợ qua trò chuyện trực tuyến | B1.6 | [receptionist_flows.md](sequences/receptionist_flows.md) |
 | 3.20 | Theo dõi tiến độ liệu trình | B1.7 | [receptionist_flows.md](sequences/receptionist_flows.md) |
+| 3.21 | Tái lập lịch tự động | B1.8 | [receptionist_flows.md](sequences/receptionist_flows.md) |
 
 ### 4. Phân hệ Kỹ thuật viên
 | Số hình | Chức năng | Mã | File |
@@ -63,11 +65,11 @@ Tài liệu này tổng hợp toàn bộ sơ đồ tuần tự của hệ thốn
 | Phân hệ | Số sơ đồ |
 |---------|----------|
 | Xác thực | 7 |
-| Khách hàng | 9 |
-| Lễ tân | 7 |
+| Khách hàng | 10 |
+| Lễ tân | 9 |
 | Kỹ thuật viên | 2 |
 | Quản trị viên | 5 |
-| **Tổng cộng** | **30** |
+| **Tổng cộng** | **33** |
 
 ---
 

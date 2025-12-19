@@ -387,3 +387,58 @@ sequenceDiagram
     deactivate UI
 ```
 **Hình 3.20: Sơ đồ tuần tự chức năng Theo dõi tiến độ liệu trình**
+
+### 3.21. Tái lập lịch tự động khi có sự cố (B1.8)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor QTV as Quản trị viên
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant S as BookingService
+    participant SOLVER as Bộ giải ràng buộc
+    participant NOTI as NotificationService
+    participant DB as Database
+    actor KH as Khách hàng
+
+    QTV->>UI: Cập nhật lịch làm việc (Nghỉ đột xuất)
+    activate UI
+    UI->>BFF: updateStaffSchedule(data)
+    activate BFF
+
+    BFF->>S: trigger_reschedule_check(staffId, date)
+    activate S
+
+    S->>DB: find_conflicting_bookings(staffId, date)
+    activate DB
+    DB-->>S: bookings_list[]
+    deactivate DB
+
+    loop Với mỗi lịch hẹn bị xung đột
+        S->>SOLVER: find_alternative_options(booking, policy)
+        activate SOLVER
+        Note right of SOLVER: Tìm KTV thay thế hoặc Giờ khác
+        SOLVER-->>S: recommended_option
+        deactivate SOLVER
+
+        alt Có phương án thay thế tối ưu (Cùng khung giờ, khác KTV)
+            S->>DB: UPDATE bookings SET staff_id = new_staff_id
+            S->>NOTI: notify_reschedule_success(KH, "Đổi KTV")
+        else Cần dời giờ (Khác khung giờ)
+            S->>NOTI: notify_reschedule_proposal(KH, new_slot)
+            Note over KH: Khách hàng xem xét đề xuất
+        else Xung đột nghiêm trọng
+            S->>DB: UPDATE bookings SET status = 'PENDING_MANUAL'
+            S->>NOTI: notify_receptionist_critical_error(bookingId)
+        end
+    end
+
+    S-->>BFF: RescheduleSummary
+    deactivate S
+    BFF-->>UI: Cập nhật Dashboard sự cố
+    deactivate BFF
+    UI-->>QTV: Hiển thị báo cáo xử lý tự động
+    deactivate UI
+```
+**Hình 3.21: Sơ đồ tuần tự chức năng Tái lập lịch tự động**

@@ -436,3 +436,44 @@ sequenceDiagram
     end
 ```
 **Hình 3.16: Sơ đồ tuần tự chức năng Nhận thông báo nhắc lịch**
+### 3.17. Gửi yêu cầu bảo hành (A3.6)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor KH as Khách hàng
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as WarrantyService
+    participant DB as Database
+
+    KH->>UI: Chọn Booking hoàn thành và gửi yêu cầu bảo hành
+    activate UI
+    UI->>BFF: createWarrantyRequest(bookingId, description, images)
+    activate BFF
+
+    BFF->>API: POST /warranty-requests
+    activate API
+
+    API->>S: create_warranty_request(customerId, data)
+    activate S
+
+    S->>DB: INSERT INTO warranty_tickets
+    activate DB
+    DB-->>S: ticket_record
+    deactivate DB
+
+    S-->>API: WarrantyTicketSchema
+    deactivate S
+
+    API-->>BFF: 201 Created
+    deactivate API
+
+    BFF-->>UI: Thông báo gửi yêu cầu thành công
+    deactivate BFF
+
+    UI-->>KH: Hiển thị trạng thái "Đang chờ xử lý"
+    deactivate UI
+```
+**Hình 3.17: Sơ đồ tuần tự chức năng Gửi yêu cầu bảo hành**
