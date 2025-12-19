@@ -2,55 +2,55 @@
 
 ---
 
-### 3.1. View Personal Work Schedule (B2.1)
+### 3.1. Xem lịch phân công dịch vụ (B2.1)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KTV as Technician
+    actor KTV as Kỹ thuật viên
     participant FE as Frontend
     participant BE as Backend
     participant DB as Database
 
-    KTV->>FE: Access work schedule
+    KTV->>FE: Truy cập danh sách khách hàng của mình
     activate FE
-    FE->>BE: getStaffSchedule()
+    FE->>BE: lấy_lịch_phân_công_cá_nhân()
     activate BE
     BE->>DB: SELECT bookings WHERE staff_id = ?
     activate DB
-    DB-->>BE: Assigned Booking List
+    DB-->>BE: Danh sách khách hàng và khung giờ
     deactivate DB
-    BE-->>FE: Schedule Data
+    BE-->>FE: Trả về dữ liệu lịch trình
     deactivate BE
-    FE-->>KTV: Display detailed list
+    FE-->>KTV: Hiển thị sơ đồ phân công chi tiết
     deactivate FE
 ```
 
 ---
 
-### 3.2. Record Treatment Note (B2.3)
+### 3.2. Ghi chú chuyên môn sau buổi hẹn (B2.3)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KTV as Technician
+    actor KTV as Kỹ thuật viên
     participant FE as Frontend
     participant BE as Backend
     participant DB as Database
 
-    KTV->>FE: Select booking & Input note
+    KTV->>FE: Chọn lịch hẹn và nhập ghi chú phục vụ
     activate FE
-    FE->>BE: saveTreatmentNote()
+    FE->>BE: lưu_ghi_chú_chuyên_môn()
     activate BE
 
     BE->>DB: INSERT INTO treatment_notes
     activate DB
-    Note right of DB: Metadata protected by RLS Policy
+    Note right of DB: Dữ liệu được bảo mật bằng RLS (auth.uid())
 
-    DB-->>BE: Success
+    DB-->>BE: Lưu thành công
     deactivate DB
-    BE-->>FE: Saved
+    BE-->>FE: Xác nhận hoàn tất
     deactivate BE
-    FE-->>KTV: Confirm successful record
+    FE-->>KTV: Hiển thị thông báo lưu thành công
     deactivate FE
 ```

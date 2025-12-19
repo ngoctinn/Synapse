@@ -2,137 +2,90 @@
 
 ---
 
-### 3.1. Register Account (A1.1)
+### 3.1. Đăng ký tài khoản (A1.1)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User as Customer
+    actor User as Khách hàng
     participant FE as Frontend
     participant Auth as Supabase Auth
     participant BE as Backend
     participant DB as Database
 
-    User->>FE: Input registration data
+    User->>FE: Nhập thông tin đăng ký
     activate FE
     FE->>Auth: signUp(email, password)
     activate Auth
-    Auth-->>FE: Response (Pending confirmation)
+    Auth-->>FE: Phản hồi (Chờ xác thực email)
     deactivate Auth
 
-    FE->>BE: createCustomerProfile()
+    FE->>BE: khởi_tạo_hồ_sơ_khách_hàng()
     activate BE
-    critical Database Transaction
+    critical Giao dịch Cơ sở dữ liệu
         BE->>DB: INSERT INTO customers
         activate DB
-        DB-->>BE: Success
+        DB-->>BE: Thành công
         deactivate DB
     end
-    BE-->>FE: Profile created
+    BE-->>FE: Hồ sơ đã được tạo
     deactivate BE
 
-    FE-->>User: Show "Check Email" notification
+    FE-->>User: Hiển thị thông báo kiểm tra Email
     deactivate FE
 ```
 
 ---
 
-### 3.2. Login (A1.2)
+### 3.2. Đăng nhập (A1.2)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User as User (All roles)
+    actor User as Người dùng
     participant FE as Frontend
     participant Auth as Supabase Auth
 
-    User->>FE: Input credentials (Email/Pass)
+    User->>FE: Nhập Email và Mật khẩu
     activate FE
     FE->>Auth: signInWithPassword()
     activate Auth
 
-    alt Valid Credentials
+    alt Thông tin hợp lệ
         Auth-->>FE: Session (JWT)
-        FE-->>User: Redirect to Dashboard
-    else Invalid Credentials
-        Auth-->>FE: Error (Unauthorized)
+        FE-->>User: Chuyển hướng đến Dashboard
+    else Thông tin sai
+        Auth-->>FE: Lỗi xác thực (Unauthorized)
         deactivate Auth
-        FE-->>User: Show error message
+        FE-->>User: Hiển thị thông báo lỗi
     end
     deactivate FE
 ```
 
 ---
 
-### 3.3. Password Recovery (A1.3)
+### 3.3. Khôi phục mật khẩu (A1.3)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User as User
+    actor User as Người dùng
     participant FE as Frontend
     participant Auth as Supabase Auth
 
-    User->>FE: Request password reset
+    User->>FE: Yêu cầu khôi phục mật khẩu
     activate FE
     FE->>Auth: resetPasswordForEmail()
     activate Auth
-    Auth-->>FE: OK (Email sent)
+    Auth-->>FE: Thành công (Email đã gửi)
     deactivate Auth
-    FE-->>User: Notify check email
+    FE-->>User: Thông báo kiểm tra Email
 
-    User->>FE: Input new password (from link)
+    User->>FE: Nhập mật khẩu mới (từ liên kết)
     FE->>Auth: updatePassword()
     activate Auth
-    Auth-->>FE: Password updated
+    Auth-->>FE: Mật khẩu đã cập nhật
     deactivate Auth
-    FE-->>User: Notify success
-    deactivate FE
-```
-
----
-
-### 3.4. Update Profile (A1.4)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor User as User
-    participant FE as Frontend
-    participant BE as Backend
-    participant DB as Database
-
-    User->>FE: Change profile information
-    activate FE
-    FE->>BE: updateProfile(data)
-    activate BE
-    BE->>DB: UPDATE users SET ... WHERE id = ?
-    activate DB
-    DB-->>BE: Updated User
-    deactivate DB
-    BE-->>FE: Success
-    deactivate BE
-    FE-->>User: Show updated info
-    deactivate FE
-```
-
----
-
-### 3.5. Logout (A1.5)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor User as User
-    participant FE as Frontend
-    participant Auth as Supabase Auth
-
-    User->>FE: Action: Logout
-    activate FE
-    FE->>Auth: signOut()
-    activate Auth
-    Auth-->>FE: OK
-    deactivate Auth
-    FE-->>User: Redirect to Login/Home
+    FE-->>User: Thông báo hoàn tất
     deactivate FE
 ```
