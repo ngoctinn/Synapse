@@ -1,4 +1,4 @@
-# Sơ đồ Tuần tự: Hoạt động Kỹ thuật viên (Technician Flows)
+# Sơ đồ Tuần tự: Hoạt động Kỹ thuật viên
 
 Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Kỹ thuật viên.
 
@@ -21,9 +21,9 @@ Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Kỹ thuật v
   }
 }%%
 
-## 1.1.4 Sơ đồ hoạt động cho kỹ thuật viên
+## Sơ đồ hoạt động cho Kỹ thuật viên
 
-### 3.39. Xem lịch làm việc cá nhân
+### 3.21. Xem lịch làm việc cá nhân (B2.1)
 
 ```mermaid
 sequenceDiagram
@@ -32,18 +32,18 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service
+    participant S as ScheduleService
     participant DB as Database
 
-    KTV->>UI: Truy cập ứng dụng
+    KTV->>UI: Truy cập lịch làm việc
     activate UI
-    UI->>BFF: getMySchedule
+    UI->>BFF: getMySchedule(date)
     activate BFF
 
-    BFF->>API: GET /staff/me/schedule
+    BFF->>API: GET /staff/me/schedule?date=...
     activate API
 
-    API->>S: get_staff_schedule
+    API->>S: get_staff_schedule(staffId, date)
     activate S
 
     S->>DB: query_bookings_by_staff_id
@@ -57,15 +57,15 @@ sequenceDiagram
     API-->>BFF: Data
     deactivate API
 
-    BFF-->>UI: Hiển thị Lịch trình
+    BFF-->>UI: Hiển thị lịch trình
     deactivate BFF
 
-    UI-->>KTV: Hiển thị danh sách khách
+    UI-->>KTV: Hiển thị danh sách khách hàng được phân công
     deactivate UI
 ```
-**Hình 3.39: Sơ đồ tuần tự chức năng Xem lịch làm việc cá nhân**
+**Hình 3.21: Sơ đồ tuần tự chức năng Xem lịch làm việc cá nhân**
 
-### 3.40. Ghi chú buổi hẹn (Treatment Notes)
+### 3.22. Ghi chú chuyên môn sau buổi hẹn (B2.3)
 
 ```mermaid
 sequenceDiagram
@@ -74,35 +74,41 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service
+    participant S as BookingService
     participant DB as Database
 
-    KTV->>UI: Nhập ghi chú liệu trình
+    KTV->>UI: Chọn lịch hẹn đã hoàn thành
     activate UI
-    UI->>BFF: updateBookingNote
+    UI->>BFF: getBookingDetail(bookingId)
+    BFF->>API: GET /bookings/{id}
+    API-->>BFF: BookingSchema
+    BFF-->>UI: Hiển thị thông tin lịch hẹn
+
+    KTV->>UI: Nhập ghi chú chuyên môn
+    UI->>BFF: updateBookingNote(bookingId, noteData)
     activate BFF
 
     BFF->>API: POST /bookings/{id}/notes
     activate API
 
-    API->>S: add_treatment_note
+    API->>S: add_treatment_note(bookingId, noteData)
     activate S
 
-    S->>DB: save_note
+    S->>DB: INSERT INTO treatment_notes
     activate DB
     DB-->>S: success
     deactivate DB
 
-    S-->>API: Success
+    S-->>API: NoteSchema
     deactivate S
 
-    API-->>BFF: OK
+    API-->>BFF: 201 Created
     deactivate API
 
-    BFF-->>UI: Đóng hộp thoại
+    BFF-->>UI: Lưu thành công
     deactivate BFF
 
-    UI-->>KTV: Lưu thành công
+    UI-->>KTV: Thông báo lưu ghi chú thành công
     deactivate UI
 ```
-**Hình 3.40: Sơ đồ tuần tự chức năng Ghi chú buổi hẹn**
+**Hình 3.22: Sơ đồ tuần tự chức năng Ghi chú chuyên môn sau buổi hẹn**

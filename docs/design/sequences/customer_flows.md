@@ -1,6 +1,6 @@
-# Sơ đồ Tuần tự: Hoạt động Khách hàng (Customer Flows)
+# Sơ đồ Tuần tự: Hoạt động Khách hàng
 
-Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Khách hàng, bao gồm xem dịch vụ, đặt lịch và quản lý lịch hẹn.
+Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Khách hàng.
 
 %%{
   init: {
@@ -21,9 +21,9 @@ Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Khách hàng, 
   }
 }%%
 
-## 1.1.2 Sơ đồ hoạt động cho khách hàng
+## Sơ đồ hoạt động cho Khách hàng
 
-### 3.15. Xem danh sách dịch vụ
+### 3.8. Xem danh sách dịch vụ (A2.1)
 
 ```mermaid
 sequenceDiagram
@@ -32,18 +32,18 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service
+    participant S as ServiceService
     participant DB as Database
 
-    KH->>UI: Truy cập trang Dịch vụ
+    KH->>UI: Truy cập trang dịch vụ
     activate UI
-    UI->>BFF: fetchServices
+    UI->>BFF: fetchServices()
     activate BFF
 
     BFF->>API: GET /services
     activate API
 
-    API->>S: get_all_services
+    API->>S: get_all_services()
     activate S
 
     S->>DB: query_services_by_category
@@ -51,21 +51,21 @@ sequenceDiagram
     DB-->>S: services_list
     deactivate DB
 
-    S-->>API: ServiceSchema[]
+    S-->>API: List[ServiceSchema]
     deactivate S
 
-    API-->>BFF: ServiceData
+    API-->>BFF: Data
     deactivate API
 
-    BFF-->>UI: Dữ liệu
+    BFF-->>UI: Dữ liệu dịch vụ
     deactivate BFF
 
     UI-->>KH: Hiển thị danh sách dịch vụ
     deactivate UI
 ```
-**Hình 3.15: Sơ đồ tuần tự chức năng Xem danh sách dịch vụ**
+**Hình 3.8: Sơ đồ tuần tự chức năng Xem danh sách dịch vụ**
 
-### 3.16. Xem chi tiết dịch vụ
+### 3.9. Xem chi tiết dịch vụ (A2.2)
 
 ```mermaid
 sequenceDiagram
@@ -74,18 +74,18 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service
+    participant S as ServiceService
     participant DB as Database
 
-    KH->>UI: Chọn một dịch vụ cụ thể
+    KH->>UI: Chọn một dịch vụ
     activate UI
-    UI->>BFF: getServiceDetail
+    UI->>BFF: getServiceDetail(serviceId)
     activate BFF
 
     BFF->>API: GET /services/{id}
     activate API
 
-    API->>S: get_service_by_id
+    API->>S: get_service_by_id(id)
     activate S
 
     S->>DB: find_service_with_related
@@ -99,15 +99,15 @@ sequenceDiagram
     API-->>BFF: Data
     deactivate API
 
-    BFF-->>UI: Dữ liệu
+    BFF-->>UI: Dữ liệu chi tiết
     deactivate BFF
 
     UI-->>KH: Hiển thị chi tiết dịch vụ
     deactivate UI
 ```
-**Hình 3.16: Sơ đồ tuần tự chức năng Xem chi tiết dịch vụ**
+**Hình 3.9: Sơ đồ tuần tự chức năng Xem chi tiết dịch vụ**
 
-### 3.21. Tìm kiếm khung giờ
+### 3.10. Tìm kiếm khung giờ khả dụng (A2.4)
 
 ```mermaid
 sequenceDiagram
@@ -116,48 +116,48 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service
-    participant SOLVER as Bộ giải
+    participant S as SchedulingService
+    participant SOLVER as Bộ giải ràng buộc
     participant DB as Database
 
-    KH->>UI: Chọn Dịch vụ & Ngày
+    KH->>UI: Chọn dịch vụ và ngày mong muốn
     activate UI
-    UI->>BFF: getAvailableSlots
+    UI->>BFF: getAvailableSlots(serviceId, date)
     activate BFF
 
     BFF->>API: POST /bookings/availability
     activate API
 
-    API->>S: find_slots
+    API->>S: find_available_slots(serviceId, date)
     activate S
 
     par Lấy dữ liệu khả dụng
         S->>DB: get_staff_schedules
         S->>DB: get_existing_bookings
-        S->>DB: get_room_availability
+        S->>DB: get_resource_availability
     end
 
-    S->>SOLVER: compute_feasible_slots
+    S->>SOLVER: compute_feasible_slots(data)
     activate SOLVER
-    note right of SOLVER: CP-SAT Solver checks constraints
+    note right of SOLVER: Thuật toán tối ưu hóa kiểm tra ràng buộc
     SOLVER-->>S: valid_slots[]
     deactivate SOLVER
 
-    S-->>API: SlotSchema[]
+    S-->>API: List[SlotSchema]
     deactivate S
 
-    API-->>BFF: Slots JSON
+    API-->>BFF: Data
     deactivate API
 
-    BFF-->>UI: Hiển thị Khung giờ
+    BFF-->>UI: Hiển thị khung giờ
     deactivate BFF
 
-    UI-->>KH: Hiển thị các khung giờ trống
+    UI-->>KH: Hiển thị các khung giờ khả dụng
     deactivate UI
 ```
-**Hình 3.21: Sơ đồ tuần tự chức năng Tìm kiếm khung giờ**
+**Hình 3.10: Sơ đồ tuần tự chức năng Tìm kiếm khung giờ khả dụng**
 
-### 3.22. Hoàn tất đặt lịch
+### 3.11. Hoàn tất đặt lịch hẹn (A2.5)
 
 ```mermaid
 sequenceDiagram
@@ -166,37 +166,36 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service
-    participant NOTI as Notification Service
+    participant S as BookingService
+    participant NOTI as NotificationService
     participant DB as Database
 
     KH->>UI: Xác nhận đặt lịch
     activate UI
-    UI->>BFF: createBooking
+    UI->>BFF: createBooking(slotData)
     activate BFF
 
     BFF->>API: POST /bookings
     activate API
 
-    API->>S: create_booking
+    API->>S: create_booking(data)
     activate S
 
     critical Kiểm tra tính nhất quán
-        S->>DB: lock_resources
-        S->>DB: check_conflict_last_time
+        S->>DB: Kiểm tra khả dụng lần cuối (Exclusion Check)
         activate DB
         DB-->>S: OK
         deactivate DB
     end
 
-    S->>DB: insert_booking
+    S->>DB: INSERT INTO bookings
     activate DB
     DB-->>S: new_booking
     deactivate DB
 
     par Gửi thông báo
-        S->>NOTI: email_customer_confirmation
-        S->>NOTI: notify_staff_new_appointment
+        S->>NOTI: send_confirmation_email(customer)
+        S->>NOTI: notify_staff_new_appointment(staff)
     end
 
     S-->>API: BookingSchema
@@ -205,65 +204,15 @@ sequenceDiagram
     API-->>BFF: 201 Created
     deactivate API
 
-    BFF-->>UI: Thành công
+    BFF-->>UI: Đặt lịch thành công
     deactivate BFF
 
     UI-->>KH: Hiển thị thông báo thành công
     deactivate UI
 ```
-**Hình 3.22: Sơ đồ tuần tự chức năng Hoàn tất đặt lịch**
+**Hình 3.11: Sơ đồ tuần tự chức năng Hoàn tất đặt lịch hẹn**
 
-### 3.24. Nhận tư vấn và đặt lịch qua Chatbot
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor KH as Khách hàng
-    participant UI as Giao diện
-    participant BFF as Server Action
-    participant API as API Router
-    participant AI as AI Bot
-    participant S as Service
-
-    KH->>UI: Gửi tin nhắn
-    activate UI
-    UI->>BFF: sendMessage
-    activate BFF
-
-    BFF->>API: POST /chat/message
-    activate API
-
-    API->>S: process_chat_message
-    activate S
-
-    S->>AI: detect_intent
-    activate AI
-    AI-->>S: intent, entities
-    deactivate AI
-
-    alt Intent là Đặt lịch
-        S->>S: get_booking_availability
-        S-->>AI: slots_info
-        activate AI
-        AI-->>S: response_text
-        deactivate AI
-    end
-
-    S-->>API: MessageResponse
-    deactivate S
-
-    API-->>BFF: Message Data
-    deactivate API
-
-    BFF-->>UI: Hiển thị Phản hồi
-    deactivate BFF
-
-    UI-->>KH: Hiển thị phản hồi từ Chatbot
-    deactivate UI
-```
-**Hình 3.24: Sơ đồ tuần tự chức năng Nhận tư vấn và đặt lịch qua chatbot**
-
-### 3.25. Hủy lịch hẹn
+### 3.12. Tham gia danh sách chờ (A2.6)
 
 ```mermaid
 sequenceDiagram
@@ -272,49 +221,89 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service
+    participant S as WaitlistService
     participant DB as Database
 
-    KH->>UI: Nhấn Hủy lịch
+    KH->>UI: Chọn khung giờ đã hết chỗ
     activate UI
-    UI->>BFF: cancelBooking
+    UI->>BFF: joinWaitlist(slotData)
     activate BFF
 
-    BFF->>API: POST /bookings/{id}/cancel
+    BFF->>API: POST /waitlist
     activate API
 
-    API->>S: cancel_booking
+    API->>S: add_to_waitlist(customerId, slotData)
     activate S
 
-    S->>DB: get_booking
+    S->>DB: INSERT INTO waitlist_entries
     activate DB
-    DB-->>S: booking
+    DB-->>S: waitlist_entry
     deactivate DB
 
-    S->>S: check_penalty_policy
+    S-->>API: WaitlistEntrySchema
+    deactivate S
 
-    alt Hủy muộn
-        S-->>API: Error
-        API-->>BFF: Warning
-        BFF-->>UI: Cảnh báo phí hủy
-    else Hợp lệ
-        S->>DB: update_status
-        activate DB
-        DB-->>S: success
-        deactivate DB
-        S-->>API: Success
-        deactivate S
-        API-->>BFF: OK
-        deactivate API
-        BFF-->>UI: Thành công
-        deactivate BFF
-        UI-->>KH: Xác nhận đã hủy
-        deactivate UI
-    end
+    API-->>BFF: 201 Created
+    deactivate API
+
+    BFF-->>UI: Đăng ký thành công
+    deactivate BFF
+
+    UI-->>KH: Thông báo đã tham gia danh sách chờ
+    deactivate UI
 ```
-**Hình 3.25: Sơ đồ tuần tự chức năng Hủy lịch hẹn**
+**Hình 3.12: Sơ đồ tuần tự chức năng Tham gia danh sách chờ**
 
-### 3.26. Xem lịch sử đặt lịch
+### 3.13. Nhận hỗ trợ qua trò chuyện trực tuyến (A2.7)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor KH as Khách hàng
+    participant UI as Giao diện trò chuyện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as ChatService
+    participant DB as Database
+
+    KH->>UI: Mở cửa sổ trò chuyện
+    activate UI
+    UI->>BFF: getChatSession()
+    BFF->>API: GET /chat/sessions/me
+    API-->>BFF: ChatSessionSchema
+    BFF-->>UI: Hiển thị lịch sử (nếu có)
+
+    KH->>UI: Gửi tin nhắn yêu cầu hỗ trợ
+    UI->>BFF: sendMessage(content)
+    activate BFF
+
+    BFF->>API: POST /chat/messages
+    activate API
+
+    API->>S: send_message(customerId, content)
+    activate S
+
+    S->>DB: INSERT INTO chat_messages
+    activate DB
+    DB-->>S: message
+    deactivate DB
+
+    S-->>API: MessageSchema
+    deactivate S
+
+    API-->>BFF: 201 Created
+    deactivate API
+
+    BFF-->>UI: Cập nhật khung trò chuyện
+    deactivate BFF
+
+    Note over UI: Chờ phản hồi từ lễ tân
+    UI-->>KH: Thông báo đang chờ phản hồi
+    deactivate UI
+```
+**Hình 3.12: Sơ đồ tuần tự chức năng Nhận hỗ trợ qua trò chuyện trực tuyến**
+
+### 3.13. Xem lịch sử đặt lịch hẹn (A3.1)
 
 ```mermaid
 sequenceDiagram
@@ -323,18 +312,18 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service
+    participant S as BookingService
     participant DB as Database
 
-    KH->>UI: Truy cập Lịch sử
+    KH->>UI: Truy cập trang lịch sử
     activate UI
-    UI->>BFF: getBookingHistory
+    UI->>BFF: getBookingHistory()
     activate BFF
 
     BFF->>API: GET /bookings/history
     activate API
 
-    API->>S: get_user_history
+    API->>S: get_user_history(userId)
     activate S
 
     S->>DB: query_bookings_by_user
@@ -342,21 +331,21 @@ sequenceDiagram
     DB-->>S: bookings[]
     deactivate DB
 
-    S-->>API: BookingListSchema
+    S-->>API: List[BookingSchema]
     deactivate S
 
     API-->>BFF: Data
     deactivate API
 
-    BFF-->>UI: Hiển thị Danh sách
+    BFF-->>UI: Hiển thị danh sách
     deactivate BFF
 
-    UI-->>KH: Hiển thị danh sách lịch sử
+    UI-->>KH: Hiển thị lịch sử lịch hẹn
     deactivate UI
 ```
-**Hình 3.26: Sơ đồ tuần tự chức năng Xem lịch sử đặt lịch**
+**Hình 3.13: Sơ đồ tuần tự chức năng Xem lịch sử đặt lịch hẹn**
 
-### 3.28. Đánh giá dịch vụ
+### 3.14. Hủy lịch hẹn (A3.2)
 
 ```mermaid
 sequenceDiagram
@@ -365,36 +354,85 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service
+    participant S as BookingService
     participant DB as Database
 
-    KH->>UI: Viết đánh giá & Chấm sao
+    KH->>UI: Chọn lịch hẹn và yêu cầu hủy
     activate UI
-    UI->>BFF: submitReview
+    UI->>BFF: cancelBooking(bookingId)
     activate BFF
 
-    BFF->>API: POST /reviews
+    BFF->>API: POST /bookings/{id}/cancel
     activate API
 
-    API->>S: create_review
+    API->>S: cancel_booking(bookingId)
     activate S
 
-    S->>DB: check_booking_completed
-    S->>DB: create_review_record
+    S->>DB: get_booking(bookingId)
     activate DB
-    DB-->>S: success
+    DB-->>S: booking
     deactivate DB
 
-    S-->>API: Success
+    S->>S: check_cancellation_policy
+
+    alt Vi phạm chính sách hủy
+        S-->>API: Error (quá thời hạn cho phép)
+        API-->>BFF: Warning
+        BFF-->>UI: Hiển thị thông báo chính sách
+    else Hợp lệ
+        S->>DB: UPDATE bookings SET status = 'CANCELLED'
+        activate DB
+        DB-->>S: success
+        deactivate DB
+        S-->>API: Success
+        deactivate S
+        API-->>BFF: 200 OK
+        deactivate API
+        BFF-->>UI: Hủy thành công
+        deactivate BFF
+        UI-->>KH: Xác nhận đã hủy lịch hẹn
+        deactivate UI
+    end
+```
+**Hình 3.15: Sơ đồ tuần tự chức năng Hủy lịch hẹn**
+
+### 3.16. Nhận thông báo nhắc lịch (A3.3)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant CRON as Bộ lập lịch
+    participant S as NotificationService
+    participant DB as Database
+    participant NOTI as Kênh thông báo
+    actor KH as Khách hàng
+
+    Note over CRON: Chạy định kỳ (mỗi giờ)
+    CRON->>S: trigger_reminder_check()
+    activate S
+
+    S->>DB: get_upcoming_bookings(reminder_threshold)
+    activate DB
+    DB-->>S: bookings_to_remind[]
+    deactivate DB
+
+    loop Với mỗi lịch hẹn cần nhắc
+        S->>NOTI: send_reminder(customer, booking)
+        NOTI-->>KH: Thư điện tử/Tin nhắn nhắc lịch hẹn
+    end
+
+    S->>DB: UPDATE bookings SET reminder_sent = true
     deactivate S
 
-    API-->>BFF: OK
-    deactivate API
+    Note over KH: Khách hàng nhận thông báo
+    KH->>NOTI: Xác nhận sẽ đến (hoặc Hủy)
 
-    BFF-->>UI: Thành công
-    deactivate BFF
-
-    UI-->>KH: Thông báo cảm ơn
-    deactivate UI
+    alt Xác nhận đến
+        NOTI->>S: confirm_attendance(bookingId)
+        S->>DB: UPDATE bookings SET confirmed = true
+    else Yêu cầu hủy
+        NOTI->>S: request_cancellation(bookingId)
+        Note over S: Chuyển sang luồng Hủy lịch (A3.2)
+    end
 ```
-**Hình 3.28: Sơ đồ tuần tự chức năng Đánh giá dịch vụ**
+**Hình 3.16: Sơ đồ tuần tự chức năng Nhận thông báo nhắc lịch**

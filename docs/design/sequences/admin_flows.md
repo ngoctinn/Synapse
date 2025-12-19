@@ -1,4 +1,4 @@
-# Sơ đồ Tuần tự: Hoạt động Quản trị viên (Admin Flows)
+# Sơ đồ Tuần tự: Hoạt động Quản trị viên
 
 Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Quản trị viên.
 
@@ -21,32 +21,32 @@ Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Quản trị v
   }
 }%%
 
-## 1.1.5 Sơ đồ hoạt động cho quản trị viên
+## Sơ đồ hoạt động cho Quản trị viên
 
-### 3.42. Quản lý dịch vụ
+### 3.22. Quản lý danh mục dịch vụ (C5)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor AD as Admin
+    actor QTV as Quản trị viên
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service
+    participant S as ServiceService
     participant DB as Database
 
-    AD->>UI: Thêm mới dịch vụ
+    QTV->>UI: Thêm mới dịch vụ
     activate UI
-    UI->>BFF: createService
+    UI->>BFF: createService(data)
     activate BFF
 
     BFF->>API: POST /services
     activate API
 
-    API->>S: create_service
+    API->>S: create_service(data)
     activate S
 
-    S->>DB: insert_service
+    S->>DB: INSERT INTO services
     activate DB
     DB-->>S: service_record
     deactivate DB
@@ -60,35 +60,83 @@ sequenceDiagram
     BFF-->>UI: Cập nhật danh sách
     deactivate BFF
 
-    UI-->>AD: Hiển thị dịch vụ mới
+    UI-->>QTV: Hiển thị dịch vụ mới
     deactivate UI
 ```
-**Hình 3.42: Sơ đồ tuần tự chức năng Quản lý dịch vụ**
+**Hình 3.22: Sơ đồ tuần tự chức năng Quản lý danh mục dịch vụ**
 
-### 3.44. Quản lý tài nguyên
+### 3.23. Quản lý tài nguyên (C7)
+
+> **Lưu ý:** Theo thiết kế cơ sở dữ liệu, hệ thống quản lý tài nguyên theo 2 cấp:
+> - **Nhóm tài nguyên** (Resource Group): Ví dụ: "Phòng VIP", "Phòng Thường", "Máy Laser"
+> - **Tài nguyên** (Resource): Ví dụ: "Giường 1 - Phòng VIP", "Máy Laser A"
+
+#### 3.23a. Thêm mới tài nguyên
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor AD as Admin
+    actor QTV as Quản trị viên
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service
+    participant S as ResourceService
     participant DB as Database
 
-    AD->>UI: Cập nhật thông tin phòng
+    QTV->>UI: Nhập thông tin tài nguyên mới
     activate UI
-    UI->>BFF: updateResource
+    UI->>BFF: createResource(data)
+    activate BFF
+
+    BFF->>API: POST /resources
+    activate API
+
+    API->>S: create_resource(data)
+    activate S
+
+    S->>DB: INSERT INTO resources (group_id, name, code, status, capacity)
+    activate DB
+    DB-->>S: resource_record
+    deactivate DB
+
+    S-->>API: ResourceSchema
+    deactivate S
+
+    API-->>BFF: 201 Created
+    deactivate API
+
+    BFF-->>UI: Cập nhật danh sách
+    deactivate BFF
+
+    UI-->>QTV: Hiển thị tài nguyên mới
+    deactivate UI
+```
+**Hình 3.23a: Sơ đồ tuần tự chức năng Thêm mới tài nguyên**
+
+#### 3.23b. Cập nhật tài nguyên
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor QTV as Quản trị viên
+    participant UI as Giao diện
+    participant BFF as Server Action
+    participant API as API Router
+    participant S as ResourceService
+    participant DB as Database
+
+    QTV->>UI: Sửa thông tin tài nguyên
+    activate UI
+    UI->>BFF: updateResource(id, data)
     activate BFF
 
     BFF->>API: PUT /resources/{id}
     activate API
 
-    API->>S: update_resource
+    API->>S: update_resource(id, data)
     activate S
 
-    S->>DB: update
+    S->>DB: UPDATE resources SET ... WHERE id = ?
     activate DB
     DB-->>S: updated_record
     deactivate DB
@@ -96,156 +144,111 @@ sequenceDiagram
     S-->>API: ResourceSchema
     deactivate S
 
-    API-->>BFF: OK
+    API-->>BFF: 200 OK
     deactivate API
 
     BFF-->>UI: Thành công
     deactivate BFF
 
-    UI-->>AD: Cập nhật thành công
+    UI-->>QTV: Hiển thị thông tin đã cập nhật
     deactivate UI
 ```
-**Hình 3.44: Sơ đồ tuần tự chức năng Quản lý tài nguyên**
+**Hình 3.23b: Sơ đồ tuần tự chức năng Cập nhật tài nguyên**
 
-### 3.47. Cấu hình lịch làm việc nhân viên
+#### 3.23c. Vô hiệu hóa tài nguyên
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor AD as Admin
+    actor QTV as Quản trị viên
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service
-    participant SOLVER as Bộ giải
+    participant S as ResourceService
     participant DB as Database
 
-    AD->>UI: Phân ca cho nhân viên
+    QTV->>UI: Chọn tài nguyên và vô hiệu hóa
     activate UI
-    UI->>BFF: assignShift
+    UI->>BFF: deactivateResource(id)
     activate BFF
 
-    BFF->>API: POST /staff/schedule
+    BFF->>API: DELETE /resources/{id}
     activate API
 
-    API->>S: assign_work_shift
+    API->>S: soft_delete_resource(id)
     activate S
 
-    S->>SOLVER: check_constraints
-    activate SOLVER
-    note right of SOLVER: Kiểm tra ràng buộc
+    S->>DB: UPDATE resources SET deleted_at = NOW() WHERE id = ?
+    activate DB
+    DB-->>S: success
+    deactivate DB
 
-    alt Vi phạm Ràng buộc Cứng
-        SOLVER-->>S: Invalid
-        S-->>API: Error
-        API-->>BFF: Error
-        BFF-->>UI: Cảnh báo xung đột
-    else Hợp lệ
-        SOLVER-->>S: Valid
-        deactivate SOLVER
-        S->>DB: save_schedule_record
-        activate DB
-        DB-->>S: success
-        deactivate DB
-    end
-
-    S-->>API: Success
+    S-->>API: 204 No Content
     deactivate S
 
     API-->>BFF: OK
     deactivate API
 
-    BFF-->>UI: Làm mới danh sách
+    BFF-->>UI: Xóa khỏi danh sách
     deactivate BFF
 
-    UI-->>AD: Hiển thị lịch đã phân công
+    UI-->>QTV: Thông báo đã vô hiệu hóa
     deactivate UI
 ```
-**Hình 3.47: Sơ đồ tuần tự chức năng Cấu hình lịch làm việc nhân viên**
+**Hình 3.23c: Sơ đồ tuần tự chức năng Vô hiệu hóa tài nguyên**
 
-### 3.53. Xem báo cáo doanh thu
+### 3.24. Cấu hình lịch làm việc nhân viên (C4)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor AD as Admin
+    actor QTV as Quản trị viên
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service
+    participant S as ScheduleService
+    participant SOLVER as Bộ giải ràng buộc
     participant DB as Database
 
-    AD->>UI: Xem báo cáo tháng
+    QTV->>UI: Phân ca cho kỹ thuật viên
     activate UI
-    UI->>BFF: getRevenue
+    UI->>BFF: assignShift(staffId, scheduleData)
     activate BFF
 
-    BFF->>API: GET /analytics/revenue
+    BFF->>API: POST /staff/schedule
     activate API
 
-    API->>S: calculate_monthly_revenue
+    API->>S: assign_work_shift(staffId, data)
     activate S
 
-    S->>DB: aggregate_completed_invoices
-    activate DB
-    DB-->>S: total_revenue
-    deactivate DB
+    S->>SOLVER: check_constraints(data)
+    activate SOLVER
+    note right of SOLVER: Kiểm tra ràng buộc lịch
 
-    S-->>API: ReportSchema
+    alt Vi phạm ràng buộc
+        SOLVER-->>S: Invalid
+        S-->>API: Error
+        API-->>BFF: Error
+        BFF-->>UI: Cảnh báo xung đột lịch
+    else Hợp lệ
+        SOLVER-->>S: Valid
+        deactivate SOLVER
+        S->>DB: INSERT INTO staff_schedules
+        activate DB
+        DB-->>S: success
+        deactivate DB
+    end
+
+    S-->>API: ScheduleSchema
     deactivate S
 
-    API-->>BFF: Data
+    API-->>BFF: 200 OK
     deactivate API
 
-    BFF-->>UI: Vẽ biểu đồ
+    BFF-->>UI: Làm mới danh sách
     deactivate BFF
 
-    UI-->>AD: Hiển thị biểu đồ báo cáo
+    UI-->>QTV: Hiển thị lịch đã phân công
     deactivate UI
 ```
-**Hình 3.53: Sơ đồ tuần tự chức năng Xem báo cáo**
-
-### 3.37. Xem báo cáo và tính hoa hồng (Staff Commission)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor AD as Admin
-    participant UI as :CommissionReportPage
-    participant BFF as :ReportAction
-    participant API as :AnalyticsRouter
-    participant S as :AnalyticsService
-    participant DB as :Database
-
-    AD->>UI: Chọn tháng cần tính hoa hồng
-    activate UI
-    UI->>BFF: getCommissionReport(month, year)
-    activate BFF
-
-    BFF->>API: GET /analytics/commissions?month=..&year=..
-    activate API
-
-    API->>S: calculate_staff_commissions(month, year)
-    activate S
-
-    S->>DB: query_completed_bookings_with_staff_rate(month, year)
-    activate DB
-    DB-->>S: list_data (booking_price, commission_rate, staff_id)
-    deactivate DB
-
-    S->>S: aggregate_by_staff(list_data)
-    note right of S: sum(price * rate) per staff
-
-    S-->>API: CommissionReportSchema[]
-    deactivate S
-
-    API-->>BFF: Data JSON
-    deactivate API
-
-    BFF-->>UI: Hiển thị bảng tổng hợp hoa hồng
-    deactivate BFF
-
-    UI-->>AD: Hiển thị danh sách hoa hồng nhân viên
-    deactivate UI
-```
-**Hình 3.37: Sơ đồ tuần tự chức năng Tính hoa hồng nhân viên**
+**Hình 3.24: Sơ đồ tuần tự chức năng Cấu hình lịch làm việc nhân viên**

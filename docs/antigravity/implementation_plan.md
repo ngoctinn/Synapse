@@ -1,6 +1,6 @@
-# Kế hoạch Triển khai Antigravity - Sửa Lỗi KLTN
+# Kế hoạch Đồng nhất Tài liệu Thiết kế KLTN
 
-**Mã phiên:** `KLTN-FIX-20251219`
+**Mã phiên:** `KLTN-SYNC-20251219`
 **Ngày tạo:** 2025-12-19
 **Trạng thái:** THINK (Chờ phê duyệt)
 
@@ -8,87 +8,143 @@
 
 ## 1. Vấn đề (Problem Statement)
 
-Sau quá trình thẩm định kiến trúc, cơ sở dữ liệu và sơ đồ tuần tự, đã phát hiện **5 vấn đề lớn** cần điều chỉnh trong tài liệu KLTN để đảm bảo tính logic và nhất quán:
+Tài liệu thiết kế trong thư mục `docs/design/` hiện tại có các vấn đề sau:
 
-| # | Vấn đề | Mức độ | File Ảnh hưởng |
-|---|--------|--------|----------------|
-| 1 | Thiếu cơ chế chống đặt trùng lịch (Concurrency Control) | **Nghiêm trọng** | `database_design.md` |
-| 2 | Mâu thuẫn Kiến trúc Sync vs Async (Sơ đồ vs Kiến trúc) | Cao | `sequences/*.md`, `architecture_v2.md` |
-| 3 | Đứt gãy logic User-Customer trong luồng Đăng ký | Cao | `sequences/authentication_flows.md` |
-| 4 | Thiếu logic trừ buổi liệu trình khi Check-in | Trung bình | `sequences/receptionist_flows.md` |
-| 5 | Bất nhất thuật ngữ "Phòng/Tài nguyên/Giường" | Thấp | Nhiều file tài liệu |
+1. **Không đồng nhất thuật ngữ**: Sử dụng lẫn lộn "phòng", "tài nguyên", "giường", viết tắt không thống nhất.
+2. **Quá nhiều tính năng**: Một số tính năng nằm ngoài phạm vi khóa luận (Chatbot AI, Khuyến mãi, Hoa hồng).
+3. **Usecase rườm rà**: Mô tả dài dòng, nhiều luồng phụ không cần thiết.
+4. **Sequence thiếu/thừa**: Không khớp 1-1 với Usecase cốt lõi.
+5. **Ngôn ngữ không học thuật**: Sử dụng ngôn ngữ đời thường thay vì học thuật.
 
 ---
 
 ## 2. Mục đích (Goals)
 
-1. **Bổ sung PostgreSQL Exclusion Constraints** vào `database_design.md` để ngăn chặn việc đặt trùng lịch ở mức Database.
-2. **Thống nhất tài liệu** để phản ánh đúng kiến trúc đã thiết kế.
-3. **Bổ sung các bước nghiệp vụ còn thiếu** trong sơ đồ tuần tự.
-4. **Chuẩn hóa thuật ngữ** trong toàn bộ tài liệu thiết kế.
+1. **Xác định phạm vi MVP** rõ ràng cho khóa luận "Xây dựng hệ thống chăm sóc khách hàng trực tuyến cho Spa".
+2. **Đồng nhất thuật ngữ** theo Quy ước đã định trong `database_design.md`.
+3. **Đơn giản hóa Usecase** với ngôn ngữ học thuật, ngắn gọn.
+4. **Đồng bộ Sequence Diagrams** với Usecase MVP.
+5. **Loại bỏ tính năng ngoài phạm vi**: Chatbot AI, Khuyến mãi (C8), Hoa hồng (C12).
+6. **Giữ lại tính năng cốt lõi**: Trò chuyện trực tuyến (Live Chat), Cá nhân hóa liệu trình.
 
 ---
 
 ## 3. Ràng buộc (Constraints)
 
-- **Ngôn ngữ:** Tiếng Việt (Vietnamese) cho toàn bộ tài liệu.
-- **Cú pháp:** Mermaid cho sơ đồ, SQL chuẩn PostgreSQL.
-- **Phạm vi:** Chỉ chỉnh sửa file tài liệu thiết kế, không chỉnh sửa code triển khai.
+- **Ngôn ngữ**: Tiếng Việt học thuật, không viết tắt, không dùng ngôn ngữ đời thường.
+- **Phạm vi**: Chỉ chỉnh sửa tài liệu thiết kế, không chỉnh sửa mã nguồn.
+- **Tính nhất quán**: Thuật ngữ phải thống nhất trên toàn bộ tài liệu.
 
 ---
 
-## 4. Chiến lược Giải quyết (Strategy)
+## 4. Phạm vi Tính năng Khóa luận
 
-### **Phase A: Database Enhancement (Ưu tiên cao nhất)**
-- Bổ sung extension `btree_gist` vào `database_design.md`.
-- Thêm 2 Exclusion Constraints cho bảng `booking_items`:
-  - `no_overlap_staff_booking` (Nhân viên)
-  - `no_overlap_resource_booking` (Tài nguyên)
-- Thêm phần giải thích kỹ thuật về Concurrency Control.
+### 4.1 Tính năng CỐT LÕI (Bắt buộc)
 
-### **Phase B: Sequence Diagram Fixes**
-1. **Luồng Đăng ký (Hình 3.7)**: Thêm bước `Create Customer Profile` sau khi tạo User.
-2. **Luồng Check-in (Hình 3.35)**: Thêm bước `update_treatment_usage()` nếu có liệu trình.
-3. **Ghi chú:** Đánh dấu các luồng nặng (OR-Tools) cần chuyển sang Async Pattern (cho lần cập nhật sau).
+| Nhóm | Mã | Tên chức năng | Ghi chú |
+|------|----|---------------|---------|
+| **Xác thực** | A1.1 | Đăng ký tài khoản khách hàng | |
+| | A1.2 | Đăng nhập | |
+| | A1.3 | Khôi phục mật khẩu | |
+| | A1.4 | Cập nhật thông tin cá nhân | |
+| | A1.5 | Đăng xuất | |
+| **Khách hàng** | A2.1 | Xem danh sách dịch vụ | |
+| | A2.2 | Xem chi tiết dịch vụ | |
+| | A2.4 | Tìm kiếm khung giờ khả dụng | Thuật toán thông minh |
+| | A2.5 | Hoàn tất đặt lịch hẹn | |
+| | A2.7 | Nhận hỗ trợ qua Trò chuyện trực tuyến | Live Chat (không AI) |
+| | A3.1 | Xem lịch sử đặt lịch | |
+| | A3.2 | Hủy lịch hẹn | |
+| | B1.7 | Theo dõi tiến độ liệu trình | Cá nhân hóa |
+| **Lễ tân** | B1.1 | Xem lịch hẹn tổng quan | |
+| | B1.2 | Quản lý hồ sơ khách hàng | |
+| | B1.3 | Tạo lịch hẹn thủ công | |
+| | B1.4 | Xác nhận khách đến (Check-in) | Trừ buổi liệu trình |
+| | B1.5 | Xử lý thanh toán | |
+| | B1.6 | Phản hồi hỗ trợ qua Trò chuyện trực tuyến | |
+| **Kỹ thuật viên** | B2.1 | Xem lịch làm việc cá nhân | |
+| | B2.3 | Ghi chú chuyên môn sau buổi hẹn | |
+| **Quản trị** | C4 | Cấu hình lịch làm việc nhân viên | |
+| | C5 | Quản lý danh mục dịch vụ | |
+| | C7 | Quản lý tài nguyên | |
 
-### **Phase C: Terminology Standardization**
-- Thống nhất sử dụng thuật ngữ **"Tài nguyên (Resource)"** trong các tài liệu kỹ thuật.
-- Định nghĩa rõ Tài nguyên bao gồm: Phòng, Giường/Ghế, Thiết bị lớn.
+**Tổng: 22 chức năng cốt lõi**
+
+### 4.2 Tính năng LOẠI BỎ (Ngoài phạm vi)
+
+| Mã | Tên chức năng | Lý do loại bỏ |
+|----|---------------|---------------|
+| A2.6 | Tham gia danh sách chờ | Phức tạp, ngoài phạm vi |
+| A3.3 | Nhận thông báo tự động | Cơ chế nền, không cần sơ đồ |
+| A3.4 | Đánh giá dịch vụ | Chức năng phụ trợ |
+| A3.5 | Tích lũy và đổi điểm thưởng | Ngoài phạm vi |
+| A3.6 | Gửi yêu cầu bảo hành | Ngoài phạm vi |
+| B1.8 | Tái lập lịch tự động | Phức tạp, ghi nhận hướng phát triển |
+| C1 | Quản lý tài khoản người dùng | Supabase Auth xử lý |
+| C2 | Phân quyền hệ thống | RLS xử lý ngầm |
+| C3 | Quản lý nhân viên | Gộp vào C4 |
+| C6 | Quản lý gói liệu trình | Phức tạp |
+| **C8** | **Quản lý chương trình khuyến mãi** | **Ngoài phạm vi** |
+| **C12** | **Tính toán hoa hồng nhân viên** | **Ngoài phạm vi** |
 
 ---
 
-## 5. Danh sách Nhiệm vụ (Task List)
+## 5. Chiến lược Thực hiện
 
-### Phase A: Database Enhancement
-- [ ] **A.1:** Bổ sung `CREATE EXTENSION IF NOT EXISTS btree_gist;`
-- [ ] **A.2:** Thêm Exclusion Constraint `no_overlap_staff_booking`
-- [ ] **A.3:** Thêm Exclusion Constraint `no_overlap_resource_booking`
-- [ ] **A.4:** Thêm mục giải thích "Concurrency Control Strategy" vào phần đầu file
+### Phase A: Chuẩn hóa Usecase
+- [ ] **A.1**: Loại bỏ các Usecase ngoài phạm vi (C8, C12, A2.6, A3.3-6, B1.8, C1-3, C6)
+- [ ] **A.2**: Viết lại mô tả theo ngôn ngữ học thuật, không viết tắt
+- [ ] **A.3**: Rút gọn luồng sự kiện (tối đa 1 luồng thay thế + 1 luồng ngoại lệ)
+- [ ] **A.4**: Thống nhất thuật ngữ (Tài nguyên, Lịch hẹn, Khách hàng...)
 
-### Phase B: Sequence Diagram Fixes
-- [ ] **B.1:** Cập nhật `sequences/authentication_flows.md` - Thêm bước tạo Customer Profile
-- [ ] **B.2:** Cập nhật `sequences/receptionist_flows.md` - Thêm logic trừ buổi liệu trình khi Check-in
+### Phase B: Chuẩn hóa Sequence Diagrams
+- [ ] **B.1**: Xóa sơ đồ của C8, C12 trong `sequences/admin_flows.md`
+- [ ] **B.2**: Đổi tên hàm/API sang tiếng Việt học thuật (participant labels)
+- [ ] **B.3**: Bổ sung sơ đồ còn thiếu (B1.2, B1.6, B1.7)
+- [ ] **B.4**: Thống nhất thuật ngữ trong mô tả
 
-### Phase C: Terminology Standardization
-- [ ] **C.1:** Thêm phần "Quy ước Thuật ngữ" vào `database_design.md`
-
----
-
-## 6. Rủi ro & Giảm thiểu (Risks)
-
-| Rủi ro | Xác suất | Giảm thiểu |
-|--------|----------|------------|
-| Extension `btree_gist` không có sẵn trên Supabase | Thấp | Supabase hỗ trợ native, chỉ cần enable trong Dashboard |
-| Sơ đồ tuần tự mới không đồng bộ với code thực tế | Trung bình | Giai đoạn này chỉ sửa tài liệu, code sẽ được cập nhật sau |
+### Phase C: Chuẩn hóa các tài liệu khác
+- [ ] **C.1**: Cập nhật `architecture_v2.md` - Loại bỏ module không dùng
+- [ ] **C.2**: Cập nhật `data_specification.md` - Thống nhất thuật ngữ
+- [ ] **C.3**: Cập nhật `ui_design.md` - Chỉ giữ màn hình MVP
+- [ ] **C.4**: Cập nhật `activity_diagrams.md` - Loại bỏ luồng ngoài phạm vi
 
 ---
 
-## 7. Output Dự kiến
+## 6. Quy ước Thuật ngữ Học thuật
 
-1. **File `database_design.md`**: Có thêm phần Exclusion Constraints và Quy ước Thuật ngữ.
-2. **File `sequences/authentication_flows.md`**: Sơ đồ Đăng ký hoàn chỉnh.
-3. **File `sequences/receptionist_flows.md`**: Sơ đồ Check-in hoàn chỉnh.
-4. **Change Log**: Ghi nhận tất cả thay đổi.
+| Thuật ngữ Cũ | Thuật ngữ Mới (Học thuật) |
+|--------------|---------------------------|
+| Phòng/Giường | Tài nguyên |
+| Thợ/KTV | Kỹ thuật viên |
+| Khách | Khách hàng |
+| Lịch | Lịch hẹn |
+| Check-in | Xác nhận khách đến |
+| No-show | Khách không đến |
+| Slot | Khung giờ |
+| Booking | Đặt lịch hẹn |
+| Live Chat | Trò chuyện trực tuyến |
+| Chatbot | (Loại bỏ - không dùng AI) |
+
+---
+
+## 7. Danh sách File Cần Sửa
+
+| File | Hành động |
+|------|-----------|
+| `usecase.md` | Loại bỏ, viết lại, rút gọn |
+| `sequences/admin_flows.md` | Xóa C8, C12; chuẩn hóa |
+| `sequences/authentication.md` | Chuẩn hóa thuật ngữ |
+| `sequences/customer_flows.md` | Chuẩn hóa thuật ngữ |
+| `sequences/receptionist_flows.md` | Thêm B1.2, B1.6, B1.7; chuẩn hóa |
+| `sequences/technician_flows.md` | Chuẩn hóa thuật ngữ |
+| `sequence_diagrams.md` | Cập nhật mục lục |
+| `architecture_v2.md` | Loại bỏ module không dùng |
+| `data_specification.md` | Chuẩn hóa thuật ngữ |
+| `ui_design.md` | Chỉ giữ màn hình MVP |
+| `activity_diagrams.md` | Loại bỏ luồng ngoài phạm vi |
+| `database_design.md` | Đã chuẩn (giữ nguyên) |
+| `algorithm_spec.md` | Đã chuẩn (giữ nguyên) |
 
 ---
 

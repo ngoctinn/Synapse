@@ -1,4 +1,4 @@
-# Sơ đồ Tuần tự: Hệ thống Xác thực (Authentication)
+# Sơ đồ Tuần tự: Phân hệ Xác thực
 
 Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Xác thực, tuân thủ quy chuẩn định dạng và kiến trúc Modular Monolith.
 
@@ -21,10 +21,9 @@ Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Xác thực, t
   }
 }%%
 
-## 1.1.1 Sơ đồ hoạt động cho hệ thống xác thực
+## Sơ đồ hoạt động cho Phân hệ Xác thực
 
-
-### 3.7. Đăng ký tài khoản khách hàng
+### 3.1. Đăng ký tài khoản khách hàng (A1.1)
 
 ```mermaid
 sequenceDiagram
@@ -37,7 +36,7 @@ sequenceDiagram
     participant S as CustomerService
     participant DB as Database
 
-    KH->>UI: Nhập thông tin (email, password, name)
+    KH->>UI: Nhập thông tin đăng ký
     activate UI
     UI->>BFF: registerUser(payload)
     activate BFF
@@ -45,13 +44,13 @@ sequenceDiagram
     BFF->>SUPA: signUp(email, password, metadata)
     activate SUPA
     alt Đăng ký thất bại
-        SUPA-->>BFF: Error (Email đã tồn tại)
-        BFF-->>UI: Hiển thị lỗi
+        SUPA-->>BFF: Error (địa chỉ thư điện tử đã tồn tại)
+        BFF-->>UI: Hiển thị thông báo lỗi
     else Đăng ký thành công
         SUPA-->>BFF: User (id, email)
         deactivate SUPA
 
-        Note over BFF,DB: Tạo Customer Profile ngay sau khi tạo User
+        Note over BFF,DB: Tạo hồ sơ khách hàng
         BFF->>API: POST /customers
         activate API
         API->>S: create_customer_for_user(user_id, name)
@@ -65,18 +64,18 @@ sequenceDiagram
         API-->>BFF: 201 Created
         deactivate API
 
-        BFF-->>UI: Kết quả thành công
+        BFF-->>UI: Đăng ký thành công
         deactivate BFF
 
-        UI-->>KH: Hiển thị thông báo "Kiểm tra email để xác thực"
+        UI-->>KH: Hiển thị thông báo kiểm tra thư điện tử
         deactivate UI
     end
 ```
-**Hình 3.7: Sơ đồ tuần tự chức năng Đăng ký tài khoản khách hàng**
+**Hình 3.1: Sơ đồ tuần tự chức năng Đăng ký tài khoản khách hàng**
 
-> **Ghi chú quan trọng:** Sơ đồ này đã được cập nhật để phản ánh thiết kế tách biệt `users` (tài khoản) và `customers` (hồ sơ CRM). Khi đăng ký thành công, hệ thống **tự động tạo Customer Profile** để đảm bảo khách hàng có thể đặt lịch ngay sau khi xác thực email.
+> **Ghi chú:** Khi đăng ký thành công, hệ thống tự động tạo hồ sơ khách hàng (Customer Profile) để đảm bảo khách hàng có thể đặt lịch hẹn ngay sau khi xác thực thư điện tử.
 
-### 3.8. Xác thực email
+### 3.2. Xác thực thư điện tử (A1.1)
 
 ```mermaid
 sequenceDiagram
@@ -85,29 +84,29 @@ sequenceDiagram
     participant UI as Giao diện
     participant SUPA as Supabase Auth
 
-    KH->>UI: Click link xác thực trong Email
+    KH->>UI: Nhấp vào liên kết xác thực trong thư điện tử
     activate UI
-    UI->>SUPA: Verify Token (Auto via Link)
+    UI->>SUPA: Verify Token
     activate SUPA
-    SUPA-->>UI: Redirect (Đã xác thực)
+    SUPA-->>UI: Redirect (đã xác thực)
     deactivate SUPA
 
-    UI-->>KH: Chuyển hướng trang đăng nhập
+    UI-->>KH: Chuyển hướng đến trang đăng nhập
     deactivate UI
 ```
-**Hình 3.8: Sơ đồ tuần tự chức năng Xác thực email**
+**Hình 3.2: Sơ đồ tuần tự chức năng Xác thực thư điện tử**
 
-### 3.9. Đăng nhập
+### 3.3. Đăng nhập (A1.2)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
+    actor ND as Người dùng
     participant UI as Giao diện
     participant BFF as Server Action
     participant SUPA as Supabase Auth
 
-    KH->>UI: Nhập credentials (email, password)
+    ND->>UI: Nhập thông tin đăng nhập
     activate UI
     UI->>BFF: login(credentials)
     activate BFF
@@ -115,34 +114,34 @@ sequenceDiagram
     BFF->>SUPA: signInWithPassword(email, password)
     activate SUPA
 
-    alt Thông tin sai
-        SUPA-->>BFF: Error (Invalid Credentials)
-        BFF-->>UI: Hiển thị lỗi thông tin đăng nhập
-    else Hợp lệ
+    alt Thông tin không hợp lệ
+        SUPA-->>BFF: Error (thông tin đăng nhập không chính xác)
+        BFF-->>UI: Hiển thị thông báo lỗi
+    else Xác thực thành công
         SUPA-->>BFF: Session (JWT)
         deactivate SUPA
 
-        BFF->>BFF: Set Cookie (Session)
-        BFF-->>UI: Chuyển hướng Dashboard
+        BFF->>BFF: Lưu Cookie phiên đăng nhập
+        BFF-->>UI: Chuyển hướng theo vai trò
         deactivate BFF
 
-        UI-->>KH: Chuyển hướng trang chủ
+        UI-->>ND: Chuyển hướng đến bảng điều khiển
         deactivate UI
     end
 ```
-**Hình 3.9: Sơ đồ tuần tự chức năng Đăng nhập**
+**Hình 3.3: Sơ đồ tuần tự chức năng Đăng nhập**
 
-### 3.10. Quên mật khẩu
+### 3.4. Khôi phục mật khẩu (A1.3)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
+    actor ND as Người dùng
     participant UI as Giao diện
     participant BFF as Server Action
     participant SUPA as Supabase Auth
 
-    KH->>UI: Nhập email yêu cầu
+    ND->>UI: Nhập địa chỉ thư điện tử
     activate UI
     UI->>BFF: forgotPasswordAction(email)
     activate BFF
@@ -155,80 +154,52 @@ sequenceDiagram
     BFF-->>UI: Hiển thị thông báo
     deactivate BFF
 
-    UI-->>KH: Thông báo kiểm tra email
+    UI-->>ND: Thông báo kiểm tra thư điện tử
     deactivate UI
 ```
-**Hình 3.10: Sơ đồ tuần tự chức năng Quên mật khẩu**
+**Hình 3.4: Sơ đồ tuần tự chức năng Khôi phục mật khẩu (Bước 1)**
 
-### 3.11. Đặt lại mật khẩu (Từ Email)
+### 3.5. Đặt lại mật khẩu từ thư điện tử (A1.3)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
+    actor ND as Người dùng
     participant UI as Giao diện
     participant BFF as Server Action
     participant SUPA as Supabase Auth
 
-    KH->>UI: Click Link Reset -> Nhập mật khẩu mới
+    ND->>UI: Nhấp liên kết đặt lại và nhập mật khẩu mới
     activate UI
-    UI->>BFF: updatePasswordAction(newPass)
+    UI->>BFF: updatePasswordAction(newPassword)
     activate BFF
 
-    BFF->>SUPA: updateUser({ password: newPass })
+    BFF->>SUPA: updateUser({ password: newPassword })
     activate SUPA
-    SUPA-->>BFF: OK (Updated)
+    SUPA-->>BFF: OK (đã cập nhật)
     deactivate SUPA
 
     BFF-->>UI: Thông báo thành công
     deactivate BFF
 
-    UI-->>KH: Chuyển hướng Dashboard
+    UI-->>ND: Chuyển hướng đến bảng điều khiển
     deactivate UI
 ```
-**Hình 3.11: Sơ đồ tuần tự chức năng Đặt lại mật khẩu**
+**Hình 3.5: Sơ đồ tuần tự chức năng Đặt lại mật khẩu (Bước 2)**
 
-### 3.12. Thay đổi mật khẩu (Khi đã Login)
+### 3.6. Cập nhật thông tin cá nhân (A1.4)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
-    participant UI as Giao diện
-    participant BFF as Server Action
-    participant SUPA as Supabase Auth
-
-    KH->>UI: Nhập mật khẩu mới
-    activate UI
-    UI->>BFF: updatePasswordAction(newPass)
-    activate BFF
-
-    BFF->>SUPA: updateUser({ password: newPass })
-    activate SUPA
-    SUPA-->>BFF: OK
-    deactivate SUPA
-
-    BFF-->>UI: Thành công
-    deactivate BFF
-
-    UI-->>KH: Thông báo cập nhật xong
-    deactivate UI
-```
-**Hình 3.12: Sơ đồ tuần tự chức năng Thay đổi mật khẩu khi đã đăng nhập**
-
-### 3.13. Cập nhật thông tin cá nhân
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor KH as Khách hàng
+    actor ND as Người dùng
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service
+    participant S as UserService
     participant DB as Database
 
-    KH->>UI: Sửa thông tin & Lưu
+    ND->>UI: Sửa thông tin và lưu
     activate UI
     UI->>BFF: updateProfile(data)
     activate BFF
@@ -239,7 +210,7 @@ sequenceDiagram
     API->>S: update_profile(current_user, data)
     activate S
 
-    S->>DB: update_user(user_id, data)
+    S->>DB: UPDATE users SET ... WHERE id = ?
     activate DB
     DB-->>S: updated_user
     deactivate DB
@@ -253,22 +224,22 @@ sequenceDiagram
     BFF-->>UI: Cập nhật trạng thái
     deactivate BFF
 
-    UI-->>KH: Hiển thị thông tin mới
+    UI-->>ND: Hiển thị thông tin mới
     deactivate UI
 ```
-**Hình 3.13: Sơ đồ tuần tự chức năng Cập nhật thông tin cá nhân**
+**Hình 3.6: Sơ đồ tuần tự chức năng Cập nhật thông tin cá nhân**
 
-### 3.14. Đăng xuất
+### 3.7. Đăng xuất (A1.5)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor KH as Khách hàng
+    actor ND as Người dùng
     participant UI as Giao diện
     participant BFF as Server Action
     participant SUPA as Supabase Auth
 
-    KH->>UI: Nhấn Đăng xuất
+    ND->>UI: Chọn đăng xuất
     activate UI
     UI->>BFF: logoutAction()
     activate BFF
@@ -278,11 +249,11 @@ sequenceDiagram
     SUPA-->>BFF: OK
     deactivate SUPA
 
-    BFF->>BFF: Xóa Cookie
-    BFF-->>UI: Chuyển hướng Đăng nhập
+    BFF->>BFF: Xóa Cookie phiên đăng nhập
+    BFF-->>UI: Chuyển hướng trang đăng nhập
     deactivate BFF
 
-    UI-->>KH: Trang đăng nhập
+    UI-->>ND: Hiển thị trang đăng nhập
     deactivate UI
 ```
-**Hình 3.14: Sơ đồ tuần tự chức năng Đăng xuất**
+**Hình 3.7: Sơ đồ tuần tự chức năng Đăng xuất**

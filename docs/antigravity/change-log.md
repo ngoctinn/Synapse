@@ -1,98 +1,100 @@
 # Change Log - Hoàn thiện tài liệu thiết kế KLTN
 
-## [2025-12-19] - Rollback: Giữ nguyên Code-style cho Sequence Diagrams
+## [2025-12-19] - Phiên KLTN-SYNC: Đồng nhất Tài liệu Thiết kế
 
-### Đã hủy bỏ (Reverted)
-- **Chuẩn hóa nhãn thông điệp tiếng Việt** trong 5 files `sequences/`
+### Mục tiêu
+Đồng nhất toàn bộ tài liệu thiết kế theo ngôn ngữ học thuật và phạm vi khóa luận tốt nghiệp "Xây dựng hệ thống chăm sóc khách hàng trực tuyến cho Spa".
 
-### Lý do Rollback
-1. **Sequence Diagram ≠ Activity Diagram**: Sequence thể hiện **giao tiếp giữa các đối tượng** (Ai nói gì với ai), cần giữ tên method/API để trace ngược về code.
-2. **Activity Diagram đã có sẵn** cho mục đích mô tả quy trình nghiệp vụ.
-3. **Giữ tính kỹ thuật** cho tài liệu thiết kế hệ thống.
+### Đã thay đổi (Changed)
 
-### Các fix nghiệp vụ vẫn được giữ lại
-- ✅ Sơ đồ Đăng ký (3.7): Bước tạo `Customer Profile`
-- ✅ Sơ đồ Check-in (3.35): Logic trừ buổi `customer_treatments`
+#### 1. usecase.md - Viết lại hoàn toàn
+- **Giảm từ 868 dòng xuống ~450 dòng** (~48% gọn hơn)
+- **Loại bỏ 12 chức năng ngoài phạm vi**: A2.6, A3.3-6, B1.8, C1-3, C6, C8, C12
+- **Giữ lại 22 chức năng cốt lõi** với mô tả học thuật
+- **Thống nhất thuật ngữ**: Không viết tắt, sử dụng ngôn ngữ chính quy
+- **Thêm phần Phụ lục**: Liệt kê các chức năng "Hướng phát triển"
+
+#### 2. sequences/authentication.md - Chuẩn hóa
+- Đánh số lại các hình từ 3.1 đến 3.7
+- Thống nhất thuật ngữ: "thư điện tử" thay vì "email"
+- Chuẩn hóa participant labels: "Người dùng", "Khách hàng"
+
+#### 3. sequences/customer_flows.md - Chuẩn hóa và bổ sung
+- Đánh số lại các hình từ 3.8 đến 3.16
+- **Bổ sung sơ đồ A2.6**: Tham gia danh sách chờ
+- **Bổ sung sơ đồ A2.7**: Nhận hỗ trợ qua trò chuyện trực tuyến
+- **Bổ sung sơ đồ A3.3**: Nhận thông báo nhắc lịch
+- Thống nhất thuật ngữ
+
+#### 4. sequences/receptionist_flows.md - Chuẩn hóa và bổ sung
+- Đánh số lại các hình từ 3.14 đến 3.20
+- **Bổ sung sơ đồ B1.2**: Quản lý hồ sơ khách hàng
+- **Bổ sung sơ đồ B1.6**: Phản hồi hỗ trợ qua trò chuyện trực tuyến
+- **Bổ sung sơ đồ B1.7**: Theo dõi tiến độ liệu trình
+- **Loại bỏ sơ đồ B1.8**: Tái lập lịch tự động (ngoài phạm vi)
+
+#### 5. sequences/technician_flows.md - Chuẩn hóa
+- Đánh số lại các hình: 3.21, 3.22
+- Thống nhất thuật ngữ
+
+#### 6. sequences/admin_flows.md - Chuẩn hóa và loại bỏ
+- Đánh số lại các hình từ 3.22 đến 3.24
+- **Loại bỏ sơ đồ C12**: Tính toán hoa hồng nhân viên (ngoài phạm vi)
+- **Loại bỏ sơ đồ 3.53**: Xem báo cáo doanh thu (gộp vào hướng phát triển)
+- Thống nhất thuật ngữ: "Quản trị viên" thay vì "Admin"
+
+#### 7. sequence_diagrams.md - Cập nhật mục lục
+- Cập nhật bảng tổng hợp với 28 sơ đồ
+- Thêm chú thích về cấu trúc và thuật ngữ
+
+### Quy ước Thuật ngữ Áp dụng
+
+| Cũ | Mới (Học thuật) |
+|----|-----------------|
+| Email | Thư điện tử |
+| Admin | Quản trị viên |
+| KTV | Kỹ thuật viên |
+| Phòng/Giường | Tài nguyên |
+| Check-in | Xác nhận khách đến |
+| No-show | Khách không đến |
+| Slot | Khung giờ |
+| Live Chat | Trò chuyện trực tuyến |
+| Booking | Lịch hẹn |
+| Chatbot | (Loại bỏ - không dùng AI) |
+
+### Tính năng Giữ lại (24)
+
+**Xác thực**: A1.1-5
+**Khách hàng**: A2.1, A2.2, A2.4, A2.5, A2.6, A2.7, A3.1, A3.2, A3.3, B1.7
+**Lễ tân**: B1.1-6
+**Kỹ thuật viên**: B2.1, B2.3
+**Quản trị**: C4, C5, C7
+
+### Tính năng Loại bỏ (10) - Ghi nhận "Hướng phát triển"
+
+- A3.4: Đánh giá dịch vụ
+- A3.5: Tích lũy và đổi điểm thưởng
+- A3.6: Gửi yêu cầu bảo hành
+- B1.8: Tái lập lịch tự động
+- C1: Quản lý tài khoản người dùng
+- C2: Phân quyền hệ thống
+- C3: Quản lý nhân viên
+- C6: Quản lý gói liệu trình
+- C8: Quản lý chương trình khuyến mãi
+- C12: Tính toán hoa hồng nhân viên
 
 ---
 
 ## [2025-12-19] - Phiên KLTN-FIX: Sửa 5 Vấn đề Nhất quán
 
 ### Đã thêm (Added)
-- **PostgreSQL Exclusion Constraints** (`database_design.md`):
-    - Extension `btree_gist` để hỗ trợ so sánh khoảng thời gian.
-    - Constraint `no_overlap_staff_booking`: Ngăn chặn đặt trùng lịch cho cùng một nhân viên.
-    - Constraint `no_overlap_resource_booking`: Ngăn chặn đặt trùng lịch cho cùng một tài nguyên.
-- **Mục 3: Chiến lược Kiểm soát Đồng thời** (`database_design.md`):
-    - Giải thích vấn đề Race Condition trong đặt lịch.
-    - Hướng dẫn xử lý lỗi Exclusion Violation ở Backend.
-- **Mục 4: Quy ước Thuật ngữ** (`database_design.md`):
-    - Bảng quy ước thuật ngữ kỹ thuật và hiển thị giao diện.
-    - Định nghĩa rõ "Resource" bao gồm: Phòng, Giường/Ghế, Thiết bị lớn.
+- **PostgreSQL Exclusion Constraints** (`database_design.md`)
+- **Mục 3: Chiến lược Kiểm soát Đồng thời** (`database_design.md`)
+- **Mục 4: Quy ước Thuật ngữ** (`database_design.md`)
 
 ### Đã thay đổi (Changed)
-- **Sơ đồ Đăng ký (Hình 3.7)** (`sequences/authentication.md`):
-    - Bổ sung bước `Create Customer Profile` sau khi tạo User thành công.
-    - Thêm các participant: API Router, CustomerService, Database.
-    - Xử lý ngoại lệ khi email đã tồn tại.
-- **Sơ đồ Check-in (Hình 3.35)** (`sequences/receptionist_flows.md`):
-    - Bổ sung logic **trừ buổi liệu trình** khi check-in.
-    - Thêm vòng lặp xử lý từng `booking_item` có `treatment_id`.
-    - Kiểm tra và cập nhật trạng thái liệu trình (COMPLETED nếu hết buổi).
-
-### Lý do (Rationale)
-1. **Vấn đề 1 (Concurrency)**: Giải quyết triệt để bài toán "đặt trùng lịch" bằng PostgreSQL Exclusion Constraints thay vì logic phức tạp ở tầng code.
-2. **Vấn đề 2 (User-Customer)**: Sơ đồ cũ thiếu bước tạo Customer, dẫn đến lỗi khi đặt lịch (bảng `bookings` yêu cầu `customer_id`).
-3. **Vấn đề 3 (Check-in)**: Sơ đồ cũ không phản ánh quy trình nghiệp vụ "trừ buổi liệu trình" như Activity Diagram đã mô tả.
-4. **Vấn đề 5 (Thuật ngữ)**: Thống nhất dùng "Tài nguyên (Resource)" trong tài liệu kỹ thuật.
-
-### Vấn đề chưa xử lý (Deferred)
-- **Vấn đề 4 (Sync vs Async)**: Các sơ đồ tuần tự cho tác vụ nặng (OR-Tools) cần vẽ lại theo mô hình Bất đồng bộ (Job Queue + Polling). Sẽ xử lý trong phiên Antigravity riêng.
+- **Sơ đồ Đăng ký (3.7)**: Bổ sung bước tạo Customer Profile
+- **Sơ đồ Check-in (3.35)**: Bổ sung logic trừ buổi liệu trình
+- **Sơ đồ Quản lý Tài nguyên (3.44)**: Chuẩn hóa CRUD đầy đủ
 
 ---
-
-## [2025-12-19] - Đánh giá và bổ sung tài liệu thiết kế
-
-### Đã thêm (Added)
-- **Sequence Diagrams**:
-    - Bổ sung luồng `B1.8: Tái lập lịch do sự cố` vào `docs/design/sequences/receptionist_flows.md`.
-    - Bổ sung luồng `C12: Tính toán và báo cáo hoa hồng` vào `docs/design/sequences/admin_flows.md`.
-- **UI Design Spec**: Tạo mới `docs/design/ui_design.md` đặc tả danh mục màn hình, layout và UX Flows chính.
-- **Activity Diagrams**: Tạo mới `docs/design/activity_diagrams.md` mô tả logic chi tiết cho Smart Scheduling, Rescheduling và Commission.
-
-### Đã thay đổi (Changed)
-- **Implementation Plan**: Cập nhật mục tiêu đánh giá bộ tài liệu thiết kế.
-- **Analysis Log**: Ghi nhận kết quả rà soát tính đầy đủ và nhất quán của bộ Design.
-
-### Lý do (Rationale)
-- Chuẩn bị hồ sơ thiết kế đầy đủ cho Khóa luận tốt nghiệp (KLTN).
-- Làm nổi bật tính "thông minh" (Smart) của hệ thống thông qua các sơ đồ hoạt động và tuần tự phức tạp.
-- Cung cấp cái nhìn trực quan về giao diện người dùng để hội đồng dễ hình dung sản phẩm.
-
----
-# Change Log - Backend Module Refactoring
-
-## [2025-12-19] - Hệ thống hóa Module Lập lịch
-
-### Đã thay đổi (Changed)
-- **Rename Folder**: `backend/src/modules/scheduling` -> `backend/src/modules/scheduling_engine`.
-  - Mục đích: Tránh nhầm lẫn với module `schedules` (Dữ liệu).
-- **Backend Entry Point**: Cập nhật `backend/src/app/main.py` để sử dụng `scheduling_engine`.
-- **API Documentation**:
-  - Cập nhật Swagger tags trong `router.py` thành `Scheduling Engine`.
-  - Cập nhật `__init__.py` docstring.
-- **Tài liệu Hệ thống**: Cập nhật `docs/ai/implementation/knowledge-schedules-scheduling.md` để khớp với tên module mới.
-
-### Lý do (Rationale)
-- Theo kiến trúc **Modular Monolith- **Refinement**: Điều chỉnh Use Case để phản ánh đúng thực tế nghiệp vụ (như đã phân tích ở trên).
-
-### 2025-12-19: Algorithm & Scheduling Logic Design
-- **New Feature**: Tạo tài liệu `docs/design/algorithm_spec.md`.
-    - Định nghĩa **Synapse Intelligent Scheduling Framework (SISF)**.
-    - Đặc tả chi tiết 9 Ràng buộc Cứng (Hard Constraints) và 5 Ràng buộc Mềm (Soft Constraints).
-    - Thống nhất mô hình quản lý tài nguyên theo đơn vị **Giường/Ghế (Bed/Chair)** thay vì Phòng.
-    - Cập nhật mô hình toán học và chiến lược Tái lập lịch (Rescheduling).g_engine` thể hiện rõ đây là logic xử lý (Engine), phân biệt với thực thể lưu trữ lịch làm việc (`schedules`).
-
-### Tác động (Impact)
-- **Frontend**: Không thay đổi API URL (`/scheduling` vẫn được giữ nguyên).
-- **Backend Internal**: Tất cả các tham chiếu import đã được cập nhật. Tính đóng gói của module được bảo toàn.
