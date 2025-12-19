@@ -340,8 +340,9 @@ Chi tiết dịch vụ trong lịch hẹn.
 | service_id | UUID | Có | NULL | FK services |
 | staff_id | UUID | Có | NULL | FK staff_profiles |
 | resource_id | UUID | Có | NULL | FK resources |
-| treatment_id | UUID | Có | NULL | FK customer_treatments |
+| treatment_id | UUID | Có | NULL | FK customer_treatments - Gắn vào nếu trừ buổi từ liệu trình |
 | service_name_snapshot | VARCHAR(255) | Có | NULL | Snapshot tên dịch vụ |
+
 | start_time | TIMESTAMPTZ | Không | - | Thời gian bắt đầu |
 | end_time | TIMESTAMPTZ | Không | - | Thời gian kết thúc |
 | original_price | DECIMAL(12,2) | Không | - | Giá gốc |

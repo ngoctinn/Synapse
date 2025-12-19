@@ -1,24 +1,30 @@
-# Kế hoạch triển khai Antigravity (Implementation Plan) - Synapse
+# Kế hoạch triển khai Antigravity (Implementation Plan) - Hoàn thiện tài liệu KLTN
 
 ## 1. Phân tích bối cảnh
-Sau khi thực hiện audit so khớp giữa Use Case (`usecase.md`) và Thiết kế (`architecture_v2.md`, `data_specification.md`, `database_design.md`), chúng tôi xác định các thay đổi cần thiết để đạt tới sự nhất quán cao và chuẩn hóa học thuật.
+Nâng cấp bộ tài liệu thiết kế Synapse để đạt chuẩn Khóa luận tốt nghiệp xuất sắc bằng cách bổ sung các sơ đồ kỹ thuật quan trọng và đặc tả giao diện người dùng.
 
-## 2. Các quyết định đã xác nhận
-- **Chatbot (A2.7)**: Chuyển thành "Live Chat" kèm kịch bản trả lời tự động (Script-based).
-- **Vật tư (Consumables)**: Loại bỏ hoàn toàn việc quản lý vật tư tiêu hao.
-- **Kỹ năng (Skill Level)**: Loại bỏ hoàn toàn khái niệm `proficiency_level`. Chỉ quan tâm KTV có kỹ năng đó hay không.
-- **Tính năng mới**: Bổ sung "Rescheduling" (Xử lý sự cố lịch) và "Staff Commission" (Tính hoa hồng KTV).
+## 2. Mục tiêu (Goals)
+- Bổ sung Sequence Diagrams cho các luồng nghiệp vụ mới cập nhật.
+- Tạo mới tài liệu đặc tả Giao diện (UI Design).
+- Thể hiện độ phức tạp thuật toán qua Activity Diagram cho luồng Smart Scheduling.
 
-## 3. Checklist chuẩn hóa Use Case
-- [x] Tên: Động từ + Danh từ (Tên hành động nghiệp vụ).
-- [x] Không chi tiết UI (Không dùng từ "nút", "màn hình", "click").
-- [x] Ngôn ngữ học thuật: "Hệ thống hiển thị...", "Actor tìm kiếm...", "Hệ thống xác nhận...".
-- [x] Ranh giới Actor và System rõ ràng.
-- [x] Luồng sự kiện: Có Luồng chính (Basic), Thay thế (Alternative) và Ngoại lệ (Exception) rõ ràng.
+## 3. Chiến lược giải quyết
+- **Giai đoạn 1**: Cập nhật `docs/design/sequence_diagrams.md` và các file trong `docs/design/sequences/`.
+- **Giai đoạn 2**: Tạo mới `docs/design/ui_design.md` để đặc tả cấu trúc màn hình và luồng UX theo FSD.
+- **Giai đoạn 3**: Tạo mới `docs/design/activity_diagrams.md` tập trung vào logic OR-Tools.
 
-## 4. Danh sách nhiệm vụ thực thi (Task List)
-- [x] **Cập nhật UseCase.md (Standardization)**: Áp dụng format học thuật, tinh giản AI thành Live Chat, thêm Rescheduling & Commission.
-- [x] **Cập nhật Data Specification**: Loại bỏ Proficiency Level, đồng bộ cấu trúc Customer.
-- [x] **Review Database Design**: Đảm bảo SQL script khớp với đặc tả mới.
-- [x] **Cập nhật Implementation Plan**: Ghi nhận trạng thái hoàn thành.
-- [x] **Hoàn tất báo cáo (REPORT)**.
+## 4. Danh sách nhiệm vụ (Task List)
+- [ ] **Bổ sung Sequence Diagrams**:
+    - [ ] Luồng B1.8: Tái lập lịch do sự cố (Rescheduling).
+    - [ ] Luồng C12: Tính toán và báo cáo hoa hồng.
+- [ ] **Khởi tạo UI Design Document**:
+    - [ ] Danh mục màn hình (Landing, Auth, Booking Wizard, Admin Dashboard).
+    - [ ] Đặc tả Layout & UX Flow.
+- [ ] **Vẽ Activity Diagrams**:
+    - [ ] Luồng tìm kiếm khung giờ thông minh (Constraint-based search).
+    - [ ] Luồng tối ưu hóa lại lịch khi có sự cố.
+
+## 5. Ràng buộc & Tiêu chuẩn
+- Ngôn ngữ: Tiếng Việt (Vietnamese).
+- Diagram: Sử dụng cú pháp Mermaid chuyên nghiệp.
+- Kiến trúc: Phải phản ánh đúng Modular Monolith và BFF pattern.

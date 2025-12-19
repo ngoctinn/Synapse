@@ -490,7 +490,9 @@ Tài liệu này cung cấp các bảng đặc tả chi tiết cho từng Use Ca
 | :--- | :--- | :--- |
 | 1 | Lễ tân | Tìm lịch của khách sắp đến làm dịch vụ. |
 | 2 | Lễ tân | Bấm xác nhận khách đã có mặt tại Spa (Check-in). |
-| 3 | Hệ thống | Chuyển trạng thái sang "Đang làm" và báo cho thợ chuẩn bị. |
+| 3 | Hệ thống | Chuyển trạng thái sang "Đang làm", báo cho thợ chuẩn bị. |
+| 4 | Hệ thống | Nếu lịch hẹn thuộc liệu trình nhiều buổi, tự động trừ 1 buổi vào Thẻ liệu trình của khách. |
+
 
 **Luồng sự kiện thay thế: Khách đến sớm (2a)**
 | Bước | Thực hiện bởi | Hành động |
@@ -547,18 +549,19 @@ Tài liệu này cung cấp các bảng đặc tả chi tiết cho từng Use Ca
 
 ---
 
-**Bảng 3.24: Đặc tả use case Cập nhật tiến trình liệu trình**
-| Mã use case: | B1.7 | Tên use case: | Cập nhật số buổi liệu trình |
+**Bảng 3.24: Đặc tả use case Theo dõi tiến độ liệu trình**
+| Mã use case: | B1.7 | Tên use case: | Theo dõi tiến độ liệu trình |
 | :--- | :--- | :--- | :--- |
-| **Mô tả:** | Lễ tân báo hệ thống trừ bớt một buổi trong gói liệu trình khách đã mua. |
-| **Tác nhân:** | Lễ tân |
+| **Mô tả:** | Kiểm tra số buổi còn lại và lịch sử thực hiện liệu trình của khách hàng. |
+| **Tác nhân:** | Lễ tân, Khách hàng |
 
 **Luồng sự kiện chính:**
 | Bước | Thực hiện bởi | Hành động |
 | :--- | :--- | :--- |
-| 1 | Hệ thống | Báo có khách làm xong dịch vụ thuộc gói liệu trình. |
-| 2 | Hệ thống | Tự động trừ 1 buổi ra khỏi tổng số buổi khách còn lại. |
-| 3 | Lễ tân | Kiểm tra thông tin buổi cuối cùng và xác nhận cập nhật. |
+| 1 | Người dùng | Yêu cầu xem thông tin liệu trình đang sử dụng của khách. |
+| 2 | Hệ thống | Hiển thị tổng số buổi, số buổi đã dùng, ngày thực hiện gần nhất và trạng thái thẻ. |
+| 3 | Hệ thống | Hiển thị danh sách các buổi hẹn đã thực hiện thuộc liệu trình này. |
+
 
 **Luồng sự kiện thay thế: Đã hết buổi (3a)**
 | Bước | Thực hiện bởi | Hành động |

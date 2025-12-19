@@ -204,3 +204,49 @@ sequenceDiagram
     deactivate UI
 ```
 **Hình 3.53: Sơ đồ tuần tự chức năng Xem báo cáo**
+
+### 3.37. Xem báo cáo và tính hoa hồng (Staff Commission)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor AD as Admin
+    participant UI as :CommissionReportPage
+    participant BFF as :ReportAction
+    participant API as :AnalyticsRouter
+    participant S as :AnalyticsService
+    participant DB as :Database
+
+    AD->>UI: Chọn tháng cần tính hoa hồng
+    activate UI
+    UI->>BFF: getCommissionReport(month, year)
+    activate BFF
+
+    BFF->>API: GET /analytics/commissions?month=..&year=..
+    activate API
+
+    API->>S: calculate_staff_commissions(month, year)
+    activate S
+
+    S->>DB: query_completed_bookings_with_staff_rate(month, year)
+    activate DB
+    DB-->>S: list_data (booking_price, commission_rate, staff_id)
+    deactivate DB
+
+    S->>S: aggregate_by_staff(list_data)
+    note right of S: sum(price * rate) per staff
+
+    S-->>API: CommissionReportSchema[]
+    deactivate S
+
+    API-->>BFF: Data JSON
+    deactivate API
+
+    BFF-->>UI: Hiển thị bảng tổng hợp hoa hồng
+    deactivate BFF
+
+    UI-->>AD: Hiển thị danh sách hoa hồng nhân viên
+    deactivate UI
+```
+**Hình 3.37: Sơ đồ tuần tự chức năng Tính hoa hồng nhân viên**
+
