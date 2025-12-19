@@ -67,7 +67,6 @@ erDiagram
     staff_skills {
         uuid staff_id PK,FK
         uuid skill_id PK,FK
-        int proficiency_level "1-3"
     }
 
     staff_profiles ||--|{ staff_skills : "possesses"
@@ -101,7 +100,6 @@ erDiagram
     service_required_skills {
         uuid service_id PK,FK
         uuid skill_id PK,FK
-        int min_proficiency_level
     }
 
     services ||--|{ service_required_skills : "requires"
@@ -462,10 +460,7 @@ CREATE TABLE skills (
 CREATE TABLE staff_skills (
     staff_id UUID REFERENCES staff_profiles(user_id) ON DELETE CASCADE,
     skill_id UUID REFERENCES skills(id) ON DELETE CASCADE,
-    proficiency_level INTEGER DEFAULT 1,
-    PRIMARY KEY (staff_id, skill_id),
-
-    CONSTRAINT chk_proficiency CHECK (proficiency_level BETWEEN 1 AND 3)
+    PRIMARY KEY (staff_id, skill_id)
 );
 
 -- ============================================================
@@ -501,10 +496,7 @@ CREATE TABLE services (
 CREATE TABLE service_required_skills (
     service_id UUID REFERENCES services(id) ON DELETE CASCADE,
     skill_id UUID REFERENCES skills(id) ON DELETE CASCADE,
-    min_proficiency_level INTEGER DEFAULT 1,
-    PRIMARY KEY (service_id, skill_id),
-
-    CONSTRAINT chk_min_proficiency CHECK (min_proficiency_level BETWEEN 1 AND 3)
+    PRIMARY KEY (service_id, skill_id)
 );
 
 -- ============================================================

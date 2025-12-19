@@ -73,12 +73,6 @@ class SkillRead(SkillBase):
 class SkillRequirement(BaseModel):
     """Schema cho yêu cầu kỹ năng của dịch vụ."""
     skill_id: uuid.UUID
-    min_proficiency_level: int = Field(default=1, ge=1, le=3)
-
-
-class SkillWithProficiency(SkillRead):
-    """Schema Skill kèm mức yêu cầu."""
-    min_proficiency_level: int = 1
 
 
 # ============================================================================

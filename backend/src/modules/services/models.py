@@ -55,8 +55,6 @@ class ServiceSkill(SQLModel, table=True):
         primary_key=True,
         sa_column_args=[ForeignKey("skills.id", ondelete="CASCADE")]
     )
-    # Mức kỹ năng tối thiểu yêu cầu (1=Cơ bản, 2=Thành thạo, 3=Chuyên gia)
-    min_proficiency_level: int = Field(default=1, ge=1, le=3)
 
     service: "Service" = Relationship(back_populates="skill_links")
     skill: "Skill" = Relationship(back_populates="service_links")

@@ -178,10 +178,7 @@ COMMENT ON TABLE skills IS 'Danh mục kỹ năng chuyên môn mà KTV có thể
 CREATE TABLE staff_skills (
     staff_id UUID REFERENCES staff_profiles(user_id) ON DELETE CASCADE,
     skill_id UUID REFERENCES skills(id) ON DELETE CASCADE,
-    proficiency_level INTEGER DEFAULT 1,  -- 1: Basic, 2: Intermediate, 3: Expert
-    PRIMARY KEY (staff_id, skill_id),
-
-    CONSTRAINT chk_proficiency CHECK (proficiency_level BETWEEN 1 AND 3)
+    PRIMARY KEY (staff_id, skill_id)
 );
 
 COMMENT ON TABLE staff_skills IS 'Kỹ năng mà mỗi nhân viên sở hữu và mức độ thành thạo';
@@ -228,10 +225,7 @@ COMMENT ON COLUMN services.buffer_time_minutes IS 'Thời gian nghỉ/dọn dẹ
 CREATE TABLE service_required_skills (
     service_id UUID REFERENCES services(id) ON DELETE CASCADE,
     skill_id UUID REFERENCES skills(id) ON DELETE CASCADE,
-    min_proficiency_level INTEGER DEFAULT 1,
-    PRIMARY KEY (service_id, skill_id),
-
-    CONSTRAINT chk_min_proficiency CHECK (min_proficiency_level BETWEEN 1 AND 3)
+    PRIMARY KEY (service_id, skill_id)
 );
 
 COMMENT ON TABLE service_required_skills IS 'Kỹ năng cần thiết để thực hiện dịch vụ';
