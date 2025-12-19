@@ -249,4 +249,3 @@ sequenceDiagram
     deactivate UI
 ```
 **Hình 3.37: Sơ đồ tuần tự chức năng Tính hoa hồng nhân viên**
-

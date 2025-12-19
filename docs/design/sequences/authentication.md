@@ -33,24 +33,48 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant SUPA as Supabase Auth
+    participant API as API Router
+    participant S as CustomerService
+    participant DB as Database
 
-    KH->>UI: Nhập thông tin (email, password)
+    KH->>UI: Nhập thông tin (email, password, name)
     activate UI
     UI->>BFF: registerUser(payload)
     activate BFF
 
     BFF->>SUPA: signUp(email, password, metadata)
     activate SUPA
-    SUPA-->>BFF: Trả về kết quả (OK/Error)
-    deactivate SUPA
+    alt Đăng ký thất bại
+        SUPA-->>BFF: Error (Email đã tồn tại)
+        BFF-->>UI: Hiển thị lỗi
+    else Đăng ký thành công
+        SUPA-->>BFF: User (id, email)
+        deactivate SUPA
 
-    BFF-->>UI: Kết quả thành công
-    deactivate BFF
+        Note over BFF,DB: Tạo Customer Profile ngay sau khi tạo User
+        BFF->>API: POST /customers
+        activate API
+        API->>S: create_customer_for_user(user_id, name)
+        activate S
+        S->>DB: INSERT INTO customers (user_id, full_name)
+        activate DB
+        DB-->>S: customer
+        deactivate DB
+        S-->>API: CustomerSchema
+        deactivate S
+        API-->>BFF: 201 Created
+        deactivate API
 
-    UI-->>KH: Hiển thị thông báo "Kiểm tra email"
-    deactivate UI
+        BFF-->>UI: Kết quả thành công
+        deactivate BFF
+
+        UI-->>KH: Hiển thị thông báo "Kiểm tra email để xác thực"
+        deactivate UI
+    end
 ```
 **Hình 3.7: Sơ đồ tuần tự chức năng Đăng ký tài khoản khách hàng**
+
+> **Ghi chú quan trọng:** Sơ đồ này đã được cập nhật để phản ánh thiết kế tách biệt `users` (tài khoản) và `customers` (hồ sơ CRM). Khi đăng ký thành công, hệ thống **tự động tạo Customer Profile** để đảm bảo khách hàng có thể đặt lịch ngay sau khi xác thực email.
 
 ### 3.8. Xác thực email
 
@@ -262,4 +286,3 @@ sequenceDiagram
     deactivate UI
 ```
 **Hình 3.14: Sơ đồ tuần tự chức năng Đăng xuất**
-

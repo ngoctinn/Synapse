@@ -325,6 +325,7 @@ erDiagram
 -- Kích hoạt Extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pg_trgm"; -- For text search
+CREATE EXTENSION IF NOT EXISTS "btree_gist"; -- For Exclusion Constraints (chống đặt trùng lịch)
 
 -- ============================================================
 -- ENUMS
@@ -648,7 +649,21 @@ CREATE TABLE booking_items (
     original_price DECIMAL(12, 2) NOT NULL,
 
     CONSTRAINT chk_item_time CHECK (end_time > start_time),
-    CONSTRAINT chk_item_price CHECK (original_price >= 0)
+    CONSTRAINT chk_item_price CHECK (original_price >= 0),
+
+    -- ============================================================
+    -- EXCLUSION CONSTRAINTS: Chống đặt trùng lịch (Concurrency Control)
+    -- Sử dụng GiST index để ngăn chặn overlapping time ranges
+    -- ============================================================
+    CONSTRAINT no_overlap_staff_booking EXCLUDE USING gist (
+        staff_id WITH =,
+        tstzrange(start_time, end_time) WITH &&
+    ) WHERE (staff_id IS NOT NULL),
+
+    CONSTRAINT no_overlap_resource_booking EXCLUDE USING gist (
+        resource_id WITH =,
+        tstzrange(start_time, end_time) WITH &&
+    ) WHERE (resource_id IS NOT NULL)
 );
 
 -- Index cho Operating Hours
@@ -803,3 +818,83 @@ CREATE POLICY bookings_customer_select ON bookings
     FOR SELECT USING (
         customer_id IN (SELECT id FROM customers WHERE user_id = auth.uid())
     );
+```
+
+---
+
+## 3. Chiến lược Kiểm soát Đồng thời (Concurrency Control Strategy)
+
+### 3.1 Vấn đề: Race Condition trong Đặt lịch
+
+Khi nhiều người dùng cùng đặt một khung giờ cho cùng một nhân viên hoặc tài nguyên (phòng/giường), có thể xảy ra tình huống **Race Condition** nếu không có cơ chế kiểm soát phù hợp.
+
+**Ví dụ:**
+- Khách A và Khách B cùng xem thấy slot 10:00-11:00 của KTV Lan còn trống.
+- Cả hai đồng thời nhấn "Đặt lịch".
+- Nếu không có cơ chế khóa, cả hai đều được tạo booking → **Trùng lịch**.
+
+### 3.2 Giải pháp: PostgreSQL Exclusion Constraints
+
+Thay vì xử lý logic phức tạp ở tầng Application hoặc dùng Distributed Lock (Redis Redlock), hệ thống sử dụng **PostgreSQL Exclusion Constraints** - một tính năng native của PostgreSQL.
+
+**Ưu điểm:**
+1. **Đơn giản**: Chỉ cần khai báo constraint, không cần viết code logic kiểm tra.
+2. **Tin cậy**: Database đảm bảo tính toàn vẹn dữ liệu ở mức thấp nhất.
+3. **Hiệu năng**: Sử dụng GiST index, tối ưu cho các phép so sánh khoảng (range).
+
+### 3.3 Constraint đã triển khai
+
+```sql
+-- Ngăn chặn đặt trùng lịch cho cùng một NHÂN VIÊN
+CONSTRAINT no_overlap_staff_booking EXCLUDE USING gist (
+    staff_id WITH =,                          -- Cùng nhân viên
+    tstzrange(start_time, end_time) WITH &&   -- Thời gian chồng lấn
+) WHERE (staff_id IS NOT NULL);
+
+-- Ngăn chặn đặt trùng lịch cho cùng một TÀI NGUYÊN
+CONSTRAINT no_overlap_resource_booking EXCLUDE USING gist (
+    resource_id WITH =,                       -- Cùng tài nguyên
+    tstzrange(start_time, end_time) WITH &&
+) WHERE (resource_id IS NOT NULL);
+```
+
+### 3.4 Xử lý lỗi ở Backend
+
+Khi xảy ra vi phạm constraint, PostgreSQL sẽ throw lỗi với mã `23P01` (Exclusion Violation). Backend cần catch lỗi này và trả về thông báo thân thiện:
+
+```python
+try:
+    await session.commit()
+except IntegrityError as e:
+    if "no_overlap_staff_booking" in str(e) or "no_overlap_resource_booking" in str(e):
+        raise HTTPException(
+            status_code=409,
+            detail="Khung giờ này vừa có người đặt. Vui lòng chọn khung giờ khác."
+        )
+    raise
+```
+
+---
+
+## 4. Quy ước Thuật ngữ (Terminology Convention)
+
+Để đảm bảo tính nhất quán trong tài liệu thiết kế và code, hệ thống sử dụng các thuật ngữ sau:
+
+| Thuật ngữ Kỹ thuật | Thuật ngữ Hiển thị (UI) | Mô tả |
+|-------------------|------------------------|-------|
+| **Resource** | Tài nguyên | Bất kỳ đối tượng vật lý nào cần được quản lý tính khả dụng |
+| **Resource Group** | Nhóm Tài nguyên | Phân loại logic cho Resource |
+| **ROOM** (type) | Phòng | Không gian thực hiện dịch vụ (VD: Phòng VIP, Phòng Thường) |
+| **EQUIPMENT** (type) | Thiết bị | Vật dụng lớn cần đặt lịch (VD: Máy laser, Ghế spa) |
+| **Resource (instance)** | Giường/Ghế/Máy cụ thể | Một đơn vị cụ thể trong Resource Group |
+| **Staff** | Nhân viên | Bao gồm Admin, Lễ tân, Kỹ thuật viên |
+| **Customer** | Khách hàng | Hồ sơ CRM, có thể liên kết hoặc không liên kết với User |
+| **User** | Tài khoản | Tài khoản đăng nhập hệ thống (Supabase Auth) |
+| **Booking** | Lịch hẹn | Một phiên đặt lịch tổng (có thể chứa nhiều dịch vụ) |
+| **Booking Item** | Mục lịch hẹn | Một dịch vụ cụ thể trong Booking |
+| **Treatment** | Liệu trình | Gói nhiều buổi của cùng một dịch vụ |
+
+**Lưu ý quan trọng:**
+- Trong **tài liệu kỹ thuật** (code, DB, API): Sử dụng thuật ngữ tiếng Anh (`Resource`, `Staff`, `Customer`).
+- Trong **giao diện người dùng**: Sử dụng thuật ngữ tiếng Việt phù hợp ngữ cảnh.
+- Thuộc tính `is_closed` nghĩa đen là "đóng cửa" (ngày nghỉ), không phải "đã hoàn thành".

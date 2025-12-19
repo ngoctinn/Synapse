@@ -1,5 +1,56 @@
 # Change Log - Hoàn thiện tài liệu thiết kế KLTN
 
+## [2025-12-19] - Rollback: Giữ nguyên Code-style cho Sequence Diagrams
+
+### Đã hủy bỏ (Reverted)
+- **Chuẩn hóa nhãn thông điệp tiếng Việt** trong 5 files `sequences/`
+
+### Lý do Rollback
+1. **Sequence Diagram ≠ Activity Diagram**: Sequence thể hiện **giao tiếp giữa các đối tượng** (Ai nói gì với ai), cần giữ tên method/API để trace ngược về code.
+2. **Activity Diagram đã có sẵn** cho mục đích mô tả quy trình nghiệp vụ.
+3. **Giữ tính kỹ thuật** cho tài liệu thiết kế hệ thống.
+
+### Các fix nghiệp vụ vẫn được giữ lại
+- ✅ Sơ đồ Đăng ký (3.7): Bước tạo `Customer Profile`
+- ✅ Sơ đồ Check-in (3.35): Logic trừ buổi `customer_treatments`
+
+---
+
+## [2025-12-19] - Phiên KLTN-FIX: Sửa 5 Vấn đề Nhất quán
+
+### Đã thêm (Added)
+- **PostgreSQL Exclusion Constraints** (`database_design.md`):
+    - Extension `btree_gist` để hỗ trợ so sánh khoảng thời gian.
+    - Constraint `no_overlap_staff_booking`: Ngăn chặn đặt trùng lịch cho cùng một nhân viên.
+    - Constraint `no_overlap_resource_booking`: Ngăn chặn đặt trùng lịch cho cùng một tài nguyên.
+- **Mục 3: Chiến lược Kiểm soát Đồng thời** (`database_design.md`):
+    - Giải thích vấn đề Race Condition trong đặt lịch.
+    - Hướng dẫn xử lý lỗi Exclusion Violation ở Backend.
+- **Mục 4: Quy ước Thuật ngữ** (`database_design.md`):
+    - Bảng quy ước thuật ngữ kỹ thuật và hiển thị giao diện.
+    - Định nghĩa rõ "Resource" bao gồm: Phòng, Giường/Ghế, Thiết bị lớn.
+
+### Đã thay đổi (Changed)
+- **Sơ đồ Đăng ký (Hình 3.7)** (`sequences/authentication.md`):
+    - Bổ sung bước `Create Customer Profile` sau khi tạo User thành công.
+    - Thêm các participant: API Router, CustomerService, Database.
+    - Xử lý ngoại lệ khi email đã tồn tại.
+- **Sơ đồ Check-in (Hình 3.35)** (`sequences/receptionist_flows.md`):
+    - Bổ sung logic **trừ buổi liệu trình** khi check-in.
+    - Thêm vòng lặp xử lý từng `booking_item` có `treatment_id`.
+    - Kiểm tra và cập nhật trạng thái liệu trình (COMPLETED nếu hết buổi).
+
+### Lý do (Rationale)
+1. **Vấn đề 1 (Concurrency)**: Giải quyết triệt để bài toán "đặt trùng lịch" bằng PostgreSQL Exclusion Constraints thay vì logic phức tạp ở tầng code.
+2. **Vấn đề 2 (User-Customer)**: Sơ đồ cũ thiếu bước tạo Customer, dẫn đến lỗi khi đặt lịch (bảng `bookings` yêu cầu `customer_id`).
+3. **Vấn đề 3 (Check-in)**: Sơ đồ cũ không phản ánh quy trình nghiệp vụ "trừ buổi liệu trình" như Activity Diagram đã mô tả.
+4. **Vấn đề 5 (Thuật ngữ)**: Thống nhất dùng "Tài nguyên (Resource)" trong tài liệu kỹ thuật.
+
+### Vấn đề chưa xử lý (Deferred)
+- **Vấn đề 4 (Sync vs Async)**: Các sơ đồ tuần tự cho tác vụ nặng (OR-Tools) cần vẽ lại theo mô hình Bất đồng bộ (Job Queue + Polling). Sẽ xử lý trong phiên Antigravity riêng.
+
+---
+
 ## [2025-12-19] - Đánh giá và bổ sung tài liệu thiết kế
 
 ### Đã thêm (Added)

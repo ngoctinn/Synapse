@@ -134,30 +134,49 @@ sequenceDiagram
     participant UI as Giao diện
     participant BFF as Server Action
     participant API as API Router
-    participant S as Service
+    participant S as BookingService
     participant DB as Database
 
     LT->>UI: Chọn lịch hẹn -> Check-in
     activate UI
-    UI->>BFF: checkInCustomer
+    UI->>BFF: checkInCustomer(bookingId)
     activate BFF
 
     BFF->>API: POST /bookings/{id}/check-in
     activate API
 
-    API->>S: update_booking_status
+    API->>S: check_in_booking(booking_id)
     activate S
 
-    S->>DB: set_status
-    S->>DB: set_actual_start_time
+    S->>DB: get_booking_with_items(booking_id)
+    activate DB
+    DB-->>S: booking (với booking_items)
+    deactivate DB
+
+    S->>DB: set_status(IN_PROGRESS)
+    S->>DB: set_check_in_time(NOW)
+    S->>DB: set_actual_start_time(NOW)
+
+    Note over S,DB: Xử lý liệu trình (nếu có)
+    loop Với mỗi booking_item có treatment_id
+        S->>DB: SELECT * FROM customer_treatments WHERE id = treatment_id
+        DB-->>S: treatment
+        alt Liệu trình còn hiệu lực
+            S->>DB: UPDATE customer_treatments SET used_sessions = used_sessions + 1
+            S->>DB: CHECK IF used_sessions >= total_sessions THEN SET status = 'COMPLETED'
+        else Liệu trình hết hạn/hết lượt
+            Note over S: Log cảnh báo, không trừ buổi
+        end
+    end
+
     activate DB
     DB-->>S: updated
     deactivate DB
 
-    S-->>API: Success
+    S-->>API: BookingSchema (updated)
     deactivate S
 
-    API-->>BFF: OK
+    API-->>BFF: 200 OK
     deactivate API
 
     BFF-->>UI: Đổi màu (Đang xử lý)
@@ -167,6 +186,8 @@ sequenceDiagram
     deactivate UI
 ```
 **Hình 3.35: Sơ đồ tuần tự chức năng Check-in lịch hẹn**
+
+> **Ghi chú quan trọng:** Sơ đồ này đã được cập nhật để bổ sung logic **trừ buổi liệu trình** theo đúng quy trình nghiệp vụ. Khi check-in, nếu booking có liên kết với `customer_treatments`, hệ thống sẽ tự động tăng `used_sessions` và kiểm tra hoàn thành liệu trình.
 
 ### 3.37. Xử lý thanh toán
 
@@ -264,4 +285,3 @@ sequenceDiagram
     deactivate UI
 ```
 **Hình 3.25: Sơ đồ tuần tự chức năng Tái lập lịch tự động khi có sự cố**
-
