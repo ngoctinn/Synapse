@@ -33,7 +33,14 @@
 - **Tài liệu Hệ thống**: Cập nhật `docs/ai/implementation/knowledge-schedules-scheduling.md` để khớp với tên module mới.
 
 ### Lý do (Rationale)
-- Theo kiến trúc **Modular Monolith**, các module cần có tên gọi phản ánh đúng trách nhiệm. `scheduling_engine` thể hiện rõ đây là logic xử lý (Engine), phân biệt với thực thể lưu trữ lịch làm việc (`schedules`).
+- Theo kiến trúc **Modular Monolith- **Refinement**: Điều chỉnh Use Case để phản ánh đúng thực tế nghiệp vụ (như đã phân tích ở trên).
+
+### 2025-12-19: Algorithm & Scheduling Logic Design
+- **New Feature**: Tạo tài liệu `docs/design/algorithm_spec.md`.
+    - Định nghĩa **Synapse Intelligent Scheduling Framework (SISF)**.
+    - Đặc tả chi tiết 9 Ràng buộc Cứng (Hard Constraints) và 5 Ràng buộc Mềm (Soft Constraints).
+    - Thống nhất mô hình quản lý tài nguyên theo đơn vị **Giường/Ghế (Bed/Chair)** thay vì Phòng.
+    - Cập nhật mô hình toán học và chiến lược Tái lập lịch (Rescheduling).g_engine` thể hiện rõ đây là logic xử lý (Engine), phân biệt với thực thể lưu trữ lịch làm việc (`schedules`).
 
 ### Tác động (Impact)
 - **Frontend**: Không thay đổi API URL (`/scheduling` vẫn được giữ nguyên).

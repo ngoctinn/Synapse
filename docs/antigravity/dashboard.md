@@ -19,8 +19,10 @@
 - [x] Phân tích các luồng còn thiếu.
 - [x] Soạn nội dung Sequence Diagram cho Rescheduling.
 - [x] Soạn nội dung Sequence Diagram cho Commission.
-- [x] Tạo file `ui_design.md` và liệt kê các màn hình.
-- [x] Thiết kế Activity Diagram cho logic OR-Tools.
-- [x] Nghiên cứu và tối ưu nghiệp vụ Liệu trình (Punch Card).
-- [x] Cập nhật toàn bộ `docs/design` theo nghiệp vụ mới.
+- [x] **Task 3.1**: Tạo tài liệu `docs/design/algorithm_spec.md`.
+    - [x] Di chuyển và chuẩn hóa nội dung từ yêu cầu.
+    - [x] Định nghĩa chi tiết Ma trận Ràng buộc (Constraint Matrix).
+    - [x] Tích hợp quyết định "Resource = Bed/Chair".
+    - [x] Mô hình hóa toán học cho Hard/Soft Constraints.
+- [ ] **Task 3.2**: Cập nhật `docs/design/activity_diagrams.md` nếu cần để phản ánh logic mới.
 - [x] Báo cáo kết quả hoàn thành (REPORT).

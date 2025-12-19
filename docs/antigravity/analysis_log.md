@@ -35,3 +35,14 @@
 
 ## 5. Kết luận sơ bộ
 Tài liệu đạt khoảng **80-85%** yêu cầu cho một Khóa luận tốt nghiệp xuất sắc. Cần bổ sung các sơ đồ kỹ thuật (Class, Activity, Deployment) và thiết kế giao diện để hoàn thiện 100%.
+
+## 6. Phân tích Task: Thiết kế Đặc tả Thuật toán (Algorithm Spec)
+- **Ngày**: 2025-12-19
+- **Yêu cầu**: Formalize logic từ văn bản đề xuất vào `docs/design/algorithm_spec.md` và chi tiết hóa toàn bộ các trường hợp ràng buộc.
+- **Quyết định Thiết kế**:
+    - **Resource Granularity**: Sử dụng đơn vị "Giường/Ghế" (Bed/Chair) làm Resource cơ sở.
+    - **Room Logic**: "Phòng" chỉ là một thuộc tính nhóm (Group), không phải là Resource chịu ràng buộc Capacity (trừ trường hợp phòng đơn VIP).
+    - **Constraint Model**: Sử dụng mô hình `AddNoOverlap` trên từng Resource ID cụ thể thay vì `AddCumulative` trên Room ID.
+- **Tác động**:
+    - Giúp thuật toán đơn giản và chính xác hơn (định vị chính xác khách ngồi ghế nào).
+    - Tạo tiền đề cho UI "Floor Map" (Sơ đồ mặt bằng) trực quan.

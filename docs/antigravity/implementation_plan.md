@@ -22,7 +22,18 @@ Nâng cấp bộ tài liệu thiết kế Synapse để đạt chuẩn Khóa lu�
     - [ ] Đặc tả Layout & UX Flow.
 - [ ] **Vẽ Activity Diagrams**:
     - [ ] Luồng tìm kiếm khung giờ thông minh (Constraint-based search).
-    - [ ] Luồng tối ưu hóa lại lịch khi có sự cố.
+    - [x] **Trạng thái**: Completed
+- [x] **Kết quả**: Đã đóng băng thiết kế Database v2.2.
+
+## 4. Giai đoạn 4: Thiết kế Thuật toán & Logic (Algorithm Design) - **CURRENT**
+- [ ] **Task 4.1**: Tạo tài liệu `docs/design/algorithm_spec.md`.
+    - [ ] Di chuyển và chuẩn hóa nội dung từ yêu cầu "Tối ưu hóa Trải nghiệm...".
+    - [ ] Định nghĩa chi tiết Ma trận Ràng buộc (Constraint Matrix).
+    - [ ] Tích hợp quyết định "Resource = Bed/Chair".
+    - [ ] Mô hình hóa toán học cho Hard/Soft Constraints.
+- [ ] **Task 4.2**: Cập nhật `docs/design/activity_diagrams.md` nếu cần để phản ánh logic mới.
+
+## 5. Giai đoạn 5: Phát triển Backend (FastAPI Core)
 
 ## 5. Ràng buộc & Tiêu chuẩn
 - Ngôn ngữ: Tiếng Việt (Vietnamese).
