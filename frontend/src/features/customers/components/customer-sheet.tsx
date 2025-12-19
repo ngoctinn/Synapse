@@ -34,6 +34,9 @@ import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs";
 import { CustomerForm } from "./customer-form";
 import { CustomerHistory } from "./customer-history";
 
+/** Union type cho cả Create và Update form values */
+type CustomerFormData = CustomerFormValues | CustomerUpdateFormValues;
+
 interface CustomerSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -64,7 +67,8 @@ export function CustomerSheet({
     }
   }, [open]);
 
-  const form = useForm<CustomerFormValues | CustomerUpdateFormValues>({
+  const form = useForm<CustomerFormData>({
+    // zodResolver với conditional schema cần type assertion (giới hạn của @hookform/resolvers)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(schema) as any,
     disabled: isPending,
@@ -108,8 +112,7 @@ export function CustomerSheet({
           membership_tier: customer.membership_tier || "SILVER",
           loyalty_points: customer.loyalty_points || 0,
           preferred_staff_id: customer.preferred_staff_id || undefined,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } as any);
+        });
       } else {
         form.reset({
           full_name: "",
@@ -127,13 +130,16 @@ export function CustomerSheet({
     }
   }, [open, mode, customer, form]);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: CustomerFormData) => {
     const formData = new FormData();
     formData.append("form_mode", mode);
     Object.entries(data).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        formData.append(key, value as string);
+      if (value === undefined || value === null) return;
+
+      if (typeof value === 'number') {
+        formData.append(key, String(value));
+      } else {
+        formData.append(key, value);
       }
     });
 

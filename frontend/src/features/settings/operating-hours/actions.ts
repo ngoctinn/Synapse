@@ -27,10 +27,9 @@ export async function getOperatingHours(): Promise<ActionResponse<OperatingHours
  * Cập nhật cấu hình giờ hoạt động
  */
 export async function updateOperatingHours(
-  config: OperatingHoursConfig
+  _config: OperatingHoursConfig
 ): Promise<ActionResponse> {
   // TODO: Replace with real API call to PUT /api/operating-hours
-  console.log("[Operating Hours] Saving config:", config);
 
   // Simulate network delay
   await new Promise(resolve => setTimeout(resolve, 300));

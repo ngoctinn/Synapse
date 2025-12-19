@@ -218,3 +218,27 @@
 ---
 *Người thực hiện: Antigravity Agent*
 *Ngày: 2025-12-18* (Refactor Session 5 - Comment Cleanup)
+
+# Antigravity Change Log: Features Deep Review Session 6
+
+## Tóm tắt
+Rà soát `services`, `booking-wizard`, `customers`, `settings`. Sửa type safety và clean code.
+
+## Chi tiết
+
+### 1. `customers/components/customer-sheet.tsx`
+- Thêm `CustomerFormData` union type
+- Giảm `eslint-disable` từ 3 → 1 (giữ zodResolver - giới hạn thư viện)
+- Type-safe onSubmit với number check
+
+### 2. `settings/operating-hours/actions.ts`
+- Xóa `console.log` debug
+- Prefix `_config` cho unused param
+
+### Verification
+- `pnpm lint`: Passed
+- `pnpm build`: Passed
+
+---
+*Người thực hiện: Antigravity Agent*
+*Ngày: 2025-12-19* (Session 6 - Features Deep Review)
