@@ -3,7 +3,7 @@
 ## 1. Tổng quan
 Hệ thống lập lịch của Synapse được chia thành hai module riêng biệt nhưng có mối quan hệ cộng sinh chặt chẽ:
 - **`schedules`**: Quản lý "Khung thời gian" (Xác định ai có mặt lúc nào).
-- **`scheduling`**: Quản lý "Phân bổ công việc" (Xác định ai làm việc gì cho khách nào).
+- **`scheduling_engine`**: Quản lý "Phân bổ công việc" (Xác định ai làm việc gì cho khách nào).
 
 Sự tách biệt này giúp hệ thống vừa linh hoạt trong việc quản lý ca làm việc (Shift management), vừa mạnh mẽ trong việc tối ưu hóa vận hành (Optimization).
 
@@ -19,7 +19,7 @@ Module này tập trung vào các thao tác CRUD và quản lý trạng thái l�
     - `get_staff_availability`: Trả về danh sách các `TimeSlot` mà nhân viên đó có mặt dựa trên các lịch đã `PUBLISHED`. Đây là hàm cầu nối quan trọng cho bộ giải (Solver).
     - `bulk_create`: Cho phép lên lịch nhanh cho nhiều nhân viên trong nhiều ngày.
 
-### 2.2. Module `scheduling` (Optimization Engine)
+### 2.2. Module `scheduling_engine` (Optimization Engine)
 Đây là module chứa logic học thuật phức tạp nhất của dự án, giải quyết bài toán RCPSP (Resource-Constrained Project Scheduling Problem).
 
 - **Công nghệ**: Google OR-Tools (CP-SAT Solver).
@@ -55,8 +55,8 @@ Hệ thống sử dụng các chỉ số học thuật để đánh giá lịch 
 - **Độ sâu phân tích**: Logic thực thi & Cấu trúc dữ liệu.
 - **Tệp liên quan**:
     - `backend/src/modules/schedules/service.py`
-    - `backend/src/modules/scheduling/solver.py`
-    - `backend/src/modules/scheduling/models.py`
+    - `backend/src/modules/scheduling_engine/solver.py`
+    - `backend/src/modules/scheduling_engine/models.py`
 
 ## 6. Các bước tiếp theo
 - **Tối ưu hóa**: Cải thiện hàm mục tiêu (Objective Function) để cân bằng tốt hơn giữa `Fairness` và `Utilization`.

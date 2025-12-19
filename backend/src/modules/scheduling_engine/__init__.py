@@ -1,5 +1,5 @@
 """
-Scheduling Module - Public API
+Scheduling Engine Module - Public API
 
 🎓 Module tối ưu hóa lập lịch sử dụng OR-Tools CP-SAT
 

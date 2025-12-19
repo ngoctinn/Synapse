@@ -1,109 +1,52 @@
-# Frontend Features Deep Review Plan - Staff Feature
+# Backend Module Refactoring - Scheduling Module Renaming
 
-## Mục tiêu
-Phân tích chuyên sâu feature `staff` (43 files) để tìm các vấn đề code quality, type safety, và duplications.
+## Vấn đề
+Hiện tại trong `backend/src/modules/` tồn tại hai module có tên gần giống nhau dễ gây nhầm lẫn:
+- `schedules`: Quản lý dữ liệu lịch làm việc (Shifts, Staff Assignments).
+- `scheduling`: Chứa logic thuật toán tối ưu hóa (OR-Tools, Solver).
 
----
+Sự tương đồng về tên gọi (`schedule` vs `scheduling`) dẫn đến khó khăn trong việc phân biệt trách nhiệm của từng module và dễ gây lỗi khi import.
 
-## 1. TỔNG QUAN FEATURE STAFF
+## Mục đích
+- Làm rõ trách nhiệm (Single Responsibility) của từng module.
+- `schedules` -> Tập trung vào Dữ liệu (State/Data).
+- `scheduling_engine` -> Tập trung vào Tính toán (Logic/Solver).
 
-### Cấu trúc thư mục
-```
-staff/
-├── actions.ts              (5.9KB) - Server Actions
-├── index.ts                (225B)  - Public API (thiếu nhiều export)
-├── model/
-│   ├── constants.ts        (3.7KB)
-│   ├── mocks.ts            (8.6KB)
-│   ├── schedules.ts        (3.3KB)
-│   ├── schemas.ts          (1KB)
-│   ├── shifts.ts           (0.9KB)
-│   └── types.ts            (2.9KB)
-├── hooks/
-│   ├── use-schedule-filters.ts
-│   ├── use-schedule-navigation.ts
-│   └── use-schedules.ts
-└── components/
-    ├── staff-form.tsx      (367 lines) ⚠️ LỚN
-    ├── staff-sheet.tsx     (174 lines)
-    ├── staff-page.tsx      (7KB)
-    ├── staff-filter.tsx
-    ├── create-staff-trigger.tsx
-    ├── invite-staff-trigger.tsx
-    ├── staff-list/
-    ├── permissions/
-    └── scheduling/         (21 files) ⚠️ LỚN
-```
+## Mục tiêu (Requirements)
+- [ ] Đổi tên module `scheduling` thành `scheduling_engine`.
+- [ ] Cập nhật toàn bộ các tham chiếu import trong codebase Backend.
+- [ ] Cấu hình lại Router trong `main.py`.
+- [ ] Đảm bảo tính nhất quán trong Frontend (nếu có gọi API cụ thể hoặc types liên quan).
 
----
+## Phân tích tác động (Impact Analysis)
+- **Files bị ảnh hưởng**:
+  - Toàn bộ files trong `src/modules/scheduling/` (nội bộ).
+  - `src/app/main.py` (Router registration).
+  - Các module khác có import từ `scheduling` (ví dụ: `bookings` hoặc `staff` nếu có).
+- **Broken links**: Đường dẫn API prefix có thể thay đổi nếu không được giữ nguyên. Cần giữ prefix `/scheduling` cho API để không làm hỏng Frontend, nhưng tên biến/module trong code đổi thành `scheduling_engine`.
 
-## 2. VẤN ĐỀ PHÁT HIỆN
-
-### 2.1. Type Safety Issues 🔴
-
-| File | Line | Vấn đề |
-|------|------|--------|
-| `staff-sheet.tsx` | 91 | `as any` type assertion cho role |
-| `staff-sheet.tsx` | 104 | `function onSubmit(data: any)` |
-
-**Nguyên nhân**: Union types giữa `StaffCreateFormValues` và `StaffUpdateFormValues`.
-
-### 2.2. Console.log còn sót 🟠
-
-| File | Line | Code |
-|------|------|------|
-| `actions.ts` | 137 | `console.log(\`[Batch Update] Created...`)` |
-
-### 2.3. File lớn cần chia nhỏ 🟡
-
-| File | Lines | Vấn đề |
-|------|-------|--------|
-| `staff-form.tsx` | 367 | Chứa 3 render functions lớn |
-
-### 2.4. Index.ts không export đầy đủ 🟡
-
-Hiện tại `index.ts` chỉ export:
-- `StaffPage`
-- `MOCK_STAFF`
-- `model/*` (schemas, types, constants)
-
-**Thiếu export:**
-- Hooks (`useScheduleFilters`, `useSchedules`, `useScheduleNavigation`)
-- Components scheduling (`StaffSchedulingPage`, etc.)
-
-### 2.5. Eslint-disable comments
-
-| File | Line | Reason |
-|------|------|--------|
-| `staff-sheet.tsx` | 90, 103 | `@typescript-eslint/no-explicit-any` |
-| `scheduling/calendar/week-view.tsx` | 106 | `@next/next/no-img-element` |
+## Giải pháp (Solution Design)
+1. **Giai đoạn chuẩn bị**: Tìm tất cả các vị trí sử dụng `src.modules.scheduling`.
+2. **Thực thi**:
+   - Sử dụng lệnh `mv` hoặc `rename` để đổi tên folder.
+   - Sử dụng regex replace để cập nhật các câu lệnh import.
+   - Sửa biến module trong `main.py`.
+3. **Kiểm tra**:
+   - Chạy test (nếu có).
+   - Kiểm tra API Health.
 
 ---
 
-## 3. KẾ HOẠCH THỰC THI
+## Kế hoạch chi tiết (Task Breakdown)
 
-### Phase 1: Fix Type Safety (High Priority)
-- [ ] **Task 1.1**: Sửa `any` type trong `staff-sheet.tsx`
-  - Tạo union type đúng cách cho onSubmit
-  - Sử dụng type narrowing thay vì `as any`
+### Phase 1: Preparation & Renaming
+- [ ] 1.1. Rename folder `backend/src/modules/scheduling` -> `backend/src/modules/scheduling_engine`.
 
-### Phase 2: Clean Code (Medium Priority)
-- [ ] **Task 2.1**: Xóa `console.log` trong `actions.ts`
-- [ ] **Task 2.2**: Thêm exports vào `index.ts` cho hooks và scheduling components
+### Phase 2: Code Updates
+- [ ] 2.1. Cập nhật `src/modules/scheduling_engine/__init__.py`.
+- [ ] 2.2. Update imports trong `backend/src/app/main.py`.
+- [ ] 2.3. Tìm và sửa các câu lệnh `from src.modules import scheduling` hoặc `from src.modules.scheduling import ...` trong toàn bộ backend.
 
-### Phase 3: Refactor Large File (Low Priority)
-- [ ] **Task 3.1**: Tách `staff-form.tsx` thành 3 files:
-  - `staff-form-general.tsx`
-  - `staff-form-professional.tsx`
-  - `staff-form-hr.tsx`
-  - `staff-form.tsx` (container)
-
----
-
-## 4. ƯU TIÊN
-
-| Priority | Task | Ảnh hưởng |
-|----------|------|-----------|
-| 🔴 High | Task 1.1 | Type safety, giảm eslint-disable |
-| 🟠 Medium | Task 2.1, 2.2 | Clean code, DX |
-| 🟡 Low | Task 3.1 | Maintainability |
+### Phase 3: Verification
+- [ ] 3.1. Kiểm tra API documentation (Swagger) xem router có hoạt động đúng không.
+- [ ] 3.2. Cập nhật các tài liệu liên quan (nếu có).

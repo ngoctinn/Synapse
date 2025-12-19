@@ -13,7 +13,7 @@ from src.modules import (
     resources,
     schedules,
     bookings,
-    scheduling,
+    scheduling_engine,
 )
 
 @asynccontextmanager
@@ -59,7 +59,7 @@ app.include_router(staff.router, prefix=settings.API_V1_STR)
 app.include_router(resources.router, prefix=settings.API_V1_STR)
 app.include_router(schedules.router, prefix=settings.API_V1_STR)
 app.include_router(bookings.router, prefix=settings.API_V1_STR)
-app.include_router(scheduling.router, prefix=settings.API_V1_STR)
+app.include_router(scheduling_engine.router, prefix=settings.API_V1_STR)
 
 @app.get("/")
 async def root():

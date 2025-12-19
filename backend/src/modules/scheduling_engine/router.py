@@ -25,7 +25,7 @@ from .data_extractor import DataExtractor
 from .solver import SpaSolver
 from .evaluator import ScheduleEvaluator
 
-router = APIRouter(prefix="/scheduling", tags=["Scheduling"])
+router = APIRouter(prefix="/scheduling", tags=["Scheduling Engine"])
 
 
 @router.post("/solve", response_model=SchedulingSolution)
