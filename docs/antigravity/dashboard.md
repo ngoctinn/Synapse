@@ -1,17 +1,30 @@
 # Dashboard Theo Dõi Antigravity - Synapse
 
 ## Thông tin Phiên
-- **Mã phiên:** `BACKEND-P3-BILLING-20251219`
-- **Trạng thái:** ✅ HOÀN THÀNH
+- **Mã phiên:** `DESIGN-PATCH-20251219`
+- **Trạng thái:** 🟡 ĐANG THỰC HIỆN (Phase 1: THINK)
 - **Ngày bắt đầu:** 2025-12-19
-- **Ngày hoàn thành:** 2025-12-19
-- **Mục tiêu:** Refactor Bookings & Triển khai Module Billing
+- **Mục tiêu:** Chỉnh sửa và đồng bộ hóa 10 lỗi không nhất quán trong thiết kế UML.
 
 ---
 
 ## Kết quả Thực hiện
 
-### Backend Phase 1: Customers Module ✅
+### DESIGN-PATCH: Đồng bộ UML (10 Lỗi) 🟡
+
+| STT | Nhiệm vụ | Tài liệu liên quan | Trạng thái |
+| :--- | :--- | :--- | :--- |
+| Task 1.1 | Khắc phục lỗi Auth Supabase (Security by Design) | `authentication.md`, `activity_diagrams.md` | ✅ HOÀN THÀNH |
+| Task 1.2 | Đồng bộ NULL `user_id` cho khách vãng lai | `usecase.md`, `database_design.md` | ✅ HOÀN THÀNH |
+| Task 1.3 | Refactor Activity Diagrams (Single Responsibility) | `activity_diagrams.md` | ✅ HOÀN THÀNH |
+| Task 1.4 | Chuẩn hóa Actor (Hợp nhất Chat, xóa Actor Hệ thống) | `usecase.md`, `usecase_diagrams.md` | ✅ HOÀN THÀNH |
+| Task 1.5 | Bổ sung ghi chú RLS, RBAC và ACID vào Sequence | `customer_flows.md`, `receptionist_flows.md` | ✅ HOÀN THÀNH |
+| Task 1.6 | Chuẩn hóa UML bao quát và tinh gọn thuật toán SISF | `activity_diagrams.md`, `receptionist_flows.md` | ✅ HOÀN THÀNH |
+| Task 1.7 | Loại bỏ lạm dụng `alt/else` cho quyết định Actor | `customer_flows.md` | ✅ HOÀN THÀNH |
+
+---
+
+### Backend Phase 3: Billing & Refactoring ✅ HOÀN THÀNH
 
 | STT | Nhiệm vụ | Trạng thái |
 | :--- | :--- | :--- |

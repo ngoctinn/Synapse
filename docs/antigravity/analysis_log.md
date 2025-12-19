@@ -1,57 +1,39 @@
-# Analysis Log - Customer Treatments Implementation
+# Nhật Ký Phân Tích (Analysis Log) - DESIGN-PATCH-20251219
 
-**Date:** 2025-12-19
-**Scope:** Backend Phase 2 (Treatments)
+## 1. Vị trí các lỗi cần sửa (Location Mapping)
 
-## 1. Integration Points
+### Lỗi 1: Auth Supabase sai hành vi
+- **File**: `docs/design/sequences/authentication.md`
+- **Chi tiết**: Sơ đồ đăng ký có bước `Hệ thống kiểm tra email tồn tại` và nhánh `alt` cho email đã tồn tại.
+- **Hướng sửa**: Xóa bước kiểm tra và nhánh rẽ, chỉ để lại phản hồi chung từ Auth Service.
 
-### A. Services Module (`src/modules/services`)
-- **Model:** `Service` (Existing)
-- **Relation:** `CustomerTreatment` has optional `service_id` FK.
-- **Goal:** Link a treatment package to a specific service definition (e.g., "10 sessions of Basic Facial").
+### Lỗi 2: Trigger DB vẽ như Actor/Service
+- **File**: Cần rà soát `docs/design/sequences/customer_flows.md` và `docs/design/activity_diagrams.md`.
+- **Chi tiết**: Tìm các luồng liên quan đến "Xác thực email" hoặc "Tự động hóa sau DB" (như tạo record phụ).
 
-### B. Bookings Module (`src/modules/bookings`)
-- **Service (`service.py`):**
-    - **`create` / `add_item`**: Needs validation.
-        - Iterate through `booking_items`.
-        - If `treatment_id` exists:
-            - Query `CustomerTreatment`.
-            - Check `customer_id` match.
-            - Check `expiry_date >= today`.
-            - Check `used_sessions < total_sessions`.
-            - *Concurrency:* Need to be careful with double spending if 2 bookings happen simultaneously.
-    - **`complete`**: Needs "Punch" logic.
-        - Iterate items.
-        - `used_sessions += 1`.
-        - Check `used_sessions <= total_sessions`.
-        - Update Reference: `CustomerTreatment`.
+### Lỗi 3 & 6: Thuật toán & Lạm dụng alt/else
+- **File**: `docs/design/activity_diagrams.md`, `docs/design/sequences/receptionist_flows.md`.
+- **Chi tiết**: Các khối `alt` cho lỗi API, lỗi kết nối hoặc các bước lặp toán học quá chi tiết.
+- **Hướng sửa**: Thay bằng `Note`.
 
-## 2. Decision Log
+### Lỗi 4: Mâu thuẫn Use Case Đặt lịch - Khách vãng lai
+- **File**: `docs/design/usecase.md`, `docs/design/sequences/customer_flows.md`, `docs/design/sequences/receptionist_flows.md`.
+- **Chi tiết**: Kiểm tra tiền điều kiện (Pre-conditions) của Use Case Đặt lịch.
+- **DB Check**: `database_design.md` xác nhận `customers.user_id` là nullable.
 
-- **State Machine:**
-    - `Punch` happens strictly at `complete()` (Status: IN_PROGRESS -> COMPLETED).
-    - `Refund` is NOT required for standard flow because `cancel()` is currently blocked for COMPLETED bookings.
-    - *Future Proofing:* Logic `refund_session` will be implemented in `CustomerTreatmentService` but might not be called by `BookingService` yet until we allow "Undo Complete".
+### Lỗi 5: Activity Diagram quá tải
+- **File**: `docs/design/activity_diagrams.md`.
+- **Chi tiết**: Rà soát các sơ đồ có quá nhiều quyết định kỹ thuật (API Call, DB Save).
 
-- **Dependency Injection:**
-    - `BookingService` will import `CustomerTreatment` model directly and use the shared `session` to execute updates within the same transaction. This ensures atomicity.
+### Lỗi 7: Nhầm lẫn Actor (Hệ thống/DB)
+- **File**: Toàn bộ các file trong `docs/design/sequences/` và `docs/design/usecase_diagrams.md`.
 
-## 4. Rà soát Mã nguồn hiện tại (Current Code Audit - 20251219)
+### Lỗi 8: Trùng lặp Use Case (Chat)
+- **File**: `docs/design/usecase.md`.
 
-### A. Mô đun Customers & Customer Treatments
-- **Trạng thái:** Đã triển khai Models, Services, Routers và Migrations.
-- **Đánh giá:** Code viết sạch, tuân thủ `SQLModel` và `Async`. Tuy nhiên, logic xử lý lỗi (Exceptions) đang nằm rải rác.
-- **Lỗ hổng:** Chưa có logic tự động chuyển trạng thái `EXPIRED` cho liệu trình bằng background task.
+### Lỗi 9 & 10: Thiếu RLS/ACID
+- **File**: Các sơ đồ Sequence quan trọng tại `customer_flows.md` và `receptionist_flows.md`.
 
-### B. Mô đun Bookings
-- **Vấn đề:** Đang có sự phụ thuộc trực tiếp vào Models của module khác (`CustomerTreatment`) thay vì thông qua Service API.
-- **Vấn đề:** Hàm `complete()` đang tự gán logic trừ buổi (Punch) thay vì gọi Service của `customer_treatments`.
-- **Thiếu sót:** `cancel()` và `no_show()` chưa có logic hoàn lại buổi hoặc xử lý kỷ luật liệu trình.
-
-### C. Cơ sở dữ liệu (Database)
-- Các bảng `customers` và `customer_treatments` đã được tạo thành công trong DB (đã kiểm tra migrations).
-- Tuy nhiên, bảng `bookings` vẫn đang dùng `customer_id` trỏ sang `users.id` trong một số logic cũ (cần chuẩn hóa sang trỏ tới bảng `customers`).
-
-## 5. Đề xuất hành động
-1. **Dọn nợ kỹ thuật (Refactoring)**: Chuẩn hóa `BookingService` để biến nó thành một "Orchestrator" gọi các service khác thay vì tự xử lý logic của module khác.
-2. **Triển khai Billing**: Đây là mảnh ghép còn thiếu để hoàn tất luồng nghiệp vụ "Money Flow".
+## 2. Các rủi ro/Dependencies
+- Việc hợp nhất Use Case có thể làm thay đổi ID của Use Case (ví dụ A2.7, B1.6), cần cập nhật tham chiếu chéo.
+- Việc xóa bước kiểm tra Auth có thể làm sơ đồ Sequence nhìn "ngắn" hơn nhưng đảm bảo đúng thực tế Supabase.

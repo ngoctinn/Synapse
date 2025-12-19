@@ -168,6 +168,7 @@ sequenceDiagram
     S->>DB: get_or_create_customer
     S->>DB: INSERT INTO bookings
     activate DB
+    Note over S,DB: Thao tác tạo lịch thủ công trong Transaction
     DB-->>S: booking
     deactivate DB
 
@@ -229,6 +230,7 @@ sequenceDiagram
     end
 
     activate DB
+    Note over S,DB: Đồng bộ trạng thái và trừ buổi trong Transaction
     DB-->>S: updated
     deactivate DB
 
@@ -274,6 +276,7 @@ sequenceDiagram
     S->>DB: INSERT INTO invoices
     S->>DB: UPDATE bookings SET status = 'COMPLETED'
     activate DB
+    Note over S,DB: Ghi hóa đơn & Cập nhật Booking trong Transaction
     DB-->>S: invoice
     deactivate DB
 
@@ -434,11 +437,11 @@ sequenceDiagram
         end
     end
 
+    Note over S,DB: Toàn bộ quá trình quét và xử lý conflict được đảm bảo tính nguyên tử
     S-->>BFF: RescheduleSummary
     deactivate S
     BFF-->>UI: Cập nhật Dashboard sự cố
     deactivate BFF
     UI-->>QTV: Hiển thị báo cáo xử lý tự động
-    deactivate UI
 ```
 **Hình 3.21: Sơ đồ tuần tự chức năng Tái lập lịch tự động**

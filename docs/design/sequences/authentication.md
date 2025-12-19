@@ -43,33 +43,28 @@ sequenceDiagram
 
     BFF->>SUPA: signUp(email, password, metadata)
     activate SUPA
-    alt Đăng ký thất bại
-        SUPA-->>BFF: Error (địa chỉ thư điện tử đã tồn tại)
-        BFF-->>UI: Hiển thị thông báo lỗi
-    else Đăng ký thành công
-        SUPA-->>BFF: User (id, email)
-        deactivate SUPA
+    SUPA-->>BFF: Response (Xác nhận tiếp nhận)
+    deactivate SUPA
 
-        Note over BFF,DB: Tạo hồ sơ khách hàng
-        BFF->>API: POST /customers
-        activate API
-        API->>S: create_customer_for_user(user_id, name)
-        activate S
-        S->>DB: INSERT INTO customers (user_id, full_name)
-        activate DB
-        DB-->>S: customer
-        deactivate DB
-        S-->>API: CustomerSchema
-        deactivate S
-        API-->>BFF: 201 Created
-        deactivate API
+    Note over BFF,DB: Tạo hồ sơ khách hàng (Customer Profile)
+    BFF->>API: POST /customers
+    activate API
+    API->>S: create_customer_for_user(user_id, name)
+    activate S
+    S->>DB: INSERT INTO customers (user_id, full_name)
+    activate DB
+    DB-->>S: customer
+    deactivate DB
+    S-->>API: CustomerSchema
+    deactivate S
+    API-->>BFF: 201 Created
+    deactivate API
 
-        BFF-->>UI: Đăng ký thành công
-        deactivate BFF
+    BFF-->>UI: Đăng ký thành công (Thông báo chung)
+    deactivate BFF
 
-        UI-->>KH: Hiển thị thông báo kiểm tra thư điện tử
-        deactivate UI
-    end
+    UI-->>KH: Hiển thị thông báo kiểm tra thư điện tử
+    deactivate UI
 ```
 **Hình 3.1: Sơ đồ tuần tự chức năng Đăng ký tài khoản khách hàng**
 

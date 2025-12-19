@@ -210,7 +210,7 @@ graph LR
         B1_3([B1.3 Tạo lịch hẹn<br>thủ công])
         B1_4([B1.4 Xác nhận<br>khách đến])
         B1_5([B1.5 Xử lý<br>thanh toán])
-        B1_6([B1.6 Phản hồi hỗ trợ<br>trò chuyện])
+        B1_6([A2.7 Hỗ trợ<br>trò chuyện (Hợp nhất)])
     end
 
     %% === USE CASES - KỸ THUẬT VIÊN ===
@@ -258,7 +258,7 @@ graph LR
 | B1.3 | Tạo lịch hẹn thủ công | Đặt lịch cho khách tại quầy |
 | B1.4 | Xác nhận khách đến | Ghi nhận khách có mặt, trừ liệu trình |
 | B1.5 | Xử lý thanh toán | Thu phí và tạo hóa đơn |
-| B1.6 | Phản hồi hỗ trợ trò chuyện | Phản hồi khách qua trò chuyện |
+| A2.7 | Hỗ trợ qua trò chuyện | Tương tác trực tiếp với khách hàng |
 
 ### Phân hệ Kỹ thuật viên
 
@@ -325,7 +325,7 @@ graph LR
 | Tác nhân | Số ca sử dụng | Mã ca sử dụng |
 |----------|---------------|---------------|
 | Khách hàng | 10 | A2.1-2, A2.4-7, A3.1-3, B1.7 |
-| Lễ tân | 6 | B1.1-6 |
+| Lễ tân | 6 | B1.1-5, A2.7 |
 | Kỹ thuật viên | 2 | B2.1, B2.3 |
 | Quản trị viên | 3 | C4, C5, C7 |
 | **Tổng cộng** | **21** | *(không tính Xác thực)* |

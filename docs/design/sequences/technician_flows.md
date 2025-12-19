@@ -96,6 +96,7 @@ sequenceDiagram
 
     S->>DB: INSERT INTO treatment_notes
     activate DB
+    Note over S,DB: Truy cập được kiểm soát bởi RLS
     DB-->>S: success
     deactivate DB
 

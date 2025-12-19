@@ -13,16 +13,10 @@ Mô tả quy trình khách hàng tạo tài khoản và xác thực qua email.
 activityDiagram
     start
     :Khách hàng nhập thông tin Đăng ký\n(Email, Tên, Mật khẩu);
-    :Hệ thống kiểm tra Email tồn tại?;
-    if (Đã tồn tại?) then (Có)
-        :Báo lỗi: Email đã được sử dụng;
-        stop
-    else (Không)
-        :Mã hóa mật khẩu;
-        :Tạo User & Customer Profile (Trạng thái: PENDING);
-        :Gửi Email xác thực (Link/Token);
-        :Hiển thị thông báo: "Vui lòng kiểm tra email";
-    endif
+    :Hệ thống tiếp nhận yêu cầu Đăng ký;
+    :Tạo User & Customer Profile (Trạng thái: PENDING);
+    :Gửi Email xác thực;
+    :Hiển thị thông báo: "Vui lòng kiểm tra email";
 
     :Khách hàng click Link xác thực;
     :Hệ thống kiểm tra Token hợp lệ?;
@@ -41,22 +35,12 @@ activityDiagram
 activityDiagram
     start
     :Người dùng nhập Email & Mật khẩu;
-    :Hệ thống tìm User theo Email;
-    if (Tồn tại User?) then (Có)
-        :Kiểm tra Mật khẩu (Hash compare);
-        if (Đúng mật khẩu?) then (Có)
-            if (Tài khoản Active?) then (Có)
-                :Lấy thông tin Role & Permissions;
-                :Tạo Session/Token (JWT);
-                :Chuyển hướng đến Dashboard theo Role;
-            else (Không)
-                :Báo lỗi: Tài khoản chưa kích hoạt hoặc bị khóa;
-            endif
-        else (Sai)
-            :Báo lỗi: Sai thông tin đăng nhập;
-        endif
-    else (Không)
-        :Báo lỗi: Sai thông tin đăng nhập;
+    :Xác thực thông tin đăng nhập;
+    if (Thành công?) then (Có)
+        :Cấp quyền truy cập (Session/Role);
+        :Chuyển hướng đến Dashboard phù hợp;
+    else (Thất bại)
+        :Báo lỗi: Sai thông tin hoặc tài khoản bị khóa;
     endif
     stop
 ```
@@ -72,10 +56,11 @@ Bao gồm tìm kiếm khung giờ (Algorithm) và hoàn tất đặt hẹn.
 activityDiagram
     start
     :Khách hàng chọn Dịch vụ & Ngày mong muốn;
-    :Hệ thống lấy dữ liệu (Lịch nhân viên, Tài nguyên, Bookings);
-    partition "Core: Constraint Solver" {
-        :Chạy thuật toán tìm khung giờ trống;
-        :Kiểm tra ràng buộc (Kỹ năng KTV, Phòng trống);
+    :Hệ thống thu thập dữ liệu khả dụng\n(KTV, Tài nguyên, Lịch hẹn);
+    partition "Thuật toán SISF (Optimization)" {
+        :Kiểm tra Ràng buộc Cứng (RCPSP Hard Constraints);
+        :Vòng lặp tối ưu hóa Đa mục tiêu\n(Fairness, Preference, Utilization);
+        :Lựa chọn phương án tối ưu (Jain's Fairness Index);
     }
     if (Có khung giờ trống?) then (Có)
         :Hiển thị danh sách khung giờ (Slots);

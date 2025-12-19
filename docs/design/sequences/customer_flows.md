@@ -181,9 +181,10 @@ sequenceDiagram
     API->>S: create_booking(data)
     activate S
 
-    critical Kiểm tra tính nhất quán
+    critical Kiểm tra tính nhất quán (Atomic Transaction)
         S->>DB: Kiểm tra khả dụng lần cuối (Exclusion Check)
         activate DB
+        Note over S,DB: Thao tác được bảo vệ bằng Database Transaction
         DB-->>S: OK
         deactivate DB
     end
@@ -285,6 +286,7 @@ sequenceDiagram
 
     S->>DB: INSERT INTO chat_messages
     activate DB
+    Note over S,DB: Truy cập được kiểm soát bởi RLS (auth.uid())
     DB-->>S: message
     deactivate DB
 
@@ -425,15 +427,11 @@ sequenceDiagram
     deactivate S
 
     Note over KH: Khách hàng nhận thông báo
-    KH->>NOTI: Xác nhận sẽ đến (hoặc Hủy)
+    Note over KH,NOTI: Khách hàng phản hồi từ các kênh (Email/SMS/App)
+    KH-->>NOTI: Gửi xác nhận hoặc yêu cầu hủy
 
-    alt Xác nhận đến
-        NOTI->>S: confirm_attendance(bookingId)
-        S->>DB: UPDATE bookings SET confirmed = true
-    else Yêu cầu hủy
-        NOTI->>S: request_cancellation(bookingId)
-        Note over S: Chuyển sang luồng Hủy lịch (A3.2)
-    end
+    Note over S: Nếu xác nhận: Cập nhật trạng thái 'CONFIRMED'
+    Note over S: Nếu yêu cầu hủy: Chuyển sang luồng Hủy lịch (A3.2)
 ```
 **Hình 3.16: Sơ đồ tuần tự chức năng Nhận thông báo nhắc lịch**
 ### 3.17. Gửi yêu cầu bảo hành (A3.6)

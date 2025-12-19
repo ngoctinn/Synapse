@@ -1,6 +1,6 @@
-# Kế Hoạch Triển Khai Backend - Giai Đoạn 3: Billing & Refactoring
+# Kế Hoạch Triển Khai: Chỉnh Sửa Và Đồng Bộ Hóa Thiết Kế UML (Synapse Design Patch)
 
-**Mã phiên:** `BACKEND-P3-BILLING-20251219`
+**Mã phiên:** `DESIGN-PATCH-20251219`
 **Ngày tạo:** 2025-12-19
 **Trạng thái:** THINK (Chờ phê duyệt)
 
@@ -8,90 +8,85 @@
 
 ## 1. Vấn đề (Problem Statement)
 
-Sau khi rà soát mã nguồn Backend, tôi nhận thấy các vấn đề sau cần giải quyết:
-1.  **Sự lặp lại logic (DRY Violation)**: `BookingService` đang tự triển khai logic `_validate_treatment` và `_punch_treatment` thay vì gọi qua `CustomerTreatmentService`. Điều này gây khó khăn cho việc bảo trì.
-2.  **Thiếu module Billing**: Hệ thống chưa có khả năng tạo hóa đơn (`Invoice`) và ghi nhận thanh toán (`Payment`).
-3.  **Hổng logic hoàn buổi**: Khi một Booking đã hoàn thành (`COMPLETED`) bị hủy hoặc chuyển trạng thái, số buổi liệu trình chưa được hoàn lại (`refund`) vào thẻ của khách.
+Hiện tại, hệ thống tài liệu thiết kế tại `docs/design` đang tồn tại 10 lỗi không nhất quán nghiêm trọng giữa các sơ đồ UML (Use Case, Sequence, Activity) và thực tế triển khai/logic nghiệp vụ:
+1.  **Sai lệch Auth Supabase**: Mô tả sai luồng kiểm tra email tồn tại (vi phạm Security by Design).
+2.  **Sai bản chất Trigger DB**: Vẽ Trigger như một actor/service bên ngoài.
+3.  **Thổi phồng thuật toán**: Mô tả RCPSP và Jain's Index quá mức so với những gì UML thực tế thể hiện (chỉ kiểm tra ràng buộc).
+4.  **Mâu thuẫn Use Case - DB**: Use Case bắt buộc đăng nhập trong khi DB cho phép khách vãng lai (`customer.user_id` nullable).
+5.  **Vi phạm Single Responsibility**: Activity Diagram quá tải thông tin (ôm đồm cả UI, Auth, DB).
+6.  **Lạm dụng alt/else**: Vẽ các nhánh rẽ mà hệ thống không kiểm soát được (ví dụ lỗi từ bên thứ 3).
+7.  **Nhầm lẫn Actor**: Dùng "Hệ thống", "Database" làm Actor.
+8.  **Trùng lặp Use Case**: Chia nhỏ Use Case không cần thiết (Chat, Đặt lịch).
+9.  **Thiếu bảo mật RLS/RBAC**: Tài liệu nhấn mạnh nhưng sơ đồ không thể hiện điểm kiểm soát.
+10. **Thiếu tính nguyên tử**: Thao tác quan trọng (Đặt lịch) không thể hiện tính Transaction/Rollback.
 
 ---
 
 ## 2. Mục đích (Goals)
 
-1.  **Refactor Integration**: Chuyển logic xử lý Liệu trình trong `BookingService` sang sử dụng `CustomerTreatmentService`.
-2.  **Triển khai Module Billing**:
-    *   Tạo bảng `invoices` để lưu trữ thông tin hóa đơn.
-    *   Tạo bảng `payments` để ghi nhận các giao dịch thanh toán.
-3.  **Tự động hóa luồng tài chính**:
-    *   Tự động tạo bản nháp hóa đơn khi Booking chuyển sang `COMPLETED`.
-    *   Tự động cập nhật trạng thái hóa đơn khi có thanh toán đủ.
+1.  **Đồng bộ hóa Toàn diện**: Đảm bảo tất cả sơ đồ UML (Use Case, Sequence, Activity) nhất quán với nhau và khớp với thực tế mã nguồn/DB.
+2.  **Bao quát Tính năng**: Đảm bảo UML thể hiện đầy đủ các đặc tính quan trọng (RCPSP, RLS, Transaction) nhưng ở mức độ bao quát (high-level).
+3.  **Chuẩn hóa & Tinh gọn**: Loại bỏ các lỗi sai actor, lạm dụng ký hiệu kỹ thuật, tập trung vào luồng nghiệp vụ chính để dễ đọc, dễ hiểu.
 
 ---
 
 ## 3. Ràng buộc (Constraints)
 
-- **Kiến trúc**: Tuân thủ Vertical Slice Architecture. Module `bookings` sẽ phụ thuộc vào `customer_treatments` và `billing`.
-- **Dữ liệu**: Hóa đơn phải lưu trữ snapshot của giá dịch vụ tại thời điểm thanh toán.
-- **Tính nguyên tử**: Các thao tác liên module (Booking -> Treatment, Booking -> Billing) phải chạy trong cùng một Database Transaction.
+- **Ngôn ngữ**: Phải sử dụng tiếng Việt chuẩn.
+- **Tính thực tế**: Không vẽ những gì hệ thống không làm.
+- **Supabase Contract**: Phải tuân thủ đúng cách Supabase Auth và DB Trigger vận hành.
+- **Kiến trúc**: Phải phù hợp với Vertical Slice Architecture và Feature-Sliced Design đang áp dụng.
 
 ---
 
 ## 4. Chiến lược (Strategy)
 
-### Bước 1: Refactor Bookings & Treatments (Verify Phase 2)
-- Inject `CustomerTreatmentService` vào `BookingService`.
-- Thay thế các helper private bằng service calls.
-- Bổ sung logic `refund_session` trong `BookingService.cancel`.
+Tôi sẽ thực hiện chỉnh sửa theo từng nhóm tài liệu:
 
-### Bước 2: Tạo Module Billing
-- Folder: `src/modules/billing/`
-- Models: `Invoice`, `Payment`.
-- Trạng thái hóa đơn: `DRAFT`, `UNPAID`, `PARTIALLY_PAID`, `PAID`, `VOID`.
-- Phương thức thanh toán: `CASH`, `BANK_TRANSFER`, `CREDIT_CARD`, `E_WALLET`.
+### Nhóm 1: Use Case & Actors (`usecase.md`, `usecase_diagrams.md`)
+- Hợp nhất các Use Case trùng lặp.
+- Định nghĩa lại 4 Actor chính: Khách hàng, Lễ tân, KTV, Quản trị viên.
+- Cập nhật tiền điều kiện cho Use Case "Đặt lịch" (hỗ trợ cả khách có tài khoản và vãng lai).
 
-### Bước 3: Tích hợp Booking -> Billing
-- Khi `BookingService.complete` được gọi:
-    - Ngoài việc punch treatment, sẽ gọi `BillingService.create_invoice_from_booking`.
+### Nhóm 2: Sequence Diagrams (`sequence_diagrams.md`, `docs/design/sequences/`)
+- Chỉnh sửa luồng Auth: Bỏ nhánh kiểm tra email, dùng thông báo chung.
+- Chỉnh sửa Trigger: Chuyển từ Actor/Service thành `Note over DB` hoặc mũi tên nội bộ DB.
+- Loại bỏ các khối `alt` thừa thải, thay bằng `Note` mô tả trường hợp ngoại lệ.
+- Thêm `Note` về Transaction/ACID và Kiểm soát RLS/RBAC.
 
----
-
-## 5. Giải pháp Chi tiết (Solution)
-
-### 5.1 Models (billing/models.py)
-- **Invoice**: `id`, `booking_id`, `customer_id`, `total_amount`, `discount_amount`, `final_amount`, `status`, `notes`.
-- **Payment**: `id`, `invoice_id`, `amount`, `payment_method`, `transaction_reference`, `payment_date`.
-
-### 5.2 Service Logic (billing/service.py)
-- `create_invoice_from_booking(booking_id)`: Tổng hợp các `BookingItem` để tính tiền.
-- `process_payment(invoice_id, amount, method)`: Ghi nhận thanh toán và check xem đã trả đủ chưa để update status Invoice.
+### Nhóm 3: Activity Diagrams (`activity_diagrams.md`)
+- **Tinh gọn trách nhiệm**: Loại bỏ các bước hạ tầng kỹ thuật (API, DB) để giải quyết lỗi "quá tải trách nhiệm", chỉ giữ lại luồng hành động của Actor và quyết định của hệ thống.
+- **Bao quát thuật toán**: Thể hiện quy trình lập lịch thông minh SISF thông qua các khối chức năng bao quát (RCPSP Constraint Check, Optimization Process) thay vì vẽ chi tiết vòng lặp code. Điều này đảm bảo tính nhất quán với văn bản mà không làm rối sơ đồ.
+- Đảm bảo tính bao quát: Sơ đồ phải phản ánh được toàn bộ quy trình từ yêu cầu của khách đến kết quả cuối cùng.
 
 ---
 
-## 6. Danh sách Task Chi Tiết (SPLIT)
+## 5. Danh sách Task Chi Tiết (SPLIT)
 
-### 3.1 Refactoring (Dọn dẹp nợ kỹ thuật)
-- [ ] **3.1.1** Inject `CustomerTreatmentService` vào `BookingService`.
-- [ ] **3.1.2** Thay thế `_validate_treatment` và `_punch_treatment` bằng service calls.
-- [ ] **3.1.3** Thêm logic `refund_session` vào `BookingService.cancel` (nếu trạng thái cũ là COMPLETED).
+### 5.1 Xử lý Use Case & Actors
+- [ ] **5.1.1** Rà soát và cập nhật danh sách Actor chuẩn trong `usecase.md`.
+- [ ] **5.1.2** Hợp nhất Use Case "Hỗ trợ chat" (Customer + Staff).
+- [ ] **5.1.3** Cập nhật Use Case "Đặt lịch" để phản ánh thực tế DB (Nullable user_id).
 
-### 3.2 Module Billing (Mới)
-- [ ] **3.2.1** Khởi tạo folder `src/modules/billing/`.
-- [ ] **3.2.2** Định nghĩa Models & Enums.
-- [ ] **3.2.3** Định nghĩa Schemas (InvoiceRead, PaymentCreate, v.v.).
-- [ ] **3.2.4** Triển khai `BillingService` (CRUD Invoices, CRUD Payments).
-- [ ] **3.2.5** Triển khai `BillingRouter`.
+### 5.2 Xử lý Sequence Diagrams (Auth & DB Focus)
+- [ ] **5.2.1** Sửa lỗi Auth Supabase (Bỏ nhánh check email tồn tại).
+- [ ] **5.2.2** Chuyển đổi Trigger DB từ Participant sang Internal Mechanism (Note).
+- [ ] **5.2.3** Dọn dẹp `alt/else` và thêm Note về RLS/RBAC.
+- [ ] **5.2.4** Bổ sung Note "Transaction/Atomic" cho các luồng tạo dữ liệu quan trọng.
 
-### 3.3 Integration & Migrations
-- [ ] **3.3.1** Tạo Database Migration cho Billing.
-- [ ] **3.3.2** Tích hợp tự động tạo hóa đơn vào `BookingService.complete`.
+### 5.3 Chuẩn hóa Activity Diagrams & Thuật toán
+- [ ] **5.3.1** Refactor Activity Diagrams: Chỉ giữ lại luồng nghiệp vụ, loại bỏ các bước API/DB call chi tiết.
+- [ ] **5.3.2** Đồng bộ hóa mô tả thuật toán: Sử dụng các khối chức năng (Action boxes) định danh rõ "RCPSP" và "Jain's Fairness" để đảm bảo tính bao quát của hệ thống trong UML.
 
 ---
 
-## 7. Kiểm tra Thành công (VERIFY)
+## 6. Kiểm tra Thành công (VERIFY)
 
-- [ ] Booking hoàn thành -> `used_sessions` tăng (qua service).
-- [ ] Booking hoàn thành -> Một bản ghi `Invoice` ở trạng thái `UNPAID` được tạo tự động.
-- [ ] Thanh toán hóa đơn -> Trạng thái Invoice chuyển sang `PAID`.
-- [ ] Hủy Booking đã hoàn thành -> `used_sessions` được hoàn lại (qua service).
+- [ ] Tất cả sơ đồ không còn "Hệ thống" hay "Database" là Actor.
+- [ ] Luồng đăng ký tài khoản không còn nhánh "Email đã tồn tại".
+- [ ] Use Case "Đặt lịch" hỗ trợ cả khách vãng lai.
+- [ ] Các sơ đồ Sequence có ghi chú về ACID và RLS.
+- [ ] Activity Diagram chỉ tập trung vào hành động nghiệp vụ.
 
 ---
 

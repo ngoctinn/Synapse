@@ -22,9 +22,9 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 |------------|----------|
 | **Mã chức năng** | A1.1 |
 | **Tên chức năng** | Đăng ký tài khoản khách hàng |
-| **Mô tả** | Khách hàng tạo tài khoản mới để sử dụng các dịch vụ trực tuyến của Spa. |
-| **Tác nhân** | Khách hàng |
-| **Tiền điều kiện** | Địa chỉ thư điện tử chưa tồn tại trong hệ thống. |
+| **Mô tả** | Người dùng tạo tài khoản mới để trở thành khách hàng chính thức và sử dụng các dịch vụ trực tuyến. |
+| **Tác nhân** | Khách hàng (tiềm năng) |
+| **Tiền điều kiện** | Hệ thống sẵn sàng tiếp nhận yêu cầu đăng ký. |
 | **Hậu điều kiện** | Tài khoản được tạo ở trạng thái chờ kích hoạt; hồ sơ khách hàng được khởi tạo; thư xác thực được gửi đi. |
 
 **Luồng sự kiện chính:**
@@ -35,7 +35,7 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 | 2 | Hệ thống | Kiểm tra tính hợp lệ và duy nhất của thông tin, tạo tài khoản mới và hồ sơ khách hàng tương ứng. |
 | 3 | Hệ thống | Gửi thư điện tử chứa liên kết xác thực đến địa chỉ đã đăng ký. |
 
-**Luồng ngoại lệ:** Nếu địa chỉ thư điện tử đã tồn tại hoặc thông tin không hợp lệ, hệ thống hiển thị thông báo lỗi tương ứng.
+**Luồng ngoại lệ:** Nếu thông tin không hợp lệ hoặc lỗi hệ thống, hệ thống hiển thị thông báo lỗi chung.
 
 ---
 
@@ -182,7 +182,8 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 | **Tên chức năng** | Hoàn tất đặt lịch hẹn |
 | **Mô tả** | Khách hàng xác nhận khung giờ đã chọn để tạo lịch hẹn chính thức. |
 | **Tác nhân** | Khách hàng |
-| **Hậu điều kiện** | Lịch hẹn được tạo; thông báo xác nhận được gửi đến khách hàng và kỹ thuật viên. |
+| **Tiền điều kiện** | Khung giờ khả dụng đã được chọn. |
+| **Hậu điều kiện** | Lịch hẹn được tạo; hồ sơ khách hàng được cập nhật/tạo mới (nếu là khách vãng lai); thông báo xác nhận được gửi đi. |
 
 **Luồng sự kiện chính:**
 
@@ -217,22 +218,24 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 ---
 
-### Bảng 3.11: Nhận hỗ trợ qua trò chuyện trực tuyến
+### Bảng 3.11: Hỗ trợ qua trò chuyện trực tuyến
 
 | Thuộc tính | Nội dung |
 |------------|----------|
-| **Mã chức năng** | A2.7 |
-| **Tên chức năng** | Nhận hỗ trợ qua trò chuyện trực tuyến |
-| **Mô tả** | Khách hàng sử dụng tính năng trò chuyện trực tuyến để nhận tư vấn hoặc hỗ trợ đặt lịch hẹn từ nhân viên Spa. |
-| **Tác nhân** | Khách hàng |
+| **Mã chức năng** | A2.7 (Hợp nhất B1.6) |
+| **Tên chức năng** | Hỗ trợ qua trò chuyện trực tuyến |
+| **Mô tả** | Khách hàng và Lễ tân trao đổi trực tiếp để giải đáp thắc mắc hoặc hỗ trợ đặt lịch. |
+| **Tác nhân** | Khách hàng, Lễ tân |
+| **Tiền điều kiện** | Khách hàng đang truy cập ứng dụng. |
 
 **Luồng sự kiện chính:**
 
 | Bước | Tác nhân | Hành động |
 |------|----------|-----------|
 | 1 | Khách hàng | Gửi tin nhắn yêu cầu hỗ trợ qua giao diện trò chuyện. |
-| 2 | Hệ thống | Chuyển tin nhắn đến lễ tân để xử lý. |
-| 3 | Lễ tân | Phản hồi và hỗ trợ khách hàng trực tiếp. |
+| 2 | Hệ thống | Thông báo cho Lễ tân có phiên trò chuyện mới. |
+| 3 | Lễ tân | Tiếp nhận và phản hồi tin nhắn của khách hàng. |
+| 4 | Hệ thống | Lưu trữ nội dung trao đổi vào lịch sử hỗ trợ. |
 
 ---
 
@@ -447,22 +450,7 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 ---
 
-### Bảng 3.20: Phản hồi hỗ trợ qua trò chuyện trực tuyến
-
-| Thuộc tính | Nội dung |
-|------------|----------|
-| **Mã chức năng** | B1.6 |
-| **Tên chức năng** | Phản hồi hỗ trợ qua trò chuyện trực tuyến |
-| **Mô tả** | Lễ tân tiếp nhận và phản hồi các yêu cầu hỗ trợ từ khách hàng qua kênh trò chuyện trực tuyến. |
-| **Tác nhân** | Lễ tân |
-
-**Luồng sự kiện chính:**
-
-| Bước | Tác nhân | Hành động |
-|------|----------|-----------|
-| 1 | Hệ thống | Thông báo có khách hàng đang yêu cầu hỗ trợ. |
-| 2 | Lễ tân | Mở phiên trò chuyện và phản hồi khách hàng. |
-| 3 | Hệ thống | Lưu lịch sử hội thoại vào hồ sơ khách hàng. |
+*(Lưu ý: Chức năng Phản hồi hỗ trợ qua trò chuyện trực tuyến đã được hợp nhất vào bảng 3.11 - A2.7)*
 
 ---
 
