@@ -1,6 +1,6 @@
-# Kế Hoạch Triển Khai Backend - Giai Đoạn 2: Module Customer Treatments
+# Kế Hoạch Triển Khai Backend - Giai Đoạn 3: Billing & Refactoring
 
-**Mã phiên:** `BACKEND-P2-TREATMENTS-20251219`
+**Mã phiên:** `BACKEND-P3-BILLING-20251219`
 **Ngày tạo:** 2025-12-19
 **Trạng thái:** THINK (Chờ phê duyệt)
 
@@ -8,153 +8,91 @@
 
 ## 1. Vấn đề (Problem Statement)
 
-Hệ thống Spa cần quản lý các gói liệu trình (Treatments) mà khách hàng đã mua (ví dụ: Gói massage 10 buổi). Hiện tại:
-1.  Chưa có bảng `customer_treatments` để lưu trữ thông tin gói đã mua.
-2.  Booking không có liên kết với Treatment, dẫn đến không thể tự động trừ buổi khi khách sử dụng dịch vụ.
-3.  Không thể kiểm tra hạn sử dụng của liệu trình.
+Sau khi rà soát mã nguồn Backend, tôi nhận thấy các vấn đề sau cần giải quyết:
+1.  **Sự lặp lại logic (DRY Violation)**: `BookingService` đang tự triển khai logic `_validate_treatment` và `_punch_treatment` thay vì gọi qua `CustomerTreatmentService`. Điều này gây khó khăn cho việc bảo trì.
+2.  **Thiếu module Billing**: Hệ thống chưa có khả năng tạo hóa đơn (`Invoice`) và ghi nhận thanh toán (`Payment`).
+3.  **Hổng logic hoàn buổi**: Khi một Booking đã hoàn thành (`COMPLETED`) bị hủy hoặc chuyển trạng thái, số buổi liệu trình chưa được hoàn lại (`refund`) vào thẻ của khách.
 
 ---
 
 ## 2. Mục đích (Goals)
 
-1.  **Tạo module `treatments`** (hoặc `customer_treatments`): Quản lý các gói liệu trình của khách hàng.
-2.  **Logic Punch Card**: Trừ số buổi (`used_sessions`) khi Booking Item hoàn thành (`COMPLETED`).
-3.  **Tích hợp Booking**: `booking_items` cần có trường `treatment_id` (optional) để biết item này thuộc về gói nào.
-4.  **Kiểm tra hợp lệ**: Chặn sử dụng nếu hết buổi hoặc hết hạn (`expiry_date`).
+1.  **Refactor Integration**: Chuyển logic xử lý Liệu trình trong `BookingService` sang sử dụng `CustomerTreatmentService`.
+2.  **Triển khai Module Billing**:
+    *   Tạo bảng `invoices` để lưu trữ thông tin hóa đơn.
+    *   Tạo bảng `payments` để ghi nhận các giao dịch thanh toán.
+3.  **Tự động hóa luồng tài chính**:
+    *   Tự động tạo bản nháp hóa đơn khi Booking chuyển sang `COMPLETED`.
+    *   Tự động cập nhật trạng thái hóa đơn khi có thanh toán đủ.
 
 ---
 
 ## 3. Ràng buộc (Constraints)
 
-### 3.1 Kỹ thuật
-- Tuân thủ Backend Rules (Async, Pydantic V2, SQLModel).
-- Quan hệ: `customers` 1-N `customer_treatments`.
-- Quan hệ: `booking_items` N-1 `customer_treatments` (đã có trong design, cần thêm FK).
-- `treatment_id` trong `booking_items` là nullable (khách có thể đặt lẻ, không dùng gói).
-
-### 3.2 Nghiệp vụ
-- **Mua gói**: Khi khách mua gói, tạo record trong `customer_treatments` (chưa làm Billing, nên tạm thời API tạo thủ công).
-- **Sử dụng**: Khi tạo Booking, nếu chọn dùng gói -> check `used_sessions < total_sessions` và `expiry_date >= today`.
-- **Trừ buổi**: Khi Booking chuyển sang `COMPLETED`, tăng `used_sessions`.
-- **Hủy Booking**: Nếu Booking bị hủy hoặc No-show (tùy chính sách), có thể hoàn lại buổi (giảm `used_sessions`). *Tạm thời: Cancel -> hoàn buổi; No-show -> mất buổi (cần confirm policy, MVP: Cancel hoàn, No-show chưa xử lý tự động).*
+- **Kiến trúc**: Tuân thủ Vertical Slice Architecture. Module `bookings` sẽ phụ thuộc vào `customer_treatments` và `billing`.
+- **Dữ liệu**: Hóa đơn phải lưu trữ snapshot của giá dịch vụ tại thời điểm thanh toán.
+- **Tính nguyên tử**: Các thao tác liên module (Booking -> Treatment, Booking -> Billing) phải chạy trong cùng một Database Transaction.
 
 ---
 
 ## 4. Chiến lược (Strategy)
 
-### Phase 2A: Tạo Module Customer Treatments
-```
-src/modules/customer_treatments/
-├── __init__.py
-├── models.py
-├── schemas.py
-├── service.py
-├── router.py
-└── exceptions.py
-```
+### Bước 1: Refactor Bookings & Treatments (Verify Phase 2)
+- Inject `CustomerTreatmentService` vào `BookingService`.
+- Thay thế các helper private bằng service calls.
+- Bổ sung logic `refund_session` trong `BookingService.cancel`.
 
-### Phase 2B: Cập nhật Module Bookings
-- Thêm trường `treatment_id` vào `BookingItem` (DB Migration).
-- Cập nhật `BookingItemCreate` schema.
-- Logic Service:
-    - Khi tạo booking: Validate treatment (còn buổi, chưa hết hạn).
-    - Khi `complete` booking: Gọi service treatment để trừ buổi (`punch`).
+### Bước 2: Tạo Module Billing
+- Folder: `src/modules/billing/`
+- Models: `Invoice`, `Payment`.
+- Trạng thái hóa đơn: `DRAFT`, `UNPAID`, `PARTIALLY_PAID`, `PAID`, `VOID`.
+- Phương thức thanh toán: `CASH`, `BANK_TRANSFER`, `CREDIT_CARD`, `E_WALLET`.
 
-### Phase 2C: Integration
-- Đăng ký router.
+### Bước 3: Tích hợp Booking -> Billing
+- Khi `BookingService.complete` được gọi:
+    - Ngoài việc punch treatment, sẽ gọi `BillingService.create_invoice_from_booking`.
 
 ---
 
 ## 5. Giải pháp Chi tiết (Solution)
 
-### 5.1 Entity (models.py)
+### 5.1 Models (billing/models.py)
+- **Invoice**: `id`, `booking_id`, `customer_id`, `total_amount`, `discount_amount`, `final_amount`, `status`, `notes`.
+- **Payment**: `id`, `invoice_id`, `amount`, `payment_method`, `transaction_reference`, `payment_date`.
 
-```python
-class TreatmentStatus(str, Enum):
-    ACTIVE = "ACTIVE"
-    COMPLETED = "COMPLETED"
-    EXPIRED = "EXPIRED"
-
-class CustomerTreatment(SQLModel, table=True):
-    __tablename__ = "customer_treatments"
-
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    customer_id: uuid.UUID = Field(foreign_key="customers.id")
-    service_id: uuid.UUID | None = Field(default=None, foreign_key="services.id")
-
-    name: str  # Tên gói (Lấy snapshot từ Service Package hoặc nhập tay)
-    total_sessions: int
-    used_sessions: int = Field(default=0)
-    expiry_date: date | None = None
-
-    status: TreatmentStatus = Field(default=TreatmentStatus.ACTIVE)
-
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-
-    # Constraints
-    # used <= total
-```
-
-### 5.2 API Endpoints
-
-| Method | Endpoint | Mô tả |
-|--------|----------|-------|
-| GET | `/treatments/customer/{customer_id}` | Lấy liệu trình của khách |
-| GET | `/treatments/{id}` | Chi tiết liệu trình |
-| POST | `/treatments` | Tạo liệu trình mới (Mua gói - Admin/Recep ONLY) |
-| PUT | `/treatments/{id}` | Cập nhật (gia hạn, sửa lỗi) |
-| POST | `/treatments/{id}/punch` | Internal API: Trừ buổi (dùng bởi Booking Service) |
+### 5.2 Service Logic (billing/service.py)
+- `create_invoice_from_booking(booking_id)`: Tổng hợp các `BookingItem` để tính tiền.
+- `process_payment(invoice_id, amount, method)`: Ghi nhận thanh toán và check xem đã trả đủ chưa để update status Invoice.
 
 ---
 
 ## 6. Danh sách Task Chi Tiết (SPLIT)
 
-### 2.1 Khởi tạo Module (Basic)
-- [ ] **2.1.1** Tạo folder `src/modules/customer_treatments/`
-- [ ] **2.1.2** `exceptions.py` (TreatmentNotFound, TreatmentExpired, TreatmentOutOfSessions)
-- [x] **2.1** Khởi tạo Module `customer_treatments` (Entity, Schema, Exception).
-- [x] **2.2** Logic Service (CRUD + `punch` method + `refund` method).
-- [x] **2.3** API Router cho Treatments.
-- [x] **2.4** Database Migration (Tạo bảng `customer_treatments` + Update `booking_items`).
-- [x] **2.5** Tích hợp vào Module `bookings`:
-    - Logic Validate Treatment (`used < total`).
-    - Logic Auto-Punch khi `COMPLETED`.
-    - Logic Refund khi `CANCELLED`.
-- [x] **2.6** Đăng ký Router chính.
-- [ ] **2.1.3** `models.py` (CustomerTreatment, TreatmentStatus)
-- [ ] **2.1.4** `schemas.py` (Create/Read/Update)
+### 3.1 Refactoring (Dọn dẹp nợ kỹ thuật)
+- [ ] **3.1.1** Inject `CustomerTreatmentService` vào `BookingService`.
+- [ ] **3.1.2** Thay thế `_validate_treatment` và `_punch_treatment` bằng service calls.
+- [ ] **3.1.3** Thêm logic `refund_session` vào `BookingService.cancel` (nếu trạng thái cũ là COMPLETED).
 
-### 2.2 Logic Service
-- [ ] **2.2.1** CRUD cơ bản (Get Customer Treatments)
-- [ ] **2.2.2** Method `validate_availability(treatment_id)`: Check còn hạn & còn buổi
-- [ ] **2.2.3** Method `punch_session(treatment_id)`: used_sessions += 1
-- [ ] **2.2.4** Method `refund_session(treatment_id)`: used_sessions -= 1
+### 3.2 Module Billing (Mới)
+- [ ] **3.2.1** Khởi tạo folder `src/modules/billing/`.
+- [ ] **3.2.2** Định nghĩa Models & Enums.
+- [ ] **3.2.3** Định nghĩa Schemas (InvoiceRead, PaymentCreate, v.v.).
+- [ ] **3.2.4** Triển khai `BillingService` (CRUD Invoices, CRUD Payments).
+- [ ] **3.2.5** Triển khai `BillingRouter`.
 
-### 2.3 Router & Integration
-- [ ] **2.3.1** API Endpoints cho Treatments
-- [ ] **2.3.2** Register Router in `main.py`
-- [ ] **2.3.3** Export module in `src/modules/__init__.py`
-
-### 2.4 Database Migration
-- [ ] **2.4.1** Update `BookingItem` model (Add `treatment_id`)
-- [ ] **2.4.2** Alembic Revision (Create table + Add Foreign Key)
-
-### 2.5 Tích hợp Bookings Logic
-- [ ] **2.5.1** Update `BookingItemCreate` schema (Add `treatment_id`)
-- [ ] **2.5.2** Update `BookingService.create` & `add_item`: Call `validate_availability`
-- [ ] **2.5.3** Update `BookingService.complete`: Call `punch_session`
-- [ ] **2.5.4** Update `BookingService.cancel`: Call `refund_session` (nếu booking đã completed hoặc logic khác - *Lưu ý: Nếu cancel từ CONFIRMED thì ko cần refund vì chưa trừ, chỉ trừ khi COMPLETED. Nhưng nếu lỡ complete nhầm rồi cancel thì cần refund.*)
-  * *Quyết định:* Chỉ gọi refund khi revert từ COMPLETED -> CANCELLED/OTHER. Với luồng chuẩn (PENDING -> CONFIRMED -> COMPLETED), ta sẽ trừ ở bước cuối.
+### 3.3 Integration & Migrations
+- [ ] **3.3.1** Tạo Database Migration cho Billing.
+- [ ] **3.3.2** Tích hợp tự động tạo hóa đơn vào `BookingService.complete`.
 
 ---
 
-## 7. Kiểm tra Thành công
+## 7. Kiểm tra Thành công (VERIFY)
 
-- [ ] Tạo được Treatment cho Customer.
-- [ ] Tạo Booking với `treatment_id`.
-- [ ] Booking hoàn thành -> `used_sessions` tăng lên 1.
-- [ ] Không thể đặt nếu `used_sessions` == `total_sessions`.
+- [ ] Booking hoàn thành -> `used_sessions` tăng (qua service).
+- [ ] Booking hoàn thành -> Một bản ghi `Invoice` ở trạng thái `UNPAID` được tạo tự động.
+- [ ] Thanh toán hóa đơn -> Trạng thái Invoice chuyển sang `PAID`.
+- [ ] Hủy Booking đã hoàn thành -> `used_sessions` được hoàn lại (qua service).
 
 ---
 
-**⏸️ TRẠNG THÁI: Chờ phê duyệt để tiếp tục sang giai đoạn SPLIT.**
+**⏸️ TRẠNG THÁI: Chờ phê duyệt (THINK stage complete).**

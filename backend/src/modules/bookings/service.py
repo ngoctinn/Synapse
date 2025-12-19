@@ -21,7 +21,8 @@ from fastapi import Depends, HTTPException, status
 from src.common.database import get_db_session
 from src.modules.services.models import Service
 from .models import Booking, BookingItem, BookingStatus
-from src.modules.customer_treatments.models import CustomerTreatment, TreatmentStatus
+from src.modules.customer_treatments import CustomerTreatmentService
+from src.modules.billing import BillingService
 from .schemas import (
     BookingCreate,
     BookingUpdate,
@@ -34,9 +35,16 @@ from .conflict_checker import ConflictChecker
 class BookingService:
     """Service xử lý logic nghiệp vụ cho Booking."""
 
-    def __init__(self, session: AsyncSession = Depends(get_db_session)):
+    def __init__(
+        self,
+        session: AsyncSession = Depends(get_db_session),
+        treatment_service: CustomerTreatmentService = Depends(CustomerTreatmentService),
+        billing_service: BillingService = Depends(BillingService)
+    ):
         self.session = session
         self.conflict_checker = ConflictChecker(session)
+        self.treatment_service = treatment_service
+        self.billing_service = billing_service
 
     async def get_all(
         self,
@@ -148,7 +156,9 @@ class BookingService:
                         status_code=status.HTTP_400_BAD_REQUEST,
                         detail="Cần thông tin khách hàng để sử dụng liệu trình"
                     )
-                await self._validate_treatment(item_data.treatment_id, data.customer_id)
+                await self.treatment_service.validate_availability(
+                    item_data.treatment_id, data.customer_id
+                )
 
             item = BookingItem(
                 booking_id=booking.id,
@@ -250,7 +260,9 @@ class BookingService:
                         status_code=status.HTTP_400_BAD_REQUEST,
                         detail="Booking chưa có khách hàng, không thể dùng liệu trình"
                     )
-            await self._validate_treatment(data.treatment_id, booking.customer_id)
+            await self.treatment_service.validate_availability(
+                data.treatment_id, booking.customer_id
+            )
 
         item = BookingItem(
             booking_id=booking_id,
@@ -323,7 +335,9 @@ class BookingService:
                     )
                 # Check if changed
                 if new_tid != item.treatment_id:
-                    await self._validate_treatment(new_tid, booking.customer_id)
+                    await self.treatment_service.validate_availability(
+                        new_tid, booking.customer_id
+                    )
 
         # Check conflicts (exclude current item)
         conflicts = await self.conflict_checker.check_all_conflicts(
@@ -456,11 +470,13 @@ class BookingService:
             )
 
         # Punch treatments
-        # Reload items just in case they are not loaded (though get_by_id loads them)
         if booking.items:
             for item in booking.items:
                 if item.treatment_id:
-                    await self._punch_treatment(item.treatment_id)
+                    await self.treatment_service.punch_session(item.treatment_id)
+
+        # Create Invoice
+        await self.billing_service.create_invoice_from_booking(booking_id)
 
         booking.status = BookingStatus.COMPLETED
         booking.actual_end_time = actual_end_time or datetime.now(timezone.utc)
@@ -490,6 +506,18 @@ class BookingService:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Không thể hủy lịch hẹn ở trạng thái {booking.status}"
             )
+
+        # Refund treatments if it was somehow in a state that had sessions deducted
+        # (Though currently we only punch at COMPLETE, let's be safe if we add more transitions)
+        # IF prev status was COMPLETED, we'd refund, but cancel is blocked for COMPLETED.
+        # However, for robustness, if we ever allow cancelling IN_PROGRESS that had some logic...
+
+        # Actual check: If status is being changed FROM COMPLETED (not possible per guard, but for future)
+        if booking.status == BookingStatus.COMPLETED:
+            if booking.items:
+                for item in booking.items:
+                    if item.treatment_id:
+                        await self.treatment_service.refund_session(item.treatment_id)
 
         booking.status = BookingStatus.CANCELLED
         booking.cancel_reason = cancel_reason
@@ -536,39 +564,3 @@ class BookingService:
         result = await self.session.exec(query)
         services = result.all()
         return {s.id: s for s in services}
-
-    async def _validate_treatment(
-        self, treatment_id: uuid.UUID, customer_id: uuid.UUID
-    ) -> None:
-        """Kiểm tra tính hợp lệ của liệu trình."""
-        treatment = await self.session.get(CustomerTreatment, treatment_id)
-        if not treatment:
-            raise HTTPException(status_code=400, detail="Liệu trình không tồn tại")
-
-        if treatment.customer_id != customer_id:
-            raise HTTPException(status_code=400, detail="Liệu trình không thuộc về khách hàng này")
-
-        if treatment.status != TreatmentStatus.ACTIVE:
-            raise HTTPException(status_code=400, detail=f"Liệu trình không khả dụng ({treatment.status})")
-
-        if treatment.expiry_date and treatment.expiry_date < date.today():
-            raise HTTPException(status_code=400, detail="Liệu trình đã hết hạn")
-
-        if treatment.used_sessions >= treatment.total_sessions:
-            raise HTTPException(status_code=400, detail="Liệu trình đã hết số buổi")
-
-    async def _punch_treatment(self, treatment_id: uuid.UUID) -> None:
-        """Trừ buổi liệu trình (Punch logic)."""
-        treatment = await self.session.get(CustomerTreatment, treatment_id)
-        if not treatment:
-            # Should have been validated, but just in case
-            return
-
-        if treatment.used_sessions < treatment.total_sessions:
-            treatment.used_sessions += 1
-            if treatment.used_sessions >= treatment.total_sessions:
-                treatment.status = TreatmentStatus.COMPLETED
-
-            treatment.updated_at = datetime.now(timezone.utc)
-            self.session.add(treatment)
-            # Commit handled by caller

@@ -98,3 +98,21 @@
 - **Sơ đồ Quản lý Tài nguyên (3.44)**: Chuẩn hóa CRUD đầy đủ
 
 ---
+
+## [2025-12-19] - Phiên BACKEND-P3-BILLING: Billing & Refactoring
+
+### Đã thêm (Added)
+- **Module Billing**: Triển khai hệ thống hóa đơn (`Invoices`) và thanh toán (`Payments`).
+    - Bảng `invoices`: Lưu trữ thông tin tài chính snapshot cho mỗi booking.
+    - Bảng `payments`: Ghi nhận các giao dịch thanh toán linh hoạt.
+- **Tự động hóa**: Logic tự động tạo hóa đơn nháp khi lịch hẹn được đánh dấu `COMPLETED`.
+
+### Đã thay đổi (Changed)
+- **Refactor Booking-Treatment Integration**:
+    - `BookingService` hiện gọi `CustomerTreatmentService` thay vì truy cập Models trực tiếp.
+    - Xóa bỏ các private helper rườm rà trong module `bookings`.
+- **Logic Hoàn buổi (Refund)**: Bổ sung khả năng hoàn lại số buổi liệu trình nếu lịch hẹn `COMPLETED` bị hủy.
+
+### Đã sửa (Fixed)
+- Lỗi `SyntaxError` trong `main.py` do các ký tự markdown dư thừa.
+- Lỗi thiếu import `sqlmodel` trong Alembic migration script.

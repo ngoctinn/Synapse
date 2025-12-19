@@ -1,11 +1,11 @@
 # Dashboard Theo Dõi Antigravity - Synapse
 
 ## Thông tin Phiên
-- **Mã phiên:** `BACKEND-P1-CUSTOMERS-20251219`
+- **Mã phiên:** `BACKEND-P3-BILLING-20251219`
 - **Trạng thái:** ✅ HOÀN THÀNH
 - **Ngày bắt đầu:** 2025-12-19
 - **Ngày hoàn thành:** 2025-12-19
-- **Mục tiêu:** Triển khai Module Customers (Backend Phase 1)
+- **Mục tiêu:** Refactor Bookings & Triển khai Module Billing
 
 ---
 
@@ -28,7 +28,17 @@
 | 2.4 | DB Migration | ✅ HOÀN THÀNH |
 | 2.5 | Tích hợp Bookings | ✅ HOÀN THÀNH |
 
-### Tiếp theo: Phase 3...
+### Backend Phase 3: Billing & Refactoring ✅ HOÀN THÀNH
+
+| STT | Nhiệm vụ | Trạng thái |
+| :--- | :--- | :--- |
+| 3.1 | Refactor Booking-Treatment Integration | ✅ HOÀN THÀNH |
+| 3.2 | Khởi tạo Module Billing (Models, Schemas) | ✅ HOÀN THÀNH |
+| 3.3 | Triển khai Billing Service (Invoices, Payments) | ✅ HOÀN THÀNH |
+| 3.4 | API Router cho Billing | ✅ HOÀN THÀNH |
+| 3.5 | DB Migration & Integration (Auto-invoice) | ✅ HOÀN THÀNH |
+
+### Tiếp theo: Phase 4...
 
 ### Lịch sử Phiên Trước
 - ✅ KLTN-SYNC-20251219: Đồng nhất tài liệu thiết kế

@@ -36,8 +36,22 @@
 - **Dependency Injection:**
     - `BookingService` will import `CustomerTreatment` model directly and use the shared `session` to execute updates within the same transaction. This ensures atomicity.
 
-## 3. Action Items
-1.  Create `CustomerTreatment` model.
-2.  Add `treatment_id` to `BookingItem` (Migration).
-3.  Modify `BookingService.create` to validate.
-4.  Modify `BookingService.complete` to punch.
+## 4. Rà soát Mã nguồn hiện tại (Current Code Audit - 20251219)
+
+### A. Mô đun Customers & Customer Treatments
+- **Trạng thái:** Đã triển khai Models, Services, Routers và Migrations.
+- **Đánh giá:** Code viết sạch, tuân thủ `SQLModel` và `Async`. Tuy nhiên, logic xử lý lỗi (Exceptions) đang nằm rải rác.
+- **Lỗ hổng:** Chưa có logic tự động chuyển trạng thái `EXPIRED` cho liệu trình bằng background task.
+
+### B. Mô đun Bookings
+- **Vấn đề:** Đang có sự phụ thuộc trực tiếp vào Models của module khác (`CustomerTreatment`) thay vì thông qua Service API.
+- **Vấn đề:** Hàm `complete()` đang tự gán logic trừ buổi (Punch) thay vì gọi Service của `customer_treatments`.
+- **Thiếu sót:** `cancel()` và `no_show()` chưa có logic hoàn lại buổi hoặc xử lý kỷ luật liệu trình.
+
+### C. Cơ sở dữ liệu (Database)
+- Các bảng `customers` và `customer_treatments` đã được tạo thành công trong DB (đã kiểm tra migrations).
+- Tuy nhiên, bảng `bookings` vẫn đang dùng `customer_id` trỏ sang `users.id` trong một số logic cũ (cần chuẩn hóa sang trỏ tới bảng `customers`).
+
+## 5. Đề xuất hành động
+1. **Dọn nợ kỹ thuật (Refactoring)**: Chuẩn hóa `BookingService` để biến nó thành một "Orchestrator" gọi các service khác thay vì tự xử lý logic của module khác.
+2. **Triển khai Billing**: Đây là mảnh ghép còn thiếu để hoàn tất luồng nghiệp vụ "Money Flow".

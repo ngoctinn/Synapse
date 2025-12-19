@@ -8,6 +8,7 @@ from . import (
     scheduling_engine,
     customers,
     customer_treatments,
+    billing,
 )
 
 __all__ = [
@@ -19,4 +20,6 @@ __all__ = [
     "bookings",
     "scheduling_engine",
     "customers",
+    "customer_treatments",
+    "billing",
 ]
