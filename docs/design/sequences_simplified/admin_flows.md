@@ -1,52 +1,65 @@
-# Sơ đồ Tuần tự Rút gọn: Hoạt động Quản trị viên
+# Sơ đồ Tuần tự: Hoạt động Quản trị viên (Chuẩn học thuật)
 
-Tài liệu này trình bày các sơ đồ tuần tự tối giản dành cho Quản trị viên.
+Tài liệu này trình bày các luồng quản lý hệ thống cho Quản trị viên, bao gồm thiết lập tài nguyên và nhân sự.
 
 ---
 
-### 3.1. Quản lý danh mục & Tài nguyên (C5, C7)
+### 3.1. Thiết lập Lịch làm việc nhân sự (C4)
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor QTV as Quản trị viên
-    participant UI as Giao diện
-    participant HT as Hệ thống
-    participant DB as Database
+    participant FE as Giao diện (Frontend)
+    participant BE as Hệ thống (Backend)
+    participant DB as Cơ sở dữ liệu
 
-    QTV->>UI: Thêm/Sửa/Xóa Dịch vụ hoặc Tài nguyên
-    UI->>HT: requestAction()
+    QTV->>FE: cấu_hình_ca_làm_việc()
+    activate FE
+    FE->>BE: yêu_cầu_phân_ca(staff_id, schedule)
+    activate BE
 
-    HT->>DB: update_records()
+    BE->>BE: kiểm_tra_ràng_buộc_lịch_trình()
+    Note right of BE: Module Solver kiểm tra xung đột thời gian
 
-    HT-->>UI: Cập nhật thành công
-    UI-->>QTV: Hiển thị thông tin mới
+    alt [Lịch trình hợp lệ]
+        BE->>DB: lưu_lịch_trình (INSERT staff_schedules)
+        activate DB
+        DB-->>BE: hoàn_tất
+        deactivate DB
+        BE-->>FE: thông_báo_thành_công
+    else [Xảy ra xung đột]
+        BE-->>FE: báo_lỗi_trùng_lịch (Conflict)
+    end
+    deactivate BE
+    FE-->>QTV: cập_nhật_trạng_ thái_giao_diện
+    deactivate FE
 ```
 
 ---
 
-### 3.2. Cấu hình lịch làm việc nhân viên (C4)
+### 3.2. Quản lý Tài nguyên và Dịch vụ (C5, C7)
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor QTV as Quản trị viên
-    participant UI as Giao diện
-    participant HT as Hệ thống
-    participant DB as Database
+    participant FE as Giao diện (Frontend)
+    participant BE as Hệ thống (Backend)
+    participant DB as Cơ sở dữ liệu
 
-    QTV->>UI: Phân ca cho nhân viên
-    UI->>HT: assignShift()
+    QTV->>FE: yêu_cầu_thay_đổi_danh_mục()
+    activate FE
+    FE->>BE: xử_lý_thông_tin_tài_nguyên()
+    activate BE
 
-    HT->>HT: checkConstraints()
-    Note right of HT: Bộ giải ràng buộc kiểm tra xung đột
+    BE->>DB: cập_nhật_cơ_sở_dữ_liệu (SQL DML)
+    activate DB
+    DB-->>BE: kết_quả_thực_thi
+    deactivate DB
 
-    alt Hợp lệ
-        HT->>DB: save_schedule()
-        HT-->>UI: Thành công
-        UI-->>QTV: Hiển thị lịch đã phân công
-    else Vi phạm
-        HT-->>UI: Báo lỗi xung đột
-        UI-->>QTV: Hiển thị cảnh báo
-    end
+    BE-->>FE: phản_hồi_thành_công
+    deactivate BE
+    FE-->>QTV: làm_mới_danh_sách_hiển_thị
+    deactivate FE
 ```

@@ -1,6 +1,6 @@
-# Sơ đồ Tuần tự Rút gọn: Phân hệ Xác thực
+# Sơ đồ Tuần tự: Phân hệ Xác thực (Chuẩn học thuật)
 
-Tài liệu này trình bày các sơ đồ tuần tự đã được tối giản, tập trung vào luồng nghiệp vụ chính phục vụ báo cáo học thuật.
+Tài liệu này trình bày quy trình trao đổi thông điệp cho các chức năng xác thực, phân định rõ ranh giới giữa Frontend, Backend và Dịch vụ hạ tầng.
 
 ---
 
@@ -10,118 +10,82 @@ Tài liệu này trình bày các sơ đồ tuần tự đã được tối gi�
 sequenceDiagram
     autonumber
     actor KH as Khách hàng
-    participant UI as Giao diện
-    participant HT as Hệ thống
-    participant DB as Database
+    participant FE as Giao diện (Frontend)
+    participant SUPA as Dịch vụ xác thực (Supabase)
+    participant BE as Hệ thống (Backend)
+    participant DB as Cơ sở dữ liệu
 
-    KH->>UI: Nhập thông tin đăng ký
-    UI->>HT: registerUser()
+    KH->>FE: yêu_cầu_đăng_ký(email, password)
+    activate FE
+    FE->>SUPA: tạo_tài_khoản_mới()
+    activate SUPA
+    SUPA-->>FE: thông_báo_chờ_xác_thực_email
+    deactivate SUPA
 
-    Note right of HT: Xác thực & Tạo tài khoản qua Auth Service
-
-    critical Lưu trữ hồ sơ
-        HT->>DB: create_customer_profile()
-        DB-->>HT: Thành công
+    FE->>BE: khởi_tạo_hồ_sơ_khách_hàng()
+    activate BE
+    critical Giao dịch lưu trữ
+        BE->>DB: INSERT INTO customers (profile)
+        activate DB
+        DB-->>BE: hoàn_tất
+        deactivate DB
     end
+    BE-->>FE: phản_hồi_thành_công
+    deactivate BE
 
-    HT-->>UI: Thông báo đăng ký thành công
-    UI-->>KH: Hiển thị yêu cầu xác thực email
+    FE-->>KH: hiển_thị_thông_báo_thành_công
+    deactivate FE
 ```
 
 ---
 
-### 3.2. Xác thực thư điện tử (A1.1)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor KH as Khách hàng
-    participant UI as Giao diện
-    participant HT as Hệ thống
-
-    KH->>UI: Nhấp liên kết xác thực
-    UI->>HT: verifyEmail()
-    HT-->>UI: Xác thực thành công
-    UI-->>KH: Chuyển hướng đăng nhập
-```
-
----
-
-### 3.3. Đăng nhập (A1.2)
+### 3.2. Đăng nhập hệ thống (A1.2)
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor ND as Người dùng
-    participant UI as Giao diện
-    participant HT as Hệ thống
+    participant FE as Giao diện (Frontend)
+    participant SUPA as Dịch vụ xác thực (Supabase)
 
-    ND->>UI: Nhập thông tin đăng nhập
-    UI->>HT: login()
+    ND->>FE: cung_cấp_thông_tin_đăng_nhập()
+    activate FE
+    FE->>SUPA: xác_thực_thông_tin()
+    activate SUPA
 
-    alt Thông tin hợp lệ
-        HT-->>UI: Session (JWT) & Role
-        UI-->>ND: Chuyển hướng Dashboard
-    else Thông tin sai
-        HT-->>UI: Báo lỗi xác thực
-        UI-->>ND: Hiển thị thông báo lỗi
+    alt [Thông tin hợp lệ]
+        SUPA-->>FE: trả_về_phiên_làm_việc (JWT)
+        FE-->>ND: chuyển_hướng_đến_Dashboard
+    else [Thông tin sai]
+        SUPA-->>FE: thông_báo_lỗi_xác_thực
+        deactivate SUPA
+        FE-->>ND: hiển_thị_lỗi_đăng_nhập
     end
+    deactivate FE
 ```
 
 ---
 
-### 3.4. Khôi phục & Đặt lại mật khẩu (A1.3)
+### 3.3. Cập nhật thông tin cá nhân (A1.4)
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor ND as Người dùng
-    participant UI as Giao diện
-    participant HT as Hệ thống
+    participant FE as Giao diện (Frontend)
+    participant BE as Hệ thống (Backend)
+    participant DB as Cơ sở dữ liệu
 
-    ND->>UI: Yêu cầu khôi phục mật khẩu
-    UI->>HT: requestReset()
-    HT-->>UI: Gửi email thành công
-
-    ND->>UI: Nhập mật khẩu mới từ liên kết
-    UI->>HT: updatePassword()
-    HT-->>UI: Cập nhật thành công
-    UI-->>ND: Thông báo hoàn tất
-```
-
----
-
-### 3.5. Cập nhật thông tin cá nhân (A1.4)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor ND as Người dùng
-    participant UI as Giao diện
-    participant HT as Hệ thống
-
-    ND->>UI: Thay đổi thông tin hồ sơ
-    UI->>HT: updateProfile()
-
-    HT->>HT: processRequest()
-
-    HT-->>UI: Cập nhật thành công
-    UI-->>ND: Hiển thị thông tin mới
-```
-
----
-
-### 3.6. Đăng xuất (A1.5)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor ND as Người dùng
-    participant UI as Giao diện
-    participant HT as Hệ thống
-
-    ND->>UI: Chọn đăng xuất
-    UI->>HT: logout()
-    HT-->>UI: Xóa phiên làm việc
-    UI-->>ND: Chuyển hướng trang chủ
+    ND->>FE: thay_đổi_thông_tin_hồ_sơ()
+    activate FE
+    FE->>BE: yêu_cầu_cập_nhật(data)
+    activate BE
+    BE->>DB: UPDATE users SET ... WHERE id = ?
+    activate DB
+    DB-->>BE: kết_quả_cập_nhật
+    deactivate DB
+    BE-->>FE: xác_nhận_thành_công
+    deactivate BE
+    FE-->>ND: hiển_thị_thông_tin_mới
+    deactivate FE
 ```

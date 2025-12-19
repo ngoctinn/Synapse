@@ -1,169 +1,103 @@
-# Sơ đồ Tuần tự Rút gọn: Hoạt động Lễ tân
+# Sơ đồ Tuần tự: Hoạt động Lễ tân (Chuẩn học thuật)
 
-Tài liệu này trình bày các sơ đồ tuần tự tối giản cho các quy trình nghiệp vụ của Lễ tân.
+Tài liệu này trình bày các luồng thông điệp cho công tác quản lý và vận hành Spa của nhân viên Lễ tân.
 
 ---
 
-### 3.1. Quản lý lịch hẹn & Hồ sơ (B1.1, B1.2)
+### 3.1. Tiếp nhận và Check-in khách hàng (B1.4)
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor LT as Lễ tân
-    participant UI as Giao diện
-    participant HT as Hệ thống
+    participant FE as Giao diện (Frontend)
+    participant BE as Hệ thống (Backend)
+    participant DB as Cơ sở dữ liệu
 
-    LT->>UI: Xem lịch hẹn / Tìm khách hàng
-    UI->>HT: fetchData()
-    HT-->>UI: Kết quả truy vấn
+    LT->>FE: chọn_lịch_hẹn_và_checkin()
+    activate FE
+    FE->>BE: yêu_cầu_xác_nhận_khách_đến()
+    activate BE
 
-    alt Tạo mới khách hàng
-        LT->>UI: Nhập thông tin khách mới
-        UI->>HT: createCustomer()
-        HT-->>UI: Hồ sơ đã tạo
-    end
-```
-
----
-
-### 3.2. Tạo lịch hẹn thủ công (B1.3)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor LT as Lễ tân
-    participant UI as Giao diện
-    participant HT as Hệ thống
-    participant DB as Database
-
-    LT->>UI: Nhập thông tin khách & dịch vụ
-    UI->>HT: checkAvailability()
-    Note right of HT: Hệ thống kiểm tra ràng buộc (SISF)
-    HT-->>UI: Xác nhận khả dụng
-
-    LT->>UI: Hoàn tất đặt lịch
-    UI->>HT: createBooking()
-
-    critical Giao dịch DB
-        HT->>DB: save_booking_transaction()
-        DB-->>HT: Success
+    critical Giao dịch đồng bộ
+        BE->>DB: cập_nhật_trạng_thái_phục_vụ (IN_PROGRESS)
+        Note right of DB: Tự động trừ buổi liệu trình trong thẻ (used_sessions)
+        BE->>DB: lưu_vết_thời_gian_đến (check_in_time)
+        activate DB
+        DB-->>BE: xác_nhận_cập_nhật
+        deactivate DB
     end
 
-    HT-->>UI: Cập nhật Dashboard
-    UI-->>LT: Hiển thị lịch mới
+    BE-->>FE: trả_về_trạng_thái_mới
+    deactivate BE
+    FE-->>LT: hiển_thị_thông_báo_phục_vụ
+    deactivate FE
 ```
 
 ---
 
-### 3.3. Xác nhận khách đến & Trừ liệu trình (B1.4)
+### 3.2. Xử lý thanh toán và In hóa đơn (B1.5)
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor LT as Lễ tân
-    participant UI as Giao diện
-    participant HT as Hệ thống
-    participant DB as Database
+    participant FE as Giao diện (Frontend)
+    participant BE as Hệ thống (Backend)
+    participant DB as Cơ sở dữ liệu
 
-    LT->>UI: Bấm "Check-in"
-    UI->>HT: checkInCustomer()
+    LT->>FE: yêu_cầu_thanh_toán()
+    activate FE
+    FE->>BE: tổng_hợp_dữ_liệu_billing()
+    activate BE
 
-    critical Cập nhật trạng thái & Liệu trình
-        HT->>DB: update_booking_and_sessions()
-        Note right of DB: Tự động trừ buổi nếu thuộc gói
-        DB-->>HT: Updated
+    critical Hoàn tất tài chính
+        BE->>DB: tạo_hóa_đơn_mới (invoices)
+        BE->>DB: đánh_dấu_lịch_hẹn_hoàn_tất (COMPLETED)
+        activate DB
+        DB-->>BE: dữ_liệu_hóa_đơn_đã_lưu
+        deactivate DB
     end
 
-    HT-->>UI: Đổi màu trạng thái
-    UI-->>LT: Hiển thị "Đang phục vụ"
+    BE-->>FE: trả_về_thông_tin_hóa_đơn
+    deactivate BE
+    FE-->>LT: hiển_thị_hóa_đơn_và_lệnh_in
+    deactivate FE
 ```
 
 ---
 
-### 3.4. Xử lý thanh toán (B1.5)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor LT as Lễ tân
-    participant UI as Giao diện
-    participant HT as Hệ thống
-    participant DB as Database
-
-    LT->>UI: Xác nhận thanh toán
-    UI->>HT: processPayment()
-
-    critical Hoàn tất hóa đơn
-        HT->>DB: create_invoice_and_complete_booking()
-        DB-->>HT: Invoice Created
-    end
-
-    HT-->>UI: Hiển thị hóa đơn điện tử
-    UI-->>LT: In hóa đơn & Kết thúc
-```
-
----
-
-### 3.5. Phản hồi hỗ trợ trò chuyện (B1.6)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor LT as Lễ tân
-    participant UI as Giao diện
-    participant HT as Hệ thống
-
-    Note left of UI: Có yêu cầu hỗ trợ mới
-    LT->>UI: Mở phiên trò chuyện
-    UI->>HT: fetchChatHistory()
-    HT-->>UI: Danh sách tin nhắn
-
-    LT->>UI: Nhập và gửi phản hồi
-    UI->>HT: sendMessage()
-    HT-->>UI: Trạng thái: Đã gửi
-```
-
----
-
-### 3.6. Theo dõi tiến độ liệu trình (B1.7)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor LT as Lễ tân
-    participant UI as Giao diện
-    participant HT as Hệ thống
-
-    LT->>UI: Tra cứu liệu trình khách hàng
-    UI->>HT: getCustomerTreatments()
-    HT-->>UI: Dữ liệu (số buổi còn lại, lịch sử)
-    UI-->>LT: Hiển thị thông tin
-```
-
----
-
-### 3.7. Tái lập lịch tự động (B1.8)
+### 3.3. Tái lập lịch tự động (B1.8)
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor QTV as Quản trị viên
-    participant HT as Hệ thống
-    participant DB as Database
+    participant FE as Giao diện (Frontend)
+    participant BE as Hệ thống (Backend)
+    participant DB as Cơ sở dữ liệu
 
-    QTV->>DB: Cập nhật lịch nghỉ nhân viên
+    QTV->>FE: cập_nhật_lịch_nghỉ_nhân_viên()
+    activate FE
+    FE->>BE: thông_báo_nhân_sự_vắng_mặt()
+    activate BE
 
-    Note right of HT: Hệ thống quét các Booking bị ảnh hưởng
+    BE->>DB: truy_vấn_danh_sách_xung_đột()
+    activate DB
+    DB-->>BE: các_lịch_hẹn_bị_ảnh_hưởng
+    deactivate DB
 
-    loop Xử lý xung đột
-        HT->>HT: findAlternative()
-        alt Có phương án tốt nhất
-            HT->>DB: update_booking()
-            Note right of HT: Thông báo đổi KTV cho khách
-        else Cần dời giờ / Thủ công
-            Note right of HT: Đánh dấu cần xử lý thủ công
+    loop Xử lý từng khách hàng
+        BE->>BE: tìm_giải_pháp_tái_lập_lịch()
+        alt Có KTV thay thế
+            BE->>DB: cập_nhật_kỹ_ thuật_viên_mới
+        else Cần dời giờ
+            Note right of BE: Gửi đề xuất giờ mới cho khách hàng
         end
     end
 
-    HT-->>QTV: Báo cáo kết quả tái lập lịch
+    BE-->>FE: báo_cáo_kết_quả_tự_động
+    deactivate BE
+    FE-->>QTV: hiển_thị_trạng_thái_xử_lý_sự_cố
+    deactivate FE
 ```

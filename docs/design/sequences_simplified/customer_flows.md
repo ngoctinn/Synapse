@@ -1,169 +1,123 @@
-# Sơ đồ Tuần tự Rút gọn: Hoạt động Khách hàng
+# Sơ đồ Tuần tự: Hoạt động Khách hàng (Chuẩn học thuật)
 
-Tài liệu này trình bày các sơ đồ tuần tự tối giản cho các luồng công việc của Khách hàng.
+Tài liệu này chi tiết hóa trình tự liên lạc giữa các tác nhân và thành phần hệ thống cho các nghiệp vụ dành cho Khách hàng.
 
 ---
 
-### 3.1. Xem & Đặt lịch dịch vụ (A2.1, A2.2)
+### 3.1. Tìm kiếm và Lựa chọn khung giờ (A2.4)
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor KH as Khách hàng
-    participant UI as Giao diện
-    participant HT as Hệ thống
+    participant FE as Giao diện (Frontend)
+    participant BE as Hệ thống (Backend)
+    participant DB as Cơ sở dữ liệu
 
-    KH->>UI: Truy cập danh sách/chi tiết dịch vụ
-    UI->>HT: fetchData()
-    HT-->>UI: Dữ liệu dịch vụ
-    UI-->>KH: Hiển thị thông tin
+    KH->>FE: chọn_dịch_ vụ_và_ngày()
+    activate FE
+    FE->>BE: yêu_cầu_tìm_khung_giờ_khả_dụng()
+    activate BE
+
+    BE->>DB: truy_vấn_dữ_liệu_tài_nguyên()
+    activate DB
+    DB-->>BE: trả_về_dữ_liệu_trống
+    deactivate DB
+
+    Note right of BE: Thực hiện thuật toán SISF (RCPSP & Jain's Fairness)
+
+    BE-->>FE: danh_sách_khung_giờ_tối_ưu
+    deactivate BE
+    FE-->>KH: hiển_thị_kết_quả_cho_khách_hàng
+    deactivate FE
 ```
 
 ---
 
-### 3.2. Tìm kiếm khung giờ khả dụng (A2.4)
+### 3.2. Hoàn tất đặt lịch hẹn (A2.5)
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor KH as Khách hàng
-    participant UI as Giao diện
-    participant HT as Hệ thống
+    participant FE as Giao diện (Frontend)
+    participant BE as Hệ thống (Backend)
+    participant DB as Cơ sở dữ liệu
 
-    KH->>UI: Chọn dịch vụ & Ngày mong muốn
-    UI->>HT: findAvailableSlots()
+    KH->>FE: xác_nhận_thanh_toán_và_đặt_lịch()
+    activate FE
+    FE->>BE: yêu_cầu_tạo_lịch_hẹn()
+    activate BE
 
-    Note right of HT: Thuật toán SISF kiểm tra ràng buộc
-
-    HT-->>UI: Danh sách khung giờ trống
-    UI-->>KH: Hiển thị Slots khả dụng
-```
-
----
-
-### 3.3. Hoàn tất đặt lịch hẹn (A2.5)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor KH as Khách hàng
-    participant UI as Giao diện
-    participant HT as Hệ thống
-    participant DB as Database
-
-    KH->>UI: Xác nhận đặt lịch
-    UI->>HT: createBooking()
-
-    critical Đảm bảo tính nhất quán
-        HT->>DB: execute_transaction()
-        DB-->>HT: Booking Created
+    critical Giao dịch ACID (Atomic)
+        BE->>DB: kiểm_tra_xung_đột_giờ_chót (Exclusion)
+        BE->>DB: ghi_dữ_liệu_lịch_hẹn (INSERT bookings)
+        activate DB
+        DB-->>BE: xác_nhận_lưu_thành_công
+        deactivate DB
     end
 
-    Note right of HT: Gửi thông báo xác nhận (Email/App)
+    Note right of BE: Kích hoạt gửi thông báo qua Email/SMS
 
-    HT-->>UI: Thông báo thành công
-    UI-->>KH: Hiển thị mã lịch hẹn
+    BE-->>FE: mã_số_lịch_hẹn_và_trạng_thái
+    deactivate BE
+    FE-->>KH: hiển_thị_thông_báo_hoàn_tất
+    deactivate FE
 ```
 
 ---
 
-### 3.4. Tham gia danh sách chờ (A2.6)
+### 3.3. Hỗ trợ qua trò chuyện (A2.7)
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor KH as Khách hàng
-    participant UI as Giao diện
-    participant HT as Hệ thống
+    participant FE as Giao diện (Frontend)
+    participant BE as Hệ thống (Backend)
+    participant DB as Cơ sở dữ liệu
 
-    KH->>UI: Đăng ký nhận tin khi có chỗ
-    UI->>HT: joinWaitlist()
-    HT-->>UI: Đăng ký thành công
-    UI-->>KH: Thông báo xác nhận danh sách chờ
+    KH->>FE: gửi_tin_nhắn_tư_vấn()
+    activate FE
+    FE->>BE: chuyển_tiếp_tin_nhắn()
+    activate BE
+
+    BE->>DB: lưu_trữ_tin_nhắn (INSERT chat_messages)
+    Note right of DB: Phân quyền truy cập theo RLS chính sách
+
+    BE-->>FE: trạng_thái_đã_gửi
+    deactivate BE
+    FE-->>KH: cập_nhật_khung_trò_chuyện
+    deactivate FE
 ```
 
 ---
 
-### 3.5. Hỗ trợ qua trò chuyện (A2.7)
+### 3.4. Quản lý và Hủy lịch hẹn (A3.1, A3.2)
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor KH as Khách hàng
-    participant UI as Giao diện
-    participant HT as Hệ thống
-    participant DB as Database
+    participant FE as Giao diện (Frontend)
+    participant BE as Hệ thống (Backend)
+    participant DB as Cơ sở dữ liệu
 
-    KH->>UI: Gửi tin nhắn yêu cầu hỗ trợ
-    UI->>HT: sendMessage()
+    KH->>FE: yêu_cầu_hủy_lịch_hẹn()
+    activate FE
+    FE->>BE: kiểm_tra_điều_kiện_hủy()
+    activate BE
 
-    HT->>DB: save_message()
-    Note right of DB: Kiểm soát quyền truy cập bằng RLS
-
-    HT-->>UI: Trạng thái: Đã gửi
-    UI-->>KH: Chờ phản hồi từ lễ tân
-```
-
----
-
-### 3.6. Quản lý lịch hẹn cá nhân (A3.1, A3.2)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor KH as Khách hàng
-    participant UI as Giao diện
-    participant HT as Hệ thống
-    participant DB as Database
-
-    KH->>UI: Truy cập lịch sử/Yêu cầu hủy
-    UI->>HT: requestAction()
-
-    alt Thao tác Hủy
-        HT->>HT: checkPolicy()
-        HT->>DB: update_status('CANCELLED')
+    alt [Trong thời hạn cho phép]
+        BE->>DB: cập_nhật_trạng_thái_hủy (CANCELLED)
+        activate DB
+        DB-->>BE: hoàn_tất_cập_nhật
+        deactivate DB
+        BE-->>FE: thông_báo_hủy_thành_công
+    else [Quá hạn quy định]
+        BE-->>FE: từ_chối_hủy (Vi phạm chính sách)
     end
-
-    HT-->>UI: Phản hồi kết quả
-    UI-->>KH: Cập nhật giao diện
-```
-
----
-
-### 3.7. Nhận thông báo nhắc lịch (A3.3)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor KH as Khách hàng
-    participant HT as Hệ thống
-
-    Note left of HT: Tác vụ nền định kỳ (Cron) kiểm tra lịch hẹn
-
-    HT->>KH: Gửi thông báo nhắc lịch
-
-    Note right of KH: Khách hàng phản hồi từ App/Email
-
-    KH-->>HT: Xác nhận tham gia / Yêu cầu hủy
-```
-
----
-
-### 3.8. Gửi yêu cầu bảo hành (A3.6)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor KH as Khách hàng
-    participant UI as Giao diện
-    participant HT as Hệ thống
-    participant DB as Database
-
-    KH->>UI: Nhập thông tin bảo hành
-    UI->>HT: createWarrantyRequest()
-
-    HT->>DB: save_warranty_ticket()
-
-    HT-->>UI: Gửi yêu cầu thành công
-    UI-->>KH: Thông báo chờ xử lý
+    deactivate BE
+    FE-->>KH: hiển_thị_kết_quả_thực_hiện
+    deactivate FE
 ```
