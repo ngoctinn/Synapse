@@ -23,7 +23,7 @@ Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Kỹ thuật v
 
 ## Sơ đồ hoạt động cho Kỹ thuật viên
 
-### 3.26. Xem lịch làm việc cá nhân (B2.1)
+### 3.25. Xem lịch làm việc cá nhân (B2.1)
 
 ```mermaid
 sequenceDiagram
@@ -49,9 +49,9 @@ sequenceDiagram
     UI-->>KTV: Hiển thị danh sách khách hàng được phân công
     deactivate UI
 ```
-**Hình 3.26: Sơ đồ tuần tự chức năng Xem lịch làm việc cá nhân**
+**Hình 3.25: Sơ đồ tuần tự chức năng Xem lịch làm việc cá nhân**
 
-### 3.27. Ghi chú chuyên môn sau buổi hẹn (B2.3)
+### 3.26. Ghi chú chuyên môn sau buổi hẹn (B2.3)
 
 ```mermaid
 sequenceDiagram
@@ -82,4 +82,4 @@ sequenceDiagram
     UI-->>KTV: Thông báo lưu ghi chú thành công
     deactivate UI
 ```
-**Hình 3.27: Sơ đồ tuần tự chức năng Ghi chú chuyên môn sau buổi hẹn**
+**Hình 3.26: Sơ đồ tuần tự chức năng Ghi chú chuyên môn sau buổi hẹn**

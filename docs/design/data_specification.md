@@ -4,8 +4,8 @@
 
 | Thuộc tính | Giá trị |
 |:---|:---|
-| Phiên bản | 2.1 |
-| Ngày cập nhật | 09/12/2025 |
+| Phiên bản | 2.2 |
+| Ngày cập nhật | 20/12/2025 |
 | Hệ quản trị CSDL | PostgreSQL 14+ |
 | Nền tảng | Supabase |
 
@@ -13,7 +13,7 @@
 
 ## 1. Tổng quan
 
-Cơ sở dữ liệu Synapse được thiết kế phục vụ hệ thống quản lý khách hàng (CRM) chuyên biệt cho ngành Spa. Hệ thống bao gồm 24 bảng dữ liệu được tổ chức thành 11 module nghiệp vụ.
+Cơ sở dữ liệu Synapse được thiết kế phục vụ hệ thống quản lý khách hàng (CRM) chuyên biệt cho ngành Spa. Hệ thống bao gồm 27 bảng dữ liệu được tổ chức thành 12 module nghiệp vụ.
 
 ### 1.1. Danh sách module
 
@@ -22,10 +22,10 @@ Cơ sở dữ liệu Synapse được thiết kế phục vụ hệ thống qu�
 | 1 | Users | 3 | Quản lý người dùng và hồ sơ |
 | 2 | Skills | 2 | Kỹ năng chuyên môn nhân viên |
 | 3 | Services | 3 | Danh mục dịch vụ |
-| 4 | Resources | 3 | Quản lý nhóm và tài nguyên |
+| 4 | Resources | 4 | Quản lý nhóm và tài nguyên |
 | 5 | Scheduling | 2 | Lịch làm việc nhân viên |
 | 6 | Bookings | 3 | Đặt lịch hẹn |
-| 7 | Packages | 2 | Gói dịch vụ (Combo) |
+| 7 | Packages | 3 | Gói dịch vụ (Combo) |
 | 8 | Billing | 2 | Hóa đơn và thanh toán |
 | 9 | Reviews | 1 | Đánh giá khách hàng |
 | 10 | Notifications | 1 | Thông báo hệ thống |
@@ -279,7 +279,21 @@ Quản lý phòng và thiết bị cụ thể.
 | image_url | TEXT | Có | NULL | Hình ảnh |
 | deleted_at | TIMESTAMPTZ | Có | NULL | Thời điểm xóa mềm |
 
-### 3.11. Bảng service_resource_requirements
+### 3.11. Bảng resource_maintenance_schedules
+
+Lưu trữ lịch bảo trì cho từng tài nguyên cụ thể.
+
+| Tên cột | Kiểu dữ liệu | Null | Mặc định | Mô tả |
+|:---|:---|:---:|:---|:---|
+| id | UUID | Không | auto | Khóa chính |
+| resource_id | UUID | Không | - | FK resources |
+| start_time | TIMESTAMPTZ | Không | - | Thời gian bắt đầu bảo trì |
+| end_time | TIMESTAMPTZ | Không | - | Thời gian kết thúc bảo trì |
+| reason | TEXT | Có | NULL | Lý do bảo trì |
+| created_by | UUID | Có | NULL | FK users (Người lập lịch) |
+| created_at | TIMESTAMPTZ | Không | NOW() | Thời điểm tạo |
+
+### 3.12. Bảng service_resource_requirements
 
 Yêu cầu nhóm tài nguyên cho dịch vụ.
 
@@ -291,7 +305,7 @@ Yêu cầu nhóm tài nguyên cho dịch vụ.
 
 Khóa chính: (service_id, group_id)
 
-### 3.12. Bảng shifts
+### 3.13. Bảng shifts
 
 Định nghĩa ca làm việc.
 
@@ -303,7 +317,7 @@ Khóa chính: (service_id, group_id)
 | end_time | TIME | Không | - | Giờ kết thúc |
 | color_code | VARCHAR(7) | Có | NULL | Mã màu |
 
-### 3.13. Bảng staff_schedules
+### 3.14. Bảng staff_schedules
 
 Phân công lịch làm việc.
 
@@ -318,7 +332,7 @@ Phân công lịch làm việc.
 
 Ràng buộc UNIQUE: (staff_id, work_date, shift_id)
 
-### 3.14. Bảng bookings
+### 3.15. Bảng bookings
 
 Thông tin lịch hẹn.
 
@@ -339,7 +353,7 @@ Thông tin lịch hẹn.
 | created_at | TIMESTAMPTZ | Không | NOW() | Thời điểm tạo |
 | updated_at | TIMESTAMPTZ | Không | NOW() | Thời điểm cập nhật |
 
-### 3.15. Bảng booking_items
+### 3.16. Bảng booking_items
 
 Chi tiết dịch vụ trong lịch hẹn.
 
@@ -357,7 +371,7 @@ Chi tiết dịch vụ trong lịch hẹn.
 | end_time | TIMESTAMPTZ | Không | - | Thời gian kết thúc |
 | original_price | DECIMAL(12,2) | Không | - | Giá gốc |
 
-### 3.16. Bảng booking_item_resources
+### 3.17. Bảng booking_item_resources
 
 Bảng trung gian liên kết Booking Item với nhiều Tài nguyên.
 
@@ -368,7 +382,7 @@ Bảng trung gian liên kết Booking Item với nhiều Tài nguyên.
 
 Khóa chính: (booking_item_id, resource_id)
 
-### 3.16. Bảng customer_treatments
+### 3.18. Bảng customer_treatments
 
 Gói liệu trình của khách hàng.
 
@@ -384,7 +398,7 @@ Gói liệu trình của khách hàng.
 | status | treatment_status | Không | ACTIVE | Trạng thái |
 | created_at | TIMESTAMPTZ | Không | NOW() | Thời điểm tạo |
 
-### 3.17. Bảng service_packages
+### 3.19. Bảng service_packages
 
 Định nghĩa gói dịch vụ (Combo).
 
@@ -398,7 +412,7 @@ Gói liệu trình của khách hàng.
 | is_active | BOOLEAN | Không | TRUE | Trạng thái kinh doanh |
 | created_at | TIMESTAMPTZ | Không | NOW() | Thời điểm tạo |
 
-### 3.18. Bảng package_services
+### 3.20. Bảng package_services
 
 Liên kết gói với dịch vụ (N-N).
 
@@ -410,7 +424,7 @@ Liên kết gói với dịch vụ (N-N).
 
 Khóa chính: (package_id, service_id)
 
-### 3.19. Bảng invoices
+### 3.21. Bảng invoices
 
 Hóa đơn thanh toán.
 
@@ -422,7 +436,7 @@ Hóa đơn thanh toán.
 | status | invoice_status | Không | UNPAID | Trạng thái |
 | issued_at | TIMESTAMPTZ | Không | NOW() | Thời điểm xuất |
 
-### 3.20. Bảng payments
+### 3.22. Bảng payments
 
 Giao dịch thanh toán.
 
@@ -436,7 +450,7 @@ Giao dịch thanh toán.
 | gateway_info | JSONB | Có | NULL | Dữ liệu từ cổng TT |
 | transaction_time | TIMESTAMPTZ | Không | NOW() | Thời điểm |
 
-### 3.21. Bảng reviews
+### 3.23. Bảng reviews
 
 Đánh giá của khách hàng.
 
@@ -451,7 +465,7 @@ Giao dịch thanh toán.
 
 Ràng buộc UNIQUE: (booking_id, customer_id)
 
-### 3.22. Bảng notifications
+### 3.24. Bảng notifications
 
 Thông báo hệ thống.
 
@@ -465,7 +479,7 @@ Thông báo hệ thống.
 | type | VARCHAR(50) | Có | NULL | Loại thông báo |
 | created_at | TIMESTAMPTZ | Không | NOW() | Thời điểm |
 
-### 3.23. Bảng warranty_tickets
+### 3.25. Bảng warranty_tickets
 
 Lưu trữ các yêu cầu bảo hành cho gói liệu trình.
 
@@ -482,7 +496,7 @@ Lưu trữ các yêu cầu bảo hành cho gói liệu trình.
 | created_at | TIMESTAMPTZ | Không | NOW() | Thời điểm tạo |
 | resolved_at | TIMESTAMPTZ | Có | NULL | Thời điểm giải quyết |
 
-### 3.24. Bảng system_configurations
+### 3.26. Bảng system_configurations
 
 Cấu hình hệ thống.
 
@@ -493,7 +507,7 @@ Cấu hình hệ thống.
 | description | TEXT | Có | NULL | Mô tả |
 | updated_at | TIMESTAMPTZ | Không | NOW() | Cập nhật |
 
-### 3.24. Bảng audit_logs
+### 3.27. Bảng audit_logs
 
 Nhật ký thay đổi.
 
@@ -533,6 +547,7 @@ Nhật ký thay đổi.
 | resource_groups | resources | group_id |
 | staff_profiles | staff_schedules | staff_id |
 | shifts | staff_schedules | shift_id |
+| resources | resource_maintenance_schedules | resource_id |
 
 ### 4.3. Quan hệ N-N
 

@@ -41,28 +41,27 @@ Tài liệu này tổng hợp toàn bộ sơ đồ tuần tự của hệ thốn
 | 3.22 | Xử lý thanh toán | B1.5 | [receptionist_flows.md](sequences/receptionist_flows.md) |
 | 3.23 | Phản hồi hỗ trợ trực tuyến | B1.6 | [receptionist_flows.md](sequences/receptionist_flows.md) |
 | 3.24 | Theo dõi tiến độ liệu trình | B1.7 | [receptionist_flows.md](sequences/receptionist_flows.md) |
-| 3.25 | Quy trình tái lập lịch (Tổng quan) | B1.8 | [receptionist_flows.md](sequences/receptionist_flows.md) |
 
 ### 4. Phân hệ Kỹ thuật viên (Technician)
 | Số hình | Chức năng | Mã | File |
 |---------|-----------|-----|------|
-| 3.26 | Xem lịch làm việc cá nhân | B2.1 | [technician_flows.md](sequences/technician_flows.md) |
-| 3.27 | Ghi chú chuyên môn sau buổi hẹn | B2.3 | [technician_flows.md](sequences/technician_flows.md) |
+| 3.25 | Xem lịch làm việc cá nhân | B2.1 | [technician_flows.md](sequences/technician_flows.md) |
+| 3.26 | Ghi chú chuyên môn sau buổi hẹn | B2.3 | [technician_flows.md](sequences/technician_flows.md) |
 
 ### 5. Phân hệ Quản trị viên (Administrator)
 | Số hình | Chức năng | Mã | File |
 |---------|-----------|-----|------|
-| 3.28 | Quản lý danh mục dịch vụ (CRUD) | C5 | [admin_flows.md](sequences/admin_flows.md) |
-| 3.29 | Quản lý tài nguyên (CRUD) | C7 | [admin_flows.md](sequences/admin_flows.md) |
-| 3.30 | Cấu hình lịch làm việc nhân viên | C4 | [admin_flows.md](sequences/admin_flows.md) |
-| 3.31 | Cấu hình giờ hoạt động Spa | C1 | [admin_flows.md](sequences/admin_flows.md) |
-| 3.32 | Quản lý ngày nghỉ lễ | C2 | [admin_flows.md](sequences/admin_flows.md) |
-| 3.33 | Mời nhân viên qua Email | C3 | [admin_flows.md](sequences/admin_flows.md) |
-| 3.34 | Quản lý tài khoản nhân viên | C9 | [admin_flows.md](sequences/admin_flows.md) |
-| 3.35 | Cấu hình hệ thống | C10 | [admin_flows.md](sequences/admin_flows.md) |
-| 3.36 | Quản lý thẻ liệu trình | C6 | [admin_flows.md](sequences/admin_flows.md) |
-| 3.37 | Quản lý khuyến mãi | C8 | [admin_flows.md](sequences/admin_flows.md) |
-| 3.38 | Logic Tái lập lịch (Reschedule Solver) | B1.8 | [admin_flows.md](sequences/admin_flows.md) |
+| 3.27 | Quản lý danh mục dịch vụ (CRUD) | C5 | [admin_flows.md](sequences/admin_flows.md) |
+| 3.28 | Quản lý tài nguyên (CRUD) | C7 | [admin_flows.md](sequences/admin_flows.md) |
+| 3.29 | Cấu hình lịch làm việc nhân viên | C4 | [admin_flows.md](sequences/admin_flows.md) |
+| 3.30 | Cấu hình giờ hoạt động Spa | C1 | [admin_flows.md](sequences/admin_flows.md) |
+| 3.31 | Quản lý ngày nghỉ lễ | C2 | [admin_flows.md](sequences/admin_flows.md) |
+| 3.32 | Mời nhân viên qua Email | C3 | [admin_flows.md](sequences/admin_flows.md) |
+| 3.33 | Quản lý tài khoản nhân viên | C9 | [admin_flows.md](sequences/admin_flows.md) |
+| 3.34 | Cấu hình hệ thống | C10 | [admin_flows.md](sequences/admin_flows.md) |
+| 3.35 | Quản lý thẻ liệu trình | C6 | [admin_flows.md](sequences/admin_flows.md) |
+| 3.36 | Quản lý khuyến mãi | C8 | [admin_flows.md](sequences/admin_flows.md) |
+| 3.37 | Logic Tái lập lịch (Reschedule Solver) | B1.8 | [admin_flows.md](sequences/admin_flows.md) |
 
 ---
 
@@ -72,10 +71,10 @@ Tài liệu này tổng hợp toàn bộ sơ đồ tuần tự của hệ thốn
 |---------|----------|
 | Xác thực | 7 |
 | Khách hàng | 10 |
-| Lễ tân | 8 |
+| Lễ tân | 7 |
 | Kỹ thuật viên | 2 |
 | Quản trị viên | 11 |
-| **Tổng cộng** | **38** |
+| **Tổng cộng** | **37** |
 
 ---
 
@@ -83,4 +82,4 @@ Tài liệu này tổng hợp toàn bộ sơ đồ tuần tự của hệ thốn
 
 - Mọi sơ đồ tuân thủ kiến trúc Modular Monolith và quy tắc Vertical Slice.
 - Tên hàm API được chuẩn hóa sang định dạng `snake_case`.
-- Các luồng nghiệp vụ phức tạp (CRUD C5, C7) được gộp vào một sơ đồ duy nhất sử dụng khối `alt` để đảm bảo tính gọn gàng và dễ theo dõi.
+- Các luồng nghiệp vụ phức tạp (CRUD C5, C7, C6, C8) được gộp vào một sơ đồ duy nhất sử dụng khối `alt` để đảm bảo tính gọn gàng và dễ theo dõi.

@@ -571,10 +571,15 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 | Bước | Tác nhân | Hành động |
 |------|----------|-----------|
-| 1 | Quản trị viên | Thêm mới, cập nhật hoặc vô hiệu hóa tài nguyên. |
-| 2 | Hệ thống | Cập nhật thông tin và điều chỉnh tính khả dụng trong hệ thống đặt lịch. |
+| 1 | Quản trị viên | Thêm mới, cập nhật thông tin tài nguyên (Tên, Mã, Nhóm). |
+| 2 | Quản trị viên | Chọn tài nguyên cụ thể và thiết lập **Lịch bảo trì** (Ngày bắt đầu - Ngày kết thúc). |
+| 3 | Hệ thống | Kiểm tra xem có lịch hẹn nào đang sử dụng tài nguyên này trong khoảng thời gian bảo trì không. |
+| 4 | Hệ thống | Nếu có xung đột, kích hoạt bộ giải thuật dời lịch tự động (B1.8). |
+| 5 | Hệ thống | Cập nhật dữ liệu và đồng bộ với bộ máy tính toán khung giờ khả dụng. |
 
-**Luồng thay thế:** Khi đánh dấu tài nguyên ở trạng thái bảo trì, hệ thống tạm thời loại tài nguyên đó khỏi danh sách khả dụng.
+**Luồng ngoại lệ (3a): Xung đột không thể dời lịch tự động**
+- 3a.1: Hệ thống thông báo danh sách các lịch hẹn bị ảnh hưởng nghiêm trọng.
+- 3a.2: Quản trị viên/Lễ tân phải can thiệp thủ công trước khi xác nhận lịch bảo trì.
 
 ---
 

@@ -23,7 +23,7 @@ Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Quản trị v
 
 ## Sơ đồ hoạt động cho Quản trị viên
 
-### 3.28. Quản lý danh mục dịch vụ (C5)
+### 3.27. Quản lý danh mục dịch vụ (C5)
 
 ```mermaid
 sequenceDiagram
@@ -70,9 +70,9 @@ sequenceDiagram
     UI-->>QTV: Cập nhật danh sách hiển thị
     deactivate UI
 ```
-**Hình 3.28: Sơ đồ tuần tự chức năng Quản lý danh mục dịch vụ (CRUD)**
+**Hình 3.27: Sơ đồ tuần tự chức năng Quản lý danh mục dịch vụ (CRUD)**
 
-### 3.29. Quản lý tài nguyên (C7)
+### 3.28. Quản lý tài nguyên (C7)
 
 > **Lưu ý:** Theo thiết kế cơ sở dữ liệu, hệ thống quản lý tài nguyên theo 2 cấp:
 > - **Nhóm tài nguyên** (Resource Group): Ví dụ: "Giường Spa Premium", "Máy Laser" (Loại: BED/EQUIPMENT)
@@ -108,24 +108,37 @@ sequenceDiagram
         deactivate DB
         BE-->>UI: Thành công
         deactivate BE
-    else Vô hiệu hóa tài nguyên
-        QTV->>UI: Chọn vô hiệu hóa
+    else Lập lịch bảo trì (C7)
+        QTV->>UI: Thiết lập thời gian bảo trì
         activate UI
-        UI->>BE: deactivate_resource(id)
+        UI->>BE: schedule_maintenance(resource_id, start_time, end_time)
         activate BE
-        BE->>DB: UPDATE resources SET deleted_at = NOW()
+        BE->>DB: Check for overlapping bookings
+        activate DB
+        DB-->>BE: conflict_list
+        deactivate DB
+
+        alt Có xung đột lịch hẹn
+            BE->>BE: Trigger automatic rescheduling (B1.8)
+            Note over BE: Tìm KTV/Tài nguyên thay thế
+            BE-->>UI: Yêu cầu xác nhận dời lịch hàng loạt
+            QTV->>UI: Phê duyệt dời lịch
+            UI->>BE: confirm_reschedule(task_id)
+        end
+
+        BE->>DB: INSERT INTO resource_maintenance_schedules
         activate DB
         DB-->>BE: success
         deactivate DB
-        BE-->>UI: Thành công
+        BE-->>UI: Bảo trì đã được thiết lập
         deactivate BE
     end
     UI-->>QTV: Cập nhật danh sách hiển thị
     deactivate UI
 ```
-**Hình 3.29: Sơ đồ tuần tự chức năng Quản lý tài nguyên (CRUD)**
+**Hình 3.28: Sơ đồ tuần tự chức năng Quản lý tài nguyên (CRUD)**
 
-### 3.30. Cấu hình lịch làm việc nhân viên (C4)
+### 3.29. Cấu hình lịch làm việc nhân viên (C4)
 
 ```mermaid
 sequenceDiagram
@@ -163,11 +176,11 @@ sequenceDiagram
     UI-->>QTV: Hiển thị lịch đã phân công
     deactivate UI
 ```
-**Hình 3.30: Sơ đồ tuần tự chức năng Cấu hình lịch làm việc nhân viên**
+**Hình 3.29: Sơ đồ tuần tự chức năng Cấu hình lịch làm việc nhân viên**
 
 ---
 
-### 3.31. Cấu hình giờ hoạt động Spa (C1)
+### 3.30. Cấu hình giờ hoạt động Spa (C1)
 
 ```mermaid
 sequenceDiagram
@@ -205,11 +218,11 @@ sequenceDiagram
     UI-->>QTV: Hiển thị thông báo lưu thành công
     deactivate UI
 ```
-**Hình 3.31: Sơ đồ tuần tự chức năng Cấu hình giờ hoạt động Spa**
+**Hình 3.30: Sơ đồ tuần tự chức năng Cấu hình giờ hoạt động Spa**
 
 ---
 
-### 3.32. Quản lý ngày nghỉ lễ (C2)
+### 3.31. Quản lý ngày nghỉ lễ (C2)
 
 ```mermaid
 sequenceDiagram
@@ -248,11 +261,11 @@ sequenceDiagram
     UI-->>QTV: Hiển thị ngày ngoại lệ mới
     deactivate UI
 ```
-**Hình 3.32: Sơ đồ tuần tự chức năng Quản lý ngày nghỉ lễ**
+**Hình 3.31: Sơ đồ tuần tự chức năng Quản lý ngày nghỉ lễ**
 
 ---
 
-### 3.33. Mời nhân viên qua thư điện tử (C3)
+### 3.32. Mời nhân viên qua thư điện tử (C3)
 
 ```mermaid
 sequenceDiagram
@@ -285,11 +298,11 @@ sequenceDiagram
     NV->>SUPA: Nhấp liên kết và thiết lập mật khẩu
     Note over NV: Tài khoản được kích hoạt
 ```
-**Hình 3.33: Sơ đồ tuần tự chức năng Mời nhân viên qua thư điện tử**
+**Hình 3.32: Sơ đồ tuần tự chức năng Mời nhân viên qua thư điện tử**
 
 ---
 
-### 3.34. Quản lý tài khoản nhân viên (C9)
+### 3.33. Quản lý tài khoản nhân viên (C9)
 
 ```mermaid
 sequenceDiagram
@@ -327,11 +340,11 @@ sequenceDiagram
     UI-->>QTV: Cập nhật danh sách
     deactivate UI
 ```
-**Hình 3.34: Sơ đồ tuần tự chức năng Quản lý tài khoản nhân viên**
+**Hình 3.33: Sơ đồ tuần tự chức năng Quản lý tài khoản nhân viên**
 
 ---
 
-### 3.35. Cấu hình hệ thống (C10)
+### 3.34. Cấu hình hệ thống (C10)
 
 ```mermaid
 sequenceDiagram
@@ -370,11 +383,11 @@ sequenceDiagram
     UI-->>QTV: Hiển thị thông báo cập nhật thành công
     deactivate UI
 ```
-**Hình 3.35: Sơ đồ tuần tự chức năng Cấu hình hệ thống**
+**Hình 3.34: Sơ đồ tuần tự chức năng Cấu hình hệ thống**
 
 ---
 
-### 3.36. Quản lý thẻ liệu trình (C6)
+### 3.35. Quản lý thẻ liệu trình (C6)
 
 ```mermaid
 sequenceDiagram
@@ -423,11 +436,11 @@ sequenceDiagram
     UI-->>QTV: Cập nhật danh sách
     deactivate UI
 ```
-**Hình 3.36: Sơ đồ tuần tự chức năng Quản lý thẻ liệu trình**
+**Hình 3.35: Sơ đồ tuần tự chức năng Quản lý thẻ liệu trình**
 
 ---
 
-### 3.37. Quản lý chương trình khuyến mãi (C8)
+### 3.36. Quản lý chương trình khuyến mãi (C8)
 
 ```mermaid
 sequenceDiagram
@@ -476,9 +489,9 @@ sequenceDiagram
     UI-->>QTV: Cập nhật danh sách
     deactivate UI
 ```
-**Hình 3.37: Sơ đồ tuần tự chức năng Quản lý chương trình khuyến mãi**
+**Hình 3.36: Sơ đồ tuần tự chức năng Quản lý chương trình khuyến mãi**
 
-### 3.38. Tái lập lịch tự động khi có sự cố (B1.8)
+### 3.37. Tái lập lịch tự động khi có sự cố (B1.8)
 
 ```mermaid
 sequenceDiagram
@@ -515,6 +528,6 @@ sequenceDiagram
     BE-->>SOLVER: Hoàn thành xử lý đợt
     deactivate BE
 ```
-**Hình 3.38: Sơ đồ tuần tự chức năng Tái lập lịch tự động**
+**Hình 3.37: Sơ đồ tuần tự chức năng Tái lập lịch tự động**
 
 ---
