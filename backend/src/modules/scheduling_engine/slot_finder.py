@@ -1,15 +1,16 @@
 """
 Scheduling Engine - Slot Finder Component
+
+Component xử lý logic tìm kiếm slot khả dụng dựa trên constraints.
 """
 import uuid
 from datetime import datetime, date, time, timedelta
 from typing import TYPE_CHECKING
-from src.modules.scheduling_engine.models import (
-    SlotOption, StaffSuggestionInfo, ResourceSuggestionInfo
-)
+
+from .models import SlotOption, StaffSuggestionInfo, ResourceSuggestionInfo
 
 if TYPE_CHECKING:
-    from src.modules.scheduling_engine.solver import SpaSolver
+    from .solver import SpaSolver
 
 
 class SlotFinder:
@@ -41,34 +42,37 @@ class SlotFinder:
             slot_start = current_dt
             slot_end = current_dt + timedelta(minutes=duration)
 
-            # Kiểm tra từng nhân viên
             for staff_data in self.problem.available_staff:
                 if preferred_staff_id and staff_data.id != preferred_staff_id:
                     continue
 
-                # 1. Check Skill
+                # Check Skill
                 if not all(sk in staff_data.skill_ids for sk in required_skill_ids):
                     continue
 
-                # 2. Check Working Hours & Overlap
-                if not self.solver._is_staff_available(staff_data.id, slot_start, slot_end) or \
-                   self.solver._has_staff_conflict(staff_data.id, slot_start, slot_end):
+                # Check Working Hours & Overlap
+                if not self.solver._is_staff_available(staff_data.id, slot_start, slot_end):
                     continue
 
-                # 3. Check Resource
+                if self.solver._has_staff_conflict(staff_data.id, slot_start, slot_end):
+                    continue
+
+                # Check Resource
                 assigned_resources = []
                 if required_resource_group_id:
                     for res in self.problem.available_resources:
-                        if res.group_id == required_resource_group_id and \
-                           not self.solver._has_resource_conflict(res.id, slot_start, slot_end):
-                            assigned_resources.append(ResourceSuggestionInfo(
-                                id=res.id, name=res.name, group_name=res.group_name
-                            ))
-                            break
+                        if res.group_id == required_resource_group_id:
+                            if not self.solver._has_resource_conflict(res.id, slot_start, slot_end):
+                                assigned_resources.append(ResourceSuggestionInfo(
+                                    id=res.id,
+                                    name=res.name,
+                                    group_name=res.group_name
+                                ))
+                                break
                     if not assigned_resources:
                         continue
 
-                # 4. Scoring
+                # Scoring
                 final_score = self._calculate_score(slot_start, staff_data.id, preferred_staff_id)
 
                 available_options.append(SlotOption(
@@ -87,9 +91,15 @@ class SlotFinder:
 
         return available_options
 
-    def _calculate_score(self, start_time: datetime, staff_id: uuid.UUID, preferred_staff_id: uuid.UUID | None) -> float:
+    def _calculate_score(
+        self,
+        start_time: datetime,
+        staff_id: uuid.UUID,
+        preferred_staff_id: uuid.UUID | None
+    ) -> float:
         """Logic chấm điểm slot."""
         score = 100
+
         if preferred_staff_id and staff_id != preferred_staff_id:
             score -= 30
 

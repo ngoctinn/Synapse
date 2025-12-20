@@ -1,12 +1,13 @@
 """
-Operating Hours Module - Business Logic Service
+Scheduling Engine Module - Business Logic Service
 
 Service Layer xử lý logic nghiệp vụ cho:
 1. Giải bài toán lập lịch (Solve)
 2. Đánh giá chất lượng lịch (Evaluate)
 3. So sánh hiệu quả (Compare)
-4. Phát hiện xung đột (Conflict Detection) - NEW
-5. Tái lập lịch tự động (Reschedule) - NEW
+4. Phát hiện xung đột (Conflict Detection)
+5. Tái lập lịch tự động (Reschedule)
+6. Tìm kiếm khung giờ thông minh (Smart Slot Finding)
 """
 
 from fastapi import Depends, HTTPException, status
@@ -37,6 +38,7 @@ from .models import (
 from .data_extractor import DataExtractor
 from .solver import SpaSolver
 from .evaluator import ScheduleEvaluator
+from .slot_finder import SlotFinder
 
 
 class SchedulingService:
@@ -45,11 +47,14 @@ class SchedulingService:
     def __init__(self, session: AsyncSession = Depends(get_db_session)):
         self.session = session
 
+    # =========================================================================
+    # CORE SCHEDULING OPERATIONS
+    # =========================================================================
+
     async def solve(self, request: SolveRequest) -> SchedulingSolution:
         """Giải bài toán lập lịch."""
         target_date = request.target_date or date.today()
 
-        # 1. Trích xuất dữ liệu
         extractor = DataExtractor(self.session)
         problem = await extractor.extract_problem(
             target_date=target_date,
@@ -59,16 +64,15 @@ class SchedulingService:
         if not problem.unassigned_items:
             return SchedulingSolution(
                 status=SolveStatus.FEASIBLE,
-                message="No booking items to assign"
+                message="Không có booking items cần gán"
             )
 
         if not problem.available_staff:
             return SchedulingSolution(
                 status=SolveStatus.INFEASIBLE,
-                message="No staff available on this date"
+                message="Không có nhân viên khả dụng trong ngày này"
             )
 
-        # 2. Giải bài toán
         solver = SpaSolver(problem)
         solution = solver.solve(time_limit_seconds=request.time_limit_seconds)
         return solution
@@ -80,7 +84,6 @@ class SchedulingService:
 
     async def get_suggestions(self, booking_id: uuid.UUID) -> SchedulingSolution:
         """Gợi ý slot cho một booking cụ thể."""
-        # Lấy items của booking
         query = text("""
             SELECT bi.id, bi.start_time
             FROM booking_items bi
@@ -93,7 +96,7 @@ class SchedulingService:
         if not rows:
             return SchedulingSolution(
                 status=SolveStatus.FEASIBLE,
-                message="No services to assign"
+                message="Không có dịch vụ cần gán"
             )
 
         target_date = rows[0][1].date()
@@ -106,17 +109,17 @@ class SchedulingService:
         )
 
         if not problem.unassigned_items:
-             return SchedulingSolution(
+            return SchedulingSolution(
                 status=SolveStatus.FEASIBLE,
-                message="No unassigned items"
+                message="Không có items chưa gán"
             )
 
         solver = SpaSolver(problem)
         return solver.solve(time_limit_seconds=10)
 
-    # ============================================================================
-    # NEW FEATURES: CONFLICT & RESCHEDULE
-    # ============================================================================
+    # =========================================================================
+    # CONFLICT DETECTION & RESCHEDULING
+    # =========================================================================
 
     async def check_conflicts(
         self,
@@ -135,7 +138,6 @@ class SchedulingService:
 
         conflicts = []
 
-        # 1. Tìm các booking items đã gán cho staff trong khoảng thời gian này
         if staff_id:
             query = text("""
                 SELECT
@@ -188,45 +190,27 @@ class SchedulingService:
                 failed_items=[]
             )
 
-        # Lấy thông tin items
-        # Để đơn giản, ta giả sử tất cả items cùng 1 ngày (logic thực tế cần group by date)
-        # Ở đây ta lấy ngày của item đầu tiên
         first_id = request.conflict_booking_item_ids[0]
         query = text("SELECT start_time FROM booking_items WHERE id = :id")
         result = await self.session.execute(query, {"id": str(first_id)})
         row = result.first()
+
         if not row:
-             return RescheduleResult(
+            return RescheduleResult(
                 success_count=0,
                 failed_count=len(request.conflict_booking_item_ids),
-                data=SchedulingSolution(status=SolveStatus.ERROR, message="Item not found"),
+                data=SchedulingSolution(status=SolveStatus.ERROR, message="Không tìm thấy item"),
                 failed_items=request.conflict_booking_item_ids
             )
 
         target_date = row[0].date()
 
-        # Extract problem CHỈ với các items cần reschedule
-        # Lưu ý: DataExtractor mặc định chỉ lấy items có staff_id IS NULL.
-        # Ta cần modify extractor hoặc truyền parameter đặc biệt.
-        # Tuy nhiên, ta có thể dùng `booking_item_ids` param của `extract_problem`.
-        # Nhưng `extract_problem` hiện tại filter: WHERE staff_id IS NULL (thường là vậy).
-        # Cần kiểm tra lại DataExtractor. Nếu nó lọc cứng staff_id IS NULL thì ta phải sửa DataExtractor hoặc
-        # fake update tạm thời trong transaction (nhưng rollback sau đó? Rủi ro).
-
-        # Mở rộng DataExtractor để chấp nhận force include items kể cả đã có staff.
-        # (Giả định DataExtractor hỗ trợ hoặc ta sẽ sửa nó ở bước sau nếu cần).
-        # Hiện tại ta cứ gọi, và giả định solver sẽ xử lý.
-
         extractor = DataExtractor(self.session)
-        # TODO: Cần đảm bảo DataExtractor.extract_problem KHÔNG lọc bỏ items được truyền trong booking_item_ids
-        # dù chúng đã có staff_id. (Logic: coi chúng là unassigned trong bài toán).
-
         problem = await extractor.extract_problem(
             target_date=target_date,
             booking_item_ids=request.conflict_booking_item_ids
         )
 
-        # Chạy Solver
         solver = SpaSolver(problem)
         solution = solver.solve(time_limit_seconds=30)
 
@@ -237,7 +221,6 @@ class SchedulingService:
             for assignment in solution.assignments:
                 success_items.append(assignment.item_id)
 
-            # Những item không có trong assignment là failed
             for item_id in request.conflict_booking_item_ids:
                 if item_id not in success_items:
                     failed_items.append(item_id)
@@ -251,29 +234,18 @@ class SchedulingService:
             failed_items=failed_items
         )
 
-from .slot_finder import SlotFinder
-
-
-class SchedulingService:
-    """Service điều phối công cụ lập lịch và logic tối ưu hóa."""
-
-    def __init__(self, session: AsyncSession = Depends(get_db_session)):
-        self.session = session
-
-    # ... results of previous search (lines 1-251 preserved) ...
+    # =========================================================================
+    # SMART SLOT FINDING
+    # =========================================================================
 
     async def find_available_slots(
         self,
         request: SlotSearchRequest
     ) -> SlotSuggestionResponse:
-        """
-        Tìm kiếm khung giờ khả dụng tối ưu (Smart Slot Finding).
-        """
+        """Tìm kiếm khung giờ khả dụng tối ưu (Smart Slot Finding)."""
         from src.modules.services.models import Service
 
-        # 1. Lấy thông tin service
-        # service = await self.session.get(Service, request.service_id)
-        # Fix Lazy Loading Error by Eagerly Loading Relationships
+        # Eagerly load relationships để tránh lazy loading error trong async context
         query_service = select(Service).where(Service.id == request.service_id).options(
             selectinload(Service.skills),
             selectinload(Service.resource_requirements)
@@ -284,22 +256,26 @@ class SchedulingService:
         if not service:
             raise HTTPException(status_code=404, detail="Không tìm thấy dịch vụ")
 
-        # 2. Extract problem context
         extractor = DataExtractor(self.session)
         problem = await extractor.extract_problem(target_date=request.target_date)
 
         if not problem.available_staff:
-             return SlotSuggestionResponse(available_slots=[], total_found=0, message="Không có nhân viên làm việc vào ngày này")
+            return SlotSuggestionResponse(
+                available_slots=[],
+                total_found=0,
+                message="Không có nhân viên làm việc vào ngày này"
+            )
 
-        # 3. Initialize SlotFinder
         solver = SpaSolver(problem)
         finder = SlotFinder(problem, solver)
 
-        # 4. Search slots
         search_start = request.time_window.start if request.time_window else time(8, 0)
         search_end = request.time_window.end if request.time_window else time(21, 0)
         required_skill_ids = [s.id for s in service.skills]
-        required_resource_group_id = service.resource_requirements[0].group_id if service.resource_requirements else None
+        required_resource_group_id = (
+            service.resource_requirements[0].group_id
+            if service.resource_requirements else None
+        )
 
         available_options = finder.find_slots(
             duration=service.duration,
@@ -310,7 +286,6 @@ class SchedulingService:
             search_end=search_end
         )
 
-        # 5. Sort and Return Top 20
         available_options.sort(key=lambda x: x.score, reverse=True)
         top_options = available_options[:20]
 

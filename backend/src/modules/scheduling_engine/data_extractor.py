@@ -7,8 +7,11 @@ Trích xuất dữ liệu từ Database → SchedulingProblem instance.
 import uuid
 from datetime import datetime, date, time, timezone
 from sqlalchemy import text, bindparam
+from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+from src.modules.users.models import User
+from src.modules.staff.models import Staff
 from .models import (
     SchedulingProblem,
     BookingItemData,
@@ -184,31 +187,31 @@ class DataExtractor:
         self, staff_ids: list[uuid.UUID]
     ) -> list[StaffData]:
         """Lấy thông tin KTV và skills của họ."""
-        if not staff_ids:
+        unique_ids = list(set(staff_ids))
+        if not unique_ids:
             return []
 
-        query = text("""
-            SELECT
-                st.user_id as id,
-                u.full_name as name
-            FROM staff st
-            JOIN users u ON st.user_id = u.id
-            WHERE st.user_id IN :staff_ids
-        """).bindparams(bindparam("staff_ids", expanding=True))
+        # Sử dụng SQLModel Select để đảm bảo tương thích type với asyncpg
+        stmt = (
+            select(Staff.user_id, User.full_name)
+            .join(User, Staff.user_id == User.id)
+            .where(Staff.user_id.in_(unique_ids))
+        )
 
-        result = await self.session.execute(query, {"staff_ids": [str(sid) for sid in staff_ids]})
-        rows = result.fetchall()
+        result = await self.session.exec(stmt)
+        rows = result.all()
 
         staff_list = []
         for row in rows:
-            staff_id = uuid.UUID(str(row[0]))
+            staff_id = row[0]
+            name = row[1] or "Unknown"
 
             # Lấy skills của staff này
             skills = await self._get_staff_skills(staff_id)
 
             staff_list.append(StaffData(
                 id=staff_id,
-                name=row[1] or "Unknown",
+                name=name,
                 skill_ids=skills
             ))
 

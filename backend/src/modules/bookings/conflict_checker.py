@@ -111,48 +111,6 @@ class ConflictChecker:
 
         Updated: Uses BookingItemResource junction table.
         """
-        # Import lazy to avoid circular import if needed, or use string reference if joined?
-        # Assuming BookingItemResource is available in DB schema, we construct query carefully.
-        # Since we don't have BookingItemResource imported here yet, we should import it or use raw SQL/text?
-        # Let's import it at top of file or use text. To be clean, text is safer for quick refactor or update imports.
-        # But models.py is in same package. Let's assume we update imports later. For now, use text or dynamic join.
-        # Using text is robust.
-
-        query = text("""
-            SELECT bi.id, bi.booking_id, bi.start_time, bi.end_time
-            FROM booking_items bi
-            JOIN bookings b ON bi.booking_id = b.id
-            JOIN booking_item_resources bir ON bi.id = bir.booking_item_id
-            WHERE bir.resource_id = :resource_id
-              AND b.status IN :statuses
-              AND bi.start_time < :end_time
-              AND bi.end_time > :start_time
-        """)
-
-        if exclude_item_id:
-             query = text(query.text + " AND bi.id != :exclude_id")
-
-        params = {
-            "resource_id": str(resource_id),
-            "statuses": tuple(self.active_statuses), # SQLAlc might need tuple needed for IN? text bind param usually handles list/tuple?
-            # Actually easier to use SQLModel select if we import BookingItemResource.
-            # Let's stick to SQLAlchemy Core / Text for complex joins if unchecked.
-            # But let's try to do it strictly with SQLModel Objects if possible.
-            # I will assume BookingItemResource is imported.
-            "start_time": start_time,
-            "end_time": end_time,
-            "exclude_id": str(exclude_item_id) if exclude_item_id else None
-        }
-        # Simplify: Use Text with proper bind params. status IN needs care.
-        # Let's use simple logic:
-
-        params = {
-            "resource_id": str(resource_id),
-            "start_time": start_time,
-            "end_time": end_time,
-            "exclude_id": str(exclude_item_id) if exclude_item_id else None
-        }
-
         sql = """
             SELECT bi.booking_id, bi.start_time, bi.end_time
             FROM booking_items bi
@@ -167,16 +125,29 @@ class ConflictChecker:
         if exclude_item_id:
             sql += " AND bi.id != :exclude_id"
 
-        from sqlalchemy import bindparam
-        stmt = text(sql).bindparams(
+        # Base binds
+        binds = [
             bindparam("statuses", expanding=True),
             bindparam("resource_id"),
             bindparam("start_time"),
             bindparam("end_time"),
-            bindparam("exclude_id")
-        )
+        ]
 
-        result = await self.session.execute(stmt, {**params, "statuses": list(self.active_statuses)})
+        # Params dict
+        params = {
+            "resource_id": str(resource_id),
+            "start_time": start_time,
+            "end_time": end_time,
+            "statuses": [status.value for status in self.active_statuses] # Convert enum to values for SQL IN clause
+        }
+
+        if exclude_item_id:
+            binds.append(bindparam("exclude_id"))
+            params["exclude_id"] = str(exclude_item_id)
+
+        stmt = text(sql).bindparams(*binds)
+
+        result = await self.session.execute(stmt, params)
         row = result.first() # (booking_id, start, end)
 
         if row:

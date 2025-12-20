@@ -104,6 +104,11 @@ class BookingItem(SQLModel, table=True):
     resources: list["Resource"] = Relationship(link_model=BookingItemResource)
 
     @property
+    def resource_ids(self) -> list[uuid.UUID]:
+        """Helper for Pydantic schema mapping."""
+        return [r.id for r in self.resources]
+
+    @property
     def duration_minutes(self) -> int:
         delta = self.end_time - self.start_time
         return int(delta.total_seconds() / 60)
@@ -161,7 +166,7 @@ class Booking(SQLModel, table=True):
 
     # Relationships
     items: list[BookingItem] = Relationship(back_populates="booking")
-    notes: list["TreatmentNote"] = Relationship(back_populates="booking")
+    treatment_notes: list["TreatmentNote"] = Relationship(back_populates="booking")
     customer: "Customer" = Relationship(
         sa_relationship_kwargs={
             "foreign_keys": "[Booking.customer_id]"
@@ -217,5 +222,5 @@ class TreatmentNote(SQLModel, table=True):
     )
 
     # Relationships
-    booking: "Booking" = Relationship(back_populates="notes")
+    booking: "Booking" = Relationship(back_populates="treatment_notes")
     staff: "User" = Relationship()

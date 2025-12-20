@@ -4,6 +4,7 @@ Booking Item Manager - Business Logic for Items
 import uuid
 import json
 from datetime import datetime, timezone
+from decimal import Decimal
 from fastapi import HTTPException, status
 from sqlmodel import select, text
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -62,7 +63,7 @@ class BookingItemManager:
             service_name_snapshot=service.name,
             start_time=data.start_time,
             end_time=data.end_time,
-            original_price=service.price
+            original_price=Decimal(str(service.price))
         )
         self.session.add(item)
         await self.session.flush()
