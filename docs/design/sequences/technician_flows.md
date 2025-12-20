@@ -30,35 +30,21 @@ sequenceDiagram
     autonumber
     actor KTV as Kỹ thuật viên
     participant UI as Giao diện
-    participant BFF as Server Action
-    participant API as API Router
-    participant S as ScheduleService
+    participant BE as Backend
     participant DB as Database
 
     KTV->>UI: Truy cập lịch làm việc
     activate UI
-    UI->>BFF: getMySchedule(date)
-    activate BFF
+    UI->>BE: getMySchedule(date)
+    activate BE
 
-    BFF->>API: GET /staff/me/schedule?date=...
-    activate API
-
-    API->>S: get_staff_schedule(staffId, date)
-    activate S
-
-    S->>DB: query_bookings_by_staff_id
+    BE->>DB: query_bookings_by_staff_id
     activate DB
-    DB-->>S: booking_list
+    DB-->>BE: booking_list
     deactivate DB
 
-    S-->>API: ScheduleSchema
-    deactivate S
-
-    API-->>BFF: Data
-    deactivate API
-
-    BFF-->>UI: Hiển thị lịch trình
-    deactivate BFF
+    BE-->>UI: Hiển thị lịch trình
+    deactivate BE
 
     UI-->>KTV: Hiển thị danh sách khách hàng được phân công
     deactivate UI
@@ -72,42 +58,26 @@ sequenceDiagram
     autonumber
     actor KTV as Kỹ thuật viên
     participant UI as Giao diện
-    participant BFF as Server Action
-    participant API as API Router
-    participant S as BookingService
+    participant BE as Backend
     participant DB as Database
 
     KTV->>UI: Chọn lịch hẹn đã hoàn thành
     activate UI
-    UI->>BFF: getBookingDetail(bookingId)
-    BFF->>API: GET /bookings/{id}
-    API-->>BFF: BookingSchema
-    BFF-->>UI: Hiển thị thông tin lịch hẹn
+    UI->>BE: getBookingDetail(bookingId)
+    BE-->>UI: Hiển thị thông tin lịch hẹn
 
     KTV->>UI: Nhập ghi chú chuyên môn
-    UI->>BFF: updateBookingNote(bookingId, noteData)
-    activate BFF
+    UI->>BE: updateBookingNote(bookingId, noteData)
+    activate BE
 
-    BFF->>API: POST /bookings/{id}/notes
-    activate API
-
-    API->>S: add_treatment_note(bookingId, noteData)
-    activate S
-
-    S->>DB: INSERT INTO treatment_notes
+    BE->>DB: INSERT INTO treatment_notes
     activate DB
-    Note over S,DB: Truy cập được kiểm soát bởi RLS
-    DB-->>S: success
+    Note over BE,DB: Truy cập được kiểm soát bởi RLS
+    DB-->>BE: success
     deactivate DB
 
-    S-->>API: NoteSchema
-    deactivate S
-
-    API-->>BFF: 201 Created
-    deactivate API
-
-    BFF-->>UI: Lưu thành công
-    deactivate BFF
+    BE-->>UI: Lưu thành công
+    deactivate BE
 
     UI-->>KTV: Thông báo lưu ghi chú thành công
     deactivate UI

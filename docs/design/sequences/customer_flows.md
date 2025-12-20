@@ -30,35 +30,21 @@ sequenceDiagram
     autonumber
     actor KH as Khách hàng
     participant UI as Giao diện
-    participant BFF as Server Action
-    participant API as API Router
-    participant S as ServiceService
+    participant BE as Backend
     participant DB as Database
 
     KH->>UI: Truy cập trang dịch vụ
     activate UI
-    UI->>BFF: fetchServices()
-    activate BFF
+    UI->>BE: fetchServices()
+    activate BE
 
-    BFF->>API: GET /services
-    activate API
-
-    API->>S: get_all_services()
-    activate S
-
-    S->>DB: query_services_by_category
+    BE->>DB: query_services_by_category
     activate DB
-    DB-->>S: services_list
+    DB-->>BE: services_list
     deactivate DB
 
-    S-->>API: List[ServiceSchema]
-    deactivate S
-
-    API-->>BFF: Data
-    deactivate API
-
-    BFF-->>UI: Dữ liệu dịch vụ
-    deactivate BFF
+    BE-->>UI: Dữ liệu dịch vụ
+    deactivate BE
 
     UI-->>KH: Hiển thị danh sách dịch vụ
     deactivate UI
@@ -72,35 +58,21 @@ sequenceDiagram
     autonumber
     actor KH as Khách hàng
     participant UI as Giao diện
-    participant BFF as Server Action
-    participant API as API Router
-    participant S as ServiceService
+    participant BE as Backend
     participant DB as Database
 
     KH->>UI: Chọn một dịch vụ
     activate UI
-    UI->>BFF: getServiceDetail(serviceId)
-    activate BFF
+    UI->>BE: getServiceDetail(serviceId)
+    activate BE
 
-    BFF->>API: GET /services/{id}
-    activate API
-
-    API->>S: get_service_by_id(id)
-    activate S
-
-    S->>DB: find_service_with_related
+    BE->>DB: find_service_with_related
     activate DB
-    DB-->>S: service_record
+    DB-->>BE: service_record
     deactivate DB
 
-    S-->>API: ServiceDetailSchema
-    deactivate S
-
-    API-->>BFF: Data
-    deactivate API
-
-    BFF-->>UI: Dữ liệu chi tiết
-    deactivate BFF
+    BE-->>UI: Dữ liệu chi tiết
+    deactivate BE
 
     UI-->>KH: Hiển thị chi tiết dịch vụ
     deactivate UI
@@ -114,43 +86,29 @@ sequenceDiagram
     autonumber
     actor KH as Khách hàng
     participant UI as Giao diện
-    participant BFF as Server Action
-    participant API as API Router
-    participant S as SchedulingService
+    participant BE as Backend
     participant SOLVER as Bộ giải ràng buộc
     participant DB as Database
 
     KH->>UI: Chọn dịch vụ và ngày mong muốn
     activate UI
-    UI->>BFF: getAvailableSlots(serviceId, date)
-    activate BFF
-
-    BFF->>API: POST /bookings/availability
-    activate API
-
-    API->>S: find_available_slots(serviceId, date)
-    activate S
+    UI->>BE: getAvailableSlots(serviceId, date)
+    activate BE
 
     par Lấy dữ liệu khả dụng
-        S->>DB: get_staff_schedules
-        S->>DB: get_existing_bookings
-        S->>DB: get_resource_availability
+        BE->>DB: get_staff_schedules
+        BE->>DB: get_existing_bookings
+        BE->>DB: get_resource_availability
     end
 
-    S->>SOLVER: compute_feasible_slots(data)
+    BE->>SOLVER: compute_feasible_slots(data)
     activate SOLVER
     note right of SOLVER: Thuật toán tối ưu hóa kiểm tra ràng buộc
-    SOLVER-->>S: valid_slots[]
+    SOLVER-->>BE: valid_slots[]
     deactivate SOLVER
 
-    S-->>API: List[SlotSchema]
-    deactivate S
-
-    API-->>BFF: Data
-    deactivate API
-
-    BFF-->>UI: Hiển thị khung giờ
-    deactivate BFF
+    BE-->>UI: Hiển thị khung giờ
+    deactivate BE
 
     UI-->>KH: Hiển thị các khung giờ khả dụng
     deactivate UI
@@ -164,49 +122,35 @@ sequenceDiagram
     autonumber
     actor KH as Khách hàng
     participant UI as Giao diện
-    participant BFF as Server Action
-    participant API as API Router
-    participant S as BookingService
-    participant NOTI as NotificationService
+    participant BE as Backend
+    participant NOTI as Kênh thông báo
     participant DB as Database
 
     KH->>UI: Xác nhận đặt lịch
     activate UI
-    UI->>BFF: createBooking(slotData)
-    activate BFF
-
-    BFF->>API: POST /bookings
-    activate API
-
-    API->>S: create_booking(data)
-    activate S
+    UI->>BE: createBooking(slotData)
+    activate BE
 
     critical Kiểm tra tính nhất quán (Atomic Transaction)
-        S->>DB: Kiểm tra khả dụng lần cuối (Exclusion Check)
+        BE->>DB: Kiểm tra khả dụng lần cuối (Exclusion Check)
         activate DB
-        Note over S,DB: Thao tác được bảo vệ bằng Database Transaction
-        DB-->>S: OK
+        Note over BE,DB: Thao tác được bảo vệ bằng Database Transaction
+        DB-->>BE: OK
         deactivate DB
     end
 
-    S->>DB: INSERT INTO bookings
+    BE->>DB: INSERT INTO bookings
     activate DB
-    DB-->>S: new_booking
+    DB-->>BE: new_booking
     deactivate DB
 
     par Gửi thông báo
-        S->>NOTI: send_confirmation_email(customer)
-        S->>NOTI: notify_staff_new_appointment(staff)
+        BE->>NOTI: send_confirmation_email(customer)
+        BE->>NOTI: notify_staff_new_appointment(staff)
     end
 
-    S-->>API: BookingSchema
-    deactivate S
-
-    API-->>BFF: 201 Created
-    deactivate API
-
-    BFF-->>UI: Đặt lịch thành công
-    deactivate BFF
+    BE-->>UI: Đặt lịch thành công
+    deactivate BE
 
     UI-->>KH: Hiển thị thông báo thành công
     deactivate UI
@@ -220,35 +164,21 @@ sequenceDiagram
     autonumber
     actor KH as Khách hàng
     participant UI as Giao diện
-    participant BFF as Server Action
-    participant API as API Router
-    participant S as WaitlistService
+    participant BE as Backend
     participant DB as Database
 
     KH->>UI: Chọn khung giờ đã hết chỗ
     activate UI
-    UI->>BFF: joinWaitlist(slotData)
-    activate BFF
+    UI->>BE: joinWaitlist(slotData)
+    activate BE
 
-    BFF->>API: POST /waitlist
-    activate API
-
-    API->>S: add_to_waitlist(customerId, slotData)
-    activate S
-
-    S->>DB: INSERT INTO waitlist_entries
+    BE->>DB: INSERT INTO waitlist_entries
     activate DB
-    DB-->>S: waitlist_entry
+    DB-->>BE: waitlist_entry
     deactivate DB
 
-    S-->>API: WaitlistEntrySchema
-    deactivate S
-
-    API-->>BFF: 201 Created
-    deactivate API
-
-    BFF-->>UI: Đăng ký thành công
-    deactivate BFF
+    BE-->>UI: Đăng ký thành công
+    deactivate BE
 
     UI-->>KH: Thông báo đã tham gia danh sách chờ
     deactivate UI
@@ -262,42 +192,26 @@ sequenceDiagram
     autonumber
     actor KH as Khách hàng
     participant UI as Giao diện trò chuyện
-    participant BFF as Server Action
-    participant API as API Router
-    participant S as ChatService
+    participant BE as Backend
     participant DB as Database
 
     KH->>UI: Mở cửa sổ trò chuyện
     activate UI
-    UI->>BFF: getChatSession()
-    BFF->>API: GET /chat/sessions/me
-    API-->>BFF: ChatSessionSchema
-    BFF-->>UI: Hiển thị lịch sử (nếu có)
+    UI->>BE: getChatSession()
+    BE-->>UI: Hiển thị lịch sử (nếu có)
 
     KH->>UI: Gửi tin nhắn yêu cầu hỗ trợ
-    UI->>BFF: sendMessage(content)
-    activate BFF
+    UI->>BE: sendMessage(content)
+    activate BE
 
-    BFF->>API: POST /chat/messages
-    activate API
-
-    API->>S: send_message(customerId, content)
-    activate S
-
-    S->>DB: INSERT INTO chat_messages
+    BE->>DB: INSERT INTO chat_messages
     activate DB
-    Note over S,DB: Truy cập được kiểm soát bởi RLS (auth.uid())
-    DB-->>S: message
+    Note over BE,DB: Truy cập được kiểm soát bởi RLS (auth.uid())
+    DB-->>BE: message
     deactivate DB
 
-    S-->>API: MessageSchema
-    deactivate S
-
-    API-->>BFF: 201 Created
-    deactivate API
-
-    BFF-->>UI: Cập nhật khung trò chuyện
-    deactivate BFF
+    BE-->>UI: Cập nhật khung trò chuyện
+    deactivate BE
 
     Note over UI: Chờ phản hồi từ lễ tân
     UI-->>KH: Thông báo đang chờ phản hồi
@@ -312,35 +226,21 @@ sequenceDiagram
     autonumber
     actor KH as Khách hàng
     participant UI as Giao diện
-    participant BFF as Server Action
-    participant API as API Router
-    participant S as BookingService
+    participant BE as Backend
     participant DB as Database
 
     KH->>UI: Truy cập trang lịch sử
     activate UI
-    UI->>BFF: getBookingHistory()
-    activate BFF
+    UI->>BE: getBookingHistory()
+    activate BE
 
-    BFF->>API: GET /bookings/history
-    activate API
-
-    API->>S: get_user_history(userId)
-    activate S
-
-    S->>DB: query_bookings_by_user
+    BE->>DB: query_bookings_by_user
     activate DB
-    DB-->>S: bookings[]
+    DB-->>BE: bookings[]
     deactivate DB
 
-    S-->>API: List[BookingSchema]
-    deactivate S
-
-    API-->>BFF: Data
-    deactivate API
-
-    BFF-->>UI: Hiển thị danh sách
-    deactivate BFF
+    BE-->>UI: Hiển thị danh sách
+    deactivate BE
 
     UI-->>KH: Hiển thị lịch sử lịch hẹn
     deactivate UI
@@ -354,44 +254,30 @@ sequenceDiagram
     autonumber
     actor KH as Khách hàng
     participant UI as Giao diện
-    participant BFF as Server Action
-    participant API as API Router
-    participant S as BookingService
+    participant BE as Backend
     participant DB as Database
 
     KH->>UI: Chọn lịch hẹn và yêu cầu hủy
     activate UI
-    UI->>BFF: cancelBooking(bookingId)
-    activate BFF
+    UI->>BE: cancelBooking(bookingId)
+    activate BE
 
-    BFF->>API: POST /bookings/{id}/cancel
-    activate API
-
-    API->>S: cancel_booking(bookingId)
-    activate S
-
-    S->>DB: get_booking(bookingId)
+    BE->>DB: get_booking(bookingId)
     activate DB
-    DB-->>S: booking
+    DB-->>BE: booking
     deactivate DB
 
-    S->>S: check_cancellation_policy
+    BE->>BE: check_cancellation_policy
 
     alt Vi phạm chính sách hủy
-        S-->>API: Error (quá thời hạn cho phép)
-        API-->>BFF: Warning
-        BFF-->>UI: Hiển thị thông báo chính sách
+        BE-->>UI: Hiển thị thông báo chính sách
     else Hợp lệ
-        S->>DB: UPDATE bookings SET status = 'CANCELLED'
+        BE->>DB: UPDATE bookings SET status = 'CANCELLED'
         activate DB
-        DB-->>S: success
+        DB-->>BE: success
         deactivate DB
-        S-->>API: Success
-        deactivate S
-        API-->>BFF: 200 OK
-        deactivate API
-        BFF-->>UI: Hủy thành công
-        deactivate BFF
+        BE-->>UI: Hủy thành công
+        deactivate BE
         UI-->>KH: Xác nhận đã hủy lịch hẹn
         deactivate UI
     end
@@ -404,34 +290,34 @@ sequenceDiagram
 sequenceDiagram
     autonumber
     participant CRON as Bộ lập lịch
-    participant S as NotificationService
+    participant BE as Backend
     participant DB as Database
     participant NOTI as Kênh thông báo
     actor KH as Khách hàng
 
     Note over CRON: Chạy định kỳ (mỗi giờ)
-    CRON->>S: trigger_reminder_check()
-    activate S
+    CRON->>BE: trigger_reminder_check()
+    activate BE
 
-    S->>DB: get_upcoming_bookings(reminder_threshold)
+    BE->>DB: get_upcoming_bookings(reminder_threshold)
     activate DB
-    DB-->>S: bookings_to_remind[]
+    DB-->>BE: bookings_to_remind[]
     deactivate DB
 
     loop Với mỗi lịch hẹn cần nhắc
-        S->>NOTI: send_reminder(customer, booking)
+        BE->>NOTI: send_reminder(customer, booking)
         NOTI-->>KH: Thư điện tử/Tin nhắn nhắc lịch hẹn
     end
 
-    S->>DB: UPDATE bookings SET reminder_sent = true
-    deactivate S
+    BE->>DB: UPDATE bookings SET reminder_sent = true
+    deactivate BE
 
     Note over KH: Khách hàng nhận thông báo
     Note over KH,NOTI: Khách hàng phản hồi từ các kênh (Email/SMS/App)
     KH-->>NOTI: Gửi xác nhận hoặc yêu cầu hủy
 
-    Note over S: Nếu xác nhận: Cập nhật trạng thái 'CONFIRMED'
-    Note over S: Nếu yêu cầu hủy: Chuyển sang luồng Hủy lịch (A3.2)
+    Note over BE: Nếu xác nhận: Cập nhật trạng thái 'CONFIRMED'
+    Note over BE: Nếu yêu cầu hủy: Chuyển sang luồng Hủy lịch (A3.2)
 ```
 **Hình 3.16: Sơ đồ tuần tự chức năng Nhận thông báo nhắc lịch**
 ### 3.17. Gửi yêu cầu bảo hành (A3.6)
@@ -441,35 +327,21 @@ sequenceDiagram
     autonumber
     actor KH as Khách hàng
     participant UI as Giao diện
-    participant BFF as Server Action
-    participant API as API Router
-    participant S as WarrantyService
+    participant BE as Backend
     participant DB as Database
 
     KH->>UI: Chọn Booking hoàn thành và gửi yêu cầu bảo hành
     activate UI
-    UI->>BFF: createWarrantyRequest(bookingId, description, images)
-    activate BFF
+    UI->>BE: createWarrantyRequest(bookingId, description, images)
+    activate BE
 
-    BFF->>API: POST /warranty-requests
-    activate API
-
-    API->>S: create_warranty_request(customerId, data)
-    activate S
-
-    S->>DB: INSERT INTO warranty_tickets
+    BE->>DB: INSERT INTO warranty_tickets
     activate DB
-    DB-->>S: ticket_record
+    DB-->>BE: ticket_record
     deactivate DB
 
-    S-->>API: WarrantyTicketSchema
-    deactivate S
-
-    API-->>BFF: 201 Created
-    deactivate API
-
-    BFF-->>UI: Thông báo gửi yêu cầu thành công
-    deactivate BFF
+    BE-->>UI: Thông báo gửi yêu cầu thành công
+    deactivate BE
 
     UI-->>KH: Hiển thị trạng thái "Đang chờ xử lý"
     deactivate UI

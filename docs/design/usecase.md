@@ -305,9 +305,7 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 ---
 
----
-
-### Bảng 3.14: Nhận thông báo nhắc lịch
+### Bảng 3.15: Nhận thông báo nhắc lịch
 
 | Thuộc tính | Nội dung |
 |------------|----------|
@@ -328,7 +326,7 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 ---
 
-### Bảng 3.15: Theo dõi tiến độ liệu trình
+### Bảng 3.16: Theo dõi tiến độ liệu trình
 
 | Thuộc tính | Nội dung |
 |------------|----------|
@@ -348,7 +346,7 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 ## 3. Phân hệ Lễ tân
 
-### Bảng 3.14: Xem lịch hẹn tổng quan
+### Bảng 3.17: Xem lịch hẹn tổng quan
 
 | Thuộc tính | Nội dung |
 |------------|----------|
@@ -366,7 +364,7 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 ---
 
-### Bảng 3.15: Quản lý hồ sơ khách hàng
+### Bảng 3.18: Quản lý hồ sơ khách hàng
 
 | Thuộc tính | Nội dung |
 |------------|----------|
@@ -387,7 +385,7 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 ---
 
-### Bảng 3.16: Tạo lịch hẹn thủ công
+### Bảng 3.19: Tạo lịch hẹn thủ công
 
 | Thuộc tính | Nội dung |
 |------------|----------|
@@ -408,7 +406,7 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 ---
 
-### Bảng 3.17: Xác nhận khách đến
+### Bảng 3.20: Xác nhận khách đến
 
 | Thuộc tính | Nội dung |
 |------------|----------|
@@ -430,7 +428,7 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 ---
 
-### Bảng 3.18: Xử lý thanh toán
+### Bảng 3.21: Xử lý thanh toán
 
 | Thuộc tính | Nội dung |
 |------------|----------|
@@ -454,7 +452,7 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 ---
 
-### Bảng 3.21: Tái lập lịch tự động khi có sự cố
+### Bảng 3.22: Tái lập lịch tự động khi có sự cố
 
 | Thuộc tính | Nội dung |
 |------------|----------|
@@ -480,7 +478,7 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 ## 4. Phân hệ Kỹ thuật viên
 
-### Bảng 3.20: Xem lịch làm việc cá nhân
+### Bảng 3.23: Xem lịch làm việc cá nhân
 
 | Thuộc tính | Nội dung |
 |------------|----------|
@@ -498,7 +496,7 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 ---
 
-### Bảng 3.21: Ghi chú chuyên môn sau buổi hẹn
+### Bảng 3.24: Ghi chú chuyên môn sau buổi hẹn
 
 | Thuộc tính | Nội dung |
 |------------|----------|
@@ -519,7 +517,7 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 ## 5. Phân hệ Quản trị viên
 
-### Bảng 3.22: Cấu hình lịch làm việc nhân viên
+### Bảng 3.25: Cấu hình lịch làm việc nhân viên
 
 | Thuộc tính | Nội dung |
 |------------|----------|
@@ -540,7 +538,7 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 ---
 
-### Bảng 3.23: Quản lý danh mục dịch vụ
+### Bảng 3.26: Quản lý danh mục dịch vụ
 
 | Thuộc tính | Nội dung |
 |------------|----------|
@@ -558,7 +556,7 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 ---
 
-### Bảng 3.24: Quản lý tài nguyên
+### Bảng 3.27: Quản lý tài nguyên
 
 | Thuộc tính | Nội dung |
 |------------|----------|
@@ -578,7 +576,7 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 ---
 
-### Bảng 3.25: Quản lý thẻ liệu trình
+### Bảng 3.28: Quản lý thẻ liệu trình
 
 | Thuộc tính | Nội dung |
 |------------|----------|
@@ -596,7 +594,7 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 
 ---
 
-### Bảng 3.26: Quản lý chương trình khuyến mãi
+### Bảng 3.29: Quản lý chương trình khuyến mãi
 
 | Thuộc tính | Nội dung |
 |------------|----------|
@@ -611,6 +609,118 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 |------|----------|-----------|
 | 1 | Quản trị viên | Thiết lập mã khuyến mãi (Mã, Mức giảm, Hạn dùng, Điều kiện áp dụng). |
 | 2 | Hệ thống | Lưu trữ và xác thực mã khi áp dụng tại quầy thanh toán. |
+
+---
+
+### Bảng 3.30: Cấu hình giờ hoạt động Spa
+
+| Thuộc tính | Nội dung |
+|------------|----------|
+| **Mã chức năng** | C1 |
+| **Tên chức năng** | Cấu hình giờ hoạt động Spa |
+| **Mô tả** | Quản trị viên thiết lập giờ mở cửa và đóng cửa của Spa cho từng ngày trong tuần. |
+| **Tác nhân** | Quản trị viên |
+| **Hậu điều kiện** | Giờ hoạt động được cập nhật và ảnh hưởng đến khung giờ khả dụng trong chức năng đặt lịch. |
+
+**Luồng sự kiện chính:**
+
+| Bước | Tác nhân | Hành động |
+|------|----------|-----------|
+| 1 | Quản trị viên | Truy cập màn hình cấu hình giờ hoạt động. |
+| 2 | Hệ thống | Hiển thị bảng 7 ngày với giờ mở/đóng cửa hiện tại. |
+| 3 | Quản trị viên | Chỉnh sửa giờ mở/đóng cửa cho từng ngày hoặc đánh dấu ngày nghỉ. |
+| 4 | Hệ thống | Kiểm tra tính hợp lệ và lưu cấu hình vào cơ sở dữ liệu. |
+
+**Luồng thay thế:** Nếu cần thiết lập nhiều ca hoạt động trong ngày (ví dụ: 8h-12h và 14h-20h), quản trị viên thêm khoảng thời gian mới cho cùng ngày.
+
+---
+
+### Bảng 3.31: Quản lý ngày nghỉ lễ
+
+| Thuộc tính | Nội dung |
+|------------|----------|
+| **Mã chức năng** | C2 |
+| **Tên chức năng** | Quản lý ngày nghỉ lễ và ngày đặc biệt |
+| **Mô tả** | Quản trị viên đánh dấu các ngày nghỉ lễ, bảo trì hoặc thay đổi giờ hoạt động đặc biệt. |
+| **Tác nhân** | Quản trị viên |
+| **Hậu điều kiện** | Ngày ngoại lệ được ghi nhận và hệ thống chặn đặt lịch vào ngày đó (nếu nghỉ). |
+
+**Luồng sự kiện chính:**
+
+| Bước | Tác nhân | Hành động |
+|------|----------|-----------|
+| 1 | Quản trị viên | Truy cập quản lý lịch ngoại lệ. |
+| 2 | Quản trị viên | Thêm ngày nghỉ lễ hoặc ngày đặc biệt với lý do. |
+| 3 | Quản trị viên | Chọn loại: Nghỉ lễ, Bảo trì, hoặc Giờ đặc biệt. |
+| 4 | Hệ thống | Lưu vào danh sách ngày ngoại lệ và cập nhật tính khả dụng. |
+
+**Luồng thay thế:** Nếu chọn "Giờ đặc biệt", quản trị viên nhập giờ mở/đóng cửa khác với lịch thường.
+
+---
+
+### Bảng 3.32: Mời nhân viên qua thư điện tử
+
+| Thuộc tính | Nội dung |
+|------------|----------|
+| **Mã chức năng** | C3 |
+| **Tên chức năng** | Mời nhân viên mới qua thư điện tử |
+| **Mô tả** | Quản trị viên gửi thư mời nhân viên tham gia hệ thống bằng địa chỉ thư điện tử. Nhân viên nhận thư và tự thiết lập mật khẩu. |
+| **Tác nhân** | Quản trị viên |
+| **Tiền điều kiện** | Địa chỉ thư điện tử chưa tồn tại trong hệ thống. |
+| **Hậu điều kiện** | Tài khoản nhân viên được tạo ở trạng thái chờ kích hoạt; thư mời được gửi đi. |
+
+**Luồng sự kiện chính:**
+
+| Bước | Tác nhân | Hành động |
+|------|----------|-----------|
+| 1 | Quản trị viên | Nhập địa chỉ thư điện tử và thông tin nhân viên mới (họ tên, vai trò). |
+| 2 | Hệ thống | Kiểm tra tính duy nhất của địa chỉ thư điện tử. |
+| 3 | Hệ thống | Gửi thư mời chứa liên kết kích hoạt đến địa chỉ đã nhập. |
+| 4 | Nhân viên | Nhấp vào liên kết và thiết lập mật khẩu đăng nhập. |
+
+**Luồng ngoại lệ:** Nếu địa chỉ thư điện tử đã tồn tại, hệ thống từ chối và yêu cầu nhập địa chỉ khác.
+
+---
+
+### Bảng 3.33: Quản lý tài khoản nhân viên
+
+| Thuộc tính | Nội dung |
+|------------|----------|
+| **Mã chức năng** | C9 |
+| **Tên chức năng** | Quản lý tài khoản nhân viên |
+| **Mô tả** | Quản trị viên xem danh sách, chỉnh sửa thông tin hoặc vô hiệu hóa tài khoản nhân viên. |
+| **Tác nhân** | Quản trị viên |
+
+**Luồng sự kiện chính:**
+
+| Bước | Tác nhân | Hành động |
+|------|----------|-----------|
+| 1 | Quản trị viên | Truy cập danh sách nhân viên (Lễ tân, Kỹ thuật viên). |
+| 2 | Hệ thống | Hiển thị danh sách với trạng thái, vai trò và thông tin liên lạc. |
+| 3 | Quản trị viên | Chọn nhân viên để xem chi tiết hoặc chỉnh sửa. |
+| 4 | Hệ thống | Lưu thay đổi vào hồ sơ nhân viên. |
+
+**Luồng thay thế:** Quản trị viên có thể vô hiệu hóa tài khoản nhân viên đã nghỉ việc thay vì xóa hoàn toàn.
+
+---
+
+### Bảng 3.34: Cấu hình hệ thống
+
+| Thuộc tính | Nội dung |
+|------------|----------|
+| **Mã chức năng** | C10 |
+| **Tên chức năng** | Cấu hình hệ thống |
+| **Mô tả** | Quản trị viên thiết lập các tham số toàn cục như thời gian nhắc lịch, chính sách hủy và thông tin liên hệ Spa. |
+| **Tác nhân** | Quản trị viên |
+
+**Luồng sự kiện chính:**
+
+| Bước | Tác nhân | Hành động |
+|------|----------|-----------|
+| 1 | Quản trị viên | Truy cập màn hình cấu hình hệ thống. |
+| 2 | Hệ thống | Hiển thị các tham số hiện tại theo nhóm (Thông báo, Chính sách, Thông tin Spa). |
+| 3 | Quản trị viên | Chỉnh sửa các tham số cần thiết. |
+| 4 | Hệ thống | Kiểm tra tính hợp lệ và lưu cấu hình. |
 
 ---
 

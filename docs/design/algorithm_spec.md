@@ -1,7 +1,7 @@
-# Đặc tả Thuật toán Lập lịch Thông minh Synapse (SISF)
+# ĐẶC TẢ CƠ CHẾ LẬP LỊCH THÔNG MINH TRONG HỆ THỐNG
 
 ## 1. Tổng quan Giải pháp
-Hệ thống **Synapse Intelligent Scheduling Framework (SISF)** là trái tim của nền tảng quản lý vận hành Spas Synapse. Khác biệt với các hệ thống xếp lịch truyền thống sử dụng phương pháp heuristic đơn giản ("Điền vào chỗ trống" - First Come First Served), SISF áp dụng mô hình toán học **Tối ưu hóa Đa mục tiêu (Multi-Objective Optimization)** dựa trên lý thuyết Bài toán Xếp lịch Dự án Có Ràng buộc Tài nguyên (RCPSP).
+Hệ thống Synapse triển khai một cơ chế lập lịch dịch vụ dựa trên ràng buộc, nhằm giải quyết bài toán phân bổ các yêu cầu dịch vụ của khách hàng theo thời gian, đồng thời thỏa mãn các ràng buộc về nhân sự, tài nguyên vật lý và các tiêu chí chất lượng dịch vụ. Hệ thống áp dụng mô hình toán học **Tối ưu hóa Đa mục tiêu (Multi-Objective Optimization)** dựa trên lý thuyết Bài toán Xếp lịch Dự án Có Ràng buộc Tài nguyên (RCPSP).
 
 Hệ thống được thiết kế để giải quyết bài toán cốt lõi: **"Làm thế nào để tối đa hóa doanh thu và hiệu suất sử dụng tài nguyên trong khi vẫn đảm bảo sự hài lòng cao nhất cho khách hàng và sự công bằng cho nhân viên?"**
 

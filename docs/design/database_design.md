@@ -312,6 +312,94 @@ erDiagram
         uuid changed_by FK
         timestamp changed_at
     }
+
+    %% === WAITLIST ===
+    waitlist {
+        uuid id PK
+        uuid customer_id FK
+        uuid service_id FK
+        date preferred_date
+        time preferred_time_start
+        time preferred_time_end
+        enum status "PENDING, NOTIFIED, BOOKED, EXPIRED"
+        timestamp created_at
+        timestamp notified_at
+    }
+
+    customers ||--|{ waitlist : "joins"
+    services ||--|{ waitlist : "for"
+
+    %% === CHAT ===
+    chat_sessions {
+        uuid id PK
+        uuid customer_id FK
+        uuid staff_id FK
+        enum status "OPEN, CLOSED"
+        timestamp created_at
+        timestamp closed_at
+    }
+
+    chat_messages {
+        uuid id PK
+        uuid session_id FK
+        uuid sender_id FK
+        text content
+        boolean is_read
+        timestamp created_at
+    }
+
+    customers ||--|{ chat_sessions : "initiates"
+    staff_profiles ||--o{ chat_sessions : "handles"
+    chat_sessions ||--|{ chat_messages : "contains"
+
+    %% === WARRANTY ===
+    warranty_tickets {
+        uuid id PK
+        uuid booking_id FK
+        uuid customer_id FK
+        text description
+        text images
+        enum status "PENDING, APPROVED, REJECTED, RESOLVED"
+        text resolution_notes
+        uuid resolved_by FK
+        timestamp created_at
+        timestamp resolved_at
+    }
+
+    bookings ||--o| warranty_tickets : "has"
+    customers ||--|{ warranty_tickets : "submits"
+
+    %% === TREATMENT NOTES ===
+    treatment_notes {
+        uuid id PK
+        uuid booking_item_id FK
+        uuid staff_id FK
+        text skin_condition
+        text reaction_notes
+        text special_notes
+        text recommendations
+        timestamp created_at
+    }
+
+    booking_items ||--o| treatment_notes : "has"
+    staff_profiles ||--|{ treatment_notes : "writes"
+
+    %% === PROMOTIONS ===
+    promotions {
+        uuid id PK
+        string code UK
+        string name
+        text description
+        enum discount_type "PERCENTAGE, FIXED_AMOUNT"
+        decimal discount_value
+        decimal min_order_value
+        int max_uses
+        int current_uses
+        date valid_from
+        date valid_until
+        boolean is_active
+        timestamp created_at
+    }
 ```
 
 ## 2. PostgreSQL Creation Script
@@ -761,6 +849,114 @@ CREATE TABLE audit_logs (
     changed_by UUID REFERENCES users(id) ON DELETE SET NULL,
     changed_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
+
+-- ============================================================
+-- TABLES: WAITLIST
+-- ============================================================
+
+CREATE TYPE waitlist_status AS ENUM ('PENDING', 'NOTIFIED', 'BOOKED', 'EXPIRED');
+
+CREATE TABLE waitlist (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    customer_id UUID REFERENCES customers(id) ON DELETE CASCADE NOT NULL,
+    service_id UUID REFERENCES services(id) ON DELETE CASCADE NOT NULL,
+    preferred_date DATE NOT NULL,
+    preferred_time_start TIME,
+    preferred_time_end TIME,
+    status waitlist_status DEFAULT 'PENDING' NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    notified_at TIMESTAMPTZ,
+
+    UNIQUE(customer_id, service_id, preferred_date)
+);
+
+-- ============================================================
+-- TABLES: CHAT
+-- ============================================================
+
+CREATE TYPE chat_session_status AS ENUM ('OPEN', 'CLOSED');
+
+CREATE TABLE chat_sessions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    customer_id UUID REFERENCES customers(id) ON DELETE CASCADE NOT NULL,
+    staff_id UUID REFERENCES staff_profiles(user_id) ON DELETE SET NULL,
+    status chat_session_status DEFAULT 'OPEN' NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    closed_at TIMESTAMPTZ
+);
+
+CREATE TABLE chat_messages (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    session_id UUID REFERENCES chat_sessions(id) ON DELETE CASCADE NOT NULL,
+    sender_id UUID REFERENCES users(id) ON DELETE SET NULL NOT NULL,
+    content TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+CREATE INDEX idx_chat_messages_session ON chat_messages(session_id, created_at);
+
+-- ============================================================
+-- TABLES: WARRANTY
+-- ============================================================
+
+CREATE TYPE warranty_status AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'RESOLVED');
+
+CREATE TABLE warranty_tickets (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    booking_id UUID REFERENCES bookings(id) ON DELETE SET NULL,
+    customer_id UUID REFERENCES customers(id) ON DELETE CASCADE NOT NULL,
+    description TEXT NOT NULL,
+    images TEXT[], -- Array of image URLs
+    status warranty_status DEFAULT 'PENDING' NOT NULL,
+    resolution_notes TEXT,
+    resolved_by UUID REFERENCES users(id) ON DELETE SET NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    resolved_at TIMESTAMPTZ
+);
+
+-- ============================================================
+-- TABLES: TREATMENT NOTES
+-- ============================================================
+
+CREATE TABLE treatment_notes (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    booking_item_id UUID REFERENCES booking_items(id) ON DELETE CASCADE NOT NULL UNIQUE,
+    staff_id UUID REFERENCES staff_profiles(user_id) ON DELETE SET NULL NOT NULL,
+    skin_condition TEXT,
+    reaction_notes TEXT,
+    special_notes TEXT,
+    recommendations TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+-- ============================================================
+-- TABLES: PROMOTIONS
+-- ============================================================
+
+CREATE TYPE discount_type AS ENUM ('PERCENTAGE', 'FIXED_AMOUNT');
+
+CREATE TABLE promotions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    code VARCHAR(50) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    discount_type discount_type NOT NULL,
+    discount_value DECIMAL(12, 2) NOT NULL,
+    min_order_value DECIMAL(12, 2) DEFAULT 0,
+    max_uses INTEGER,
+    current_uses INTEGER DEFAULT 0,
+    valid_from DATE NOT NULL,
+    valid_until DATE NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+
+    CONSTRAINT chk_discount_value CHECK (discount_value > 0),
+    CONSTRAINT chk_valid_dates CHECK (valid_until >= valid_from),
+    CONSTRAINT chk_uses CHECK (max_uses IS NULL OR current_uses <= max_uses)
+);
+
+CREATE INDEX idx_promotions_code ON promotions(code) WHERE is_active = TRUE;
 
 -- ============================================================
 -- TRIGGERS

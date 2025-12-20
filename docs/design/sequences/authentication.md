@@ -30,38 +30,28 @@ sequenceDiagram
     autonumber
     actor KH as Khách hàng
     participant UI as Giao diện
-    participant BFF as Server Action
+    participant BE as Backend
     participant SUPA as Supabase Auth
-    participant API as API Router
-    participant S as CustomerService
     participant DB as Database
 
     KH->>UI: Nhập thông tin đăng ký
     activate UI
-    UI->>BFF: registerUser(payload)
-    activate BFF
+    UI->>BE: registerUser(payload)
+    activate BE
 
-    BFF->>SUPA: signUp(email, password, metadata)
+    BE->>SUPA: signUp(email, password, metadata)
     activate SUPA
-    SUPA-->>BFF: Response (Xác nhận tiếp nhận)
+    SUPA-->>BE: Response (Xác nhận tiếp nhận)
     deactivate SUPA
 
-    Note over BFF,DB: Tạo hồ sơ khách hàng (Customer Profile)
-    BFF->>API: POST /customers
-    activate API
-    API->>S: create_customer_for_user(user_id, name)
-    activate S
-    S->>DB: INSERT INTO customers (user_id, full_name)
+    Note over BE,DB: Tạo hồ sơ khách hàng (Customer Profile)
+    BE->>DB: INSERT INTO customers (user_id, full_name)
     activate DB
-    DB-->>S: customer
+    DB-->>BE: customer
     deactivate DB
-    S-->>API: CustomerSchema
-    deactivate S
-    API-->>BFF: 201 Created
-    deactivate API
 
-    BFF-->>UI: Đăng ký thành công (Thông báo chung)
-    deactivate BFF
+    BE-->>UI: Đăng ký thành công (Thông báo chung)
+    deactivate BE
 
     UI-->>KH: Hiển thị thông báo kiểm tra thư điện tử
     deactivate UI
@@ -98,27 +88,27 @@ sequenceDiagram
     autonumber
     actor ND as Người dùng
     participant UI as Giao diện
-    participant BFF as Server Action
+    participant BE as Backend
     participant SUPA as Supabase Auth
 
     ND->>UI: Nhập thông tin đăng nhập
     activate UI
-    UI->>BFF: login(credentials)
-    activate BFF
+    UI->>BE: login(credentials)
+    activate BE
 
-    BFF->>SUPA: signInWithPassword(email, password)
+    BE->>SUPA: signInWithPassword(email, password)
     activate SUPA
 
     alt Thông tin không hợp lệ
-        SUPA-->>BFF: Error (thông tin đăng nhập không chính xác)
-        BFF-->>UI: Hiển thị thông báo lỗi
+        SUPA-->>BE: Error (thông tin đăng nhập không chính xác)
+        BE-->>UI: Hiển thị thông báo lỗi
     else Xác thực thành công
-        SUPA-->>BFF: Session (JWT)
+        SUPA-->>BE: Session (JWT)
         deactivate SUPA
 
-        BFF->>BFF: Lưu Cookie phiên đăng nhập
-        BFF-->>UI: Chuyển hướng theo vai trò
-        deactivate BFF
+        BE->>BE: Lưu Cookie phiên đăng nhập
+        BE-->>UI: Chuyển hướng theo vai trò
+        deactivate BE
 
         UI-->>ND: Chuyển hướng đến bảng điều khiển
         deactivate UI
@@ -133,21 +123,21 @@ sequenceDiagram
     autonumber
     actor ND as Người dùng
     participant UI as Giao diện
-    participant BFF as Server Action
+    participant BE as Backend
     participant SUPA as Supabase Auth
 
     ND->>UI: Nhập địa chỉ thư điện tử
     activate UI
-    UI->>BFF: forgotPasswordAction(email)
-    activate BFF
+    UI->>BE: forgotPasswordAction(email)
+    activate BE
 
-    BFF->>SUPA: resetPasswordForEmail(email)
+    BE->>SUPA: resetPasswordForEmail(email)
     activate SUPA
-    SUPA-->>BFF: OK
+    SUPA-->>BE: OK
     deactivate SUPA
 
-    BFF-->>UI: Hiển thị thông báo
-    deactivate BFF
+    BE-->>UI: Hiển thị thông báo
+    deactivate BE
 
     UI-->>ND: Thông báo kiểm tra thư điện tử
     deactivate UI
@@ -161,21 +151,21 @@ sequenceDiagram
     autonumber
     actor ND as Người dùng
     participant UI as Giao diện
-    participant BFF as Server Action
+    participant BE as Backend
     participant SUPA as Supabase Auth
 
     ND->>UI: Nhấp liên kết đặt lại và nhập mật khẩu mới
     activate UI
-    UI->>BFF: updatePasswordAction(newPassword)
-    activate BFF
+    UI->>BE: updatePasswordAction(newPassword)
+    activate BE
 
-    BFF->>SUPA: updateUser({ password: newPassword })
+    BE->>SUPA: updateUser({ password: newPassword })
     activate SUPA
-    SUPA-->>BFF: OK (đã cập nhật)
+    SUPA-->>BE: OK (đã cập nhật)
     deactivate SUPA
 
-    BFF-->>UI: Thông báo thành công
-    deactivate BFF
+    BE-->>UI: Thông báo thành công
+    deactivate BE
 
     UI-->>ND: Chuyển hướng đến bảng điều khiển
     deactivate UI
@@ -189,35 +179,21 @@ sequenceDiagram
     autonumber
     actor ND as Người dùng
     participant UI as Giao diện
-    participant BFF as Server Action
-    participant API as API Router
-    participant S as UserService
+    participant BE as Backend
     participant DB as Database
 
     ND->>UI: Sửa thông tin và lưu
     activate UI
-    UI->>BFF: updateProfile(data)
-    activate BFF
+    UI->>BE: updateProfile(data)
+    activate BE
 
-    BFF->>API: PUT /users/me
-    activate API
-
-    API->>S: update_profile(current_user, data)
-    activate S
-
-    S->>DB: UPDATE users SET ... WHERE id = ?
+    BE->>DB: UPDATE users SET ... WHERE id = ?
     activate DB
-    DB-->>S: updated_user
+    DB-->>BE: updated_user
     deactivate DB
 
-    S-->>API: UserSchema
-    deactivate S
-
-    API-->>BFF: 200 OK
-    deactivate API
-
-    BFF-->>UI: Cập nhật trạng thái
-    deactivate BFF
+    BE-->>UI: Cập nhật trạng thái
+    deactivate BE
 
     UI-->>ND: Hiển thị thông tin mới
     deactivate UI
@@ -231,22 +207,22 @@ sequenceDiagram
     autonumber
     actor ND as Người dùng
     participant UI as Giao diện
-    participant BFF as Server Action
+    participant BE as Backend
     participant SUPA as Supabase Auth
 
     ND->>UI: Chọn đăng xuất
     activate UI
-    UI->>BFF: logoutAction()
-    activate BFF
+    UI->>BE: logoutAction()
+    activate BE
 
-    BFF->>SUPA: signOut()
+    BE->>SUPA: signOut()
     activate SUPA
-    SUPA-->>BFF: OK
+    SUPA-->>BE: OK
     deactivate SUPA
 
-    BFF->>BFF: Xóa Cookie phiên đăng nhập
-    BFF-->>UI: Chuyển hướng trang đăng nhập
-    deactivate BFF
+    BE->>BE: Xóa Cookie phiên đăng nhập
+    BE-->>UI: Chuyển hướng trang đăng nhập
+    deactivate BE
 
     UI-->>ND: Hiển thị trang đăng nhập
     deactivate UI
