@@ -146,23 +146,37 @@ class ConflictChecker:
         # Simplify: Use Text with proper bind params. status IN needs care.
         # Let's use simple logic:
 
-        statuses_str = "('" + "','".join(self.active_statuses) + "')"
+        params = {
+            "resource_id": str(resource_id),
+            "start_time": start_time,
+            "end_time": end_time,
+            "exclude_id": str(exclude_item_id) if exclude_item_id else None
+        }
 
-        sql = f"""
+        sql = """
             SELECT bi.booking_id, bi.start_time, bi.end_time
             FROM booking_items bi
             JOIN bookings b ON bi.booking_id = b.id
             JOIN booking_item_resources bir ON bi.id = bir.booking_item_id
-            WHERE bir.resource_id = '{str(resource_id)}'
-              AND b.status IN {statuses_str}
-              AND bi.start_time < '{end_time.isoformat()}'
-              AND bi.end_time > '{start_time.isoformat()}'
+            WHERE bir.resource_id = :resource_id
+              AND b.status IN :statuses
+              AND bi.start_time < :end_time
+              AND bi.end_time > :start_time
         """
 
         if exclude_item_id:
-            sql += f" AND bi.id != '{str(exclude_item_id)}'"
+            sql += " AND bi.id != :exclude_id"
 
-        result = await self.session.execute(text(sql))
+        from sqlalchemy import bindparam
+        stmt = text(sql).bindparams(
+            bindparam("statuses", expanding=True),
+            bindparam("resource_id"),
+            bindparam("start_time"),
+            bindparam("end_time"),
+            bindparam("exclude_id")
+        )
+
+        result = await self.session.execute(stmt, {**params, "statuses": list(self.active_statuses)})
         row = result.first() # (booking_id, start, end)
 
         if row:

@@ -42,6 +42,10 @@ origins = [
     "http://localhost:3000",  # Frontend
 ]
 
+from src.app.middleware import ObservabilityMiddleware
+
+app.add_middleware(ObservabilityMiddleware)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -52,6 +56,8 @@ app.add_middleware(
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
+    from src.common.logging import logger
+    logger.error(f"Global Exception: {str(exc)}", exc_info=True)
     return JSONResponse(
         status_code=500,
         content={"message": "Hệ thống đang bận"}

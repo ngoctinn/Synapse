@@ -11,7 +11,7 @@ from sqlalchemy import text
 from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import Depends
 from src.app.config import settings
-from src.common.auth_core import get_token_payload
+from src.common.auth_core import get_token_payload, get_token_payload_optional
 import json
 
 
@@ -36,35 +36,29 @@ async_session_factory = sessionmaker(
 
 
 async def get_db_session(
-    token_payload: Annotated[dict, Depends(get_token_payload)]
+    token_payload: Annotated[dict | None, Depends(get_token_payload_optional)] = None
 ) -> AsyncGenerator[AsyncSession, None]:
     """
     Cung cấp DB session với RLS context (request.jwt.claims) đã được inject.
-
-    Logic:
-    1. Chuyển role sang 'authenticated' (quyền hạn chế).
-    2. Inject thông tin user vào cấu hình Postgres.
-
-    Args:
-        token_payload (dict): Payload từ JWT token (chứa claims).
-
-    Yields:
-        AsyncSession: Session database an toàn.
+    Hỗ trợ cả truy cập public (anon) và authenticated.
     """
-    # Import local để tránh circular dependency (nếu cần thiết trong tương lai)
-
     async with async_session_factory() as session:
         try:
-            # 1. Chuyển role sang 'authenticated' (quyền hạn chế)
-            await session.exec(text("SET LOCAL role TO 'authenticated';"))
+            if token_payload:
+                # 1. Chuyển role sang 'authenticated'
+                await session.exec(text("SET LOCAL role TO 'authenticated';"))
 
-            # 2. Inject thông tin user vào cấu hình Postgres
-            # Supabase sử dụng request.jwt.claims để kiểm tra policies
-            claims_json = json.dumps(token_payload)
-            await session.exec(
-                text("SELECT set_config('request.jwt.claims', :claims, true)"),
-                params={"claims": claims_json}
-            )
+                # 2. Inject claims
+                claims_json = json.dumps(token_payload)
+                await session.exec(
+                    text("SELECT set_config('request.jwt.claims', :claims, true)"),
+                    params={"claims": claims_json}
+                )
+            else:
+                # Chuyển role sang 'anon' (không có claims)
+                await session.exec(text("SET LOCAL role TO 'anon';"))
+                # Clear claims cũ nếu có trong pool (để an toàn)
+                await session.exec(text("SELECT set_config('request.jwt.claims', '', true)"))
 
             yield session
         finally:

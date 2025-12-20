@@ -1,26 +1,17 @@
 """
 Bookings Module - Business Logic Service
-
-🔥 ĐÂY LÀ SERVICE QUAN TRỌNG NHẤT CỦA HỆ THỐNG
-
-Tuân thủ Backend Rules:
-- Async All The Way
-- Service as Dependency
-- Guard Clauses / Early Return
-- Conflict checking trước mọi thao tác gán
 """
 
 import uuid
 from datetime import datetime, date, timezone
 from decimal import Decimal
 from sqlalchemy.orm import selectinload
-from sqlalchemy import text
 from sqlmodel import select, and_, func
 from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import Depends, HTTPException, status
 
 from src.common.database import get_db_session
-from src.modules.services.models import Service
+from src.modules.services import Service
 from .models import Booking, BookingItem, BookingStatus
 from src.modules.customer_treatments import CustomerTreatmentService
 from src.modules.billing import BillingService
@@ -31,6 +22,8 @@ from .schemas import (
     BookingItemUpdate,
 )
 from .conflict_checker import ConflictChecker
+from .status_manager import BookingStatusManager
+from .item_manager import BookingItemManager
 
 
 class BookingService:
@@ -46,6 +39,8 @@ class BookingService:
         self.conflict_checker = ConflictChecker(session)
         self.treatment_service = treatment_service
         self.billing_service = billing_service
+        self.status_manager = BookingStatusManager(session, treatment_service, billing_service)
+        self.item_manager = BookingItemManager(session, self.conflict_checker, treatment_service)
 
     async def get_all(
         self,
@@ -57,7 +52,6 @@ class BookingService:
         offset: int = 0
     ) -> tuple[list[Booking], int]:
         """Lấy danh sách bookings với filter và pagination."""
-        # Eager load items AND their resources
         query = select(Booking).options(
             selectinload(Booking.items).selectinload(BookingItem.resources)
         )
@@ -77,11 +71,9 @@ class BookingService:
             query = query.where(and_(*conditions))
             count_query = count_query.where(and_(*conditions))
 
-        # Get total count
         count_result = await self.session.exec(count_query)
         total = count_result.one()
 
-        # Get paginated results
         query = query.order_by(Booking.start_time.desc()).offset(offset).limit(limit)
         result = await self.session.exec(query)
 
@@ -99,125 +91,39 @@ class BookingService:
         result = await self.session.exec(query)
         return result.first()
 
-    async def create(
-        self,
-        data: BookingCreate,
-        created_by: uuid.UUID | None = None
-    ) -> Booking:
-        """
-        Tạo booking mới với các items.
-
-        Flow:
-        1. Validate tất cả services tồn tại
-        2. Tạo Booking với status PENDING
-        3. Tạo các BookingItems
-        4. Tính tổng giá và time range
-        """
-        # Collect all service IDs và validate
-        service_ids = [item.service_id for item in data.items]
-        services_map = await self._get_services_map(service_ids)
-
-        for service_id in service_ids:
-            if service_id not in services_map:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Dịch vụ {service_id} không tồn tại"
-                )
-
+    async def create(self, data: BookingCreate, created_by: uuid.UUID | None = None) -> Booking:
+        """Tạo lịch hẹn mới."""
         # Calculate time range from items
         start_time = min(item.start_time for item in data.items)
         end_time = max(item.end_time for item in data.items)
 
-        # Create booking
         booking = Booking(
             customer_id=data.customer_id,
             created_by=created_by,
             start_time=start_time,
             end_time=end_time,
+            notes=data.notes,
             status=BookingStatus.PENDING,
-            notes=data.notes
+            total_price=Decimal("0")
         )
         self.session.add(booking)
-        await self.session.flush()  # Get booking.id
+        await self.session.flush()
 
-        # Create booking items
-        total_price = Decimal("0")
         for item_data in data.items:
-            service = services_map[item_data.service_id]
+            await self.item_manager.add_item(booking, item_data)
 
-            # Kiểm tra xung đột nếu có gán staff/resource
-            if item_data.staff_id or item_data.resource_ids:
-                conflicts = await self.conflict_checker.check_all_conflicts(
-                    staff_id=item_data.staff_id,
-                    resource_ids=item_data.resource_ids,
-                    start_time=item_data.start_time,
-                    end_time=item_data.end_time
-                )
-                if conflicts:
-                    raise HTTPException(
-                        status_code=status.HTTP_409_CONFLICT,
-                        detail=conflicts[0].message
-                    )
-
-            # Validate Treatment
-            if item_data.treatment_id:
-                if not data.customer_id:
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Cần thông tin khách hàng để sử dụng liệu trình"
-                    )
-                await self.treatment_service.validate_availability(
-                    item_data.treatment_id, data.customer_id
-                )
-
-            item = BookingItem(
-                booking_id=booking.id,
-                service_id=item_data.service_id,
-                staff_id=item_data.staff_id,
-                treatment_id=item_data.treatment_id,
-                service_name_snapshot=service.name,
-                start_time=item_data.start_time,
-                end_time=item_data.end_time,
-                original_price=Decimal(str(service.price))
-            )
-            self.session.add(item)
-            await self.session.flush() # Get item.id for resources
-
-            # Handle Resources
-            if item_data.resource_ids:
-                from .models import BookingItemResource # Avoid circular
-                for rid in item_data.resource_ids:
-                    bir = BookingItemResource(booking_item_id=item.id, resource_id=rid)
-                    self.session.add(bir)
-
-            total_price += item.original_price
-
-        booking.total_price = total_price
         await self.session.commit()
         await self.session.refresh(booking)
+        return await self.get_by_id(booking.id)
 
-        return booking
-
-    async def update(
-        self,
-        booking_id: uuid.UUID,
-        data: BookingUpdate
-    ) -> Booking:
-        """Cập nhật thông tin booking (không bao gồm items)."""
+    async def update(self, booking_id: uuid.UUID, data: BookingUpdate) -> Booking:
+        """Cập nhật thông tin cơ bản của booking."""
         booking = await self.get_by_id(booking_id)
-
         if not booking:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Không tìm thấy lịch hẹn"
-            )
+            raise HTTPException(status_code=404, detail="Không tìm thấy lịch hẹn")
 
-        # Chỉ cho phép update khi PENDING hoặc CONFIRMED
-        if booking.status not in [BookingStatus.PENDING, BookingStatus.CONFIRMED]:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Không thể cập nhật lịch hẹn ở trạng thái {booking.status}"
-            )
+        if booking.status in [BookingStatus.COMPLETED, BookingStatus.CANCELLED]:
+            raise HTTPException(status_code=400, detail="Không thể cập nhật lịch hẹn đã hoàn thành/hủy")
 
         update_data = data.model_dump(exclude_unset=True)
         for key, value in update_data.items():
@@ -226,488 +132,114 @@ class BookingService:
         booking.updated_at = datetime.now(timezone.utc)
         await self.session.commit()
         await self.session.refresh(booking)
-
         return booking
 
-    async def add_item(
-        self,
-        booking_id: uuid.UUID,
-        data: BookingItemCreate
-    ) -> BookingItem:
-        """Thêm dịch vụ vào booking."""
+    async def add_item(self, booking_id: uuid.UUID, data: BookingItemCreate) -> BookingItem:
         booking = await self.get_by_id(booking_id)
-
         if not booking:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Không tìm thấy lịch hẹn"
-            )
+            raise HTTPException(status_code=404, detail="Không tìm thấy lịch hẹn")
 
-        if booking.status not in [BookingStatus.PENDING, BookingStatus.CONFIRMED]:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Không thể thêm dịch vụ ở trạng thái này"
-            )
-
-        # Get service
-        service = await self.session.get(Service, data.service_id)
-        if not service:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Dịch vụ không tồn tại"
-            )
-
-        # Check conflicts
-        if data.staff_id or data.resource_ids:
-            conflicts = await self.conflict_checker.check_all_conflicts(
-                staff_id=data.staff_id,
-                resource_ids=data.resource_ids,
-                start_time=data.start_time,
-                end_time=data.end_time
-            )
-            if conflicts:
-                raise HTTPException(
-                    status_code=status.HTTP_409_CONFLICT,
-                    detail=conflicts[0].message
-                )
-
-        # Validate Treatment
-        if data.treatment_id:
-            if not booking.customer_id:
-                 raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Booking chưa có khách hàng, không thể dùng liệu trình"
-                    )
-            await self.treatment_service.validate_availability(
-                data.treatment_id, booking.customer_id
-            )
-
-        item = BookingItem(
-            booking_id=booking_id,
-            service_id=data.service_id,
-            staff_id=data.staff_id,
-            treatment_id=data.treatment_id,
-            service_name_snapshot=service.name,
-            start_time=data.start_time,
-            end_time=data.end_time,
-            original_price=Decimal(str(service.price))
-        )
-        self.session.add(item)
-        await self.session.flush()
-
-        # Handle Resources
-        if data.resource_ids:
-            from .models import BookingItemResource
-            for rid in data.resource_ids:
-                bir = BookingItemResource(booking_item_id=item.id, resource_id=rid)
-                self.session.add(bir)
-
-        # Recalculate booking
-        booking.total_price += item.original_price
-        if item.start_time < booking.start_time:
-            booking.start_time = item.start_time
-        if item.end_time > booking.end_time:
-            booking.end_time = item.end_time
-        booking.updated_at = datetime.now(timezone.utc)
-
+        item = await self.item_manager.add_item(booking, data)
         await self.session.commit()
         await self.session.refresh(item)
-
         return item
 
-    async def update_item(
-        self,
-        booking_id: uuid.UUID,
-        item_id: uuid.UUID,
-        data: BookingItemUpdate
-    ) -> BookingItem:
-        """
-        Cập nhật booking item (gán staff/resource).
-
-        ⚡ ĐÂY LÀ THAO TÁC QUAN TRỌNG - CẦN KIỂM TRA XUNG ĐỘT
-        """
-        item = await self.session.get(BookingItem, item_id)
-
-        if not item or item.booking_id != booking_id:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Không tìm thấy dịch vụ trong lịch hẹn"
-            )
-
+    async def update_item(self, booking_id: uuid.UUID, item_id: uuid.UUID, data: BookingItemUpdate) -> BookingItem:
         booking = await self.get_by_id(booking_id)
-        if booking.status not in [BookingStatus.PENDING, BookingStatus.CONFIRMED]:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Không thể cập nhật ở trạng thái này"
-            )
+        item = await self.session.get(BookingItem, item_id)
+        if not booking or not item or item.booking_id != booking_id:
+            raise HTTPException(status_code=404, detail="Không tìm thấy")
 
-        update_data = data.model_dump(exclude_unset=True)
-
-        # Determine new values
-        new_staff_id = update_data.get("staff_id", item.staff_id)
-        # Handle resource_ids: if provided in update_data, use it. Else... item.resources?
-        # Update schema has resource_ids. logic: if present in update_data, Replace All.
-
-        should_update_resources = "resource_ids" in update_data
-        new_resource_ids = update_data.get("resource_ids") if should_update_resources else [r.id for r in item.resources] # Lazy load might fail if not joined.
-        # Note: 'item' fetched via session.get might not have 'resources' loaded.
-        # We need to ensure resources are loaded or fetch them if we need to check default.
-        # But if we rely on update_data having resource_ids for change...
-
-        # NOTE: For simplicity in checking conflicts only:
-        # If 'resource_ids' is NOT passed, we assume we keep existing.
-        # Checking existing resources requires loading them.
-
-        if not should_update_resources:
-            # Load existing
-            from .models import BookingItemResource
-            res_links = await self.session.exec(select(BookingItemResource).where(BookingItemResource.booking_item_id == item.id))
-            new_resource_ids = [r.resource_id for r in res_links.all()]
-
-        new_start = update_data.get("start_time", item.start_time)
-        new_end = update_data.get("end_time", item.end_time)
-
-        # Validate treatment if changed
-        if "treatment_id" in update_data:
-            new_tid = update_data["treatment_id"]
-            if new_tid:
-                if not booking.customer_id:
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Booking chưa có khách hàng"
-                    )
-                # Check if changed
-                if new_tid != item.treatment_id:
-                    await self.treatment_service.validate_availability(
-                        new_tid, booking.customer_id
-                    )
-
-        # Check conflicts (exclude current item)
-        conflicts = await self.conflict_checker.check_all_conflicts(
-            staff_id=new_staff_id,
-            resource_ids=new_resource_ids,
-            start_time=new_start,
-            end_time=new_end,
-            exclude_item_id=item_id
-        )
-        if conflicts:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail=conflicts[0].message
-            )
-
-        for key, value in update_data.items():
-            if key != "resource_ids":
-                setattr(item, key, value)
-
-        if should_update_resources:
-            from .models import BookingItemResource
-            # Delete old
-            await self.session.exec(
-                text(f"DELETE FROM booking_item_resources WHERE booking_item_id = '{item.id}'")
-            )
-            # Add new
-            if new_resource_ids:
-                for rid in new_resource_ids:
-                    self.session.add(BookingItemResource(booking_item_id=item.id, resource_id=rid))
-
+        await self.item_manager.update_item(booking, item, data)
         await self.session.commit()
         await self.session.refresh(item)
-
         return item
 
-    async def delete_item(
-        self,
-        booking_id: uuid.UUID,
-        item_id: uuid.UUID
-    ) -> bool:
-        """Xóa dịch vụ khỏi booking."""
-        item = await self.session.get(BookingItem, item_id)
-
-        if not item or item.booking_id != booking_id:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Không tìm thấy dịch vụ trong lịch hẹn"
-            )
-
+    async def delete_item(self, booking_id: uuid.UUID, item_id: uuid.UUID) -> bool:
         booking = await self.get_by_id(booking_id)
-        if booking.status not in [BookingStatus.PENDING, BookingStatus.CONFIRMED]:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Không thể xóa ở trạng thái này"
-            )
+        item = await self.session.get(BookingItem, item_id)
+        if not booking or not item or item.booking_id != booking_id:
+            raise HTTPException(status_code=404, detail="Không tìm thấy")
 
-        # Update booking total
-        booking.total_price -= item.original_price
-        booking.updated_at = datetime.now(timezone.utc)
-
-        await self.session.delete(item)
+        await self.item_manager.delete_item(booking, item)
         await self.session.commit()
-
         return True
 
-    # =========================================================================
-    # STATUS TRANSITIONS
-    # =========================================================================
-
+    # --- Status Transitions Delegate to StatusManager ---
     async def confirm(self, booking_id: uuid.UUID) -> Booking:
-        """Xác nhận booking: PENDING → CONFIRMED"""
         booking = await self.get_by_id(booking_id)
-
-        if not booking:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Không tìm thấy lịch hẹn"
-            )
-
-        if booking.status != BookingStatus.PENDING:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Chỉ có thể xác nhận từ PENDING, hiện tại là {booking.status}"
-            )
-
-        booking.status = BookingStatus.CONFIRMED
-        booking.updated_at = datetime.now(timezone.utc)
-
+        if not booking: raise HTTPException(status_code=404)
+        await self.status_manager.confirm(booking)
         await self.session.commit()
-        await self.session.refresh(booking)
-
         return booking
 
-    async def check_in(
-        self,
-        booking_id: uuid.UUID,
-        check_in_time: datetime | None = None
-    ) -> Booking:
-        """Check-in: CONFIRMED → IN_PROGRESS"""
+    async def check_in(self, booking_id: uuid.UUID, check_in_time: datetime | None = None) -> Booking:
         booking = await self.get_by_id(booking_id)
-
-        if not booking:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Không tìm thấy lịch hẹn"
-            )
-
-        if booking.status != BookingStatus.CONFIRMED:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Chỉ có thể check-in từ CONFIRMED, hiện tại là {booking.status}"
-            )
-
-        booking.status = BookingStatus.IN_PROGRESS
-        booking.check_in_time = check_in_time or datetime.now(timezone.utc)
-        booking.actual_start_time = datetime.now(timezone.utc)
-        booking.updated_at = datetime.now(timezone.utc)
-
+        if not booking: raise HTTPException(status_code=404)
+        await self.status_manager.check_in(booking, check_in_time)
         await self.session.commit()
-        await self.session.refresh(booking)
-
         return booking
 
-    async def complete(
-        self,
-        booking_id: uuid.UUID,
-        actual_end_time: datetime | None = None
-    ) -> Booking:
-        """Hoàn thành: IN_PROGRESS → COMPLETED"""
+    async def complete(self, booking_id: uuid.UUID, actual_end_time: datetime | None = None) -> Booking:
         booking = await self.get_by_id(booking_id)
-
-        if not booking:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Không tìm thấy lịch hẹn"
-            )
-
-        if booking.status != BookingStatus.IN_PROGRESS:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Chỉ có thể hoàn thành từ IN_PROGRESS, hiện tại là {booking.status}"
-            )
-
-        # Punch treatments
-        if booking.items:
-            for item in booking.items:
-                if item.treatment_id:
-                    await self.treatment_service.punch_session(item.treatment_id)
-
-        # Create Invoice
-        await self.billing_service.create_invoice_from_booking(booking_id)
-
-        booking.status = BookingStatus.COMPLETED
-        booking.actual_end_time = actual_end_time or datetime.now(timezone.utc)
-        booking.updated_at = datetime.now(timezone.utc)
-
+        if not booking: raise HTTPException(status_code=404)
+        await self.status_manager.complete(booking, actual_end_time)
         await self.session.commit()
-        await self.session.refresh(booking)
-
         return booking
 
-    async def cancel(
-        self,
-        booking_id: uuid.UUID,
-        cancel_reason: str
-    ) -> Booking:
-        """Hủy booking."""
+    async def cancel(self, booking_id: uuid.UUID, cancel_reason: str) -> Booking:
         booking = await self.get_by_id(booking_id)
-
-        if not booking:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Không tìm thấy lịch hẹn"
-            )
-
-        if booking.status in [BookingStatus.COMPLETED, BookingStatus.CANCELLED]:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Không thể hủy lịch hẹn ở trạng thái {booking.status}"
-            )
-
-        # Refund treatments if it was somehow in a state that had sessions deducted
-        # (Though currently we only punch at COMPLETE, let's be safe if we add more transitions)
-        # IF prev status was COMPLETED, we'd refund, but cancel is blocked for COMPLETED.
-        # However, for robustness, if we ever allow cancelling IN_PROGRESS that had some logic...
-
-        # Actual check: If status is being changed FROM COMPLETED (not possible per guard, but for future)
-        if booking.status == BookingStatus.COMPLETED:
-            if booking.items:
-                for item in booking.items:
-                    if item.treatment_id:
-                        await self.treatment_service.refund_session(item.treatment_id)
-
-        booking.status = BookingStatus.CANCELLED
-        booking.cancel_reason = cancel_reason
-        booking.updated_at = datetime.now(timezone.utc)
-
+        if not booking: raise HTTPException(status_code=404)
+        await self.status_manager.cancel(booking, cancel_reason)
         await self.session.commit()
-        await self.session.refresh(booking)
-
         return booking
 
     async def no_show(self, booking_id: uuid.UUID) -> Booking:
-        """Đánh dấu khách không đến."""
         booking = await self.get_by_id(booking_id)
-
-        if not booking:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Không tìm thấy lịch hẹn"
-            )
-
+        if not booking: raise HTTPException(status_code=404, detail="Không tìm thấy")
         if booking.status != BookingStatus.CONFIRMED:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Chỉ có thể đánh dấu NO_SHOW từ CONFIRMED"
-            )
-
+            raise HTTPException(status_code=400, detail="Chỉ có thể đánh dấu NO_SHOW từ CONFIRMED")
         booking.status = BookingStatus.NO_SHOW
         booking.updated_at = datetime.now(timezone.utc)
-
         await self.session.commit()
-        await self.session.refresh(booking)
-
         return booking
 
-    # =========================================================================
-    # HELPERS
-    # =========================================================================
-
-    async def _get_services_map(
-        self, service_ids: list[uuid.UUID]
-    ) -> dict[uuid.UUID, Service]:
-        """Lấy map service_id -> Service."""
-        query = select(Service).where(Service.id.in_(service_ids))
-        result = await self.session.exec(query)
-        services = result.all()
-        return {s.id: s for s in services}
-
-    # =========================================================================
-    # TREATMENT NOTES
-    # =========================================================================
-
-    async def add_note(
-        self,
-        booking_id: uuid.UUID,
-        staff_id: uuid.UUID,
-        content: str,
-        note_type: str = "PROFESSIONAL"
-    ):
-        """
-        Thêm ghi chú chuyên môn cho booking.
-
-        Args:
-            booking_id: ID của booking
-            staff_id: ID của staff (từ auth context)
-            content: Nội dung ghi chú
-            note_type: Loại ghi chú (PROFESSIONAL/GENERAL)
-        """
+    # --- Helpers & Notes ---
+    async def add_note(self, booking_id: uuid.UUID, staff_id: uuid.UUID, content: str, note_type: str = "PROFESSIONAL"):
         from .models import TreatmentNote, NoteType
-        from src.modules.users.models import User
+        from src.modules.users import User
         from .schemas import TreatmentNoteRead
 
-        # Verify booking exists
         booking = await self.get_by_id(booking_id)
-        if not booking:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Không tìm thấy booking"
-            )
+        if not booking: raise HTTPException(status_code=404)
 
-        # Create note
-        note = TreatmentNote(
-            booking_id=booking_id,
-            staff_id=staff_id,
-            content=content,
-            note_type=NoteType[note_type]
-        )
-
+        note = TreatmentNote(booking_id=booking_id, staff_id=staff_id, content=content, note_type=NoteType[note_type])
         self.session.add(note)
         await self.session.commit()
         await self.session.refresh(note)
 
-        # Get staff name
-        staff_query = select(User).where(User.id == staff_id)
-        staff_result = await self.session.exec(staff_query)
-        staff = staff_result.first()
-
-        # Build response
+        staff = await self.session.get(User, staff_id)
         return TreatmentNoteRead(
-            id=note.id,
-            booking_id=note.booking_id,
-            staff_id=note.staff_id,
-            content=note.content,
-            note_type=note.note_type.value,
-            created_at=note.created_at,
-            staff_name=staff.full_name if staff else None
+            id=note.id, booking_id=note.booking_id, staff_id=note.staff_id,
+            content=note.content, note_type=note.note_type.value,
+            created_at=note.created_at, staff_name=staff.full_name if staff else None
         )
 
     async def get_notes(self, booking_id: uuid.UUID):
-        """Lấy danh sách ghi chú của booking."""
         from .models import TreatmentNote
-        from src.modules.users.models import User
+        from src.modules.users import User
         from .schemas import TreatmentNoteRead
 
-        query = select(TreatmentNote).where(
-            TreatmentNote.booking_id == booking_id
-        ).order_by(TreatmentNote.created_at.desc())
-
+        query = select(TreatmentNote).where(TreatmentNote.booking_id == booking_id).order_by(TreatmentNote.created_at.desc())
         result = await self.session.exec(query)
         notes = result.all()
 
-        # Get staff names
         note_reads = []
         for note in notes:
-            staff_query = select(User).where(User.id == note.staff_id)
-            staff_result = await self.session.exec(staff_query)
-            staff = staff_result.first()
-
+            staff = await self.session.get(User, note.staff_id)
             note_reads.append(TreatmentNoteRead(
-                id=note.id,
-                booking_id=note.booking_id,
-                staff_id=note.staff_id,
-                content=note.content,
-                note_type=note.note_type.value,
-                created_at=note.created_at,
-                staff_name=staff.full_name if staff else None
+                id=note.id, booking_id=note.booking_id, staff_id=note.staff_id,
+                content=note.content, note_type=note.note_type.value,
+                created_at=note.created_at, staff_name=staff.full_name if staff else None
             ))
-
         return note_reads

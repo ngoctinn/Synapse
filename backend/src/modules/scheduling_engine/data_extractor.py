@@ -6,7 +6,7 @@ Trích xuất dữ liệu từ Database → SchedulingProblem instance.
 
 import uuid
 from datetime import datetime, date, time, timezone
-from sqlalchemy import text
+from sqlalchemy import text, bindparam
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from .models import (
@@ -187,16 +187,16 @@ class DataExtractor:
         if not staff_ids:
             return []
 
-        staff_ids_str = ",".join(f"'{str(sid)}'" for sid in set(staff_ids))
-        query = text(f"""
+        query = text("""
             SELECT
                 st.user_id as id,
                 u.full_name as name
             FROM staff st
             JOIN users u ON st.user_id = u.id
-            WHERE st.user_id IN ({staff_ids_str})
-        """)
-        result = await self.session.execute(query)
+            WHERE st.user_id IN :staff_ids
+        """).bindparams(bindparam("staff_ids", expanding=True))
+
+        result = await self.session.execute(query, {"staff_ids": [str(sid) for sid in staff_ids]})
         rows = result.fetchall()
 
         staff_list = []
@@ -294,15 +294,19 @@ class DataExtractor:
         }
 
         if exclude_item_ids:
-            ids_str = ",".join(f"'{str(id)}'" for id in exclude_item_ids)
-            exclude_clause = f" AND bi.id NOT IN ({ids_str})"
+            exclude_clause = " AND bi.id NOT IN :exclude_ids"
             staff_query_str += exclude_clause
             resource_query_str += exclude_clause
+            params["exclude_ids"] = [str(eid) for eid in exclude_item_ids]
 
         assignments = []
 
         # Execute Staff Query
-        staff_result = await self.session.execute(text(staff_query_str), params)
+        staff_stmt = text(staff_query_str)
+        if exclude_item_ids:
+            staff_stmt = staff_stmt.bindparams(bindparam("exclude_ids", expanding=True))
+
+        staff_result = await self.session.execute(staff_stmt, params)
         for row in staff_result.fetchall():
             assignments.append(ExistingAssignment(
                 staff_id=uuid.UUID(str(row[1])),
@@ -312,7 +316,11 @@ class DataExtractor:
             ))
 
         # Execute Resource Query
-        resource_result = await self.session.execute(text(resource_query_str), params)
+        resource_stmt = text(resource_query_str)
+        if exclude_item_ids:
+            resource_stmt = resource_stmt.bindparams(bindparam("exclude_ids", expanding=True))
+
+        resource_result = await self.session.execute(resource_stmt, params)
         for row in resource_result.fetchall():
             assignments.append(ExistingAssignment(
                 staff_id=None,

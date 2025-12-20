@@ -10,7 +10,7 @@ from sqlmodel import SQLModel, Field, Relationship
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.modules.services.models import Service
+    from src.modules.services import Service
 
 
 class ResourceType(str, Enum):

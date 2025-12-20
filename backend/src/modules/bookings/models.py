@@ -11,12 +11,12 @@ from sqlmodel import SQLModel, Field, Relationship
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.modules.customers.models import Customer
-    from src.modules.users.models import User
-    from src.modules.services.models import Service
-    from src.modules.staff.models import Staff
-    from src.modules.resources.models import Resource
-    from src.modules.customer_treatments.models import CustomerTreatment
+    from src.modules.customers import Customer
+    from src.modules.users import User
+    from src.modules.services import Service
+    from src.modules.staff import Staff
+    from src.modules.resources import Resource
+    from src.modules.customer_treatments import CustomerTreatment
 
 
 class BookingStatus(str, Enum):
