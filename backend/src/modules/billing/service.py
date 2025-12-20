@@ -49,14 +49,29 @@ class BillingService:
         return invoice
 
     async def process_payment(self, data: PaymentCreate) -> Payment:
-        invoice = await self.get_invoice_by_id(data.invoice_id)
+        # Use explicit transaction with locking to prevent race conditions
+        # select ... for update
+        stmt = (
+            select(Invoice)
+            .where(Invoice.id == data.invoice_id)
+            .options(selectinload(Invoice.payments))
+            .with_for_update()
+        )
+
+        result = await self.session.exec(stmt)
+        invoice = result.first()
+
+        if not invoice:
+            raise HTTPException(status_code=404, detail="Không tìm thấy hóa đơn")
 
         # Create payment record
         payment = Payment.model_validate(data)
         self.session.add(payment)
 
         # Calculate new status for invoice
-        total_paid = sum(p.amount for p in invoice.payments) + data.amount
+        # Re-calculate total based on locked rows + new amount
+        current_paid = sum(p.amount for p in invoice.payments)
+        total_paid = current_paid + data.amount
 
         if total_paid >= invoice.final_amount:
             invoice.status = InvoiceStatus.PAID

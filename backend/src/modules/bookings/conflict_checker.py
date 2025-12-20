@@ -12,7 +12,7 @@ Nguyên tắc: 2 khoảng thời gian CHỒNG CHÉO nếu:
 
 import uuid
 from datetime import datetime, date
-from sqlalchemy import text, and_
+from sqlalchemy import text, and_, bindparam
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from pydantic import BaseModel

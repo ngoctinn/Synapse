@@ -84,14 +84,14 @@ class SchedulingService:
 
     async def get_suggestions(self, booking_id: uuid.UUID) -> SchedulingSolution:
         """Gợi ý slot cho một booking cụ thể."""
-        query = text("""
-            SELECT bi.id, bi.start_time
-            FROM booking_items bi
-            WHERE bi.booking_id = :booking_id
-              AND bi.staff_id IS NULL
-        """)
-        result = await self.session.execute(query, {"booking_id": str(booking_id)})
-        rows = result.fetchall()
+        from src.modules.bookings.models import BookingItem
+
+        query = select(BookingItem.id, BookingItem.start_time).where(
+            BookingItem.booking_id == booking_id,
+            BookingItem.staff_id == None
+        )
+        result = await self.session.exec(query)
+        rows = result.all()
 
         if not rows:
             return SchedulingSolution(
@@ -100,7 +100,7 @@ class SchedulingService:
             )
 
         target_date = rows[0][1].date()
-        item_ids = [uuid.UUID(str(row[0])) for row in rows]
+        item_ids = [row[0] for row in rows]
 
         extractor = DataExtractor(self.session)
         problem = await extractor.extract_problem(
@@ -131,6 +131,11 @@ class SchedulingService:
         Kiểm tra xung đột lịch.
         Use case: Khi nhân viên xin nghỉ, kiểm tra có booking nào bị ảnh hưởng không.
         """
+        # Import lazy
+        from src.modules.bookings.models import BookingItem, BookingStatus
+        from src.modules.services.models import Service
+        from sqlmodel import col, func, and_
+
         if not start_date:
             start_date = date.today()
         if not end_date:
@@ -139,23 +144,26 @@ class SchedulingService:
         conflicts = []
 
         if staff_id:
-            query = text("""
-                SELECT
-                    bi.id, bi.booking_id, bi.start_time, bi.end_time,
-                    s.name as service_name
-                FROM booking_items bi
-                JOIN services s ON bi.service_id = s.id
-                WHERE bi.staff_id = :staff_id
-                  AND date(bi.start_time) >= :start_date
-                  AND date(bi.end_time) <= :end_date
-                  AND bi.status NOT IN ('CANCELLED', 'COMPLETED')
-            """)
-            result = await self.session.execute(query, {
-                "staff_id": str(staff_id),
-                "start_date": start_date,
-                "end_date": end_date
-            })
-            rows = result.fetchall()
+            # SQLModel Select replacement
+            query = (
+                select(
+                    BookingItem.id,
+                    BookingItem.booking_id,
+                    BookingItem.start_time,
+                    BookingItem.end_time,
+                    Service.name
+                )
+                .join(Service, BookingItem.service_id == Service.id)
+                .where(
+                    BookingItem.staff_id == staff_id,
+                    func.date(BookingItem.start_time) >= start_date,
+                    func.date(BookingItem.end_time) <= end_date,
+                    col(BookingItem.status).notin([BookingStatus.CANCELLED, BookingStatus.COMPLETED])
+                )
+            )
+
+            result = await self.session.exec(query)
+            rows = result.all()
 
             for row in rows:
                 conflicts.append(ConflictInfo(
@@ -182,6 +190,8 @@ class SchedulingService:
         2. Coi chúng là 'unassigned' (cần null staff_id/resource_id tạm thời trong logic solver).
         3. Chạy Solver để tìm staff/resource thay thế (giữ nguyên giờ).
         """
+        from src.modules.bookings.models import BookingItem
+
         if not request.conflict_booking_item_ids:
             return RescheduleResult(
                 success_count=0,
@@ -191,11 +201,10 @@ class SchedulingService:
             )
 
         first_id = request.conflict_booking_item_ids[0]
-        query = text("SELECT start_time FROM booking_items WHERE id = :id")
-        result = await self.session.execute(query, {"id": str(first_id)})
-        row = result.first()
+        # SQLModel Select replacement
+        item = await self.session.get(BookingItem, first_id)
 
-        if not row:
+        if not item:
             return RescheduleResult(
                 success_count=0,
                 failed_count=len(request.conflict_booking_item_ids),
@@ -203,7 +212,7 @@ class SchedulingService:
                 failed_items=request.conflict_booking_item_ids
             )
 
-        target_date = row[0].date()
+        target_date = item.start_time.date()
 
         extractor = DataExtractor(self.session)
         problem = await extractor.extract_problem(

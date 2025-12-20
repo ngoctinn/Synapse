@@ -28,6 +28,7 @@ from .schemas import (
 )
 from .conflict_checker import ConflictChecker
 from src.common.database import get_db_session
+from src.common.auth_core import get_token_payload
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 router = APIRouter(prefix="/bookings", tags=["Bookings"])
@@ -360,7 +361,8 @@ async def get_resource_bookings(
 async def add_treatment_note(
     booking_id: uuid.UUID,
     data: TreatmentNoteCreate,
-    service: BookingService = Depends()
+    service: BookingService = Depends(),
+    token_payload: dict = Depends(get_token_payload)
 ) -> TreatmentNoteRead:
     """
     **Ghi chú chuyên môn sau buổi hẹn**
@@ -376,9 +378,7 @@ async def add_treatment_note(
     - Chỉ staff mới có thể tạo ghi chú
     - RLS đảm bảo staff chỉ thấy notes của họ
     """
-    # TODO: Get staff_id from auth context
-    # For now, using a placeholder - will be replaced with actual auth
-    staff_id = uuid.uuid4()  # Replace with: current_user["sub"]
+    staff_id = uuid.UUID(token_payload["sub"])
 
     return await service.add_note(
         booking_id=booking_id,

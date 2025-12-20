@@ -76,55 +76,59 @@ class DataExtractor:
         item_ids: list[uuid.UUID] | None = None
     ) -> list[BookingItemData]:
         """Lấy các booking items chưa được gán staff."""
+        # Lazy imports
+        from src.modules.bookings.models import BookingItem, Booking, BookingStatus
+        from src.modules.services.models import Service
+        from sqlalchemy.orm import selectinload
+        from sqlmodel import col
+
         start_of_day = datetime.combine(target_date, time.min, tzinfo=timezone.utc)
         end_of_day = datetime.combine(target_date, time.max, tzinfo=timezone.utc)
 
-        query = text("""
-            SELECT
-                bi.id,
-                bi.booking_id,
-                bi.service_id,
-                s.name as service_name,
-                bi.start_time,
-                bi.end_time,
-                EXTRACT(EPOCH FROM (bi.end_time - bi.start_time)) / 60 as duration_minutes
-            FROM booking_items bi
-            JOIN bookings b ON bi.booking_id = b.id
-            LEFT JOIN services s ON bi.service_id = s.id
-            WHERE bi.start_time >= :start_of_day
-              AND bi.start_time < :end_of_day
-              AND b.status NOT IN ('CANCELLED', 'NO_SHOW')
-            ORDER BY bi.start_time
-        """)
+        query = (
+            select(BookingItem)
+            .join(Booking, BookingItem.booking_id == Booking.id)
+            .where(
+                BookingItem.start_time >= start_of_day,
+                BookingItem.start_time < end_of_day,
+                col(Booking.status).notin([BookingStatus.CANCELLED, BookingStatus.NO_SHOW])
+            )
+            .options(selectinload(BookingItem.service))
+            .order_by(BookingItem.start_time)
+        )
 
-        result = await self.session.execute(query, {
-            "start_of_day": start_of_day,
-            "end_of_day": end_of_day
-        })
-        rows = result.fetchall()
+        if item_ids:
+            query = query.where(col(BookingItem.id).in_(item_ids))
+
+        result = await self.session.exec(query)
+        booking_items = result.all()
 
         items = []
-        for row in rows:
-            item_id = uuid.UUID(str(row[0]))
+        for bi in booking_items:
+            # Service info
+            svc_name = bi.service.name if bi.service else "Unknown Service"
+            svc_id = bi.service_id
 
-            # Lọc theo item_ids nếu có
-            if item_ids and item_id not in item_ids:
-                continue
+            # Duration check (fallback if property fails)
+            duration = bi.duration_minutes
+            if duration is None:
+                duration = int((bi.end_time - bi.start_time).total_seconds() / 60)
 
             # Lấy required skills cho service này
-            required_skills = await self._get_service_required_skills(row[2])
+            # Lưu ý: service_id có thể None? items phải có service.
+            if not svc_id: continue
 
-            # Lấy required resource groups
-            required_resources = await self._get_service_required_resources(row[2])
+            required_skills = await self._get_service_required_skills(svc_id)
+            required_resources = await self._get_service_required_resources(svc_id)
 
             items.append(BookingItemData(
-                id=item_id,
-                booking_id=uuid.UUID(str(row[1])),
-                service_id=uuid.UUID(str(row[2])),
-                service_name=row[3],
-                start_time=row[4],
-                end_time=row[5],
-                duration_minutes=int(row[6]),
+                id=bi.id,
+                booking_id=bi.booking_id,
+                service_id=svc_id,
+                service_name=svc_name,
+                start_time=bi.start_time,
+                end_time=bi.end_time,
+                duration_minutes=duration,
                 required_skill_ids=required_skills,
                 required_resource_group_ids=required_resources
             ))

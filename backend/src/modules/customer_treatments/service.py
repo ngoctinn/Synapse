@@ -106,8 +106,11 @@ class CustomerTreatmentService:
         Trừ 1 buổi liệu trình.
         Gọi khi Booking COMPLETE.
         """
-        # Note: We assume validation passed before calling this, but we check again for safety
-        treatment = await self.session.get(CustomerTreatment, treatment_id)
+        # Lock row for update
+        stmt = select(CustomerTreatment).where(CustomerTreatment.id == treatment_id).with_for_update()
+        result = await self.session.exec(stmt)
+        treatment = result.first()
+
         if not treatment:
              raise TreatmentNotFound()
 
@@ -130,7 +133,11 @@ class CustomerTreatmentService:
         """
         Hoàn 1 buổi liệu trình (nếu huỷ booking đã complete).
         """
-        treatment = await self.session.get(CustomerTreatment, treatment_id)
+        # Lock row for update
+        stmt = select(CustomerTreatment).where(CustomerTreatment.id == treatment_id).with_for_update()
+        result = await self.session.exec(stmt)
+        treatment = result.first()
+
         if not treatment:
             raise TreatmentNotFound()
 
