@@ -35,7 +35,7 @@ sequenceDiagram
 
     LT->>UI: Mở bảng điều khiển
     activate UI
-    UI->>BE: getAppointments(date)
+    UI->>BE: get_appointments(date)
     activate BE
 
     BE->>DB: query_appointments_with_details
@@ -63,7 +63,7 @@ sequenceDiagram
 
     LT->>UI: Tìm kiếm khách hàng
     activate UI
-    UI->>BE: searchCustomers(query)
+    UI->>BE: search_customers(query)
     activate BE
 
     BE->>DB: query_by_name_or_phone
@@ -76,11 +76,11 @@ sequenceDiagram
 
     alt Chọn khách hàng
         LT->>UI: Chọn xem chi tiết
-        UI->>BE: getCustomerDetail(id)
+        UI->>BE: get_customer_detail(customer_id)
         BE-->>UI: Hiển thị hồ sơ chi tiết
     else Tạo mới khách hàng
         LT->>UI: Nhập thông tin khách mới
-        UI->>BE: createCustomer(data)
+        UI->>BE: create_customer(data)
         BE->>DB: INSERT INTO customers
         DB-->>BE: customer
         BE-->>UI: Hiển thị hồ sơ mới
@@ -104,7 +104,7 @@ sequenceDiagram
 
     LT->>UI: Nhập thông tin khách và dịch vụ
     activate UI
-    UI->>BE: checkAvailability(data)
+    UI->>BE: check_availability(data)
     activate BE
     BE->>SOLVER: validate_slot
     SOLVER-->>BE: Valid
@@ -112,7 +112,7 @@ sequenceDiagram
     deactivate BE
 
     LT->>UI: Xác nhận tạo lịch
-    UI->>BE: createManualBooking(data)
+    UI->>BE: create_manual_booking(data)
     activate BE
 
     BE->>DB: get_or_create_customer
@@ -142,7 +142,7 @@ sequenceDiagram
 
     LT->>UI: Chọn lịch hẹn và xác nhận khách đến
     activate UI
-    UI->>BE: checkInCustomer(bookingId)
+    UI->>BE: check_in_customer(booking_id)
     activate BE
 
     BE->>DB: get_booking_with_items(booking_id)
@@ -192,7 +192,7 @@ sequenceDiagram
 
     LT->>UI: Xác nhận thanh toán
     activate UI
-    UI->>BE: processPayment(bookingId, paymentMethod)
+    UI->>BE: process_payment(booking_id, payment_method)
     activate BE
 
     BE->>DB: INSERT INTO invoices
@@ -226,13 +226,13 @@ sequenceDiagram
 
     LT->>UI: Mở phiên trò chuyện
     activate UI
-    UI->>BE: getChatSession(sessionId)
+    UI->>BE: get_chat_session(session_id)
     activate BE
     BE-->>UI: Hiển thị lịch sử tin nhắn
     deactivate BE
 
     LT->>UI: Nhập và gửi phản hồi
-    UI->>BE: sendMessage(sessionId, content)
+    UI->>BE: send_message(session_id, content)
     activate BE
 
     BE->>DB: INSERT INTO chat_messages
@@ -261,7 +261,7 @@ sequenceDiagram
 
     LT->>UI: Tra cứu liệu trình của khách hàng
     activate UI
-    UI->>BE: getCustomerTreatments(customerId)
+    UI->>BE: get_customer_treatments(customer_id)
     activate BE
 
     BE->>DB: query_customer_treatments_with_history
@@ -292,10 +292,10 @@ sequenceDiagram
 
     QTV->>UI: Cập nhật lịch làm việc (Nghỉ đột xuất)
     activate UI
-    UI->>BE: updateStaffSchedule(data)
+    UI->>BE: update_staff_schedule(data)
     activate BE
 
-    BE->>DB: find_conflicting_bookings(staffId, date)
+    BE->>DB: find_conflicting_bookings(staff_id, date)
     activate DB
     DB-->>BE: bookings_list[]
     deactivate DB
@@ -315,7 +315,7 @@ sequenceDiagram
             Note over KH: Khách hàng xem xét đề xuất
         else Xung đột nghiêm trọng
             BE->>DB: UPDATE bookings SET status = 'PENDING_MANUAL'
-            BE->>NOTI: notify_receptionist_critical_error(bookingId)
+            BE->>NOTI: notify_receptionist_critical_error(booking_id)
         end
     end
 

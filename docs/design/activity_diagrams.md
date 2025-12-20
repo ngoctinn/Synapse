@@ -1,290 +1,290 @@
 # Tổng hợp Sơ đồ Hoạt động (Activity Diagrams) - Synapse
 
-Tài liệu này mô tả chi tiết các luồng quy trình nghiệp vụ (Business Process Flows) của hệ thống, bao phủ toàn bộ các Ca sử dụng (Use Cases) và Sơ đồ tuần tự (Sequence Diagrams) đã thiết kế.
+Tài liệu này mô tả các luồng nghiệp vụ cấp hệ thống (Business Process Flows), tập trung vào tương tác giữa các tác nhân và trách nhiệm của hệ thống.
 
 ---
 
 ## 1. Phân hệ Xác thực (Authentication)
 
-### 1.1. Quy trình Đăng ký & Kích hoạt (A1.1)
-Mô tả quy trình khách hàng tạo tài khoản và xác thực qua email.
+### 1.1. Quy trình Đăng ký tài khoản khách hàng (A1.1)
+Mô tả luồng nghiệp vụ từ khi khách hàng tạo tài khoản đến khi kích hoạt.
 
 ```mermaid
-activityDiagram
-    start
-    :Khách hàng nhập thông tin Đăng ký\n(Email, Tên, Mật khẩu);
-    :Hệ thống tiếp nhận yêu cầu Đăng ký;
-    :Tạo User & Customer Profile (Trạng thái: PENDING);
-    :Gửi Email xác thực;
-    :Hiển thị thông báo: "Vui lòng kiểm tra email";
+flowchart TD
+    subgraph KhachHang ["Khách hàng"]
+        Start([Bắt đầu]) --> Input[Nhập thông tin Đăng ký]
+        ClickLink[Click Link xác thực trong Email]
+    end
 
-    :Khách hàng click Link xác thực;
-    :Hệ thống kiểm tra Token hợp lệ?;
-    if (Hợp lệ?) then (Có)
-        :Kích hoạt Tài khoản (Status: ACTIVE);
-        :Chuyển hướng đến trang Đăng nhập;
-    else (Không/Hết hạn)
-        :Báo lỗi: Link không hợp lệ hoặc hết hạn;
-    endif
-    stop
+    subgraph HeThong ["Hệ thống"]
+        Input --> CreateProfile[Khởi tạo Hồ sơ người dùng\nTrạng thái: Chờ kích hoạt]
+        CreateProfile --> SendEmail[Gửi Email xác thực]
+        SendEmail --> Notify[Hiển thị thông báo kiểm tra Email]
+
+        ClickLink --> Verify{Kiểm tra Token}
+        Verify -- "[Hợp lệ]" --> Activate[Kích hoạt tài khoản]
+        Verify -- "[Không hợp lệ]" --> Error[Hiển thị thông báo lỗi]
+
+        Activate --> Redirect[Chuyển hướng trang Đăng nhập]
+    end
+
+    Redirect --> End([Kết thúc])
+    Error --> End
 ```
 
-### 1.2. Quy trình Đăng nhập & Phân quyền (A1.2)
+### 1.2. Quy trình Đăng nhập hệ thống (A1.2)
+Mô tả luồng xác thực người dùng và điều hướng theo vai trò.
 
 ```mermaid
-activityDiagram
-    start
-    :Người dùng nhập Email & Mật khẩu;
-    :Xác thực thông tin đăng nhập;
-    if (Thành công?) then (Có)
-        :Cấp quyền truy cập (Session/Role);
-        :Chuyển hướng đến Dashboard phù hợp;
-    else (Thất bại)
-        :Báo lỗi: Sai thông tin hoặc tài khoản bị khóa;
-    endif
-    stop
+flowchart TD
+    subgraph NguoiDung ["Người dùng"]
+        Start([Bắt đầu]) --> Input[Nhập Email và Mật khẩu]
+    end
+
+    subgraph HeThong ["Hệ thống"]
+        Input --> Auth{Xác thực thông tin}
+        Auth -- "[Thông tin sai]" --> ShowError[Hiển thị thông báo lỗi]
+        Auth -- "[Thông tin đúng]" --> Access[Cấp quyền truy cập]
+
+        Access --> RoleCheck[Điều hướng về Dashboard tương ứng]
+    end
+
+    RoleCheck --> End([Kết thúc])
+    ShowError --> End
 ```
 
 ---
 
 ## 2. Phân hệ Khách hàng (Customer)
 
-### 2.1. Quy trình Đặt lịch Thông minh (Smart Booking Flow) (A2.4, A2.5)
-Bao gồm tìm kiếm khung giờ (Algorithm) và hoàn tất đặt hẹn.
+### 2.1. Quy trình Đặt lịch hẹn trực tuyến (A2.4, A2.5)
+Mô tả quy trình tìm kiếm và xác nhận lịch hẹn từ phía khách hàng.
 
 ```mermaid
-activityDiagram
-    start
-    :Khách hàng chọn Dịch vụ & Ngày mong muốn;
-    :Hệ thống thu thập dữ liệu khả dụng\n(KTV, Tài nguyên, Lịch hẹn);
-    partition "Thuật toán SISF (Optimization)" {
-        :Kiểm tra Ràng buộc Cứng (RCPSP Hard Constraints);
-        :Vòng lặp tối ưu hóa Đa mục tiêu\n(Fairness, Preference, Utilization);
-        :Lựa chọn phương án tối ưu (Jain's Fairness Index);
-    }
-    if (Có khung giờ trống?) then (Có)
-        :Hiển thị danh sách khung giờ (Slots);
-        :Khách hàng chọn Slot;
-        :Khách hàng chọn KTV (Tùy chọn);
-        :Hệ thống giữ chỗ (Temporary Hold);
+flowchart TD
+    subgraph KhachHang ["Khách hàng"]
+        Start([Bắt đầu]) --> SelectService[Chọn Dịch vụ & Ngày]
+        SelectSlot[Chọn khung giờ & Nhân viên]
+        ConfirmBooking[Xác nhận đặt lịch]
+        Pay[Thực hiện thanh toán đặt cọc]
+        JoinWaitlist[Đăng ký vào Danh sách chờ]
+    end
 
-        partition "Thanh toán/Đặt cọc" {
-            if (Cần đặt cọc?) then (Có)
-                :Chuyển sang cổng thanh toán;
-                if (Thanh toán thành công?) then (Có)
-                    :Xác nhận Booking;
-                else (Thất bại/Hủy)
-                    :Hủy giữ chỗ;
-                    stop
-                endif
-            else (Không)
-                :Tự động xác nhận;
-            endif
-        }
+    subgraph HeThong ["Hệ thống"]
+        SelectService --> Search[Tính toán các khung giờ khả dụng]
+        Search --> SlotAvailability{Có chỗ trống?}
 
-        :Tạo Booking (Status: CONFIRMED);
-        :Gửi Email/Notif xác nhận;
-    else (Không)
-        :Gợi ý ngày khác hoặc Tham gia Waitlist (A2.6);
-        if (Chọn Waitlist?) then (Có)
-            :Thêm vào Danh sách chờ;
-        endif
-    endif
-    stop
+        SlotAvailability -- "[Hết chỗ]" --> Suggest[Đề xuất tham gia danh sách chờ]
+        SlotAvailability -- "[Còn chỗ]" --> ShowSlots[Hiển thị danh sách khung giờ]
+
+        Suggest --> JoinWaitlist
+        JoinWaitlist --> End([Kết thúc])
+
+        ShowSlots --> SelectSlot
+        SelectSlot --> Hold[Giữ chỗ tạm thời]
+        Hold --> ConfirmBooking
+
+        ConfirmBooking --> Policy{Yêu cầu đặt cọc?}
+        Policy -- "[Có]" --> Pay
+        Policy -- "[Không]" --> CreateBooking[Tạo lịch hẹn: Đã xác nhận]
+
+        Pay --> PayVerify{Thành công?}
+        PayVerify -- "[Có]" --> CreateBooking
+        PayVerify -- "[Không]" --> Release[Hủy giữ chỗ & Báo lỗi]
+
+        CreateBooking --> SendNoti[Gửi thông báo xác nhận]
+    end
+
+    SendNoti --> End
+    Release --> End
 ```
 
 ### 2.2. Quy trình Hủy lịch hẹn (A3.2)
+Kiểm soát hành vi hủy lịch theo chính sách của Spa.
 
 ```mermaid
-activityDiagram
-    start
-    :Khách hàng chọn Lịch hẹn (Status: CONFIRMED);
-    :Yêu cầu hủy lịch;
-    :Hệ thống kiểm tra Chính sách thời gian;
-    if (Quá thời hạn hủy (2a)?) then (Có)
-        :Hiển thị thông báo lỗi (Violation);
-        :Hướng dẫn liên hệ Hotline hỗ trợ;
-        stop
-    else (Không)
-        :Hiển thị điều kiện hoàn tiền/phí (nếu có);
-        :Khách hàng xác nhận lần cuối;
-        :Cập nhật trạng thái: CANCELLED;
-        :Giải phóng KTV & Tài nguyên;
-        :Gửi thông báo xác nhận hủy;
-    endif
-    stop
+flowchart TD
+    subgraph KhachHang ["Khách hàng"]
+        Start([Bắt đầu]) --> SelectBooking[Chọn lịch hẹn cần hủy]
+        SelectBooking --> RequestCancel[Gửi yêu cầu hủy]
+        FinalConfirm{Xác nhận lần cuối?}
+    end
+
+    subgraph HeThong ["Hệ thống"]
+        RequestCancel --> PolicyCheck{Trong thời hạn cho phép?}
+
+        PolicyCheck -- "[Quá hạn]" --> Alert[Thông báo lỗi chính sách]
+        PolicyCheck -- "[Hợp lệ]" --> Terms[Hiển thị điều kiện hoàn phí]
+
+        Terms --> FinalConfirm
+        FinalConfirm -- "[Đồng ý]" --> UpdateStatus[Hủy lịch & Giải phóng tài nguyên]
+        UpdateStatus --> SendCancelNoti[Gửi xác nhận hủy thành công]
+    end
+
+    SendCancelNoti --> End([Kết thúc])
+    Alert --> End
+    FinalConfirm -- "[Không]" --> End
 ```
 
-### 2.3. Quy trình Gửi yêu cầu Bảo hành (Warranty Request) (A3.6)
+### 2.3. Quy trình Gửi yêu cầu Bảo hành (A3.6)
+Mô tả luồng xử lý khi khách hàng yêu cầu hỗ trợ cho dịch vụ đã hoàn thành.
 
 ```mermaid
-activityDiagram
-    start
-    :Khách hàng xem Lịch sử Booking;
-    :Chọn Booking đã hoàn thành (COMPLETED);
-    :Hệ thống kiểm tra Chính sách bảo hành;
-    note right: Check: Service có bảo hành? \nCheck: Thời gian <= Thời hạn bảo hành?
+flowchart TD
+    subgraph KhachHang ["Khách hàng"]
+        Start([Bắt đầu]) --> SelectService[Chọn dịch vụ đã hoàn thành]
+        SelectService --> RequestWarranty[Gửi yêu cầu bảo hành]
+    end
 
-    if (Đủ điều kiện?) then (Có)
-        :Hiển thị Form yêu cầu bảo hành;
-        :Khách hàng nhập Lý do & Hình ảnh (nếu có);
-        :Gửi yêu cầu;
-        :Hệ thống tạo Ticket Bảo hành (PENDING);
-        :Thông báo cho CSKH/Quản lý;
+    subgraph HeThong ["Hệ thống"]
+        RequestWarranty --> Eligibility{Còn hạn bảo hành?}
+        Eligibility -- "[Hết hạn]" --> Ineligible[Thông báo không đủ điều kiện]
+        Eligibility -- "[Còn hạn]" --> ShowForm[Hiển thị Form yêu cầu]
+    end
 
-        partition "Xử lý nội bộ" {
-            :Quản lý xem xét yêu cầu;
-            if (Chấp thuận?) then (Có)
-                :Tạo Booking 0đ (Loại: Bảo hành);
-                :Thông báo lịch hẹn cho khách;
-                :Update Ticket: APPROVED;
-            else (Từ chối)
-                :Gửi phản hồi từ chối;
-                :Update Ticket: REJECTED;
-            endif
-        }
-    else (Không)
-        :Thông báo: Không đủ điều kiện bảo hành;
-    endif
-    stop
+    subgraph QuanLy ["Quản lý"]
+        ShowForm --> InputDetail[Nhập chi tiết lỗi & Hình ảnh]
+        InputDetail --> Review{Xem xét yêu cầu}
+
+        Review -- "[Từ chối]" --> Reject[Gửi phản hồi từ chối]
+        Review -- "[Chấp thuận]" --> Approve[Tạo Booking bảo hành 0đ]
+    end
+
+    Approve --> End([Kết thúc])
+    Reject --> End
+    Ineligible --> End
 ```
 
 ---
 
 ## 3. Phân hệ Lễ tân (Receptionist)
 
-### 3.1. Quy trình Check-in & Trừ liệu trình (Service Usage) (B1.4, C6)
-Mô tả xử lý khi khách đến, bao gồm logic xử lý gói liệu trình (Punch Card).
+### 3.1. Quy trình Tiếp đón & Check-in (B1.4)
+Mô tả quy trình nghiệp vụ khi khách hàng đến Spa.
 
 ```mermaid
-activityDiagram
-    start
-    :Khách hàng đến Spa;
-    :Lễ tân tìm Booking trên Dashboard (B1.1);
-    :Lễ tân bấm "Check-in";
+flowchart TD
+    subgraph LeTan ["Lễ tân"]
+        Start([Bắt đầu]) --> CustomerArrive[Tiếp đón khách hàng]
+        CustomerArrive --> SearchBooking[Tìm lịch hẹn trên hệ thống]
+        SearchBooking --> ExecuteCI[Thực hiện Check-in]
+        WarnCustomer[Thông báo gói hết buổi & Tư vấn mua thêm]
+        ConfirmBuy{Khách đồng ý mua?}
+    end
 
-    if (Booking thuộc Gói liệu trình?) then (Có)
-        :Hệ thống kiểm tra số buổi còn lại;
-        if (Còn buổi?) then (Có)
-            :Trừ 1 buổi (used_sessions += 1);
-            :Đánh dấu Booking Item: "Đã trừ";
-            note right: Auto Punch Logic
-        else (Hết buổi)
-            :Cảnh báo: Gói đã hết buổi;
-            :Yêu cầu thanh toán lẻ hoặc Mua gói mới;
-            if (Khách đồng ý mua/trả lẻ?) then (Có)
-                :Cập nhật Booking Item (Chuyển sang trả phí);
-            else (Không)
-                :Hủy Check-in;
-                stop
-            endif
-        endif
-    endif
+    subgraph HeThong ["Hệ thống"]
+        ExecuteCI --> TypeCheck{Sử dụng liệu trình?}
 
-    :Cập nhật trạng thái Booking: IN_PROGRESS;
-    :Thông báo KTV chuẩn bị;
-    :Khách hàng sử dụng dịch vụ;
-    stop
+        TypeCheck -- "[Không]" --> ActiveBooking[Bắt đầu phục vụ]
+
+        TypeCheck -- "[Có]" --> SessionCheck{Còn buổi không?}
+        SessionCheck -- "[Còn buổi]" --> AutoDebit[Trừ 1 buổi vào Thẻ liệu trình]
+        SessionCheck -- "[Hết buổi]" --> WarnCustomer
+
+        ConfirmBuy -- "[Có]" --> NewPackage[Tạo đơn hàng mới]
+        ConfirmBuy -- "[Không]" --> ManualInvoice[Chuyển sang thanh toán lẻ]
+
+        AutoDebit --> ActiveBooking
+        NewPackage --> ActiveBooking
+        ManualInvoice --> ActiveBooking
+
+        ActiveBooking --> NotifyKTV[Thông báo cho Kỹ thuật viên]
+    end
+
+    NotifyKTV --> End([Kết thúc])
 ```
 
-### 3.2. Quy trình Thanh toán & Checkout (B1.5, C8)
-Bao gồm áp dụng khuyến mãi.
+### 3.2. Quy trình Thanh toán & Checkout (B1.5)
+Mô tả quy trình tất toán dịch vụ và áp dụng khuyến mãi.
 
 ```mermaid
-activityDiagram
-    start
-    :Lễ tân chọn Booking "IN_PROGRESS";
-    :Bấm "Hoàn thành dịch vụ";
-    :Cập nhật trạng thái: COMPLETED;
+flowchart TD
+    subgraph LeTan ["Lễ tân"]
+        Start([Bắt đầu]) --> FinishService[Đánh dấu hoàn thành dịch vụ]
+        InputVoucher[Nhập mã khuyến mãi - nếu có]
+        FinalConfirm[Xác nhận thanh toán]
+    end
 
-    partition "Billing" {
-        :Tạo Invoice nháp;
-        :Load các Item chưa thanh toán;
+    subgraph HeThong ["Hệ thống"]
+        FinishService --> CreateInvoice[Khởi tạo hóa đơn tạm tính]
+        CreateInvoice --> InputVoucher
 
-        if (Có mã khuyến mãi?) then (Có)
-            :Nhập Voucher Code (C8);
-            :Validate Code (Hạn dùng, Điều kiện);
-            if (Hợp lệ?) then (Có)
-                :Trừ tiền (Discount);
-            endif
-        endif
+        InputVoucher --> VoucherCheck{Kiểm tra mã C8}
+        VoucherCheck -- "[Hợp lệ]" --> ApplyDiscount[Áp dụng giảm giá]
+        VoucherCheck -- "[Không hợp lệ]" --> ShowVoucherError[Thông báo mã lỗi]
 
-        :Hiển thị Tổng tiền phải trả;
-        :Khách hàng thanh toán (Tiền mặt/Thẻ/CK);
-        :Lễ tân xác nhận "Đã thanh toán";
-    }
+        ApplyDiscount --> ShowTotal[Hiển thị tổng tiền]
+        ShowVoucherError --> ShowTotal
 
-    :Cập nhật Invoice: PAID;
-    :Gửi Hóa đơn điện tử (Email);
-    stop
-```
+        ShowTotal --> FinalConfirm
+        FinalConfirm --> BillPAID[Ghi nhận trạng thái: Đã thanh toán]
+        BillPAID --> SendEInvoice[Gửi hóa đơn điện tử cho khách]
+    end
 
-### 3.3. Quy trình Tái lập lịch tự động (Auto Rescheduling) (B1.8)
-
-```mermaid
-activityDiagram
-    start
-    :Sự kiện: KTV/Phòng báo nghỉ đột xuất (Unavailable);
-    :Hệ thống quét các Booking bị ảnh hưởng (Conflict);
-
-    while (Còn Booking conflict?) is (Có)
-        :Lấy thông tin Booking (Khách, Dịch vụ, Giờ);
-        partition "Reschedule Solver" {
-            :Tìm KTV thay thế (Cùng Skill);
-            if (Tìm thấy KTV?) then (Có)
-                :Gán KTV mới;
-                :Log thay đổi (Change Log);
-                :Notify: "Đã đổi sang KTV X";
-            else (Không)
-                :Tìm Giờ khác trong ngày (Same KTV);
-                if (Tìm thấy?) then (Có)
-                    :Đề xuất giờ mới cho Khách;
-                    if (Khách đồng ý?) then (Có)
-                        :Dời lịch;
-                    else (Không)
-                         :Đánh dấu: "Cần xử lý thủ công";
-                    endif
-                else (Không)
-                     :Đánh dấu: "Critical Conflict";
-                endif
-            endif
-        }
-    endwhile
-
-    :Lễ tân nhận danh sách "Cần xử lý thủ công";
-    :Lễ tân gọi điện thương lượng với khách;
-    stop
+    SendEInvoice --> End([Kết thúc])
 ```
 
 ---
 
 ## 4. Phân hệ Quản trị (Admin)
 
-### 4.1. Quản lý Tài nguyên & Cấu hình (C4, C7)
-Quy trình chung cho thiết lập dữ liệu nền (Master Data).
+### 4.1. Quy trình Cấu hình Lịch hoạt động & Ngày nghỉ (C1, C2)
+Hợp nhất luồng quản lý thời gian vận hành của Spa.
 
 ```mermaid
-activityDiagram
-    start
-    :Admin truy cập trang Quản lý (Resource/Staff);
-    :Thực hiện Thêm/Sửa/Xóa;
+flowchart TD
+    subgraph QuanTri ["Quản trị viên"]
+        Start([Bắt đầu]) --> SelectConfig[Chọn Cấu hình Lịch]
+        Choice{Chọn loại thay đổi}
+        EditHours[Chỉnh sửa giờ hoạt động định kỳ]
+        AddHoliday[Thêm ngày nghỉ lễ/bảo trì]
+    end
 
-    if (Hành động ảnh hưởng lịch?) then (Có)
-        :Hệ thống check Dependencies (Booking tồn tại?);
-        if (Có Booking xung đột?) then (Có)
-            :Cảnh báo: "Không thể xóa vì có Booking";
-            :Yêu cầu: Hủy/Dời Booking trước;
-            stop
-        else (Không)
-            :Thực hiện cập nhật DB;
-        endif
-    else (Không)
-        :Cập nhật DB;
-    endif
+    subgraph HeThong ["Hệ thống"]
+        Choice -- "[Giờ định kỳ]" --> EditHours
+        Choice -- "[Ngày ngoại lệ]" --> AddHoliday
 
-    :Cập nhật Cache/Search Index của Bộ giải (Solver);
-    stop
+        EditHours --> ValidTime{Giờ mở < Giờ đóng?}
+        ValidTime -- "[Sai]" --> ShowTimeError[Báo lỗi logic giờ]
+        ValidTime -- "[Đúng]" --> SaveConfig[Lưu cấu hình hệ thống]
+
+        AddHoliday --> ConflictCheck{Có Booking tồn tại?}
+        ConflictCheck -- "[Có]" --> AlertConflict[Cảnh báo lịch hẹn bị ảnh hưởng]
+        ConflictCheck -- "[Không]" --> SaveConfig
+
+        SaveConfig --> SyncSolver[Cập nhật dữ liệu cho Availability Engine]
+    end
+
+    SyncSolver --> End([Kết thúc])
+    ShowTimeError --> EditHours
+    AlertConflict --> End
+```
+
+### 4.2. Quy trình Quản lý Master Data (C4, C5, C7)
+Luồng nghiệp vụ khi thay đổi dữ liệu nhân sự, dịch vụ hoặc tài nguyên.
+
+```mermaid
+flowchart TD
+    subgraph QuanTri ["Quản trị viên"]
+        Start([Bắt đầu]) --> Manage[Truy cập mục Quản lý Master Data]
+        Manage --> ExecuteAction[Thực hiện Thêm/Sửa/Vô hiệu hóa]
+    end
+
+    subgraph HeThong ["Hệ thống"]
+        ExecuteAction --> RelationCheck{Có liên kết dịch vụ/nhân sự?}
+
+        RelationCheck -- "[Có liên kết]" --> HardConstraint{Có Booking tương lai?}
+        HardConstraint -- "[Có]" --> Block[Cảnh báo: Phải xử lý Booking trước]
+        HardConstraint -- "[Không]" --> ProcessUpdate[Cập nhật trạng thái dữ liệu]
+
+        RelationCheck -- "[Không]" --> ProcessUpdate
+
+        ProcessUpdate --> NotifyChange[Thông báo cập nhật thành công]
+    end
+
+    NotifyChange --> End([Kết thúc])
+    Block --> End
 ```
 
 ---
-*Các sơ đồ trên đảm bảo phủ kín các luồng nghiệp vụ trong tài liệu Use Case và Sequence Diagrams.*
+*Lưu ý: Các sơ đồ trên tập trung vào luồng nghiệp vụ cấp cao để đối chiếu với Sequence Diagram và Use Case.*

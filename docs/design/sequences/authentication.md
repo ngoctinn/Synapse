@@ -36,10 +36,10 @@ sequenceDiagram
 
     KH->>UI: Nhập thông tin đăng ký
     activate UI
-    UI->>BE: registerUser(payload)
+    UI->>BE: register_user(payload)
     activate BE
 
-    BE->>SUPA: signUp(email, password, metadata)
+    BE->>SUPA: sign_up(email, password, metadata)
     activate SUPA
     SUPA-->>BE: Response (Xác nhận tiếp nhận)
     deactivate SUPA
@@ -96,7 +96,7 @@ sequenceDiagram
     UI->>BE: login(credentials)
     activate BE
 
-    BE->>SUPA: signInWithPassword(email, password)
+    BE->>SUPA: sign_in_with_password(email, password)
     activate SUPA
 
     alt Thông tin không hợp lệ
@@ -128,10 +128,10 @@ sequenceDiagram
 
     ND->>UI: Nhập địa chỉ thư điện tử
     activate UI
-    UI->>BE: forgotPasswordAction(email)
+    UI->>BE: forgot_password_action(email)
     activate BE
 
-    BE->>SUPA: resetPasswordForEmail(email)
+    BE->>SUPA: reset_password_for_email(email)
     activate SUPA
     SUPA-->>BE: OK
     deactivate SUPA
@@ -156,10 +156,10 @@ sequenceDiagram
 
     ND->>UI: Nhấp liên kết đặt lại và nhập mật khẩu mới
     activate UI
-    UI->>BE: updatePasswordAction(newPassword)
+    UI->>BE: update_password_action(new_password)
     activate BE
 
-    BE->>SUPA: updateUser({ password: newPassword })
+    BE->>SUPA: update_user({ password: new_password })
     activate SUPA
     SUPA-->>BE: OK (đã cập nhật)
     deactivate SUPA
@@ -184,7 +184,7 @@ sequenceDiagram
 
     ND->>UI: Sửa thông tin và lưu
     activate UI
-    UI->>BE: updateProfile(data)
+    UI->>BE: update_profile(data)
     activate BE
 
     BE->>DB: UPDATE users SET ... WHERE id = ?
@@ -212,10 +212,10 @@ sequenceDiagram
 
     ND->>UI: Chọn đăng xuất
     activate UI
-    UI->>BE: logoutAction()
+    UI->>BE: logout_action()
     activate BE
 
-    BE->>SUPA: signOut()
+    BE->>SUPA: sign_out()
     activate SUPA
     SUPA-->>BE: OK
     deactivate SUPA

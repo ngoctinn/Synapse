@@ -35,7 +35,7 @@ sequenceDiagram
 
     KH->>UI: Truy cập trang dịch vụ
     activate UI
-    UI->>BE: fetchServices()
+    UI->>BE: get_services()
     activate BE
 
     BE->>DB: query_services_by_category
@@ -63,7 +63,7 @@ sequenceDiagram
 
     KH->>UI: Chọn một dịch vụ
     activate UI
-    UI->>BE: getServiceDetail(serviceId)
+    UI->>BE: get_service_detail(service_id)
     activate BE
 
     BE->>DB: find_service_with_related
@@ -92,7 +92,7 @@ sequenceDiagram
 
     KH->>UI: Chọn dịch vụ và ngày mong muốn
     activate UI
-    UI->>BE: getAvailableSlots(serviceId, date)
+    UI->>BE: get_available_slots(service_id, date)
     activate BE
 
     par Lấy dữ liệu khả dụng
@@ -128,7 +128,7 @@ sequenceDiagram
 
     KH->>UI: Xác nhận đặt lịch
     activate UI
-    UI->>BE: createBooking(slotData)
+    UI->>BE: create_booking(slot_data)
     activate BE
 
     critical Kiểm tra tính nhất quán (Atomic Transaction)
@@ -169,7 +169,7 @@ sequenceDiagram
 
     KH->>UI: Chọn khung giờ đã hết chỗ
     activate UI
-    UI->>BE: joinWaitlist(slotData)
+    UI->>BE: join_waitlist(slot_data)
     activate BE
 
     BE->>DB: INSERT INTO waitlist_entries
@@ -197,11 +197,11 @@ sequenceDiagram
 
     KH->>UI: Mở cửa sổ trò chuyện
     activate UI
-    UI->>BE: getChatSession()
+    UI->>BE: get_chat_session()
     BE-->>UI: Hiển thị lịch sử (nếu có)
 
     KH->>UI: Gửi tin nhắn yêu cầu hỗ trợ
-    UI->>BE: sendMessage(content)
+    UI->>BE: send_message(content)
     activate BE
 
     BE->>DB: INSERT INTO chat_messages
@@ -219,7 +219,7 @@ sequenceDiagram
 ```
 **Hình 3.13: Sơ đồ tuần tự chức năng Nhận hỗ trợ qua trò chuyện trực tuyến**
 
-### 3.13. Xem lịch sử đặt lịch hẹn (A3.1)
+### 3.14. Xem lịch sử đặt lịch hẹn (A3.1)
 
 ```mermaid
 sequenceDiagram
@@ -231,7 +231,7 @@ sequenceDiagram
 
     KH->>UI: Truy cập trang lịch sử
     activate UI
-    UI->>BE: getBookingHistory()
+    UI->>BE: get_booking_history()
     activate BE
 
     BE->>DB: query_bookings_by_user
@@ -247,7 +247,7 @@ sequenceDiagram
 ```
 **Hình 3.14: Sơ đồ tuần tự chức năng Xem lịch sử đặt lịch hẹn**
 
-### 3.14. Hủy lịch hẹn (A3.2)
+### 3.15. Hủy lịch hẹn (A3.2)
 
 ```mermaid
 sequenceDiagram
@@ -259,10 +259,10 @@ sequenceDiagram
 
     KH->>UI: Chọn lịch hẹn và yêu cầu hủy
     activate UI
-    UI->>BE: cancelBooking(bookingId)
+    UI->>BE: cancel_booking(booking_id)
     activate BE
 
-    BE->>DB: get_booking(bookingId)
+    BE->>DB: get_booking(booking_id)
     activate DB
     DB-->>BE: booking
     deactivate DB
@@ -332,7 +332,7 @@ sequenceDiagram
 
     KH->>UI: Chọn Treatment đã mua và gửi yêu cầu bảo hành
     activate UI
-    UI->>BE: createWarrantyRequest(treatmentId, description, images)
+    UI->>BE: create_warranty_request(treatment_id, description, images)
     activate BE
 
     BE->>DB: INSERT INTO warranty_tickets

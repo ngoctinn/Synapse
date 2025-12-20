@@ -35,7 +35,7 @@ sequenceDiagram
 
     KTV->>UI: Truy cập lịch làm việc
     activate UI
-    UI->>BE: getMySchedule(date)
+    UI->>BE: get_my_schedule(date)
     activate BE
 
     BE->>DB: query_bookings_by_staff_id
@@ -63,11 +63,11 @@ sequenceDiagram
 
     KTV->>UI: Chọn lịch hẹn đã hoàn thành
     activate UI
-    UI->>BE: getBookingDetail(bookingId)
+    UI->>BE: get_booking_detail(booking_id)
     BE-->>UI: Hiển thị thông tin lịch hẹn
 
     KTV->>UI: Nhập ghi chú chuyên môn
-    UI->>BE: updateBookingNote(bookingId, noteData)
+    UI->>BE: update_booking_note(booking_id, note_data)
     activate BE
 
     BE->>DB: INSERT INTO treatment_notes
