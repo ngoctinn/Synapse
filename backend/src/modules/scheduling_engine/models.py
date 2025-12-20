@@ -102,6 +102,11 @@ class SchedulingProblem(BaseModel):
     horizon_start: int = 0  # 00:00
     horizon_end: int = 1440  # 24:00
 
+    # Optimization Weights
+    weight_preference: float = 1.0
+    weight_utilization: float = 1.0
+    weight_fairness: float = 1.0
+
     model_config = ConfigDict(from_attributes=True)
 
 

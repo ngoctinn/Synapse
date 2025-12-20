@@ -213,19 +213,108 @@ class SpaSolver:
             if len(intervals) > 1:
                 self.model.AddNoOverlap(intervals)
 
-        # Hàm mục tiêu: Minimize sum of penalties
-        # - Penalty for not matching preference
-        # - Penalty for uneven load distribution
+        # Ràng buộc: NoOverlap cho mỗi resource
+        for resource_id, intervals in self.resource_intervals.items():
+            if len(intervals) > 1:
+                self.model.AddNoOverlap(intervals)
+
+        # ====================================================================
+        # OBJECTIVE FUNCTION
+        # ====================================================================
+
+        # Scaling factor for float weights (since CP-SAT requires int)
+        SCALE = 100
+        w_pref = int(getattr(self.problem, "weight_preference", 1.0) * SCALE)
+        w_fair = int(getattr(self.problem, "weight_fairness", 1.0) * SCALE)
+        w_util = int(getattr(self.problem, "weight_utilization", 1.0) * SCALE)
+
         objective_terms = []
 
+        # 1. Preference Penalty
+        # --------------------------------------------------------
         for item in self.problem.unassigned_items:
             for (item_id, staff_id, resource_id), var in self.assignment_vars.items():
                 if item_id != item.id:
                     continue
 
-                # Preference penalty: +10 nếu không phải preferred staff
+                # Preference penalty: +10 (base) * weight
                 if item.preferred_staff_id and staff_id != item.preferred_staff_id:
-                    objective_terms.append(10 * var)
+                    objective_terms.append(10 * w_pref * var)
+
+        # 2. Load Balancing (Fairness)
+        # --------------------------------------------------------
+        # Minimize (MaxLoad - MinLoad)
+
+        staff_loads = []
+        for staff in self.problem.available_staff:
+            # Calculate total duration assigned to this staff
+            staff_vars = []
+            staff_durations = []
+
+            for (item_id, s_id, r_id), var in self.assignment_vars.items():
+                if s_id == staff.id:
+                    item = next(i for i in self.problem.unassigned_items if i.id == item_id)
+                    staff_vars.append(var)
+                    staff_durations.append(item.duration_minutes)
+
+            if staff_vars:
+                load_var = self.model.NewIntVar(0, 1440, f"load_{staff.id}")
+                self.model.Add(load_var == sum(v * d for v, d in zip(staff_vars, staff_durations)))
+                staff_loads.append(load_var)
+            else:
+                # Nếu không có assignment nào khả dĩ (logic code), load = 0
+                # Tuy nhiên biến assignments được tạo động, thường sẽ có ít nhất 1 biến nếu staff available
+                # Fallback an toàn:
+                zero = self.model.NewConstant(0)
+                staff_loads.append(zero)
+
+        if staff_loads and w_fair > 0:
+            max_load = self.model.NewIntVar(0, 1440, "max_load")
+            min_load = self.model.NewIntVar(0, 1440, "min_load")
+
+            self.model.AddMaxEquality(max_load, staff_loads)
+            self.model.AddMinEquality(min_load, staff_loads)
+
+            # Penalty = (max - min) * weight
+            objective_terms.append((max_load - min_load) * w_fair)
+
+        # 3. Gap Minimization (Utilization)
+        # --------------------------------------------------------
+        # Minimize (Span - TotalLoad) for each staff
+        # Span = MaxEnd - MinStart
+
+        if w_util > 0:
+            for i, staff in enumerate(self.problem.available_staff):
+                msg_prefix = f"staff_{staff.id}"
+                min_start = self.model.NewIntVar(0, 1440, f"{msg_prefix}_min_start")
+                max_end = self.model.NewIntVar(0, 1440, f"{msg_prefix}_max_end")
+
+                # Default for unassigned: min_start=max_end (span=0)
+                # We enforce min_start <= max_end
+                self.model.Add(min_start <= max_end)
+
+                has_any_assignment = False
+
+                for (item_id, s_id, r_id), var in self.assignment_vars.items():
+                    if s_id == staff.id:
+                        item = next(it for it in self.problem.unassigned_items if it.id == item_id)
+                        start_mins = self._time_to_minutes(item.start_time)
+                        end_mins = start_mins + item.duration_minutes
+
+                        # Constraints implications
+                        # If assigned: min_start <= start, max_end >= end
+                        self.model.Add(min_start <= start_mins).OnlyEnforceIf(var)
+                        self.model.Add(max_end >= end_mins).OnlyEnforceIf(var)
+                        has_any_assignment = True
+
+                if has_any_assignment:
+                    span = max_end - min_start
+                    load = staff_loads[i] # Correspond to the index in available_staff
+
+                    # Gap = Span - Load
+                    # Objective: Minimize Gap * weight
+                    # Gap >= 0 is implicitly true if constraints correct
+                    objective_terms.append((span - load) * w_util)
 
         if objective_terms:
             self.model.Minimize(sum(objective_terms))

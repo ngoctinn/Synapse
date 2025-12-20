@@ -91,7 +91,7 @@ class DataExtractor:
             .where(
                 BookingItem.start_time >= start_of_day,
                 BookingItem.start_time < end_of_day,
-                col(Booking.status).notin([BookingStatus.CANCELLED, BookingStatus.NO_SHOW])
+                col(Booking.status).notin_([BookingStatus.CANCELLED, BookingStatus.NO_SHOW])
             )
             .options(selectinload(BookingItem.service))
             .order_by(BookingItem.start_time)

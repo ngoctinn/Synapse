@@ -75,3 +75,54 @@
 ### 4. Rủi ro (Risks)
 - Bài toán tìm kiếm exhaustive qua toàn bộ grid có thể chậm nếu spa có quá nhiều KTV.
 - Giải pháp: Giới hạn số lượng slots trả về (vd: top 10).
+
+---
+
+# Analysis Log - Phase 10: Scheduling Optimization
+
+## Ngày: 2025-12-20
+
+### 1. Load Balancing Analysis
+
+**Mục tiêu**: Phân phối công việc đều giữa các nhân viên để đảm bảo sự công bằng (Fairness).
+
+**Hiện trạng**:
+- `SchedulingService` hiện tại chỉ có `jain_fairness_index` để đánh giá, chưa có logic tối ưu hóa trong `SpaSolver`.
+- Solver chỉ tối ưu preference (+10 điểm) và tìm feasible solution.
+
+**Giải pháp đề xuất (OR-Tools)**:
+- Thêm biến `staff_load[s]` = tổng thời gian làm việc (phút) của nhân viên `s`.
+- Thêm biến `min_load` và `max_load` ràng buộc bởi các `staff_load`.
+- Mục tiêu: Minimize `(max_load - min_load)`.
+- Trọng số: `weight_fairness` từ config.
+
+**Complexity**:
+- Số lượng biến tăng tuyến tính theo số nhân viên.
+- Không ảnh hưởng nhiều đến hiệu năng với số lượng nhân viên < 50.
+
+### 2. Gap Minimization Analysis
+
+**Mục tiêu**: Giảm thiểu thời gian chết xen kẽ (gaps) để tăng hiệu suất (Utilization) và giúp nhân viên có thời gian nghỉ dài hơn thay vì vụn vặt.
+
+**Giải pháp đề xuất**:
+- Định nghĩa "Working Span" của nhân viên = `Last Task End` - `First Task Start`.
+- "Idle Time within Span" = `Working Span` - `Total Working Duration`.
+- Mục tiêu: Minimize `Idle Time within Span`.
+- Điều này khuyến khích co cụm các task lại gần nhau (compact schedule).
+
+**Implementation Details**:
+- Cần biến `first_start[s]` và `last_end[s]` cho mỗi nhân viên.
+- Ràng buộc: `first_start[s] <= start_time` của mọi task được gán cho `s`.
+- Ràng buộc: `last_end[s] >= end_time` của mọi task được gán cho `s`.
+- Objective terms: `(last_end[s] - first_start[s] - total_load[s]) * weight_utilization`.
+
+### 3. Impact Analysis
+
+**Affected Files**:
+- `solver.py`: Logic chính của CP-SAT.
+- `models.py`: Cập nhật `SolveRequest` để truyền weights.
+- `evaluator.py`: Cần tính `total_idle_minutes` để verify kết quả.
+
+**Risks**:
+- Tightening constraints might lead to `INFEASIBLE` if not careful.
+- Solution time might increase. Cần set `time_limit_seconds` hợp lý (mặc định 30s).

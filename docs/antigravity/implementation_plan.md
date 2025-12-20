@@ -1,114 +1,40 @@
-# Kế Hoạch Triển Khai: Smart Slot Finding (Phase 2)
+# Scheduling Engine - Advanced Optimization Implementation Plan
 
-## 1. Vấn đề (Problem)
-Khách hàng cần tìm kiếm các khung giờ khả dụng cho một dịch vụ cụ thể mà không cần phải thực hiện đặt lịch thử. Hiện tại hệ thống chưa có endpoint độc lập để gợi ý các slots tối ưu dựa trên tài nguyên và nhân viên.
+This plan addresses the missing features identified during the review of the Scheduling Engine against the design specifications. It focuses on implementing advanced optimization objectives: **Load Balancing** and **Gap Minimization**.
 
-## 2. Mục đích (Purpose)
-Triển khai endpoint `POST /scheduling-engine/find-slots` giúp:
-- Tự động tìm kiếm các khung giờ trống cho dịch vụ.
-- Cân bằng tải nhân viên và tối ưu hóa sử dụng tài nguyên (giường, máy).
-- Hỗ trợ khách hàng chọn nhân viên yêu thích.
+## Proposed Changes
 
-## 3. Ràng buộc (Constraints)
-- **H01-H09 (Hard Constraints)**: Phải tuân thủ tuyệt đối quy tắc chồng chéo (Non-overlap) và năng lực nhân viên.
-- **S01-S05 (Soft Constraints)**: Tối ưu hóa theo sở thích khách hàng và sự công bằng giữa nhân viên.
-- **Hiệu năng**: Kết quả trả về trong < 2 giây.
-- **Vertical Slice**: Logic nằm trọn trong module `scheduling_engine`.
+### Backend Implementation
 
-## 4. Chiến lược (Strategy)
-Sử dụng logic của `SpaSolver` (CP-SAT) để tìm kiếm các vị trí khả dụng. Thay vì giải bài toán lập lịch cho toàn bộ spa, hỗ trợ tìm kiếm local quanh ngày khách yêu cầu (`target_date`).
+#### [MODIFY] [backend/src/modules/scheduling_engine/models.py](file:///d:/ReactJSLearning/Synapse/backend/src/modules/scheduling_engine/models.py)
+- Update `SolveRequest` to allow tuning weights for new objectives (ensure `weight_fairness` and `weight_utilization` are leveraged correctly).
 
-## 5. Giải pháp (Solution)
+#### [MODIFY] [backend/src/modules/scheduling_engine/solver.py](file:///d:/ReactJSLearning/Synapse/backend/src/modules/scheduling_engine/solver.py)
+- **Implement Load Balancing**:
+    - Add `total_load` variables for each staff.
+    - Add `min_load` and `max_load` variables.
+    - Add `(max_load - min_load) * weight_fairness` to objective function.
+- **Implement Gap Minimization**:
+    - Add `span_var` for each staff (End of last task - Start of first task).
+    - Add `(span_var - total_load) * weight_utilization` to objective function. This effectively minimizes the idle time *within* the working span.
 
-### 5.1 API Specification
-- **Endpoint**: `POST /scheduling-engine/find-slots`
-- **Request**: `{ service_id, target_date, preferred_staff_id?, time_window? }`
-- **Response**: List các `SlotOption` (mỗi option gồm start/end, nhân viên, tài nguyên và điểm số tối ưu).
+#### [MODIFY] [backend/src/modules/scheduling_engine/evaluator.py](file:///d:/ReactJSLearning/Synapse/backend/src/modules/scheduling_engine/evaluator.py)
+- Implement `total_idle_minutes` calculation in `evaluate_current_schedule` to properly measure gap reduction improvements.
 
-### 5.2 Thành phần chính
-1. **Schemas**: Định nghĩa `SlotSearchRequest` và `SlotSuggestionResponse`.
-2. **Service**: Bổ sung hàm `find_available_slots` vào `SchedulingService`.
-3. **Solver Integration**: Sử dụng `SchedulingEngine` để kiểm tra tính khả thi của từng slot ứng viên.
+## Verification Plan
 
----
+### Automated Tests
+Create a new test file `backend/src/tests/modules/scheduling_engine/test_optimization.py` covering:
+1.  **Load Balancing**: Verify that tasks are distributed evenly among staff when possible (e.g., 2 tasks, 2 staff -> 1 each, not 2 for one).
+2.  **Gap Minimization**: Verify that tasks for the same staff are scheduled contiguously (e.g., 9:00-10:00 and 10:00-11:00 preferred over 9:00-10:00 and 13:00-14:00).
 
-## 6. Kế hoạch thực thi (Steps)
-1. **ANALYZE**: Rà soát `scheduling_engine/service.py` và `solver.py` để tìm điểm tích hợp.
-2. **DIFF**: Thiết kế chi tiết hàm tìm kiếm slot (sinh ứng viên -> lọc -> chấm điểm).
-3. **APPLY**: Code Schemas, Service và Router.
-4. **VERIFY**: Unit test logic sinh slot và Integration test API.
+**Command to run:**
+```bash
+pytest backend/src/tests/modules/scheduling_engine/test_optimization.py
+```
 
----
-
-# Kế Hoạch Triển Khai: Promotions Module (Phase 3)
-
-## 1. Vấn đề (Problem)
-Module `promotions` đã có mã nguồn nhưng chưa có bảng dữ liệu tương ứng trong Database và chưa thiết lập RLS (Row Level Security).
-
-## 2. Mục đích (Purpose)
-- Triển khai bảng `promotions`.
-- Thiết lập RLS đảm bảo: Admin/Staff quản lý, Khách hàng chỉ xem/áp dụng mã.
-- Tích hợp logic tính toán `Decimal` chính xác.
-
-## 3. Thành phần chính
-- **Models**: `promotions` table, `discount_type` enum.
-- **Service**: CRUD operations + logic validate mã giảm giá.
-- **Router**: API `/promotions` và `/promotions/validate`.
-
-## 4. Kế hoạch thực thi (Steps)
-1. **DIFF**: Tạo script SQL `migration_promotions.sql`.
-2. **APPLY**:
-    - Thực thi SQL migration trên Supabase.
-    - Kiểm tra và sửa lỗi logic (nếu có) bằng Ruff.
-3. **VERIFY**: Kiểm thử API trọn gói.
-
----
-
-# Kế Hoạch Triển Khai: Waitlist Module (Phase 4)
-
-## 1. Vấn đề (Problem)
-Module `waitlist` đã có mã nguồn cơ bản nhưng chưa có bảng dữ liệu `waitlist_entries` trong Database và chưa thiết lập RLS (Row Level Security). Đồng thời, chưa có logic tự động hóa liên kết giữa waitlist và các lịch hẹn bị hủy (Phần Notification sẽ được xử lý ở Phase sau, Phase này tập trung vào Core CRUD & Security).
-
-## 2. Mục đích (Purpose)
-- Triển khai bảng `waitlist_entries`.
-- Thiết lập RLS:
-    - Khách hàng: Có thể gửi yêu cầu chờ (join waitlist), xem/hủy yêu cầu của chính mình.
-    - Admin/Staff: Quản lý toàn bộ danh sách chờ.
-- Đảm bảo logic dữ liệu hợp lệ (ngày/giờ ưu tiên).
-
-## 3. Thành phần chính
-- **Models**: `waitlist_entries` table, `WaitlistStatus` enum.
-- **Service**: CRUD operations cho danh sách chờ.
-- **Router**: API `/waitlist`.
-
-## 4. Kế hoạch thực thi (Steps)
-1. **ANALYZE**: Rà soát code `waitlist` hiện tại (Đã thực hiện).
-2. **DIFF**: Tạo script SQL `migration_waitlist.sql`.
-3. **APPLY**:
-    - Thực thi SQL migration trên Supabase.
-    - Kiểm tra lỗi linting bằng Ruff.
-4. **VERIFY**: Kiểm thử API CRUD waitlist.
-
----
-
-# Kế Hoạch Triển Khai: Warranty Module (Phase 5)
-
-## 1. Vấn đề (Problem)
-Khách hàng sau khi sử dụng dịch vụ (đặc biệt là các liệu trình nhiều buổi) nếu không hài lòng cần có cơ chế gửi yêu cầu bảo hành chính thức. Hiện tại module `warranty` đã có code nhưng chưa có Database, chưa liên kết đúng với đối tượng Liệu trình (`customer_treatments`) và chưa kích hoạt RLS.
-
-## 2. Mục đích (Purpose)
-- Triển khai hệ thống **Quản lý Ticket Bảo hành dựa trên Liệu trình**.
-- Cho phép khách hàng gửi yêu cầu kèm hình ảnh minh họa cho các gói liệu trình đã mua.
-- Quản trị viên (Admin) duyệt và xử lý Ticket (Approved/Rejected/Resolved) dựa trên lịch sử các buổi thực hiện.
-
-## 3. Thành phần chính
-- **Models**: `warranty_tickets` table (FK `treatment_id`), `WarrantyStatus` enum.
-- **Service**: Logic xử lý Ticket, ghi nhận lịch sử giải quyết (`resolved_at`, `resolved_by`).
-- **Router**: API `/warranty-tickets`.
-
-## 4. Kế hoạch thực thi (Steps)
-1. **DIFF**: Tạo script SQL `migration_warranty.sql`.
-2. **APPLY**:
-    - Thực thi SQL migration trên Supabase.
-    - Sửa lỗi Ruff (unused imports, v.v.).
-3. **VERIFY**: Kiểm thử luồng gửi và duyệt Ticket bảo hành.
+### Manual Verification
+1.  Run the backend server.
+2.  Use `POST /api/v1/scheduling/solve` with a prepared dataset containing multiple available staff and tasks.
+3.  Observe that the solver spreads tasks evenly (Fairness).
+4.  Observe that sequential tasks for a single staff are packed together (Utilization).

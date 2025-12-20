@@ -81,8 +81,45 @@ class ScheduleEvaluator:
             max_staff_load_minutes=max(workloads) if workloads else 0,
             min_staff_load_minutes=min(workloads) if workloads else 0,
             avg_staff_load_minutes=round(sum(workloads) / len(workloads), 1) if workloads else 0,
-            total_idle_minutes=0  # TODO
+            total_idle_minutes=await self._calculate_total_idle_minutes(assignments)
         )
+
+    async def _calculate_total_idle_minutes(self, assignments: list) -> int:
+        """
+        Tính tổng thời gian chết (Gap) trong "Working Span" của các nhân viên.
+        Idle = (Last Task End - First Task Start) - Total Worked Duration
+        """
+        staff_tasks = {}
+        for row in assignments:
+            staff_id = str(row[0]) if row[0] else None
+            if not staff_id: continue
+
+            # row[2] = start_time (datetime), row[3] = duration_minutes (float/int)
+            start_time = row[2]
+            duration = int(row[3]) if row[3] else 0
+            end_time = start_time + timedelta(minutes=duration)
+
+            if staff_id not in staff_tasks:
+                staff_tasks[staff_id] = []
+            staff_tasks[staff_id].append((start_time, end_time, duration))
+
+        total_idle = 0
+        for staff_id, tasks in staff_tasks.items():
+            if not tasks: continue
+
+            # Sort by start time
+            tasks.sort(key=lambda x: x[0])
+
+            first_start = tasks[0][0]
+            last_end = max(t[1] for t in tasks) # Find max end time
+
+            span_minutes = int((last_end - first_start).total_seconds() / 60)
+            worked_minutes = sum(t[2] for t in tasks)
+
+            idle = max(0, span_minutes - worked_minutes)
+            total_idle += idle
+
+        return total_idle
 
     async def compare_schedules(
         self,

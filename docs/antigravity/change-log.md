@@ -133,5 +133,16 @@ CREATE TABLE booking_item_resources (
   - Thiết lập RLS Policies bảo mật: Khách hàng quản lý ticket của mình, Staff/Admin quản lý toàn bộ.
 - **Database**: Đã apply `migration_warranty.sql` (v2 - Treatment based).
 
+
+## [2025-12-20] FEAT: Scheduling Optimization (Phase 10)
+- **Module**: `scheduling_engine`
+- **Thay đổi**:
+  - Implemented **Load Balancing** (Fairness): Minimize `max_load - min_load`.
+  - Implemented **Gap Minimization** (Utilization): Minimize `working_span - total_load`.
+  - Updated `SpaSolver` logic with CP-SAT objective terms.
+  - Added optimization weights to `SchedulingProblem`.
+  - Verification: Added `test_optimization.py` and implemented `_calculate_total_idle_minutes` in Evaluator.
+- **Status**: Verified passed with automated tests.
+
 ## [Previous Logs...]
 ...

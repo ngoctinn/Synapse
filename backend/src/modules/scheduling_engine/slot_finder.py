@@ -4,7 +4,7 @@ Scheduling Engine - Slot Finder Component
 Component xử lý logic tìm kiếm slot khả dụng dựa trên constraints.
 """
 import uuid
-from datetime import datetime, date, time, timedelta
+from datetime import datetime, date, time, timedelta, timezone
 from typing import TYPE_CHECKING
 
 from .models import SlotOption, StaffSuggestionInfo, ResourceSuggestionInfo
@@ -33,8 +33,8 @@ class SlotFinder:
         """Thuật toán tìm slot dựa trên các constraints."""
         target_date = self.problem.target_date
         increment = timedelta(minutes=increment_minutes)
-        current_dt = datetime.combine(target_date, search_start)
-        end_dt = datetime.combine(target_date, search_end)
+        current_dt = datetime.combine(target_date, search_start, tzinfo=timezone.utc)
+        end_dt = datetime.combine(target_date, search_end, tzinfo=timezone.utc)
 
         available_options = []
 
