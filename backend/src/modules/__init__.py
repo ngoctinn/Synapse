@@ -13,6 +13,8 @@ from . import (
     promotions,
     waitlist,
     notifications,
+    warranty,
+    chat,
 )
 
 __all__ = [
@@ -30,5 +32,7 @@ __all__ = [
     "promotions",
     "waitlist",
     "notifications",
+    "warranty",
+    "chat",
 ]
 
