@@ -52,7 +52,8 @@ class ServiceManagementService:
             tuple[list[Service], int]: Danh sách dịch vụ và tổng số bản ghi.
         """
         query = select(Service).options(
-            selectinload(Service.skills)
+            selectinload(Service.skills),
+            selectinload(Service.category)
         )
 
         if only_active:
@@ -94,7 +95,8 @@ class ServiceManagementService:
             ServiceNotFoundError: Nếu không tìm thấy dịch vụ.
         """
         query = select(Service).where(Service.id == service_id).options(
-            selectinload(Service.skills)
+            selectinload(Service.skills),
+            selectinload(Service.category)
         )
         result = await self.session.exec(query)
         service = result.first()
