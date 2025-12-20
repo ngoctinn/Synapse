@@ -36,7 +36,7 @@ Quy trình này thực thi nghiêm ngặt giao thức được định nghĩa t�
     *   `cd frontend && pnpm lint`
     *   `cd frontend && pnpm build` (Kiểm tra An toàn kiểu dữ liệu)
 2.  **Backend**:
-    *   Chạy kiểm tra cú pháp/linting backend.
+    *   Chạy kiểm tra cú pháp/linting backend(thông qua ruff)
 3.  Nếu lỗi: Sửa ngay lập tức.
 
 ## Giai đoạn 7: AUDIT (Kiểm toán)

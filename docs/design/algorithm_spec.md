@@ -15,13 +15,13 @@ Hệ thống được thiết kế để giải quyết bài toán cốt lõi: *
 ### 2.1. Định nghĩa Tập hợp (Sets)
 - $T$: Tập hợp các khoảng thời gian (Time slots, độ phân giải 15 phút).
 - $S$: Tập hợp nhân viên (Staff/Technicians).
-- $R_{bed}$: Tập hợp các Tài nguyên Giường/Ghế (Beds/Chairs). **Lưu ý: Mỗi Giường/Ghế là một tài nguyên độc lập với Capacity = 1.**
+- $R$: Tập hợp các Tài nguyên (Resources), được phân loại thành Bed hoặc Equipment. Mỗi tài nguyên là một thực thể nguyên tử (Atomic).
 - $B$: Tập hợp các yêu cầu đặt lịch (Bookings). Mỗi booking $b$ bao gồm một hoặc nhiều dịch vụ con (items) $i$.
 
 ### 2.2. Biến Quyết định (Decision Variables)
-Hệ thống sử dụng biến nhị phân $x_{i, s, r, t}$ để biểu diễn trạng thái:
-$$x_{i, s, r, t} = 1$$
-Nếu dịch vụ item $i$ được gán cho nhân viên $s$, sử dụng giường/ghế $r$, bắt đầu tại thời điểm $t$.
+Hệ thống sử dụng biến nhị phân $x_{i, s, r_k, t}$ để biểu diễn trạng thái:
+$$x_{i, s, \{r\}, t} = 1$$
+Nếu dịch vụ item $i$ được gán cho nhân viên $s$, và bộ tài nguyên $\{r\}$ (bao gồm 1 hoặc nhiều tài nguyên), bắt đầu tại thời điểm $t$.
 
 ## 3. Đặc tả Chi tiết Các Ràng buộc (Constraints Specification)
 
@@ -31,11 +31,11 @@ Hệ thống tuân thủ nghiêm ngặt các ràng buộc sau. Vi phạm **Ràng
 
 | Mã | Tên Ràng buộc | Mô tả Chi tiết | Logic Hệ thống (OR-Tools) |
 |:---|:---|:---|:---|
-| **H01** | **Duy nhất Gán (One-to-One)** | Một dịch vụ (item) phải được gán cho chính xác **1 Nhân viên** và **1 Giường/Ghế** (nếu dịch vụ yêu cầu giường). | `AddExactlyOne(assignment_vars)` |
+| **H01** | **Gán Đủ và Duy nhất (Assignment Completeness)** | Một dịch vụ (item) phải được gán cho **chính xác 1 Nhân viên** và **đủ số lượng Tài nguyên** theo yêu cầu (Resource Requirements). | `AddExactlyOne` cho Staff; `AddExactlyOne` cho mỗi Resource Group yêu cầu. |
 | **H02** | **Nhân viên Không chồng chéo (Staff No-Overlap)** | Một nhân viên không thể thực hiện 2 dịch vụ cùng lúc. | `AddNoOverlap(staff_intervals)` |
-| **H03** | **Tài nguyên Không chồng chéo (Resource No-Overlap)** | Một Giường/Ghế không thể chứa 2 khách hàng cùng lúc. **Đây là lý do quản lý theo từng Bed/Chair ID giúp đảm bảo chính xác tuyệt đối.** | `AddNoOverlap(resource_intervals)` |
+| **H03** | **Tài nguyên Không chồng chéo (Resource No-Overlap)** | Một Tài nguyên (Giường hoặc Thiết bị) không thể được sử dụng bởi 2 dịch vụ cùng lúc. | `AddNoOverlap(resource_intervals)` cho mỗi atomic resource. |
 | **H04** | **Khớp Kỹ năng (Skill Matching)** | Nhân viên được gán phải sở hữu **tất cả** các kỹ năng (Skills) mà dịch vụ yêu cầu. | Filter `available_staff` theo `required_skill_ids` trước khi tạo biến. |
-| **H05** | **Khớp Loại Tài nguyên (Resource Group)** | Giường/Ghế được gán phải thuộc đúng Nhóm (Group) phù hợp với dịch vụ (VD: Massage Body phải dùng giường có lỗ úp mặt, không dùng ghế Foot). | Filter `available_resources` theo `resource_group_id`. |
+| **H05** | **Khớp Nhóm Tài nguyên (Resource Group Matching)** | Tài nguyên được gán phải thuộc đúng Nhóm (Group) mà dịch vụ yêu cầu (VD: Dịch vụ cần 1 Giường và 1 Máy Laser -> Phải gán đúng 1 Resource thuộc Group 'Giường' và 1 Resource thuộc Group 'Máy Laser'). | Filter `available_resources` theo `group_id`. |
 | **H06** | **Ca làm việc (Shift Boundaries)** | Thời gian bắt đầu và kết thúc dịch vụ phải nằm trọn trong ca làm việc của nhân viên. | `AddIteration` kiểm tra `shift_start <= item_start` và `item_end <= shift_end`. |
 | **H07** | **Giờ Mở cửa (Operating Hours)** | Dịch vụ không được diễn ra ngoài giờ mở cửa của Spa hoặc trong các ngày nghỉ lễ/đóng cửa. | Pre-processing data đầu vào. |
 | **H08** | **Tính Liên tục (Continuity)** | Dịch vụ không được bị ngắt quãng (preemption). Một khi bắt đầu phải diễn ra liên tục đến khi kết thúc. | `NewOptionalFixedSizeIntervalVar` (thời lượng cố định). |

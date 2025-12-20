@@ -305,7 +305,7 @@ async def check_conflicts(
     checker = ConflictChecker(session)
     conflicts = await checker.check_all_conflicts(
         staff_id=data.staff_id,
-        resource_id=data.resource_id,
+        resource_ids=data.resource_ids,
         start_time=data.start_time,
         end_time=data.end_time,
         exclude_item_id=data.exclude_item_id,
