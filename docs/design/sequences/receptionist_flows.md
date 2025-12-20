@@ -23,7 +23,7 @@ Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Lễ tân.
 
 ## Sơ đồ hoạt động cho Lễ tân
 
-### 3.14. Xem lịch hẹn tổng quan (B1.1)
+### 3.18. Xem lịch hẹn tổng quan (B1.1)
 
 ```mermaid
 sequenceDiagram
@@ -49,9 +49,9 @@ sequenceDiagram
     UI-->>LT: Hiển thị lịch tổng quan
     deactivate UI
 ```
-**Hình 3.14: Sơ đồ tuần tự chức năng Xem lịch hẹn tổng quan**
+**Hình 3.18: Sơ đồ tuần tự chức năng Xem lịch hẹn tổng quan**
 
-### 3.15. Quản lý hồ sơ khách hàng (B1.2)
+### 3.19. Quản lý hồ sơ khách hàng (B1.2)
 
 ```mermaid
 sequenceDiagram
@@ -89,9 +89,9 @@ sequenceDiagram
     UI-->>LT: Hiển thị hồ sơ khách hàng
     deactivate UI
 ```
-**Hình 3.15: Sơ đồ tuần tự chức năng Quản lý hồ sơ khách hàng**
+**Hình 3.19: Sơ đồ tuần tự chức năng Quản lý hồ sơ khách hàng**
 
-### 3.16. Tạo lịch hẹn thủ công (B1.3)
+### 3.20. Tạo lịch hẹn thủ công (B1.3)
 
 ```mermaid
 sequenceDiagram
@@ -128,9 +128,9 @@ sequenceDiagram
     UI-->>LT: Hiển thị lịch mới
     deactivate UI
 ```
-**Hình 3.16: Sơ đồ tuần tự chức năng Tạo lịch hẹn thủ công**
+**Hình 3.20: Sơ đồ tuần tự chức năng Tạo lịch hẹn thủ công**
 
-### 3.17. Xác nhận khách đến (B1.4)
+### 3.21. Xác nhận khách đến (B1.4)
 
 ```mermaid
 sequenceDiagram
@@ -176,11 +176,11 @@ sequenceDiagram
     UI-->>LT: Cập nhật trạng thái "Đang phục vụ"
     deactivate UI
 ```
-**Hình 3.17: Sơ đồ tuần tự chức năng Xác nhận khách đến**
+**Hình 3.21: Sơ đồ tuần tự chức năng Xác nhận khách đến**
 
 > **Ghi chú:** Sơ đồ này bao gồm logic **trừ buổi liệu trình** tự động. Khi xác nhận khách đến, nếu lịch hẹn có liên kết với thẻ liệu trình, hệ thống sẽ tự động tăng số buổi đã sử dụng.
 
-### 3.18. Xử lý thanh toán (B1.5)
+### 3.22. Xử lý thanh toán (B1.5)
 
 ```mermaid
 sequenceDiagram
@@ -208,9 +208,9 @@ sequenceDiagram
     UI-->>LT: In hóa đơn và hoàn tất
     deactivate UI
 ```
-**Hình 3.18: Sơ đồ tuần tự chức năng Xử lý thanh toán**
+**Hình 3.22: Sơ đồ tuần tự chức năng Xử lý thanh toán**
 
-### 3.19. Phản hồi hỗ trợ qua trò chuyện trực tuyến (B1.6)
+### 3.23. Phản hồi hỗ trợ qua trò chuyện trực tuyến (B1.6)
 
 ```mermaid
 sequenceDiagram
@@ -247,9 +247,9 @@ sequenceDiagram
     deactivate UI
     deactivate LT
 ```
-**Hình 3.19: Sơ đồ tuần tự chức năng Phản hồi hỗ trợ qua trò chuyện trực tuyến**
+**Hình 3.23: Sơ đồ tuần tự chức năng Phản hồi hỗ trợ qua trò chuyện trực tuyến**
 
-### 3.20. Theo dõi tiến độ liệu trình (B1.7)
+### 3.24. Theo dõi tiến độ liệu trình (B1.7)
 
 ```mermaid
 sequenceDiagram
@@ -275,9 +275,9 @@ sequenceDiagram
     UI-->>LT: Hiển thị tiến độ (số buổi còn lại, lịch sử)
     deactivate UI
 ```
-**Hình 3.20: Sơ đồ tuần tự chức năng Theo dõi tiến độ liệu trình**
+**Hình 3.24: Sơ đồ tuần tự chức năng Theo dõi tiến độ liệu trình**
 
-### 3.21. Tái lập lịch tự động khi có sự cố (B1.8)
+### 3.25. Tái lập lịch tự động khi có sự cố (B1.8)
 
 ```mermaid
 sequenceDiagram
@@ -324,4 +324,4 @@ sequenceDiagram
     deactivate BE
     UI-->>QTV: Hiển thị báo cáo xử lý tự động
 ```
-**Hình 3.21: Sơ đồ tuần tự chức năng Tái lập lịch tự động**
+**Hình 3.25: Sơ đồ tuần tự chức năng Tái lập lịch tự động**

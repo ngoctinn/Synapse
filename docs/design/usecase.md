@@ -724,7 +724,8 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 | 3 | Quản trị viên | Chỉnh sửa các tham số cần thiết. |
 | 4 | Hệ thống | Kiểm tra tính hợp lệ và lưu cấu hình. |
 
----
+
+
 
 ## Phụ lục: Hướng phát triển
 

@@ -202,7 +202,7 @@ activityDiagram
         :Load các Item chưa thanh toán;
 
         if (Có mã khuyến mãi?) then (Có)
-            :Nhập Voucher Code (C12);
+            :Nhập Voucher Code (C8);
             :Validate Code (Hạn dùng, Điều kiện);
             if (Hợp lệ?) then (Có)
                 :Trừ tiền (Discount);
@@ -215,7 +215,6 @@ activityDiagram
     }
 
     :Cập nhật Invoice: PAID;
-    :Cập nhật Doanh số & Hoa hồng (Log);
     :Gửi Hóa đơn điện tử (Email);
     stop
 ```

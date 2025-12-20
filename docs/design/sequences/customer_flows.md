@@ -217,7 +217,7 @@ sequenceDiagram
     UI-->>KH: Thông báo đang chờ phản hồi
     deactivate UI
 ```
-**Hình 3.12: Sơ đồ tuần tự chức năng Nhận hỗ trợ qua trò chuyện trực tuyến**
+**Hình 3.13: Sơ đồ tuần tự chức năng Nhận hỗ trợ qua trò chuyện trực tuyến**
 
 ### 3.13. Xem lịch sử đặt lịch hẹn (A3.1)
 
@@ -245,7 +245,7 @@ sequenceDiagram
     UI-->>KH: Hiển thị lịch sử lịch hẹn
     deactivate UI
 ```
-**Hình 3.13: Sơ đồ tuần tự chức năng Xem lịch sử đặt lịch hẹn**
+**Hình 3.14: Sơ đồ tuần tự chức năng Xem lịch sử đặt lịch hẹn**
 
 ### 3.14. Hủy lịch hẹn (A3.2)
 

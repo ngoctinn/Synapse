@@ -163,7 +163,7 @@ Thông tin chi tiết nhân viên. Quan hệ 1-1 với bảng users.
 | title | VARCHAR(100) | Không | - | Chức danh |
 | bio | TEXT | Có | NULL | Giới thiệu |
 | color_code | VARCHAR(7) | Có | #6366F1 | Mã màu hiển thị |
-| commission_rate | DECIMAL(5,2) | Có | 0.0 | Tỷ lệ hoa hồng (0-100) |
+
 | hired_at | DATE | Có | CURRENT_DATE | Ngày vào làm |
 
 ### 3.3. Bảng customers (Core CRM)

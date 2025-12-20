@@ -23,7 +23,7 @@ Tài liệu này chứa các sơ đồ tuần tự cho phân hệ Quản trị v
 
 ## Sơ đồ hoạt động cho Quản trị viên
 
-### 3.22. Quản lý danh mục dịch vụ (C5)
+### 3.28. Quản lý danh mục dịch vụ (C5)
 
 ```mermaid
 sequenceDiagram
@@ -33,32 +33,51 @@ sequenceDiagram
     participant BE as Backend
     participant DB as Database
 
-    QTV->>UI: Thêm mới dịch vụ
-    activate UI
-    UI->>BE: createService(data)
-    activate BE
-
-    BE->>DB: INSERT INTO services
-    activate DB
-    DB-->>BE: service_record
-    deactivate DB
-
-    BE-->>UI: Cập nhật danh sách
-    deactivate BE
-
-    UI-->>QTV: Hiển thị dịch vụ mới
+    alt Thêm mới dịch vụ
+        QTV->>UI: Thêm mới dịch vụ
+        activate UI
+        UI->>BE: create_service(data)
+        activate BE
+        BE->>DB: INSERT INTO services
+        activate DB
+        DB-->>BE: service_record
+        deactivate DB
+        BE-->>UI: Thành công
+        deactivate BE
+    else Cập nhật dịch vụ
+        QTV->>UI: Chỉnh sửa thông tin
+        activate UI
+        UI->>BE: update_service(service_id, data)
+        activate BE
+        BE->>DB: UPDATE services SET ...
+        activate DB
+        DB-->>BE: updated_record
+        deactivate DB
+        BE-->>UI: Thành công
+        deactivate BE
+    else Vô hiệu hóa dịch vụ
+        QTV->>UI: Yêu cầu vô hiệu hóa
+        activate UI
+        UI->>BE: deactivate_service(id)
+        activate BE
+        BE->>DB: UPDATE services SET deleted_at = NOW()
+        activate DB
+        DB-->>BE: success
+        deactivate DB
+        BE-->>UI: Thành công
+        deactivate BE
+    end
+    UI-->>QTV: Cập nhật danh sách hiển thị
     deactivate UI
 ```
-**Hình 3.22: Sơ đồ tuần tự chức năng Quản lý danh mục dịch vụ**
+**Hình 3.28: Sơ đồ tuần tự chức năng Quản lý danh mục dịch vụ (CRUD)**
 
-### 3.23. Quản lý tài nguyên (C7)
+### 3.29. Quản lý tài nguyên (C7)
 
 > **Lưu ý:** Theo thiết kế cơ sở dữ liệu, hệ thống quản lý tài nguyên theo 2 cấp:
-> - **Nhóm tài nguyên** (Resource Group): Ví dụ: "Giường Spa Premium", "Máy Laser", "Máy Xông Hơi" (Loại: BED/EQUIPMENT)
+> - **Nhóm tài nguyên** (Resource Group): Ví dụ: "Giường Spa Premium", "Máy Laser" (Loại: BED/EQUIPMENT)
 > - **Tài nguyên** (Resource): Ví dụ: "Giường 01", "Máy Laser A"
 
-#### 3.23a. Thêm mới tài nguyên
-
 ```mermaid
 sequenceDiagram
     autonumber
@@ -67,81 +86,46 @@ sequenceDiagram
     participant BE as Backend
     participant DB as Database
 
-    QTV->>UI: Nhập thông tin tài nguyên mới
-    activate UI
-    UI->>BE: createResource(data)
-    activate BE
-
-    BE->>DB: INSERT INTO resources (group_id, name, code, status, setup_time)
-    activate DB
-    DB-->>BE: resource_record
-    deactivate DB
-
-    BE-->>UI: Cập nhật danh sách
-    deactivate BE
-
-    UI-->>QTV: Hiển thị tài nguyên mới
+    alt Thêm mới tài nguyên
+        QTV->>UI: Nhập thông tin tài nguyên mới
+        activate UI
+        UI->>BE: create_resource(data)
+        activate BE
+        BE->>DB: INSERT INTO resources
+        activate DB
+        DB-->>BE: resource_record
+        deactivate DB
+        BE-->>UI: Thành công
+        deactivate BE
+    else Cập nhật tài nguyên
+        QTV->>UI: Sửa thông tin tài nguyên
+        activate UI
+        UI->>BE: update_resource(resource_id, data)
+        activate BE
+        BE->>DB: UPDATE resources SET ...
+        activate DB
+        DB-->>BE: updated_record
+        deactivate DB
+        BE-->>UI: Thành công
+        deactivate BE
+    else Vô hiệu hóa tài nguyên
+        QTV->>UI: Chọn vô hiệu hóa
+        activate UI
+        UI->>BE: deactivate_resource(id)
+        activate BE
+        BE->>DB: UPDATE resources SET deleted_at = NOW()
+        activate DB
+        DB-->>BE: success
+        deactivate DB
+        BE-->>UI: Thành công
+        deactivate BE
+    end
+    UI-->>QTV: Cập nhật danh sách hiển thị
     deactivate UI
 ```
-**Hình 3.23a: Sơ đồ tuần tự chức năng Thêm mới tài nguyên**
+**Hình 3.29: Sơ đồ tuần tự chức năng Quản lý tài nguyên (CRUD)**
 
-#### 3.23b. Cập nhật tài nguyên
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor QTV as Quản trị viên
-    participant UI as Giao diện
-    participant BE as Backend
-    participant DB as Database
-
-    QTV->>UI: Sửa thông tin tài nguyên
-    activate UI
-    UI->>BE: updateResource(id, data)
-    activate BE
-
-    BE->>DB: UPDATE resources SET ... WHERE id = ?
-    activate DB
-    DB-->>BE: updated_record
-    deactivate DB
-
-    BE-->>UI: Thành công
-    deactivate BE
-
-    UI-->>QTV: Hiển thị thông tin đã cập nhật
-    deactivate UI
-```
-**Hình 3.23b: Sơ đồ tuần tự chức năng Cập nhật tài nguyên**
-
-#### 3.23c. Vô hiệu hóa tài nguyên
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor QTV as Quản trị viên
-    participant UI as Giao diện
-    participant BE as Backend
-    participant DB as Database
-
-    QTV->>UI: Chọn tài nguyên và vô hiệu hóa
-    activate UI
-    UI->>BE: deactivateResource(id)
-    activate BE
-
-    BE->>DB: UPDATE resources SET deleted_at = NOW() WHERE id = ?
-    activate DB
-    DB-->>BE: success
-    deactivate DB
-
-    BE-->>UI: Xóa khỏi danh sách
-    deactivate BE
-
-    UI-->>QTV: Thông báo đã vô hiệu hóa
-    deactivate UI
-```
-**Hình 3.23c: Sơ đồ tuần tự chức năng Vô hiệu hóa tài nguyên**
-
-### 3.24. Cấu hình lịch làm việc nhân viên (C4)
+### 3.30. Cấu hình lịch làm việc nhân viên (C4)
 
 ```mermaid
 sequenceDiagram
@@ -154,7 +138,7 @@ sequenceDiagram
 
     QTV->>UI: Phân ca cho kỹ thuật viên
     activate UI
-    UI->>BE: assignShift(staffId, scheduleData)
+    UI->>BE: assign_shift(staff_id, schedule_data)
     activate BE
 
     BE->>SOLVER: check_constraints(data)
@@ -179,11 +163,11 @@ sequenceDiagram
     UI-->>QTV: Hiển thị lịch đã phân công
     deactivate UI
 ```
-**Hình 3.24: Sơ đồ tuần tự chức năng Cấu hình lịch làm việc nhân viên**
+**Hình 3.30: Sơ đồ tuần tự chức năng Cấu hình lịch làm việc nhân viên**
 
 ---
 
-### 3.25. Cấu hình giờ hoạt động Spa (C1)
+### 3.31. Cấu hình giờ hoạt động Spa (C1)
 
 ```mermaid
 sequenceDiagram
@@ -195,7 +179,7 @@ sequenceDiagram
 
     QTV->>UI: Truy cập cấu hình giờ hoạt động
     activate UI
-    UI->>BE: getOperatingHours()
+    UI->>BE: get_operating_hours()
     activate BE
 
     BE->>DB: SELECT * FROM regular_operating_hours
@@ -207,7 +191,7 @@ sequenceDiagram
     deactivate BE
 
     QTV->>UI: Chỉnh sửa giờ mở/đóng cửa
-    UI->>BE: updateOperatingHours(data)
+    UI->>BE: update_operating_hours(data)
     activate BE
 
     BE->>DB: UPSERT regular_operating_hours
@@ -221,11 +205,11 @@ sequenceDiagram
     UI-->>QTV: Hiển thị thông báo lưu thành công
     deactivate UI
 ```
-**Hình 3.25: Sơ đồ tuần tự chức năng Cấu hình giờ hoạt động Spa**
+**Hình 3.31: Sơ đồ tuần tự chức năng Cấu hình giờ hoạt động Spa**
 
 ---
 
-### 3.26. Quản lý ngày nghỉ lễ (C2)
+### 3.32. Quản lý ngày nghỉ lễ (C2)
 
 ```mermaid
 sequenceDiagram
@@ -237,7 +221,7 @@ sequenceDiagram
 
     QTV->>UI: Truy cập quản lý ngày ngoại lệ
     activate UI
-    UI->>BE: getExceptionDates(year)
+    UI->>BE: get_exception_dates(year)
     activate BE
 
     BE->>DB: SELECT * FROM exception_dates WHERE YEAR(exception_date) = ?
@@ -249,7 +233,7 @@ sequenceDiagram
     deactivate BE
 
     QTV->>UI: Thêm ngày nghỉ lễ mới
-    UI->>BE: createExceptionDate(data)
+    UI->>BE: create_exception_date(data)
     activate BE
 
     BE->>DB: INSERT INTO exception_dates
@@ -264,11 +248,11 @@ sequenceDiagram
     UI-->>QTV: Hiển thị ngày ngoại lệ mới
     deactivate UI
 ```
-**Hình 3.26: Sơ đồ tuần tự chức năng Quản lý ngày nghỉ lễ**
+**Hình 3.32: Sơ đồ tuần tự chức năng Quản lý ngày nghỉ lễ**
 
 ---
 
-### 3.27. Mời nhân viên qua thư điện tử (C3)
+### 3.33. Mời nhân viên qua thư điện tử (C3)
 
 ```mermaid
 sequenceDiagram
@@ -281,7 +265,7 @@ sequenceDiagram
 
     QTV->>UI: Nhập email và thông tin nhân viên
     activate UI
-    UI->>BE: inviteStaff(email, role, fullName)
+    UI->>BE: invite_staff(email, role, full_name)
     activate BE
 
     BE->>SUPA: inviteUserByEmail(email, metadata)
@@ -301,11 +285,11 @@ sequenceDiagram
     NV->>SUPA: Nhấp liên kết và thiết lập mật khẩu
     Note over NV: Tài khoản được kích hoạt
 ```
-**Hình 3.27: Sơ đồ tuần tự chức năng Mời nhân viên qua thư điện tử**
+**Hình 3.33: Sơ đồ tuần tự chức năng Mời nhân viên qua thư điện tử**
 
 ---
 
-### 3.28. Quản lý tài khoản nhân viên (C9)
+### 3.34. Quản lý tài khoản nhân viên (C9)
 
 ```mermaid
 sequenceDiagram
@@ -317,7 +301,7 @@ sequenceDiagram
 
     QTV->>UI: Truy cập danh sách nhân viên
     activate UI
-    UI->>BE: getStaffList()
+    UI->>BE: get_staff_list()
     activate BE
 
     BE->>DB: SELECT * FROM users WHERE role IN ('receptionist', 'technician')
@@ -330,12 +314,12 @@ sequenceDiagram
 
     alt Chỉnh sửa thông tin
         QTV->>UI: Chọn nhân viên và chỉnh sửa
-        UI->>BE: updateStaff(staffId, data)
+        UI->>BE: update_staff(staff_id, data)
         BE->>DB: UPDATE users, staff_profiles
         BE-->>UI: Cập nhật thành công
     else Vô hiệu hóa tài khoản
         QTV->>UI: Chọn vô hiệu hóa nhân viên
-        UI->>BE: deactivateStaff(staffId)
+        UI->>BE: deactivate_staff(staff_id)
         BE->>DB: UPDATE users SET is_active = false
         BE-->>UI: Vô hiệu hóa thành công
     end
@@ -343,11 +327,11 @@ sequenceDiagram
     UI-->>QTV: Cập nhật danh sách
     deactivate UI
 ```
-**Hình 3.28: Sơ đồ tuần tự chức năng Quản lý tài khoản nhân viên**
+**Hình 3.34: Sơ đồ tuần tự chức năng Quản lý tài khoản nhân viên**
 
 ---
 
-### 3.29. Cấu hình hệ thống (C10)
+### 3.35. Cấu hình hệ thống (C10)
 
 ```mermaid
 sequenceDiagram
@@ -359,7 +343,7 @@ sequenceDiagram
 
     QTV->>UI: Truy cập cấu hình hệ thống
     activate UI
-    UI->>BE: getSystemConfigurations()
+    UI->>BE: get_system_configurations()
     activate BE
 
     BE->>DB: SELECT * FROM system_configurations
@@ -371,7 +355,7 @@ sequenceDiagram
     deactivate BE
 
     QTV->>UI: Chỉnh sửa tham số
-    UI->>BE: updateConfiguration(key, value)
+    UI->>BE: update_configuration(key, value)
     activate BE
 
     BE->>DB: UPSERT system_configurations
@@ -386,11 +370,11 @@ sequenceDiagram
     UI-->>QTV: Hiển thị thông báo cập nhật thành công
     deactivate UI
 ```
-**Hình 3.29: Sơ đồ tuần tự chức năng Cấu hình hệ thống**
+**Hình 3.35: Sơ đồ tuần tự chức năng Cấu hình hệ thống**
 
 ---
 
-### 3.30. Quản lý thẻ liệu trình (C6)
+### 3.36. Quản lý thẻ liệu trình (C6)
 
 ```mermaid
 sequenceDiagram
@@ -402,7 +386,7 @@ sequenceDiagram
 
     QTV->>UI: Truy cập quản lý gói liệu trình
     activate UI
-    UI->>BE: getServicePackages()
+    UI->>BE: get_service_packages()
     activate BE
 
     BE->>DB: SELECT * FROM service_packages
@@ -415,7 +399,7 @@ sequenceDiagram
 
     alt Thêm gói mới
         QTV->>UI: Nhập thông tin gói (Tên, Giá, Số buổi, Hạn dùng)
-        UI->>BE: createServicePackage(data)
+        UI->>BE: create_service_package(data)
         activate BE
         BE->>DB: INSERT INTO service_packages
         BE->>DB: INSERT INTO package_services (dịch vụ đính kèm)
@@ -426,12 +410,12 @@ sequenceDiagram
         deactivate BE
     else Cập nhật gói
         QTV->>UI: Chỉnh sửa thông tin gói
-        UI->>BE: updateServicePackage(id, data)
+        UI->>BE: update_service_package(package_id, data)
         BE->>DB: UPDATE service_packages SET ...
         BE-->>UI: Cập nhật thành công
     else Vô hiệu hóa gói
         QTV->>UI: Chọn vô hiệu hóa
-        UI->>BE: deactivatePackage(id)
+        UI->>BE: deactivate_package(id)
         BE->>DB: UPDATE service_packages SET is_active = false
         BE-->>UI: Đã vô hiệu hóa
     end
@@ -439,11 +423,11 @@ sequenceDiagram
     UI-->>QTV: Cập nhật danh sách
     deactivate UI
 ```
-**Hình 3.30: Sơ đồ tuần tự chức năng Quản lý thẻ liệu trình**
+**Hình 3.36: Sơ đồ tuần tự chức năng Quản lý thẻ liệu trình**
 
 ---
 
-### 3.31. Quản lý chương trình khuyến mãi (C8)
+### 3.37. Quản lý chương trình khuyến mãi (C8)
 
 ```mermaid
 sequenceDiagram
@@ -455,7 +439,7 @@ sequenceDiagram
 
     QTV->>UI: Truy cập quản lý khuyến mãi
     activate UI
-    UI->>BE: getPromotions()
+    UI->>BE: get_promotions()
     activate BE
 
     BE->>DB: SELECT * FROM promotions
@@ -468,7 +452,7 @@ sequenceDiagram
 
     alt Tạo mã khuyến mãi mới
         QTV->>UI: Nhập thông tin (Mã, Loại giảm, Giá trị, Hạn dùng)
-        UI->>BE: createPromotion(data)
+        UI->>BE: create_promotion(data)
         activate BE
         BE->>DB: INSERT INTO promotions
         activate DB
@@ -479,12 +463,12 @@ sequenceDiagram
         deactivate BE
     else Cập nhật mã
         QTV->>UI: Chỉnh sửa thông tin
-        UI->>BE: updatePromotion(id, data)
+        UI->>BE: update_promotion(promotion_id, data)
         BE->>DB: UPDATE promotions SET ...
         BE-->>UI: Cập nhật thành công
     else Vô hiệu hóa mã
         QTV->>UI: Chọn vô hiệu hóa
-        UI->>BE: deactivatePromotion(id)
+        UI->>BE: deactivate_promotion(id)
         BE->>DB: UPDATE promotions SET is_active = false
         BE-->>UI: Đã vô hiệu hóa
     end
@@ -492,6 +476,45 @@ sequenceDiagram
     UI-->>QTV: Cập nhật danh sách
     deactivate UI
 ```
-**Hình 3.31: Sơ đồ tuần tự chức năng Quản lý chương trình khuyến mãi**
+**Hình 3.37: Sơ đồ tuần tự chức năng Quản lý chương trình khuyến mãi**
+
+### 3.38. Tái lập lịch tự động khi có sự cố (B1.8)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant SOLVER as Reschedule Solver
+    participant BE as Backend
+    participant DB as Database
+    participant NOTI as Kênh thông báo
+
+    Note over SOLVER: Phát hiện sự kiện (KTV nghỉ/Tài nguyên hỏng)
+    SOLVER->>BE: trigger_auto_reschedule(event_data)
+    activate BE
+
+    BE->>DB: find_conflicting_bookings(resource_id, time_range)
+    activate DB
+    DB-->>BE: conflict_list[]
+    deactivate DB
+
+    loop Với mỗi Booking bị ảnh hưởng
+        BE->>SOLVER: find_best_alternative(booking_id)
+        activate SOLVER
+        SOLVER-->>BE: alternative_option (New Staff/Time)
+        deactivate SOLVER
+
+        alt Tìm thấy phương án thay thế
+            BE->>DB: update_booking_assignment()
+            BE->>NOTI: notify_customer_rescheduled(booking_id)
+        else Không tìm thấy (Critical)
+            BE->>DB: mark_booking_manual_review()
+            BE->>NOTI: notify_receptionist_manual_needed(booking_id)
+        end
+    end
+
+    BE-->>SOLVER: Hoàn thành xử lý đợt
+    deactivate BE
+```
+**Hình 3.38: Sơ đồ tuần tự chức năng Tái lập lịch tự động**
 
 ---
