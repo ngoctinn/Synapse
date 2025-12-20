@@ -1,39 +1,72 @@
-# Nhật Ký Phân Tích (Analysis Log) - DESIGN-PATCH-20251219
+# Analysis Log - Phase 1: Operating Hours Module
 
-## 1. Vị trí các lỗi cần sửa (Location Mapping)
+## Ngày: 2025-12-20
 
-### Lỗi 1: Auth Supabase sai hành vi
-- **File**: `docs/design/sequences/authentication.md`
-- **Chi tiết**: Sơ đồ đăng ký có bước `Hệ thống kiểm tra email tồn tại` và nhánh `alt` cho email đã tồn tại.
-- **Hướng sửa**: Xóa bước kiểm tra và nhánh rẽ, chỉ để lại phản hồi chung từ Auth Service.
+### 1. Database Schema Analysis
 
-### Lỗi 2: Trigger DB vẽ như Actor/Service
-- **File**: Cần rà soát `docs/design/sequences/customer_flows.md` và `docs/design/activity_diagrams.md`.
-- **Chi tiết**: Tìm các luồng liên quan đến "Xác thực email" hoặc "Tự động hóa sau DB" (như tạo record phụ).
+**Tables đã có trong thiết kế:**
+- `regular_operating_hours` - Giờ hoạt động thường xuyên theo ngày trong tuần
+- `exception_dates` - Ngày nghỉ lễ, bảo trì, giờ đặc biệt
 
-### Lỗi 3 & 6: Thuật toán & Lạm dụng alt/else
-- **File**: `docs/design/activity_diagrams.md`, `docs/design/sequences/receptionist_flows.md`.
-- **Chi tiết**: Các khối `alt` cho lỗi API, lỗi kết nối hoặc các bước lặp toán học quá chi tiết.
-- **Hướng sửa**: Thay bằng `Note`.
+**Schema từ database_design.md:**
+```
+regular_operating_hours {
+    uuid id PK
+    int day_of_week "0-6 (Sun-Sat)"
+    time open_time
+    time close_time
+    boolean is_closed
+}
 
-### Lỗi 4: Mâu thuẫn Use Case Đặt lịch - Khách vãng lai
-- **File**: `docs/design/usecase.md`, `docs/design/sequences/customer_flows.md`, `docs/design/sequences/receptionist_flows.md`.
-- **Chi tiết**: Kiểm tra tiền điều kiện (Pre-conditions) của Use Case Đặt lịch.
-- **DB Check**: `database_design.md` xác nhận `customers.user_id` là nullable.
+exception_dates {
+    uuid id PK
+    date exception_date
+    enum type "HOLIDAY, MAINTENANCE, CUSTOM"
+    time open_time
+    time close_time
+    boolean is_closed
+    string reason
+}
+```
 
-### Lỗi 5: Activity Diagram quá tải
-- **File**: `docs/design/activity_diagrams.md`.
-- **Chi tiết**: Rà soát các sơ đồ có quá nhiều quyết định kỹ thuật (API Call, DB Save).
+### 2. Dependencies Analysis
 
-### Lỗi 7: Nhầm lẫn Actor (Hệ thống/DB)
-- **File**: Toàn bộ các file trong `docs/design/sequences/` và `docs/design/usecase_diagrams.md`.
+**Modules sẽ sử dụng operating_hours:**
+- `scheduling_engine` - Kiểm tra giờ hoạt động trước khi tìm slot
+- `bookings` - Validate booking time phải trong giờ hoạt động
 
-### Lỗi 8: Trùng lặp Use Case (Chat)
-- **File**: `docs/design/usecase.md`.
+**Import pattern (theo Vertical Slice):**
+```python
+from src.modules import operating_hours
+hours = await operating_hours.get_hours_for_day(date)
+```
 
-### Lỗi 9 & 10: Thiếu RLS/ACID
-- **File**: Các sơ đồ Sequence quan trọng tại `customer_flows.md` và `receptionist_flows.md`.
+### 3. Files Cần Tạo
 
-## 2. Các rủi ro/Dependencies
-- Việc hợp nhất Use Case có thể làm thay đổi ID của Use Case (ví dụ A2.7, B1.6), cần cập nhật tham chiếu chéo.
-- Việc xóa bước kiểm tra Auth có thể làm sơ đồ Sequence nhìn "ngắn" hơn nhưng đảm bảo đúng thực tế Supabase.
+```
+backend/src/modules/operating_hours/
+├── __init__.py       # Public API exports
+├── models.py         # SQLModel entities
+├── schemas.py        # Pydantic DTOs
+├── service.py        # OperatingHoursService
+├── router.py         # FastAPI endpoints
+└── exceptions.py     # Custom exceptions
+```
+
+### 4. API Endpoints Đề Xuất
+
+| Method | Path | Mô tả |
+|--------|------|-------|
+| GET | /operating-hours | Lấy toàn bộ giờ hoạt động 7 ngày |
+| PUT | /operating-hours | Cập nhật giờ hoạt động (batch) |
+| GET | /operating-hours/{day} | Lấy giờ hoạt động một ngày cụ thể |
+| GET | /exception-dates | Danh sách ngày ngoại lệ |
+| POST | /exception-dates | Thêm ngày nghỉ/đặc biệt |
+| GET | /exception-dates/{id} | Chi tiết một ngày ngoại lệ |
+| PUT | /exception-dates/{id} | Cập nhật ngày ngoại lệ |
+| DELETE | /exception-dates/{id} | Xóa ngày ngoại lệ |
+
+### 5. Không Có Breaking Changes
+
+- Không ảnh hưởng đến modules hiện tại
+- Chỉ thêm mới, không sửa đổi code existing

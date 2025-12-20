@@ -9,6 +9,7 @@ from . import (
     customers,
     customer_treatments,
     billing,
+    operating_hours,
 )
 
 __all__ = [
@@ -22,4 +23,6 @@ __all__ = [
     "customers",
     "customer_treatments",
     "billing",
+    "operating_hours",
 ]
+

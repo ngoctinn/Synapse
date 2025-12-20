@@ -17,6 +17,7 @@ from src.modules import (
     scheduling_engine,
     customer_treatments,
     billing,
+    operating_hours,
 )
 
 @asynccontextmanager
@@ -66,6 +67,7 @@ app.include_router(customers.router, prefix=settings.API_V1_STR)
 app.include_router(scheduling_engine.router, prefix=settings.API_V1_STR)
 app.include_router(customer_treatments.router, prefix=settings.API_V1_STR)
 app.include_router(billing.router, prefix=settings.API_V1_STR)
+app.include_router(operating_hours.router, prefix=settings.API_V1_STR)
 
 @app.get("/")
 async def root():

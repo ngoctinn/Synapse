@@ -1,118 +1,49 @@
-# Change Log - Hoàn thiện tài liệu thiết kế KLTN
+# Change Log - Antigravity Workflow
 
-## [2025-12-19] - Phiên KLTN-SYNC: Đồng nhất Tài liệu Thiết kế
+## [2025-12-20] Phase 1: Operating Hours Module
 
-### Mục tiêu
-Đồng nhất toàn bộ tài liệu thiết kế theo ngôn ngữ học thuật và phạm vi khóa luận tốt nghiệp "Xây dựng hệ thống chăm sóc khách hàng trực tuyến cho Spa".
+### Thêm Mới
+- **Module**: `backend/src/modules/operating_hours/`
+  - `models.py` - SQLModel entities (RegularOperatingHours, ExceptionDate)
+  - `schemas.py` - Pydantic V2 DTOs với ConfigDict
+  - `exceptions.py` - Custom exceptions Tiếng Việt
+  - `service.py` - Business logic với Service as Dependency pattern
+  - `router.py` - FastAPI endpoints với Docstring Markdown
+  - `__init__.py` - Public API exports
 
-### Đã thay đổi (Changed)
+### Cập Nhật
+- `backend/src/modules/__init__.py` - Thêm export `operating_hours`
+- `backend/src/app/main.py` - Đăng ký router `/api/v1/operating-hours`
 
-#### 1. usecase.md - Viết lại hoàn toàn
-- **Giảm từ 868 dòng xuống ~450 dòng** (~48% gọn hơn)
-- **Loại bỏ 12 chức năng ngoài phạm vi**: A2.6, A3.3-6, B1.8, C1-3, C6, C8, C12
-- **Giữ lại 22 chức năng cốt lõi** với mô tả học thuật
-- **Thống nhất thuật ngữ**: Không viết tắt, sử dụng ngôn ngữ chính quy
-- **Thêm phần Phụ lục**: Liệt kê các chức năng "Hướng phát triển"
+### Database
+- **Tables Created**: `regular_operating_hours`, `exception_dates`
+- **Enum Type**: `exception_date_type`
+- **RLS Policies**: Enabled (Read: All, Write: Authenticated)
+- **Data**: Seeded default hours (Mon-Sun: 09:00 - 21:00)
 
-#### 2. sequences/authentication.md - Chuẩn hóa
-- Đánh số lại các hình từ 3.1 đến 3.7
-- Thống nhất thuật ngữ: "thư điện tử" thay vì "email"
-- Chuẩn hóa participant labels: "Người dùng", "Khách hàng"
+### API Endpoints Mới (8)
+| Method | Path | Mô tả |
+|--------|------|-------|
+| GET | `/operating-hours` | Lấy giờ hoạt động cả tuần |
+| PUT | `/operating-hours` | Cập nhật giờ hoạt động cả tuần |
+| GET | `/operating-hours/day/{day}` | Giờ hoạt động một ngày |
+| GET | `/operating-hours/exceptions` | Danh sách ngày ngoại lệ |
+| POST | `/operating-hours/exceptions` | Thêm ngày nghỉ/đặc biệt |
+| GET | `/operating-hours/exceptions/{id}` | Chi tiết ngày ngoại lệ |
+| PUT | `/operating-hours/exceptions/{id}` | Cập nhật ngày ngoại lệ |
+| DELETE | `/operating-hours/exceptions/{id}` | Xóa ngày ngoại lệ |
 
-#### 3. sequences/customer_flows.md - Chuẩn hóa và bổ sung
-- Đánh số lại các hình từ 3.8 đến 3.16
-- **Bổ sung sơ đồ A2.6**: Tham gia danh sách chờ
-- **Bổ sung sơ đồ A2.7**: Nhận hỗ trợ qua trò chuyện trực tuyến
-- **Bổ sung sơ đồ A3.3**: Nhận thông báo nhắc lịch
-- Thống nhất thuật ngữ
+### Tuân Thủ Rules
+- ✅ Vertical Slice Architecture
+- ✅ Service as Dependency
+- ✅ Pydantic V2 với ConfigDict
+- ✅ Async All The Way
+- ✅ Python 3.12+ syntax (`X | Y`, `list[X]`)
+- ✅ Guard Clauses / Early Return
+- ✅ Error messages Tiếng Việt
+- ✅ Docstring Markdown cho Swagger UI
 
-#### 4. sequences/receptionist_flows.md - Chuẩn hóa và bổ sung
-- Đánh số lại các hình từ 3.14 đến 3.20
-- **Bổ sung sơ đồ B1.2**: Quản lý hồ sơ khách hàng
-- **Bổ sung sơ đồ B1.6**: Phản hồi hỗ trợ qua trò chuyện trực tuyến
-- **Bổ sung sơ đồ B1.7**: Theo dõi tiến độ liệu trình
-- **Loại bỏ sơ đồ B1.8**: Tái lập lịch tự động (ngoài phạm vi)
-
-#### 5. sequences/technician_flows.md - Chuẩn hóa
-- Đánh số lại các hình: 3.21, 3.22
-- Thống nhất thuật ngữ
-
-#### 6. sequences/admin_flows.md - Chuẩn hóa và loại bỏ
-- Đánh số lại các hình từ 3.22 đến 3.24
-- **Loại bỏ sơ đồ C12**: Tính toán hoa hồng nhân viên (ngoài phạm vi)
-- **Loại bỏ sơ đồ 3.53**: Xem báo cáo doanh thu (gộp vào hướng phát triển)
-- Thống nhất thuật ngữ: "Quản trị viên" thay vì "Admin"
-
-#### 7. sequence_diagrams.md - Cập nhật mục lục
-- Cập nhật bảng tổng hợp với 28 sơ đồ
-- Thêm chú thích về cấu trúc và thuật ngữ
-
-### Quy ước Thuật ngữ Áp dụng
-
-| Cũ | Mới (Học thuật) |
-|----|-----------------|
-| Email | Thư điện tử |
-| Admin | Quản trị viên |
-| KTV | Kỹ thuật viên |
-| Phòng/Giường | Tài nguyên |
-| Check-in | Xác nhận khách đến |
-| No-show | Khách không đến |
-| Slot | Khung giờ |
-| Live Chat | Trò chuyện trực tuyến |
-| Booking | Lịch hẹn |
-| Chatbot | (Loại bỏ - không dùng AI) |
-
-### Tính năng Giữ lại (24)
-
-**Xác thực**: A1.1-5
-**Khách hàng**: A2.1, A2.2, A2.4, A2.5, A2.6, A2.7, A3.1, A3.2, A3.3, B1.7
-**Lễ tân**: B1.1-6
-**Kỹ thuật viên**: B2.1, B2.3
-**Quản trị**: C4, C5, C7
-
-### Tính năng Loại bỏ (10) - Ghi nhận "Hướng phát triển"
-
-- A3.4: Đánh giá dịch vụ
-- A3.5: Tích lũy và đổi điểm thưởng
-- A3.6: Gửi yêu cầu bảo hành
-- B1.8: Tái lập lịch tự động
-- C1: Quản lý tài khoản người dùng
-- C2: Phân quyền hệ thống
-- C3: Quản lý nhân viên
-- C6: Quản lý gói liệu trình
-- C8: Quản lý chương trình khuyến mãi
-- C12: Tính toán hoa hồng nhân viên
-
----
-
-## [2025-12-19] - Phiên KLTN-FIX: Sửa 5 Vấn đề Nhất quán
-
-### Đã thêm (Added)
-- **PostgreSQL Exclusion Constraints** (`database_design.md`)
-- **Mục 3: Chiến lược Kiểm soát Đồng thời** (`database_design.md`)
-- **Mục 4: Quy ước Thuật ngữ** (`database_design.md`)
-
-### Đã thay đổi (Changed)
-- **Sơ đồ Đăng ký (3.7)**: Bổ sung bước tạo Customer Profile
-- **Sơ đồ Check-in (3.35)**: Bổ sung logic trừ buổi liệu trình
-- **Sơ đồ Quản lý Tài nguyên (3.44)**: Chuẩn hóa CRUD đầy đủ
-
----
-
-## [2025-12-19] - Phiên BACKEND-P3-BILLING: Billing & Refactoring
-
-### Đã thêm (Added)
-- **Module Billing**: Triển khai hệ thống hóa đơn (`Invoices`) và thanh toán (`Payments`).
-    - Bảng `invoices`: Lưu trữ thông tin tài chính snapshot cho mỗi booking.
-    - Bảng `payments`: Ghi nhận các giao dịch thanh toán linh hoạt.
-- **Tự động hóa**: Logic tự động tạo hóa đơn nháp khi lịch hẹn được đánh dấu `COMPLETED`.
-
-### Đã thay đổi (Changed)
-- **Refactor Booking-Treatment Integration**:
-    - `BookingService` hiện gọi `CustomerTreatmentService` thay vì truy cập Models trực tiếp.
-    - Xóa bỏ các private helper rườm rà trong module `bookings`.
-- **Logic Hoàn buổi (Refund)**: Bổ sung khả năng hoàn lại số buổi liệu trình nếu lịch hẹn `COMPLETED` bị hủy.
-
-### Đã sửa (Fixed)
-- Lỗi `SyntaxError` trong `main.py` do các ký tự markdown dư thừa.
-- Lỗi thiếu import `sqlmodel` trong Alembic migration script.
+### Kiểm Tra
+- ✅ Import test passed
+- ✅ Syntax validation passed
+- ✅ Database Tables & Policies created

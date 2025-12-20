@@ -1,93 +1,158 @@
-# Kế Hoạch Triển Khai: Chỉnh Sửa Và Đồng Bộ Hóa Thiết Kế UML (Synapse Design Patch)
+# Báo Cáo Đánh Giá Chi Tiết Backend Synapse
 
-**Mã phiên:** `DESIGN-PATCH-20251219`
-**Ngày tạo:** 2025-12-19
-**Trạng thái:** THINK (Chờ phê duyệt)
+## I. Tổng Quan Nghiên Cứu
 
----
-
-## 1. Vấn đề (Problem Statement)
-
-Hiện tại, hệ thống tài liệu thiết kế tại `docs/design` đang tồn tại 10 lỗi không nhất quán nghiêm trọng giữa các sơ đồ UML (Use Case, Sequence, Activity) và thực tế triển khai/logic nghiệp vụ:
-1.  **Sai lệch Auth Supabase**: Mô tả sai luồng kiểm tra email tồn tại (vi phạm Security by Design).
-2.  **Sai bản chất Trigger DB**: Vẽ Trigger như một actor/service bên ngoài.
-3.  **Thổi phồng thuật toán**: Mô tả RCPSP và Jain's Index quá mức so với những gì UML thực tế thể hiện (chỉ kiểm tra ràng buộc).
-4.  **Mâu thuẫn Use Case - DB**: Use Case bắt buộc đăng nhập trong khi DB cho phép khách vãng lai (`customer.user_id` nullable).
-5.  **Vi phạm Single Responsibility**: Activity Diagram quá tải thông tin (ôm đồm cả UI, Auth, DB).
-6.  **Lạm dụng alt/else**: Vẽ các nhánh rẽ mà hệ thống không kiểm soát được (ví dụ lỗi từ bên thứ 3).
-7.  **Nhầm lẫn Actor**: Dùng "Hệ thống", "Database" làm Actor.
-8.  **Trùng lặp Use Case**: Chia nhỏ Use Case không cần thiết (Chat, Đặt lịch).
-9.  **Thiếu bảo mật RLS/RBAC**: Tài liệu nhấn mạnh nhưng sơ đồ không thể hiện điểm kiểm soát.
-10. **Thiếu tính nguyên tử**: Thao tác quan trọng (Đặt lịch) không thể hiện tính Transaction/Rollback.
+### Quy Tắc Đang Áp Dụng (.agent/rules)
+| Quy tắc | Trạng thái |
+|---------|------------|
+| Vertical Slice Architecture | ✅ Tuân thủ |
+| Service as Dependency | ✅ Tuân thủ |
+| Pydantic V2 (`ConfigDict`) | ✅ Tuân thủ |
+| Async All The Way | ✅ Tuân thủ |
+| Python 3.12+ Syntax (`X \| Y`) | ✅ Tuân thủ |
+| Docstring Markdown (Tiếng Việt) | ✅ Tuân thủ |
+| Guard Clauses / Early Return | ✅ Tuân thủ |
+| RLS Injection | ⚠️ Cần xác nhận (Supabase Auth) |
 
 ---
 
-## 2. Mục đích (Goals)
+## II. Chi Tiết Modules Hiện Có (10 modules, 84 endpoints)
 
-1.  **Đồng bộ hóa Toàn diện**: Đảm bảo tất cả sơ đồ UML (Use Case, Sequence, Activity) nhất quán với nhau và khớp với thực tế mã nguồn/DB.
-2.  **Bao quát Tính năng**: Đảm bảo UML thể hiện đầy đủ các đặc tính quan trọng (RCPSP, RLS, Transaction) nhưng ở mức độ bao quát (high-level).
-3.  **Chuẩn hóa & Tinh gọn**: Loại bỏ các lỗi sai actor, lạm dụng ký hiệu kỹ thuật, tập trung vào luồng nghiệp vụ chính để dễ đọc, dễ hiểu.
-
----
-
-## 3. Ràng buộc (Constraints)
-
-- **Ngôn ngữ**: Phải sử dụng tiếng Việt chuẩn.
-- **Tính thực tế**: Không vẽ những gì hệ thống không làm.
-- **Supabase Contract**: Phải tuân thủ đúng cách Supabase Auth và DB Trigger vận hành.
-- **Kiến trúc**: Phải phù hợp với Vertical Slice Architecture và Feature-Sliced Design đang áp dụng.
-
----
-
-## 4. Chiến lược (Strategy)
-
-Tôi sẽ thực hiện chỉnh sửa theo từng nhóm tài liệu:
-
-### Nhóm 1: Use Case & Actors (`usecase.md`, `usecase_diagrams.md`)
-- Hợp nhất các Use Case trùng lặp.
-- Định nghĩa lại 4 Actor chính: Khách hàng, Lễ tân, KTV, Quản trị viên.
-- Cập nhật tiền điều kiện cho Use Case "Đặt lịch" (hỗ trợ cả khách có tài khoản và vãng lai).
-
-### Nhóm 2: Sequence Diagrams (`sequence_diagrams.md`, `docs/design/sequences/`)
-- Chỉnh sửa luồng Auth: Bỏ nhánh kiểm tra email, dùng thông báo chung.
-- Chỉnh sửa Trigger: Chuyển từ Actor/Service thành `Note over DB` hoặc mũi tên nội bộ DB.
-- Loại bỏ các khối `alt` thừa thải, thay bằng `Note` mô tả trường hợp ngoại lệ.
-- Thêm `Note` về Transaction/ACID và Kiểm soát RLS/RBAC.
-
-### Nhóm 3: Activity Diagrams (`activity_diagrams.md`)
-- **Tinh gọn trách nhiệm**: Loại bỏ các bước hạ tầng kỹ thuật (API, DB) để giải quyết lỗi "quá tải trách nhiệm", chỉ giữ lại luồng hành động của Actor và quyết định của hệ thống.
-- **Bao quát thuật toán**: Thể hiện quy trình lập lịch thông minh SISF thông qua các khối chức năng bao quát (RCPSP Constraint Check, Optimization Process) thay vì vẽ chi tiết vòng lặp code. Điều này đảm bảo tính nhất quán với văn bản mà không làm rối sơ đồ.
-- Đảm bảo tính bao quát: Sơ đồ phải phản ánh được toàn bộ quy trình từ yêu cầu của khách đến kết quả cuối cùng.
+| Module | Prefix | Endpoints | Tình trạng |
+|--------|--------|-----------|------------|
+| `users` | `/users` | 6 | ✅ Hoàn thiện |
+| `staff` | `/staff` | 7 | ✅ Hoàn thiện |
+| `services` | `/services` | 10 | ✅ Hoàn thiện |
+| `resources` | `/resources` | 11 | ✅ Hoàn thiện |
+| `schedules` | `/schedules` | 14 | ✅ Hoàn thiện |
+| `bookings` | `/bookings` | 15+ | ✅ Hoàn thiện |
+| `customers` | `/customers` | 7 | ✅ Hoàn thiện |
+| `scheduling_engine` | `/scheduling` | 5 | ✅ Hoàn thiện |
+| `customer_treatments` | `/treatments` | 4 | ✅ Hoàn thiện |
+| `billing` | `/billing` | 5 | ✅ Hoàn thiện |
 
 ---
 
-## 5. Danh sách Task Chi Tiết (SPLIT)
+## III. So Sánh Use Cases với Backend
 
-### 5.1 Xử lý Use Case & Actors
-- [ ] **5.1.1** Rà soát và cập nhật danh sách Actor chuẩn trong `usecase.md`.
-- [ ] **5.1.2** Hợp nhất Use Case "Hỗ trợ chat" (Customer + Staff).
-- [ ] **5.1.3** Cập nhật Use Case "Đặt lịch" để phản ánh thực tế DB (Nullable user_id).
+### ✅ Đã Triển Khai Đầy Đủ (23/34)
+| Mã UC | Tên | Module |
+|-------|-----|--------|
+| A1.1-A1.5 | Xác thực | Supabase Auth + `users` |
+| A2.1-A2.2 | Xem dịch vụ | `services` |
+| A2.4-A2.5 | Tìm slot, Đặt lịch | `scheduling_engine`, `bookings` |
+| A3.1-A3.2 | Lịch sử, Hủy lịch | `bookings` |
+| B1.1-B1.5 | Lễ tân CRUD | `bookings`, `customers`, `billing` |
+| B1.7 | Tiến độ liệu trình | `customer_treatments` |
+| B2.1, B2.3 | KTV xem lịch, Ghi chú | `schedules`, (ghi chú trong `bookings`) |
+| C3-C5 | Staff invite, Lịch NV, Dịch vụ | `staff`, `schedules`, `services` |
+| C6-C7 | Liệu trình, Tài nguyên | `customer_treatments`, `resources` |
 
-### 5.2 Xử lý Sequence Diagrams (Auth & DB Focus)
-- [ ] **5.2.1** Sửa lỗi Auth Supabase (Bỏ nhánh check email tồn tại).
-- [ ] **5.2.2** Chuyển đổi Trigger DB từ Participant sang Internal Mechanism (Note).
-- [ ] **5.2.3** Dọn dẹp `alt/else` và thêm Note về RLS/RBAC.
-- [ ] **5.2.4** Bổ sung Note "Transaction/Atomic" cho các luồng tạo dữ liệu quan trọng.
-
-### 5.3 Chuẩn hóa Activity Diagrams & Thuật toán
-- [ ] **5.3.1** Refactor Activity Diagrams: Chỉ giữ lại luồng nghiệp vụ, loại bỏ các bước API/DB call chi tiết.
-- [ ] **5.3.2** Đồng bộ hóa mô tả thuật toán: Sử dụng các khối chức năng (Action boxes) định danh rõ "RCPSP" và "Jain's Fairness" để đảm bảo tính bao quát của hệ thống trong UML.
+### ❌ Chưa Triển Khai (11/34)
+| Mã UC | Tên | Module Cần Tạo | Ưu tiên |
+|-------|-----|----------------|---------|
+| C1 | Giờ hoạt động Spa | `operating_hours` | 🔴 Cao |
+| C2 | Ngày nghỉ lễ | `operating_hours` | 🔴 Cao |
+| A2.6 | Danh sách chờ | `waitlist` | 🟡 Trung bình |
+| A2.7 | Chat trực tuyến | `chat` | 🟡 Trung bình |
+| A3.3 | Thông báo nhắc lịch | `notifications` | 🟡 Trung bình |
+| A3.6 | Yêu cầu bảo hành | `warranty` | 🟡 Trung bình |
+| B1.8 | Tái lập lịch tự động | `scheduling_engine` (mở rộng) | 🔴 Cao |
+| C8 | Khuyến mãi | `promotions` | 🟡 Trung bình |
+| C9 | Quản lý tài khoản NV | `staff` (có rồi) | ✅ Đã có |
+| C10 | Cấu hình hệ thống | `system_config` | 🟢 Thấp |
 
 ---
 
-## 6. Kiểm tra Thành công (VERIFY)
+## IV. Kế Hoạch Triển Khai Chia Phase
 
-- [ ] Tất cả sơ đồ không còn "Hệ thống" hay "Database" là Actor.
-- [ ] Luồng đăng ký tài khoản không còn nhánh "Email đã tồn tại".
-- [ ] Use Case "Đặt lịch" hỗ trợ cả khách vãng lai.
-- [ ] Các sơ đồ Sequence có ghi chú về ACID và RLS.
-- [ ] Activity Diagram chỉ tập trung vào hành động nghiệp vụ.
+### Phase 1: Cấu Hình Vận Hành (Core Config)
+**Thời gian:** ~2 ngày | **Endpoints:** ~8
+
+| Module | Endpoints |
+|--------|-----------|
+| `operating_hours` | GET/PUT `/operating-hours` |
+| `operating_hours` | CRUD `/exception-dates` |
+
+**Files cần tạo:**
+```
+backend/src/modules/operating_hours/
+├── __init__.py
+├── models.py       # RegularOperatingHours, ExceptionDate
+├── schemas.py      # OperatingHourRead, ExceptionDateCreate...
+├── service.py      # OperatingHoursService
+└── router.py       # API endpoints
+```
 
 ---
 
-**⏸️ TRẠNG THÁI: Chờ phê duyệt (THINK stage complete).**
+### Phase 2: Tái Lập Lịch Tự Động
+**Thời gian:** ~2 ngày | **Endpoints:** ~3
+
+| Module | Endpoints |
+|--------|-----------|
+| `scheduling_engine` | POST `/scheduling/reschedule` |
+| `scheduling_engine` | GET `/scheduling/conflicts` |
+| `scheduling_engine` | POST `/scheduling/resolve-conflict` |
+
+---
+
+### Phase 3: Khuyến Mãi
+**Thời gian:** ~2 ngày | **Endpoints:** ~6
+
+| Module | Endpoints |
+|--------|-----------|
+| `promotions` | CRUD `/promotions` |
+| `promotions` | POST `/promotions/validate` |
+
+---
+
+### Phase 4: Waitlist & Notifications
+**Thời gian:** ~3 ngày | **Endpoints:** ~8
+
+| Module | Endpoints |
+|--------|-----------|
+| `waitlist` | CRUD `/waitlist` |
+| `notifications` | GET `/notifications`, PATCH `/notifications/{id}/read` |
+
+---
+
+### Phase 5: Warranty & Chat (Tương lai)
+**Thời gian:** ~4 ngày | **Endpoints:** ~10
+
+| Module | Endpoints |
+|--------|-----------|
+| `warranty` | CRUD `/warranty-tickets` |
+| `chat` | WebSocket + REST API |
+
+---
+
+## V. Database Tables Đã Có vs Cần Thêm
+
+### ✅ Đã Có Trong Schema (32 tables)
+- `regular_operating_hours`, `exception_dates` → Sẵn sàng cho Phase 1
+- `waitlist`, `promotions`, `warranty_tickets`, `chat_*`, `treatment_notes` → Đã thêm ER Diagram
+
+### ⚠️ Chưa Có Migration
+Cần tạo Alembic migration cho các tables mới trước khi code module.
+
+---
+
+## VI. Đề Xuất Tiếp Theo
+
+1. **Bắt đầu Phase 1** (Operating Hours) vì:
+   - Database tables đã có sẵn
+   - Ảnh hưởng trực tiếp đến Scheduling Engine
+   - Không dependency với module khác
+
+2. **Tạo migration** cho các tables còn thiếu (waitlist, chat, warranty, promotions, treatment_notes)
+
+3. **Mở rộng Scheduling Engine** để hỗ trợ tái lập lịch tự động
+
+---
+
+## VII. Câu Hỏi Xác Nhận
+
+1. Bạn muốn bắt đầu với **Phase nào**?
+2. Có cần tôi tạo **Alembic migration** cho các tables mới trước không?
+3. **Ưu tiên** nào quan trọng nhất với bạn: Vận hành (Phase 1-2) hay Trải nghiệm khách (Phase 3-5)?
