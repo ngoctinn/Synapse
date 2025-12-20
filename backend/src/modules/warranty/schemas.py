@@ -8,7 +8,7 @@ from pydantic import BaseModel, ConfigDict
 from .models import WarrantyStatus
 
 class WarrantyTicketBase(BaseModel):
-    booking_id: uuid.UUID | None = None
+    treatment_id: uuid.UUID | None = None
     customer_id: uuid.UUID
     description: str
     images: list[str] | None = None

@@ -330,9 +330,9 @@ sequenceDiagram
     participant BE as Backend
     participant DB as Database
 
-    KH->>UI: Chọn Booking hoàn thành và gửi yêu cầu bảo hành
+    KH->>UI: Chọn Treatment đã mua và gửi yêu cầu bảo hành
     activate UI
-    UI->>BE: createWarrantyRequest(bookingId, description, images)
+    UI->>BE: createWarrantyRequest(treatmentId, description, images)
     activate BE
 
     BE->>DB: INSERT INTO warranty_tickets

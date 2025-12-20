@@ -290,18 +290,20 @@ Tài liệu này mô tả chi tiết các chức năng của hệ thống chăm 
 |------------|----------|
 | **Mã chức năng** | A3.6 |
 | **Tên chức năng** | Gửi yêu cầu bảo hành |
-| **Mô tả** | Khách hàng gửi yêu cầu hỗ trợ bảo hành cho các dịch vụ đã thực hiện không đạt yêu cầu. |
+| **Mô tả** | Khách hàng gửi yêu cầu hỗ trợ bảo hành cho gói liệu trình đã thực hiện không đạt yêu cầu. |
 | **Tác nhân** | Khách hàng |
 | **Mức độ ưu tiên** | Trung bình |
-| **Tiền điều kiện** | Booking đã ở trạng thái "Hoàn thành" (COMPLETED) và còn trong thời hạn bảo hành. |
+| **Tiền điều kiện** | Gói liệu trình (Treatment) đã hoàn thành hoặc đang sử dụng, và còn trong thời hạn bảo hành. |
 
 **Luồng sự kiện chính:**
 
 | Bước | Tác nhân | Hành động |
 |------|----------|-----------|
-| 1 | Khách hàng | Chọn lịch hẹn đã hoàn thành và chọn chức năng "Yêu cầu bảo hành". |
+| 1 | Khách hàng | Chọn gói liệu trình đã mua và chọn chức năng "Yêu cầu bảo hành". |
 | 2 | Khách hàng | Nhập mô tả vấn đề và tải lên hình ảnh minh họa (nếu có). |
-| 3 | Hệ thống | Ghi nhận yêu cầu, tạo Ticket bảo hành và thông báo cho quản trị viên. |
+| 3 | Hệ thống | Ghi nhận yêu cầu, tạo Ticket bảo hành liên kết với liệu trình và thông báo cho quản trị viên. |
+
+**Luồng thay thế:** Quản trị viên sau khi kiểm tra lịch sử các buổi thực hiện trong liệu trình sẽ đưa ra phương án xử lý (bồi hoàn buổi tập, bảo dưỡng miễn phí, v.v.).
 
 ---
 

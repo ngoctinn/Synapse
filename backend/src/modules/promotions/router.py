@@ -40,10 +40,10 @@ async def create_promotion(
     """
     try:
         return await service.create(data)
-    except DuplicatePromotionCode as e:
+    except DuplicatePromotionCode:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
+            detail="Mã khuyến mãi đã tồn tại"
         )
 
 

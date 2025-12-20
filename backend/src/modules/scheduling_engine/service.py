@@ -9,11 +9,11 @@ Service Layer xử lý logic nghiệp vụ cho:
 5. Tái lập lịch tự động (Reschedule) - NEW
 """
 
-import uuid
-from datetime import date, datetime
-from sqlmodel.ext.asyncio.session import AsyncSession
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 from sqlalchemy import text
+from datetime import time, timedelta, datetime, date
+from sqlmodel.ext.asyncio.session import AsyncSession
+import uuid
 
 from src.common.database import get_db_session
 from .models import (
@@ -25,7 +25,12 @@ from .models import (
     ConflictInfo,
     ConflictType,
     RescheduleRequest,
-    RescheduleResult
+    RescheduleResult,
+    SlotSearchRequest,
+    SlotSuggestionResponse,
+    SlotOption,
+    StaffSuggestionInfo,
+    ResourceSuggestionInfo
 )
 from .data_extractor import DataExtractor
 from .solver import SpaSolver
@@ -242,4 +247,128 @@ class SchedulingService:
             failed_count=len(failed_items),
             data=solution,
             failed_items=failed_items
+        )
+
+    async def find_available_slots(
+        self,
+        request: SlotSearchRequest
+    ) -> SlotSuggestionResponse:
+        """
+        Tìm kiếm khung giờ khả dụng tối ưu (Smart Slot Finding).
+        Logic:
+        1. Lấy yêu cầu của service (skills, resources, duration).
+        2. Sinh các khung giờ ứng viên (mỗi 15 phút).
+        3. Kiểm tra tính khả thi của từng ứng viên.
+        4. Chấm điểm và trả về N kết quả tốt nhất.
+        """
+        from src.modules.services.models import Service
+
+        # 1. Lấy thông tin service
+        service = await self.session.get(Service, request.service_id)
+        if not service:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Không tìm thấy dịch vụ"
+            )
+
+        # 2. Extract problem context (staff schedules, existing assignments, etc.)
+        extractor = DataExtractor(self.session)
+        problem = await extractor.extract_problem(target_date=request.target_date)
+
+        if not problem.available_staff:
+             return SlotSuggestionResponse(available_slots=[], total_found=0, message="Không có nhân viên làm việc vào ngày này")
+
+        # 3. Định nghĩa khung thời gian tìm kiếm
+        # Mặc định 08:00 - 20:00 hoặc theo request
+        search_start = request.time_window.start if request.time_window else time(8, 0)
+        search_end = request.time_window.end if request.time_window else time(21, 0)
+
+        # 4. Sinh ứng viên (mỗi 15 phút)
+        increment = timedelta(minutes=15)
+        current_dt = datetime.combine(request.target_date, search_start)
+        end_dt = datetime.combine(request.target_date, search_end)
+
+        # Lấy skill_ids của service
+        required_skill_ids = [s.id for s in service.skills]
+
+        # Lấy resource requirements
+        # (Giả định đơn giản: lấy group_id từ requirement đầu tiên nếu có)
+        required_resource_group_id = None
+        if service.resource_requirements:
+            required_resource_group_id = service.resource_requirements[0].resource_group_id
+
+        available_options = []
+
+        # Mock solver helper logic (để tránh overlap)
+        solver = SpaSolver(problem)
+
+        while current_dt + timedelta(minutes=service.duration) <= end_dt:
+            slot_start = current_dt
+            slot_end = current_dt + timedelta(minutes=service.duration)
+
+            # Kiểm tra từng nhân viên
+            for staff_data in problem.available_staff:
+                # Nếu có yêu cầu staff cụ thể, skip người khác
+                if request.preferred_staff_id and staff_data.id != request.preferred_staff_id:
+                    continue
+
+                # Check 1: Skill
+                if not all(sk in staff_data.skill_ids for sk in required_skill_ids):
+                    continue
+
+                # Check 2: Working hours & Overlap
+                if not solver._is_staff_available(staff_data.id, slot_start, slot_end) or \
+                   solver._has_staff_conflict(staff_data.id, slot_start, slot_end):
+                    continue
+
+                # Check 3: Resource availability (nêu dịch vụ yêu cầu)
+                assigned_resources = []
+                if required_resource_group_id:
+                    # Tìm tài nguyên trống thuộc group
+                    for res in problem.available_resources:
+                        if res.group_id == required_resource_group_id and \
+                           not solver._has_resource_conflict(res.id, slot_start, slot_end):
+                            assigned_resources.append(ResourceSuggestionInfo(
+                                id=res.id,
+                                name=res.name,
+                                group_name=res.group_name
+                            ))
+                            break # Chỉ lấy 1 tài nguyên phù hợp
+
+                    if not assigned_resources:
+                        continue # Unit này yêu cầu resource nhưng không có cái nào trống
+
+                # 5. Chấm điểm
+                score = 100
+                # Phạt nếu không phải preferred staff
+                if request.preferred_staff_id and staff_data.id != request.preferred_staff_id:
+                    score -= 30
+
+                # Thưởng nếu là giờ cao điểm hoặc theo logic kinh doanh
+                # (Ở đây đơn giản là ưu tiên slot sớm)
+                time_penalty = (slot_start.hour * 60 + slot_start.minute) // 60
+                final_score = max(0, score - time_penalty)
+
+                available_options.append(SlotOption(
+                    start_time=slot_start,
+                    end_time=slot_end,
+                    staff=StaffSuggestionInfo(
+                        id=staff_data.id,
+                        name=staff_data.name,
+                        is_preferred=(staff_data.id == request.preferred_staff_id)
+                    ),
+                    resources=assigned_resources,
+                    score=final_score
+                ))
+
+            current_dt += increment
+
+        # 6. Sắp xếp và lấy Top 20
+        available_options.sort(key=lambda x: x.score, reverse=True)
+        top_options = available_options[:20]
+
+        return SlotSuggestionResponse(
+            available_slots=top_options,
+            total_found=len(available_options),
+            message="Tìm kiếm thành công" if top_options else "Không tìm thấy khung giờ phù hợp"
         )

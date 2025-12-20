@@ -1,5 +1,37 @@
 # Change Log - Antigravity Workflow
 
+## [2025-12-20] FEAT: Technician Notes (Phase 1)
+- **Module**: `bookings`
+- **Thay đổi**:
+  - Thêm `NoteType` enum (PROFESSIONAL, GENERAL).
+  - Thêm bảng `treatment_notes` và model `TreatmentNote`.
+  - Thêm endpoints: `POST /bookings/{id}/notes` và `GET /bookings/{id}/notes`.
+- **Database**: Đã apply migration tạo bảng và chính sách RLS.
+
+## [2025-12-20] FEAT: Smart Slot Finding (Phase 2)
+- **Module**: `scheduling_engine`
+- **Thay đổi**:
+  - Thêm DTOs: `SlotSearchRequest`, `SlotSuggestionResponse`, `SlotOption`.
+  - Triển khai `SchedulingService.find_available_slots` (Logic grid-search 15 min).
+  - Thêm endpoint: `POST /scheduling/find-slots`.
+- **Security**: Đảm bảo quyền truy cập qua API và bảo mật thông tin nhân viên.
+
+## [2025-12-20] FEAT: Promotions Module (Phase 3)
+- **Module**: `promotions`
+- **Thay đổi**:
+  - Triển khai bảng `promotions` và ENUM `discount_type`.
+  - Thiết lập RLS Policies (Staff manage, Public view active).
+  - Cleanup mã nguồn: Xóa import thừa, sửa lỗi so sánh `is_active == True` sang `is_active`.
+- **Database**: Đã apply `migration_promotions.sql`.
+
+## [2025-12-20] FEAT: Waitlist Module (Phase 4)
+- **Module**: `waitlist`
+- **Thay đổi**:
+  - Triển khai bảng `waitlist_entries` và ENUM `waitlist_status`.
+  - Thiết lập RLS Policies bảo mật cho khách hàng (xem/join của chính mình) và nhân viên (quản lý toàn bộ).
+  - Cleanup mã nguồn: Xóa các import thừa (`Optional`, `Relationship`, `Field`).
+- **Database**: Đã apply `migration_waitlist.sql`.
+
 ## [2025-12-20] REFACTOR: Resource Models & Booking Resources (Critical)
 
 ### Cập Nhật Code
@@ -91,6 +123,15 @@ CREATE TABLE booking_item_resources (
 -- So let's assume we copy time range or reference it clearly.
 
 ```
+
+## [2025-12-20] FEAT: Warranty Management (Phase 5)
+- **Module**: `warranty`
+- **Thay đổi**:
+  - Chuyển đổi logic bảo hành từ liên kết Booking lẻ sang **Liệu trình (Treatment)**.
+  - Cập nhật `WarrantyTicket` model và schemas với `treatment_id`.
+  - Triển khai enum `warranty_status`.
+  - Thiết lập RLS Policies bảo mật: Khách hàng quản lý ticket của mình, Staff/Admin quản lý toàn bộ.
+- **Database**: Đã apply `migration_warranty.sql` (v2 - Treatment based).
 
 ## [Previous Logs...]
 ...

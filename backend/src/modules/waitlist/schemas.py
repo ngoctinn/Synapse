@@ -4,7 +4,7 @@ Waitlist Module - Pydantic Schemas
 
 import uuid
 from datetime import date, time, datetime
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict
 from .models import WaitlistStatus
 
 class WaitlistEntryBase(BaseModel):

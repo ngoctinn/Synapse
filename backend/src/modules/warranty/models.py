@@ -5,7 +5,7 @@ Warranty Module - Database Models
 import uuid
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
+from typing import List
 from sqlmodel import SQLModel, Field, Column, ARRAY, String
 
 class WarrantyStatus(str, Enum):
@@ -18,7 +18,7 @@ class WarrantyTicket(SQLModel, table=True):
     __tablename__ = "warranty_tickets"
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    booking_id: uuid.UUID | None = Field(default=None, foreign_key="bookings.id")
+    treatment_id: uuid.UUID | None = Field(default=None, foreign_key="customer_treatments.id")
     customer_id: uuid.UUID = Field(foreign_key="customers.id")
 
     description: str

@@ -1,159 +1,114 @@
-# Báo Cáo Đánh Giá Chi Tiết Backend Synapse
+# Kế Hoạch Triển Khai: Smart Slot Finding (Phase 2)
 
-## I. Tổng Quan Nghiên Cứu
+## 1. Vấn đề (Problem)
+Khách hàng cần tìm kiếm các khung giờ khả dụng cho một dịch vụ cụ thể mà không cần phải thực hiện đặt lịch thử. Hiện tại hệ thống chưa có endpoint độc lập để gợi ý các slots tối ưu dựa trên tài nguyên và nhân viên.
 
-### Quy Tắc Đang Áp Dụng (.agent/rules)
-| Quy tắc | Trạng thái |
-|---------|------------|
-| Vertical Slice Architecture | ✅ Tuân thủ |
-| Service as Dependency | ✅ Tuân thủ |
-| Pydantic V2 (`ConfigDict`) | ✅ Tuân thủ |
-| Async All The Way | ✅ Tuân thủ |
-| Python 3.12+ Syntax (`X \| Y`) | ✅ Tuân thủ |
-| Docstring Markdown (Tiếng Việt) | ✅ Tuân thủ |
-| Guard Clauses / Early Return | ✅ Tuân thủ |
-| RLS Injection | ⚠️ Cần xác nhận (Supabase Auth) |
+## 2. Mục đích (Purpose)
+Triển khai endpoint `POST /scheduling-engine/find-slots` giúp:
+- Tự động tìm kiếm các khung giờ trống cho dịch vụ.
+- Cân bằng tải nhân viên và tối ưu hóa sử dụng tài nguyên (giường, máy).
+- Hỗ trợ khách hàng chọn nhân viên yêu thích.
 
----
+## 3. Ràng buộc (Constraints)
+- **H01-H09 (Hard Constraints)**: Phải tuân thủ tuyệt đối quy tắc chồng chéo (Non-overlap) và năng lực nhân viên.
+- **S01-S05 (Soft Constraints)**: Tối ưu hóa theo sở thích khách hàng và sự công bằng giữa nhân viên.
+- **Hiệu năng**: Kết quả trả về trong < 2 giây.
+- **Vertical Slice**: Logic nằm trọn trong module `scheduling_engine`.
 
-## II. Chi Tiết Modules Hiện Có (10 modules, 84 endpoints)
+## 4. Chiến lược (Strategy)
+Sử dụng logic của `SpaSolver` (CP-SAT) để tìm kiếm các vị trí khả dụng. Thay vì giải bài toán lập lịch cho toàn bộ spa, hỗ trợ tìm kiếm local quanh ngày khách yêu cầu (`target_date`).
 
-| Module | Prefix | Endpoints | Tình trạng |
-|--------|--------|-----------|------------|
-| `users` | `/users` | 6 | ✅ Hoàn thiện |
-| `staff` | `/staff` | 7 | ✅ Hoàn thiện |
-| `services` | `/services` | 10 | ✅ Hoàn thiện |
-| `resources` | `/resources` | 11 | ✅ Hoàn thiện |
-| `schedules` | `/schedules` | 14 | ✅ Hoàn thiện |
-| `bookings` | `/bookings` | 15+ | ✅ Hoàn thiện |
-| `customers` | `/customers` | 7 | ✅ Hoàn thiện |
-| `scheduling_engine` | `/scheduling` | 5 | ✅ Hoàn thiện |
-| `customer_treatments` | `/treatments` | 4 | ✅ Hoàn thiện |
-| `billing` | `/billing` | 5 | ✅ Hoàn thiện |
+## 5. Giải pháp (Solution)
 
----
+### 5.1 API Specification
+- **Endpoint**: `POST /scheduling-engine/find-slots`
+- **Request**: `{ service_id, target_date, preferred_staff_id?, time_window? }`
+- **Response**: List các `SlotOption` (mỗi option gồm start/end, nhân viên, tài nguyên và điểm số tối ưu).
 
-## III. So Sánh Use Cases với Backend
-
-### ✅ Đã Triển Khai Đầy Đủ (23/34)
-| Mã UC | Tên | Module |
-|-------|-----|--------|
-| A1.1-A1.5 | Xác thực | Supabase Auth + `users` |
-| A2.1-A2.2 | Xem dịch vụ | `services` |
-| A2.4-A2.5 | Tìm slot, Đặt lịch | `scheduling_engine`, `bookings` |
-| A3.1-A3.2 | Lịch sử, Hủy lịch | `bookings` |
-| B1.1-B1.5 | Lễ tân CRUD | `bookings`, `customers`, `billing` |
-| B1.7 | Tiến độ liệu trình | `customer_treatments` |
-| B2.1, B2.3 | KTV xem lịch, Ghi chú | `schedules`, (ghi chú trong `bookings`) |
-| C3-C5 | Staff invite, Lịch NV, Dịch vụ | `staff`, `schedules`, `services` |
-| C6-C7 | Liệu trình, Tài nguyên | `customer_treatments`, `resources` |
-
-### ❌ Chưa Triển Khai (11/34)
-| Mã UC | Tên | Module Cần Tạo | Ưu tiên |
-|-------|-----|----------------|---------|
-| C1 | Giờ hoạt động Spa | `operating_hours` | 🔴 Cao |
-| C2 | Ngày nghỉ lễ | `operating_hours` | 🔴 Cao |
-| A2.6 | Danh sách chờ | `waitlist` | 🟡 Trung bình |
-| A2.7 | Chat trực tuyến | `chat` | 🟡 Trung bình |
-| A3.3 | Thông báo nhắc lịch | `notifications` | 🟡 Trung bình |
-| A3.6 | Yêu cầu bảo hành | `warranty` | 🟡 Trung bình |
-| B1.8 | Tái lập lịch tự động | `scheduling_engine` (mở rộng) | 🔴 Cao |
-| C8 | Khuyến mãi | `promotions` | 🟡 Trung bình |
-| C9 | Quản lý tài khoản NV | `staff` (có rồi) | ✅ Đã có |
-| C10 | Cấu hình hệ thống | `system_config` | 🟢 Thấp |
+### 5.2 Thành phần chính
+1. **Schemas**: Định nghĩa `SlotSearchRequest` và `SlotSuggestionResponse`.
+2. **Service**: Bổ sung hàm `find_available_slots` vào `SchedulingService`.
+3. **Solver Integration**: Sử dụng `SchedulingEngine` để kiểm tra tính khả thi của từng slot ứng viên.
 
 ---
 
-## IV. Kế Hoạch Triển Khai Chia Phase
-
-### Phase 1: Cấu Hình Vận Hành (Core Config)
-**Thời gian:** ~2 ngày | **Endpoints:** ~8
-
-| Module | Endpoints |
-|--------|-----------|
-| `operating_hours` | GET/PUT `/operating-hours` |
-| `operating_hours` | CRUD `/exception-dates` |
-
-**Files cần tạo:**
-```
-backend/src/modules/operating_hours/
-├── __init__.py
-├── models.py       # RegularOperatingHours, ExceptionDate
-├── schemas.py      # OperatingHourRead, ExceptionDateCreate...
-├── service.py      # OperatingHoursService
-└── router.py       # API endpoints
-```
+## 6. Kế hoạch thực thi (Steps)
+1. **ANALYZE**: Rà soát `scheduling_engine/service.py` và `solver.py` để tìm điểm tích hợp.
+2. **DIFF**: Thiết kế chi tiết hàm tìm kiếm slot (sinh ứng viên -> lọc -> chấm điểm).
+3. **APPLY**: Code Schemas, Service và Router.
+4. **VERIFY**: Unit test logic sinh slot và Integration test API.
 
 ---
 
-### Phase 2: Tái Lập Lịch Tự Động
-**Thời gian:** ~2 ngày | **Endpoints:** ~3
+# Kế Hoạch Triển Khai: Promotions Module (Phase 3)
 
-| Module | Endpoints |
-|--------|-----------|
-| `scheduling_engine` | POST `/scheduling/reschedule` |
-| `scheduling_engine` | GET `/scheduling/conflicts` |
-| `scheduling_engine` | POST `/scheduling/resolve-conflict` |
+## 1. Vấn đề (Problem)
+Module `promotions` đã có mã nguồn nhưng chưa có bảng dữ liệu tương ứng trong Database và chưa thiết lập RLS (Row Level Security).
 
----
+## 2. Mục đích (Purpose)
+- Triển khai bảng `promotions`.
+- Thiết lập RLS đảm bảo: Admin/Staff quản lý, Khách hàng chỉ xem/áp dụng mã.
+- Tích hợp logic tính toán `Decimal` chính xác.
 
-### Phase 3: Khuyến Mãi
-**Thời gian:** ~2 ngày | **Endpoints:** ~6
+## 3. Thành phần chính
+- **Models**: `promotions` table, `discount_type` enum.
+- **Service**: CRUD operations + logic validate mã giảm giá.
+- **Router**: API `/promotions` và `/promotions/validate`.
 
-| Module | Endpoints |
-|--------|-----------|
-| `promotions` | CRUD `/promotions` |
-| `promotions` | POST `/promotions/validate` |
-
----
-
-### Phase 4: Waitlist & Notifications
-**Thời gian:** ~3 ngày | **Endpoints:** ~8 (Email Only)
-
-| Module | Endpoints |
-|--------|-----------|
-| `waitlist` | CRUD `/waitlist` |
-| `notifications` | POST `/notifications/send-email` (Test) |
-| `notifications` | CRUD `/notification-templates` (Email Templates) |
+## 4. Kế hoạch thực thi (Steps)
+1. **DIFF**: Tạo script SQL `migration_promotions.sql`.
+2. **APPLY**:
+    - Thực thi SQL migration trên Supabase.
+    - Kiểm tra và sửa lỗi logic (nếu có) bằng Ruff.
+3. **VERIFY**: Kiểm thử API trọn gói.
 
 ---
 
-### Phase 5: Warranty & Chat (Tương lai)
-**Thời gian:** ~4 ngày | **Endpoints:** ~10
+# Kế Hoạch Triển Khai: Waitlist Module (Phase 4)
 
-| Module | Endpoints |
-|--------|-----------|
-| `warranty` | CRUD `/warranty-tickets` |
-| `chat` | WebSocket + REST API |
+## 1. Vấn đề (Problem)
+Module `waitlist` đã có mã nguồn cơ bản nhưng chưa có bảng dữ liệu `waitlist_entries` trong Database và chưa thiết lập RLS (Row Level Security). Đồng thời, chưa có logic tự động hóa liên kết giữa waitlist và các lịch hẹn bị hủy (Phần Notification sẽ được xử lý ở Phase sau, Phase này tập trung vào Core CRUD & Security).
 
----
+## 2. Mục đích (Purpose)
+- Triển khai bảng `waitlist_entries`.
+- Thiết lập RLS:
+    - Khách hàng: Có thể gửi yêu cầu chờ (join waitlist), xem/hủy yêu cầu của chính mình.
+    - Admin/Staff: Quản lý toàn bộ danh sách chờ.
+- Đảm bảo logic dữ liệu hợp lệ (ngày/giờ ưu tiên).
 
-## V. Database Tables Đã Có vs Cần Thêm
+## 3. Thành phần chính
+- **Models**: `waitlist_entries` table, `WaitlistStatus` enum.
+- **Service**: CRUD operations cho danh sách chờ.
+- **Router**: API `/waitlist`.
 
-### ✅ Đã Có Trong Schema (32 tables)
-- `regular_operating_hours`, `exception_dates` → Sẵn sàng cho Phase 1
-- `waitlist`, `promotions`, `warranty_tickets`, `chat_*`, `treatment_notes` → Đã thêm ER Diagram
-
-### ⚠️ Chưa Có Migration
-Cần tạo Alembic migration cho các tables mới trước khi code module.
-
----
-
-## VI. Đề Xuất Tiếp Theo
-
-1. **Bắt đầu Phase 1** (Operating Hours) vì:
-   - Database tables đã có sẵn
-   - Ảnh hưởng trực tiếp đến Scheduling Engine
-   - Không dependency với module khác
-
-2. **Tạo migration** cho các tables còn thiếu (waitlist, chat, warranty, promotions, treatment_notes)
-
-3. **Mở rộng Scheduling Engine** để hỗ trợ tái lập lịch tự động
+## 4. Kế hoạch thực thi (Steps)
+1. **ANALYZE**: Rà soát code `waitlist` hiện tại (Đã thực hiện).
+2. **DIFF**: Tạo script SQL `migration_waitlist.sql`.
+3. **APPLY**:
+    - Thực thi SQL migration trên Supabase.
+    - Kiểm tra lỗi linting bằng Ruff.
+4. **VERIFY**: Kiểm thử API CRUD waitlist.
 
 ---
 
-## VII. Câu Hỏi Xác Nhận
+# Kế Hoạch Triển Khai: Warranty Module (Phase 5)
 
-1. Bạn muốn bắt đầu với **Phase nào**?
-2. Có cần tôi tạo **Alembic migration** cho các tables mới trước không?
-3. **Ưu tiên** nào quan trọng nhất với bạn: Vận hành (Phase 1-2) hay Trải nghiệm khách (Phase 3-5)?
+## 1. Vấn đề (Problem)
+Khách hàng sau khi sử dụng dịch vụ (đặc biệt là các liệu trình nhiều buổi) nếu không hài lòng cần có cơ chế gửi yêu cầu bảo hành chính thức. Hiện tại module `warranty` đã có code nhưng chưa có Database, chưa liên kết đúng với đối tượng Liệu trình (`customer_treatments`) và chưa kích hoạt RLS.
+
+## 2. Mục đích (Purpose)
+- Triển khai hệ thống **Quản lý Ticket Bảo hành dựa trên Liệu trình**.
+- Cho phép khách hàng gửi yêu cầu kèm hình ảnh minh họa cho các gói liệu trình đã mua.
+- Quản trị viên (Admin) duyệt và xử lý Ticket (Approved/Rejected/Resolved) dựa trên lịch sử các buổi thực hiện.
+
+## 3. Thành phần chính
+- **Models**: `warranty_tickets` table (FK `treatment_id`), `WarrantyStatus` enum.
+- **Service**: Logic xử lý Ticket, ghi nhận lịch sử giải quyết (`resolved_at`, `resolved_by`).
+- **Router**: API `/warranty-tickets`.
+
+## 4. Kế hoạch thực thi (Steps)
+1. **DIFF**: Tạo script SQL `migration_warranty.sql`.
+2. **APPLY**:
+    - Thực thi SQL migration trên Supabase.
+    - Sửa lỗi Ruff (unused imports, v.v.).
+3. **VERIFY**: Kiểm thử luồng gửi và duyệt Ticket bảo hành.

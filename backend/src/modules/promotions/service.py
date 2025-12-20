@@ -20,8 +20,7 @@ from .schemas import (
 )
 from .exceptions import (
     PromotionNotFound,
-    DuplicatePromotionCode,
-    InvalidPromotionCode
+    DuplicatePromotionCode
 )
 
 
@@ -33,7 +32,7 @@ class PromotionService:
         """Lấy danh sách khuyến mãi."""
         query = select(Promotion)
         if active_only:
-            query = query.where(Promotion.is_active == True)
+            query = query.where(Promotion.is_active)
 
         result = await self.session.exec(query)
         promotions = result.all()

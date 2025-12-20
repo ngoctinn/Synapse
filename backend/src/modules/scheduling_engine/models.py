@@ -249,3 +249,51 @@ class RescheduleResult(BaseModel):
     failed_items: list[uuid.UUID] # Items không tìm được slot
 
     model_config = ConfigDict(from_attributes=True)
+
+
+# ============================================================================
+# NEW: SMART SLOT FINDING SCHEMAS
+# ============================================================================
+
+class TimeWindow(BaseModel):
+    """Giới hạn thời gian tìm kiếm (VD: 09:00 - 17:00)."""
+    start: time
+    end: time
+
+
+class SlotSearchRequest(BaseModel):
+    """Request tìm kiếm khung giờ khả dụng."""
+    service_id: uuid.UUID
+    target_date: date
+    preferred_staff_id: uuid.UUID | None = None
+    time_window: TimeWindow | None = None
+
+
+class StaffSuggestionInfo(BaseModel):
+    """Thông tin rút gọn của nhân viên cho gợi ý."""
+    id: uuid.UUID
+    name: str
+    is_preferred: bool = False
+
+
+class ResourceSuggestionInfo(BaseModel):
+    """Thông tin rút gọn của tài nguyên cho gợi ý."""
+    id: uuid.UUID
+    name: str
+    group_name: str | None = None
+
+
+class SlotOption(BaseModel):
+    """Một phương án khung giờ có thể đặt lịch."""
+    start_time: datetime
+    end_time: datetime
+    staff: StaffSuggestionInfo
+    resources: list[ResourceSuggestionInfo] = []
+    score: int = 0  # Điểm tối ưu (0-100)
+
+
+class SlotSuggestionResponse(BaseModel):
+    """Kết quả gợi ý các khung giờ."""
+    available_slots: list[SlotOption]
+    total_found: int
+    message: str | None = None

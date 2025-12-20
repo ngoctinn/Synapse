@@ -29,7 +29,8 @@ Cơ sở dữ liệu Synapse được thiết kế phục vụ hệ thống qu�
 | 8 | Billing | 2 | Hóa đơn và thanh toán |
 | 9 | Reviews | 1 | Đánh giá khách hàng |
 | 10 | Notifications | 1 | Thông báo hệ thống |
-| 11 | System | 2 | Cấu hình và nhật ký |
+| 11 | Warranty | 1 | Quản lý bảo hành liệu trình |
+| 12 | System | 2 | Cấu hình và nhật ký |
 
 ### 1.2. Quy ước đặt tên
 
@@ -114,6 +115,15 @@ Phân loại nhóm tài nguyên (Logic).
 | ACTIVE | Đang hoạt động |
 | COMPLETED | Đã hoàn thành |
 | EXPIRED | Đã hết hạn |
+
+### 2.10. warranty_status
+
+| Giá trị | Mô tả |
+|:---|:---|
+| PENDING | Đang chờ xử lý |
+| APPROVED | Đã chấp nhận bảo hành |
+| REJECTED | Từ chối bảo hành |
+| RESOLVED | Đã xử lý xong |
 
 ### 2.9. schedule_status
 
@@ -455,7 +465,24 @@ Thông báo hệ thống.
 | type | VARCHAR(50) | Có | NULL | Loại thông báo |
 | created_at | TIMESTAMPTZ | Không | NOW() | Thời điểm |
 
-### 3.23. Bảng system_configurations
+### 3.23. Bảng warranty_tickets
+
+Lưu trữ các yêu cầu bảo hành cho gói liệu trình.
+
+| Tên cột | Kiểu dữ liệu | Null | Mặc định | Mô tả |
+|:---|:---|:---:|:---|:---|
+| id | UUID | Không | auto | Khóa chính |
+| treatment_id | UUID | Có | NULL | FK customer_treatments |
+| customer_id | UUID | Không | - | FK customers |
+| description | TEXT | Không | - | Mô tả vấn đề |
+| images | TEXT[] | Có | NULL | Danh sách URL ảnh minh họa |
+| status | warranty_status | Không | PENDING | Trạng thái ticket |
+| resolution_notes | TEXT | Có | NULL | Ghi chú giải quyết |
+| resolved_by | UUID | Có | NULL | FK users - Người xử lý |
+| created_at | TIMESTAMPTZ | Không | NOW() | Thời điểm tạo |
+| resolved_at | TIMESTAMPTZ | Có | NULL | Thời điểm giải quyết |
+
+### 3.24. Bảng system_configurations
 
 Cấu hình hệ thống.
 

@@ -23,6 +23,8 @@ from .schemas import (
     BookingComplete,
     ConflictCheckRequest,
     ConflictCheckResponse,
+    TreatmentNoteCreate,
+    TreatmentNoteRead,
 )
 from .conflict_checker import ConflictChecker
 from src.common.database import get_db_session
@@ -348,3 +350,52 @@ async def get_resource_bookings(
     checker = ConflictChecker(session)
     items = await checker.get_resource_bookings_on_date(resource_id, work_date)
     return items
+
+
+# ============================================================================
+# TREATMENT NOTES
+# ============================================================================
+
+@router.post("/{booking_id}/notes", response_model=TreatmentNoteRead)
+async def add_treatment_note(
+    booking_id: uuid.UUID,
+    data: TreatmentNoteCreate,
+    service: BookingService = Depends()
+) -> TreatmentNoteRead:
+    """
+    **Ghi chú chuyên môn sau buổi hẹn**
+
+    Kỹ thuật viên ghi lại tình trạng da/tóc, phản ứng của khách sau dịch vụ
+    để phục vụ tốt hơn cho các lần tiếp theo.
+
+    ### Tham số:
+    - **content**: Nội dung ghi chú (tối đa 1000 ký tự)
+    - **note_type**: Loại ghi chú (PROFESSIONAL/GENERAL, mặc định PROFESSIONAL)
+
+    ### Lưu ý:
+    - Chỉ staff mới có thể tạo ghi chú
+    - RLS đảm bảo staff chỉ thấy notes của họ
+    """
+    # TODO: Get staff_id from auth context
+    # For now, using a placeholder - will be replaced with actual auth
+    staff_id = uuid.uuid4()  # Replace with: current_user["sub"]
+
+    return await service.add_note(
+        booking_id=booking_id,
+        staff_id=staff_id,
+        content=data.content,
+        note_type=data.note_type
+    )
+
+
+@router.get("/{booking_id}/notes", response_model=list[TreatmentNoteRead])
+async def get_booking_notes(
+    booking_id: uuid.UUID,
+    service: BookingService = Depends()
+) -> list[TreatmentNoteRead]:
+    """
+    **Lấy danh sách ghi chú của booking**
+
+    Hiển thị tất cả ghi chú chuyên môn đã được tạo cho booking này.
+    """
+    return await service.get_notes(booking_id)

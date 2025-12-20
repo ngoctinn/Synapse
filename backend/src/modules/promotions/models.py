@@ -6,11 +6,9 @@ Promotions Module - Database Models
 
 import uuid
 from datetime import date, datetime
-from typing import Optional
 from enum import Enum
 from decimal import Decimal
 from sqlmodel import SQLModel, Field, Column, DECIMAL
-from sqlalchemy import CheckConstraint
 
 
 class DiscountType(str, Enum):

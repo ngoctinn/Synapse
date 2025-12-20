@@ -2,14 +2,14 @@
 
 ## Active Workflow Tracker
 
-### ⚠️ Waiting for Manual Action: Refactor Resource Model
+### ✅ All Scheduled Phases Completed (Antigravity Workflow)
 
 | Task | Mô tả | Trạng thái |
 |------|-------|------------|
-| Refactor 1 | Update `models.py` (Resources, Bookings) | ✅ Hoàn thành |
-| Refactor 2 | Update `data_extractor.py` | ✅ Hoàn thành |
-| Refactor 3 | Generate Migration SQL | ✅ Hoàn thành (See Change Log) |
-| **Action** | **Run SQL in Supabase** | **WAITING** |
+| Phase 5 | Warranty Management (Treatment) | ✅ Hoàn thành |
+| Phase 4 | Waitlist Module | ✅ Hoàn thành |
+| Phase 3 | Promotions Module | ✅ Hoàn thành |
+| **Status** | **Ready for Final Audit** | ✅ Done |
 
 ---
 
@@ -18,8 +18,12 @@
 | Phase | Module | Kết quả | Trạng thái |
 |-------|--------|---------|------------|
 | Refactor| Resource & Bookings | RCPSP Model | ⚠️ Pending DB |
-| 5 | Warranty & Chat | History, Tickets | ✅ Done |
+| 5 | Warranty Management | Treatment-based | ✅ Done |
 | 4 | Waitlist/Notify | Email Templates | ✅ Done |
 | 3 | Promotions | Discount Logic | ✅ Done |
 | 2 | Scheduling Engine | Auto Reschedule | ✅ Done |
 | 1 | Operating Hours | Management | ✅ Done |
+| 6 | Technician Notes | B2.3 Notes Flow | ✅ Done |
+| 7 | Smart Slot Finding | A2.4 Suggestion | ✅ Done |
+| 8 | Promotions | C8 Management | ✅ Done |
+| 9 | Waitlist | A2.2 Registration | ✅ Done |

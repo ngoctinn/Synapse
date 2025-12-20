@@ -1,7 +1,7 @@
 """
 Scheduling Module - CP-SAT Solver
 
-⚡ CORE: Bộ giải tối ưu hóa sử dụng Google OR-Tools CP-SAT
+CORE: Bộ giải tối ưu hóa sử dụng Google OR-Tools CP-SAT
 
 Mô hình hóa bài toán RCPSP (Resource-Constrained Project Scheduling Problem)
 cho nghiệp vụ Spa - gán KTV và Phòng cho booking items.

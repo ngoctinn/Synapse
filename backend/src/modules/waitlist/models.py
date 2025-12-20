@@ -4,9 +4,8 @@ Waitlist Module - Database Models
 
 import uuid
 from datetime import date, time, datetime
-from typing import Optional
 from enum import Enum
-from sqlmodel import SQLModel, Field, Relationship
+from sqlmodel import SQLModel, Field
 
 class WaitlistStatus(str, Enum):
     PENDING = "PENDING"

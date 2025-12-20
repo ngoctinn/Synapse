@@ -507,6 +507,34 @@ CREATE TABLE staff_profiles (
 );
 
 -- ============================================================
+-- TABLES: WARRANTY MODULE
+-- ============================================================
+
+CREATE TYPE warranty_status AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'RESOLVED');
+
+CREATE TABLE warranty_tickets (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    treatment_id UUID REFERENCES customer_treatments(id) ON DELETE SET NULL,
+    customer_id UUID NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
+
+    description TEXT NOT NULL,
+    images TEXT[], -- Array of image URLs
+
+    status warranty_status NOT NULL DEFAULT 'PENDING',
+    resolution_notes TEXT,
+    resolved_by UUID REFERENCES users(id) ON DELETE SET NULL,
+
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    resolved_at TIMESTAMPTZ,
+
+    -- Constraints
+    CONSTRAINT description_length CHECK (char_length(description) >= 10)
+);
+
+CREATE INDEX idx_warranty_customer ON warranty_tickets(customer_id);
+CREATE INDEX idx_warranty_treatment ON warranty_tickets(treatment_id);
+
+-- ============================================================
 -- TABLES: CUSTOMERS MODULE (CORE CRM)
 -- ============================================================
 

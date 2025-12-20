@@ -196,3 +196,26 @@ class ResourceSlot(BaseModel):
     end_time: datetime
     is_booked: bool
     booking_id: uuid.UUID | None = None
+
+
+# ============================================================================
+# TREATMENT NOTES
+# ============================================================================
+
+class TreatmentNoteCreate(BaseModel):
+    """Schema tạo ghi chú chuyên môn."""
+    content: str = Field(..., min_length=1, max_length=1000)
+    note_type: str = "PROFESSIONAL"  # Default value
+
+
+class TreatmentNoteRead(BaseModel):
+    """Schema đọc ghi chú chuyên môn."""
+    id: uuid.UUID
+    booking_id: uuid.UUID
+    staff_id: uuid.UUID
+    content: str
+    note_type: str
+    created_at: datetime
+    staff_name: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)

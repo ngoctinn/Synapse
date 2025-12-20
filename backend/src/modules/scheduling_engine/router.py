@@ -7,7 +7,7 @@ Sử dụng trí tuệ nhân tạo (OR-Tools) để tự động hóa việc ph�
 
 import uuid
 from datetime import date
-from fastapi import APIRouter, Depends, Query, status, HTTPException
+from fastapi import APIRouter, Depends, Query
 
 from .models import (
     SchedulingSolution,
@@ -17,7 +17,9 @@ from .models import (
     CompareResponse,
     ConflictCheckResponse,
     RescheduleRequest,
-    RescheduleResult
+    RescheduleResult,
+    SlotSearchRequest,
+    SlotSuggestionResponse
 )
 from .service import SchedulingService
 
@@ -122,6 +124,22 @@ async def auto_reschedule(
         # Ở đây ta trả về result để FE hiển thị items nào fail
         pass
     return result
+
+
+@router.post("/find-slots", response_model=SlotSuggestionResponse)
+async def find_available_slots(
+    request: SlotSearchRequest,
+    service: SchedulingService = Depends()
+) -> SlotSuggestionResponse:
+    """
+    **Tìm kiếm khung giờ khả dụng thông minh (Smart Slot Finding).**
+
+    Dùng khi khách hàng muốn đặt lịch:
+    - AI sẽ tính toán và gợi ý các khung giờ tốt nhất (tối đa 20 gợi ý).
+    - Ưu tiên nhân viên yêu thích (nếu có).
+    - Đảm bảo đủ tài nguyên (phòng/máy) và nhân viên có kỹ năng phù hợp.
+    """
+    return await service.find_available_slots(request)
 
 
 @router.get("/health")
