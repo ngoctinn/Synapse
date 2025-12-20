@@ -1,5 +1,5 @@
 # Hướng Dẫn Kiểm Thử Hệ Thống Synapse - Toàn Diện & Chi Tiết
-*(Cập nhật ngày 20/12/2024 - Dựa trên dữ liệu thực tế)*
+*(Cập nhật ngày 20/12/2025 - Dựa trên dữ liệu thực tế)*
 
 Tài liệu này cung cấp lộ trình kiểm thử 4 giai đoạn, từ cơ bản đến nâng cao. Mỗi bước đều có sẵn dữ liệu mẫu (UUID thực) để bạn copy-paste và chạy ngay trên Swagger UI.
 
@@ -50,7 +50,7 @@ Kiểm tra xem hệ thống đã có đủ dữ liệu master chưa.
 ```json
 {
   "service_id": "7700b093-6c84-4752-9477-96a67f185677",
-  "target_date": "2024-12-25",
+  "target_date": "2025-12-20",
   "preferred_staff_id": "6700b093-6c84-4752-9477-96a67f185673",
   "time_window": {
     "start": "09:00:00",
@@ -66,7 +66,7 @@ Kiểm tra xem hệ thống đã có đủ dữ liệu master chưa.
 ```json
 {
   "customer_id": "c72d6f4f-ada5-4885-bc62-a9b5ae750150",
-  "notes": "Test Flow Full - 12/2024"
+  "notes": "Test Flow Full - 20/12/2025"
 }
 ```
 📌 **Copy ID trả về (chúng ta gọi là `BOOKING_ID`) để dùng các bước sau.**
@@ -78,8 +78,8 @@ Kiểm tra xem hệ thống đã có đủ dữ liệu master chưa.
 ```json
 {
   "service_id": "7700b093-6c84-4752-9477-96a67f185677",
-  "start_time": "2024-12-25T10:00:00Z",
-  "end_time": "2024-12-25T11:00:00Z",
+  "start_time": "2025-12-20T10:00:00Z",
+  "end_time": "2025-12-20T11:00:00Z",
   "staff_id": "6700b093-6c84-4752-9477-96a67f185673",
   "resource_ids": ["e975efc5-b8c9-4590-84ed-1fe1d256e37c"]
 }
@@ -128,8 +128,8 @@ Tính năng nâng cao dành cho Quản lý & Điều phối.
 *Test case: KTV đang có lịch mà lại xin nghỉ phép.*
 
 *   `staff_id`: `6700b093-6c84-4752-9477-96a67f185673`
-*   `start_date`: `2024-12-25`
-*   `end_date`: `2024-12-25`
+*   `start_date`: `2025-12-20`
+*   `end_date`: `2025-12-20`
 
 ### 2. Tự Động Xếp Lịch (Auto Solve)
 **API:** `POST /api/v1/scheduling/solve`
@@ -138,7 +138,7 @@ Tính năng nâng cao dành cho Quản lý & Điều phối.
 ```json
 {
   "booking_item_ids": null,
-  "target_date": "2024-12-25",
+  "target_date": "2025-12-20",
   "time_limit_seconds": 10
 }
 ```
