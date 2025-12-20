@@ -31,17 +31,18 @@ class BookingItemBase(BaseModel):
         return v
 
 
+
 class BookingItemCreate(BookingItemBase):
     """Schema tạo BookingItem."""
     staff_id: uuid.UUID | None = None
-    resource_id: uuid.UUID | None = None
+    resource_ids: list[uuid.UUID] | None = None
     treatment_id: uuid.UUID | None = None
 
 
 class BookingItemUpdate(BaseModel):
     """Schema cập nhật BookingItem."""
     staff_id: uuid.UUID | None = None
-    resource_id: uuid.UUID | None = None
+    resource_ids: list[uuid.UUID] | None = None
     treatment_id: uuid.UUID | None = None
     start_time: datetime | None = None
     end_time: datetime | None = None
@@ -53,7 +54,8 @@ class BookingItemRead(BaseModel):
     booking_id: uuid.UUID
     service_id: uuid.UUID | None
     staff_id: uuid.UUID | None
-    resource_id: uuid.UUID | None
+    # resource_id removed, replaced by list
+    resource_ids: list[uuid.UUID] = []
     treatment_id: uuid.UUID | None
     service_name_snapshot: str | None
     start_time: datetime
@@ -63,7 +65,7 @@ class BookingItemRead(BaseModel):
 
     # Thông tin bổ sung
     staff_name: str | None = None
-    resource_name: str | None = None
+    resource_names: list[str] = []
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -162,7 +164,7 @@ class BookingNoShow(BaseModel):
 class ConflictCheckRequest(BaseModel):
     """Request kiểm tra xung đột."""
     staff_id: uuid.UUID | None = None
-    resource_id: uuid.UUID | None = None
+    resource_ids: list[uuid.UUID] | None = None
     start_time: datetime
     end_time: datetime
     exclude_item_id: uuid.UUID | None = None

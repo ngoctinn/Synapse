@@ -258,19 +258,33 @@ class DataExtractor:
         start_of_day = datetime.combine(target_date, time.min, tzinfo=timezone.utc)
         end_of_day = datetime.combine(target_date, time.max, tzinfo=timezone.utc)
 
-        # Base query
-        query_str = """
+        # 1. Lấy Staff Assignments
+        staff_query_str = """
             SELECT
                 bi.id,
                 bi.staff_id,
-                bi.resource_id,
                 bi.start_time,
                 bi.end_time
             FROM booking_items bi
             JOIN bookings b ON bi.booking_id = b.id
             WHERE bi.start_time >= :start_of_day
               AND bi.start_time < :end_of_day
-              AND (bi.staff_id IS NOT NULL OR bi.resource_id IS NOT NULL)
+              AND bi.staff_id IS NOT NULL
+              AND b.status NOT IN ('CANCELLED', 'NO_SHOW', 'COMPLETED')
+        """
+
+        # 2. Lấy Resource Assignments (Joined)
+        resource_query_str = """
+            SELECT
+                bi.id,
+                bir.resource_id,
+                bi.start_time,
+                bi.end_time
+            FROM booking_items bi
+            JOIN bookings b ON bi.booking_id = b.id
+            JOIN booking_item_resources bir ON bi.id = bir.booking_item_id
+            WHERE bi.start_time >= :start_of_day
+              AND bi.start_time < :end_of_day
               AND b.status NOT IN ('CANCELLED', 'NO_SHOW', 'COMPLETED')
         """
 
@@ -279,22 +293,32 @@ class DataExtractor:
             "end_of_day": end_of_day
         }
 
-        # Exclude specified items (đang được reschedule)
         if exclude_item_ids:
-            # Convert UUIDs to string for IN clause (safe with UUID)
             ids_str = ",".join(f"'{str(id)}'" for id in exclude_item_ids)
-            query_str += f" AND bi.id NOT IN ({ids_str})"
+            exclude_clause = f" AND bi.id NOT IN ({ids_str})"
+            staff_query_str += exclude_clause
+            resource_query_str += exclude_clause
 
-        query = text(query_str)
-        result = await self.session.execute(query, params)
-        rows = result.fetchall()
+        assignments = []
 
-        return [
-            ExistingAssignment(
-                staff_id=uuid.UUID(str(row[1])) if row[1] else None,
-                resource_id=uuid.UUID(str(row[2])) if row[2] else None,
-                start_time=row[3],
-                end_time=row[4]
-            )
-            for row in rows
-        ]
+        # Execute Staff Query
+        staff_result = await self.session.execute(text(staff_query_str), params)
+        for row in staff_result.fetchall():
+            assignments.append(ExistingAssignment(
+                staff_id=uuid.UUID(str(row[1])),
+                resource_id=None,
+                start_time=row[2],
+                end_time=row[3]
+            ))
+
+        # Execute Resource Query
+        resource_result = await self.session.execute(text(resource_query_str), params)
+        for row in resource_result.fetchall():
+            assignments.append(ExistingAssignment(
+                staff_id=None,
+                resource_id=uuid.UUID(str(row[1])),
+                start_time=row[2],
+                end_time=row[3]
+            ))
+
+        return assignments

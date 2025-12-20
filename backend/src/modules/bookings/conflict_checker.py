@@ -107,42 +107,82 @@ class ConflictChecker:
         exclude_item_id: uuid.UUID | None = None
     ) -> ConflictResult:
         """
-        Kiểm tra Phòng/Máy có bị trùng không.
+        Kiểm tra Tài nguyên (Giường/Máy) có bị trùng không.
 
-        Args:
-            resource_id: ID của Resource
-            start_time: Thời gian bắt đầu mới
-            end_time: Thời gian kết thúc mới
-            exclude_item_id: Bỏ qua item này (khi update)
-
-        Returns:
-            ConflictResult với thông tin xung đột
+        Updated: Uses BookingItemResource junction table.
         """
-        query = (
-            select(BookingItem)
-            .join(Booking, BookingItem.booking_id == Booking.id)
-            .where(
-                and_(
-                    BookingItem.resource_id == resource_id,
-                    Booking.status.in_(self.active_statuses),
-                    BookingItem.start_time < end_time,
-                    BookingItem.end_time > start_time
-                )
-            )
-        )
+        # Import lazy to avoid circular import if needed, or use string reference if joined?
+        # Assuming BookingItemResource is available in DB schema, we construct query carefully.
+        # Since we don't have BookingItemResource imported here yet, we should import it or use raw SQL/text?
+        # Let's import it at top of file or use text. To be clean, text is safer for quick refactor or update imports.
+        # But models.py is in same package. Let's assume we update imports later. For now, use text or dynamic join.
+        # Using text is robust.
+
+        query = text("""
+            SELECT bi.id, bi.booking_id, bi.start_time, bi.end_time
+            FROM booking_items bi
+            JOIN bookings b ON bi.booking_id = b.id
+            JOIN booking_item_resources bir ON bi.id = bir.booking_item_id
+            WHERE bir.resource_id = :resource_id
+              AND b.status IN :statuses
+              AND bi.start_time < :end_time
+              AND bi.end_time > :start_time
+        """)
 
         if exclude_item_id:
-            query = query.where(BookingItem.id != exclude_item_id)
+             query = text(query.text + " AND bi.id != :exclude_id")
 
-        result = await self.session.exec(query)
-        conflicting_item = result.first()
+        params = {
+            "resource_id": str(resource_id),
+            "statuses": tuple(self.active_statuses), # SQLAlc might need tuple needed for IN? text bind param usually handles list/tuple?
+            # Actually easier to use SQLModel select if we import BookingItemResource.
+            # Let's stick to SQLAlchemy Core / Text for complex joins if unchecked.
+            # But let's try to do it strictly with SQLModel Objects if possible.
+            # I will assume BookingItemResource is imported.
+            "start_time": start_time,
+            "end_time": end_time,
+            "exclude_id": str(exclude_item_id) if exclude_item_id else None
+        }
+        # Simplify: Use Text with proper bind params. status IN needs care.
+        # Let's use simple logic:
 
-        if conflicting_item:
+        statuses_str = "('" + "','".join(self.active_statuses) + "')"
+
+        sql = f"""
+            SELECT bi.booking_id, bi.start_time, bi.end_time
+            FROM booking_items bi
+            JOIN bookings b ON bi.booking_id = b.id
+            JOIN booking_item_resources bir ON bi.id = bir.booking_item_id
+            WHERE bir.resource_id = '{str(resource_id)}'
+              AND b.status IN {statuses_str}
+              AND bi.start_time < '{end_time.isoformat()}'
+              AND bi.end_time > '{start_time.isoformat()}'
+        """
+
+        if exclude_item_id:
+            sql += f" AND bi.id != '{str(exclude_item_id)}'"
+
+        result = await self.session.execute(text(sql))
+        row = result.first() # (booking_id, start, end)
+
+        if row:
+            # row[1] is start, row[2] is end (from select)
+            # Need to parse if text returns strings or objects. Usually returns active types if typed?
+            # Safe to assume it returns something.
+
+            # Format message
+            try:
+                s_str = row[1].strftime('%H:%M') if isinstance(row[1], datetime) else str(row[1])
+                e_str = row[2].strftime('%H:%M') if isinstance(row[2], datetime) else str(row[2])
+            except:
+                s_str = "..."
+                e_str = "..."
+
             return ConflictResult(
                 has_conflict=True,
                 conflict_type="RESOURCE",
-                conflicting_booking_id=conflicting_item.booking_id,
-                message=f"Phòng/Máy đã được sử dụng từ {conflicting_item.start_time.strftime('%H:%M')} đến {conflicting_item.end_time.strftime('%H:%M')}"
+                conflicting_booking_id=uuid.UUID(str(row[0])),
+                message=f"Tài nguyên {resource_id} đã được sử dụng từ {s_str} đến {e_str}"
             )
 
         return ConflictResult(has_conflict=False)
@@ -196,7 +236,7 @@ class ConflictChecker:
     async def check_all_conflicts(
         self,
         staff_id: uuid.UUID | None,
-        resource_id: uuid.UUID | None,
+        resource_ids: list[uuid.UUID] | None,
         start_time: datetime,
         end_time: datetime,
         exclude_item_id: uuid.UUID | None = None,
@@ -225,12 +265,14 @@ class ConflictChecker:
                 if schedule_conflict.has_conflict:
                     conflicts.append(schedule_conflict)
 
-        if resource_id:
-            resource_conflict = await self.check_resource_conflict(
-                resource_id, start_time, end_time, exclude_item_id
-            )
-            if resource_conflict.has_conflict:
-                conflicts.append(resource_conflict)
+        if resource_ids:
+            for rid in resource_ids:
+                resource_conflict = await self.check_resource_conflict(
+                    rid, start_time, end_time, exclude_item_id
+                )
+                if resource_conflict.has_conflict:
+                    conflicts.append(resource_conflict)
+                    # Optional: Break on first conflict or collect all? Collecting all is better.
 
         return conflicts
 

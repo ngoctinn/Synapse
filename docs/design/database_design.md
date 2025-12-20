@@ -109,7 +109,7 @@ erDiagram
     resource_groups {
         uuid id PK
         string name
-        enum type "ROOM, EQUIPMENT"
+        enum type "BED, EQUIPMENT"
         text description
         timestamp deleted_at
     }
@@ -120,7 +120,6 @@ erDiagram
         string name
         string code UK
         enum status "ACTIVE, MAINTENANCE, INACTIVE"
-        int capacity
         int setup_time_minutes
         text description
         string image_url
@@ -205,7 +204,6 @@ erDiagram
         uuid booking_id FK
         uuid service_id FK
         uuid staff_id FK
-        uuid resource_id FK
         uuid treatment_id FK
         string service_name_snapshot "Snapshot"
         timestamp start_time
@@ -213,10 +211,17 @@ erDiagram
         decimal original_price
     }
 
+    booking_item_resources {
+        uuid booking_item_id PK,FK
+        uuid resource_id PK,FK
+    }
+
     bookings ||--|{ booking_items : "includes"
     services ||--|{ booking_items : "instance_of"
     staff_profiles ||--o{ booking_items : "performs"
-    resources ||--o{ booking_items : "occupies"
+
+    booking_items ||--|{ booking_item_resources : "uses"
+    resources ||--|{ booking_item_resources : "allocated_to"
 
     %% === TREATMENTS ===
     customer_treatments {
@@ -421,7 +426,7 @@ CREATE EXTENSION IF NOT EXISTS "btree_gist"; -- For Exclusion Constraints (chố
 CREATE TYPE user_role AS ENUM ('admin', 'receptionist', 'technician', 'customer');
 CREATE TYPE membership_tier AS ENUM ('SILVER', 'GOLD', 'PLATINUM');
 CREATE TYPE gender AS ENUM ('MALE', 'FEMALE', 'OTHER');
-CREATE TYPE resource_type AS ENUM ('ROOM', 'EQUIPMENT');
+CREATE TYPE resource_type AS ENUM ('BED', 'EQUIPMENT');
 CREATE TYPE resource_status AS ENUM ('ACTIVE', 'MAINTENANCE', 'INACTIVE');
 CREATE TYPE booking_status AS ENUM ('PENDING', 'CONFIRMED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'NO_SHOW');
 CREATE TYPE invoice_status AS ENUM ('PAID', 'UNPAID', 'REFUNDED');
@@ -607,13 +612,11 @@ CREATE TABLE resources (
     name VARCHAR(100) NOT NULL,
     code VARCHAR(50) UNIQUE,
     status resource_status DEFAULT 'ACTIVE' NOT NULL,
-    capacity INTEGER DEFAULT 1,
     setup_time_minutes INTEGER DEFAULT 0,
     description TEXT,
     image_url TEXT,
     deleted_at TIMESTAMPTZ, -- Soft delete
 
-    CONSTRAINT chk_capacity CHECK (capacity > 0),
     CONSTRAINT chk_setup_time CHECK (setup_time_minutes >= 0)
 );
 
@@ -729,7 +732,6 @@ CREATE TABLE booking_items (
     booking_id UUID REFERENCES bookings(id) ON DELETE CASCADE NOT NULL,
     service_id UUID REFERENCES services(id) ON DELETE SET NULL,
     staff_id UUID REFERENCES staff_profiles(user_id) ON DELETE SET NULL,
-    resource_id UUID REFERENCES resources(id) ON DELETE SET NULL,
     treatment_id UUID REFERENCES customer_treatments(id) ON DELETE SET NULL,
     service_name_snapshot VARCHAR(255),
     start_time TIMESTAMPTZ NOT NULL,
@@ -739,20 +741,20 @@ CREATE TABLE booking_items (
     CONSTRAINT chk_item_time CHECK (end_time > start_time),
     CONSTRAINT chk_item_price CHECK (original_price >= 0),
 
-    -- ============================================================
-    -- EXCLUSION CONSTRAINTS: Chống đặt trùng lịch (Concurrency Control)
-    -- Sử dụng GiST index để ngăn chặn overlapping time ranges
-    -- ============================================================
+    -- Exclusion Constraint: Staff Overlap
     CONSTRAINT no_overlap_staff_booking EXCLUDE USING gist (
         staff_id WITH =,
         tstzrange(start_time, end_time) WITH &&
-    ) WHERE (staff_id IS NOT NULL),
-
-    CONSTRAINT no_overlap_resource_booking EXCLUDE USING gist (
-        resource_id WITH =,
-        tstzrange(start_time, end_time) WITH &&
-    ) WHERE (resource_id IS NOT NULL)
+    ) WHERE (staff_id IS NOT NULL)
 );
+
+CREATE TABLE booking_item_resources (
+    booking_item_id UUID REFERENCES booking_items(id) ON DELETE CASCADE,
+    resource_id UUID REFERENCES resources(id) ON DELETE CASCADE,
+    PRIMARY KEY (booking_item_id, resource_id)
+);
+-- Note: Resource Overlap Constraint needs complex handling (Trigger or Exclusion on denormalized data).
+-- This design assumes application-level check by Solver/ConflictChecker.
 
 -- Index cho Operating Hours
 CREATE UNIQUE INDEX idx_regular_hours_day_period ON regular_operating_hours(day_of_week, period_number);

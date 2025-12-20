@@ -1,10 +1,5 @@
 """
 Resources Module - Database Models
-
-Định nghĩa các Entity liên quan đến Tài nguyên (Resources):
-- ResourceGroup: Nhóm tài nguyên logic (Phòng đơn, Máy Laser...)
-- Resource: Tài nguyên vật lý cụ thể (Phòng VIP 1, Máy 01...)
-- ServiceResourceRequirement: Bảng trung gian Service ↔ ResourceGroup
 """
 
 import uuid
@@ -20,7 +15,7 @@ if TYPE_CHECKING:
 
 class ResourceType(str, Enum):
     """Loại nhóm tài nguyên."""
-    ROOM = "ROOM"
+    BED = "BED"
     EQUIPMENT = "EQUIPMENT"
 
 
@@ -34,9 +29,6 @@ class ResourceStatus(str, Enum):
 class ServiceResourceRequirement(SQLModel, table=True):
     """
     Bảng trung gian: Service ↔ ResourceGroup (N-N)
-
-    Định nghĩa dịch vụ cần bao nhiêu tài nguyên thuộc nhóm nào.
-    VD: Massage Body cần 1 Phòng đơn.
     """
     __tablename__ = "service_resource_requirements"
 
@@ -60,9 +52,7 @@ class ServiceResourceRequirement(SQLModel, table=True):
 class ResourceGroup(SQLModel, table=True):
     """
     Nhóm tài nguyên logic.
-
-    VD: "Phòng đơn", "Phòng VIP", "Máy Laser", "Giường Massage"
-    Dùng để định nghĩa YÊU CẦU tài nguyên cho dịch vụ.
+    VD: "Giường Massage", "Máy Laser"
     """
     __tablename__ = "resource_groups"
 
@@ -88,9 +78,7 @@ class ResourceGroup(SQLModel, table=True):
 class Resource(SQLModel, table=True):
     """
     Tài nguyên vật lý cụ thể.
-
-    VD: "Phòng VIP 1", "Phòng 02", "Máy Laser 01"
-    Đây là những thực thể thực sự được đặt lịch.
+    VD: "Giường 01", "Máy Laser 01"
     """
     __tablename__ = "resources"
 
@@ -106,7 +94,7 @@ class Resource(SQLModel, table=True):
         default=ResourceStatus.ACTIVE,
         sa_type=SAEnum(ResourceStatus, name="resource_status")
     )
-    capacity: int = Field(default=1, ge=1)
+    # capacity Removed as per RCPSP Atomic Resource
     setup_time_minutes: int = Field(default=0, ge=0)
     description: str | None = None
     image_url: str | None = None

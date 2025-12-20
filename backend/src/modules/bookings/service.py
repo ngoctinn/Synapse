@@ -56,7 +56,10 @@ class BookingService:
         offset: int = 0
     ) -> tuple[list[Booking], int]:
         """Lấy danh sách bookings với filter và pagination."""
-        query = select(Booking).options(selectinload(Booking.items))
+        # Eager load items AND their resources
+        query = select(Booking).options(
+            selectinload(Booking.items).selectinload(BookingItem.resources)
+        )
         count_query = select(func.count(Booking.id))
 
         conditions = []
@@ -84,8 +87,14 @@ class BookingService:
         return list(result.all()), total
 
     async def get_by_id(self, booking_id: uuid.UUID) -> Booking | None:
-        """Lấy booking theo ID, bao gồm items."""
-        query = select(Booking).where(Booking.id == booking_id).options(selectinload(Booking.items))
+        """Lấy booking theo ID, bao gồm items và resources."""
+        query = (
+            select(Booking)
+            .where(Booking.id == booking_id)
+            .options(
+                selectinload(Booking.items).selectinload(BookingItem.resources)
+            )
+        )
         result = await self.session.exec(query)
         return result.first()
 
@@ -136,10 +145,10 @@ class BookingService:
             service = services_map[item_data.service_id]
 
             # Kiểm tra xung đột nếu có gán staff/resource
-            if item_data.staff_id or item_data.resource_id:
+            if item_data.staff_id or item_data.resource_ids:
                 conflicts = await self.conflict_checker.check_all_conflicts(
                     staff_id=item_data.staff_id,
-                    resource_id=item_data.resource_id,
+                    resource_ids=item_data.resource_ids,
                     start_time=item_data.start_time,
                     end_time=item_data.end_time
                 )
@@ -164,7 +173,6 @@ class BookingService:
                 booking_id=booking.id,
                 service_id=item_data.service_id,
                 staff_id=item_data.staff_id,
-                resource_id=item_data.resource_id,
                 treatment_id=item_data.treatment_id,
                 service_name_snapshot=service.name,
                 start_time=item_data.start_time,
@@ -172,6 +180,15 @@ class BookingService:
                 original_price=Decimal(str(service.price))
             )
             self.session.add(item)
+            await self.session.flush() # Get item.id for resources
+
+            # Handle Resources
+            if item_data.resource_ids:
+                from .models import BookingItemResource # Avoid circular
+                for rid in item_data.resource_ids:
+                    bir = BookingItemResource(booking_item_id=item.id, resource_id=rid)
+                    self.session.add(bir)
+
             total_price += item.original_price
 
         booking.total_price = total_price
@@ -240,10 +257,10 @@ class BookingService:
             )
 
         # Check conflicts
-        if data.staff_id or data.resource_id:
+        if data.staff_id or data.resource_ids:
             conflicts = await self.conflict_checker.check_all_conflicts(
                 staff_id=data.staff_id,
-                resource_id=data.resource_id,
+                resource_ids=data.resource_ids,
                 start_time=data.start_time,
                 end_time=data.end_time
             )
@@ -268,7 +285,6 @@ class BookingService:
             booking_id=booking_id,
             service_id=data.service_id,
             staff_id=data.staff_id,
-            resource_id=data.resource_id,
             treatment_id=data.treatment_id,
             service_name_snapshot=service.name,
             start_time=data.start_time,
@@ -276,6 +292,14 @@ class BookingService:
             original_price=Decimal(str(service.price))
         )
         self.session.add(item)
+        await self.session.flush()
+
+        # Handle Resources
+        if data.resource_ids:
+            from .models import BookingItemResource
+            for rid in data.resource_ids:
+                bir = BookingItemResource(booking_item_id=item.id, resource_id=rid)
+                self.session.add(bir)
 
         # Recalculate booking
         booking.total_price += item.original_price
@@ -320,7 +344,25 @@ class BookingService:
 
         # Determine new values
         new_staff_id = update_data.get("staff_id", item.staff_id)
-        new_resource_id = update_data.get("resource_id", item.resource_id)
+        # Handle resource_ids: if provided in update_data, use it. Else... item.resources?
+        # Update schema has resource_ids. logic: if present in update_data, Replace All.
+
+        should_update_resources = "resource_ids" in update_data
+        new_resource_ids = update_data.get("resource_ids") if should_update_resources else [r.id for r in item.resources] # Lazy load might fail if not joined.
+        # Note: 'item' fetched via session.get might not have 'resources' loaded.
+        # We need to ensure resources are loaded or fetch them if we need to check default.
+        # But if we rely on update_data having resource_ids for change...
+
+        # NOTE: For simplicity in checking conflicts only:
+        # If 'resource_ids' is NOT passed, we assume we keep existing.
+        # Checking existing resources requires loading them.
+
+        if not should_update_resources:
+            # Load existing
+            from .models import BookingItemResource
+            res_links = await self.session.exec(select(BookingItemResource).where(BookingItemResource.booking_item_id == item.id))
+            new_resource_ids = [r.resource_id for r in res_links.all()]
+
         new_start = update_data.get("start_time", item.start_time)
         new_end = update_data.get("end_time", item.end_time)
 
@@ -342,7 +384,7 @@ class BookingService:
         # Check conflicts (exclude current item)
         conflicts = await self.conflict_checker.check_all_conflicts(
             staff_id=new_staff_id,
-            resource_id=new_resource_id,
+            resource_ids=new_resource_ids,
             start_time=new_start,
             end_time=new_end,
             exclude_item_id=item_id
@@ -354,7 +396,19 @@ class BookingService:
             )
 
         for key, value in update_data.items():
-            setattr(item, key, value)
+            if key != "resource_ids":
+                setattr(item, key, value)
+
+        if should_update_resources:
+            from .models import BookingItemResource
+            # Delete old
+            await self.session.exec(
+                text(f"DELETE FROM booking_item_resources WHERE booking_item_id = '{item.id}'")
+            )
+            # Add new
+            if new_resource_ids:
+                for rid in new_resource_ids:
+                    self.session.add(BookingItemResource(booking_item_id=item.id, resource_id=rid))
 
         await self.session.commit()
         await self.session.refresh(item)

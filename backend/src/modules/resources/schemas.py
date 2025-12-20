@@ -57,7 +57,7 @@ class ResourceBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100, description="Tên tài nguyên")
     code: str | None = Field(None, max_length=50, description="Mã định danh (unique)")
     status: ResourceStatus = Field(ResourceStatus.ACTIVE, description="Trạng thái")
-    capacity: int = Field(1, ge=1, description="Sức chứa")
+    # capacity removed
     setup_time_minutes: int = Field(0, ge=0, description="Thời gian chuẩn bị (phút)")
     description: str | None = None
     image_url: str | None = None
@@ -74,7 +74,7 @@ class ResourceUpdate(BaseModel):
     code: str | None = None
     group_id: uuid.UUID | None = None
     status: ResourceStatus | None = None
-    capacity: int | None = Field(None, ge=1)
+    # capacity removed
     setup_time_minutes: int | None = Field(None, ge=0)
     description: str | None = None
     image_url: str | None = None

@@ -54,8 +54,8 @@ sequenceDiagram
 ### 3.23. Quản lý tài nguyên (C7)
 
 > **Lưu ý:** Theo thiết kế cơ sở dữ liệu, hệ thống quản lý tài nguyên theo 2 cấp:
-> - **Nhóm tài nguyên** (Resource Group): Ví dụ: "Phòng VIP", "Phòng Thường", "Máy Laser"
-> - **Tài nguyên** (Resource): Ví dụ: "Giường 1 - Phòng VIP", "Máy Laser A"
+> - **Nhóm tài nguyên** (Resource Group): Ví dụ: "Giường Spa Premium", "Máy Laser", "Máy Xông Hơi" (Loại: BED/EQUIPMENT)
+> - **Tài nguyên** (Resource): Ví dụ: "Giường 01", "Máy Laser A"
 
 #### 3.23a. Thêm mới tài nguyên
 
@@ -72,7 +72,7 @@ sequenceDiagram
     UI->>BE: createResource(data)
     activate BE
 
-    BE->>DB: INSERT INTO resources (group_id, name, code, status, capacity)
+    BE->>DB: INSERT INTO resources (group_id, name, code, status, setup_time)
     activate DB
     DB-->>BE: resource_record
     deactivate DB

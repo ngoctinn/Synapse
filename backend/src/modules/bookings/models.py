@@ -1,12 +1,5 @@
 """
 Bookings Module - Database Models
-
-🔥 ĐÂY LÀ MODULE QUAN TRỌNG NHẤT CỦA HỆ THỐNG
-
-Định nghĩa:
-- Booking: Lịch hẹn tổng của khách
-- BookingItem: Chi tiết từng dịch vụ (Activity trong mô hình RCPSP)
-- BookingStatus: Trạng thái lifecycle của booking
 """
 
 import uuid
@@ -28,22 +21,37 @@ if TYPE_CHECKING:
 
 class BookingStatus(str, Enum):
     """Trạng thái lifecycle của booking."""
-    PENDING = "PENDING"          # Chờ xác nhận
-    CONFIRMED = "CONFIRMED"      # Đã xác nhận
-    IN_PROGRESS = "IN_PROGRESS"  # Đang thực hiện
-    COMPLETED = "COMPLETED"      # Hoàn thành
-    CANCELLED = "CANCELLED"      # Đã hủy
-    NO_SHOW = "NO_SHOW"          # Khách không đến
+    PENDING = "PENDING"
+    CONFIRMED = "CONFIRMED"
+    IN_PROGRESS = "IN_PROGRESS"
+    COMPLETED = "COMPLETED"
+    CANCELLED = "CANCELLED"
+    NO_SHOW = "NO_SHOW"
+
+
+class BookingItemResource(SQLModel, table=True):
+    """
+    Bảng trung gian: BookingItem ↔ Resource (N-N)
+
+    1 BookingItem có thể chiếm N Resources (VD: 1 Giường + 1 Máy)
+    """
+    __tablename__ = "booking_item_resources"
+
+    booking_item_id: uuid.UUID = Field(
+        foreign_key="booking_items.id",
+        primary_key=True,
+        ondelete="CASCADE"
+    )
+    resource_id: uuid.UUID = Field(
+        foreign_key="resources.id",
+        primary_key=True,
+        ondelete="CASCADE"
+    )
 
 
 class BookingItem(SQLModel, table=True):
     """
     Chi tiết từng dịch vụ trong lịch hẹn.
-
-    ⚡ ĐÂY LÀ ACTIVITY TRONG MÔ HÌNH RCPSP:
-    - start_time, end_time: Processing time
-    - staff_id: Resource (con người)
-    - resource_id: Resource (vật lý - phòng/máy)
     """
     __tablename__ = "booking_items"
 
@@ -62,11 +70,7 @@ class BookingItem(SQLModel, table=True):
         foreign_key="staff.user_id",
         ondelete="SET NULL"
     )
-    resource_id: uuid.UUID | None = Field(
-        default=None,
-        foreign_key="resources.id",
-        ondelete="SET NULL"
-    )
+    # Removed single resource_id, moved to BookingItemResource
     treatment_id: uuid.UUID | None = Field(
         default=None,
         foreign_key="customer_treatments.id",
@@ -88,12 +92,13 @@ class BookingItem(SQLModel, table=True):
     booking: "Booking" = Relationship(back_populates="items")
     service: "Service" = Relationship()
     staff: "Staff" = Relationship()
-    resource: "Resource" = Relationship()
     treatment: "CustomerTreatment" = Relationship()
+
+    # New Relationship: Resources assigned to this item
+    resources: list["Resource"] = Relationship(link_model=BookingItemResource)
 
     @property
     def duration_minutes(self) -> int:
-        """Thời lượng dịch vụ (phút)."""
         delta = self.end_time - self.start_time
         return int(delta.total_seconds() / 60)
 
@@ -101,8 +106,6 @@ class BookingItem(SQLModel, table=True):
 class Booking(SQLModel, table=True):
     """
     Lịch hẹn của khách hàng.
-
-    Một Booking có thể chứa nhiều BookingItems (nhiều dịch vụ).
     """
     __tablename__ = "bookings"
 
@@ -164,11 +167,9 @@ class Booking(SQLModel, table=True):
     )
 
     def recalculate_total(self) -> None:
-        """Tính lại tổng giá từ items."""
         self.total_price = sum(item.original_price for item in self.items)
 
     def recalculate_time_range(self) -> None:
-        """Tính lại start/end time từ items."""
         if self.items:
             self.start_time = min(item.start_time for item in self.items)
             self.end_time = max(item.end_time for item in self.items)
