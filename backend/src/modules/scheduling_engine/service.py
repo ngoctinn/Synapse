@@ -11,6 +11,8 @@ Service Layer xử lý logic nghiệp vụ cho:
 
 from fastapi import Depends, HTTPException, status
 from sqlalchemy import text
+from sqlalchemy.orm import selectinload
+from sqlmodel import select
 from datetime import time, timedelta, datetime, date
 from sqlmodel.ext.asyncio.session import AsyncSession
 import uuid
@@ -270,7 +272,15 @@ class SchedulingService:
         from src.modules.services.models import Service
 
         # 1. Lấy thông tin service
-        service = await self.session.get(Service, request.service_id)
+        # service = await self.session.get(Service, request.service_id)
+        # Fix Lazy Loading Error by Eagerly Loading Relationships
+        query_service = select(Service).where(Service.id == request.service_id).options(
+            selectinload(Service.skills),
+            selectinload(Service.resource_requirements)
+        )
+        result_service = await self.session.exec(query_service)
+        service = result_service.first()
+
         if not service:
             raise HTTPException(status_code=404, detail="Không tìm thấy dịch vụ")
 
@@ -289,7 +299,7 @@ class SchedulingService:
         search_start = request.time_window.start if request.time_window else time(8, 0)
         search_end = request.time_window.end if request.time_window else time(21, 0)
         required_skill_ids = [s.id for s in service.skills]
-        required_resource_group_id = service.resource_requirements[0].resource_group_id if service.resource_requirements else None
+        required_resource_group_id = service.resource_requirements[0].group_id if service.resource_requirements else None
 
         available_options = finder.find_slots(
             duration=service.duration,
