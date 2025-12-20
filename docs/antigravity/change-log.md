@@ -1,54 +1,65 @@
 # Change Log - Antigravity Workflow
 
-## [2025-12-20] Phase 3: Promotions Module
+## [2025-12-20] Phase 4: Waitlist & Notifications (Email Only)
 
 ### Cập Nhật Code
-- Tạo module mới: `backend/src/modules/promotions/`
-  - `models.py`: Định nghĩa `Promotion` entity và `DiscountType` enum.
-  - `schemas.py`: `PromotionCreate`, `PromotionUpdate`, `ValidatePromotionRequest`, `ValidatePromotionResponse`.
-  - `service.py`: `PromotionService` với CRUD và logic `validate_code` (kiểm tra ngày, số lượt, min order).
-  - `router.py`: API endpoints standard.
-  - `exceptions.py`: Custom errors.
-- Đăng ký module:
-  - Import vào `backend/src/modules/__init__.py`.
-  - Include router vào `backend/src/app/main.py`.
+- Tạo module `waitlist`:
+  - `models.py`: `WaitlistEntry`, `WaitlistStatus`.
+  - `service.py`: CRUD Operations.
+  - `router.py`: API `/waitlist`.
+- Tạo module `notifications`:
+  - `models.py`: `NotificationTemplate` (Email templates).
+  - `service.py`: `send_email` (Mock implementation), Template CRUD.
+  - `router.py`: API `/notifications/send-email` (Test), `/notifications/templates` (Config).
+- Đăng ký modules vào `src/modules/__init__.py` và `src/app/main.py`.
 
 ### Database Changes (Manual Action Required ⚠️)
-Do lỗi `Permission Denied` khi Agent chạy migration, bạn vui lòng chạy SQL sau trên Supabase SQL Editor:
+Chưa có quyền DDL tự động, bạn vui lòng chạy script SQL sau:
+
 ```sql
--- 1. Create Enum
+-- 1. WAITLIST
 DO $$ BEGIN
-    CREATE TYPE discount_type AS ENUM ('PERCENTAGE', 'FIXED_AMOUNT');
+    CREATE TYPE waitlist_status AS ENUM ('PENDING', 'NOTIFIED', 'BOOKED', 'EXPIRED', 'CANCELLED');
 EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
 
--- 2. Create Table
-CREATE TABLE IF NOT EXISTS promotions (
+CREATE TABLE IF NOT EXISTS waitlist_entries (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    code VARCHAR(50) UNIQUE NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    discount_type discount_type NOT NULL,
-    discount_value DECIMAL(12, 2) NOT NULL,
-    min_order_value DECIMAL(12, 2) DEFAULT 0,
-    max_uses INTEGER,
-    current_uses INTEGER DEFAULT 0,
-    valid_from DATE NOT NULL,
-    valid_until DATE NOT NULL,
-    is_active BOOLEAN DEFAULT TRUE NOT NULL,
+    customer_id UUID REFERENCES customers(id) ON DELETE CASCADE NOT NULL,
+    service_id UUID REFERENCES services(id) ON DELETE SET NULL,
+    preferred_date DATE NOT NULL,
+    preferred_time_range_start TIME,
+    preferred_time_range_end TIME,
+    notes TEXT,
+    status waitlist_status DEFAULT 'PENDING' NOT NULL,
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
-
-    CONSTRAINT chk_discount_value_positive CHECK (discount_value > 0),
-    CONSTRAINT chk_valid_dates CHECK (valid_until >= valid_from),
-    CONSTRAINT chk_uses CHECK (max_uses IS NULL OR current_uses <= max_uses)
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
--- 3. Index & RLS
-CREATE INDEX IF NOT EXISTS idx_promotions_code ON promotions(code) WHERE is_active = TRUE;
-ALTER TABLE promotions ENABLE ROW LEVEL SECURITY;
-CREATE POLICY promotions_read_public ON promotions FOR SELECT USING (is_active = TRUE);
+-- 2. NOTIFICATIONS (TEMPLATES)
+CREATE TABLE IF NOT EXISTS notification_templates (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    code VARCHAR(100) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    subject_template VARCHAR(255) NOT NULL,
+    body_template TEXT NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+-- 3. RLS
+ALTER TABLE waitlist_entries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE notification_templates ENABLE ROW LEVEL SECURITY;
+
+-- Policies (Simplified for dev)
+CREATE POLICY waitlist_customer_insert ON waitlist_entries FOR INSERT WITH CHECK (true);
+CREATE POLICY waitlist_read_own ON waitlist_entries FOR SELECT USING (customer_id IN (SELECT id FROM customers WHERE user_id = auth.uid()));
+CREATE POLICY waitlist_admin_all ON waitlist_entries FOR ALL USING (auth.role() = 'service_role'); -- OR admin check result
+
+CREATE POLICY templates_read_all ON notification_templates FOR SELECT USING (true);
 ```
 
-## [2025-12-20] Phase 2: Scheduling Engine Expansion (Auto Reschedule)
+## [2025-12-20] Phase 3: Promotions Module
 ... (như cũ)

@@ -18,7 +18,9 @@ from src.modules import (
     customer_treatments,
     billing,
     operating_hours,
-    promotions
+    promotions,
+    waitlist,
+    notifications
 )
 
 @asynccontextmanager
@@ -70,6 +72,8 @@ app.include_router(customer_treatments.router, prefix=settings.API_V1_STR)
 app.include_router(billing.router, prefix=settings.API_V1_STR)
 app.include_router(operating_hours.router, prefix=settings.API_V1_STR)
 app.include_router(promotions.router, prefix=settings.API_V1_STR)
+app.include_router(waitlist.router, prefix=settings.API_V1_STR)
+app.include_router(notifications.router, prefix=settings.API_V1_STR)
 
 @app.get("/")
 async def root():

@@ -11,6 +11,8 @@ from . import (
     billing,
     operating_hours,
     promotions,
+    waitlist,
+    notifications,
 )
 
 __all__ = [
@@ -26,5 +28,7 @@ __all__ = [
     "billing",
     "operating_hours",
     "promotions",
+    "waitlist",
+    "notifications",
 ]
 

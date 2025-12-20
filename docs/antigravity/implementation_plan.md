@@ -108,12 +108,13 @@ backend/src/modules/operating_hours/
 ---
 
 ### Phase 4: Waitlist & Notifications
-**Thời gian:** ~3 ngày | **Endpoints:** ~8
+**Thời gian:** ~3 ngày | **Endpoints:** ~8 (Email Only)
 
 | Module | Endpoints |
 |--------|-----------|
 | `waitlist` | CRUD `/waitlist` |
-| `notifications` | GET `/notifications`, PATCH `/notifications/{id}/read` |
+| `notifications` | POST `/notifications/send-email` (Test) |
+| `notifications` | CRUD `/notification-templates` (Email Templates) |
 
 ---
 

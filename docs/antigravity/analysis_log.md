@@ -1,52 +1,46 @@
-# Analysis Log - Phase 3: Promotions Module
+# Analysis Log - Phase 5: Warranty & Chat
 
 ## Ngày: 2025-12-20
 
 ### 1. Database Schema Analysis
 
-**Table `promotions`**:
-- `id`: UUID (PK)
-- `code`: VARCHAR(50) (Unique) - Mã giảm giá
-- `name`: VARCHAR(255)
-- `discount_type`: Enum ('PERCENTAGE', 'FIXED_AMOUNT')
-- `discount_value`: DECIMAL - Giá trị giảm
-- `valid_from`: DATE
-- `valid_until`: DATE
-- `min_order_value`: DECIMAL
-- `max_uses`: INTEGER (Optional)
-- `current_uses`: INTEGER
-- `is_active`: BOOLEAN
+**Chat Modules**:
+- `chat_sessions`: Quản lý phiên hội thoại (Open/Closed).
+- `chat_messages`: Nội dung tin nhắn. Link `sender_id` tới `users`.
 
-**Constraints**:
-- `valid_until >= valid_from`
-- `discount_value > 0`
-- `current_uses <= max_uses`
+**Warranty Module**:
+- `warranty_tickets`:
+  - `status`: Enum ('PENDING', 'APPROVED', 'REJECTED', 'RESOLVED').
+  - `images`: Array `TEXT[]`. (Trong Python SQLModel cần `Column(ARRAY(String))`).
+  - Link `booking_id` (optional), `customer_id`.
 
-### 2. Business Logic Analysis
+### 2. Business Logic
 
-**Validate Promotion (`validate_promotion`)**:
-1. Check `is_active = True`.
-2. Check `code` tồn tại.
-3. Check `today` trong khoảng [`valid_from`, `valid_until`].
-4. Check `current_uses < max_uses` (nếu có limit).
-5. Check `order_total >= min_order_value`.
-6. Trả về: Giá trị giảm giá + Final Price.
+**Chat Flow**:
+- Khách gửi tin -> Kiểm tra có Session OPEN không?
+  - Không: Tạo Session mới.
+  - Có: Append message vào session đó.
+- WebSocket: Kết nối tới `/ws/chat/{session_id}`.
+  - Client gửi msg -> Server lưu DB -> Broadcast cho Staff đang subscribe.
 
-**Apply Promotion**:
-- Khi Booking thành công (hoặc Invoice payment), tăng `current_uses`.
+**Warranty Flow**:
+- Khách tạo yêu cầu bảo hành từ Booking cũ.
+- Upload ảnh (Client upload lên Storage, gửi URL về API).
+- Admin xem danh sách -> Cập nhật Status & Notes.
 
 ### 3. API Endpoints
 
-| Method | Path | Mô tả |
-|--------|------|-------|
-| GET | `/promotions` | List (Admin view) |
-| POST | `/promotions` | Create |
-| GET | `/promotions/{id}` | Detail |
-| PUT | `/promotions/{id}` | Update |
-| POST | `/promotions/validate` | Validate code & Calculate discount |
-| PATCH | `/promotions/{id}/toggle` | Activate/Deactivate |
+**Module `warranty`**:
+- `POST /warranty-tickets`: Tạo yêu cầu.
+- `GET /warranty-tickets`: List (Filter by Customer/Status).
+- `PATCH /warranty-tickets/{id}`: Update Status (Admin).
+
+**Module `chat`**:
+- `POST /chat/sessions`: Bắt đầu hội thoại.
+- `GET /chat/sessions/{id}/messages`: Lấy lịch sử chat.
+- `POST /chat/sessions/{id}/messages`: Gửi tin (HTTP Fallback).
+- `WS /chat/ws/{session_id}`: WebSocket Real-time.
 
 ### 4. Dependencies
-- Module `billing` sẽ gọi `promotions` để tính giá.
-- Module `bookings` cũng có thể cần hiển thị giá tạm tính.
-- Service `PromotionService` sẽ được inject vào `BillingService` (Future).
+- Chat cần `users`, `customers`, `staff`.
+- Warranty cần `bookings`, `customers`.
