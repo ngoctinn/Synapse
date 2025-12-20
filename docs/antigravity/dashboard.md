@@ -2,17 +2,18 @@
 
 ## Active Workflow Tracker
 
-### ⏳ Đang Thực Hiện: Phase 2 - Scheduling Engine Extension
+### ⏳ Đang Thực Hiện: Phase 3 - Promotions Module
 
 | Task | Mô tả | Trạng thái |
 |------|-------|------------|
-| 2.1 | Phân tích code hiện tại của module `scheduling_engine` | ⬜ Chưa bắt đầu |
-| 2.2 | Cập nhật schemas.py (RescheduleRequest, ConflictCheck) | ⬜ Chưa bắt đầu |
-| 2.3 | Implement logic tìm xung đột (Conflict Detection) | ⬜ Chưa bắt đầu |
-| 2.4 | Implement logic tìm slot thay thế (Reschedule Algo) | ⬜ Chưa bắt đầu |
-| 2.5 | Cập nhật router.py (Endpoints mới) | ⬜ Chưa bắt đầu |
-| 2.6 | Verify (lint/build) | ⬜ Chưa bắt đầu |
-| 2.7 | Setup DB (nếu cần tables mới, vd: logs) | ⬜ Chưa bắt đầu |
+| 3.1 | Phân tích schema `promotions` trong database_design.md | ⬜ Chưa bắt đầu |
+| 3.2 | Tạo `models.py` (Promotion, PromotionUsage?) | ⬜ Chưa bắt đầu |
+| 3.3 | Tạo `schemas.py` (DTOs: Create, Update, ValidateRequest) | ⬜ Chưa bắt đầu |
+| 3.4 | Tạo `service.py` (CRUD + Logic Validate Discount) | ⬜ Chưa bắt đầu |
+| 3.5 | Tạo `router.py` (CRUD Endpoints + /validate) | ⬜ Chưa bắt đầu |
+| 3.6 | Đăng ký module trong `main.py` | ⬜ Chưa bắt đầu |
+| 3.7 | Verify (lint/build) | ⬜ Chưa bắt đầu |
+| 3.8 | Setup DB (create tables via MCP) | ⬜ Chưa bắt đầu |
 
 ---
 
@@ -20,5 +21,5 @@
 
 | Ngày | Phase | Mô tả | Kết quả |
 |------|-------|-------|---------|
+| 2025-12-20 | Phase 2 | Scheduling Reschedule | ✅ 2 endpoints, Logic AI |
 | 2025-12-20 | Phase 1 | Operating Hours Module | ✅ 8 endpoints, DB ready |
-

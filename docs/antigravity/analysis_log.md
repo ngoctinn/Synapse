@@ -1,72 +1,52 @@
-# Analysis Log - Phase 1: Operating Hours Module
+# Analysis Log - Phase 3: Promotions Module
 
 ## Ngày: 2025-12-20
 
 ### 1. Database Schema Analysis
 
-**Tables đã có trong thiết kế:**
-- `regular_operating_hours` - Giờ hoạt động thường xuyên theo ngày trong tuần
-- `exception_dates` - Ngày nghỉ lễ, bảo trì, giờ đặc biệt
+**Table `promotions`**:
+- `id`: UUID (PK)
+- `code`: VARCHAR(50) (Unique) - Mã giảm giá
+- `name`: VARCHAR(255)
+- `discount_type`: Enum ('PERCENTAGE', 'FIXED_AMOUNT')
+- `discount_value`: DECIMAL - Giá trị giảm
+- `valid_from`: DATE
+- `valid_until`: DATE
+- `min_order_value`: DECIMAL
+- `max_uses`: INTEGER (Optional)
+- `current_uses`: INTEGER
+- `is_active`: BOOLEAN
 
-**Schema từ database_design.md:**
-```
-regular_operating_hours {
-    uuid id PK
-    int day_of_week "0-6 (Sun-Sat)"
-    time open_time
-    time close_time
-    boolean is_closed
-}
+**Constraints**:
+- `valid_until >= valid_from`
+- `discount_value > 0`
+- `current_uses <= max_uses`
 
-exception_dates {
-    uuid id PK
-    date exception_date
-    enum type "HOLIDAY, MAINTENANCE, CUSTOM"
-    time open_time
-    time close_time
-    boolean is_closed
-    string reason
-}
-```
+### 2. Business Logic Analysis
 
-### 2. Dependencies Analysis
+**Validate Promotion (`validate_promotion`)**:
+1. Check `is_active = True`.
+2. Check `code` tồn tại.
+3. Check `today` trong khoảng [`valid_from`, `valid_until`].
+4. Check `current_uses < max_uses` (nếu có limit).
+5. Check `order_total >= min_order_value`.
+6. Trả về: Giá trị giảm giá + Final Price.
 
-**Modules sẽ sử dụng operating_hours:**
-- `scheduling_engine` - Kiểm tra giờ hoạt động trước khi tìm slot
-- `bookings` - Validate booking time phải trong giờ hoạt động
+**Apply Promotion**:
+- Khi Booking thành công (hoặc Invoice payment), tăng `current_uses`.
 
-**Import pattern (theo Vertical Slice):**
-```python
-from src.modules import operating_hours
-hours = await operating_hours.get_hours_for_day(date)
-```
-
-### 3. Files Cần Tạo
-
-```
-backend/src/modules/operating_hours/
-├── __init__.py       # Public API exports
-├── models.py         # SQLModel entities
-├── schemas.py        # Pydantic DTOs
-├── service.py        # OperatingHoursService
-├── router.py         # FastAPI endpoints
-└── exceptions.py     # Custom exceptions
-```
-
-### 4. API Endpoints Đề Xuất
+### 3. API Endpoints
 
 | Method | Path | Mô tả |
 |--------|------|-------|
-| GET | /operating-hours | Lấy toàn bộ giờ hoạt động 7 ngày |
-| PUT | /operating-hours | Cập nhật giờ hoạt động (batch) |
-| GET | /operating-hours/{day} | Lấy giờ hoạt động một ngày cụ thể |
-| GET | /exception-dates | Danh sách ngày ngoại lệ |
-| POST | /exception-dates | Thêm ngày nghỉ/đặc biệt |
-| GET | /exception-dates/{id} | Chi tiết một ngày ngoại lệ |
-| PUT | /exception-dates/{id} | Cập nhật ngày ngoại lệ |
-| DELETE | /exception-dates/{id} | Xóa ngày ngoại lệ |
+| GET | `/promotions` | List (Admin view) |
+| POST | `/promotions` | Create |
+| GET | `/promotions/{id}` | Detail |
+| PUT | `/promotions/{id}` | Update |
+| POST | `/promotions/validate` | Validate code & Calculate discount |
+| PATCH | `/promotions/{id}/toggle` | Activate/Deactivate |
 
-### 5. Không Có Breaking Changes
-
-- Không ảnh hưởng đến modules hiện tại
-- Chỉ thêm mới, không sửa đổi code existing
+### 4. Dependencies
+- Module `billing` sẽ gọi `promotions` để tính giá.
+- Module `bookings` cũng có thể cần hiển thị giá tạm tính.
+- Service `PromotionService` sẽ được inject vào `BillingService` (Future).

@@ -52,8 +52,11 @@ class DataExtractor:
         # 3. Lấy danh sách resources khả dụng
         available_resources = await self._get_available_resources()
 
-        # 4. Lấy các lịch đã gán (để tránh conflict)
-        existing_assignments = await self._get_existing_assignments(target_date)
+        # 4. Lấy các lịch đã gán (để tránh conflict), loại trừ items đang xử lý
+        existing_assignments = await self._get_existing_assignments(
+            target_date,
+            exclude_item_ids=booking_item_ids
+        )
 
         return SchedulingProblem(
             unassigned_items=unassigned_items,
@@ -247,14 +250,18 @@ class DataExtractor:
         ]
 
     async def _get_existing_assignments(
-        self, target_date: date
+        self,
+        target_date: date,
+        exclude_item_ids: list[uuid.UUID] | None = None
     ) -> list[ExistingAssignment]:
         """Lấy các lịch đã được gán (để tránh conflict)."""
         start_of_day = datetime.combine(target_date, time.min, tzinfo=timezone.utc)
         end_of_day = datetime.combine(target_date, time.max, tzinfo=timezone.utc)
 
-        query = text("""
+        # Base query
+        query_str = """
             SELECT
+                bi.id,
                 bi.staff_id,
                 bi.resource_id,
                 bi.start_time,
@@ -265,19 +272,29 @@ class DataExtractor:
               AND bi.start_time < :end_of_day
               AND (bi.staff_id IS NOT NULL OR bi.resource_id IS NOT NULL)
               AND b.status NOT IN ('CANCELLED', 'NO_SHOW', 'COMPLETED')
-        """)
-        result = await self.session.execute(query, {
+        """
+
+        params = {
             "start_of_day": start_of_day,
             "end_of_day": end_of_day
-        })
+        }
+
+        # Exclude specified items (đang được reschedule)
+        if exclude_item_ids:
+            # Convert UUIDs to string for IN clause (safe with UUID)
+            ids_str = ",".join(f"'{str(id)}'" for id in exclude_item_ids)
+            query_str += f" AND bi.id NOT IN ({ids_str})"
+
+        query = text(query_str)
+        result = await self.session.execute(query, params)
         rows = result.fetchall()
 
         return [
             ExistingAssignment(
-                staff_id=uuid.UUID(str(row[0])) if row[0] else None,
-                resource_id=uuid.UUID(str(row[1])) if row[1] else None,
-                start_time=row[2],
-                end_time=row[3]
+                staff_id=uuid.UUID(str(row[1])) if row[1] else None,
+                resource_id=uuid.UUID(str(row[2])) if row[2] else None,
+                start_time=row[3],
+                end_time=row[4]
             )
             for row in rows
         ]

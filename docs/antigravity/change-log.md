@@ -1,49 +1,43 @@
 # Change Log - Antigravity Workflow
 
-## [2025-12-20] Phase 1: Operating Hours Module
-
-### Thêm Mới
-- **Module**: `backend/src/modules/operating_hours/`
-  - `models.py` - SQLModel entities (RegularOperatingHours, ExceptionDate)
-  - `schemas.py` - Pydantic V2 DTOs với ConfigDict
-  - `exceptions.py` - Custom exceptions Tiếng Việt
-  - `service.py` - Business logic với Service as Dependency pattern
-  - `router.py` - FastAPI endpoints với Docstring Markdown
-  - `__init__.py` - Public API exports
+## [2025-12-20] Phase 2: Scheduling Engine Expansion (Auto Reschedule)
 
 ### Cập Nhật
-- `backend/src/modules/__init__.py` - Thêm export `operating_hours`
-- `backend/src/app/main.py` - Đăng ký router `/api/v1/operating-hours`
+- `backend/src/modules/scheduling_engine/models.py`
+  - Thêm `ConflictCheckResponse`, `ConflictInfo`, `ConflictType`.
+  - Thêm `RescheduleRequest`, `RescheduleResult`.
+  - Cập nhật Pydantic models với `ConfigDict`.
 
-### Database
-- **Tables Created**: `regular_operating_hours`, `exception_dates`
-- **Enum Type**: `exception_date_type`
-- **RLS Policies**: Enabled (Read: All, Write: Authenticated)
-- **Data**: Seeded default hours (Mon-Sun: 09:00 - 21:00)
+- `backend/src/modules/scheduling_engine/service.py` (Mới)
+  - Refactor logic từ `router.py` sang `SchedulingService`.
+  - Thêm method `check_conflicts`: Tìm booking bị ảnh hưởng bởi staff unavailable.
+  - Thêm method `reschedule`: Tự động tìm slot thay thế cho items bị conflict.
 
-### API Endpoints Mới (8)
+- `backend/src/modules/scheduling_engine/data_extractor.py`
+  - Update `_get_existing_assignments` hỗ trợ `exclude_item_ids`.
+  - Fix logic `extract_problem` để cho phép Solver xử lý lại items đã gán (Reschedule mode).
+
+- `backend/src/modules/scheduling_engine/router.py`
+  - Refactor toàn bộ endpoints sử dụng `SchedulingService`.
+  - Thêm API `GET /conflicts`.
+  - Thêm API `POST /reschedule`.
+
+### API Endpoints Mới
 | Method | Path | Mô tả |
 |--------|------|-------|
-| GET | `/operating-hours` | Lấy giờ hoạt động cả tuần |
-| PUT | `/operating-hours` | Cập nhật giờ hoạt động cả tuần |
-| GET | `/operating-hours/day/{day}` | Giờ hoạt động một ngày |
-| GET | `/operating-hours/exceptions` | Danh sách ngày ngoại lệ |
-| POST | `/operating-hours/exceptions` | Thêm ngày nghỉ/đặc biệt |
-| GET | `/operating-hours/exceptions/{id}` | Chi tiết ngày ngoại lệ |
-| PUT | `/operating-hours/exceptions/{id}` | Cập nhật ngày ngoại lệ |
-| DELETE | `/operating-hours/exceptions/{id}` | Xóa ngày ngoại lệ |
+| GET | `/scheduling/conflicts` | Kiểm tra xung đột (VD: khi NV nghỉ) |
+| POST | `/scheduling/reschedule` | Tự động tìm người thay thế cho bookings bị conflict |
 
-### Tuân Thủ Rules
-- ✅ Vertical Slice Architecture
-- ✅ Service as Dependency
-- ✅ Pydantic V2 với ConfigDict
-- ✅ Async All The Way
-- ✅ Python 3.12+ syntax (`X | Y`, `list[X]`)
-- ✅ Guard Clauses / Early Return
-- ✅ Error messages Tiếng Việt
-- ✅ Docstring Markdown cho Swagger UI
+### Logic Tái Lập Lịch
+1.  Nhận danh sách `conflict_booking_item_ids`.
+2.  Trích xuất bài toán với các items này được coi là "unassigned" và loại trừ khỏi "existing assignments".
+3.  Chạy Solver để tìm `staff/resource` khác phù hợp (giữ nguyên giờ).
+4.  Trả về kết quả Assignments mới hoặc danh sách Failed Items.
 
 ### Kiểm Tra
-- ✅ Import test passed
-- ✅ Syntax validation passed
-- ✅ Database Tables & Policies created
+- ✅ Import test passed.
+- ✅ DataExtractor logic patched.
+- ✅ Solver logic unchanged (stable).
+
+## [2025-12-20] Phase 1: Operating Hours Module
+... (như cũ)

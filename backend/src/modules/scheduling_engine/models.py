@@ -7,7 +7,7 @@ Scheduling Module - Data Structures
 import uuid
 from datetime import datetime, date, time
 from enum import Enum
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class SolveStatus(str, Enum):
@@ -37,12 +37,16 @@ class BookingItemData(BaseModel):
     # Sở thích (ràng buộc mềm)
     preferred_staff_id: uuid.UUID | None = None
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class StaffData(BaseModel):
     """Dữ liệu KTV."""
     id: uuid.UUID
     name: str
     skill_ids: list[uuid.UUID] = []
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class StaffScheduleData(BaseModel):
@@ -53,6 +57,8 @@ class StaffScheduleData(BaseModel):
     end_time: time
     shift_name: str
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class ResourceData(BaseModel):
     """Dữ liệu phòng/máy."""
@@ -61,6 +67,8 @@ class ResourceData(BaseModel):
     group_id: uuid.UUID
     group_name: str
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class ExistingAssignment(BaseModel):
     """Lịch đã được gán (để tránh overlap)."""
@@ -68,6 +76,8 @@ class ExistingAssignment(BaseModel):
     resource_id: uuid.UUID | None = None
     start_time: datetime
     end_time: datetime
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class SchedulingProblem(BaseModel):
@@ -92,6 +102,8 @@ class SchedulingProblem(BaseModel):
     horizon_start: int = 0  # 00:00
     horizon_end: int = 1440  # 24:00
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 # ============================================================================
 # DATA STRUCTURES FOR SOLUTION
@@ -107,6 +119,8 @@ class Assignment(BaseModel):
     # Metadata
     staff_name: str | None = None
     resource_name: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class SolutionMetrics(BaseModel):
@@ -129,6 +143,8 @@ class SolutionMetrics(BaseModel):
     # Gap analysis
     total_idle_minutes: int = Field(description="Tổng thời gian rảnh")
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class SchedulingSolution(BaseModel):
     """Kết quả giải bài toán."""
@@ -138,6 +154,8 @@ class SchedulingSolution(BaseModel):
     solve_time_ms: int = 0
     metrics: SolutionMetrics | None = None
     message: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ============================================================================
@@ -163,10 +181,13 @@ class SolveRequest(BaseModel):
     weight_utilization: float = Field(default=1.0, description="Trọng số utilization")
     weight_fairness: float = Field(default=1.0, description="Trọng số công bằng")
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class EvaluateRequest(BaseModel):
     """Request đánh giá lịch hiện tại."""
     target_date: date
+    model_config = ConfigDict(from_attributes=True)
 
 
 class CompareResponse(BaseModel):
@@ -174,3 +195,57 @@ class CompareResponse(BaseModel):
     manual_metrics: SolutionMetrics
     optimized_metrics: SolutionMetrics
     improvement_summary: dict
+    model_config = ConfigDict(from_attributes=True)
+
+
+# ============================================================================
+# NEW: RESCHEDULE & CONFLICT SCHEMAS
+# ============================================================================
+
+class ConflictType(str, Enum):
+    STAFF_UNAVAILABLE = "STAFF_UNAVAILABLE" # NV nghỉ/bận
+    RESOURCE_UNAVAILABLE = "RESOURCE_UNAVAILABLE" # Phòng hỏng
+    DOUBLE_BOOKING = "DOUBLE_BOOKING" # Trùng lịch
+
+
+class ConflictInfo(BaseModel):
+    """Thông tin về xung đột lịch."""
+    booking_item_id: uuid.UUID
+    booking_id: uuid.UUID
+    type: ConflictType
+    description: str
+    affected_staff_id: uuid.UUID | None = None
+    affected_resource_id: uuid.UUID | None = None
+    start_time: datetime
+    end_time: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ConflictCheckResponse(BaseModel):
+    """Kết quả kiểm tra xung đột."""
+    has_conflicts: bool
+    conflicts: list[ConflictInfo]
+    total_conflicts: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class RescheduleRequest(BaseModel):
+    """Request tái lập lịch tự động."""
+    conflict_booking_item_ids: list[uuid.UUID]
+    allow_change_staff: bool = True
+    allow_change_resource: bool = True
+    # Future: allow_move_time: bool = False
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class RescheduleResult(BaseModel):
+    """Kết quả tái lập lịch."""
+    success_count: int
+    failed_count: int
+    data: SchedulingSolution # Assignments mới
+    failed_items: list[uuid.UUID] # Items không tìm được slot
+
+    model_config = ConfigDict(from_attributes=True)

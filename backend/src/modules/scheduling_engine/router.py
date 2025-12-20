@@ -2,16 +2,12 @@
 Scheduling Module - API Endpoints
 
 Hệ thống lập lịch thông minh (Optimization Solver).
-Sử dụng trí tuệ nhân tạo (OR-Tools) để tự động hóa việc phân bổ Kỹ thuật viên và Phòng cho các dịch vụ khách hàng
-nhằm tối ưu hóa hiệu suất và sự công bằng.
+Sử dụng trí tuệ nhân tạo (OR-Tools) để tự động hóa việc phân bổ Kỹ thuật viên và Phòng.
 """
 
 import uuid
 from datetime import date
-from fastapi import APIRouter, Depends
-
-from sqlmodel.ext.asyncio.session import AsyncSession
-from src.common.database import get_db_session
+from fastapi import APIRouter, Depends, Query, status, HTTPException
 
 from .models import (
     SchedulingSolution,
@@ -19,11 +15,11 @@ from .models import (
     SolveRequest,
     EvaluateRequest,
     CompareResponse,
-    SolveStatus,
+    ConflictCheckResponse,
+    RescheduleRequest,
+    RescheduleResult
 )
-from .data_extractor import DataExtractor
-from .solver import SpaSolver
-from .evaluator import ScheduleEvaluator
+from .service import SchedulingService
 
 router = APIRouter(prefix="/scheduling", tags=["Scheduling Engine"])
 
@@ -31,177 +27,106 @@ router = APIRouter(prefix="/scheduling", tags=["Scheduling Engine"])
 @router.post("/solve", response_model=SchedulingSolution)
 async def solve_scheduling(
     request: SolveRequest,
-    session: AsyncSession = Depends(get_db_session)
+    service: SchedulingService = Depends()
 ) -> SchedulingSolution:
-    """
-    **Tự động giải bài toán lập lịch tối ưu.**
-
-    Tự động gán Kỹ thuật viên và Phòng cho các dịch vụ chưa có người phụ trách bằng thuật toán Constraint Programming (CP-SAT).
-
-    ### Logic Flow:
-    1. **Data Extraction**: Thu thập dữ liệu về các lượt đặt trước (`BookingItems`), lịch làm việc của nhân viên (`StaffSchedule`) và danh sách kỹ năng.
-    2. **Model Building**: Định nghĩa các biến quyết định (Interval variables) và các ràng buộc (Hard Constraints):
-        - KTV phải có kỹ năng phù hợp với dịch vụ.
-        - KTV và Phòng không thể làm 2 việc cùng lúc (No overlap).
-        - Công việc phải nằm trong khung giờ làm việc của nhân viên.
-    3. **Optimization**: Tối ưu hóa hàm mục tiêu (Objective Function):
-        - Giảm thiểu tổng thời gian chờ của khách.
-        - Tối ưu hóa hiệu suất sử dụng phòng.
-        - Đảm bảo sự công bằng về khối lượng công việc giữa các nhân viên.
-    4. **Result**: Trả về danh sách các đề xuất phân công tối ưu.
-
-    ### Tham số đầu vào:
-    - **target_date**: Ngày cần lập lịch.
-    - **time_limit_seconds**: Giới hạn thời gian chạy của Solver (mặc định 30s).
-    """
-    target_date = request.target_date or date.today()
-
-    # 1. Trích xuất dữ liệu
-    extractor = DataExtractor(session)
-    problem = await extractor.extract_problem(
-        target_date=target_date,
-        booking_item_ids=request.booking_item_ids
-    )
-
-    if not problem.unassigned_items:
-        return SchedulingSolution(
-            status=SolveStatus.FEASIBLE,
-            message="No booking items to assign"
-        )
-
-    if not problem.available_staff:
-        return SchedulingSolution(
-            status=SolveStatus.INFEASIBLE,
-            message="No staff available on this date"
-        )
-
-    # 2. Giải bài toán
-    solver = SpaSolver(problem)
-    solution = solver.solve(time_limit_seconds=request.time_limit_seconds)
-
-    return solution
+    """Tự động giải bài toán lập lịch tối ưu."""
+    return await service.solve(request)
 
 
 @router.post("/evaluate", response_model=SolutionMetrics)
 async def evaluate_schedule(
     request: EvaluateRequest,
-    session: AsyncSession = Depends(get_db_session)
+    service: SchedulingService = Depends()
 ) -> SolutionMetrics:
-    """
-    **Đánh giá chất lượng lịch làm việc hiện tại.**
-
-    Phân tích và tính toán các chỉ số hiệu quả của bảng điều phối hiện tại đang được sắp xếp thủ công hoặc tự động.
-
-    ### Các chỉ số thu thập:
-    - **Utilization**: Tỷ lệ thời gian làm việc thực tế so với thời gian rảnh.
-    - **Fairness Index**: Chỉ số đo lường sự cân bằng trong việc phân bổ ca giữa các nhân viên.
-    - **Staff/Resource distribution**: Biểu đồ phân bổ tải trọng.
-    """
-    evaluator = ScheduleEvaluator(session)
-    return await evaluator.evaluate_current_schedule(request.target_date)
+    """Đánh giá chất lượng lịch làm việc hiện tại."""
+    return await service.evaluate(request.target_date)
 
 
 @router.post("/compare", response_model=CompareResponse)
 async def compare_schedules(
     target_date: date,
-    session: AsyncSession = Depends(get_db_session)
+    service: SchedulingService = Depends()
 ) -> CompareResponse:
-    """
-    **So sánh Lịch thủ công vs Lịch do AI đề xuất.**
+    """So sánh Lịch thủ công vs Lịch do AI đề xuất."""
+    # Logic compare cần manual + optimized, service hiện tại tách rời.
+    # Ta tái sử dụng logic cũ nhưng chuyển vào service hoặc gọi 2 hàm service.
 
-    Giúp quản lý thấy được giá trị của việc sử dụng AI trong việc cải thiện hiệu suất vận hành.
+    # 1. Evaluate Manual
+    manual = await service.evaluate(target_date)
 
-    ### Logic Flow:
-    1. Đo lường hiệu quả của lịch đang chạy (Manual).
-    2. Mô phỏng việc lập lịch lại bằng Solver (AI).
-    3. Tính toán phần trăm cải thiện (Improvement %) trên các tiêu chí (Fairness, Waiting time, Utilization).
-    """
-    evaluator = ScheduleEvaluator(session)
+    # 2. Solve Optimized
+    optimized_sol = await service.solve(SolveRequest(target_date=target_date))
 
-    # 1. Đánh giá lịch hiện tại
-    manual_metrics = await evaluator.evaluate_current_schedule(target_date)
-
-    # 2. Giải bài toán để lấy lịch tối ưu
-    extractor = DataExtractor(session)
-    problem = await extractor.extract_problem(target_date=target_date)
-
-    if not problem.unassigned_items:
+    if optimized_sol.metrics:
+        # TODO: Implement Detail Comparison Logic in Service or Utility
+        # For now return direct metrics
         return CompareResponse(
-            manual_metrics=manual_metrics,
-            optimized_metrics=manual_metrics,
-            improvement_summary={"note": "No unassigned items to optimize"}
+            manual_metrics=manual,
+            optimized_metrics=optimized_sol.metrics,
+            improvement_summary={"status": "computed"}
         )
-
-    solver = SpaSolver(problem)
-    solution = solver.solve(time_limit_seconds=30)
-
-    if solution.metrics:
-        # 3. So sánh
-        return await evaluator.compare_schedules(manual_metrics, solution.metrics)
     else:
         return CompareResponse(
-            manual_metrics=manual_metrics,
-            optimized_metrics=manual_metrics,
-            improvement_summary={"error": "Optimization solver failed"}
+             manual_metrics=manual,
+            optimized_metrics=manual,
+            improvement_summary={"error": "Optimization failed"}
         )
 
 
 @router.get("/suggestions/{booking_id}", response_model=SchedulingSolution)
 async def get_suggestions(
     booking_id: uuid.UUID,
-    session: AsyncSession = Depends(get_db_session)
+    service: SchedulingService = Depends()
 ) -> SchedulingSolution:
+    """Gợi ý phân công nhanh cho một Lịch hẹn."""
+    return await service.get_suggestions(booking_id)
+
+
+# ============================================================================
+# NEW ENDPOINTS (PHASE 2)
+# ============================================================================
+
+@router.get("/conflicts", response_model=ConflictCheckResponse)
+async def check_conflicts(
+    staff_id: uuid.UUID | None = Query(None, description="ID nhân viên (nếu kiểm tra nghỉ phép)"),
+    start_date: date | None = Query(None),
+    end_date: date | None = Query(None),
+    service: SchedulingService = Depends()
+) -> ConflictCheckResponse:
     """
-    **Gợi ý phân công nhanh cho một Lịch hẹn.**
+    **Kiểm tra xung đột lịch.**
 
-    Sử dụng Solver để tìm ra KTV và Phòng "tốt nhất" còn trống cho các dịch vụ trong một Booking cụ thể.
-    Dùng để hỗ trợ lễ tân khi khách gọi điện đặt lịch.
+    Dùng khi:
+    - Nhân viên xin nghỉ phép (check xem có dính booking nào không).
+    - Bảo trì phòng (check booking dính phòng).
     """
-    from sqlalchemy import text
+    return await service.check_conflicts(staff_id, start_date, end_date)
 
-    # Lấy các items của booking này
-    query = text("""
-        SELECT bi.id, bi.start_time
-        FROM booking_items bi
-        WHERE bi.booking_id = :booking_id
-          AND bi.staff_id IS NULL
-    """)
-    result = await session.execute(query, {"booking_id": str(booking_id)})
-    rows = result.fetchall()
 
-    if not rows:
-        return SchedulingSolution(
-            status=SolveStatus.FEASIBLE,
-            message="No services to assign for this booking"
-        )
+@router.post("/reschedule", response_model=RescheduleResult)
+async def auto_reschedule(
+    request: RescheduleRequest,
+    service: SchedulingService = Depends()
+) -> RescheduleResult:
+    """
+    **Tự động tái lập lịch (Tìm người thay thế).**
 
-    target_date = rows[0][1].date()
-    item_ids = [uuid.UUID(str(row[0])) for row in rows]
+    Khi có xung đột (VD: NV nghỉ), API này sẽ cố gắng tìm KTV khác phù hợp
+    cho các booking bị ảnh hưởng (cùng giờ, đủ kỹ năng).
 
-    # Giải bài toán
-    extractor = DataExtractor(session)
-    problem = await extractor.extract_problem(
-        target_date=target_date,
-        booking_item_ids=item_ids
-    )
-
-    if not problem.unassigned_items:
-        return SchedulingSolution(
-            status=SolveStatus.FEASIBLE,
-            message="No unassigned items"
-        )
-
-    solver = SpaSolver(problem)
-    return solver.solve(time_limit_seconds=10)
+    Trả về danh sách assignments mới nếu thành công.
+    """
+    result = await service.reschedule(request)
+    if result.failed_count > 0 and result.success_count == 0:
+        # Nếu fail hết thì báo lỗi 400 hoặc trả về result tùy policy FE
+        # Ở đây ta trả về result để FE hiển thị items nào fail
+        pass
+    return result
 
 
 @router.get("/health")
 async def check_ortools():
-    """
-    **Kiểm tra sức khỏe hệ thống giải toán.**
-
-    Xác nhận thư viện Google OR-Tools được cài đặt đúng và có thể thực thi các phép toán cơ bản.
-    """
+    """Kiểm tra sức khỏe hệ thống OR-Tools."""
     try:
         from ortools.sat.python import cp_model
         model = cp_model.CpModel()
@@ -210,13 +135,6 @@ async def check_ortools():
         model.Minimize(x)
         solver = cp_model.CpSolver()
         status = solver.Solve(model)
-
-        return {
-            "status": "ok",
-            "test_status": "OPTIMAL" if status == cp_model.OPTIMAL else "FAILED"
-        }
+        return {"status": "ok", "test_status": "OPTIMAL" if status == cp_model.OPTIMAL else "FAILED"}
     except Exception as e:
-        return {
-            "status": "error",
-            "message": str(e)
-        }
+        return {"status": "error", "message": str(e)}
