@@ -78,6 +78,12 @@ class CustomerService:
         result = await self.session.exec(query)
         return result.first()
 
+    async def get_by_user_id(self, user_id: uuid.UUID) -> Customer | None:
+        """Tìm profile khách hàng dựa trên user_id đăng nhập."""
+        query = select(Customer).where(Customer.user_id == user_id, Customer.deleted_at == None)
+        result = await self.session.exec(query)
+        return result.first()
+
     async def create(self, data: CustomerCreate) -> Customer:
         # Check duplicate phone
         existing = await self.get_by_phone(data.phone_number)

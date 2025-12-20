@@ -15,6 +15,7 @@ from src.modules.services import Service
 from .models import Booking, BookingItem, BookingStatus
 from src.modules.customer_treatments import CustomerTreatmentService
 from src.modules.billing import BillingService
+from src.modules.customers import CustomerService
 from .schemas import (
     BookingCreate,
     BookingUpdate,
@@ -33,12 +34,14 @@ class BookingService:
         self,
         session: AsyncSession = Depends(get_db_session),
         treatment_service: CustomerTreatmentService = Depends(CustomerTreatmentService),
-        billing_service: BillingService = Depends(BillingService)
+        billing_service: BillingService = Depends(BillingService),
+        customer_service: CustomerService = Depends(CustomerService)
     ):
         self.session = session
         self.conflict_checker = ConflictChecker(session)
         self.treatment_service = treatment_service
         self.billing_service = billing_service
+        self.customer_service = customer_service
         self.status_manager = BookingStatusManager(session, treatment_service, billing_service)
         self.item_manager = BookingItemManager(session, self.conflict_checker, treatment_service)
 
@@ -93,17 +96,47 @@ class BookingService:
 
     async def create(self, data: BookingCreate, created_by: uuid.UUID | None = None) -> Booking:
         """Tạo lịch hẹn mới."""
+        from src.modules.users.models import User
+        from src.modules.users.constants import UserRole
+
+        # Tự động xác định customer_id nếu người tạo là khách hàng
+        customer_id = data.customer_id
+        creator_role = UserRole.CUSTOMER # Default role
+
+        if created_by:
+            creator = await self.session.get(User, created_by)
+            if creator:
+                creator_role = creator.role
+
+            if not customer_id and creator_role == UserRole.CUSTOMER:
+                # creator_role = creator.role # Retain for traceability if needed, but not used for status
+
+                if not customer_id and creator.role == UserRole.CUSTOMER:
+                    customer = await self.customer_service.get_by_user_id(created_by)
+                    if customer:
+                        customer_id = customer.id
+
+        if not customer_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Thiếu thông tin khách hàng (customer_id)"
+            )
+
+        # Trạng thái ban đầu mặc định là CONFIRMED (Auto-confirm)
+        # Hệ thống đã qua bước ConflictChecker trong add_item nên chốt luôn.
+        initial_status = BookingStatus.CONFIRMED
+
         # Calculate time range from items
         start_time = min(item.start_time for item in data.items)
         end_time = max(item.end_time for item in data.items)
 
         booking = Booking(
-            customer_id=data.customer_id,
+            customer_id=customer_id,
             created_by=created_by,
             start_time=start_time,
             end_time=end_time,
             notes=data.notes,
-            status=BookingStatus.PENDING,
+            status=initial_status,
             total_price=Decimal("0")
         )
         self.session.add(booking)

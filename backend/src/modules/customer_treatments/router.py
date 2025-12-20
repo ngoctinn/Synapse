@@ -9,7 +9,9 @@ from .schemas import (
 from .service import CustomerTreatmentService
 from .exceptions import TreatmentNotFound, TreatmentException
 
-router = APIRouter(prefix="/treatments", tags=["Customer Treatments"])
+from src.common.auth_core import get_token_payload
+
+router = APIRouter(prefix="/treatments", tags=["Customer Treatments"], dependencies=[Depends(get_token_payload)])
 
 @router.get("/customer/{customer_id}", response_model=list[CustomerTreatmentRead])
 async def get_customer_treatments(

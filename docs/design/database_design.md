@@ -726,7 +726,7 @@ CREATE TABLE bookings (
 
     start_time TIMESTAMPTZ NOT NULL,
     end_time TIMESTAMPTZ NOT NULL,
-    status booking_status DEFAULT 'PENDING' NOT NULL,
+    status booking_status DEFAULT 'CONFIRMED' NOT NULL,
     notes TEXT,
     cancel_reason TEXT,
     check_in_time TIMESTAMPTZ,

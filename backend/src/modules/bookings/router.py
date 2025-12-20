@@ -31,7 +31,7 @@ from src.common.database import get_db_session
 from src.common.auth_core import get_token_payload
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-router = APIRouter(prefix="/bookings", tags=["Bookings"])
+router = APIRouter(prefix="/bookings", tags=["Bookings"], dependencies=[Depends(get_token_payload)])
 
 
 # ============================================================================
@@ -76,7 +76,8 @@ async def list_bookings(
 @router.post("", response_model=BookingRead, status_code=status.HTTP_201_CREATED)
 async def create_booking(
     data: BookingCreate,
-    service: BookingService = Depends()
+    service: BookingService = Depends(),
+    token_payload: dict = Depends(get_token_payload)
 ) -> BookingRead:
     """
     **Tạo lịch đặt chỗ mới.**
@@ -91,7 +92,8 @@ async def create_booking(
     ### Chú ý:
     - Sau khi tạo Booking, bạn cần sử dụng endpoint `add_item` để thêm các dịch vụ cụ thể vào lịch hẹn này.
     """
-    return await service.create(data)
+    user_id = uuid.UUID(token_payload["sub"])
+    return await service.create(data, created_by=user_id)
 
 
 @router.get("/{booking_id}", response_model=BookingRead)

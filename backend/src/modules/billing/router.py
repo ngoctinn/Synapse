@@ -9,7 +9,9 @@ from .schemas import (
     PaymentRead, PaymentCreate, InvoiceListResponse
 )
 
-router = APIRouter(prefix="/billing", tags=["Billing"])
+from src.common.auth_core import get_token_payload
+
+router = APIRouter(prefix="/billing", tags=["Billing"], dependencies=[Depends(get_token_payload)])
 
 @router.post("/invoices", response_model=InvoiceRead, status_code=status.HTTP_201_CREATED)
 async def create_invoice(data: InvoiceCreate, service: BillingService = Depends()):

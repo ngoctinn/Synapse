@@ -134,7 +134,7 @@ class Booking(SQLModel, table=True):
     start_time: datetime = Field(sa_type=DateTime(timezone=True))
     end_time: datetime = Field(sa_type=DateTime(timezone=True))
     status: BookingStatus = Field(
-        default=BookingStatus.PENDING,
+        default=BookingStatus.CONFIRMED,
         sa_type=SAEnum(BookingStatus, name="booking_status")
     )
     notes: str | None = None
