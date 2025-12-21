@@ -53,12 +53,6 @@ class ScheduleEvaluator:
 
         workloads = list(staff_workloads.values()) if staff_workloads else [0]
 
-        # Jain Fairness Index
-        n = len(workloads)
-        sum_x = sum(workloads)
-        sum_x2 = sum(x**2 for x in workloads)
-        jain_index = (sum_x**2) / (n * sum_x2) if sum_x2 > 0 else 1.0
-
         # Staff utilization
         total_staff_hours = await self._get_total_scheduled_hours(target_date)
         staff_utilization = total_assigned_minutes / (total_staff_hours * 60) if total_staff_hours > 0 else 0
@@ -76,7 +70,6 @@ class ScheduleEvaluator:
         return SolutionMetrics(
             staff_utilization=round(staff_utilization, 3),
             resource_utilization=round(resource_utilization, 3),
-            jain_fairness_index=round(jain_index, 3),
             preference_satisfaction=1.0,  # Không có dữ liệu preference
             max_staff_load_minutes=max(workloads) if workloads else 0,
             min_staff_load_minutes=min(workloads) if workloads else 0,
@@ -136,14 +129,6 @@ class ScheduleEvaluator:
                 / manual_metrics.staff_utilization * 100
             )
             improvements["staff_utilization_improvement_percent"] = round(util_improvement, 1)
-
-        # Fairness improvement
-        if manual_metrics.jain_fairness_index < 1:
-            fairness_improvement = (
-                (optimized_metrics.jain_fairness_index - manual_metrics.jain_fairness_index)
-                / (1 - manual_metrics.jain_fairness_index) * 100
-            )
-            improvements["fairness_improvement_percent"] = round(fairness_improvement, 1)
 
         # Load balance improvement
         manual_variance = manual_metrics.max_staff_load_minutes - manual_metrics.min_staff_load_minutes

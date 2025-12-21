@@ -37,6 +37,10 @@ class BookingItemData(BaseModel):
     # Sở thích (ràng buộc mềm)
     preferred_staff_id: uuid.UUID | None = None
 
+    # Thông tin gán hiện tại (để tính C_perturb khi reschedule)
+    current_staff_id: uuid.UUID | None = None
+    current_resource_id: uuid.UUID | None = None
+
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -105,7 +109,11 @@ class SchedulingProblem(BaseModel):
     # Optimization Weights
     weight_preference: float = 1.0
     weight_utilization: float = 1.0
-    weight_fairness: float = 1.0
+    weight_load_balance: float = 1.0  # C_fair
+    weight_perturbation: float = 1.0  # C_perturb
+
+    # Business Constraints
+    transition_time_minutes: int = 15  # Delta t
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -133,9 +141,6 @@ class SolutionMetrics(BaseModel):
     # Utilization (0-1)
     staff_utilization: float = Field(description="Tỷ lệ sử dụng KTV")
     resource_utilization: float = Field(description="Tỷ lệ sử dụng Phòng")
-
-    # Fairness (0-1, 1 = công bằng hoàn hảo)
-    jain_fairness_index: float = Field(description="Chỉ số công bằng Jain")
 
     # Preference satisfaction (0-1)
     preference_satisfaction: float = Field(description="Tỷ lệ đáp ứng sở thích")
@@ -182,9 +187,12 @@ class SolveRequest(BaseModel):
         description="Giới hạn thời gian giải (giây)"
     )
     # Weights for objective function
-    weight_preference: float = Field(default=1.0, description="Trọng số sở thích")
-    weight_utilization: float = Field(default=1.0, description="Trọng số utilization")
-    weight_fairness: float = Field(default=1.0, description="Trọng số công bằng")
+    weight_preference: float = Field(default=1.0, description="Trọng số sở thích (C_pref)")
+    weight_utilization: float = Field(default=1.0, description="Trọng số utilization (C_idle)")
+    weight_load_balance: float = Field(default=1.0, description="Trọng số cân bằng tải (C_fair)")
+    weight_perturbation: float = Field(default=1.0, description="Trọng số ổn định (C_perturb)")
+
+    transition_time_minutes: int = Field(default=15, description="Thời gian chuyển đổi (phút)")
 
     model_config = ConfigDict(from_attributes=True)
 

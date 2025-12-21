@@ -130,7 +130,8 @@ class DataExtractor:
                 end_time=bi.end_time,
                 duration_minutes=duration,
                 required_skill_ids=required_skills,
-                required_resource_group_ids=required_resources
+                required_resource_group_ids=required_resources,
+                current_staff_id=bi.staff_id # Để tính C_perturb
             ))
 
         return items
