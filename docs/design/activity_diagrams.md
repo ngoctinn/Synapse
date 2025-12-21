@@ -86,7 +86,13 @@ flowchart TD
 
         Confirm --> DepositReq{Yêu cầu đặt cọc?}
         DepositReq -- "[Có]" --> Pay
-        DepositReq -- "[Không]" --> CommitBooking[Ghi nhận lịch hẹn: Chờ phục vụ]
+        DepositReq -- "[Không]" --> TreatmentCheck{Sử dụng liệu trình?}
+
+        TreatmentCheck -- "[Có]" --> ValidTreatment{Còn buổi?}
+        ValidTreatment -- "[Hết/Hết hạn]" --> ShowTreatError[Thông báo lỗi liệu trình]
+        ValidTreatment -- "[Còn buổi]" --> CommitBooking[Ghi nhận lịch hẹn: Chờ phục vụ]
+
+        TreatmentCheck -- "[Không]" --> CommitBooking
 
         Pay --> PayStatus{Cổng thanh toán phản hồi?}
         PayStatus -- "[Thành công]" --> CommitBooking

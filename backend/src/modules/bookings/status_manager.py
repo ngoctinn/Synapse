@@ -43,6 +43,12 @@ class BookingStatusManager:
         booking.actual_start_time = datetime.now(timezone.utc)
         booking.updated_at = datetime.now(timezone.utc)
 
+        # 1. Trừ buổi liệu trình ngay khi Check-in (Tránh thất thoát)
+        if booking.items:
+            for item in booking.items:
+                if item.treatment_id:
+                    await self.treatment_service.punch_session(item.treatment_id)
+
         self.session.add(booking)
         return booking
 
@@ -54,13 +60,7 @@ class BookingStatusManager:
                 detail=f"Chỉ có thể hoàn thành từ IN_PROGRESS, hiện tại là {booking.status}"
             )
 
-        # 1. Trừ buổi liệu trình (Punch treatments)
-        if booking.items:
-            for item in booking.items:
-                if item.treatment_id:
-                    await self.treatment_service.punch_session(item.treatment_id)
-
-        # 2. Tạo hóa đơn (Billing integration)
+        # 1. Tạo hóa đơn (Billing integration)
         await self.billing_service.create_invoice_from_booking(booking.id)
 
         booking.status = BookingStatus.COMPLETED
@@ -78,8 +78,8 @@ class BookingStatusManager:
                 detail=f"Không thể hủy lịch hẹn ở trạng thái {booking.status}"
             )
 
-        # 1. Hoàn lại buổi liệu trình nếu cần (Trường hợp hiếm)
-        if booking.status == BookingStatus.COMPLETED:
+        # 1. Hoàn lại buổi liệu trình nếu đã trừ (Đã Check-in hoặc Đã Complete)
+        if booking.status in [BookingStatus.IN_PROGRESS, BookingStatus.COMPLETED]:
              if booking.items:
                 for item in booking.items:
                     if item.treatment_id:

@@ -136,6 +136,16 @@ sequenceDiagram
         activate DB
         Note over BE,DB: Thao tác được bảo vệ bằng Database Transaction
         DB-->>BE: OK
+
+        alt Có sử dụng liệu trình (Treatment)
+            BE->>DB: get_treatment_sessions(treatment_id)
+            alt Hết buổi hoặc Hết hạn
+                DB-->>BE: Treament Invalid/Empty
+                BE-->>UI: Lỗi: Liệu trình không khả dụng
+            else Còn buổi
+                DB-->>BE: Treatment OK
+            end
+        end
         deactivate DB
     end
 
