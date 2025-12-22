@@ -44,7 +44,7 @@ from .models import (
 from .data_extractor import DataExtractor
 from .solver import SpaSolver
 from .evaluator import ScheduleEvaluator
-from .slot_finder import SlotFinder
+from .flexible_solver import FlexibleTimeSolver  # ✅ CORE: OR-Tools CP-SAT Solver
 
 # Service
 from .service import SchedulingService
@@ -86,7 +86,7 @@ __all__ = [
     "DataExtractor",
     "SpaSolver",
     "ScheduleEvaluator",
-    "SlotFinder",
+    "FlexibleTimeSolver",  # ✅ CORE: OR-Tools CP-SAT
     # Service
     "SchedulingService",
     # Router

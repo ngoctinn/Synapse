@@ -153,6 +153,9 @@ class SolutionMetrics(BaseModel):
     # Gap analysis
     total_idle_minutes: int = Field(description="Tổng thời gian rảnh")
 
+    # Evaluation Metric (Academic)
+    jain_fairness_index: float | None = Field(default=None, description="Chỉ số công bằng Jain (kiểm chứng)")
+
     model_config = ConfigDict(from_attributes=True)
 
 

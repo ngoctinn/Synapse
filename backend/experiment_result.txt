@@ -1,0 +1,14 @@
+=== THỰC NGHIỆM KIỂM CHỨNG CHỈ SỐ CÔNG BẰNG (FAIRNESS VERIFICATION) ===
+
+[KỊCH BẢN 1: KHÔNG TỐI ƯU CÔNG BẰNG]
+- Danh sách Workload (phút): []
+- Độ lệch Max-Min: 0 phút
+- Jain's Fairness Index: 1.0
+
+[KỊCH BẢN 2: CÓ TỐI ƯU CÔNG BẰNG (MIN-MAX)]
+- Danh sách Workload (phút): []
+- Độ lệch Max-Min: 0 phút
+- Jain's Fairness Index: 1.0
+
+[KẾT LUẬN]
+==> Kỹ thuật chưa cho thấy sự cải thiện rõ rệt trong kịch bản này.

@@ -1,0 +1,16 @@
+=== THỰC NGHIỆM KIỂM CHỨNG CHỈ SỐ CÔNG BẰNG (FAIRNESS VERIFICATION) ===
+Status (No Fair): SolveStatus.OPTIMAL, Message: Tìm được lịch tối ưu
+Status (With Fair): SolveStatus.OPTIMAL, Message: Tìm được lịch tối ưu
+
+[KỊCH BẢN 1: KHÔNG TỐI ƯU CÔNG BẰNG]
+- Danh sách Workload (phút): [165, 120, 150, 120, 165]
+- Độ lệch Max-Min: 45 phút
+- Jain's Fairness Index: 0.9804
+
+[KỊCH BẢN 2: CÓ TỐI ƯU CÔNG BẰNG (MIN-MAX)]
+- Danh sách Workload (phút): [165, 120, 150, 120, 165]
+- Độ lệch Max-Min: 45 phút
+- Jain's Fairness Index: 0.9804
+
+[KẾT LUẬN]
+==> Kỹ thuật chưa cho thấy sự cải thiện rõ rệt trong kịch bản này.

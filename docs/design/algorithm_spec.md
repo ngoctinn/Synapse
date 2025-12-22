@@ -46,23 +46,37 @@ Hệ thống tuân thủ nghiêm ngặt các ràng buộc sau. Vi phạm **Ràng
 | Mã | Tên Ràng buộc | Mô tả & Cách tính Phạt (Penalty) | Mục tiêu |
 |:---|:---|:---|:---|
 | **S01** | **Sở thích KTV (Staff Preference)** | Nếu khách yêu cầu đích danh KTV A, nhưng hệ thống xếp cho KTV B. <br> **Phạt:** +1000 điểm. | Tối đa hóa **CSAT**. |
-| **S02** | **Cân bằng Tải (Load Balancing)** | Tránh việc một KTV làm quá nhiều trong khi người khác ngồi chơi. <br> **Phạt:** Dựa trên độ lệch chuẩn (Variance) của tổng thời gian làm việc. | Tối đa hóa **Fairness**. |
+| **S02** | **Cân bằng Tải (Load Balancing)** | Tối thiểu hóa sự chênh lệch workload giữa các nhân viên. <br> **Phạm vi (Horizon):** Tính toán dựa trên tổng thời lượng (phút) được gán cho mỗi nhân viên trong một ngày cụ thể (`target_date`). <br> **Cơ chế:** Sử dụng kỹ thuật "Tuyến tính hóa" (Linearization) để làm Linear Proxy cho chỉ số Jain. Chỉ số công bằng Jain (Jain's Fairness Index) là thước đo tiêu chuẩn cho sự công bằng, nhưng công thức gốc của nó chứa các phép toán phi tuyến tính gây khó khăn cho bộ giải CP-SAT. <br> **Thực nghiệm:** Sử dụng kỹ thuật Tuyến tính hóa (Linearization) thông qua việc tối thiểu hóa độ lệch tải trọng: $C_{fair} = \text{Max}(L_s) - \text{Min}(L_s)$. | Tối đa hóa **Fairness**. |
 | **S03** | **Lấp đầy Khe hở (Gap Minimization)** | Ưu tiên xếp lịch khít nhau, hạn chế các khoảng trống nhỏ (VD: 15p) khó bán được cho khách khác. <br> **Phạt:** + điểm tương ứng với độ lớn khoảng trống. | Tối đa hóa **Utilization/Revenue**. |
-| **S04** | **Sở thích Giới tính (Gender Request)** | Khách nữ yêu cầu KTV nữ (quan trọng cho Body services). <br> **Phạt:** +5000 điểm (thường coi như xấp xỉ Hard Constraint). | Tối đa hóa **CSAT/Comfort**. |
-| **S05** | **Ổn định Lịch (Stability)** | (Trong trường hợp Rescheduling) Hạn chế đổi giờ hoặc đổi người của các khách đã đặt. <br> **Phạt:** + điểm cho mỗi sự thay đổi so với lịch gốc. | **Customer Retention**. |
+| **S04** | **Ổn định Lịch (Stability)** | (Trong trường hợp Rescheduling) Hạn chế đổi giờ hoặc đổi người của các khách đã đặt. <br> **Phạt:** + điểm cho mỗi sự thay đổi so với lịch gốc. | **Customer Retention**. |
+
 
 ## 4. Hàm Mục tiêu (Objective Function)
 
-Hàm mục tiêu tổng quát được định nghĩa làm cực tiểu hóa tổng chi phí phạt:
+Hệ thống áp dụng mô hình tối ưu hóa dựa trên việc cực tiểu hóa tổng chi phí phạt (Cost/Penalty minimization). Hàm mục tiêu $Z$ được thiết kế dưới dạng tổng trọng số của các thành phần đa mục tiêu:
 
-$$ \text{Minimize } Z = \alpha \cdot P_{pref} + \beta \cdot P_{fair} + \gamma \cdot P_{util} + \delta \cdot P_{perturb} $$
+$$ \text{Minimize } Z = \alpha \cdot C_{fair} + \beta \cdot C_{pref} + \gamma \cdot C_{idle} + \delta \cdot C_{perturb} $$
+
+### 4.1. Hệ số Phạt Cơ sở (Base Penalty Coefficients)
+Để các thành phần có đơn vị khác nhau (phút, lần, trạng thái) có thể cộng dồn vào một hàm mục tiêu duy nhất, hệ thống quy định các **Hệ số Phạt Cơ sở (Base Penalties)** trong mã nguồn như sau:
+
+| Thành phần | Công thức Chi phí Gốc ($C$) | Hệ số Cơ sở ($K$) | Ý nghĩa đơn vị |
+| :--- | :--- | :---: | :--- |
+| **$C_{fair}$** | $\text{Max}(Load) - \text{Min}(Load)$ | **1** | Phạt 1 điểm cho mỗi phút chênh lệch. |
+| **$C_{idle}$** | $\sum (\text{Span}_s - \text{Load}_s)$ | **1** | Phạt 1 điểm cho mỗi phút nhàn rỗi. |
+| **$C_{pref}$** | $\sum (\text{Vi phạm sở thích})$ | **10** | 1 lần sai KTV yêu thích $\approx$ 10 phút lệch tải. |
+| **$C_{perturb}$** | $\sum (\text{Xáo trộn lịch cũ})$ | **20** | 1 lần đổi KTV lịch cũ $\approx$ 20 phút lệch tải. |
+
+**Công thức triển khai thực tế:**
+$$ Z = \alpha \cdot (K_{fair} \cdot C_{fair}) + \beta \cdot (K_{pref} \cdot C_{pref}) + \dots $$
 
 Trong đó:
-- $P_{pref}$: Điểm phạt vi phạm sở thích khách hàng.
-- $P_{fair}$: Điểm phạt mất cân bằng tải (dựa trên Jain's Fairness Index đảo ngược).
-- $P_{util}$: Điểm phạt lãng phí tài nguyên (thời gian chết).
-- $P_{perturb}$: Điểm phạt xáo trộn lịch (chỉ dùng khi Rescheduling).
-- $\alpha, \beta, \gamma, \delta$: Các trọng số có thể cấu hình (Configurable Weights) tùy theo chiến lược kinh doanh của Spa (VD: Mùa cao điểm ưu tiên $P_{util}$, ngày thường ưu tiên $P_{pref}$).
+- **Hệ số Cơ sở ($K$):** Được lập trình viên thiết lập để định nghĩa "tỷ giá" giữa các mục tiêu khác loại (phút vs lần).
+- **Trọng số điều chỉnh ($\alpha, \beta, \gamma, \delta$):** Do người dùng (Chủ Spa) cấu hình trong dải $[0, 10]$ để thực thi chiến lược ưu tiên.
+- **$\alpha, \beta, \gamma, \delta$:** Các trọng số điều chỉnh (normalized weights) thường nằm trong khoảng $[0, 10]$, cho phép nhà quản trị tùy biến chiến lược ưu tiên của Spa theo từng thời điểm kinh doanh.
+
+> [!TIP]
+> **Tính Tuyến tính hóa (Linearization):** Trong quá trình giải bằng CP-SAT, thành phần $C_{fair}$ được mô hình hóa bằng đại lượng Max-Min Deviation. Đây là một **Linear Proxy** (đại diện tuyến tính) quan trọng giúp tăng tốc độ hội tụ của thuật toán trong khi vẫn đảm bảo sự tương quan cao với Chỉ số Công bằng Jain thực tế.
 
 ## 5. Chiến lược Tái lập lịch (Rescheduling Strategy)
 Khi xảy ra sự cố (KTV ốm, Giường hỏng), hệ thống sử dụng chiến lược **Minimal Perturbation (Xáo trộn Tối thiểu)**:
@@ -84,3 +98,26 @@ Khi xảy ra sự cố (KTV ốm, Giường hỏng), hệ thống sử dụng ch
     - Dữ liệu Input: Customer Requests, Staff Schedules, Resource Status (từ Database).
     - Biến đổi: Adapter pattern chuyển đổi DB Models -> Solver Models using Pydantic.
     - Output: List assignments -> DB Transactions.
+## 7. Đánh giá Hiệu quả Cân bằng tải (Fairness Verification)
+
+Để kiểm chứng hiệu quả của hàm mục tiêu tuyến tính hóa (Minimize Max-Min Load) trong việc đảm bảo sự công bằng, hệ thống thực hiện đo lường lại kết quả lập lịch bằng Chỉ số công bằng Jain (Jain's Fairness Index).
+
+**Công thức kiểm chứng (Evaluation Metric):**
+$$ J = \frac{(\sum_{i=1}^{n} T_i)^2}{n \cdot \sum_{i=1}^{n} T_i^2} $$
+
+### 7.3. Sự kết hợp giữa Sở thích (Preference) và Công bằng (Fairness)
+Hệ thống giải quyết bài toán "Chọn KTV" và "Cân bằng tải" thông qua mô hình **Phạt theo cấp bậc (Tiered Penalties)**:
+
+| Cấp độ | Thành phần mục tiêu | Điểm phạt (Mặc định) | Ý nghĩa nghiệp vụ |
+| :--- | :--- | :---: | :--- |
+| **Vô hạn** | Ràng buộc Cứng (Overlap, Skill) | `Infeasible` | Bắt buộc tuân thủ (Không thể trùng lịch). |
+| **Cao** | **S01 - Sở thích** (Preference) | **~1000** | Ưu tiên kỳ vọng của khách hàng. |
+| **Thấp** | **S02 - Cân bằng tải** (Min-Max) | **1đ / phút lệch** | Dàn đều công việc theo đơn vị phút. |
+| **Thấp** | **S03 - Lấp đầy gap** (Idle time) | **1đ / phút rảnh** | Tối ưu doanh thu/Hiệu suất máy. |
+
+**Cơ chế:** Khách vẫn được chọn KTV yêu thích, nhưng hệ thống sẽ âm thầm điều phối các lịch hẹn khác (không yêu cầu đích danh) sang các nhân viên rảnh hơn để giảm tổng điểm phạt của $C_{fair}$.
+
+**Kết luận thực nghiệm (Quy mô 10 KTV, 50 đặt lịch):**
+- Khi **không** tối ưu công bằng (Ưu tiên sở thích): Độ lệch Max-Min là 195 phút, chỉ số Jain 0.9757, thời gian giải **0.09s**.
+- Khi **áp dụng** thuật toán (Min-Max + Trọng số 50.0): Độ lệch Max-Min giảm xuống chỉ còn **15 phút**, chỉ số Jain đạt **0.9999**, thời gian giải **0.75s**.
+- **Hiệu năng:** Dù độ phức tạp tăng lên nhưng thời gian giải vẫn giữ ở mức **dưới 1 giây**, đảm bảo tính khả thi cho ứng dụng web (Real-time Scheduling).

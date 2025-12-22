@@ -74,7 +74,8 @@ class ScheduleEvaluator:
             max_staff_load_minutes=max(workloads) if workloads else 0,
             min_staff_load_minutes=min(workloads) if workloads else 0,
             avg_staff_load_minutes=round(sum(workloads) / len(workloads), 1) if workloads else 0,
-            total_idle_minutes=await self._calculate_total_idle_minutes(assignments)
+            total_idle_minutes=await self._calculate_total_idle_minutes(assignments),
+            jain_fairness_index=self._calculate_jain_index(workloads)
         )
 
     async def _calculate_total_idle_minutes(self, assignments: list) -> int:
@@ -113,6 +114,24 @@ class ScheduleEvaluator:
             total_idle += idle
 
         return total_idle
+
+    def _calculate_jain_index(self, workloads: list[int]) -> float:
+        """
+        Tính toán Chỉ số Công bằng Jain (Jain's Fairness Index).
+        Công thức: J = (sum(x)^2) / (n * sum(x^2))
+        """
+        if not workloads:
+            return 1.0
+
+        n = len(workloads)
+        sum_x = sum(workloads)
+        sum_x_sq = sum(x**2 for x in workloads)
+
+        if sum_x_sq == 0:
+            return 1.0 # Tuyệt đối công bằng nếu tất cả đều là 0
+
+        jain_index = (sum_x**2) / (n * sum_x_sq)
+        return round(jain_index, 4)
 
     async def compare_schedules(
         self,
