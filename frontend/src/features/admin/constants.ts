@@ -1,10 +1,15 @@
 import {
   Box,
   Calendar,
+  CalendarClock,
+  ClipboardList,
   CreditCard,
   Home,
+  FileText,
+  Package,
   Scissors,
   Settings,
+  ShieldCheck,
   Star,
   User,
   Users,
@@ -32,6 +37,11 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     icon: Calendar,
   },
   {
+    title: "Danh sách chờ",
+    href: "/admin/waitlist",
+    icon: CalendarClock,
+  },
+  {
     title: "Khách hàng",
     href: "/admin/customers",
     icon: Users,
@@ -42,9 +52,34 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     icon: User,
   },
   {
+    title: "Hoa hồng",
+    href: "/admin/staff/commission",
+    icon: CreditCard,
+  },
+  {
     title: "Dịch vụ",
     href: "/admin/services",
     icon: Scissors,
+  },
+  {
+    title: "Liệu trình",
+    href: "/admin/treatments",
+    icon: ClipboardList,
+  },
+  {
+    title: "Bảo hành",
+    href: "/admin/warranty",
+    icon: ShieldCheck,
+  },
+  {
+    title: "Nhật ký",
+    href: "/admin/audit-logs",
+    icon: FileText,
+  },
+  {
+    title: "Gói dịch vụ",
+    href: "/admin/packages",
+    icon: Package,
   },
   {
     title: "Tài nguyên",

@@ -9,7 +9,7 @@ import { Skill } from "../services/types"
 import { MOCK_STAFF } from "./model/mocks"
 import { MOCK_SCHEDULES } from "./model/schedules"
 import { staffCreateSchema } from "./model/schemas"
-import { Schedule, StaffListResponse, StaffUpdate } from "./model/types"
+import { CommissionReportItem, Schedule, StaffListResponse, StaffUpdate } from "./model/types"
 
 export async function manageStaff(prevState: unknown, formData: FormData): Promise<ActionResponse> {
   const mode = formData.get("form_mode")
@@ -136,4 +136,27 @@ export async function deleteSchedule(_scheduleId: string): Promise<ActionRespons
 export async function batchUpdateSchedule(creates: Schedule[], deletes: string[]): Promise<ActionResponse> {
   revalidatePath("/admin/staff")
   return success(undefined, `Đã lưu ${creates.length + deletes.length} thay đổi`)
+}
+
+export async function getCommissionReport(month: number, year: number): Promise<ActionResponse<CommissionReportItem[]>> {
+  // Mock calculation
+  const report: CommissionReportItem[] = MOCK_STAFF
+    .filter(staff => staff.user.role === "technician" && staff.user.is_active)
+    .map(staff => {
+      const totalServices = Math.floor(Math.random() * 50) + 10;
+      const totalRevenue = totalServices * 500000;
+      const rate = staff.commission_rate || 5;
+      return {
+        staffId: staff.user_id,
+        staffName: staff.user.full_name || "N/A",
+        role: "Kỹ thuật viên",
+        totalServices,
+        totalRevenue,
+        commissionRate: rate,
+        totalCommission: totalRevenue * (rate / 100),
+        period: `${month}/${year}`
+      };
+    });
+
+  return success(report);
 }

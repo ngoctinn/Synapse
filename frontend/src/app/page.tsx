@@ -6,7 +6,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col">
       <Header />
 
-      <main className="flex-1 bg-slate-50 dark:bg-slate-950">
+      <main className="flex-1 bg-muted/50">
         <Hero />
 
         <ServicesSection />

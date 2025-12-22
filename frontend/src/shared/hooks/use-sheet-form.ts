@@ -12,12 +12,30 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 /**
- * Kết quả trả về từ action
+ * Kết quả trả về từ action - hỗ trợ cả hai format:
+ * 1. { success: boolean; message?: string; error?: string } (recommended)
+ * 2. { status: 'success' | 'error'; message?: string } (ActionResponse format)
  */
-interface ActionResult {
-  success: boolean;
-  message?: string;
-  error?: string;
+type ActionResult =
+  | { success: boolean; message?: string; error?: string }
+  | { status: 'success' | 'error'; message?: string; data?: unknown };
+
+/**
+ * Normalize action result để xử lý cả hai format
+ */
+function normalizeResult(result: ActionResult): { isSuccess: boolean; message?: string; error?: string } {
+  if ('success' in result) {
+    return {
+      isSuccess: result.success,
+      message: result.message,
+      error: result.error,
+    };
+  }
+  return {
+    isSuccess: result.status === 'success',
+    message: result.message,
+    error: result.status === 'error' ? result.message : undefined,
+  };
 }
 
 /**
@@ -148,13 +166,14 @@ export function useSheetForm<TFormValues extends FieldValues, TData = unknown>(
     (formData: TFormValues) => {
       startTransition(async () => {
         try {
-          const result = await action(formData);
+          const rawResult = await action(formData);
+          const result = normalizeResult(rawResult);
 
-          if (result.success) {
+          if (result.isSuccess) {
             const successMessage =
               toastMessages?.success || result.message || "Thao tác thành công";
             toast.success(successMessage);
-            onSuccess?.(result);
+            onSuccess?.(rawResult);
           } else {
             const errorMessage =
               result.error ||

@@ -1,7 +1,7 @@
 import { cn } from "@/shared/lib/utils";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertCircle, Crown, Save, UserPlus } from "lucide-react";
+import { AlertCircle, Save, UserPlus } from "lucide-react";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 
@@ -79,8 +79,6 @@ export function CustomerSheet({
       gender: undefined,
       date_of_birth: "",
       address: "",
-      membership_tier: "SILVER",
-      loyalty_points: 0,
     },
   });
 
@@ -109,8 +107,6 @@ export function CustomerSheet({
           address: customer.address || "",
           allergies: customer.allergies || "",
           medical_notes: customer.medical_notes || "",
-          membership_tier: customer.membership_tier || "SILVER",
-          loyalty_points: customer.loyalty_points || 0,
           preferred_staff_id: customer.preferred_staff_id || undefined,
         });
       } else {
@@ -123,8 +119,6 @@ export function CustomerSheet({
           address: "",
           allergies: "",
           medical_notes: "",
-          membership_tier: "SILVER",
-          loyalty_points: 0,
         });
       }
     }
@@ -168,19 +162,6 @@ export function CustomerSheet({
                   Dị ứng
                 </Badge>
               )}
-              {mode === "update" && customer?.membership_tier === "GOLD" && (
-                <Badge preset="tier-gold">
-                  <Crown className="size-3.5" />
-                  Gold
-                </Badge>
-              )}
-              {mode === "update" &&
-                customer?.membership_tier === "PLATINUM" && (
-                  <Badge preset="tier-platinum">
-                    <Crown className="size-3.5" />
-                    Platinum
-                  </Badge>
-                )}
             </div>
           </div>
         </SheetHeader>

@@ -49,8 +49,6 @@ export function CustomerForm({
   // --- Sub-render functions (Extracted for readability) ---
   const renderProfile = () => (
     <div className="space-y-6">
-      {/* Premium Avatar Upload UI */}
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField
           control={form.control}
@@ -197,106 +195,6 @@ export function CustomerForm({
           </FormItem>
         )}
       />
-    </div>
-  );
-
-  const renderHealth = () => (
-    <div className="space-y-6">
-      <FormField
-        control={form.control}
-        name="allergies"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Tiền sử dị ứng</FormLabel>
-            <FormControl>
-              <Textarea
-                placeholder="Liệt kê: Hải sản, Phấn hoa, Thuốc kháng sinh..."
-                disabled={disabled}
-                className="resize-none min-h-[100px] border-destructive/30 focus:border-destructive focus:ring-destructive/20 disabled:opacity-50"
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="medical_notes"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Ghi chú y tế & Thai sản</FormLabel>
-            <FormControl>
-              <Textarea
-                placeholder="Bệnh nền, tình trạng sức khỏe, đang mang thai (tháng thứ mấy)..."
-                disabled={disabled}
-                className="resize-none min-h-[120px]"
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    </div>
-  );
-
-  const renderMembership = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField
-          control={form.control}
-          name="membership_tier"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Hạng thành viên</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value || "SILVER"}
-                disabled={true}
-              >
-                <SelectTrigger className="bg-muted/50">
-                  <SelectValue placeholder="Chọn hạng thẻ" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="SILVER">Silver Member</SelectItem>
-                  <SelectItem value="GOLD">Gold Member</SelectItem>
-                  <SelectItem value="PLATINUM">Platinum Member</SelectItem>
-                </SelectContent>
-              </Select>
-              <p className="text-[10px] text-muted-foreground">
-                Hạng được tính tự động theo điểm tích lũy.
-              </p>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="loyalty_points"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Điểm tích lũy</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  min="0"
-                  placeholder="0"
-                  disabled={true}
-                  className="bg-muted/50"
-                  {...field}
-                />
-              </FormControl>
-              <p className="text-[10px] text-muted-foreground">
-                Điểm được tính tự động từ giao dịch.
-              </p>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
 
       <FormField
         control={form.control}
@@ -333,6 +231,48 @@ export function CustomerForm({
     </div>
   );
 
+  const renderHealth = () => (
+    <div className="space-y-6">
+      <FormField
+        control={form.control}
+        name="allergies"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Tiền sử dị ứng</FormLabel>
+            <FormControl>
+              <Textarea
+                placeholder="Liệt kê: Hải sản, Phấn hoa, Thuốc kháng sinh..."
+                disabled={disabled}
+                className="resize-none min-h-[100px] border-destructive/30 focus:border-destructive focus:ring-destructive/20 disabled:opacity-50"
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="medical_notes"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Ghi chú y tế &amp; Thai sản</FormLabel>
+            <FormControl>
+              <Textarea
+                placeholder="Bệnh nền, tình trạng sức khỏe, đang mang thai (tháng thứ mấy)..."
+                disabled={disabled}
+                className="resize-none min-h-[120px]"
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </div>
+  );
+
   // --- Main Render ---
   return (
     <div className={cn("space-y-4", className)}>
@@ -357,20 +297,12 @@ export function CustomerForm({
             </div>
             {renderHealth()}
           </div>
-
-          <div className="space-y-4">
-            <div className="border-t pt-4">
-              <h3 className="font-semibold text-base">Thành viên & Tích lũy</h3>
-            </div>
-            {renderMembership()}
-          </div>
         </div>
       ) : (
         <Tabs defaultValue="general" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="general">Hồ sơ</TabsTrigger>
             <TabsTrigger value="health">Sức khỏe</TabsTrigger>
-            <TabsTrigger value="membership">Thành viên</TabsTrigger>
           </TabsList>
 
           <TabsContent value="general" className="mt-4 border-none p-0">
@@ -379,10 +311,6 @@ export function CustomerForm({
 
           <TabsContent value="health" className="mt-4 border-none p-0">
             {renderHealth()}
-          </TabsContent>
-
-          <TabsContent value="membership" className="mt-4 border-none p-0">
-            {renderMembership()}
           </TabsContent>
         </Tabs>
       )}

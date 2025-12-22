@@ -46,9 +46,10 @@ const itemVariants: Variants = {
 export function AppointmentList({ appointments }: AppointmentListProps) {
   const prefersReducedMotion = useReducedMotion();
 
-  const handleCancelClick = (_appointment: Appointment) => {
-    // TODO: Tích hợp với booking-wizard để hủy lịch
-    console.log("Cancel appointment:", _appointment.id);
+  const handleCancelClick = (appointment: Appointment) => {
+    // Chức năng hủy lịch sẽ được tích hợp khi connect với API backend
+    // Hiện tại chỉ hiển thị nút, chưa có action thực tế
+    void appointment; // Placeholder để tránh unused warning
   };
 
   if (appointments.length === 0) {

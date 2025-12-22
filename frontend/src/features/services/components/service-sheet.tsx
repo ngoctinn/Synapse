@@ -9,18 +9,16 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  showToast
 } from "@/shared/ui";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Save, Send } from "lucide-react";
-import * as React from "react";
-import { Resolver, useForm } from "react-hook-form";
 import { createService, updateService } from "../actions";
 import { SERVICE_DEFAULT_VALUES } from "../constants";
 import { MOCK_CATEGORIES } from "../data/mocks";
 import { ServiceFormValues, serviceSchema } from "../schemas";
 import { Service, Skill } from "../types";
 import { ServiceForm } from "./service-form";
+import { useSheetForm } from "@/shared/hooks";
+import { useCallback } from "react";
 
 interface ServiceSheetProps {
   mode: "create" | "update";
@@ -41,89 +39,64 @@ export function ServiceSheet({
   availableRoomTypes,
   availableEquipment,
 }: ServiceSheetProps) {
-  const [isPending, startTransition] = React.useTransition();
   const isUpdateMode = mode === "update";
 
-  const form = useForm<ServiceFormValues>({
-    resolver: zodResolver(serviceSchema) as Resolver<ServiceFormValues>,
-    mode: "onChange",
-    disabled: isPending,
+  // Transform Service entity thành form values
+  const transformData = useCallback((service: Service): Partial<ServiceFormValues> => ({
+    name: service.name || "",
+    duration: service.duration || SERVICE_DEFAULT_VALUES.duration,
+    buffer_time: service.buffer_time || SERVICE_DEFAULT_VALUES.buffer_time,
+    price: service.price || SERVICE_DEFAULT_VALUES.price,
+    is_active: service.is_active ?? true,
+    image_url: service.image_url || "",
+    color: service.color || SERVICE_DEFAULT_VALUES.color,
+    description: service.description || "",
+    resource_requirements: {
+      room_type_id: service.resource_requirements?.room_type_id || undefined,
+      equipment_ids: service.resource_requirements?.equipment_ids || [],
+      equipment_usage: service.resource_requirements?.equipment_usage || [],
+    },
+    skill_ids: service.skills?.map((s) => s.id) || [],
+    new_skills: [],
+  }), []);
+
+  // Action wrapper để phù hợp với useSheetForm API
+  const handleAction = useCallback(async (data: ServiceFormValues) => {
+    if (isUpdateMode && initialData) {
+      return updateService(initialData.id, data);
+    }
+    return createService(data);
+  }, [isUpdateMode, initialData]);
+
+  const { form, isPending, onSubmit } = useSheetForm({
+    schema: serviceSchema,
     defaultValues: {
-      name: initialData?.name || "",
-      duration: initialData?.duration || SERVICE_DEFAULT_VALUES.duration,
-      buffer_time:
-        initialData?.buffer_time || SERVICE_DEFAULT_VALUES.buffer_time,
-      price: initialData?.price || SERVICE_DEFAULT_VALUES.price,
-      is_active: initialData?.is_active ?? true,
-      image_url: initialData?.image_url || "",
-      color: initialData?.color || SERVICE_DEFAULT_VALUES.color,
-      description: initialData?.description || "",
+      name: "",
+      duration: SERVICE_DEFAULT_VALUES.duration,
+      buffer_time: SERVICE_DEFAULT_VALUES.buffer_time,
+      price: SERVICE_DEFAULT_VALUES.price,
+      is_active: true,
+      image_url: "",
+      color: SERVICE_DEFAULT_VALUES.color,
+      description: "",
       resource_requirements: {
-        room_type_id:
-          initialData?.resource_requirements?.room_type_id || undefined,
-        equipment_ids: initialData?.resource_requirements?.equipment_ids || [],
-        equipment_usage:
-          initialData?.resource_requirements?.equipment_usage || [],
+        room_type_id: undefined,
+        equipment_ids: [],
+        equipment_usage: [],
       },
-      skill_ids: initialData?.skills?.map((s) => s.id) || [],
+      skill_ids: [],
       new_skills: [],
     },
+    open,
+    data: initialData,
+    transformData,
+    action: handleAction,
+    onSuccess: () => onOpenChange(false),
+    toastMessages: {
+      success: isUpdateMode ? "Cập nhật dịch vụ thành công" : "Tạo dịch vụ thành công",
+      error: isUpdateMode ? "Không thể cập nhật dịch vụ" : "Không thể tạo dịch vụ",
+    },
   });
-
-  // Reset form when opening
-  React.useEffect(() => {
-    if (open) {
-      form.reset({
-        name: initialData?.name || "",
-        duration: initialData?.duration || SERVICE_DEFAULT_VALUES.duration,
-        buffer_time:
-          initialData?.buffer_time || SERVICE_DEFAULT_VALUES.buffer_time,
-        price: initialData?.price || SERVICE_DEFAULT_VALUES.price,
-        is_active: initialData?.is_active ?? true,
-        image_url: initialData?.image_url || "",
-        color: initialData?.color || SERVICE_DEFAULT_VALUES.color,
-        description: initialData?.description || "",
-        resource_requirements: {
-          room_type_id:
-            initialData?.resource_requirements?.room_type_id || undefined,
-          equipment_ids:
-            initialData?.resource_requirements?.equipment_ids || [],
-          equipment_usage:
-            initialData?.resource_requirements?.equipment_usage || [],
-        },
-        skill_ids: initialData?.skills?.map((s) => s.id) || [],
-        new_skills: [],
-      });
-    }
-  }, [open, initialData, form]);
-
-  const onSubmit = (data: ServiceFormValues) => {
-    startTransition(async () => {
-      try {
-        const result =
-          isUpdateMode && initialData
-            ? await updateService(initialData.id, data)
-            : await createService(data);
-
-        if (result.status === "success") {
-          showToast.success(
-            isUpdateMode ? "Cập nhật thành công" : "Tạo dịch vụ thành công",
-            `Dịch vụ "${data.name}" đã được ${
-              isUpdateMode ? "cập nhật" : "thêm vào hệ thống"
-            }.`
-          );
-          onOpenChange(false);
-        } else {
-          showToast.error("Thất bại", result.message);
-        }
-      } catch {
-        showToast.error(
-          "Lỗi hệ thống",
-          "Đã có lỗi xảy ra, vui lòng thử lại sau."
-        );
-      }
-    });
-  };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -138,7 +111,7 @@ export function ServiceSheet({
           <Form {...form}>
             <form
               id="service-form"
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={onSubmit}
               className="h-full flex flex-col"
             >
               <ServiceForm

@@ -3,8 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { AlertTriangle } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useCallback, useTransition } from "react";
+import { useForm } from "react-hook-form";
 
 import { MultiServiceSelector } from "@/features/appointments/components/selection/multi-service-selector";
 import {
@@ -27,12 +27,15 @@ import { Combobox } from "@/shared/ui/custom/combobox";
 import { DatePicker } from "@/shared/ui/custom/date-picker";
 import { TimePicker } from "@/shared/ui/custom/time-picker";
 
-import { checkConflicts, searchCustomers } from "@/features/appointments/actions";
 import { MockService } from "@/features/appointments/mock-data";
 import { quickAppointmentFormSchema, type QuickAppointmentFormValues } from "@/features/appointments/schemas";
-import type { Appointment, ConflictInfo, TimelineResource } from "@/features/appointments/types";
+import type { Appointment, TimelineResource } from "@/features/appointments/types";
+import { useConflictCheck, useCustomerSearch } from "@/features/appointments/hooks";
 
-// Types
+// ============================================
+// TYPES
+// ============================================
+
 interface AppointmentFormProps {
   id?: string;
   appointment?: Appointment | null;
@@ -47,11 +50,9 @@ interface AppointmentFormProps {
   availableServices: MockService[];
 }
 
-interface CustomerOption {
-  id: string;
-  name: string;
-  phone: string;
-}
+// ============================================
+// COMPONENT
+// ============================================
 
 export function AppointmentForm({
   id = "appointment-form",
@@ -62,15 +63,9 @@ export function AppointmentForm({
   availableResources,
   availableServices,
 }: AppointmentFormProps) {
-  // State
   const [isPending, startTransition] = useTransition();
-  const [customerSearch, setCustomerSearch] = useState("");
-  const [customerOptions, setCustomerOptions] = useState<CustomerOption[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [conflicts, setConflicts] = useState<ConflictInfo[]>([]);
-  const [timeWarning, setTimeWarning] = useState<string | null>(null);
 
-  // Form Initialization
+  // Form
   const form = useForm<QuickAppointmentFormValues>({
     resolver: zodResolver(quickAppointmentFormSchema),
     disabled: isPending,
@@ -85,64 +80,17 @@ export function AppointmentForm({
     },
   });
 
-  // Watched Values
-  const watchedDate = useWatch({ control: form.control, name: "date" });
-  const watchedStartTime = useWatch({ control: form.control, name: "startTime" });
-  const watchedStaffId = useWatch({ control: form.control, name: "staffId" });
-  const watchedServiceIds = useWatch({ control: form.control, name: "serviceIds" });
+  // Custom hooks - extracted logic
+  const { customerOptions, isSearching, setCustomerSearch } = useCustomerSearch();
+  const { conflicts, timeWarning, totalDuration } = useConflictCheck({
+    form,
+    availableServices,
+    appointmentId: appointment?.id,
+  });
 
-  // Buffer time là thời gian nghỉ dành cho KHÁCH SAU (dọn dẹp, chuẩn bị)
-  // Không tính vào duration của booking hiện tại
-  // Nếu khách làm nhiều dịch vụ liên tiếp → có thể bỏ qua buffer giữa các dịch vụ
-  const totalDuration = useMemo(() => {
-    return (watchedServiceIds || []).reduce((acc, serviceId) => {
-      const service = availableServices.find((s) => s.id === serviceId);
-      return acc + (service?.duration || 0);
-    }, 0);
-  }, [watchedServiceIds, availableServices]);
-
-  // Effects
-  useEffect(() => {
-    const debouncedCheck = setTimeout(async () => {
-      if (!watchedStaffId || !watchedStartTime || !watchedDate || !watchedServiceIds?.length) {
-        setConflicts([]);
-        setTimeWarning(null);
-        return;
-      }
-
-      const [hours] = watchedStartTime.split(":").map(Number);
-      if (hours < 8 || hours >= 21) {
-        setTimeWarning("Ngoài giờ làm việc (08:00 - 21:00)");
-      } else {
-        setTimeWarning(null);
-      }
-
-      const [h, m] = watchedStartTime.split(":").map(Number);
-      const start = new Date(watchedDate);
-      start.setHours(h, m, 0, 0);
-
-      const end = new Date(start.getTime() + (totalDuration || 60) * 60000);
-
-      const res = await checkConflicts(watchedStaffId, start, end, appointment?.id);
-      setConflicts((res.status === "success" && res.data) ? res.data : []);
-    }, 500);
-
-    return () => clearTimeout(debouncedCheck);
-  }, [watchedDate, watchedStartTime, watchedStaffId, watchedServiceIds, appointment?.id, totalDuration]);
-
-  // Customer Search Effect
-  useEffect(() => {
-    if (customerSearch.length < 2) return;
-
-    const timer = setTimeout(async () => {
-      setIsSearching(true);
-      const result = await searchCustomers(customerSearch);
-      if (result.data) setCustomerOptions(result.data);
-      setIsSearching(false);
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [customerSearch]);
+  // ============================================
+  // HANDLERS
+  // ============================================
 
   const handleSubmit = useCallback((values: QuickAppointmentFormValues) => {
     startTransition(() => {
@@ -204,6 +152,10 @@ export function AppointmentForm({
     });
   }, [appointment, availableResources, availableServices, availableStaff, customerOptions, onSubmit]);
 
+  // ============================================
+  // RENDER
+  // ============================================
+
   return (
     <Form {...form}>
       <form id={id} onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
@@ -222,7 +174,7 @@ export function AppointmentForm({
                   onSearch={setCustomerSearch}
                   placeholder={appointment?.customerName || "Tìm khách hàng..."}
                   searchPlaceholder="Nhập tên hoặc SĐT..."
-                  emptyMessage={customerSearch.length < 2 ? "Nhập 2 ký tự để tìm..." : "Không tìm thấy khách hàng"}
+                  emptyMessage="Nhập 2 ký tự để tìm..."
                   isLoading={isSearching}
                 />
               </FormControl>
@@ -366,7 +318,7 @@ export function AppointmentForm({
             <FormItem>
               <FormLabel>Ghi chú</FormLabel>
               <FormControl>
-                <Textarea placeholder="Ghi chú cho lịch hẹn..." className="resize-none min-h-[80px]" rows={3} {...field} />
+                <Textarea placeholder="Ghi chú cho lịch hẹn..." className="resize-none min-h-20" rows={3} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

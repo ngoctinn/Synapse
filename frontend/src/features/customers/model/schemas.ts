@@ -16,8 +16,6 @@ export const customerSchema = z.object({
   allergies: z.string().optional().nullable(),
   medical_notes: z.string().optional().nullable(),
   preferred_staff_id: z.string().optional().nullable(),
-  membership_tier: z.enum(["SILVER", "GOLD", "PLATINUM"]).optional().default("SILVER"),
-  loyalty_points: z.coerce.number().min(0, "Điểm tích lũy không được âm").optional().default(0),
 });
 
 export type CustomerFormValues = z.infer<typeof customerSchema>;

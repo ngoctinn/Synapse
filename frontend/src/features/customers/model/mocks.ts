@@ -8,16 +8,12 @@ export const MOCK_CUSTOMERS: Customer[] = [
     email: "hoa.pham@example.com",
     avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Hoa",
     is_active: true,
-
-    loyalty_points: 150,
-    membership_tier: "SILVER",
     gender: "FEMALE",
     date_of_birth: "1990-05-20",
     address: "123 Nguyễn Huệ, Q1, TP.HCM",
     allergies: "Dị ứng phấn hoa",
     medical_notes: "Da nhạy cảm, dễ kích ứng với mỹ phẩm chứa cồn",
     preferred_staff_id: null,
-
     created_at: "2024-01-15T08:00:00Z",
     updated_at: "2024-01-15T08:00:00Z",
   },
@@ -28,16 +24,12 @@ export const MOCK_CUSTOMERS: Customer[] = [
     email: "tuan.tran@example.com",
     avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Tuan",
     is_active: true,
-
-    loyalty_points: 520,
-    membership_tier: "GOLD",
     gender: "MALE",
     date_of_birth: "1985-12-15",
     address: "45 Lê Lợi, Q1, TP.HCM",
     allergies: null,
     medical_notes: "Thường xuyên đau mỏi vai gáy",
     preferred_staff_id: "staff-1",
-
     created_at: "2024-02-10T10:30:00Z",
     updated_at: "2024-02-10T10:30:00Z",
   },
@@ -48,37 +40,28 @@ export const MOCK_CUSTOMERS: Customer[] = [
     email: "thao.le@gmail.com",
     avatar_url: null,
     is_active: true,
-
-    loyalty_points: 1200,
-    membership_tier: "PLATINUM",
     gender: "FEMALE",
     date_of_birth: "1995-08-08",
     address: "Biệt thự Lan Anh, Q2",
     allergies: "Hải sản",
     medical_notes: "Đang mang thai tuần thứ 12",
     preferred_staff_id: "staff-2",
-
     created_at: "2024-03-05T14:15:00Z",
     updated_at: "2024-03-05T14:15:00Z",
   },
-  // Example: Walk-in Guest (No email)
   {
     id: "cust-4",
     full_name: "Chị Lan (Vãng lai)",
-    phone_number: "0999888777", // Only Phone
+    phone_number: "0999888777",
     email: null,
     avatar_url: null,
     is_active: true,
-
-    loyalty_points: 50,
-    membership_tier: "SILVER",
     gender: "FEMALE",
     date_of_birth: null,
     address: null,
     allergies: null,
     medical_notes: "Khách gọi điện đặt lần đầu",
     preferred_staff_id: null,
-
     created_at: "2025-12-11T09:00:00Z",
     updated_at: "2025-12-11T09:00:00Z",
   },

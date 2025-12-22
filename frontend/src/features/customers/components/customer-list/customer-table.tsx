@@ -142,33 +142,6 @@ export function CustomerTable({
       ),
     },
     {
-      header: "Hạng thành viên",
-      accessorKey: "membership_tier",
-      cell: (c) => (
-        <Badge
-          preset={
-            `tier-${c.membership_tier.toLowerCase()}` as
-              | "tier-silver"
-              | "tier-gold"
-              | "tier-platinum"
-          }
-        >
-          {c.membership_tier}
-        </Badge>
-      ),
-    },
-    {
-      header: "Điểm",
-      accessorKey: "loyalty_points",
-      sortable: true,
-      cell: (c) => (
-        <div className="font-medium text-sm flex items-center gap-1">
-          {c.loyalty_points.toLocaleString("vi-VN")}{" "}
-          <span className="text-xs text-muted-foreground font-normal">pts</span>
-        </div>
-      ),
-    },
-    {
       header: "Trạng thái",
       accessorKey: "is_active",
       cell: (c) => (

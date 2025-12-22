@@ -27,7 +27,7 @@ class User(SQLModel, table=True):
     date_of_birth: date | None = None
     role: UserRole = Field(
         default=UserRole.CUSTOMER,
-        sa_type=SAEnum(UserRole, name="user_role")
+        sa_type=SAEnum(UserRole, name="user_role", values_callable=lambda obj: [e.value for e in obj])
     )
     is_active: bool = Field(default=True)  # Vô hiệu hóa tài khoản
 

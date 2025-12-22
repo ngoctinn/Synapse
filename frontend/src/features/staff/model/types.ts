@@ -47,6 +47,17 @@ export interface StaffListResponse {
   limit: number;
 }
 
+export interface CommissionReportItem {
+  staffId: string;
+  staffName: string;
+  role: string;
+  totalServices: number;
+  totalRevenue: number;
+  commissionRate: number;
+  totalCommission: number;
+  period: string; // e.g. "12/2023"
+}
+
 // Scheduling Types - Maps to Database Design
 
 /** Chế độ xem lịch */
