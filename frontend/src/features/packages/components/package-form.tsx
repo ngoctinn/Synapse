@@ -15,7 +15,7 @@ import {
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { Button } from "@/shared/ui";
 import { Plus, Trash2 } from "lucide-react";
-import { PackageFormValues } from "../schemas";
+import { PackageFormValues } from "../model/schemas";
 
 interface PackageFormProps {
   mode: "create" | "update";

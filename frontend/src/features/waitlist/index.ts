@@ -1,9 +1,4 @@
-export * from "./types";
-// Components
-export * from "./components"
-
-// Actions
-export * from "./actions"
-
-// Types
-export * from "./types"
+export * from "./actions";
+export * from "./components/waitlist-page";
+export * from "./model/schemas";
+export * from "./model/types";

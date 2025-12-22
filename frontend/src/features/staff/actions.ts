@@ -2,10 +2,10 @@
 
 import "server-only"
 
-import { MOCK_SKILLS } from "@/features/services/data/mocks"
+import { MOCK_SKILLS } from "@/features/services/model/mocks"
 import { ActionResponse, error, success } from "@/shared/lib/action-response"
 import { revalidatePath } from "next/cache"
-import { Skill } from "../services/types"
+import { Skill } from "@/features/services/model/types"
 import { MOCK_STAFF } from "./model/mocks"
 import { MOCK_SCHEDULES } from "./model/schedules"
 import { staffCreateSchema } from "./model/schemas"

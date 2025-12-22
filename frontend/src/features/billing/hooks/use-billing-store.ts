@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { getBillingMetrics, getInvoices } from "../actions";
-import { Invoice, InvoiceFilters, InvoiceMetrics } from "../types";
+import { Invoice, InvoiceFilters, InvoiceMetrics } from "../model/types";
 
 interface BillingState {
   invoices: Invoice[];

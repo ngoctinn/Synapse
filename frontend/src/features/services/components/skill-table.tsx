@@ -9,7 +9,7 @@ import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import { Plus } from "lucide-react";
 import { deleteSkill } from "../actions";
-import { Skill } from "../types";
+import { Skill } from "../model/types";
 import { CreateSkillDialog } from "./create-skill-dialog";
 import { SkillActions } from "./skill-actions";
 

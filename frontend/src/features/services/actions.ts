@@ -4,9 +4,9 @@ import "server-only";
 
 import { ActionResponse, error, success } from "@/shared/lib/action-response";
 import { revalidatePath } from "next/cache";
-import { MOCK_SERVICES, MOCK_SKILLS } from "./data/mocks";
-import { serviceSchema, skillSchema } from "./schemas";
-import { PaginatedResponse, Service, ServiceCreateInput, ServiceUpdateInput, Skill, SkillCreateInput, SkillUpdateInput } from "./types";
+import { MOCK_SERVICES, MOCK_SKILLS } from "./model/mocks";
+import { serviceSchema, skillSchema } from "./model/schemas";
+import { PaginatedResponse, Service, ServiceCreateInput, ServiceUpdateInput, Skill, SkillCreateInput, SkillUpdateInput } from "./model/types";
 
 let services = [...MOCK_SERVICES];
 let skills = [...MOCK_SKILLS];

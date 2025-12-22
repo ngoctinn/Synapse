@@ -1,8 +1,8 @@
 "use client"
 
 import { PROFILE_LABELS } from "@/features/customer-dashboard/constants"
-import { ProfileInput } from "@/features/customer-dashboard/schemas"
-import { UserProfile } from "@/features/customer-dashboard/types"
+import { ProfileInput } from "@/features/customer-dashboard"
+import { UserProfile } from "@/features/customer-dashboard"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
 import { FormField, FormItem, FormMessage } from "@/shared/ui/form"

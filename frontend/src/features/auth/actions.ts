@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import "server-only";
-import { forgotPasswordSchema, loginSchema, registerSchema, updatePasswordSchema } from "./schemas";
+import { forgotPasswordSchema, loginSchema, registerSchema, updatePasswordSchema } from "./model/schemas";
 
 export async function loginAction(prevState: unknown, formData: FormData): Promise<ActionResponse> {
   const validatedFields = loginSchema.safeParse({

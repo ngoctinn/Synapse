@@ -6,7 +6,7 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { formatCurrency } from "@/shared/lib/utils";
 import { Eye } from "lucide-react";
-import { Invoice } from "../types";
+import { Invoice } from "../model/types";
 import { InvoiceStatusBadge } from "./invoice-status-badge";
 
 interface InvoiceTableProps {

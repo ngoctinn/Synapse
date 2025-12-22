@@ -15,8 +15,8 @@ import {
     Textarea,
 } from "@/shared/ui";
 
-import { CreateReviewFormValues, createReviewSchema } from "../schemas";
-import { ReviewRating } from "../types";
+import { CreateReviewFormValues, createReviewSchema } from "../model/schemas";
+import { ReviewRating } from "../model/types";
 import { StarRating } from "./star-rating";
 
 interface ReviewFormProps {

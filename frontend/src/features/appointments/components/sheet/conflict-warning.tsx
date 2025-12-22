@@ -11,7 +11,7 @@ import { AlertTriangle, Clock, User, X } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { Alert, AlertDescription, AlertTitle, Button } from "@/shared/ui";
 
-import type { ConflictInfo } from "../../types";
+import type { ConflictInfo } from "../../model/types";
 
 // TYPES
 

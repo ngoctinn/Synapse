@@ -19,7 +19,7 @@ import {
     showToast,
 } from "@/shared/ui";
 import { forgotPasswordAction } from "../actions";
-import { forgotPasswordSchema, type ForgotPasswordInput } from "../schemas";
+import { forgotPasswordSchema, type ForgotPasswordInput } from "../model/schemas";
 
 export function ForgotPasswordForm() {
   const router = useRouter();

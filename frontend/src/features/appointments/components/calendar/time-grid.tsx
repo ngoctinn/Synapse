@@ -14,7 +14,7 @@ import { useMemo } from "react";
 
 import { cn } from "@/shared/lib/utils";
 import { DEFAULT_WORKING_HOURS, HOUR_HEIGHT } from "../../constants";
-import type { DensityMode } from "../../types";
+import type { DensityMode } from "../../model/types";
 
 
 interface TimeGridProps {

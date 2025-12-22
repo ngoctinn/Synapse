@@ -1,7 +1,7 @@
 "use client";
 
 import { Resource, RoomType } from "@/features/resources";
-import { Service, Skill } from "../types";
+import { Service, Skill } from "../model/types";
 import { ServiceSheet } from "./service-sheet";
 
 interface EditServiceDialogProps {

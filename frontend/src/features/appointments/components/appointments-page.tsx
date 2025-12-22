@@ -15,8 +15,8 @@ import {
   getAppointmentMetrics, getAppointments, markNoShow
 } from "../actions";
 import { useCalendarState } from "../hooks/use-calendar-state";
-import { MockService } from "../mock-data";
-import type { Appointment, AppointmentFilters, AppointmentMetrics, CalendarEvent, TimelineResource } from "../types";
+import { MockService } from "../model/mocks";
+import type { Appointment, AppointmentFilters, AppointmentMetrics, CalendarEvent, TimelineResource } from "../model/types";
 import { CalendarView } from "./calendar";
 import { AppointmentSheet } from "./sheet";
 import { CancelDialog } from "./sheet/cancel-dialog";
@@ -50,7 +50,7 @@ interface AppointmentsPageProps {
   staffListPromise: Promise<ActionResponse<TimelineResource[]>>;
   resourceListPromise: Promise<ActionResponse<TimelineResource[]>>;
   serviceListPromise: Promise<ActionResponse<MockService[]>>;
-  fullStaffList: TimelineResource[];
+  fullStaffList?: TimelineResource[];
 }
 
 export function AppointmentsPage({ appointmentsPromise, staffListPromise, resourceListPromise, serviceListPromise }: AppointmentsPageProps) {

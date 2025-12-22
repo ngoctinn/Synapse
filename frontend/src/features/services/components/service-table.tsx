@@ -22,8 +22,8 @@ import {
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { deleteService } from "../actions";
-import { MOCK_CATEGORIES } from "../data/mocks";
-import { Service, Skill } from "../types";
+import { MOCK_CATEGORIES } from "../model/mocks";
+import { Service, Skill } from "../model/types";
 import { CreateServiceWizard } from "./create-service-wizard";
 import { ServiceActions } from "./service-actions";
 import { ServiceSheet } from "./service-sheet";

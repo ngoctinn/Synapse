@@ -8,8 +8,7 @@ import { startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { loginAction } from "../actions";
-import { usePasswordVisibility } from "../hooks/use-password-visibility";
-import { loginSchema, type LoginInput } from "../schemas";
+import { loginSchema, type LoginInput } from "../model/schemas";
 
 import {
     Alert,
@@ -24,6 +23,7 @@ import {
     Input,
     showToast,
 } from "@/shared/ui";
+import { PasswordInput } from "@/shared/ui/custom/password-input";
 
 export function LoginForm() {
   const router = useRouter();
@@ -31,7 +31,6 @@ export function LoginForm() {
   const returnUrl = searchParams.get("returnUrl") || "/";
   const registered = searchParams.get("registered");
   const passwordReset = searchParams.get("password_reset");
-  const { toggle, inputType, Icon, ariaLabel } = usePasswordVisibility();
 
   const [state, action, isPending] = useActionState(loginAction, undefined);
 
@@ -133,20 +132,7 @@ export function LoginForm() {
                     </Link>
                   </div>
                   <FormControl>
-                    <Input
-                      type={inputType}
-                      startContent={<Lock className="size-4 text-muted-foreground" />}
-                      endContent={
-                        <button
-                          type="button"
-                          onClick={toggle}
-                          className="text-muted-foreground hover:text-foreground transition-colors"
-                          aria-label={ariaLabel}
-                          tabIndex={-1}
-                        >
-                          <Icon className="size-4" />
-                        </button>
-                      }
+                    <PasswordInput
                       placeholder="Nhập mật khẩu"
                       autoComplete="current-password"
                       {...field}

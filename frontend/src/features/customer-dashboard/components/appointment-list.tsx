@@ -1,6 +1,6 @@
 "use client";
 
-import { Appointment, AppointmentStatus } from "@/features/appointments/types";
+import { Appointment, AppointmentStatus } from "@/features/appointments";
 import { useReducedMotion } from "@/shared/hooks";
 import { Badge, BadgePreset } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";

@@ -5,7 +5,7 @@ import { Save, Send } from "lucide-react";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 
-import { Skill } from "@/features/services/types";
+import { Skill } from "@/features/services/model/types";
 import { manageStaff } from "@/features/staff/actions";
 import {
     StaffCreateFormValues,

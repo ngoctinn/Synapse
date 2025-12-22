@@ -1,7 +1,7 @@
 "use client"
 
 import { PROFILE_LABELS } from "@/features/customer-dashboard/constants"
-import { ProfileInput } from "@/features/customer-dashboard/schemas"
+import { ProfileInput } from "@/features/customer-dashboard"
 import { Button } from "@/shared/ui/button"
 import { DatePicker } from "@/shared/ui/custom/date-picker"
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/ui/form"

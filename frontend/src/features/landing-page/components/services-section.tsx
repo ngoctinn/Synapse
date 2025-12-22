@@ -1,6 +1,6 @@
 "use client";
 
-import { MOCK_SERVICES } from "@/features/services/data/mocks";
+import { MOCK_SERVICES } from "@/features/services/model/mocks";
 import { Badge } from "@/shared/ui/badge";
 import { SearchX } from "lucide-react";
 import { useMemo, useState } from "react";

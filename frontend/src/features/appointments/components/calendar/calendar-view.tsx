@@ -7,7 +7,7 @@ import type {
     DateRange,
     DensityMode,
     TimelineResource,
-} from "../../types";
+} from "../../model/types";
 
 import { ResourceTimeline } from "../timeline";
 import { AgendaView } from "./agenda-view";

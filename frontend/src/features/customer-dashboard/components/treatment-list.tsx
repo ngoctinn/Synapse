@@ -1,6 +1,6 @@
 "use client";
 
-import { Treatment } from "@/features/customer-dashboard/types";
+import { Treatment } from "@/features/customer-dashboard";
 import { Badge, BadgeVariant } from "@/shared/ui/badge";
 import {
   Card,

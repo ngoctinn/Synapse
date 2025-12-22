@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { cloneService, deleteService } from "../actions";
-import { Service } from "../types";
+import { Service } from "../model/types";
 
 interface ServiceActionsProps {
   service: Service;

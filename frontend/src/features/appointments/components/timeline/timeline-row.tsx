@@ -7,7 +7,7 @@ import { cn } from "@/shared/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage, Badge } from "@/shared/ui";
 
 import { DEFAULT_WORKING_HOURS } from "../../constants";
-import type { CalendarEvent, TimelineResource, ZoomLevel } from "../../types";
+import type { CalendarEvent, TimelineResource, ZoomLevel } from "../../model/types";
 import {
   calculateTimelinePosition,
   calculateTimelineWidth,

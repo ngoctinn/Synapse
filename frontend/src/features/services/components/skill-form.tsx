@@ -19,8 +19,8 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { createSkill, updateSkill } from "../actions";
-import { skillSchema } from "../schemas";
-import { Skill } from "../types";
+import { skillSchema } from "../model/schemas";
+import { Skill } from "../model/types";
 
 interface SkillFormProps {
   skill?: Skill;

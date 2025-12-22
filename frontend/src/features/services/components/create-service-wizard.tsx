@@ -4,7 +4,7 @@ import { Resource, RoomType } from "@/features/resources";
 import { Button } from "@/shared/ui/button";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { Skill } from "../types";
+import { Skill } from "../model/types";
 import { ServiceSheet } from "./service-sheet";
 
 interface CreateServiceWizardProps {

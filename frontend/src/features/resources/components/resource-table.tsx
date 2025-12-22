@@ -12,7 +12,7 @@ import { showToast } from "@/shared/ui/sonner";
 import { Bed, Box, Loader2 } from "lucide-react";
 import { useState, useTransition } from "react";
 import { deleteResource } from "../actions";
-import { Resource, ResourceGroup } from "../types";
+import { Resource, ResourceGroup } from "../model/types";
 import { CreateResourceTrigger } from "./create-resource-trigger";
 import { ResourceActions } from "./resource-actions";
 import { ResourceSheet } from "./resource-sheet";

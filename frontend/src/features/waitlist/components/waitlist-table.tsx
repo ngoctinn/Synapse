@@ -12,7 +12,7 @@ import { CalendarClock, CheckCircle2, Clock, MoreHorizontal, Phone, XCircle } fr
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { updateWaitlistStatus, deleteWaitlistEntry } from "../actions";
-import { WaitlistEntry } from "../types";
+import { WaitlistEntry } from "../model/types";
 import { WaitlistSheet } from "./waitlist-sheet";
 import {
   DropdownMenu,

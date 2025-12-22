@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { isSameDay } from "date-fns";
-import type { CalendarEvent } from "../../types";
+import type { CalendarEvent } from "../../model/types";
 import { calculateEventLayout } from "./layout-utils";
 
 interface UseWeekEventLayoutParams {

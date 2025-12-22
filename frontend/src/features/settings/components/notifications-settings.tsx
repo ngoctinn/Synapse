@@ -9,7 +9,7 @@ import { ChannelConfigDialog } from "../notifications/components/channel-config-
 import { NotificationChannels } from "../notifications/components/notification-channels";
 import { NotificationList } from "../notifications/components/notification-list";
 import { TemplateEditor } from "../notifications/components/template-editor";
-import { NotificationChannel, NotificationEvent } from "../notifications/types";
+import { NotificationChannel, NotificationEvent } from "../notifications";
 
 interface NotificationsSettingsProps {
   initialChannels: NotificationChannel[];

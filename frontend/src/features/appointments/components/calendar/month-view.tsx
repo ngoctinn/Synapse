@@ -10,7 +10,7 @@ import { useMemo } from "react";
 
 import { cn } from "@/shared/lib/utils";
 import { WEEKDAYS } from "../../constants";
-import type { CalendarEvent, DateRange } from "../../types";
+import type { CalendarEvent, DateRange } from "../../model/types";
 import { DayCell, type DayModel } from "./day-cell";
 
 interface MonthViewProps {

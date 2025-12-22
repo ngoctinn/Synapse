@@ -4,9 +4,9 @@ import "server-only";
 
 import { ActionResponse, error, success } from "@/shared/lib/action-response";
 import { revalidatePath } from "next/cache";
-import { MOCK_PACKAGES } from "./data/mocks";
-import { packageSchema } from "./schemas";
-import { PaginatedPackages, PackageCreateInput, PackageUpdateInput, ServicePackage } from "./types";
+import { MOCK_PACKAGES } from "./model/mocks";
+import { packageSchema } from "./model/schemas";
+import { PaginatedPackages, PackageCreateInput, PackageUpdateInput, ServicePackage } from "./model/types";
 
 let packages = [...MOCK_PACKAGES];
 

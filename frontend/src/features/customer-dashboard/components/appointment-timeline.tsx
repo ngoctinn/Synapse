@@ -5,7 +5,7 @@ import { vi } from "date-fns/locale"
 import { Calendar as CalendarIcon, Clock, MoreHorizontal, Plus } from "lucide-react"
 import * as React from "react"
 
-import { Appointment } from "@/features/customer-dashboard/types"
+import { Appointment } from "@/features/customer-dashboard"
 import { cn } from "@/shared/lib/utils"
 import { Avatar, AvatarFallback } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"

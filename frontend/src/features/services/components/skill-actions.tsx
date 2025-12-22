@@ -12,7 +12,7 @@ import {
 } from "@/shared/ui";
 import { useState } from "react";
 import { deleteSkill } from "../actions";
-import { Skill } from "../types";
+import { Skill } from "../model/types";
 import { SkillForm } from "./skill-form";
 
 interface SkillActionsProps {

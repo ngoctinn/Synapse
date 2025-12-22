@@ -1,6 +1,6 @@
 import { AppointmentsPage } from "@/features/appointments/components/appointments-page";
 import { getAppointments, getResourceList, getServiceList, getStaffList } from "@/features/appointments/actions";
-import { MOCK_STAFF } from "@/features/appointments/mock-data"; // Temporary
+import { MOCK_APPOINTMENTS } from "@/features/appointments"; // Temporary
 import { endOfMonth, startOfMonth } from "date-fns";
 import { Suspense } from "react";
 import { AppointmentsPageSkeleton } from "@/features/appointments/components/appointments-page-skeleton";
@@ -19,7 +19,7 @@ export default async function Appointments() {
   const serviceListPromise = getServiceList();
 
   // For now, passing full MOCK_STAFF for other components that might expect it directly
-  const fullStaffList = MOCK_STAFF; 
+  // const fullStaffList = MOCK_STAFF; // TODO: Remove or replace with proper data
 
   return (
     <Suspense fallback={<AppointmentsPageSkeleton />}>
@@ -28,7 +28,7 @@ export default async function Appointments() {
         staffListPromise={staffListPromise}
         resourceListPromise={resourceListPromise}
         serviceListPromise={serviceListPromise}
-        fullStaffList={fullStaffList}
+        // fullStaffList={fullStaffList}
       />
     </Suspense>
   );

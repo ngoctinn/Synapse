@@ -1,6 +1,6 @@
 "use client"
 
-import { Skill } from "@/features/services/types"
+import { Skill } from "@/features/services"
 import { Button } from "@/shared/ui/button"
 import { Mail } from "lucide-react"
 import { useState } from "react"

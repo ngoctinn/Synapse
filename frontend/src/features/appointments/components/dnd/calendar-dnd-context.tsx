@@ -28,7 +28,7 @@ import {
 } from "@dnd-kit/modifiers";
 import { useCallback, useState } from "react";
 
-import type { CalendarEvent, ZoomLevel } from "../../types";
+import type { CalendarEvent, ZoomLevel } from "../../model/types";
 import { EventCard } from "../event/event-card";
 
 

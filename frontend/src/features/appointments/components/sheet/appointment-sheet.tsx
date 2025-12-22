@@ -14,16 +14,16 @@ import {
 // Billing components
 import { InvoiceDetails } from "@/features/billing/components/sheet/invoice-details";
 import { PaymentForm } from "@/features/billing/components/sheet/payment-form";
-import { Invoice } from "@/features/billing/types";
+import { Invoice } from "@/features/billing/model/types";
 
 import { ReviewPrompt } from "@/features/reviews/components/review-prompt";
 import { STATUS_TO_BADGE_PRESET } from "../../constants";
-import { MockService } from "../../mock-data";
+import { MockService } from "../../model/mocks";
 import type {
     Appointment,
     CalendarEvent,
     TimelineResource,
-} from "../../types";
+} from "../../model/types";
 import { AppointmentForm } from "./appointment-form";
 import { FormModeFooter, PaymentModeFooter, ViewModeFooter } from "./appointment-sheet-footer";
 import { AppointmentViewContent } from "./appointment-view-content";

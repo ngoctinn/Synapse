@@ -9,7 +9,7 @@ import { FilterBar } from "@/shared/ui/custom/filter-bar"
 import { Input } from "@/shared/ui/input"
 import { Search } from "lucide-react"
 import { useDebouncedCallback } from "use-debounce"
-import { ServicePackage } from "../types"
+import { ServicePackage } from "../model/types"
 import { CreatePackageTrigger, PackageTable } from "./index"
 
 interface PackagesPageProps {

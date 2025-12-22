@@ -9,7 +9,7 @@ import {
 } from "@/shared/ui";
 import { History } from "lucide-react";
 import { deleteResource } from "../actions";
-import { Resource } from "../types";
+import { Resource } from "../model/types";
 
 interface ResourceActionsProps {
   resource: Resource;

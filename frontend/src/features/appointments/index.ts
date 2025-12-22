@@ -15,13 +15,13 @@ export type {
     Appointment, AppointmentFilters, AppointmentFormData, AppointmentMetrics, AppointmentStatus,
     CalendarEvent, CalendarState, CalendarViewConfig, CalendarViewType, ConflictInfo, DateRange,
     DensityMode, DragState, RecurrenceConfig, RecurrenceEndType, RecurrenceFrequency, ResourceType, TimeSlot, TimelineResource, UpdateAppointmentTimeData, ZoomLevel
-} from "./types";
+} from "./model/types";
 
 export {
     appointmentFilterSchema, appointmentFormSchema, recurrenceSchema, updateAppointmentTimeSchema,
     validateFutureDateTime, validateWorkingHours
-} from "./schemas";
-export type { AppointmentFilterValues, AppointmentFormValues, RecurrenceValues, UpdateAppointmentTimeValues } from "./schemas";
+} from "./model/schemas";
+export type { AppointmentFilterValues, AppointmentFormValues, RecurrenceValues, UpdateAppointmentTimeValues } from "./model/schemas";
 
 export {
     ANIMATION_DURATION, APPOINTMENT_STATUS_CONFIG, APPOINTMENT_STATUS_OPTIONS, CALENDAR_VIEW_CONFIG,
@@ -36,3 +36,5 @@ export {
     getAppointmentById, getAppointmentMetrics, getAppointments, getResourceList, getServiceList,
     getStaffList, markNoShow, searchCustomers, updateAppointment, updateAppointmentTime
 } from "./actions";
+
+export { MOCK_APPOINTMENTS } from "./model/mocks";

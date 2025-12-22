@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from 'react';
-import { MOCK_CONVERSATIONS, MOCK_MESSAGES, MOCK_USERS } from '../data/mock-data';
-import { Message } from '../types';
+import { MOCK_CONVERSATIONS, MOCK_MESSAGES, MOCK_USERS } from '../model/mocks';
+import { Message } from '../model/types';
 import { ChatLayout } from './chat-layout';
 import { ChatSidebar } from './chat-sidebar';
 import { ChatWindow } from './chat-window';
@@ -26,7 +26,7 @@ export function ChatContainer() {
       type: 'text'
     };
 
-    setMessages(prev => ({
+    setMessages((prev: Record<string, Message[]>) => ({
       ...prev,
       [selectedId]: [...(prev[selectedId] || []), newMessage]
     }));

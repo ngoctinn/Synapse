@@ -7,7 +7,7 @@ import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { FileText } from "lucide-react";
-import { AuditLog } from "../types";
+import { AuditLog } from "../model/types";
 
 interface AuditTableProps {
   data: AuditLog[];

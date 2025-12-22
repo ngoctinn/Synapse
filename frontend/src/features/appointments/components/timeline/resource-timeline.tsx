@@ -27,7 +27,7 @@ import type {
     ResourceType,
     TimelineResource,
     ZoomLevel,
-} from "../../types";
+} from "../../model/types";
 import { TimelineHeader } from "./timeline-header";
 import { TimelineRow } from "./timeline-row";
 

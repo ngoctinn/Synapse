@@ -8,7 +8,7 @@ import { Search } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useTransition } from "react"
 import { useDebouncedCallback } from "use-debounce"
-import { CustomerTreatment } from "../types"
+import { CustomerTreatment } from "../model/types"
 import { TreatmentTable } from "./treatment-table"
 
 interface TreatmentsPageProps {

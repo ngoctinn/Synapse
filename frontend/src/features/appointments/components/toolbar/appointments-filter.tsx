@@ -7,7 +7,7 @@ import { Label } from "@/shared/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import { Separator } from "@/shared/ui/separator";
 import { Filter, X } from "lucide-react";
-import type { AppointmentFilters, AppointmentStatus, TimelineResource } from "../../types";
+import type { AppointmentFilters, AppointmentStatus, TimelineResource } from "../../model/types";
 
 interface AppointmentsFilterProps {
   staffList: TimelineResource[];

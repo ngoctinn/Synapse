@@ -37,7 +37,7 @@ import {
 } from "@/shared/ui";
 
 import { APPOINTMENT_STATUS_CONFIG } from "../../constants";
-import type { CalendarEvent } from "../../types";
+import type { CalendarEvent } from "../../model/types";
 
 interface EventPopoverProps {
   event: CalendarEvent;

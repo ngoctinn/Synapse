@@ -15,7 +15,7 @@ import { Label } from "@/shared/ui/label";
 import { ScrollArea } from "@/shared/ui/scroll-area";
 import { Textarea } from "@/shared/ui/textarea";
 import { useEffect, useState } from "react";
-import { NotificationTemplate } from "../types";
+import { NotificationTemplate } from "../model/types";
 
 interface TemplateEditorProps {
   isOpen: boolean;
@@ -42,12 +42,12 @@ export function TemplateEditor({
     if (template) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setContent(prev => prev !== template.content ? template.content : prev);
-       
+
       setSubject(prev => prev !== (template.subject || "") ? (template.subject || "") : prev);
     } else {
-       
+
       setContent(prev => prev !== "" ? "" : prev);
-       
+
       setSubject(prev => prev !== "" ? "" : prev);
     }
   }, [template, isOpen]);

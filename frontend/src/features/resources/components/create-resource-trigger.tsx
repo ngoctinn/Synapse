@@ -3,7 +3,7 @@
 import { Button } from "@/shared/ui/button"
 import { Plus } from "lucide-react"
 import { useState } from "react"
-import { ResourceGroup } from "../types"
+import { ResourceGroup } from "../model/types"
 import { ResourceSheet } from "./resource-sheet"
 
 interface CreateResourceTriggerProps {

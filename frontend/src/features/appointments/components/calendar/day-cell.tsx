@@ -7,7 +7,7 @@ import { cn } from "@/shared/lib/utils";
 import { Button, Popover, PopoverContent, PopoverTrigger, ScrollArea } from "@/shared/ui";
 
 import { MAX_EVENTS_IN_MONTH_CELL } from "../../constants";
-import type { CalendarEvent } from "../../types";
+import type { CalendarEvent } from "../../model/types";
 import { EventCard } from "../event/event-card";
 
 export interface DayModel {

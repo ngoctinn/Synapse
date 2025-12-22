@@ -12,7 +12,7 @@ import type {
     CalendarViewType,
     DensityMode,
     ZoomLevel,
-} from "./types";
+} from "./model/types";
 
 /** Mapping từ AppointmentStatus sang BadgePreset để hiển thị badge */
 export const STATUS_TO_BADGE_PRESET: Record<AppointmentStatus, BadgePreset> = {

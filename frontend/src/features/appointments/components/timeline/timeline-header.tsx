@@ -11,7 +11,7 @@ import { useMemo } from "react";
 
 import { cn } from "@/shared/lib/utils";
 import { DEFAULT_WORKING_HOURS } from "../../constants";
-import type { ZoomLevel } from "../../types";
+import type { ZoomLevel } from "../../model/types";
 
 // TYPES
 

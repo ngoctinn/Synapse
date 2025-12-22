@@ -9,7 +9,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Suspense, use, useCallback, useEffect, useState, useTransition } from "react"
 import { toast } from "sonner"
 import { NotificationsSettings } from "../components/notifications-settings"
-import { NotificationChannel, NotificationEvent } from "../notifications/types"
+import { NotificationChannel, NotificationEvent } from "../notifications"
 import {
     ExceptionDate,
     ExceptionsPanel,

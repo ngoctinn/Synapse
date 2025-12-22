@@ -18,10 +18,10 @@ import {
 import { Input } from "@/shared/ui/input";
 import { Textarea } from "@/shared/ui/textarea";
 import { createWarranty, updateWarranty } from "../actions";
-import { warrantyCreateSchema, WarrantyFormValues } from "../schemas";
-import { WarrantyTicket } from "../types";
+import { warrantyCreateSchema, WarrantyFormValues } from "../model/schemas";
+import { WarrantyTicket } from "../model/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
-import { MOCK_TREATMENTS } from "@/features/treatments/data/mocks";
+import { MOCK_TREATMENTS } from "@/features/treatments/model/mocks";
 
 interface WarrantySheetProps {
   mode: "create"; // Only create implemented for now

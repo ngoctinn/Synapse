@@ -27,9 +27,9 @@ import { Combobox } from "@/shared/ui/custom/combobox";
 import { DatePicker } from "@/shared/ui/custom/date-picker";
 import { TimePicker } from "@/shared/ui/custom/time-picker";
 
-import { MockService } from "@/features/appointments/mock-data";
-import { quickAppointmentFormSchema, type QuickAppointmentFormValues } from "@/features/appointments/schemas";
-import type { Appointment, TimelineResource } from "@/features/appointments/types";
+import { MockService } from "@/features/appointments/model/mocks";
+import { quickAppointmentFormSchema, type QuickAppointmentFormValues } from "@/features/appointments/model/schemas";
+import type { Appointment, TimelineResource } from "@/features/appointments/model/types";
 import { useConflictCheck, useCustomerSearch } from "@/features/appointments/hooks";
 
 // ============================================
@@ -104,7 +104,7 @@ export function AppointmentForm({
       const service = availableServices.find((s) => s.id === values.serviceIds[0]);
       const resource = values.resourceId ? availableResources.find((r) => r.id === values.resourceId) : undefined;
 
-      const bookingItems = values.serviceIds.map(sId => {
+      const bookingItems = values.serviceIds.map((sId: string) => {
         const s = availableServices.find(as => as.id === sId);
         return {
           serviceId: sId,
@@ -117,8 +117,8 @@ export function AppointmentForm({
         };
       });
 
-      const currentTotalDuration = bookingItems.reduce((acc, item) => acc + item.duration, 0);
-      const currentTotalPrice = bookingItems.reduce((acc, item) => acc + item.price, 0);
+      const currentTotalDuration = bookingItems.reduce((acc: number, item: any) => acc + item.duration, 0);
+      const currentTotalPrice = bookingItems.reduce((acc: number, item: any) => acc + item.price, 0);
       const finalEndTime = new Date(startTime.getTime() + (currentTotalDuration || 60) * 60000);
 
       const newAppointment: Appointment = {

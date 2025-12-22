@@ -20,7 +20,7 @@ import {
     TooltipTrigger,
 } from "@/shared/ui/tooltip";
 import { GripVertical, Plus, Trash2, X } from "lucide-react";
-import { EquipmentUsage } from "../types";
+import { EquipmentUsage } from "../model/types";
 
 interface EquipmentTimelineEditorProps {
   /** Thời lượng dịch vụ (phút) - dùng để vẽ timeline */

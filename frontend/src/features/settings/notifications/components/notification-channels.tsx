@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/sha
 
 import { Button } from "@/shared/ui/button";
 import { Mail, MessageCircle, Settings2, Smartphone } from "lucide-react";
-import { NotificationChannel } from "../types";
+import { NotificationChannel } from "../model/types";
 import { ChannelStatusBadge } from "./channel-status-badge";
 
 interface NotificationChannelsProps {

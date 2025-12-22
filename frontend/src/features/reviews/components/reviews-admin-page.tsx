@@ -16,7 +16,7 @@ import { useCallback, useEffect, useState, useTransition } from "react";
 import { useDebounce } from "use-debounce";
 import { getReviews } from "../actions";
 import { REVIEW_RATING_LABELS } from "../constants";
-import { Review, ReviewFilters, ReviewRating } from "../types";
+import { Review, ReviewFilters, ReviewRating } from "../model/types";
 import { ReviewList } from "./review-list";
 
 export function ReviewsAdminPage() {

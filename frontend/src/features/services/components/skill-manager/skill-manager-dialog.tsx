@@ -16,8 +16,8 @@ import { Loader2, Pencil, Plus, Save, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
-import { MOCK_SKILLS } from "../../data/mocks";
-import { Skill } from "../../types";
+import { MOCK_SKILLS } from "../../model/mocks";
+import { Skill } from "../../model/types";
 
 interface SkillManagerDialogProps {
   open: boolean;

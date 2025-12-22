@@ -2,7 +2,7 @@
 
 import { Star } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
-import { ReviewRating } from "../types";
+import { ReviewRating } from "../model/types";
 
 interface StarRatingProps {
   rating: ReviewRating;

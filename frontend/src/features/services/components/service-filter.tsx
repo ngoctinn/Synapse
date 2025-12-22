@@ -1,6 +1,6 @@
   "use client"
 
-  import { Skill } from "@/features/services/types"
+  import { Skill } from "@/features/services"
 import { useFilterParams } from "@/shared/lib/hooks/use-filter-params"
 import { FilterButton } from "@/shared/ui/custom/filter-button"
 import { TagInput } from "@/shared/ui/custom/tag-input"
@@ -15,7 +15,7 @@ import {
 } from "@/shared/ui/select"
 import { Slider } from "@/shared/ui/slider"
 import { useEffect, useState } from "react"
-import { MOCK_CATEGORIES } from "../data/mocks"
+import { MOCK_CATEGORIES } from "../model/mocks"
 
   interface ServiceFilterProps {
     availableSkills: Skill[]

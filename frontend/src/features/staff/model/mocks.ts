@@ -1,4 +1,4 @@
-import { MOCK_SKILLS } from "@/features/services/data/mocks";
+import { MOCK_SKILLS } from "@/features/services/model/mocks";
 import { Staff } from "./types";
 
 export const MOCK_STAFF: Staff[] = [

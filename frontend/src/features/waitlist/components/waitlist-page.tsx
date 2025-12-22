@@ -8,7 +8,7 @@ import { Search } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useTransition } from "react"
 import { useDebouncedCallback } from "use-debounce"
-import { WaitlistEntry } from "../types"
+import { WaitlistEntry } from "../model/types"
 import { CreateWaitlistTrigger, WaitlistTable } from "./index"
 
 interface WaitlistPageProps {

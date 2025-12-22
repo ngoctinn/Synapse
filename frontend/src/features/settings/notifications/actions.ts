@@ -1,7 +1,7 @@
 'use server';
 
 import { ActionResponse, success } from '@/shared/lib/action-response';
-import { NotificationChannel, NotificationEvent } from './types';
+import { NotificationChannel, NotificationEvent } from './model/types';
 
 // Mock data simulation helpers
 const DELAY_MS = 800;

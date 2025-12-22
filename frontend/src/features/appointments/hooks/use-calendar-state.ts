@@ -20,7 +20,7 @@ import type {
     DateRange,
     DensityMode,
     ZoomLevel,
-} from "../types";
+} from "../model/types";
 
 interface UseCalendarStateOptions {
   initialView?: CalendarViewType;

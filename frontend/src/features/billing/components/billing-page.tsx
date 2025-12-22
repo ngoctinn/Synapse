@@ -6,7 +6,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { AlertCircle, CheckCircle, DollarSign, FileText } from "lucide-react";
 import { useEffect, useState } from "react";
 import { formatCurrency } from "@/shared/lib/utils";
-import { Invoice, InvoiceStatus } from "../types";
+import { Invoice, InvoiceStatus } from "../model/types";
 import { InvoiceTable } from "./invoice-table";
 import { InvoiceSheet } from "./sheet/invoice-sheet";
 import { useBillingStore } from "../hooks/use-billing-store";

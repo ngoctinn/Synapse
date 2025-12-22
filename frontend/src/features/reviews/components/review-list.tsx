@@ -1,7 +1,7 @@
 "use client";
 
 import { Frown } from "lucide-react";
-import { Review } from "../types";
+import { Review } from "../model/types";
 import { ReviewCard } from "./review-card";
 
 interface ReviewListProps {

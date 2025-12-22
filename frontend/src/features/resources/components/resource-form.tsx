@@ -25,7 +25,7 @@ import {
     Textarea,
 } from "@/shared/ui";
 
-import { ResourceGroup } from "../types";
+import { ResourceGroup } from "../model/types";
 
 interface ResourceFormProps {
     mode: "create" | "update";

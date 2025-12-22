@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { UseFormReturn, useWatch } from "react-hook-form";
 
 import { checkConflicts } from "@/features/appointments/actions";
-import type { ConflictInfo } from "@/features/appointments/types";
-import type { QuickAppointmentFormValues } from "@/features/appointments/schemas";
-import { MockService } from "@/features/appointments/mock-data";
+import type { ConflictInfo } from "@/features/appointments/model/types";
+import type { QuickAppointmentFormValues } from "@/features/appointments/model/schemas";
+import { MockService } from "@/features/appointments/model/mocks";
 
 interface ConflictCheckParams {
   form: UseFormReturn<QuickAppointmentFormValues>;

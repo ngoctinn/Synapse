@@ -18,10 +18,10 @@ import {
 import { Input } from "@/shared/ui/input";
 import { Textarea } from "@/shared/ui/textarea";
 import { createWaitlistEntry, updateWaitlistEntry } from "../actions";
-import { waitlistCreateSchema, WaitlistFormValues } from "../schemas";
-import { WaitlistEntry } from "../types";
+import { waitlistCreateSchema, type WaitlistFormValues } from "../model/schemas";
+import { WaitlistEntry } from "../model/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
-import { MOCK_SERVICES } from "@/features/services/data/mocks"; // Import mock services for dropdown
+import { MOCK_SERVICES } from "@/features/services/model/mocks"; // Import mock services for dropdown
 
 interface WaitlistSheetProps {
   mode: "create" | "edit";

@@ -1,7 +1,7 @@
 "use server";
 
-import { MOCK_AUDIT_LOGS } from "./data/mocks";
-import { AuditLog, PaginatedAuditLogs } from "./types";
+import { MOCK_AUDIT_LOGS } from "./model/mocks";
+import { AuditLog, PaginatedAuditLogs } from "./model/types";
 
 export async function getAuditLogs(
   page = 1,

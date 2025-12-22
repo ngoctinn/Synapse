@@ -6,7 +6,7 @@ import { ScrollArea } from "@/shared/ui/scroll-area";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Search } from "lucide-react";
-import { Conversation } from "../types";
+import { Conversation } from "../model/types";
 
 interface ChatSidebarProps {
   conversations: Conversation[];

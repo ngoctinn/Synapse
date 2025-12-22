@@ -1,7 +1,4 @@
-// Public API for packages feature
-export * from "./types";
-export * from "./schemas";
 export * from "./actions";
-
-// Components
-export * from "./components"
+export * from "./components/packages-page";
+export * from "./model/types";
+export { MOCK_PACKAGES } from "./model/mocks";

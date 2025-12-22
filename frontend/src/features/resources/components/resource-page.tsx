@@ -12,7 +12,7 @@ import { FilterBar } from "@/shared/ui/custom/filter-bar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 
 import { Suspense, use, useState } from "react";
-import { MaintenanceTask, Resource, ResourceGroup } from "../types";
+import { MaintenanceTask, Resource, ResourceGroup } from "../model/types";
 import { CreateResourceTrigger } from "./create-resource-trigger";
 import { MaintenanceTimeline } from "./maintenance-timeline";
 import { ResourceFilter } from "./resource-filter";

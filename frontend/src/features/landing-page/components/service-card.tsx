@@ -1,6 +1,6 @@
 "use client";
 
-import { Service } from "@/features/services/types";
+import { Service } from "@/features/services";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import { Calendar, Clock, Tag } from "lucide-react";

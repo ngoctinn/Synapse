@@ -12,7 +12,7 @@ import { Loader2, Package } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { deletePackage } from "../actions";
-import { ServicePackage } from "../types";
+import { ServicePackage } from "../model/types";
 import { PackageSheet } from "./package-sheet";
 import { CreatePackageTrigger } from "./create-package-trigger";
 

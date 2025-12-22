@@ -1,4 +1,4 @@
-import { Skill } from "@/features/services/types";
+import { Skill } from "@/features/services";
 
 export type Role = 'admin' | 'receptionist' | 'technician' | 'customer';
 

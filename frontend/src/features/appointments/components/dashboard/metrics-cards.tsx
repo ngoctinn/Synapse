@@ -18,7 +18,7 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/shared/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui";
 
-import type { AppointmentMetrics } from "../../types";
+import type { AppointmentMetrics } from "../../model/types";
 
 interface MetricsCardsProps {
   metrics: AppointmentMetrics | null;

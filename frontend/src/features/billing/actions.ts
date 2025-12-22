@@ -1,22 +1,25 @@
 "use server";
 
-import { MOCK_APPOINTMENTS, MOCK_CUSTOMERS, MOCK_SERVICES } from "@/features/appointments/mock-data";
-import { ActionResponse, error, success } from "@/shared/lib/action-response";
+import { MOCK_APPOINTMENTS, MOCK_CUSTOMERS, MOCK_SERVICES } from "@/features/appointments/model/mocks";
+import { error, success } from "@/shared/lib/action-response";
+import { executeAction } from "@/shared/lib/execute-action";
 import { revalidatePath } from "next/cache";
-import { MOCK_INVOICES } from "./mock-data";
-import { CreatePaymentPayload, Invoice, InvoiceFilters, InvoiceMetrics } from "./types";
+import { MOCK_INVOICES } from "./model/mocks";
+import type { CreatePaymentPayload, Invoice, InvoiceFilters, InvoiceMetrics } from "./model/types";
 
-export async function createInvoice(bookingId: string): Promise<ActionResponse<Invoice>> {
-  try {
+// === INVOICE ACTIONS ===
+
+export async function createInvoice(bookingId: string) {
+  return executeAction("createInvoice", async () => {
     const existing = MOCK_INVOICES.find(i => i.bookingId === bookingId);
-    if (existing) return error("Hóa đơn cho lịch hẹn này đã tồn tại");
+    if (existing) throw new Error("DUPLICATE");
 
     const booking = MOCK_APPOINTMENTS.find(a => a.id === bookingId);
-    if (!booking) return error("Không tìm thấy lịch hẹn");
-    if (booking.status !== "COMPLETED") return error("Chỉ có thể tạo hóa đơn cho lịch hẹn đã hoàn thành");
+    if (!booking) throw new Error("NOT_FOUND");
+    if (booking.status !== "COMPLETED") throw new Error("INVALID_STATUS");
 
     const service = MOCK_SERVICES.find(s => s.id === booking.serviceId);
-    if (!service) return error("Không tìm thấy dịch vụ");
+    if (!service) throw new Error("SERVICE_NOT_FOUND");
 
     const item = {
       id: `ITEM-${Date.now()}`,
@@ -31,14 +34,14 @@ export async function createInvoice(bookingId: string): Promise<ActionResponse<I
 
     const amount = item.totalPrice;
     let discountAmount = 0;
-    let discountReason = undefined;
+    let discountReason: string | undefined = undefined;
 
     const customer = MOCK_CUSTOMERS.find(c => c.id === booking.customerId);
     if (customer) {
-      if (customer.membershipLevel === 'GOLD') {
+      if (customer.membershipLevel === "GOLD") {
         discountAmount = amount * 0.05;
         discountReason = "Gold Member (5%)";
-      } else if (customer.membershipLevel === 'PLATINUM') {
+      } else if (customer.membershipLevel === "PLATINUM") {
         discountAmount = amount * 0.10;
         discountReason = "Platinum Member (10%)";
       }
@@ -51,7 +54,7 @@ export async function createInvoice(bookingId: string): Promise<ActionResponse<I
       customerId: booking.customerId,
       customerName: booking.customerName,
       customerPhone: booking.customerPhone,
-      amount: amount,
+      amount,
       paidAmount: 0,
       status: "UNPAID",
       issuedAt: new Date(),
@@ -66,14 +69,12 @@ export async function createInvoice(bookingId: string): Promise<ActionResponse<I
     MOCK_INVOICES.unshift(newInvoice);
     revalidatePath("/admin/billing");
 
-    return success(newInvoice, "Tạo hóa đơn thành công");
-  } catch {
-    return error("Lỗi khi tạo hóa đơn");
-  }
+    return newInvoice;
+  }, "Lỗi khi tạo hóa đơn");
 }
 
-export async function getInvoices(filters?: InvoiceFilters): Promise<ActionResponse<Invoice[]>> {
-  try {
+export async function getInvoices(filters?: InvoiceFilters) {
+  return executeAction("getInvoices", async () => {
     let invoices = [...MOCK_INVOICES];
     if (filters) {
       if (filters.status && filters.status.length > 0) {
@@ -90,28 +91,27 @@ export async function getInvoices(filters?: InvoiceFilters): Promise<ActionRespo
       }
     }
     invoices.sort((a, b) => b.issuedAt.getTime() - a.issuedAt.getTime());
-    return success(invoices);
-  } catch {
-    return error("Không thể tải danh sách hóa đơn");
-  }
+    return invoices;
+  }, "Không thể tải danh sách hóa đơn");
 }
 
-export async function getInvoice(id: string): Promise<ActionResponse<Invoice>> {
-  try {
+export async function getInvoice(id: string) {
+  return executeAction("getInvoice", async () => {
     const invoice = MOCK_INVOICES.find((inv) => inv.id === id);
-    return invoice ? success(invoice) : error("Không tìm thấy hóa đơn");
-  } catch {
-    return error("Lỗi khi tải chi tiết hóa đơn");
-  }
+    if (!invoice) throw new Error("NOT_FOUND");
+    return invoice;
+  }, "Không tìm thấy hóa đơn");
 }
 
-export async function createPayment(payload: CreatePaymentPayload): Promise<ActionResponse<Invoice>> {
-  try {
+export async function createPayment(payload: CreatePaymentPayload) {
+  return executeAction("createPayment", async () => {
     const invoiceIndex = MOCK_INVOICES.findIndex((inv) => inv.id === payload.invoiceId);
-    if (invoiceIndex === -1) return error("Không tìm thấy hóa đơn");
+    if (invoiceIndex === -1) throw new Error("NOT_FOUND");
 
     const invoice = MOCK_INVOICES[invoiceIndex];
-    if (payload.amount > (invoice.finalAmount - invoice.paidAmount)) return error("Số tiền thanh toán vượt quá số tiền còn lại");
+    if (payload.amount > (invoice.finalAmount - invoice.paidAmount)) {
+      throw new Error("AMOUNT_EXCEEDED");
+    }
 
     const newPayment = {
       id: `PAY-${Date.now()}`,
@@ -132,27 +132,20 @@ export async function createPayment(payload: CreatePaymentPayload): Promise<Acti
 
     if (updatedInvoice.paidAmount >= updatedInvoice.finalAmount) {
       updatedInvoice.status = "PAID";
-      // const pointsEarned = Math.floor(updatedInvoice.finalAmount / 10000);
-      // TODO: Dispatch loyalty points event here
     }
 
     MOCK_INVOICES[invoiceIndex] = updatedInvoice;
     revalidatePath("/admin/billing");
-    return success(updatedInvoice, "Thanh toán thành công");
-  } catch {
-    return error("Lỗi khi xử lý thanh toán");
-  }
+    return updatedInvoice;
+  }, "Lỗi khi xử lý thanh toán");
 }
 
-export async function getBillingMetrics(): Promise<ActionResponse<InvoiceMetrics>> {
-  try {
+export async function getBillingMetrics() {
+  return executeAction("getBillingMetrics", async () => {
     const totalRevenue = MOCK_INVOICES.reduce((sum, inv) => sum + inv.paidAmount, 0);
     const pendingAmount = MOCK_INVOICES.reduce((sum, inv) => sum + (inv.finalAmount - inv.paidAmount), 0);
     const paidInvoices = MOCK_INVOICES.filter((inv) => inv.status === "PAID").length;
     const unpaidInvoices = MOCK_INVOICES.filter((inv) => inv.status === "UNPAID").length;
-
-    return success({ totalRevenue, pendingAmount, paidInvoices, unpaidInvoices });
-  } catch {
-    return error("Không thể tải thống kê");
-  }
+    return { totalRevenue, pendingAmount, paidInvoices, unpaidInvoices } as InvoiceMetrics;
+  }, "Không thể tải thống kê");
 }

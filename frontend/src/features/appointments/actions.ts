@@ -1,29 +1,14 @@
 "use server";
 
 import { type ActionResponse, error as createErrorResponse, success as createSuccessResponse } from "@/shared/lib/action-response";
+import { executeAction } from "@/shared/lib/execute-action";
 import { isWithinInterval } from "date-fns";
 import {
   appointmentsToCalendarEvents, getMockMetrics,
   MOCK_APPOINTMENTS, MOCK_CUSTOMERS, MOCK_RESOURCES, MOCK_SERVICES, MOCK_STAFF
-} from "./mock-data";
-import type { Appointment, AppointmentFilters, ConflictInfo, DateRange } from "./types";
+} from "./model/mocks";
+import type { Appointment, AppointmentFilters, ConflictInfo, DateRange } from "./model/types";
 
-const SIMULATED_DELAY_MS = 300;
-
-async function executeAction<T>(
-    actionName: string,
-    operation: () => Promise<T>,
-    errorMessage: string = "Thao tác thất bại"
-): Promise<ActionResponse<T>> {
-    try {
-        await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS));
-        const data = await operation();
-        return createSuccessResponse(data);
-    } catch (e) {
-        console.error(`${actionName} error:`, e);
-        return createErrorResponse(errorMessage);
-    }
-}
 
 export async function getAppointments(dateRange: DateRange, filters?: Partial<AppointmentFilters>) {
     return executeAction("getAppointments", async () => {

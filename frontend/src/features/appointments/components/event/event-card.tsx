@@ -23,7 +23,7 @@ import {
 import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui";
 
-import type { AppointmentStatus, CalendarEvent } from "../../types";
+import type { AppointmentStatus, CalendarEvent } from "../../model/types";
 import { STATUS_TO_BADGE_PRESET } from "../../constants";
 
 interface EventCardProps {

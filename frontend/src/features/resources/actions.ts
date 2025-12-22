@@ -6,9 +6,9 @@ import {
   mockMaintenanceTasks,
   mockResourceGroups,
   mockResources,
-} from "./data/mocks";
+} from "./model/mocks";
 import { ResourceFormValues, resourceSchema } from "./schemas";
-import { MaintenanceTask, Resource, ResourceGroup } from "./types";
+import { MaintenanceTask, Resource, ResourceGroup } from "./model/types";
 
 let resources = [...mockResources];
 const resourceGroups = [...mockResourceGroups];

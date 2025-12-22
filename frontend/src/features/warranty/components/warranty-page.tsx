@@ -8,7 +8,7 @@ import { Search } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useTransition } from "react"
 import { useDebouncedCallback } from "use-debounce"
-import { WarrantyTicket } from "../types"
+import { WarrantyTicket } from "../model/types"
 import { CreateWarrantyTrigger, WarrantyTable } from "./index"
 
 interface WarrantyPageProps {

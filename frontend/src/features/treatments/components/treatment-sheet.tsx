@@ -6,7 +6,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/shared/ui";
-import { CustomerTreatment } from "../types";
+import { CustomerTreatment } from "../model/types";
 import { Badge } from "@/shared/ui/badge";
 import { Progress } from "@/shared/ui/progress";
 import { Button } from "@/shared/ui/button";

@@ -8,8 +8,7 @@ import { startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { registerAction } from "../actions";
-import { usePasswordVisibility } from "../hooks/use-password-visibility";
-import { registerSchema, type RegisterInput } from "../schemas";
+import { registerSchema, type RegisterInput } from "../model/schemas";
 
 import {
     Button,
@@ -22,6 +21,7 @@ import {
     Input,
     showToast,
 } from "@/shared/ui";
+import { PasswordInput } from "@/shared/ui/custom/password-input";
 
 export function RegisterForm() {
   const router = useRouter();
@@ -69,8 +69,7 @@ export function RegisterForm() {
     });
   }
 
-  const { toggle: togglePassword, inputType: passwordInputType, Icon: PasswordToggleIcon, ariaLabel: passwordAriaLabel } = usePasswordVisibility();
-  const { toggle: toggleConfirmPassword, inputType: confirmPasswordInputType, Icon: ConfirmPasswordToggleIcon, ariaLabel: confirmPasswordAriaLabel } = usePasswordVisibility();
+
 
   if (state?.status === "success") {
     return (
@@ -152,20 +151,7 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel>Mật khẩu</FormLabel>
                   <FormControl>
-                    <Input
-                      type={passwordInputType}
-                      startContent={<Lock className="size-4 text-muted-foreground" />}
-                      endContent={
-                        <button
-                          type="button"
-                          onClick={togglePassword}
-                          className="text-muted-foreground hover:text-foreground transition-colors"
-                          aria-label={passwordAriaLabel}
-                          tabIndex={-1}
-                        >
-                          <PasswordToggleIcon className="size-4" />
-                        </button>
-                      }
+                    <PasswordInput
                       placeholder="Tối thiểu 8 ký tự"
                       autoComplete="new-password"
                       {...field}
@@ -182,20 +168,7 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel>Xác nhận mật khẩu</FormLabel>
                   <FormControl>
-                    <Input
-                      type={confirmPasswordInputType}
-                      startContent={<Lock className="size-4 text-muted-foreground" />}
-                      endContent={
-                        <button
-                          type="button"
-                          onClick={toggleConfirmPassword}
-                          className="text-muted-foreground hover:text-foreground transition-colors"
-                          aria-label={confirmPasswordAriaLabel}
-                          tabIndex={-1}
-                        >
-                          <ConfirmPasswordToggleIcon className="size-4" />
-                        </button>
-                      }
+                    <PasswordInput
                       placeholder="Nhập lại mật khẩu"
                       autoComplete="new-password"
                       {...field}

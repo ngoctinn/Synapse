@@ -10,7 +10,7 @@ import { useCallback, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { checkConflicts, updateAppointmentTime } from "../actions";
-import type { CalendarEvent } from "../types";
+import type { CalendarEvent } from "../model/types";
 
 
 

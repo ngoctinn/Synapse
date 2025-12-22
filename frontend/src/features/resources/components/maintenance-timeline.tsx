@@ -14,7 +14,7 @@ import { vi } from "date-fns/locale";
 import { Bed, Box, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import * as React from "react";
-import { MaintenanceTask, Resource } from "../types";
+import { MaintenanceTask, Resource } from "../model/types";
 
 interface MaintenanceTimelineProps {
   resources: Resource[];

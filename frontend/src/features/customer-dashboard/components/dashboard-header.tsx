@@ -1,7 +1,7 @@
 "use client"
 
 import { HeaderLogo, HeaderUserDropdown } from "@/shared/components/layout/components/header"
-import { UserProfile } from "../types"
+import { UserProfile } from "../model/types"
 
 interface DashboardHeaderProps {
   user: UserProfile

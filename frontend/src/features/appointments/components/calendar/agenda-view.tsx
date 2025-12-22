@@ -15,7 +15,7 @@ import { cn } from "@/shared/lib/utils";
 import { ScrollArea } from "@/shared/ui";
 
 import { EMPTY_STATE_MESSAGES } from "../../constants";
-import type { CalendarEvent, DateRange } from "../../types";
+import type { CalendarEvent, DateRange } from "../../model/types";
 import { EventCard } from "../event/event-card";
 
 

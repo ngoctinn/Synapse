@@ -16,7 +16,7 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import { manageResource } from "../actions";
 import { ResourceFormValues, resourceSchema } from "../schemas";
-import { Resource, ResourceGroup } from "../types";
+import { Resource, ResourceGroup } from "../model/types";
 import { ResourceForm } from "./resource-form";
 
 interface ResourceSheetProps {

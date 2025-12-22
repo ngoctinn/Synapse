@@ -23,8 +23,8 @@ import { useForm } from "react-hook-form";
 
 import { createPayment } from "../../actions";
 import { PAYMENT_METHODS } from "../../constants";
-import { CreatePaymentFormValues, createPaymentSchema } from "../../schemas";
-import { Invoice } from "../../types";
+import { CreatePaymentFormValues, createPaymentSchema } from "../../model/schemas";
+import { Invoice } from "../../model/types";
 
 interface PaymentFormProps {
   invoice: Invoice;

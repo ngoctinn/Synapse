@@ -13,8 +13,8 @@ import { Loader2, Plus, Save } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
-import { MOCK_CATEGORIES } from "../../data/mocks";
-import { ServiceCategory } from "../../types";
+import { MOCK_CATEGORIES } from "../../model/mocks";
+import { ServiceCategory } from "../../model/types";
 import { SortableCategoryList } from "./sortable-category-list";
 
 interface CategoryManagerDialogProps {

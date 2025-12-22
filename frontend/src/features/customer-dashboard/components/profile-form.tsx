@@ -2,8 +2,8 @@
 
 import { updateProfile } from "@/features/customer-dashboard/actions"
 import { PROFILE_MESSAGES } from "@/features/customer-dashboard/constants"
-import { ProfileInput, profileSchema } from "@/features/customer-dashboard/schemas"
-import { UserProfile } from "@/features/customer-dashboard/types"
+import { ProfileInput, profileSchema } from "@/features/customer-dashboard"
+import { UserProfile } from "@/features/customer-dashboard"
 import { useReducedMotion } from "@/shared/hooks"
 import {
     Card,

@@ -3,9 +3,32 @@
 import { ActionResponse, error, success } from "@/shared/lib/action-response";
 import { revalidatePath } from "next/cache";
 import "server-only";
-import { profileSchema } from "./schemas";
-import { updateCustomerProfile } from "./services/api";
+import { profileSchema } from "./model/schemas";
+import { MOCK_USER, MOCK_APPOINTMENTS, MOCK_TREATMENTS } from "./model/mocks";
 import { cancelAppointment as adminCancelAppointment } from "@/features/appointments/actions";
+import type { UserProfile } from "./model/types";
+
+// === Server-only API functions (gộp từ services/api.ts) ===
+
+export async function getCustomerProfile(): Promise<UserProfile> {
+  await new Promise(r => setTimeout(r, 200)); // Simulate delay
+  return MOCK_USER;
+}
+
+export async function getCustomerAppointments() {
+  await new Promise(r => setTimeout(r, 200));
+  return MOCK_APPOINTMENTS;
+}
+
+export async function getCustomerTreatments() {
+  await new Promise(r => setTimeout(r, 200));
+  return MOCK_TREATMENTS;
+}
+
+async function updateCustomerProfile(data: Partial<UserProfile>): Promise<UserProfile> {
+  await new Promise(r => setTimeout(r, 200));
+  return { ...MOCK_USER, ...data };
+}
 
 export async function cancelBooking(id: string, reason: string): Promise<ActionResponse<unknown>> {
   const result = await adminCancelAppointment(id, reason);

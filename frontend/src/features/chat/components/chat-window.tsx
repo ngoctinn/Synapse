@@ -4,7 +4,7 @@ import { Button } from "@/shared/ui/button";
 import { ScrollArea } from "@/shared/ui/scroll-area";
 import { ChevronLeft, MessageSquareDashed, MoreHorizontal, Phone, Video } from "lucide-react";
 import { useEffect, useRef } from 'react';
-import { Conversation, Message } from '../types';
+import { Conversation, Message } from '../model/types';
 import { MessageBubble } from './message-bubble';
 import { MessageInput } from './message-input';
 

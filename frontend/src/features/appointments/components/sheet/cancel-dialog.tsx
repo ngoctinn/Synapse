@@ -21,7 +21,7 @@ import {
 import { Textarea } from "@/shared/ui/textarea";
 
 import { cancelAppointment } from "../../actions";
-import type { CalendarEvent } from "../../types";
+import type { CalendarEvent } from "../../model/types";
 
 
 

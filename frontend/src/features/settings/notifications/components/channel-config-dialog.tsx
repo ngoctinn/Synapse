@@ -11,7 +11,7 @@ import {
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import { useEffect, useState } from "react";
-import { NotificationChannel } from "../types";
+import { NotificationChannel } from "../model/types";
 
 interface ChannelConfigDialogProps {
   isOpen: boolean;

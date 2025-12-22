@@ -9,7 +9,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/shared/ui/table";
-import { NotificationEvent } from "../types";
+import { NotificationEvent } from "../model/types";
 import { ChannelControl } from "./channel-control";
 
 interface NotificationListProps {

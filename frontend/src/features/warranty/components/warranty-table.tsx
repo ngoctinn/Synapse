@@ -12,7 +12,7 @@ import { vi } from "date-fns/locale";
 import { AlertTriangle, MoreHorizontal, ShieldCheck, XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { updateWarrantyStatus } from "../actions";
-import { WarrantyTicket } from "../types";
+import { WarrantyTicket } from "../model/types";
 import {
   DropdownMenu,
   DropdownMenuContent,

@@ -10,7 +10,7 @@ import {
 } from "@/shared/ui/dialog";
 import { useTransition } from "react";
 import { createReview } from "../actions";
-import { CreateReviewFormValues } from "../schemas";
+import { CreateReviewFormValues } from "../model/schemas";
 import { ReviewForm } from "./review-form";
 
 interface ReviewPromptProps {

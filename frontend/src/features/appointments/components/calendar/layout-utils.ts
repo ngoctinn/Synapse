@@ -1,4 +1,4 @@
-import type { CalendarEvent } from "../../types";
+import type { CalendarEvent } from "../../model/types";
 import { calculateEventPosition } from "./time-grid";
 
 interface PositionedEvent {

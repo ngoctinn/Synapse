@@ -11,7 +11,7 @@ import { CSS } from "@dnd-kit/utilities";
 
 import { cn } from "@/shared/lib/utils";
 
-import type { CalendarEvent } from "../../types";
+import type { CalendarEvent } from "../../model/types";
 import { EventCard } from "../event/event-card";
 import type { DragData } from "./calendar-dnd-context";
 

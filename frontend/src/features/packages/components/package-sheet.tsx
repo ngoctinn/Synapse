@@ -13,8 +13,8 @@ import { useSheetForm } from "@/shared/hooks";
 import { Save, Send } from "lucide-react";
 import { useCallback } from "react";
 import { createPackage, updatePackage } from "../actions";
-import { packageSchema, PackageFormValues } from "../schemas";
-import { ServicePackage } from "../types";
+import { packageSchema, PackageFormValues } from "../model/schemas";
+import { ServicePackage } from "../model/types";
 import { PackageForm } from "./package-form";
 
 interface PackageSheetProps {

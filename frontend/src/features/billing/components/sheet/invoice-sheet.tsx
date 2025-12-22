@@ -5,7 +5,7 @@ import {
   SheetHeader,
   SheetTitle
 } from "@/shared/ui";
-import { Invoice } from "../../types";
+import { Invoice } from "../../model/types";
 import { InvoiceDetails } from "./invoice-details";
 import { PaymentForm } from "./payment-form";
 

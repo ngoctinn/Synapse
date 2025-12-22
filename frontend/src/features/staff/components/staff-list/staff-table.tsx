@@ -1,6 +1,6 @@
 "use client";
 
-import { Skill } from "@/features/services/types";
+import { Skill } from "@/features/services";
 import { deleteStaff } from "@/features/staff/actions";
 import { useTableParams, useTableSelection } from "@/shared/hooks";
 import { DeleteConfirmDialog, showToast } from "@/shared/ui";

@@ -6,7 +6,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Check, GripVertical, Pencil, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { ServiceCategory } from "../../types";
+import { ServiceCategory } from "../../model/types";
 
 interface SortableItemProps {
   category: ServiceCategory;

@@ -3,7 +3,7 @@
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
-import { Review } from "../types";
+import { Review } from "../model/types";
 import { StarRating } from "./star-rating";
 
 interface ReviewCardProps {

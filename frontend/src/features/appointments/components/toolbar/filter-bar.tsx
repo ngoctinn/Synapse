@@ -26,7 +26,7 @@ import {
 } from "@/shared/ui";
 
 import { APPOINTMENT_STATUS_CONFIG } from "../../constants";
-import type { AppointmentFilters, AppointmentStatus } from "../../types";
+import type { AppointmentFilters, AppointmentStatus } from "../../model/types";
 
 // TYPES
 
@@ -71,21 +71,21 @@ export function FilterBar({
   // Handlers
   const handleStaffToggle = (staffId: string) => {
     const newStaffIds = filters.staffIds.includes(staffId)
-      ? filters.staffIds.filter((id) => id !== staffId)
+      ? filters.staffIds.filter((id: string) => id !== staffId)
       : [...filters.staffIds, staffId];
     onFiltersChange({ ...filters, staffIds: newStaffIds });
   };
 
   const handleServiceToggle = (serviceId: string) => {
     const newServiceIds = filters.serviceIds.includes(serviceId)
-      ? filters.serviceIds.filter((id) => id !== serviceId)
+      ? filters.serviceIds.filter((id: string) => id !== serviceId)
       : [...filters.serviceIds, serviceId];
     onFiltersChange({ ...filters, serviceIds: newServiceIds });
   };
 
   const handleStatusToggle = (status: AppointmentStatus) => {
     const newStatuses = filters.statuses.includes(status)
-      ? filters.statuses.filter((s) => s !== status)
+      ? filters.statuses.filter((s: AppointmentStatus) => s !== status)
       : [...filters.statuses, status];
     onFiltersChange({ ...filters, statuses: newStatuses });
   };
@@ -109,19 +109,19 @@ export function FilterBar({
       case "staff":
         onFiltersChange({
           ...filters,
-          staffIds: filters.staffIds.filter((id) => id !== value),
+          staffIds: filters.staffIds.filter((id: string) => id !== value),
         });
         break;
       case "service":
         onFiltersChange({
           ...filters,
-          serviceIds: filters.serviceIds.filter((id) => id !== value),
+          serviceIds: filters.serviceIds.filter((id: string) => id !== value),
         });
         break;
       case "status":
         onFiltersChange({
           ...filters,
-          statuses: filters.statuses.filter((s) => s !== value),
+          statuses: filters.statuses.filter((s: AppointmentStatus) => s !== value as AppointmentStatus),
         });
         break;
       case "search":

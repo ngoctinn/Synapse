@@ -1,6 +1,6 @@
-export * from "./types";
-export * from "./schemas";
 export * from "./actions";
-
-// Components export
-export * from "./components"
+export * from "./components/treatment-sheet";
+export * from "./components/treatment-table";
+export * from "./components/treatments-page";
+export * from "./model/types";
+export * from "./model/schemas";

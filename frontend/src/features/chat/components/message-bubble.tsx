@@ -2,7 +2,7 @@ import { cn } from "@/shared/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { Message } from '../types';
+import { Message } from '../model/types';
 
 interface MessageBubbleProps {
   message: Message;

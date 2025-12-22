@@ -15,7 +15,7 @@ import {
     sortableKeyboardCoordinates,
     verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { ServiceCategory } from "../../types";
+import { ServiceCategory } from "../../model/types";
 import { SortableItem } from "./sortable-item";
 
 interface SortableCategoryListProps {

@@ -10,7 +10,7 @@ import {
     SidebarRail,
 } from "@/shared/ui/sidebar"
 import * as React from "react"
-import { UserProfile } from "../types"
+import { UserProfile } from "../model/types"
 import { NavMain } from "./nav-main"
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {

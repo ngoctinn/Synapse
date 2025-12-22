@@ -11,7 +11,7 @@ import { CheckCircle2, ClipboardList } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { checkInSession } from "../actions";
-import { CustomerTreatment } from "../types";
+import { CustomerTreatment } from "../model/types";
 import { TreatmentSheet } from "./treatment-sheet";
 import { showToast } from "@/shared/ui";
 

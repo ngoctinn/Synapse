@@ -1,7 +1,7 @@
 "use client"
 
 import { SkillManagerDialog } from "@/features/services/components/skill-manager/skill-manager-dialog"
-import { Skill } from "@/features/services/types"
+import { Skill } from "@/features/services"
 import { cn } from "@/shared/lib/utils"
 import {
   Button,

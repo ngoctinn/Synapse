@@ -4,7 +4,7 @@ import { formatCurrency } from "@/shared/lib/utils";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { PAYMENT_METHOD_LABELS } from "../../constants";
-import { Invoice } from "../../types";
+import { Invoice } from "../../model/types";
 import { InvoiceStatusBadge } from "../invoice-status-badge";
 
 interface InvoiceDetailsProps {

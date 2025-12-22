@@ -7,7 +7,7 @@ import { cn } from "@/shared/lib/utils";
 import { ScrollArea } from "@/shared/ui";
 
 import { DEFAULT_WORKING_HOURS, HOUR_HEIGHT } from "../../constants";
-import type { CalendarEvent, DensityMode } from "../../types";
+import type { CalendarEvent, DensityMode } from "../../model/types";
 import { EventPopover } from "../event";
 import { EventCard } from "../event/event-card";
 import { DateHeader } from "./date-header";

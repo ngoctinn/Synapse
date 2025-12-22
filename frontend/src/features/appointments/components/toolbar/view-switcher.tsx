@@ -19,7 +19,7 @@ import { cn } from "@/shared/lib/utils";
 import { Tabs, TabsList, TabsTrigger } from "@/shared/ui";
 
 import { CALENDAR_VIEW_CONFIG } from "../../constants";
-import type { CalendarViewType } from "../../types";
+import type { CalendarViewType } from "../../model/types";
 
 // TYPES
 

@@ -13,9 +13,9 @@ import {
 import { Save, Send } from "lucide-react";
 import { createService, updateService } from "../actions";
 import { SERVICE_DEFAULT_VALUES } from "../constants";
-import { MOCK_CATEGORIES } from "../data/mocks";
-import { ServiceFormValues, serviceSchema } from "../schemas";
-import { Service, Skill } from "../types";
+import { MOCK_CATEGORIES } from "../model/mocks";
+import { ServiceFormValues, serviceSchema } from "../model/schemas";
+import { Service, Skill } from "../model/types";
 import { ServiceForm } from "./service-form";
 import { useSheetForm } from "@/shared/hooks";
 import { useCallback } from "react";

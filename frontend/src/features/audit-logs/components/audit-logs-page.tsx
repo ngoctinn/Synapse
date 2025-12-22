@@ -2,7 +2,7 @@
 
 import { PageFooter } from "@/shared/components/layout/components/page-footer"
 import { PageContent, PageHeader, PageShell, SurfaceCard } from "@/shared/components/layout/page-layout"
-import { AuditLog } from "../types"
+import { AuditLog } from "../model/types"
 import { AuditTable } from "./index"
 import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import { useTransition } from "react"

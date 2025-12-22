@@ -10,7 +10,7 @@ import {
 
 import { Separator } from "@/shared/ui";
 
-import type { Appointment, CalendarEvent } from "../../types";
+import type { Appointment, CalendarEvent } from "../../model/types";
 
 // HELPERS
 function getInitials(name: string): string {
