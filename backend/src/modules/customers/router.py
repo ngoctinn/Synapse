@@ -2,7 +2,6 @@
 Customers Module - API Endpoints
 """
 import uuid
-from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 
 from .service import CustomerService

@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 
 from src.common.database import engine
 from src.app.config import settings
+from src.app.middleware import ObservabilityMiddleware
 # Import các modules (Sử dụng Public API - __init__.py)
 from src.modules import (
     users,
@@ -43,8 +44,6 @@ origins = [
     "http://localhost:3000",  # Frontend
 ]
 
-from src.app.middleware import ObservabilityMiddleware
-
 app.add_middleware(ObservabilityMiddleware)
 
 app.add_middleware(
@@ -68,24 +67,17 @@ async def global_exception_handler(request, exc):
 async def health_check():
     return {"status": "ok", "message": "Backend Synapse đang hoạt động"}
 
-# Đăng ký routers
-app.include_router(users.router, prefix=settings.API_V1_STR)
-app.include_router(services.router, prefix=settings.API_V1_STR)
-app.include_router(staff.router, prefix=settings.API_V1_STR)
-app.include_router(resources.router, prefix=settings.API_V1_STR)
-app.include_router(schedules.router, prefix=settings.API_V1_STR)
-app.include_router(bookings.router, prefix=settings.API_V1_STR)
-app.include_router(customers.router, prefix=settings.API_V1_STR)
-app.include_router(scheduling_engine.router, prefix=settings.API_V1_STR)
-app.include_router(customer_treatments.router, prefix=settings.API_V1_STR)
-app.include_router(billing.router, prefix=settings.API_V1_STR)
-app.include_router(operating_hours.router, prefix=settings.API_V1_STR)
-app.include_router(promotions.router, prefix=settings.API_V1_STR)
-app.include_router(waitlist.router, prefix=settings.API_V1_STR)
-app.include_router(notifications.router, prefix=settings.API_V1_STR)
-app.include_router(warranty.router, prefix=settings.API_V1_STR)
-app.include_router(chat.router, prefix=settings.API_V1_STR)
-app.include_router(settings_module.router, prefix=settings.API_V1_STR)
+# Đăng ký routers tự động từ các modules
+# Danh sách các module cần đăng ký router
+_MODULES_WITH_ROUTERS = [
+    users, services, staff, resources, schedules, bookings, customers,
+    scheduling_engine, customer_treatments, billing, operating_hours,
+    promotions, waitlist, notifications, warranty, chat, settings_module
+]
+
+for module in _MODULES_WITH_ROUTERS:
+    if hasattr(module, "router"):
+        app.include_router(module.router, prefix=settings.API_V1_STR)
 
 @app.get("/")
 async def root():

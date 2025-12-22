@@ -18,7 +18,7 @@ class CustomerService:
 
     async def get_all(self, filter_params: CustomerFilter, page: int = 1, limit: int = 10) -> CustomerListResponse:
         # Base query: ignore deleted items
-        query = select(Customer).where(Customer.deleted_at == None)
+        query = select(Customer).where(Customer.deleted_at is None)
 
         # Filtering
         if filter_params.search:
@@ -35,7 +35,7 @@ class CustomerService:
             query = query.where(Customer.membership_tier == filter_params.membership_tier)
 
         # Count query
-        count_query = select(func.count()).select_from(Customer).where(Customer.deleted_at == None)
+        count_query = select(func.count()).select_from(Customer).where(Customer.deleted_at is None)
 
         if filter_params.search:
              search_term = f"%{filter_params.search}%"
@@ -66,7 +66,7 @@ class CustomerService:
         )
 
     async def get_by_id(self, customer_id: uuid.UUID) -> Customer:
-        query = select(Customer).where(Customer.id == customer_id, Customer.deleted_at == None)
+        query = select(Customer).where(Customer.id == customer_id, Customer.deleted_at is None)
         result = await self.session.exec(query)
         customer = result.first()
         if not customer:
@@ -74,13 +74,13 @@ class CustomerService:
         return customer
 
     async def get_by_phone(self, phone: str) -> Customer | None:
-        query = select(Customer).where(Customer.phone_number == phone, Customer.deleted_at == None)
+        query = select(Customer).where(Customer.phone_number == phone, Customer.deleted_at is None)
         result = await self.session.exec(query)
         return result.first()
 
     async def get_by_user_id(self, user_id: uuid.UUID) -> Customer | None:
         """Tìm profile khách hàng dựa trên user_id đăng nhập."""
-        query = select(Customer).where(Customer.user_id == user_id, Customer.deleted_at == None)
+        query = select(Customer).where(Customer.user_id == user_id, Customer.deleted_at is None)
         result = await self.session.exec(query)
         return result.first()
 
@@ -120,7 +120,7 @@ class CustomerService:
         customer = await self.get_by_id(customer_id)
 
         # Check integrity: user_id unique
-        query = select(Customer).where(Customer.user_id == user_id, Customer.deleted_at == None)
+        query = select(Customer).where(Customer.user_id == user_id, Customer.deleted_at is None)
         existing = (await self.session.exec(query)).first()
         if existing and existing.id != customer_id:
              raise CustomerAlreadyExists(f"User ID {user_id} is already linked to another customer")

@@ -249,13 +249,12 @@ class BookingService:
         note = TreatmentNote(booking_id=booking_id, staff_id=staff_id, content=content, note_type=NoteType[note_type])
         self.session.add(note)
         await self.session.commit()
-        await self.session.refresh(note)
+        await self.session.refresh(note, ["staff"])
 
-        staff = await self.session.get(User, staff_id)
         return TreatmentNoteRead(
             id=note.id, booking_id=note.booking_id, staff_id=note.staff_id,
             content=note.content, note_type=note.note_type.value,
-            created_at=note.created_at, staff_name=staff.full_name if staff else None
+            created_at=note.created_at, staff_name=note.staff.full_name if note.staff else None
         )
 
     async def get_notes(self, booking_id: uuid.UUID):
@@ -263,16 +262,20 @@ class BookingService:
         from src.modules.users import User
         from .schemas import TreatmentNoteRead
 
-        query = select(TreatmentNote).where(TreatmentNote.booking_id == booking_id).order_by(TreatmentNote.created_at.desc())
+        query = (
+            select(TreatmentNote)
+            .where(TreatmentNote.booking_id == booking_id)
+            .options(selectinload(TreatmentNote.staff))
+            .order_by(TreatmentNote.created_at.desc())
+        )
         result = await self.session.exec(query)
         notes = result.all()
 
-        note_reads = []
-        for note in notes:
-            staff = await self.session.get(User, note.staff_id)
-            note_reads.append(TreatmentNoteRead(
+        return [
+            TreatmentNoteRead(
                 id=note.id, booking_id=note.booking_id, staff_id=note.staff_id,
                 content=note.content, note_type=note.note_type.value,
-                created_at=note.created_at, staff_name=staff.full_name if staff else None
-            ))
-        return note_reads
+                created_at=note.created_at, staff_name=note.staff.full_name if note.staff else None
+            )
+            for note in notes
+        ]

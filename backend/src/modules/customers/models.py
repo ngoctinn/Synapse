@@ -7,8 +7,10 @@ Customers Module - Database Models
 from datetime import date, datetime, timezone
 import uuid
 from sqlmodel import SQLModel, Field, DateTime
-from pydantic import ConfigDict
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
+
+from sqlalchemy import Enum as SAEnum
+from .constants import Gender, MembershipTier
 
 if TYPE_CHECKING:
     pass
@@ -27,8 +29,14 @@ class Customer(SQLModel, table=True):
 
     # CRM Fields
     loyalty_points: int = Field(default=0, ge=0)
-    membership_tier: str = Field(default="SILVER", max_length=50) # SILVER, GOLD, PLATINUM
-    gender: str | None = Field(default=None, max_length=20) # MALE, FEMALE, OTHER
+    membership_tier: MembershipTier = Field(
+        default=MembershipTier.SILVER,
+        sa_type=SAEnum(MembershipTier, name="membership_tier")
+    )
+    gender: Gender | None = Field(
+        default=None,
+        sa_type=SAEnum(Gender, name="gender")
+    )
     date_of_birth: date | None = None
     address: str | None = None
     allergies: str | None = None
@@ -47,5 +55,3 @@ class Customer(SQLModel, table=True):
         default_factory=lambda: datetime.now(timezone.utc)
     )
     deleted_at: datetime | None = Field(default=None, sa_type=DateTime(timezone=True))
-
-    model_config = ConfigDict(from_attributes=True)

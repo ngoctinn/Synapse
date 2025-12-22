@@ -69,8 +69,11 @@ class BillingService:
         self.session.add(payment)
 
         # Calculate new status for invoice
-        # Re-calculate total based on locked rows + new amount
-        current_paid = sum(p.amount for p in invoice.payments)
+        # Query total paid via DB instead of loading all payment objects
+        sum_stmt = select(func.sum(Payment.amount)).where(Payment.invoice_id == invoice.id)
+        current_paid_result = await self.session.exec(sum_stmt)
+        current_paid = current_paid_result.one() or Decimal("0")
+
         total_paid = current_paid + data.amount
 
         if total_paid >= invoice.final_amount:

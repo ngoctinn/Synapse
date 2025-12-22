@@ -4,11 +4,10 @@ Unit Tests for CustomerService
 
 import pytest
 import uuid
-from datetime import datetime, timezone
 from unittest.mock import AsyncMock, MagicMock
 from src.modules.customers.service import CustomerService
 from src.modules.customers.models import Customer
-from src.modules.customers.schemas import CustomerCreate, CustomerUpdate, CustomerFilter
+from src.modules.customers.schemas import CustomerCreate
 from src.modules.customers.exceptions import CustomerNotFound, CustomerAlreadyExists
 
 @pytest.fixture
