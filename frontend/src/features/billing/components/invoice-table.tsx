@@ -4,6 +4,7 @@ import { Button } from "@/shared/ui/button";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
+import { formatCurrency } from "@/shared/lib/utils";
 import { Eye } from "lucide-react";
 import { Invoice } from "../types";
 import { InvoiceStatusBadge } from "./invoice-status-badge";
@@ -41,10 +42,7 @@ export function InvoiceTable({ data, onView, isLoading }: InvoiceTableProps) {
       header: "Tổng tiền",
       cell: (item) => (
         <span className="font-medium">
-          {new Intl.NumberFormat("vi-VN", {
-            style: "currency",
-            currency: "VND",
-          }).format(item.finalAmount)}
+          {formatCurrency(item.finalAmount)}
         </span>
       ),
     },
@@ -54,10 +52,7 @@ export function InvoiceTable({ data, onView, isLoading }: InvoiceTableProps) {
       header: "Đã thanh toán",
       cell: (item) => (
         <span className={item.paidAmount < item.finalAmount ? "text-warning" : "text-success"}>
-          {new Intl.NumberFormat("vi-VN", {
-            style: "currency",
-            currency: "VND",
-          }).format(item.paidAmount)}
+          {formatCurrency(item.paidAmount)}
         </span>
       ),
     },

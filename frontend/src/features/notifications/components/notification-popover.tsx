@@ -15,8 +15,7 @@ import {
 } from "@/shared/ui/tabs";
 import { CheckCheck, Settings } from "lucide-react";
 import { useState } from "react";
-import { MOCK_NOTIFICATIONS } from "../model/mocks";
-import { Notification } from "../model/types";
+import { useNotificationStore } from "../hooks/use-notification-store";
 import { NotificationList } from "./notification-list";
 
 interface NotificationPopoverProps {
@@ -24,19 +23,18 @@ interface NotificationPopoverProps {
 }
 
 export function NotificationPopover({ children }: NotificationPopoverProps) {
-  const [notifications, setNotifications] = useState<Notification[]>(MOCK_NOTIFICATIONS);
+  const notifications = useNotificationStore(state => state.notifications);
+  const unreadCount = useNotificationStore(state => state.unreadCount);
+  const markAllAsRead = useNotificationStore(state => state.markAllAsRead);
+  const markAsRead = useNotificationStore(state => state.markAsRead);
   const [open, setOpen] = useState(false);
 
-  const unreadCount = notifications.filter(n => !n.read).length;
-
   const handleMarkAllRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    markAllAsRead();
   };
 
   const handleItemClick = (id: string) => {
-    setNotifications(prev => prev.map(n =>
-      n.id === id ? { ...n, read: true } : n
-    ));
+    markAsRead(id);
   };
 
   return (

@@ -1,4 +1,4 @@
-export type InvoiceStatus = 'UNPAID' | 'PAID' | 'REFUNDED';
+export type InvoiceStatus = 'UNPAID' | 'PAID' | 'REFUNDED' | 'OVERDUE';
 export type PaymentMethod = 'CASH' | 'CARD' | 'TRANSFER';
 
 export interface Invoice {

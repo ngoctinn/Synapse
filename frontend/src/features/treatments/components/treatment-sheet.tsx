@@ -31,11 +31,13 @@ export function TreatmentSheet({
 }: TreatmentSheetProps) {
   const [isEditing, setIsEditing] = useState(mode === "edit");
   const [editedNotes, setEditedNotes] = useState(data?.notes || "");
+  const [prevDataId, setPrevDataId] = useState(data?.id);
 
-  // Update notes if data changes
-  useEffect(() => {
-    if (data) setEditedNotes(data.notes || "");
-  }, [data]);
+  // Sync state with props during render (React pattern)
+  if (data && data.id !== prevDataId) {
+    setPrevDataId(data.id);
+    setEditedNotes(data.notes || "");
+  }
 
   if (!data) return null;
 

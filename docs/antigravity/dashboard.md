@@ -6,6 +6,7 @@
 
 | Task | Mô tả | Trạng thái |
 |------|-------|------------|
+| Phase 12 | Admin Feature Audit Refactor | UI/UX & Data Sync | ⏳ In Progress |
 | Phase 11 | Comprehensive Backend Testing | coverage for 17 modules | ⏳ In Progress |
 | Phase 10 | Scheduling Optimization | Load Balancing & Gap Minimization | ✅ Hoàn thành |
 | Phase 5 | Warranty Management (Treatment) | ✅ Hoàn thành |

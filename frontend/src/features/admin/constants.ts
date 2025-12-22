@@ -55,6 +55,18 @@ export const BREADCRUMB_MAP: Record<string, string> = {
   "audit-logs": "Nhật ký hệ thống",
   packages: "Gói dịch vụ",
   reviews: "Đánh giá",
+  "customer-info": "Thông tin khách hàng", // Sửa từ 'payment'
+};
+
+// Hàm lấy title cho breadcrumb với fallback thông minh
+export const getBreadcrumbTitle = (segment: string): string => {
+  if (BREADCRUMB_MAP[segment]) return BREADCRUMB_MAP[segment];
+
+  // Suy luận từ slug (ví dụ: user-profile -> User profile)
+  return segment
+    .split("-")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 };
 
 export const SIDEBAR_GROUPS: SidebarGroup[] = [

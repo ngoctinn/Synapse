@@ -49,9 +49,18 @@ export function LoginForm() {
       showToast.success("Đăng nhập thành công", "Chào mừng bạn quay trở lại hệ thống.");
       router.push(returnUrl);
     } else if (state?.status === "error") {
+      if (state.errors) {
+        // Map server errors to react-hook-form fields
+        Object.entries(state.errors).forEach(([key, messages]) => {
+          form.setError(key as keyof LoginInput, {
+            type: "server",
+            message: Array.isArray(messages) ? messages[0] : (messages as string),
+          });
+        });
+      }
       showToast.error("Đăng nhập thất bại", state.message);
     }
-  }, [state, router, returnUrl]);
+  }, [state, router, returnUrl, form]);
 
   function onSubmit(values: LoginInput) {
     const formData = new FormData();

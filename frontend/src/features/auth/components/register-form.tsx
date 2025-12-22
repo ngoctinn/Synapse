@@ -41,11 +41,21 @@ export function RegisterForm() {
   useEffect(() => {
     if (state?.status === "success") {
       showToast.success("Đăng ký thành công", state.message);
+      // Success state UI would be handled by visual feedback or redirect
       router.push("/login?registered=true");
     } else if (state?.status === "error") {
+      if (state.errors) {
+        // Map server errors to react-hook-form fields
+        Object.entries(state.errors).forEach(([key, messages]) => {
+          form.setError(key as keyof RegisterInput, {
+            type: "server",
+            message: Array.isArray(messages) ? messages[0] : (messages as string),
+          });
+        });
+      }
       showToast.error("Đăng ký thất bại", state.message);
     }
-  }, [state, router]);
+  }, [state, router, form]);
 
   function onSubmit(values: RegisterInput) {
     const formData = new FormData();
@@ -61,6 +71,30 @@ export function RegisterForm() {
 
   const { toggle: togglePassword, inputType: passwordInputType, Icon: PasswordToggleIcon, ariaLabel: passwordAriaLabel } = usePasswordVisibility();
   const { toggle: toggleConfirmPassword, inputType: confirmPasswordInputType, Icon: ConfirmPasswordToggleIcon, ariaLabel: confirmPasswordAriaLabel } = usePasswordVisibility();
+
+  if (state?.status === "success") {
+    return (
+      <div className="w-full animate-fade-in text-center space-y-6 py-8">
+        <div className="flex flex-col items-center space-y-2">
+          <div className="size-12 rounded-full bg-success/10 text-success flex items-center justify-center mb-2">
+            <Mail className="size-6" />
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight">Kiểm tra email của bạn</h1>
+          <p className="text-muted-foreground text-sm max-w-[300px] mx-auto">
+            Chúng tôi đã gửi một liên kết xác thực đến <strong>{form.getValues("email")}</strong>.
+          </p>
+        </div>
+        <div className="space-y-4">
+          <Button asChild variant="outline" className="w-full">
+            <Link href="/login">Quay lại đăng nhập</Link>
+          </Button>
+          <p className="text-xs text-muted-foreground">
+            Không nhận được email? <button className="text-primary hover:underline" onClick={() => window.location.reload()}>Thử lại</button>
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full animate-fade-in">

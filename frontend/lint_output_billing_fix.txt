@@ -1,0 +1,4 @@
+
+> frontend@0.1.0 lint D:\ReactJSLearning\Synapse\frontend
+> eslint
+

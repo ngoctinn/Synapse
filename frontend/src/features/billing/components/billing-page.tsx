@@ -2,39 +2,24 @@
 
 import { PageContent, PageHeader, PageShell, SurfaceCard } from "@/shared/components/layout/page-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { AlertCircle, CheckCircle, DollarSign, FileText } from "lucide-react";
-import { useEffect, useState, useTransition } from "react";
-import { getBillingMetrics, getInvoices } from "../actions";
-import { Invoice, InvoiceMetrics } from "../types";
+import { useEffect, useState } from "react";
+import { formatCurrency } from "@/shared/lib/utils";
+import { Invoice, InvoiceStatus } from "../types";
 import { InvoiceTable } from "./invoice-table";
 import { InvoiceSheet } from "./sheet/invoice-sheet";
+import { useBillingStore } from "../hooks/use-billing-store";
 
 export function BillingPage() {
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
-  const [metrics, setMetrics] = useState<InvoiceMetrics | null>(null);
+  const { invoices, metrics, isLoading, loadAllData, fetchInvoices, fetchMetrics } = useBillingStore();
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [isPending, startTransition] = useTransition();
-
-  const loadData = () => {
-    startTransition(async () => {
-      const [invRes, metricRes] = await Promise.all([
-        getInvoices(),
-        getBillingMetrics(),
-      ]);
-
-      if (invRes.status === "success" && invRes.data) {
-        setInvoices(invRes.data);
-      }
-      if (metricRes.status === "success" && metricRes.data) {
-        setMetrics(metricRes.data);
-      }
-    });
-  };
+  const [filterStatus, setFilterStatus] = useState<string>("all");
 
   useEffect(() => {
-    loadData();
-  }, []);
+    loadAllData();
+  }, [loadAllData]);
 
   const handleViewInvoice = (invoice: Invoice) => {
     setSelectedInvoice(invoice);
@@ -42,19 +27,16 @@ export function BillingPage() {
   };
 
   const handleUpdate = () => {
-    loadData();
+    fetchInvoices(filterStatus !== "all" ? { status: [filterStatus as InvoiceStatus] } : undefined);
+    fetchMetrics();
     if (selectedInvoice) {
-        startTransition(async () => {
-            const res = await getInvoices();
-             if (res.status === "success" && res.data) {
-                setInvoices(res.data);
-                const updated = res.data.find(i => i.id === selectedInvoice.id);
-                if (updated) setSelectedInvoice(updated);
-             }
-             const mRes = await getBillingMetrics();
-             if (mRes.status === "success" && mRes.data) setMetrics(mRes.data);
-        })
+        // Refresh detail if needed
     }
+  };
+
+  const handleFilterChange = (value: string) => {
+    setFilterStatus(value);
+    fetchInvoices(value !== "all" ? { status: [value as InvoiceStatus] } : undefined);
   };
 
   return (
@@ -73,12 +55,7 @@ export function BillingPage() {
             </CardHeader>
             <CardContent>
                 <div className="text-2xl font-bold">
-                {metrics
-                    ? new Intl.NumberFormat("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                    }).format(metrics.totalRevenue)
-                    : "..."}
+                    {metrics ? formatCurrency(metrics.totalRevenue) : "..."}
                 </div>
             </CardContent>
             </Card>
@@ -89,12 +66,7 @@ export function BillingPage() {
             </CardHeader>
             <CardContent>
                 <div className="text-2xl font-bold text-orange-600">
-                {metrics
-                    ? new Intl.NumberFormat("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                    }).format(metrics.pendingAmount)
-                    : "..."}
+                    {metrics ? formatCurrency(metrics.pendingAmount) : "..."}
                 </div>
             </CardContent>
             </Card>
@@ -124,12 +96,24 @@ export function BillingPage() {
             </Card>
         </div>
 
+        {/* Filter Toolbar */}
+        <div className="flex items-center justify-between mb-4">
+            <Tabs value={filterStatus} onValueChange={handleFilterChange} className="w-auto">
+                <TabsList>
+                    <TabsTrigger value="all">Tất cả</TabsTrigger>
+                    <TabsTrigger value="PAID">Đã thanh toán</TabsTrigger>
+                    <TabsTrigger value="UNPAID">Chờ thanh toán</TabsTrigger>
+                    <TabsTrigger value="OVERDUE">Quá hạn</TabsTrigger>
+                </TabsList>
+            </Tabs>
+        </div>
+
         {/* Main Table Area */}
         <SurfaceCard>
             <InvoiceTable
                 data={invoices}
                 onView={handleViewInvoice}
-                isLoading={isPending && invoices.length === 0}
+                isLoading={isLoading}
             />
         </SurfaceCard>
 
