@@ -1,8 +1,8 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { BookingState, ServiceItem, TimeSlot, CustomerInfo } from '../types';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import { BOOKING_WIZARD_STORAGE_KEY } from '../constants';
 import { clearSessionId } from '../lib/session-id';
+import { BookingState, CustomerInfo, ServiceItem, TimeSlot } from '../types';
 
 interface BookingActions {
   // Step 1: Services
@@ -21,7 +21,6 @@ interface BookingActions {
 
   // Step 4: Payment
   setCustomerInfo: (info: CustomerInfo) => void;
-  setPaymentMethod: (method: 'COD' | 'ONLINE') => void;
 
   // Navigation
   goToStep: (step: 1 | 2 | 3 | 4) => void;
@@ -39,7 +38,6 @@ const initialState: BookingState = {
   holdId: null,
   holdExpiresAt: null,
   customerInfo: null,
-  paymentMethod: null,
   currentStep: 1,
 };
 
@@ -80,9 +78,7 @@ export const useBookingStore = create<BookingStore>()(
           holdExpiresAt: null,
         }),
 
-      // Step 4
       setCustomerInfo: (info) => set({ customerInfo: info }),
-      setPaymentMethod: (method) => set({ paymentMethod: method }),
 
       // Navigation
       goToStep: (step) => set({ currentStep: step }),
@@ -103,7 +99,6 @@ export const useBookingStore = create<BookingStore>()(
         holdId: state.holdId,
         holdExpiresAt: state.holdExpiresAt,
         customerInfo: state.customerInfo,
-        paymentMethod: state.paymentMethod,
         currentStep: state.currentStep,
       }),
     }

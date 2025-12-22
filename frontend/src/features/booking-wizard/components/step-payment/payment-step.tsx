@@ -9,10 +9,9 @@ import { useBookingStore } from "../../hooks/use-booking-store";
 import { customerInfoSchema, CustomerInfoSchema } from "../../schemas";
 import { BookingSummary } from "./booking-summary";
 import { CustomerForm } from "./customer-form";
-import { PaymentMethods } from "./payment-methods";
 
 export const PaymentStep = () => {
-  const { customerInfo, paymentMethod, setCustomerInfo, setPaymentMethod } = useBookingStore();
+  const { customerInfo, setCustomerInfo } = useBookingStore();
 
   const form = useForm<CustomerInfoSchema>({
     resolver: zodResolver(customerInfoSchema),
@@ -48,10 +47,6 @@ export const PaymentStep = () => {
         <Form {...form}>
           <form className="space-y-8">
             <CustomerForm form={form} />
-            <PaymentMethods
-              value={paymentMethod || "COD"}
-              onChange={setPaymentMethod}
-            />
           </form>
         </Form>
       </div>

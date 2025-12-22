@@ -38,21 +38,20 @@ export interface CustomerInfo {
 export interface BookingState {
   // Step 1: Services
   selectedServices: ServiceItem[];
-  
+
   // Step 2: Staff
   staffId: string | 'any' | null;
   staffName: string | null;
-  
+
   // Step 3: Time
   selectedDate: Date | null;
   selectedSlot: TimeSlot | null;
   holdId: string | null;
   holdExpiresAt: Date | null;
-  
+
   // Step 4: Payment/Customer
   customerInfo: CustomerInfo | null;
-  paymentMethod: 'COD' | 'ONLINE' | null;
-  
+
   // Navigation
   currentStep: 1 | 2 | 3 | 4;
 }
