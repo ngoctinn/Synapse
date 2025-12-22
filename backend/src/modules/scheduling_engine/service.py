@@ -38,7 +38,7 @@ from .models import (
 from .data_extractor import DataExtractor
 from .solver import SpaSolver
 from .evaluator import ScheduleEvaluator
-from .slot_finder import SlotFinder
+from .flexible_solver import FlexibleTimeSolver
 
 
 class SchedulingService:
@@ -275,31 +275,56 @@ class SchedulingService:
                 message="Không có nhân viên làm việc vào ngày này"
             )
 
-        solver = SpaSolver(problem)
-        finder = SlotFinder(problem, solver)
+        # ====================================================================
+        # H07: Lấy giờ hoạt động từ Database (thay vì hardcode)
+        # ====================================================================
+        from src.modules.operating_hours.service import OperatingHoursService
 
-        search_start = request.time_window.start if request.time_window else time(8, 0)
-        search_end = request.time_window.end if request.time_window else time(21, 0)
+        hours_service = OperatingHoursService(self.session)
+        day_hours = await hours_service.get_hours_for_date(request.target_date)
+
+        # Nếu Spa đóng cửa ngày này → không có slot
+        if day_hours is None or day_hours.is_closed or not day_hours.periods:
+            return SlotSuggestionResponse(
+                available_slots=[],
+                total_found=0,
+                message="Spa đóng cửa vào ngày này"
+            )
+
+        # Lấy giờ mở/đóng cửa từ database
+        # Ưu tiên time_window từ request nếu có, fallback về operating hours
+        if request.time_window:
+            search_start = request.time_window.start
+            search_end = request.time_window.end
+        else:
+            # Lấy từ periods (có thể có nhiều period, lấy min open - max close)
+            search_start = min(p.open_time for p in day_hours.periods if not p.is_closed)
+            search_end = max(p.close_time for p in day_hours.periods if not p.is_closed)
+
+        # ====================================================================
+        # Sử dụng FlexibleTimeSolver (OR-Tools CP-SAT)
+        # ====================================================================
+        solver = FlexibleTimeSolver(problem)
+
         required_skill_ids = [s.id for s in service.skills]
-        required_resource_group_id = (
-            service.resource_requirements[0].group_id
-            if service.resource_requirements else None
-        )
 
-        available_options = finder.find_slots(
-            duration=service.duration,
+        # Hỗ trợ multi-resource
+        required_resource_group_ids = [
+            req.group_id for req in service.resource_requirements
+        ] if service.resource_requirements else []
+
+        available_options = solver.find_optimal_slots(
+            duration_minutes=service.duration,
             required_skill_ids=required_skill_ids,
-            required_resource_group_id=required_resource_group_id,
+            required_resource_group_ids=required_resource_group_ids,
             preferred_staff_id=request.preferred_staff_id,
             search_start=search_start,
-            search_end=search_end
+            search_end=search_end,
+            top_k=5
         )
 
-        available_options.sort(key=lambda x: x.score, reverse=True)
-        top_options = available_options[:20]
-
         return SlotSuggestionResponse(
-            available_slots=top_options,
+            available_slots=available_options,
             total_found=len(available_options),
-            message="Tìm kiếm thành công" if top_options else "Không tìm thấy khung giờ phù hợp"
+            message="Tìm kiếm thành công" if available_options else "Không tìm thấy khung giờ phù hợp"
         )

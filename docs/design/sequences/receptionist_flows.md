@@ -116,6 +116,14 @@ sequenceDiagram
     activate BE
 
     BE->>DB: get_or_create_customer
+
+    alt Có sử dụng liệu trình (Treatment)
+        BE->>DB: check_treatment_availability(treatment_id)
+        alt Hết buổi
+            BE-->>UI: Lỗi: Liệu trình đã hết buổi
+        end
+    end
+
     BE->>DB: INSERT INTO bookings
     activate DB
     Note over BE,DB: Thao tác tạo lịch thủ công trong Transaction

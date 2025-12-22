@@ -91,7 +91,7 @@ class DataExtractor:
             .where(
                 BookingItem.start_time >= start_of_day,
                 BookingItem.start_time < end_of_day,
-                col(Booking.status).notin([BookingStatus.CANCELLED, BookingStatus.NO_SHOW])
+                col(Booking.status).notin_([BookingStatus.CANCELLED, BookingStatus.NO_SHOW])
             )
             .options(selectinload(BookingItem.service))
             .order_by(BookingItem.start_time)
@@ -130,7 +130,8 @@ class DataExtractor:
                 end_time=bi.end_time,
                 duration_minutes=duration,
                 required_skill_ids=required_skills,
-                required_resource_group_ids=required_resources
+                required_resource_group_ids=required_resources,
+                current_staff_id=bi.staff_id # Để tính C_perturb
             ))
 
         return items

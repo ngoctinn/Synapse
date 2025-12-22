@@ -9,7 +9,7 @@ cho nghiệp vụ Spa - gán KTV và Phòng cho booking items.
 
 import uuid
 import time as time_module
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from ortools.sat.python import cp_model
 
 from .models import (
@@ -125,20 +125,29 @@ class SpaSolver:
     def _has_staff_conflict(
         self, staff_id: uuid.UUID, start: datetime, end: datetime
     ) -> bool:
-        """Kiểm tra staff có bị conflict với existing assignments không."""
-        for assignment in self.problem.existing_assignments:
-            if assignment.staff_id == staff_id:
-                if start < assignment.end_time and end > assignment.start_time:
+        """Kiểm tra staff có bị conflict với existing assignments không (có tính transition time)."""
+        buffer = timedelta(minutes=self.problem.transition_time_minutes)
+        s_with_buffer = start - buffer
+        e_with_buffer = end + buffer
+
+        for ea in self.problem.existing_assignments:
+            if ea.staff_id == staff_id:
+                # Giao nhau: (s1 < e2) and (s2 < e1)
+                if ea.start_time < e_with_buffer and s_with_buffer < ea.end_time:
                     return True
         return False
 
     def _has_resource_conflict(
         self, resource_id: uuid.UUID, start: datetime, end: datetime
     ) -> bool:
-        """Kiểm tra resource có bị conflict không."""
-        for assignment in self.problem.existing_assignments:
-            if assignment.resource_id == resource_id:
-                if start < assignment.end_time and end > assignment.start_time:
+        """Kiểm tra resource có bị conflict không (có tính transition time)."""
+        buffer = timedelta(minutes=self.problem.transition_time_minutes)
+        s_with_buffer = start - buffer
+        e_with_buffer = end + buffer
+
+        for ea in self.problem.existing_assignments:
+            if ea.resource_id == resource_id:
+                if ea.start_time < e_with_buffer and s_with_buffer < ea.end_time:
                     return True
         return False
 
@@ -188,17 +197,25 @@ class SpaSolver:
                     start_minutes = self._time_to_minutes(item.start_time)
                     duration = item.duration_minutes
 
-                    interval = self.model.NewOptionalFixedSizeIntervalVar(
-                        start_minutes, duration, is_assigned,
-                        f"interval_{item.id}_{staff.id}"
+                    # Đảm bảo interval có tính transition time
+                    # Trong model CP-SAT, chúng ta tạo interval từ (start, duration + transition)
+                    # Tuy nhiên do item.start/end là cố định, ta đơn giản là tạo interval rộng hơn
+                    extended_duration = item.duration_minutes + self.problem.transition_time_minutes
+
+                    # Create optional intervals for staff and resource
+                    staff_interval = self.model.NewOptionalFixedSizeIntervalVar(
+                        start_minutes, extended_duration, is_assigned,
+                        f"interval_staff_{item.id}_{staff.id}_{resource_id}"
                     )
+                    self.staff_intervals[staff.id].append(staff_interval)
 
-                    # Thêm vào danh sách intervals của staff
-                    self.staff_intervals[staff.id].append(interval)
-
-                    # Thêm vào danh sách intervals của resource (nếu có)
                     if resource:
-                        self.resource_intervals[resource.id].append(interval)
+                        resource_interval = self.model.NewOptionalFixedSizeIntervalVar(
+                            start_minutes, extended_duration, is_assigned,
+                            f"interval_resource_{item.id}_{staff.id}_{resource_id}"
+                        )
+                        self.resource_intervals[resource.id].append(resource_interval)
+
 
             # Ràng buộc: Mỗi item được gán cho đúng 1 cặp (staff, resource)
             self.model.AddExactlyOne(item_assignment_vars)
@@ -213,19 +230,118 @@ class SpaSolver:
             if len(intervals) > 1:
                 self.model.AddNoOverlap(intervals)
 
-        # Hàm mục tiêu: Minimize sum of penalties
-        # - Penalty for not matching preference
-        # - Penalty for uneven load distribution
+        # Ràng buộc: NoOverlap cho mỗi resource
+        for resource_id, intervals in self.resource_intervals.items():
+            if len(intervals) > 1:
+                self.model.AddNoOverlap(intervals)
+
+        # ====================================================================
+        # OBJECTIVE FUNCTION
+        # ====================================================================
+
+        # Scaling factor for float weights (since CP-SAT requires int)
+        SCALE = 100
+        w_pref = int(getattr(self.problem, "weight_preference", 1.0) * SCALE)
+        w_util = int(getattr(self.problem, "weight_utilization", 1.0) * SCALE)
+        w_balance = int(getattr(self.problem, "weight_load_balance", 1.0) * SCALE)
+        w_perturb = int(getattr(self.problem, "weight_perturbation", 1.0) * SCALE)
+
         objective_terms = []
 
+        # 1. Preference Penalty
+        # --------------------------------------------------------
         for item in self.problem.unassigned_items:
             for (item_id, staff_id, resource_id), var in self.assignment_vars.items():
                 if item_id != item.id:
                     continue
 
-                # Preference penalty: +10 nếu không phải preferred staff
+                # Preference penalty: +10 (base) * weight
                 if item.preferred_staff_id and staff_id != item.preferred_staff_id:
-                    objective_terms.append(10 * var)
+                    objective_terms.append(10 * w_pref * var)
+
+        # Staff load vars (dùng cho cả Load Balancing và Utilization)
+        staff_loads = []
+        for staff in self.problem.available_staff:
+            staff_vars = []
+            staff_durations = []
+
+            for (item_id, s_id, r_id), var in self.assignment_vars.items():
+                if s_id == staff.id:
+                    item = next(i for i in self.problem.unassigned_items if i.id == item_id)
+                    staff_vars.append(var)
+                    staff_durations.append(item.duration_minutes)
+
+            if staff_vars:
+                load_var = self.model.NewIntVar(0, 1440, f"load_{staff.id}")
+                self.model.Add(load_var == sum(v * d for v, d in zip(staff_vars, staff_durations)))
+                staff_loads.append(load_var)
+            else:
+                zero = self.model.NewConstant(0)
+                staff_loads.append(zero)
+
+        # 2. Load Balancing: Minimize (MaxLoad - MinLoad)
+        # --------------------------------------------------------
+        # Mục tiêu: Phân bổ workload đều giữa các KTV
+        if staff_loads and w_balance > 0:
+            max_load = self.model.NewIntVar(0, 1440, "max_load")
+            min_load = self.model.NewIntVar(0, 1440, "min_load")
+
+            self.model.AddMaxEquality(max_load, staff_loads)
+            self.model.AddMinEquality(min_load, staff_loads)
+
+            # Penalty = (max - min) * weight
+            objective_terms.append((max_load - min_load) * w_balance)
+
+
+        # 3. Gap Minimization (Utilization)
+        # --------------------------------------------------------
+        # Minimize (Span - TotalLoad) for each staff
+        # Span = MaxEnd - MinStart
+
+        if w_util > 0:
+            for i, staff in enumerate(self.problem.available_staff):
+                msg_prefix = f"staff_{staff.id}"
+                min_start = self.model.NewIntVar(0, 1440, f"{msg_prefix}_min_start")
+                max_end = self.model.NewIntVar(0, 1440, f"{msg_prefix}_max_end")
+
+                # Default for unassigned: min_start=max_end (span=0)
+                # We enforce min_start <= max_end
+                self.model.Add(min_start <= max_end)
+
+                has_any_assignment = False
+
+                for (item_id, s_id, r_id), var in self.assignment_vars.items():
+                    if s_id == staff.id:
+                        item = next(it for it in self.problem.unassigned_items if it.id == item_id)
+                        start_mins = self._time_to_minutes(item.start_time)
+                        end_mins = start_mins + item.duration_minutes
+
+                        # Constraints implications
+                        # If assigned: min_start <= start, max_end >= end
+                        self.model.Add(min_start <= start_mins).OnlyEnforceIf(var)
+                        self.model.Add(max_end >= end_mins).OnlyEnforceIf(var)
+                        has_any_assignment = True
+
+                if has_any_assignment:
+                    span = max_end - min_start
+                    load = staff_loads[i] # Correspond to the index in available_staff
+
+                    # Gap = Span - Load
+                    # Objective: Minimize Gap * weight
+                    # Gap >= 0 is implicitly true if constraints correct
+                    objective_terms.append((span - load) * w_util)
+
+        # 4. Stability: Minimize Perturbation (C_perturb)
+        # --------------------------------------------------------
+        # Phát nếu gán KTV khác với gán hiện tại (chỉ áp dụng khi có current_staff_id)
+        for item in self.problem.unassigned_items:
+            if item.current_staff_id:
+                for (item_id, staff_id, resource_id), var in self.assignment_vars.items():
+                    if item_id == item.id:
+                        # Nếu gán cho KTV KHÁC với KTV cũ -> Penalty
+                        if staff_id != item.current_staff_id:
+                            # C_perturb: phạt xáo trộn
+                            objective_terms.append(20 * w_perturb * var)
 
         if objective_terms:
             self.model.Minimize(sum(objective_terms))
@@ -322,12 +438,6 @@ class SpaSolver:
 
         workloads = list(staff_workloads.values()) if staff_workloads else [0]
 
-        # Jain Fairness Index
-        n = len(workloads)
-        sum_x = sum(workloads)
-        sum_x2 = sum(x**2 for x in workloads)
-        jain_index = (sum_x**2) / (n * sum_x2) if sum_x2 > 0 else 1.0
-
         # Staff utilization (rough estimate)
         total_available_minutes = len(self.problem.available_staff) * 8 * 60  # Giả sử 8h/ngày
         total_assigned_minutes = sum(workloads)
@@ -358,10 +468,10 @@ class SpaSolver:
         return SolutionMetrics(
             staff_utilization=round(staff_utilization, 3),
             resource_utilization=round(resource_utilization, 3),
-            jain_fairness_index=round(jain_index, 3),
             preference_satisfaction=round(pref_satisfaction, 3),
             max_staff_load_minutes=max(workloads) if workloads else 0,
             min_staff_load_minutes=min(workloads) if workloads else 0,
             avg_staff_load_minutes=round(sum(workloads) / len(workloads), 1) if workloads else 0,
             total_idle_minutes=0  # TODO: Calculate properly
         )
+

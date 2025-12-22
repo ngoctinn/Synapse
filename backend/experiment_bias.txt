@@ -1,0 +1,17 @@
+=== THỰC NGHIỆM KIỂM CHỨNG CHỈ SỐ CÔNG BẰNG (FAIRNESS VERIFICATION) ===
+Status (No Fair - High Preference): SolveStatus.OPTIMAL, Message: Tìm được lịch tối ưu
+Status (With High Fair): SolveStatus.OPTIMAL, Message: Tìm được lịch tối ưu
+
+[KỊCH BẢN 1: KHÔNG TỐI ƯU CÔNG BẰNG]
+- Danh sách Workload (phút): [495, 420, 450, 420, 360, 300, 330, 435, 360, 315]
+- Độ lệch Max-Min: 195 phút
+- Jain's Fairness Index: 0.9757
+
+[KỊCH BẢN 2: CÓ TỐI ƯU CÔNG BẰNG (MIN-MAX)]
+- Danh sách Workload (phút): [375, 390, 390, 390, 390, 390, 390, 390, 390, 390]
+- Độ lệch Max-Min: 15 phút
+- Jain's Fairness Index: 0.9999
+
+[KẾT LUẬN]
+==> Chỉ số Jain tăng từ 0.9757 lên 0.9999 (2.42%)
+==> Kỹ thuật Min-Max tỷ lệ thuận với Chỉ số Jain. Thực nghiệm thành công.
