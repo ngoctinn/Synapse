@@ -5,10 +5,10 @@ Promotions Module - Database Models
 """
 
 import uuid
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from enum import Enum
 from decimal import Decimal
-from sqlmodel import SQLModel, Field, Column, DECIMAL
+from sqlmodel import SQLModel, Field, Column, DECIMAL, DateTime
 
 
 class DiscountType(str, Enum):
@@ -39,7 +39,10 @@ class Promotion(SQLModel, table=True):
     valid_until: date = Field(nullable=False)
 
     is_active: bool = Field(default=True)
-    created_at: datetime = Field(default_factory=datetime.now)
+    created_at: datetime = Field(
+        sa_type=DateTime(timezone=True),
+        default_factory=lambda: datetime.now(timezone.utc)
+    )
 
     # Note: SQLModel chưa hỗ trợ CheckConstraint trực tiếp trong class body dễ dàng
     # nên ta định nghĩa __table_args__ nếu cần, nhưng DB schema đã có rồi.

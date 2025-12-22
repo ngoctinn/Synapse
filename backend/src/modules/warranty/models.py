@@ -3,10 +3,10 @@ Warranty Module - Database Models
 """
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import List
-from sqlmodel import SQLModel, Field, Column, ARRAY, String
+from sqlmodel import SQLModel, Field, Column, ARRAY, String, DateTime
 
 class WarrantyStatus(str, Enum):
     PENDING = "PENDING"
@@ -28,5 +28,11 @@ class WarrantyTicket(SQLModel, table=True):
     resolution_notes: str | None = None
     resolved_by: uuid.UUID | None = Field(default=None, foreign_key="users.id")
 
-    created_at: datetime = Field(default_factory=datetime.now)
-    resolved_at: datetime | None = None
+    created_at: datetime = Field(
+        sa_type=DateTime(timezone=True),
+        default_factory=lambda: datetime.now(timezone.utc)
+    )
+    resolved_at: datetime | None = Field(
+        default=None,
+        sa_type=DateTime(timezone=True)
+    )

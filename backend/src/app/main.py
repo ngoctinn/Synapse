@@ -22,7 +22,8 @@ from src.modules import (
     waitlist,
     notifications,
     warranty,
-    chat
+    chat,
+    settings as settings_module,
 )
 
 @asynccontextmanager
@@ -84,6 +85,7 @@ app.include_router(waitlist.router, prefix=settings.API_V1_STR)
 app.include_router(notifications.router, prefix=settings.API_V1_STR)
 app.include_router(warranty.router, prefix=settings.API_V1_STR)
 app.include_router(chat.router, prefix=settings.API_V1_STR)
+app.include_router(settings_module.router, prefix=settings.API_V1_STR)
 
 @app.get("/")
 async def root():
