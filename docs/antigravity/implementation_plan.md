@@ -1,40 +1,45 @@
-# Scheduling Engine - Advanced Optimization Implementation Plan
+# Kế hoạch Kiểm thử Toàn diện Backend (Synapse)
 
-This plan addresses the missing features identified during the review of the Scheduling Engine against the design specifications. It focuses on implementing advanced optimization objectives: **Load Balancing** and **Gap Minimization**.
+## 1. Vấn đề (Problem)
+Hiện tại hệ thống backend có hơn 17 modules và 67+ endpoints nhưng thiếu hụt trầm trọng các bộ test tự động. Điều này dẫn đến:
+- Khó khăn trong việc phát hiện lỗi khi refactor code.
+- Rủi ro về bảo mật (RLS) không được kiểm chứng thường xuyên.
+- Mất nhiều thời gian kiểm thử thủ công.
 
-## Proposed Changes
+## 2. Mục đích (Purpose)
+- Thiết lập hạ tầng và quy chuẩn kiểm thử chuyên nghiệp.
+- Đảm bảo độ phủ (coverage) cho toàn bộ 100% endpoints.
+- Tự động hóa việc kiểm tra logic nghiệp vụ và phân quyền (RLS).
 
-### Backend Implementation
+## 3. Ràng buộc (Constraints)
+- **Kiến trúc**: Tuân thủ Modular Monolith và Vertical Slice.
+- **Vị trí**: Áp dụng quy tắc **Colocation** (Test nằm cùng module).
+- **Công nghệ**: FastAPI 0.115+, SQLModel, Python 3.12+, PostgreSQL RLS.
+- **Ngôn ngữ**: Toàn bộ tài liệu và log phải bằng Tiếng Việt.
 
-#### [MODIFY] [backend/src/modules/scheduling_engine/models.py](file:///d:/ReactJSLearning/Synapse/backend/src/modules/scheduling_engine/models.py)
-- Update `SolveRequest` to allow tuning weights for new objectives (ensure `weight_fairness` and `weight_utilization` are leveraged correctly).
-
-#### [MODIFY] [backend/src/modules/scheduling_engine/solver.py](file:///d:/ReactJSLearning/Synapse/backend/src/modules/scheduling_engine/solver.py)
-- **Implement Load Balancing**:
-    - Add `total_load` variables for each staff.
-    - Add `min_load` and `max_load` variables.
-    - Add `(max_load - min_load) * weight_fairness` to objective function.
-- **Implement Gap Minimization**:
-    - Add `span_var` for each staff (End of last task - Start of first task).
-    - Add `(span_var - total_load) * weight_utilization` to objective function. This effectively minimizes the idle time *within* the working span.
-
-#### [MODIFY] [backend/src/modules/scheduling_engine/evaluator.py](file:///d:/ReactJSLearning/Synapse/backend/src/modules/scheduling_engine/evaluator.py)
-- Implement `total_idle_minutes` calculation in `evaluate_current_schedule` to properly measure gap reduction improvements.
-
-## Verification Plan
-
-### Automated Tests
-Create a new test file `backend/src/tests/modules/scheduling_engine/test_optimization.py` covering:
-1.  **Load Balancing**: Verify that tasks are distributed evenly among staff when possible (e.g., 2 tasks, 2 staff -> 1 each, not 2 for one).
-2.  **Gap Minimization**: Verify that tasks for the same staff are scheduled contiguously (e.g., 9:00-10:00 and 10:00-11:00 preferred over 9:00-10:00 and 13:00-14:00).
-
-**Command to run:**
+## 4. Chiến lược thực hiện (Strategy)
+### 4.1. Quy tắc Colocation
 ```bash
-pytest backend/src/tests/modules/scheduling_engine/test_optimization.py
+src/modules/[module_name]/
+├── tests/
+│   ├── unit/         # Test logic Service (Mock DB)
+│   └── integration/  # Test API Router (Test DB + RLS)
 ```
 
-### Manual Verification
-1.  Run the backend server.
-2.  Use `POST /api/v1/scheduling/solve` with a prepared dataset containing multiple available staff and tasks.
-3.  Observe that the solver spreads tasks evenly (Fairness).
-4.  Observe that sequential tasks for a single staff are packed together (Utilization).
+### 4.2. Lộ trình 3 Giai đoạn
+1.  **Giai đoạn 1 (Core)**: Users, Services, Staff.
+2.  **Giai đoạn 2 (Logic)**: Bookings, Scheduling Engine, Customers.
+3.  **Giai đoạn 3 (Supporting)**: Settings, Billing, Warranty, v.v.
+
+## 5. Giải pháp kỹ thuật (Solution)
+- **Hạ tầng**: `pytest` + `pytest-asyncio`.
+- **Mocking**: `app.dependency_overrides` để inject mock session hoặc mock user.
+- **Database**: Sử dụng PostgreSQL chuyên biệt cho integration test để kiểm tra RLS thực tế.
+- **Automation**: Thiết lập `conftest.py` toàn cục tại `backend/tests/`.
+
+## 6. Kế hoạch xác thực (Verification)
+### Tự động
+- Chạy `pytest src/modules/` sau mỗi module được hoàn thành.
+- Đảm bảo log xanh 100%.
+### Thủ công
+- Review code test để đảm bảo bao phủ đủ các trường hợp Exception (Guard Clauses).

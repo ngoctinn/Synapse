@@ -6,6 +6,7 @@
 
 | Task | Mô tả | Trạng thái |
 |------|-------|------------|
+| Phase 11 | Comprehensive Backend Testing | coverage for 17 modules | ⏳ In Progress |
 | Phase 10 | Scheduling Optimization | Load Balancing & Gap Minimization | ✅ Hoàn thành |
 | Phase 5 | Warranty Management (Treatment) | ✅ Hoàn thành |
 | Phase 4 | Waitlist Module | ✅ Hoàn thành |
@@ -27,4 +28,5 @@
 | 6 | Technician Notes | B2.3 Notes Flow | ✅ Done |
 | 7 | Smart Slot Finding | A2.4 Suggestion | ✅ Done |
 | 8 | Promotions | C8 Management | ✅ Done |
-| 9 | Waitlist | A2.2 Registration | ✅ Done |
+| 10 | Scheduling Engine | Optimization | ✅ Done |
+| 11 | Backend Testing | Coverage for all endpoints | ⏳ In Progress |

@@ -49,3 +49,11 @@ def _decode_token(token: str) -> dict[str, Any]:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Không thể xác thực thông tin đăng nhập",
         )
+
+def check_is_admin(token_payload: dict[str, Any]) -> None:
+    """Kiểm tra xem user có quyền Admin không."""
+    if token_payload.get("role") != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Bạn không có quyền thực hiện hành động này",
+        )

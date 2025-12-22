@@ -1,8 +1,10 @@
 | Task | Mô tả | Trạng thái |
 |------|-------|------------|
-| Phase 5.1 | Cập nhật Model & Schema (Treatment-based) | ✅ Hoàn thành |
-| Phase 5.2 | Chuẩn bị SQL Migration (`migration_warranty.sql`) | ✅ Hoàn thành |
-| Phase 5.3 | Thực thi SQL Migration trên Supabase | ⏳ Đang chờ |
-| Phase 5.4 | Sửa lỗi Linting (Ruff) | ⏳ Đang chờ |
-| Phase 5.5 | Kiểm thử luồng gửi yêu cầu bảo hành | ⏳ Đang chờ |
-| Phase 5.6 | Cập nhật Change Log & Dashboard | ⏳ Đang chờ |
+| **THINK** | Lập kế hoạch kiểm thử chi tiết | ✅ Hoàn thành |
+| **SPLIT** | Chia nhỏ nhiệm vụ vào Dashboard | ⏳ Chờ duyệt |
+| **SETUP** | Thiết lập Boilerplate (pytest, conftest) | ⏳ Chờ |
+| **CORE** | Kiểm thử Module: Users, Staff, Services | ⏳ Chờ |
+| **LOGIC** | Kiểm thử Module: Bookings, Scheduling | ⏳ Chờ |
+| **FULL** | Phủ kín 100% các module còn lại | ⏳ Chờ |
+| **VERIFY** | Chạy toàn bộ test suite & Linting | ⏳ Chờ |
+| **REPORT** | Cập nhật Dashboard & Change Log | ⏳ Chờ |
