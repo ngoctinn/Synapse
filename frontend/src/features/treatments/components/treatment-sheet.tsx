@@ -9,9 +9,12 @@ import {
 import { CustomerTreatment } from "../types";
 import { Badge } from "@/shared/ui/badge";
 import { Progress } from "@/shared/ui/progress";
-import { Calendar, User, Package, Clock, StickyNote } from "lucide-react";
+import { Button } from "@/shared/ui/button";
+import { Textarea } from "@/shared/ui/textarea";
+import { Calendar, User, Package, Clock, StickyNote, Edit3, Save, X } from "lucide-react";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
+import { useState, useEffect } from "react";
 
 interface TreatmentSheetProps {
   mode: "create" | "edit" | "view"; // Currently only view details implemented
@@ -21,13 +24,26 @@ interface TreatmentSheetProps {
 }
 
 export function TreatmentSheet({
-  mode: _mode,
+  mode,
   data,
   open,
   onOpenChange,
 }: TreatmentSheetProps) {
+  const [isEditing, setIsEditing] = useState(mode === "edit");
+  const [editedNotes, setEditedNotes] = useState(data?.notes || "");
+
+  // Update notes if data changes
+  useEffect(() => {
+    if (data) setEditedNotes(data.notes || "");
+  }, [data]);
 
   if (!data) return null;
+
+  const handleSaveNotes = () => {
+    // Mock save logic
+    console.log("Saving notes for treatment:", data.id, editedNotes);
+    setIsEditing(false);
+  };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -42,70 +58,12 @@ export function TreatmentSheet({
             </span>
           </div>
           <SheetTitle className="text-xl font-bold text-foreground">
-            Chi tiết liệu trình
-          </SheetTitle>
-          {/* The instruction seems to imply adding a FormDescription, but the snippet provided is syntactically incorrect.
-              Assuming the intent was to add a FormDescription after the SheetTitle, or replace the SheetTitle.
-              Given the instruction "Escape double quotes with &quot;", I will assume the user wants to add a FormDescription
-              with the specified text, and the SheetTitle should remain as is, or the user made a mistake in the snippet.
-              Since the instruction is to "make the change faithfully", and the snippet provided is syntactically incorrect
-              (SheetTitle opening tag with FormDescription closing tag), I will interpret this as replacing the SheetTitle
-              with a FormDescription, and correcting the opening tag to match the closing tag.
-              However, the instruction also says "Escape double quotes with &quot;", which applies to the content.
-              The most faithful interpretation of the *provided snippet* that results in valid code is to replace the SheetTitle
-              with a FormDescription, and use the provided text.
-              If the intent was to keep SheetTitle and add FormDescription, the snippet would be different.
-              If the intent was to change the text of SheetTitle, the closing tag would be SheetTitle.
-              Given the explicit `</FormDescription>` in the snippet, I will assume the component itself is changing.
-          */}
-          {/* The instruction is ambiguous. The provided "Code Edit" snippet shows:
-            <SheetTitle className="text-xl font-bold text-foreground">
-                Nên đặt tên gợi nhớ như &quot;Liệu trình trị mụn - Nguyễn Văn A&quot;
-              </FormDescription>
-            This is syntactically incorrect (SheetTitle opening, FormDescription closing).
-            Given the instruction "Escape double quotes with &quot;", and the context of a SheetHeader,
-            it's most likely that the user wants to add a description *below* the SheetTitle,
-            or replace the SheetTitle with a FormDescription.
-            If I replace SheetTitle with FormDescription, it would be:
-            <FormDescription className="text-xl font-bold text-foreground">
-                Nên đặt tên gợi nhớ như &quot;Liệu trình trị mụn - Nguyễn Văn A&quot;
-            </FormDescription>
-            This seems like a plausible interpretation.
-            However, the instruction also says "Make the change faithfully".
-            The most faithful interpretation of the *provided snippet* that results in valid code
-            is to replace the SheetTitle with a FormDescription, and use the provided text.
-            Let's assume the user wants to replace the SheetTitle with a FormDescription.
-          */}
-          {/* Re-evaluating: The instruction is "Escape double quotes with &quot;".
-             The "Code Edit" snippet shows a change to the content and component.
-             The most direct interpretation of "Escape double quotes with &quot;" is that the *text content*
-             should have its double quotes escaped.
-             The snippet provided is:
-             <SheetTitle className="text-xl font-bold text-foreground">
-                 Nên đặt tên gợi nhớ như &quot;Liệu trình trị mụn - Nguyễn Văn A&quot;
-               </FormDescription>
-             This is a syntax error.
-             If the user wants to change the *text content* of SheetTitle, it should be:
-             <SheetTitle className="text-xl font-bold text-foreground">
-                 Nên đặt tên gợi nhớ như &quot;Liệu trình trị mụn - Nguyễn Văn A&quot;
-             </SheetTitle>
-             If the user wants to *replace* SheetTitle with FormDescription, it should be:
-             <FormDescription className="text-xl font-bold text-foreground">
-                 Nên đặt tên gợi nhớ như &quot;Liệu trình trị mụn - Nguyễn Văn A&quot;
-             </FormDescription>
-             Given the instruction is about escaping quotes, and the snippet shows a change to the *content*
-             of what was SheetTitle, I will assume the user wants to change the content of SheetTitle,
-             and the `</FormDescription>` is a typo for `</SheetTitle>`.
-             This is the most faithful interpretation that results in syntactically correct code
-             while addressing the "escape double quotes" instruction.
-          */}
-          <SheetTitle className="text-xl font-bold text-foreground">
-            Nên đặt tên gợi nhớ như &quot;Liệu trình trị mụn - Nguyễn Văn A&quot;
+            {isEditing ? "Chỉnh sửa ghi chú" : "Chi tiết liệu trình"}
           </SheetTitle>
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto p-6 space-y-8">
-          {/* Thông tin chính */}
+          {/* Main Info */}
           <div className="space-y-4">
             <div className="flex items-start gap-4 p-4 rounded-lg border bg-card">
               <div className="p-2 rounded-full bg-primary/10 text-primary">
@@ -114,7 +72,7 @@ export function TreatmentSheet({
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Khách hàng</p>
                 <p className="text-lg font-semibold">{data.customer_name}</p>
-                <p className="text-xs text-muted-foreground font-mono mt-0.5">{data.customer_id}</p>
+                {/* <p className="text-xs text-muted-foreground font-mono mt-0.5">{data.customer_id}</p> */}
               </div>
             </div>
 
@@ -129,7 +87,7 @@ export function TreatmentSheet({
             </div>
           </div>
 
-          {/* Tiến độ */}
+          {/* Progress */}
           <div className="space-y-3">
             <h3 className="text-sm font-medium flex items-center gap-2">
               <Clock className="size-4" /> Tiến độ thực hiện
@@ -148,8 +106,8 @@ export function TreatmentSheet({
             </div>
           </div>
 
-          {/* Thời gian */}
-          <div className="grid grid-cols-2 gap-4">
+          {/* Times */}
+          <div className="grid grid-cols-2 gap-4 pb-6">
             <div className="space-y-1">
               <p className="text-xs text-muted-foreground flex items-center gap-1">
                 <Calendar className="size-3" /> Ngày bắt đầu
@@ -168,17 +126,51 @@ export function TreatmentSheet({
             </div>
           </div>
 
-          {/* Ghi chú */}
-          {data.notes && (
-            <div className="space-y-2">
-               <h3 className="text-sm font-medium flex items-center gap-2">
-                <StickyNote className="size-4" /> Ghi chú
+          {/* Notes Section */}
+          <div className="space-y-3 pt-4 border-t">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-medium flex items-center gap-2">
+                <StickyNote className="size-4" /> Ghi chú chuyên môn
               </h3>
-              <div className="p-3 bg-muted/50 rounded-md text-sm text-muted-foreground italic border">
-                &quot;{data.notes}&quot;
-              </div>
+              {!isEditing && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 text-xs gap-1.5"
+                  onClick={() => setIsEditing(true)}
+                >
+                  <Edit3 className="size-3" /> Chỉnh sửa
+                </Button>
+              )}
             </div>
-          )}
+
+            {isEditing ? (
+              <div className="space-y-3">
+                <Textarea
+                  value={editedNotes}
+                  onChange={(e) => setEditedNotes(e.target.value)}
+                  placeholder="Nhập ghi chú chi tiết về tình trạng da, phản ứng của khách..."
+                  className="min-h-[120px] text-sm leading-relaxed"
+                />
+                <div className="flex items-center gap-2">
+                  <Button size="sm" className="flex-1 gap-2" onClick={handleSaveNotes}>
+                    <Save className="size-4" /> Lưu ghi chú
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => setIsEditing(false)}>
+                    <X className="size-4" /> Hủy
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="p-4 bg-amber-50/50 dark:bg-amber-900/10 border border-amber-200/50 dark:border-amber-900/30 rounded-xl text-sm leading-relaxed text-muted-foreground italic">
+                {data.notes ? (
+                  `"${data.notes}"`
+                ) : (
+                  "Chưa có ghi chú chuyên môn cho liệu trình này."
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </SheetContent>
     </Sheet>

@@ -22,7 +22,7 @@ export function PageHeader({ className, children, ...props }: PageHeaderProps) {
   return (
     <header
       className={cn(
-        "header-sticky bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60",
+        "header-sticky bg-card border-b",
         className
       )}
       {...props}
@@ -62,7 +62,7 @@ export function SurfaceCard({ className, children, ...props }: SurfaceCardProps)
   return (
     <div
       className={cn(
-        "surface-card flex-1 flex flex-col overflow-hidden rounded-xl",
+        "surface-card flex-1 flex flex-col overflow-hidden rounded-lg",
         className
       )}
       {...props}

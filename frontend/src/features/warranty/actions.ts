@@ -14,11 +14,21 @@ let warranties = [...MOCK_WARRANTIES];
 export async function getWarranties(
   page = 1,
   limit = 10,
-  status?: string
+  status?: string,
+  search?: string
 ): Promise<ActionResponse<PaginatedWarranties>> {
   let filtered = warranties;
   if (status && status !== "all") {
     filtered = filtered.filter((w) => w.status === status);
+  }
+
+  if (search && search.trim()) {
+    const q = search.trim().toLowerCase();
+    filtered = filtered.filter(
+      (w) =>
+        w.code.toLowerCase().includes(q) ||
+        w.customer_name.toLowerCase().includes(q)
+    );
   }
 
   const start = (page - 1) * limit;
@@ -36,6 +46,16 @@ export async function createWarranty(data: WarrantyCreateInput): Promise<ActionR
 
   // Mock: fetch treatment details
   const treatment = MOCK_TREATMENTS.find((t) => t.id === data.treatment_id);
+  if (!treatment) return error("Không tìm thấy liệu trình tương ứng");
+
+  if (treatment.status === "cancelled") {
+    return error("Không thể tạo bảo hành cho liệu trình đã bị hủy");
+  }
+
+  if (data.duration_months <= 0) {
+    return error("Thời hạn bảo hành phải lớn hơn 0 tháng");
+  }
+
   const serviceName = treatment ? treatment.package_name : "Dịch vụ/Liệu trình không xác định";
   const customerName = treatment ? treatment.customer_name : "Khách hàng";
 

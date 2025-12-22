@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useBookingStore } from "../hooks/use-booking-store";
 import { customerInfoSchema } from "../schemas";
 import { BookingSuccess } from "./booking-success";
-import { PaymentStep } from "./step-payment/payment-step";
+import { CustomerInfoStep } from "./step-payment/customer-info-step";
 import { ServicesStep } from "./step-services/services-step";
 import { TechnicianStep } from "./step-technician/technician-step";
 import { HoldTimer } from "./step-time/hold-timer";
 import { TimeStep } from "./step-time/time-step";
+import { SummaryStep } from "./step-summary/summary-step";
 import { WizardFooter } from "./wizard-footer";
 import { WizardHeader } from "./wizard-header";
 
@@ -23,15 +24,17 @@ export const BookingWizard = () => {
       case 3:
         return <TimeStep />;
       case 4:
-        return <PaymentStep />;
+        return <CustomerInfoStep />;
+      case 5:
+        return <SummaryStep />;
       default:
         return null;
     }
   };
 
   const handleNext = () => {
-    if (currentStep < 4) {
-      goToStep((currentStep + 1) as 1 | 2 | 3 | 4);
+    if (currentStep < 5) {
+      goToStep((currentStep + 1) as 1 | 2 | 3 | 4 | 5);
     } else {
       // Mock confirmation
       setIsSuccess(true);
@@ -42,7 +45,7 @@ export const BookingWizard = () => {
   // Step 1 uses FloatingSummary, so we can hide the main footer or disable it
   // Strategy: Main footer is sticky, FloatingSummary is also fixed.
   // UX Decision: Step 1 hides main footer, uses FloatingSummary for "Add to Cart" feel.
-  // Step 2-4 use Main Footer.
+  // Step 2-5 use Main Footer.
   const showMainFooter = currentStep !== 1 && !isSuccess;
 
   // Validation for enabling Next button
@@ -55,6 +58,7 @@ export const BookingWizard = () => {
       const result = customerInfoSchema.safeParse(customerInfo);
       return result.success;
     }
+    if (currentStep === 5) return true;
     return true;
   };
 
@@ -91,14 +95,14 @@ export const BookingWizard = () => {
         )}
       </div>
 
-      <main className="flex-1 container max-w-2xl mx-auto px-4 py-6 pb-24 animate-in fade-in duration-500">
+      <main className="flex-1 container max-w-2xl mx-auto px-4 py-6 pb-32 animate-in fade-in duration-500">
         {renderStep()}
       </main>
 
       {showMainFooter && (
         <WizardFooter
           onNext={handleNext}
-          nextLabel={currentStep === 4 ? "Xác nhận" : "Tiếp tục"}
+          nextLabel={currentStep === 5 ? "Xác nhận đặt lịch" : "Tiếp tục"}
           isDisabled={!canProceed()}
         />
       )}

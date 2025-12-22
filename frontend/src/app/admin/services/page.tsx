@@ -1,7 +1,7 @@
-
 import { getEquipmentList, getRoomTypes } from "@/features/resources/actions"
 import { ServicesPage } from "@/features/services"
 import { getServices, getSkills } from "@/features/services/actions"
+import { Suspense } from "react"
 
 export default async function Page({
   searchParams,
@@ -24,12 +24,14 @@ export default async function Page({
   const servicesPromise = getServices(pageNumber)
 
   return (
-    <ServicesPage
-      page={pageNumber}
-      servicesPromise={servicesPromise}
-      skills={skills}
-      roomTypes={roomTypes}
-      equipmentList={equipmentList}
-    />
+    <Suspense fallback={<div>Đang tải dịch vụ...</div>}>
+      <ServicesPage
+        page={pageNumber}
+        servicesPromise={servicesPromise}
+        skills={skills}
+        roomTypes={roomTypes}
+        equipmentList={equipmentList}
+      />
+    </Suspense>
   )
 }

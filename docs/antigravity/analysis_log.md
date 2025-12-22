@@ -1,31 +1,40 @@
-# Analysis Log - Comprehensive Backend Testing
+# Nhật ký Phân tích Antigravity - Slice 1: Core Layout & Navigation
 
-## 1. Phát hiện về Database (Database Findings)
-- **Dependency**: `src.common.database.get_db_session`.
-- **Cơ chế**: Sử dụng `Annotated[dict | None, Depends(get_token_payload_optional)]` để lấy `token_payload` và thực hiện `SET LOCAL role` cho RLS.
-- **Thách thức**: Khi test bằng SQLite in-memory, cơ chế `SET LOCAL role` của Postgres sẽ không hoạt động.
-- **Giải pháp**:
-    - **Unit Test**: Mock hoàn toàn `AsyncSession` và Service.
-    - **Integration Test**: Sử dụng Postgres Test DB thật để kiểm chứng RLS logic.
+## Phân tích Tác động (Impact Analysis)
+- **Hệ thống Breadcrumb**: Việc di chuyển `BREADCRUMB_MAP` từ `AdminHeader` sang một file hằng số dùng chung sẽ giúp dễ dàng bảo trì và mở rộng cho các phân hệ khác (như Worker Workspace).
+- **AdminSidebar**: Thay đổi cấu trúc menu và icon sẽ cải thiện tính thẩm mỹ "Premium". Cần đảm bảo tính responsive khi co giãn (collapsible).
+- **Landing CTA**: Thêm nút đặt lịch vào `ServiceCard` ảnh hưởng đến layout trang chủ. Cần đảm bảo nút nổi bật nhưng không làm hỏng tính cân đối của thẻ.
 
-## 2. Phát hiện về Xác thực (Authentication Findings)
-- **Dependencies**: `get_token_payload`, `get_token_payload_optional`.
-- **Cơ chế**: Giải mã JWT dựa trên `settings.SUPABASE_JWT_SECRET`.
-- **Giải pháp**:
-    - Tạo `auth_mock` fixture trong `conftest.py` để override các dependency này, trả về payload giả lập các vai trò (Admin, Staff, Customer).
+## Rủi ro & Giải pháp
+- **Rủi ro**: Lỗi import khi di chuyển hằng số.
+- **Giải pháp**: Kiểm tra kỹ các đường dẫn import sau khi di chuyển.
+- **Rủi ro**: Nút "Đặt lịch" có thể bị tràn text trên mobile.
+- **Giải pháp**: Sử dụng flex-col/row linh hoạt dựa trên screen size.
 
-## 3. Thư viện còn thiếu (Missing Dependencies)
-Cần bổ sung vào `pyproject.toml` và cài đặt:
-- `pytest`: Framework test.
-- `pytest-asyncio`: Xử lý async tests.
-- `httpx`: Thay thế `TestClient` chuẩn để hỗ trợ async requests tốt hơn.
-- `pytest-mock`: Hỗ trợ patch dependencies dễ dàng.
+## Ghi chú Thực thi
+- Di chuyển `BREADCRUMB_MAP` vào `frontend/src/features/admin/constants.ts`.
+- Cập nhật `lucide-react` icons cho Sidebar để trông chuyên nghiệp hơn.
+- Link nút "Đặt lịch" trực tiếp vào `/booking` router.
 
-## 4. Rủi ro và Ràng buộc (Risks & Constraints)
-- **RLS**: Row Level Security là phần quan trọng nhất cần test. Nếu chỉ test logic Python mà không test RLS thì độ tin cậy chỉ đạt 50%.
-- **Timezones**: Cần đảm bảo dữ liệu mock trong test đồng quán với chuẩn Timezone của dự án.
+## [2025-12-22] Slice 2: Receptionist Dashboard (Premium)
+### Phân tích Tác động
+- **app/admin/dashboard/page.tsx**: Trang hiện tại là placeholder trống. Thay thế bằng một trung tâm điều hành thực thụ.
+- **Dữ liệu Mock**: Cần cấu trúc dữ liệu mock phản ánh chính xác nghiệp vụ Spa (số giường, số kỹ thuật viên rảnh, doanh thu hôm nay).
 
-## 5. Danh sách File ảnh hưởng (Affected Files)
-- `backend/pyproject.toml` (Cập nhật deps).
-- `backend/tests/conftest.py` (Tạo mới).
-- Toàn bộ `router.py` và `service.py` trong 17 modules.
+### Rủi ro & Giải pháp
+- **Rủi ro**: Grid layout bị vỡ trên màn hình nhỏ.
+- **Giải pháp**: Sử dụng các cột linh hoạt (1/2/4 cột tùy screen size).
+- **Rủi ro**: Dashboard quá nhiều thông tin gây nhiễu.
+- **Giải pháp**: Nhóm thông tin vào các `Card` rõ ràng và sử dụng `Tabs` nếu cần.
+
+## [2025-12-22] Slice 3: Worker Workspace (Mobile First)
+### Phân tích Tác động
+- **Route Mới (`/admin/workspace`)**: Tạo không gian làm việc tập trung cho KTV, tách biệt với dashboard quản lý của lễ tân.
+- **Mobile Navigation**: Cần một thanh điều hướng dưới (Bottom Nav) cho thiết bị di động để tối ưu thao tác bằng một tay.
+- **TreatmentSheet**: Nâng cấp từ "chỉ đọc" sang "có thể chỉnh sửa" ghi chú chuyên môn.
+
+### Rủi ro & Giải pháp
+- **Rủi ro**: Trùng lặp code với dashboard admin hiện tại.
+- **Giải pháp**: Tái sử dụng các component dùng chung (Avatar, Badge, Calendar) nhưng tùy chỉnh layout.
+- **Rủi ro**: Thao tác ghi chú trên mobile khó khăn nếu form quá phức tạp.
+- **Giải pháp**: Sử dụng Drawer hoặc Full-screen Dialog với các phím tắt nhanh/gợi ý.

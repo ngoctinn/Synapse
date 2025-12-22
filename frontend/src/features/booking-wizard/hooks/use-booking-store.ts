@@ -23,7 +23,7 @@ interface BookingActions {
   setCustomerInfo: (info: CustomerInfo) => void;
 
   // Navigation
-  goToStep: (step: 1 | 2 | 3 | 4) => void;
+  goToStep: (step: 1 | 2 | 3 | 4 | 5) => void;
   reset: () => void;
 }
 

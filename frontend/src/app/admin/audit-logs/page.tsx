@@ -1,36 +1,32 @@
-import { AuditTable } from "@/features/audit-logs/components";
-import { getAuditLogs } from "@/features/audit-logs/actions";
-import { PageShell, PageHeader, PageContent, SurfaceCard } from "@/shared/components/layout/page-layout";
+import { getAuditLogs, AuditLogsPage } from "@/features/audit-logs";
+import { Suspense } from "react";
 
-export default async function AuditLogsPage({
-  searchParams
+export const metadata = {
+  title: "Nhật ký hệ thống | Synapse",
+  description: "Theo dõi các hoạt động của người dùng và hệ thống",
+};
+
+export default async function Page({
+  searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; action?: string; entityType?: string }>;
 }) {
-  const { page } = await searchParams; // Await searchParams in Next.js 15+
+  const { page, action, entityType } = await searchParams;
   const pageNum = Number(page) || 1;
-  const { data, totalPages } = await getAuditLogs(pageNum);
+
+  // Fetch data
+  const { data, totalPages } = await getAuditLogs(pageNum, 10, {
+    action: action as string,
+    entityType: entityType as string
+  });
 
   return (
-    <PageShell>
-       <PageHeader>
-          <div className="flex flex-col gap-1">
-            <h1 className="text-lg font-semibold md:text-xl">Nhật ký hệ thống</h1>
-            <p className="text-sm text-muted-foreground hidden md:block">
-              Theo dõi các hoạt động của người dùng và hệ thống
-            </p>
-          </div>
-       </PageHeader>
-
-      <PageContent>
-        <SurfaceCard className="p-0 overflow-hidden">
-          <AuditTable
-            data={data}
-            page={pageNum}
-            totalPages={totalPages}
-          />
-        </SurfaceCard>
-      </PageContent>
-    </PageShell>
+    <Suspense fallback={<div>Đang tải nhật ký...</div>}>
+      <AuditLogsPage
+        data={data}
+        page={pageNum}
+        totalPages={totalPages}
+      />
+    </Suspense>
   );
 }

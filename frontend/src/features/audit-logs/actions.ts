@@ -13,11 +13,11 @@ export async function getAuditLogs(
 
   let filtered = [...MOCK_AUDIT_LOGS];
 
-  if (filter?.action) {
+  if (filter?.action && filter.action !== "all") {
     filtered = filtered.filter((log) => log.action === filter.action);
   }
 
-  if (filter?.entityType) {
+  if (filter?.entityType && filter.entityType !== "all") {
     filtered = filtered.filter((log) => log.entity_type === filter.entityType);
   }
 

@@ -89,8 +89,42 @@ export async function getAvailableSlots(params: {
   try {
     const { staffId, date } = params;
 
-    // Generate mock slots directly here instead of calling an API route
-    // This avoids issues with NEXT_PUBLIC_BASE_URL or server-side fetch calls
+    if (staffId === 'any') {
+      // Fetch all staff to get technicians
+      const staffResponse = await getStaffList(1, 100);
+      if (staffResponse.status === "error" || !staffResponse.data) {
+        return error("Failed to load staff for aggregate availability");
+      }
+
+      const technicians = staffResponse.data.data.filter(
+        (s) => s.user.role === "technician" && s.user.is_active
+      );
+
+      // Aggregate slots from all technicians
+      const allSlots: TimeSlot[] = [];
+      const seenTimes = new Set<string>();
+
+      technicians.forEach(tech => {
+        const techSlots = generateMockTimeSlots(date, tech.user_id);
+        techSlots.forEach(slot => {
+          if (slot.is_available && !seenTimes.has(slot.start_time)) {
+            allSlots.push({
+              ...slot,
+              staff_id: 'any', // Mark as any for the UI
+              id: `${slot.date}-${slot.start_time}-any`
+            });
+            seenTimes.add(slot.start_time);
+          }
+        });
+      });
+
+      // Sort by time
+      allSlots.sort((a, b) => a.start_time.localeCompare(b.start_time));
+
+      return success(allSlots);
+    }
+
+    // Single staff logic
     const mockSlots = generateMockTimeSlots(date, staffId);
 
     // Simulate network delay

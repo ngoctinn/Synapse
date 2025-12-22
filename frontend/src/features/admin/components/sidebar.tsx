@@ -14,7 +14,7 @@ import {
   SidebarRail,
 } from "@/shared/ui/sidebar"
 import { HelpCircle } from "lucide-react"
-import { SIDEBAR_ITEMS } from "../constants"
+import { SIDEBAR_GROUPS } from "../constants"
 import { SidebarItem } from "./sidebar-item"
 
 export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -35,16 +35,21 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="px-2 py-2 group-data-[collapsible=icon]:px-1">
-        <SidebarGroup className="group-data-[collapsible=icon]:items-center">
-          <SidebarGroupContent>
-            <SidebarMenu className="gap-2" aria-label="Danh mục chính">
-              {SIDEBAR_ITEMS.map((item) => (
-                <SidebarItem key={item.title} item={item} />
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+      <SidebarContent className="px-2 py-2 group-data-[collapsible=icon]:px-1 scrollbar-none">
+        {SIDEBAR_GROUPS.map((group) => (
+          <SidebarGroup key={group.group} className="group-data-[collapsible=icon]:items-center">
+            <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground/50 uppercase tracking-wider group-data-[collapsible=icon]:hidden">
+              {group.group}
+            </div>
+            <SidebarGroupContent>
+              <SidebarMenu className="gap-2" aria-label={`Danh mục ${group.group}`}>
+                {group.items.map((item) => (
+                  <SidebarItem key={item.title} item={item} />
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
 
       <SidebarFooter className="p-4 group-data-[collapsible=icon]:p-2 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center">

@@ -1,6 +1,7 @@
 import { SettingsPage } from "@/features/settings/components/settings-page";
 import { MOCK_CHANNELS, MOCK_EVENTS } from "@/features/settings/notifications";
 import { getOperatingHours } from "@/features/settings/operating-hours";
+import { Suspense } from "react";
 
 export default function AdminSettingsPage() {
   // Tạo promises để truyền xuống component (streaming pattern)
@@ -11,10 +12,12 @@ export default function AdminSettingsPage() {
   const eventsPromise = Promise.resolve(MOCK_EVENTS);
 
   return (
-    <SettingsPage
-      operatingHoursPromise={operatingHoursPromise}
-      channelsPromise={channelsPromise}
-      eventsPromise={eventsPromise}
-    />
+    <Suspense fallback={<div>Đang tải cài đặt...</div>}>
+      <SettingsPage
+        operatingHoursPromise={operatingHoursPromise}
+        channelsPromise={channelsPromise}
+        eventsPromise={eventsPromise}
+      />
+    </Suspense>
   );
 }

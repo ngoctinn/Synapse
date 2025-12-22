@@ -1,6 +1,9 @@
 export * from "./types";
-export * from "./schemas";
-export * from "./actions";
+// Components
+export * from "./components"
 
-// Components export (sẽ thêm sau)
-// export * from "./components";
+// Actions
+export * from "./actions"
+
+// Types
+export * from "./types"

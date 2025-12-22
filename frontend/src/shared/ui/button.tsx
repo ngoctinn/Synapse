@@ -113,6 +113,18 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const leftContent = startContent ?? leftIcon;
     const rightContent = endContent ?? rightIcon;
 
+    if (asChild) {
+      return (
+        <Comp
+          className={cn(buttonVariants({ variant, size, className }))}
+          ref={ref}
+          {...props}
+        >
+          {children}
+        </Comp>
+      );
+    }
+
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}

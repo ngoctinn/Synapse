@@ -29,24 +29,7 @@ import { LogOut, Settings, User } from "lucide-react"
 import { usePathname } from "next/navigation"
 import React from "react"
 
-// Mapping đường dẫn sang tên hiển thị Tiếng Việt
-const BREADCRUMB_MAP: Record<string, string> = {
-  admin: "Quản trị",
-  overview: "Tổng quan",
-  appointments: "Lịch hẹn",
-  staff: "Nhân sự",
-  permissions: "Phân quyền",
-  schedule: "Lịch làm việc",
-  skills: "Kỹ năng",
-  services: "Dịch vụ",
-  messages: "Tin nhắn",
-  notifications: "Thông báo",
-  components: "Thành phần",
-  settings: "Cài đặt",
-  "operating-hours": "Thời gian hoạt động",
-  resources: "Tài nguyên",
-  customers: "Khách hàng",
-}
+import { BREADCRUMB_MAP } from "../constants"
 
 interface AdminHeaderProps {
   className?: string

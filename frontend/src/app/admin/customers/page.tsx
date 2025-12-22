@@ -1,6 +1,6 @@
-
 import { CustomersPage } from "@/features/customers"
 import { getCustomers } from "@/features/customers/actions"
+import { Suspense } from "react"
 
 export default async function Page({
   searchParams,
@@ -11,5 +11,9 @@ export default async function Page({
   const pageNumber = Number(page) || 1
   const customerListPromise = getCustomers(pageNumber)
 
-  return <CustomersPage page={pageNumber} customerListPromise={customerListPromise} />
+  return (
+    <Suspense fallback={<div>Đang tải khách hàng...</div>}>
+      <CustomersPage page={pageNumber} customerListPromise={customerListPromise} />
+    </Suspense>
+  )
 }

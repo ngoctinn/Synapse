@@ -5,7 +5,8 @@ export const STEPS = [
   { id: 1, title: 'Dịch vụ', path: 'services' },
   { id: 2, title: 'Kỹ thuật viên', path: 'technician' },
   { id: 3, title: 'Thời gian', path: 'time' },
-  { id: 4, title: 'Xác nhận', path: 'payment' },
+  { id: 4, title: 'Thông tin', path: 'customer-info' },
+  { id: 5, title: 'Xác nhận', path: 'summary' },
 ] as const;
 
 export const BOOKING_WIZARD_STORAGE_KEY = 'booking-wizard-storage';

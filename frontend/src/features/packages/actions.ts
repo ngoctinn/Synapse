@@ -13,10 +13,22 @@ let packages = [...MOCK_PACKAGES];
 export async function getPackages(
   page = 1,
   limit = 10,
-  activeOnly = false
+  search?: string,
+  status?: string // "active", "inactive", "all"
 ): Promise<ActionResponse<PaginatedPackages>> {
   let filtered = packages;
-  if (activeOnly) filtered = filtered.filter((p) => p.is_active);
+
+  if (status === "active") filtered = filtered.filter((p) => p.is_active);
+  if (status === "inactive") filtered = filtered.filter((p) => !p.is_active);
+
+  if (search && search.trim()) {
+    const q = search.trim().toLowerCase();
+    filtered = filtered.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        (p.description && p.description.toLowerCase().includes(q))
+    );
+  }
 
   const start = (page - 1) * limit;
   return success({

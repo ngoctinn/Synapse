@@ -1,3 +1,4 @@
-export { WarrantyTable } from "./warranty-table";
-export { WarrantySheet } from "./warranty-sheet";
-export { CreateWarrantyTrigger } from "./create-warranty-trigger";
+export * from "./warranty-table"
+export * from "./warranty-sheet"
+export * from "./create-warranty-trigger"
+export * from "./warranty-page"

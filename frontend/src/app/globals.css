@@ -223,11 +223,11 @@
   }
 
   .surface-card {
-    @apply bg-background rounded-lg border border-border shadow-sm;
+    @apply bg-background rounded-lg border border-border;
   }
 
   .header-sticky {
-    @apply sticky top-0 z-50 w-full border-b transition-all duration-200 bg-background/95;
+    @apply sticky top-0 z-50 w-full border-b transition-all duration-200 bg-background;
   }
 
   .shadow-premium-sm {
@@ -328,7 +328,7 @@
   }
 
   .empty-state-container {
-    @apply flex flex-col items-center justify-center py-16 text-center border rounded-xl bg-background/50 backdrop-blur-sm border-dashed border-border;
+    @apply flex flex-col items-center justify-center py-16 text-center border rounded-lg bg-background border-dashed border-border;
   }
 
   .close-button-base {
@@ -379,7 +379,7 @@
   }
 
   .sticky-header-blur {
-    @apply sticky top-0 z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b;
+    @apply sticky top-0 z-30 bg-background border-b;
   }
 
   .sidebar-rail-styling {

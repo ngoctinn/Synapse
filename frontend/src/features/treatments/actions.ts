@@ -14,11 +14,21 @@ let treatments = [...MOCK_TREATMENTS];
 export async function getTreatments(
   page = 1,
   limit = 10,
-  status?: string
+  status?: string,
+  search?: string
 ): Promise<ActionResponse<PaginatedTreatments>> {
   let filtered = treatments;
   if (status && status !== "all") {
     filtered = filtered.filter((t) => t.status === status);
+  }
+
+  if (search && search.trim()) {
+    const q = search.trim().toLowerCase();
+    filtered = filtered.filter(
+      (t) =>
+        t.customer_name.toLowerCase().includes(q) ||
+        t.id.toLowerCase().includes(q)
+    );
   }
 
   const start = (page - 1) * limit;
@@ -75,7 +85,11 @@ export async function checkInSession(treatmentId: string): Promise<ActionRespons
   if (index === -1) return error("Không tìm thấy liệu trình");
 
   const treatment = treatments[index];
-  if (treatment.status !== "active") return error("Liệu trình không khả dụng");
+  if (treatment.status !== "active") return error("Liệu trình không khả dụng hoặc đã hoàn thành");
+
+  if (treatment.sessions_completed >= treatment.total_sessions) {
+    return error("Liệu trình đã hoàn thành tất cả các buổi");
+  }
 
   const newCompleted = treatment.sessions_completed + 1;
   const isCompleted = newCompleted >= treatment.total_sessions;

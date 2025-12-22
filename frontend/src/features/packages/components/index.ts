@@ -1,5 +1,5 @@
-// Public exports for packages components
-export { PackageTable } from "./package-table";
-export { PackageSheet } from "./package-sheet";
-export { PackageForm } from "./package-form";
-export { CreatePackageTrigger } from "./create-package-trigger";
+export * from "./package-table"
+export * from "./package-sheet"
+export * from "./package-form"
+export * from "./create-package-trigger"
+export * from "./packages-page"

@@ -17,8 +17,8 @@ export const FloatingSummary = ({
   if (totalCount === 0) return null;
 
   return (
-    <div className="fixed bottom-[72px] left-0 right-0 px-4 z-40 animate-in slide-in-from-bottom-10 duration-300">
-      <div className="max-w-2xl mx-auto">
+    <div className="fixed bottom-0 left-0 right-0 z-40 animate-in slide-in-from-bottom-10 duration-300">
+      <div className="max-w-2xl mx-auto px-4 pb-4">
         <div className="bg-foreground text-background rounded-xl p-4 shadow-lg flex items-center justify-between cursor-pointer" onClick={onNext}>
           <div className="flex flex-col">
             <div className="flex items-center gap-2">

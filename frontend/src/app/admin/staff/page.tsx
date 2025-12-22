@@ -1,6 +1,6 @@
-
 import { StaffPage, getPermissions, getSchedules, getSkills, getStaffList } from "@/features/staff"
 import { endOfWeek, format, startOfWeek } from "date-fns"
+import { Suspense } from "react"
 
 export default async function Page({
   searchParams,
@@ -28,12 +28,14 @@ export default async function Page({
   const staffListPromise = getStaffList(pageNumber)
 
   return (
-    <StaffPage
-      page={pageNumber}
-      skills={skills}
-      staffListPromise={staffListPromise}
-      initialPermissions={permissions}
-      initialSchedules={schedules}
-    />
+    <Suspense fallback={<div>Đang tải nhân viên...</div>}>
+      <StaffPage
+        page={pageNumber}
+        skills={skills}
+        staffListPromise={staffListPromise}
+        initialPermissions={permissions}
+        initialSchedules={schedules}
+      />
+    </Suspense>
   )
 }

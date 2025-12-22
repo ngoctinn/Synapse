@@ -2,15 +2,13 @@
 
 import { Form } from "@/shared/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
-import { useForm, useWatch } from "react-hook-form";
-import { useDebounce } from "use-debounce";
+import { useForm } from "react-hook-form";
 import { useBookingStore } from "../../hooks/use-booking-store";
 import { customerInfoSchema, CustomerInfoSchema } from "../../schemas";
 import { BookingSummary } from "./booking-summary";
 import { CustomerForm } from "./customer-form";
 
-export const PaymentStep = () => {
+export const CustomerInfoStep = () => {
   const { customerInfo, setCustomerInfo } = useBookingStore();
 
   const form = useForm<CustomerInfoSchema>({
@@ -21,31 +19,25 @@ export const PaymentStep = () => {
       email: "",
       notes: "",
     },
-    mode: "onChange",
+    mode: "onBlur", // Validate on blur for better UX
   });
 
-  const watchedValues = useWatch({ control: form.control });
-  const [debouncedValues] = useDebounce(watchedValues, 500);
-
-  // Sync form values to store
-  useEffect(() => {
-    // Only update if valid to avoid clearing store with invalid initial data unnecessarily,
-    // but for UX, we might want to persist even partial data.
-    // Let's persist everything so user doesn't lose data when switching steps.
-    const { full_name, phone_number, email, notes } = debouncedValues;
+  // Function to sync form values to store
+  const syncToStore = () => {
+    const values = form.getValues();
     setCustomerInfo({
-      full_name: full_name || "",
-      phone_number: phone_number || "",
-      email: email || undefined,
-      notes: notes || undefined,
+      full_name: values.full_name || "",
+      phone_number: values.phone_number || "",
+      email: values.email || undefined,
+      notes: values.notes || undefined,
     });
-  }, [debouncedValues, setCustomerInfo]);
+  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
       <div className="lg:col-span-3 space-y-8">
         <Form {...form}>
-          <form className="space-y-8">
+          <form className="space-y-8" onBlur={syncToStore}>
             <CustomerForm form={form} />
           </form>
         </Form>

@@ -1,4 +1,5 @@
 import { AdminHeader, AdminSidebar } from "@/features/admin"
+import { BottomNav } from "@/features/admin/components/bottom-nav"
 import { createClient } from "@/shared/lib/supabase/server"
 import { SidebarInset, SidebarProvider } from "@/shared/ui/sidebar"
 import { cookies } from "next/headers"
@@ -40,9 +41,10 @@ export default async function AdminLayout({
       <AdminSidebar />
       <SidebarInset className="h-screen max-h-svh overflow-hidden">
         <AdminHeader user={userProfile} />
-        <div className="flex flex-1 flex-col overflow-y-auto bg-muted/50">
+        <div className="flex flex-1 flex-col overflow-y-auto bg-muted/50 pb-20 md:pb-0">
           {children}
         </div>
+        <BottomNav />
       </SidebarInset>
     </SidebarProvider>
   )

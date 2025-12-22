@@ -10,7 +10,7 @@ export const WizardHeader = () => {
 
   const handleBack = () => {
     if (currentStep > 1) {
-      goToStep((currentStep - 1) as 1 | 2 | 3);
+      goToStep((currentStep - 1) as 1 | 2 | 3 | 4);
     } else {
       router.back();
     }
@@ -28,7 +28,7 @@ export const WizardHeader = () => {
           <ArrowLeft className="h-5 w-5" />
           <span className="sr-only">Quay lại</span>
         </Button>
-        
+
         <div className="flex-1">
           <StepIndicator currentStep={currentStep} />
         </div>

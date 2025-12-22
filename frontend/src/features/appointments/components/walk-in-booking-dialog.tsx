@@ -58,7 +58,7 @@ export function WalkInBookingDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-xl p-0 gap-0">
         <DialogHeader className="px-6 py-4 border-b shrink-0 space-y-0">
-          <DialogTitle className="text-lg">Tạo lịch hẹn nhanh (Walk-in)</DialogTitle>
+          <DialogTitle className="text-lg">Tạo lịch hẹn nhanh (Khách vãng lai)</DialogTitle>
         </DialogHeader>
         <div className="relative p-6">
           <AppointmentForm

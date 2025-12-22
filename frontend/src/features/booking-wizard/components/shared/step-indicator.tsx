@@ -12,9 +12,9 @@ export const StepIndicator = ({ currentStep }: StepIndicatorProps) => {
       <div className="relative flex items-center justify-between mx-auto max-w-sm sm:max-w-md">
         {/* Progress Bar Background */}
         <div className="absolute top-1/2 left-0 w-full h-1 bg-muted -z-10 -translate-y-1/2 rounded-full" />
-        
+
         {/* Active Progress Bar */}
-        <div 
+        <div
           className="absolute top-1/2 left-0 h-1 bg-primary -z-10 -translate-y-1/2 rounded-full transition-all duration-300 ease-in-out"
           style={{ width: `${((currentStep - 1) / (STEPS.length - 1)) * 100}%` }}
         />
@@ -41,7 +41,7 @@ export const StepIndicator = ({ currentStep }: StepIndicatorProps) => {
                   <span className="text-sm font-medium">{step.id}</span>
                 )}
               </div>
-              <span 
+              <span
                 className={cn(
                   "hidden sm:block text-xs font-medium transition-colors duration-300",
                   isCurrent ? "text-foreground" : "text-muted-foreground"
@@ -54,7 +54,10 @@ export const StepIndicator = ({ currentStep }: StepIndicatorProps) => {
         })}
       </div>
       {/* Mobile Title Display */}
-      <div className="sm:hidden text-center mt-2">
+      <div className="sm:hidden text-center mt-2 flex flex-col items-center">
+        <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
+          Bước {currentStep} / {STEPS.length}
+        </span>
         <span className="text-sm font-semibold">
           {STEPS[currentStep - 1].title}
         </span>
