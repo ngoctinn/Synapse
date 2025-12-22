@@ -1,10 +1,10 @@
+import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useBookingStore } from "../../hooks/use-booking-store";
 import { getAvailableStaff } from "../../actions";
+import { useBookingStore } from "../../hooks/use-booking-store";
 import { StaffItem } from "../../types";
 import { AnyOption } from "./any-option";
 import { StaffList } from "./staff-list";
-import { Loader2 } from "lucide-react";
 
 export const TechnicianStep = () => {
   const {
@@ -51,7 +51,7 @@ export const TechnicianStep = () => {
   return (
     <div className="space-y-6">
       <div className="text-center sm:text-left mb-6">
-        <h2 className="text-2xl font-bold tracking-tight">Chọn Kỹ thuật viên</h2>
+        <h2 className="text-2xl font-bold tracking-tight">Chọn kỹ thuật viên</h2>
         <p className="text-muted-foreground mt-1">
           Vui lòng chọn KTV bạn muốn thực hiện dịch vụ
         </p>

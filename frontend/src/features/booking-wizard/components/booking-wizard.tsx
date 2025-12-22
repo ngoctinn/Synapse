@@ -1,17 +1,17 @@
+import { useState } from "react";
 import { useBookingStore } from "../hooks/use-booking-store";
-import { WizardHeader } from "./wizard-header";
-import { WizardFooter } from "./wizard-footer";
-import { ServicesStep } from "./step-services/services-step";
-import { TechnicianStep } from "./step-technician/technician-step";
-import { TimeStep } from "./step-time/time-step";
-import { HoldTimer } from "./step-time/hold-timer";
-import { PaymentStep } from "./step-payment/payment-step";
 import { customerInfoSchema } from "../schemas";
 import { BookingSuccess } from "./booking-success";
-import { useState } from "react";
+import { PaymentStep } from "./step-payment/payment-step";
+import { ServicesStep } from "./step-services/services-step";
+import { TechnicianStep } from "./step-technician/technician-step";
+import { HoldTimer } from "./step-time/hold-timer";
+import { TimeStep } from "./step-time/time-step";
+import { WizardFooter } from "./wizard-footer";
+import { WizardHeader } from "./wizard-header";
 
 export const BookingWizard = () => {
-  const { currentStep, goToStep, selectedServices, staffId, holdExpiresAt, clearHold, selectedDate, selectedSlot, customerInfo, paymentMethod, reset } = useBookingStore();
+  const { currentStep, goToStep, selectedServices, staffId, holdExpiresAt, clearHold, selectedDate, selectedSlot, customerInfo, reset } = useBookingStore();
   const [isSuccess, setIsSuccess] = useState(false);
 
   const renderStep = () => {
@@ -51,7 +51,7 @@ export const BookingWizard = () => {
     if (currentStep === 2) return !!staffId;
     if (currentStep === 3) return !!selectedDate && !!selectedSlot;
     if (currentStep === 4) {
-      if (!customerInfo || !paymentMethod) return false;
+      if (!customerInfo) return false;
       const result = customerInfoSchema.safeParse(customerInfo);
       return result.success;
     }
