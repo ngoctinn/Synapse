@@ -23,6 +23,7 @@ export interface TimeSlot {
   start_time: string; // HH:mm
   end_time: string; // HH:mm
   staff_id: string;
+  staff_name?: string;
   resource_id?: string;
   is_available: boolean;
   is_held?: boolean;

@@ -36,9 +36,9 @@ export const BookingWizard = () => {
     if (currentStep < 5) {
       goToStep((currentStep + 1) as 1 | 2 | 3 | 4 | 5);
     } else {
-      // Mock confirmation
+      // TODO: Gửi dữ liệu đặt lịch thực tế đến Backend API tại đây
       setIsSuccess(true);
-      clearHold(); // Clear hold timer
+      clearHold();
     }
   };
 
@@ -50,16 +50,16 @@ export const BookingWizard = () => {
 
   // Validation for enabling Next button
   const canProceed = () => {
-    if (currentStep === 1) return selectedServices.length > 0;
-    if (currentStep === 2) return !!selectedDate && !!selectedSlot;
-    if (currentStep === 3) return !!staffId;
-    if (currentStep === 4) {
-      if (!customerInfo) return false;
-      const result = customerInfoSchema.safeParse(customerInfo);
-      return result.success;
+    switch (currentStep) {
+      case 1: return selectedServices.length > 0;
+      case 2: return !!selectedDate && !!selectedSlot;
+      case 3: return !!staffId;
+      case 4:
+        if (!customerInfo) return false;
+        return customerInfoSchema.safeParse(customerInfo).success;
+      case 5: return true;
+      default: return true;
     }
-    if (currentStep === 5) return true;
-    return true;
   };
 
   if (isSuccess) {

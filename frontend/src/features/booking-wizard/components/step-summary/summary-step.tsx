@@ -4,6 +4,7 @@ import { useBookingStore } from "../../hooks/use-booking-store";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Badge } from "@/shared/ui/badge";
 import { Calendar, Clock, User, ClipboardList, Phone, Mail, MapPin } from "lucide-react";
+import { formatCurrency } from "@/shared/lib/utils";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 
@@ -43,13 +44,13 @@ export const SummaryStep = () => {
                 <div key={service.id} className="flex justify-between items-center text-sm">
                   <span className="font-medium">{service.name}</span>
                   <span className="text-muted-foreground">
-                    {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(service.price)}
+                    {formatCurrency(service.price)}
                   </span>
                 </div>
               ))}
               <div className="pt-3 border-t flex justify-between items-center font-bold text-primary">
                 <span>Tổng cộng</span>
-                <span>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}</span>
+                <span>{formatCurrency(totalPrice)}</span>
               </div>
             </CardContent>
           </Card>

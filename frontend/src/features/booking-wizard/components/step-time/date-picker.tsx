@@ -4,6 +4,7 @@ import { cn } from "@/shared/lib/utils";
 import { ScrollArea, ScrollBar } from "@/shared/ui/scroll-area";
 import { addDays, format, isSameDay, isToday } from "date-fns";
 import { vi } from "date-fns/locale";
+import { useHasHydrated } from "@/shared/hooks";
 import React, { useEffect, useRef } from "react";
 
 interface DatePickerProps {
@@ -19,6 +20,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   availableDates,
   isLoading,
 }) => {
+  const hasHydrated = useHasHydrated();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const selectedDateRef = useRef<HTMLButtonElement>(null);
 
@@ -39,6 +41,8 @@ export const DatePicker: React.FC<DatePickerProps> = ({
       });
     }
   }, [selectedDate]);
+
+  if (!hasHydrated) return <div className="h-20 w-full animate-pulse bg-muted rounded-md border" />;
 
   return (
     <ScrollArea className="w-full whitespace-nowrap rounded-md border">

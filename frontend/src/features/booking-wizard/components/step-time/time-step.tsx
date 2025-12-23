@@ -1,28 +1,31 @@
 "use client";
 
 import { Alert, AlertDescription, AlertTitle } from "@/shared/ui/alert";
-import { isSameDay } from "date-fns";
-import { AlertCircle, CalendarClock } from "lucide-react";
-import React, { useEffect, useMemo, useState, useTransition } from "react";
-import { getAvailableSlots } from "../../actions";
-import { useBookingStore } from "../../hooks/use-booking-store";
-import { TimeSlot, StaffItem } from "../../types";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
+import { CalendarClock } from "lucide-react";
+import React, { useMemo, useState } from "react";
+import { WaitlistSheet } from "@/features/waitlist/components/waitlist-sheet";
+import { useTimeStepData } from "../../hooks/use-time-step-data";
 import { DatePicker } from "./date-picker";
 import { TimeSlots } from "./time-slots";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
-import { getAvailableStaff } from "../../actions";
-import { WaitlistSheet } from "@/features/waitlist/components/waitlist-sheet";
 
 export const TimeStep: React.FC = () => {
-  const { selectedServices, staffId, setStaff, selectedDate, selectedSlot, setSelectedDate, setSelectedSlot } = useBookingStore();
+  const {
+    fetchedSlots,
+    availableStaff,
+    fetchError,
+    isLoading,
+    shouldFetch,
+    staffId,
+    setStaff,
+    selectedDate,
+    selectedSlot,
+    setSelectedDate,
+    setSelectedSlot,
+    selectedServices
+  } = useTimeStepData();
 
-  const [fetchedSlots, setFetchedSlots] = useState<TimeSlot[]>([]);
-  const [availableStaff, setAvailableStaff] = useState<StaffItem[]>([]);
-  const [fetchError, setFetchError] = useState<string | null>(null);
-  const [isLoading, startTransition] = useTransition();
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
-
-  const shouldFetch = selectedServices.length > 0;
 
   const displayError = useMemo(() => {
     if (!shouldFetch) {
@@ -35,59 +38,18 @@ export const TimeStep: React.FC = () => {
     if (!shouldFetch) return [];
     const dates = new Set<string>();
     fetchedSlots.forEach(slot => dates.add(slot.date));
-    return Array.from(dates).map(dateStr => new Date(dateStr)).sort((a,b) => a.getTime() - b.getTime());
+    return Array.from(dates).map(dateStr => new Date(dateStr)).sort((a, b) => a.getTime() - b.getTime());
   }, [fetchedSlots, shouldFetch]);
-
-  const slotsForSelectedDate = useMemo(() => {
-    if (!selectedDate || !shouldFetch) return [];
-    return fetchedSlots; // Backend already filtered by date
-  }, [fetchedSlots, selectedDate, shouldFetch]);
-
-  useEffect(() => {
-    if (!shouldFetch) {
-      startTransition(() => {
-        setFetchedSlots([]);
-        setSelectedDate(null);
-      });
-      return;
-    }
-
-    const fetchData = async () => {
-      setFetchError(null);
-      const dateToFetch = selectedDate ? new Date(selectedDate) : new Date();
-
-      const [slotsRes, staffRes] = await Promise.all([
-        getAvailableSlots({
-          serviceIds: selectedServices.map(s => s.id),
-          staffId: staffId || 'any',
-          date: dateToFetch,
-        }),
-        getAvailableStaff({
-          serviceIds: selectedServices.map(s => s.id)
-        })
-      ]);
-
-      if (staffRes.status === "success" && staffRes.data) {
-        setAvailableStaff(staffRes.data);
-      }
-
-      if (slotsRes.status === "success" && slotsRes.data) {
-        setFetchedSlots(slotsRes.data);
-        if (!selectedDate && slotsRes.data.length > 0) {
-          // If no date selected, default to the first available date from backend
-          setSelectedDate(new Date(slotsRes.data[0].date));
-        }
-      } else {
-        setFetchError(slotsRes.message || "Không thể tải khung giờ. Vui lòng thử lại.");
-        setFetchedSlots([]);
-      }
-    };
-
-    startTransition(fetchData);
-  }, [selectedServices, staffId, selectedDate, setSelectedDate, shouldFetch]);
 
   return (
     <div className="space-y-6 p-4">
+      {displayError && (
+        <Alert variant="destructive">
+          <AlertTitle>Lỗi</AlertTitle>
+          <AlertDescription>{displayError}</AlertDescription>
+        </Alert>
+      )}
+
       {/* Staff Preference Filter */}
       <div className="w-full">
         <h2 className="text-lg font-semibold mb-3">Nhân viên ưu tiên</h2>
@@ -95,7 +57,7 @@ export const TimeStep: React.FC = () => {
           value={staffId || 'any'}
           onValueChange={(val) => {
             const selected = availableStaff.find(s => s.id === val);
-            setStaff(val === 'any' ? 'any' : val, selected?.name || 'Ngẫu nhiên');
+            setStaff(val === 'any' ? 'any' : val, selected?.name || 'Bất kỳ nhân viên');
           }}
         >
           <SelectTrigger className="w-full">
@@ -128,9 +90,9 @@ export const TimeStep: React.FC = () => {
             <CalendarClock className="size-5" />
             <span>Khung giờ khả dụng {new Date(selectedDate).toLocaleDateString('vi-VN')}</span>
           </h2>
-          {slotsForSelectedDate.length > 0 ? (
+          {fetchedSlots.length > 0 ? (
             <TimeSlots
-              timeSlots={slotsForSelectedDate}
+              timeSlots={fetchedSlots}
               selectedSlot={selectedSlot}
               onSelectSlot={setSelectedSlot}
               isLoading={isLoading}
@@ -144,7 +106,7 @@ export const TimeStep: React.FC = () => {
                 </AlertDescription>
               </div>
               <div className="flex flex-col gap-2 w-full max-w-xs">
-                 <button
+                <button
                   onClick={() => setIsWaitlistOpen(true)}
                   className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md font-medium transition-colors"
                 >
