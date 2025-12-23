@@ -31,9 +31,15 @@ export function useConflictCheck({
   const [timeWarning, setTimeWarning] = useState<string | null>(null);
 
   const watchedDate = useWatch({ control: form.control, name: "date" });
-  const watchedStartTime = useWatch({ control: form.control, name: "startTime" });
+  const watchedStartTime = useWatch({
+    control: form.control,
+    name: "startTime",
+  });
   const watchedStaffId = useWatch({ control: form.control, name: "staffId" });
-  const watchedServiceIds = useWatch({ control: form.control, name: "serviceIds" });
+  const watchedServiceIds = useWatch({
+    control: form.control,
+    name: "serviceIds",
+  });
 
   // Tính tổng thời lượng dịch vụ
   const totalDuration = (watchedServiceIds || []).reduce((acc, serviceId) => {
@@ -44,7 +50,12 @@ export function useConflictCheck({
   // Kiểm tra xung đột với debounce
   useEffect(() => {
     const debouncedCheck = setTimeout(async () => {
-      if (!watchedStaffId || !watchedStartTime || !watchedDate || !watchedServiceIds?.length) {
+      if (
+        !watchedStaffId ||
+        !watchedStartTime ||
+        !watchedDate ||
+        !watchedServiceIds?.length
+      ) {
         setConflicts([]);
         setTimeWarning(null);
         return;
@@ -65,12 +76,24 @@ export function useConflictCheck({
       const end = new Date(start.getTime() + (totalDuration || 60) * 60000);
 
       // Gọi API kiểm tra xung đột
-      const res = await checkConflicts(watchedStaffId, start, end, appointmentId);
-      setConflicts((res.status === "success" && res.data) ? res.data : []);
+      const res = await checkConflicts(
+        watchedStaffId,
+        start,
+        end,
+        appointmentId
+      );
+      setConflicts(res.status === "success" && res.data ? res.data : []);
     }, 500);
 
     return () => clearTimeout(debouncedCheck);
-  }, [watchedDate, watchedStartTime, watchedStaffId, watchedServiceIds, appointmentId, totalDuration]);
+  }, [
+    watchedDate,
+    watchedStartTime,
+    watchedStaffId,
+    watchedServiceIds,
+    appointmentId,
+    totalDuration,
+  ]);
 
   return { conflicts, timeWarning, totalDuration };
 }

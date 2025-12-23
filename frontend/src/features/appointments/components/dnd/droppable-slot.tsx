@@ -13,7 +13,6 @@ import { cn } from "@/shared/lib/utils";
 
 import type { DropData } from "./calendar-dnd-context";
 
-
 interface DroppableSlotProps {
   /** ID duy nhất cho slot */
   id: string;
@@ -31,7 +30,6 @@ interface DroppableSlotProps {
   height?: number;
   className?: string;
 }
-
 
 export function DroppableSlot({
   id,
@@ -70,14 +68,14 @@ export function DroppableSlot({
         // Highlight khi đang kéo
         isActive && !disabled && "bg-primary/5",
         // Highlight khi hover
-        isHovered && "bg-primary/20 ring-2 ring-primary/50 ring-inset",
+        isHovered && "bg-primary/20 ring-primary/50 ring-2 ring-inset",
         className
       )}
       style={{ minHeight: height }}
     >
       {/* Drop indicator */}
       {isHovered && (
-        <div className="absolute inset-x-0 top-0 h-1 bg-primary rounded-full animate-pulse" />
+        <div className="bg-primary absolute inset-x-0 top-0 h-1 animate-pulse rounded-full" />
       )}
 
       {/* Content */}

@@ -46,17 +46,17 @@ export function CustomerFilter() {
       onClear={clearFilters}
       className="h-9 w-9"
     >
-      <div className="grid gap-5 p-1 min-w-[220px]">
+      <div className="grid min-w-[220px] gap-5 p-1">
         {/* Filter: Trạng thái */}
         <div className="space-y-2">
           <Label
             htmlFor="status"
-            className="text-sm font-medium flex items-center gap-2"
+            className="flex items-center gap-2 text-sm font-medium"
           >
             <Activity className="size-3.5" /> Trạng thái
           </Label>
           <Select value={status || "all"} onValueChange={handleStatusChange}>
-            <SelectTrigger id="status" className="h-9 w-full bg-background">
+            <SelectTrigger id="status" className="bg-background h-9 w-full">
               <SelectValue placeholder="Tất cả" />
             </SelectTrigger>
             <SelectContent>
@@ -74,12 +74,12 @@ export function CustomerFilter() {
         <div className="space-y-2">
           <Label
             htmlFor="gender"
-            className="text-sm font-medium flex items-center gap-2"
+            className="flex items-center gap-2 text-sm font-medium"
           >
             <User className="size-3.5" /> Giới tính
           </Label>
           <Select value={gender || "all"} onValueChange={handleGenderChange}>
-            <SelectTrigger id="gender" className="h-9 w-full bg-background">
+            <SelectTrigger id="gender" className="bg-background h-9 w-full">
               <SelectValue placeholder="Tất cả" />
             </SelectTrigger>
             <SelectContent>

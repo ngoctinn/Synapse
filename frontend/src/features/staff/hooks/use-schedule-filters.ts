@@ -36,7 +36,11 @@ export function useScheduleFilters({ staffList }: UseScheduleFiltersProps) {
 
   // Check có filter nào đang active không
   const hasActiveFilters = useMemo(() => {
-    return filters.staffIds.length > 0 || filters.roles.length > 0 || filters.status !== undefined;
+    return (
+      filters.staffIds.length > 0 ||
+      filters.roles.length > 0 ||
+      filters.status !== undefined
+    );
   }, [filters]);
 
   // Filter handlers

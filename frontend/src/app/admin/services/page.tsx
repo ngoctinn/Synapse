@@ -1,27 +1,30 @@
-import { getEquipmentList, getRoomTypes } from "@/features/resources/actions"
-import { ServicesPage } from "@/features/services"
-import { getServices, getSkills } from "@/features/services/actions"
-import { Suspense } from "react"
+import { getEquipmentList, getRoomTypes } from "@/features/resources/actions";
+import { ServicesPage } from "@/features/services";
+import { getServices, getSkills } from "@/features/services/actions";
+import { Suspense } from "react";
 
 export default async function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>
+  searchParams: Promise<{ page?: string }>;
 }) {
-  const { page } = await searchParams
-  const pageNumber = Number(page) || 1
+  const { page } = await searchParams;
+  const pageNumber = Number(page) || 1;
 
   const [skillsRes, roomTypesRes, equipmentListRes] = await Promise.all([
     getSkills(),
     getRoomTypes(),
-    getEquipmentList()
-  ])
+    getEquipmentList(),
+  ]);
 
-  const skills = skillsRes.status === 'success' ? skillsRes.data?.data || [] : []
-  const roomTypes = roomTypesRes.status === 'success' ? roomTypesRes.data || [] : []
-  const equipmentList = equipmentListRes.status === 'success' ? equipmentListRes.data || [] : []
+  const skills =
+    skillsRes.status === "success" ? skillsRes.data?.data || [] : [];
+  const roomTypes =
+    roomTypesRes.status === "success" ? roomTypesRes.data || [] : [];
+  const equipmentList =
+    equipmentListRes.status === "success" ? equipmentListRes.data || [] : [];
 
-  const servicesPromise = getServices(pageNumber)
+  const servicesPromise = getServices(pageNumber);
 
   return (
     <Suspense fallback={<div>Đang tải dịch vụ...</div>}>
@@ -33,5 +36,5 @@ export default async function Page({
         equipmentList={equipmentList}
       />
     </Suspense>
-  )
+  );
 }

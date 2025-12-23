@@ -41,9 +41,5 @@ export function StarRating({
     );
   });
 
-  return (
-    <div className="flex items-center">
-      {stars}
-    </div>
-  );
+  return <div className="flex items-center">{stars}</div>;
 }

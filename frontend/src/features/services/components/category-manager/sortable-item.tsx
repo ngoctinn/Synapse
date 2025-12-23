@@ -14,7 +14,11 @@ interface SortableItemProps {
   onDelete: (id: string) => void;
 }
 
-export function SortableItem({ category, onUpdate, onDelete }: SortableItemProps) {
+export function SortableItem({
+  category,
+  onUpdate,
+  onDelete,
+}: SortableItemProps) {
   const {
     attributes,
     listeners,
@@ -58,14 +62,16 @@ export function SortableItem({ category, onUpdate, onDelete }: SortableItemProps
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-center gap-2 p-2 bg-background border rounded-md mb-2 group ${
-        isDragging ? "shadow-lg ring-2 ring-primary/20" : "hover:border-primary/50"
+      className={`bg-background group mb-2 flex items-center gap-2 rounded-md border p-2 ${
+        isDragging
+          ? "ring-primary/20 shadow-lg ring-2"
+          : "hover:border-primary/50"
       }`}
     >
       <div
         {...attributes}
         {...listeners}
-        className="cursor-grab active:cursor-grabbing p-1 text-muted-foreground hover:text-foreground"
+        className="text-muted-foreground hover:text-foreground cursor-grab p-1 active:cursor-grabbing"
       >
         <GripVertical className="h-4 w-4" />
       </div>
@@ -83,17 +89,17 @@ export function SortableItem({ category, onUpdate, onDelete }: SortableItemProps
             className="h-8"
           />
         ) : (
-          <span className="text-sm font-medium pl-1">{category.name}</span>
+          <span className="pl-1 text-sm font-medium">{category.name}</span>
         )}
       </div>
 
-      <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+      <div className="flex items-center gap-1 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
         {isEditing ? (
           <>
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 text-green-600 hover:text-green-700 hover:bg-green-50"
+              className="h-7 w-7 text-green-600 hover:bg-green-50 hover:text-green-700"
               onClick={handleSave}
             >
               <Check className="h-4 w-4" />
@@ -101,7 +107,7 @@ export function SortableItem({ category, onUpdate, onDelete }: SortableItemProps
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 text-red-600 hover:text-red-700 hover:bg-red-50"
+              className="h-7 w-7 text-red-600 hover:bg-red-50 hover:text-red-700"
               onClick={handleCancel}
             >
               <X className="h-4 w-4" />
@@ -112,7 +118,7 @@ export function SortableItem({ category, onUpdate, onDelete }: SortableItemProps
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground h-7 w-7"
               onClick={() => setIsEditing(true)}
             >
               <Pencil className="h-3.5 w-3.5" />
@@ -120,7 +126,7 @@ export function SortableItem({ category, onUpdate, onDelete }: SortableItemProps
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+              className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-7 w-7"
               onClick={() => onDelete(category.id)}
             >
               <Trash2 className="h-3.5 w-3.5" />

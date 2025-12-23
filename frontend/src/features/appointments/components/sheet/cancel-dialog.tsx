@@ -1,7 +1,5 @@
 "use client";
 
-
-
 import { showToast } from "@/shared/ui/sonner";
 import { differenceInHours, format } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -23,8 +21,6 @@ import { Textarea } from "@/shared/ui/textarea";
 import { cancelAppointment } from "../../actions";
 import type { CalendarEvent } from "../../model/types";
 
-
-
 interface CancelDialogProps {
   event: CalendarEvent | null;
   open: boolean;
@@ -32,14 +28,10 @@ interface CancelDialogProps {
   onSuccess?: () => void;
 }
 
-
-
 const CANCELLATION_POLICY = {
   freeHours: 2,
   lateFee: 50,
 };
-
-
 
 export function CancelDialog({
   event,
@@ -62,12 +54,18 @@ export function CancelDialog({
       const result = await cancelAppointment(event.id, reason || undefined);
 
       if (result.status === "success") {
-        showToast.success("Hủy thành công", result.message || "Đã hủy lịch hẹn");
+        showToast.success(
+          "Hủy thành công",
+          result.message || "Đã hủy lịch hẹn"
+        );
         setReason("");
         onOpenChange(false);
         onSuccess?.();
       } else {
-        showToast.error("Hủy thất bại", result.message || "Không thể hủy lịch hẹn");
+        showToast.error(
+          "Hủy thất bại",
+          result.message || "Không thể hủy lịch hẹn"
+        );
       }
     });
   };
@@ -77,7 +75,7 @@ export function CancelDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <XCircle className="h-5 w-5 text-warning" />
+            <XCircle className="text-warning h-5 w-5" />
             Xác nhận hủy lịch hẹn
           </DialogTitle>
           <DialogDescription>
@@ -85,65 +83,74 @@ export function CancelDialog({
           </DialogDescription>
         </DialogHeader>
 
-
         <div className="space-y-3 py-4">
           {/* Service & Customer */}
-          <div className="p-3 rounded-lg bg-muted/50 space-y-2">
+          <div className="bg-muted/50 space-y-2 rounded-lg p-3">
             <div
-              className="font-semibold text-base"
+              className="text-base font-semibold"
               style={{ color: event.color }}
             >
               {event.appointment.serviceName}
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <User className="size-4 text-muted-foreground" />
+              <User className="text-muted-foreground size-4" />
               <span>{event.appointment.customerName}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="text-muted-foreground flex items-center gap-2 text-sm">
               <Calendar className="size-4" />
               <span>{dateStr}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="text-muted-foreground flex items-center gap-2 text-sm">
               <Clock className="size-4" />
               <span>{timeRange}</span>
             </div>
           </div>
 
-
-          <div className="p-3 rounded-lg border space-y-2">
+          <div className="space-y-2 rounded-lg border p-3">
             <div className="text-sm font-medium">📋 Chính sách hủy:</div>
-            <ul className="text-sm text-muted-foreground space-y-1 ml-4">
-              <li>• Hủy trước {CANCELLATION_POLICY.freeHours} giờ: <span className="text-success font-medium">Miễn phí</span></li>
-              <li>• Hủy trong {CANCELLATION_POLICY.freeHours} giờ: <span className="text-warning font-medium">Phí {CANCELLATION_POLICY.lateFee}%</span></li>
+            <ul className="text-muted-foreground ml-4 space-y-1 text-sm">
+              <li>
+                • Hủy trước {CANCELLATION_POLICY.freeHours} giờ:{" "}
+                <span className="text-success font-medium">Miễn phí</span>
+              </li>
+              <li>
+                • Hủy trong {CANCELLATION_POLICY.freeHours} giờ:{" "}
+                <span className="text-warning font-medium">
+                  Phí {CANCELLATION_POLICY.lateFee}%
+                </span>
+              </li>
             </ul>
           </div>
 
-
           {isLateCancel && (
-            <div className={cn(
-              "flex items-start gap-3 p-3 rounded-lg",
-              "bg-warning/10 border border-warning/20"
-            )}>
-              <AlertTriangle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
+            <div
+              className={cn(
+                "flex items-start gap-3 rounded-lg p-3",
+                "bg-warning/10 border-warning/20 border"
+              )}
+            >
+              <AlertTriangle className="text-warning mt-0.5 h-5 w-5 flex-shrink-0" />
               <div className="text-sm">
-                <div className="font-medium text-warning-foreground">
+                <div className="text-warning-foreground font-medium">
                   Cảnh báo: Hủy sát giờ
                 </div>
                 <div className="text-muted-foreground">
-                  Bạn đang hủy trong vòng {CANCELLATION_POLICY.freeHours} giờ trước giờ hẹn.
+                  Bạn đang hủy trong vòng {CANCELLATION_POLICY.freeHours} giờ
+                  trước giờ hẹn.
                   {hoursUntilStart > 0
                     ? ` Còn ${hoursUntilStart} giờ nữa là đến giờ hẹn.`
-                    : " Lịch hẹn đã quá giờ."
-                  }
+                    : " Lịch hẹn đã quá giờ."}
                 </div>
               </div>
             </div>
           )}
 
-
           <div className="space-y-2">
             <label className="text-sm font-medium">
-              Lý do hủy <span className="text-muted-foreground font-normal">(tùy chọn)</span>
+              Lý do hủy{" "}
+              <span className="text-muted-foreground font-normal">
+                (tùy chọn)
+              </span>
             </label>
             <Textarea
               placeholder="Nhập lý do hủy lịch hẹn..."

@@ -21,10 +21,12 @@ export function AppointmentsPageSkeleton() {
       </div>
 
       {/* Calendar Area */}
-      <div className={cn(
-        "flex-1 rounded-xl border bg-card p-4 flex flex-col gap-4",
-        "h-[calc(100vh-200px)]" // Adjust height as needed
-      )}>
+      <div
+        className={cn(
+          "bg-card flex flex-1 flex-col gap-4 rounded-xl border p-4",
+          "h-[calc(100vh-200px)]" // Adjust height as needed
+        )}
+      >
         {/* Days/Timeline Header */}
         <div className="grid grid-cols-7 gap-2">
           {[...Array(7)].map((_, i) => (
@@ -32,11 +34,14 @@ export function AppointmentsPageSkeleton() {
           ))}
         </div>
         {/* Main Grid */}
-        <div className="flex-1 grid grid-cols-7 gap-2">
+        <div className="grid flex-1 grid-cols-7 gap-2">
           {[...Array(24)].map((_, timeIdx) => (
             <div key={timeIdx} className="col-span-7 grid grid-cols-7 gap-2">
               {[...Array(7)].map((_, dayIdx) => (
-                <Skeleton key={`${timeIdx}-${dayIdx}`} className="h-12 rounded-md" />
+                <Skeleton
+                  key={`${timeIdx}-${dayIdx}`}
+                  className="h-12 rounded-md"
+                />
               ))}
             </div>
           ))}

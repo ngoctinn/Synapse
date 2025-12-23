@@ -18,7 +18,6 @@ import { EMPTY_STATE_MESSAGES } from "../../constants";
 import type { CalendarEvent, DateRange } from "../../model/types";
 import { EventCard } from "../event/event-card";
 
-
 interface AgendaViewProps {
   /** Khoảng thời gian hiển thị */
   dateRange: DateRange;
@@ -34,7 +33,6 @@ interface DayGroup {
   isToday: boolean;
   events: CalendarEvent[];
 }
-
 
 export function AgendaView({
   dateRange,
@@ -71,12 +69,19 @@ export function AgendaView({
   // No events state
   if (dayGroups.length === 0) {
     return (
-      <div className={cn("flex flex-col items-center justify-center h-full p-8", className)}>
-        <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-          <CalendarOff className="h-8 w-8 text-muted-foreground" />
+      <div
+        className={cn(
+          "flex h-full flex-col items-center justify-center p-8",
+          className
+        )}
+      >
+        <div className="bg-muted/50 mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+          <CalendarOff className="text-muted-foreground h-8 w-8" />
         </div>
-        <h3 className="text-lg font-semibold">{EMPTY_STATE_MESSAGES.noAppointments.title}</h3>
-        <p className="text-sm text-muted-foreground text-center mt-1">
+        <h3 className="text-lg font-semibold">
+          {EMPTY_STATE_MESSAGES.noAppointments.title}
+        </h3>
+        <p className="text-muted-foreground mt-1 text-center text-sm">
           {EMPTY_STATE_MESSAGES.noAppointments.description}
         </p>
       </div>
@@ -85,7 +90,7 @@ export function AgendaView({
 
   return (
     <ScrollArea className={cn("h-full", className)}>
-      <div className="divide-y divide-border/50">
+      <div className="divide-border/50 divide-y">
         {dayGroups.map((group) => (
           <DayGroupSection
             key={group.date.toISOString()}
@@ -114,8 +119,8 @@ function DayGroupSection({ group, onEventClick }: DayGroupSectionProps) {
       <div
         className={cn(
           "sticky top-0 z-10 px-4 py-2",
-          "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80",
-          "border-b border-border/30",
+          "bg-background/95 supports-[backdrop-filter]:bg-background/80 backdrop-blur",
+          "border-border/30 border-b",
           isToday && "bg-primary/5"
         )}
       >
@@ -123,7 +128,7 @@ function DayGroupSection({ group, onEventClick }: DayGroupSectionProps) {
           {/* Day Number Circle */}
           <div
             className={cn(
-              "w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg",
+              "flex h-10 w-10 items-center justify-center rounded-full text-lg font-bold",
               isToday
                 ? "bg-primary text-primary-foreground"
                 : "bg-muted text-foreground"
@@ -134,17 +139,19 @@ function DayGroupSection({ group, onEventClick }: DayGroupSectionProps) {
 
           {/* Day Info */}
           <div className="flex flex-col">
-            <span className={cn("text-sm font-medium", isToday && "text-primary")}>
+            <span
+              className={cn("text-sm font-medium", isToday && "text-primary")}
+            >
               {isToday ? "Hôm nay" : format(date, "EEEE", { locale: vi })}
             </span>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-muted-foreground text-xs">
               {format(date, "d MMMM, yyyy", { locale: vi })}
             </span>
           </div>
 
           {/* Event Count */}
           {events.length > 0 && (
-            <span className="ml-auto text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+            <span className="text-muted-foreground bg-muted ml-auto rounded-full px-2 py-0.5 text-xs">
               {events.length} lịch hẹn
             </span>
           )}
@@ -152,9 +159,9 @@ function DayGroupSection({ group, onEventClick }: DayGroupSectionProps) {
       </div>
 
       {/* Events List */}
-      <div className="p-4 space-y-2">
+      <div className="space-y-2 p-4">
         {events.length === 0 ? (
-          <div className="text-sm text-muted-foreground py-4 text-center italic">
+          <div className="text-muted-foreground py-4 text-center text-sm italic">
             Không có lịch hẹn
           </div>
         ) : (

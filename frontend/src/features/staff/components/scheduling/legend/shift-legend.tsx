@@ -14,7 +14,12 @@ interface ShiftLegendProps {
  */
 export function ShiftLegend({ className }: ShiftLegendProps) {
   return (
-    <div className={cn("flex items-center gap-4 text-xs text-muted-foreground", className)}>
+    <div
+      className={cn(
+        "text-muted-foreground flex items-center gap-4 text-xs",
+        className
+      )}
+    >
       <div className="flex items-center gap-1">
         <Info className="size-3.5" />
         <span>Chú giải:</span>
@@ -23,7 +28,7 @@ export function ShiftLegend({ className }: ShiftLegendProps) {
       {MOCK_SHIFTS.map((shift) => (
         <div key={shift.id} className="flex items-center gap-1.5">
           <div
-            className="w-3 h-3 rounded-sm"
+            className="h-3 w-3 rounded-sm"
             style={{ backgroundColor: shift.colorCode }}
           />
           <span>
@@ -32,13 +37,13 @@ export function ShiftLegend({ className }: ShiftLegendProps) {
         </div>
       ))}
 
-      <div className="flex items-center gap-3 border-l pl-3 ml-2">
+      <div className="ml-2 flex items-center gap-3 border-l pl-3">
         <div className="flex items-center gap-1.5">
-          <div className="w-4 h-3 rounded-sm bg-muted border-2 border-dashed border-muted-foreground/30" />
+          <div className="bg-muted border-muted-foreground/30 h-3 w-4 rounded-sm border-2 border-dashed" />
           <span>Bản nháp</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-4 h-3 rounded-sm bg-muted border-2 border-solid border-muted-foreground/50" />
+          <div className="bg-muted border-muted-foreground/50 h-3 w-4 rounded-sm border-2 border-solid" />
           <span>Đã công bố</span>
         </div>
       </div>

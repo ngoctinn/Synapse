@@ -1,29 +1,29 @@
-"use client"
+"use client";
 
-import { cn } from "@/shared/lib/utils"
-import { Button } from "@/shared/ui/button"
-import { Download, Trash2, X } from "lucide-react"
-import { ReactNode } from "react"
+import { cn } from "@/shared/lib/utils";
+import { Button } from "@/shared/ui/button";
+import { Download, Trash2, X } from "lucide-react";
+import { ReactNode } from "react";
 
 interface TableActionBarProps {
   /** Số lượng items đã chọn */
-  selectedCount: number
+  selectedCount: number;
   /** Handler cho action xóa */
-  onDelete?: () => void
+  onDelete?: () => void;
   /** Handler cho action export */
-  onExport?: () => void
+  onExport?: () => void;
   /** Handler bỏ chọn tất cả */
-  onDeselectAll: () => void
+  onDeselectAll: () => void;
   /** Label tùy chỉnh cho nút xóa */
-  deleteLabel?: string
+  deleteLabel?: string;
   /** Label tùy chỉnh cho nút export */
-  exportLabel?: string
+  exportLabel?: string;
   /** Actions bổ sung */
-  extraActions?: ReactNode
+  extraActions?: ReactNode;
   /** Đang loading */
-  isLoading?: boolean
+  isLoading?: boolean;
   /** Custom class */
-  className?: string
+  className?: string;
 }
 
 /**
@@ -50,29 +50,30 @@ export function TableActionBar({
   className,
 }: TableActionBarProps) {
   // Không hiển thị nếu không có item nào được chọn
-  if (selectedCount === 0) return null
+  if (selectedCount === 0) return null;
 
   return (
     <div
       className={cn(
         // Positioning
-        "fixed bottom-6 left-1/2 -translate-x-1/2 z-50",
+        "fixed bottom-6 left-1/2 z-50 -translate-x-1/2",
         // Appearance
-        "bg-background/95 backdrop-blur-sm border rounded-xl shadow-lg",
+        "bg-background/95 rounded-xl border shadow-lg backdrop-blur-sm",
         // Layout
-        "px-5 py-3 flex items-center gap-4",
+        "flex items-center gap-4 px-5 py-3",
         // Animation
         "animate-in slide-in-from-bottom-4 fade-in-0 duration-300",
         className
       )}
     >
       {/* Selected count */}
-      <span className="text-sm font-medium whitespace-nowrap">
-        Đã chọn <span className="text-primary font-semibold">{selectedCount}</span> mục
+      <span className="whitespace-nowrap text-sm font-medium">
+        Đã chọn{" "}
+        <span className="text-primary font-semibold">{selectedCount}</span> mục
       </span>
 
       {/* Separator */}
-      <div className="h-5 w-px bg-border" />
+      <div className="bg-border h-5 w-px" />
 
       {/* Actions */}
       <div className="flex items-center gap-2">
@@ -85,7 +86,7 @@ export function TableActionBar({
             disabled={isLoading}
             className="h-8"
           >
-            <Download className="size-4 mr-1.5" />
+            <Download className="mr-1.5 size-4" />
             {exportLabel}
           </Button>
         )}
@@ -99,7 +100,7 @@ export function TableActionBar({
             disabled={isLoading}
             className="h-8"
           >
-            <Trash2 className="size-4 mr-1.5" />
+            <Trash2 className="mr-1.5 size-4" />
             {deleteLabel}
           </Button>
         )}
@@ -109,7 +110,7 @@ export function TableActionBar({
       </div>
 
       {/* Separator */}
-      <div className="h-5 w-px bg-border" />
+      <div className="bg-border h-5 w-px" />
 
       {/* Deselect */}
       <Button
@@ -117,11 +118,11 @@ export function TableActionBar({
         size="sm"
         onClick={onDeselectAll}
         disabled={isLoading}
-        className="h-8 text-muted-foreground hover:text-foreground"
+        className="text-muted-foreground hover:text-foreground h-8"
       >
-        <X className="size-4 mr-1" />
+        <X className="mr-1 size-4" />
         Bỏ chọn
       </Button>
     </div>
-  )
+  );
 }

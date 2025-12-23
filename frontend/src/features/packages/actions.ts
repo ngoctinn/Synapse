@@ -6,7 +6,12 @@ import { ActionResponse, error, success } from "@/shared/lib/action-response";
 import { revalidatePath } from "next/cache";
 import { MOCK_PACKAGES } from "./model/mocks";
 import { packageSchema } from "./model/schemas";
-import { PaginatedPackages, PackageCreateInput, PackageUpdateInput, ServicePackage } from "./model/types";
+import {
+  PaginatedPackages,
+  PackageCreateInput,
+  PackageUpdateInput,
+  ServicePackage,
+} from "./model/types";
 
 let packages = [...MOCK_PACKAGES];
 
@@ -39,14 +44,22 @@ export async function getPackages(
   });
 }
 
-export async function getPackage(id: string): Promise<ActionResponse<ServicePackage>> {
+export async function getPackage(
+  id: string
+): Promise<ActionResponse<ServicePackage>> {
   const pkg = packages.find((p) => p.id === id);
   return pkg ? success(pkg) : error("Không tìm thấy gói dịch vụ");
 }
 
-export async function createPackage(data: PackageCreateInput): Promise<ActionResponse<ServicePackage>> {
+export async function createPackage(
+  data: PackageCreateInput
+): Promise<ActionResponse<ServicePackage>> {
   const validation = packageSchema.safeParse(data);
-  if (!validation.success) return error("Dữ liệu không hợp lệ", validation.error.flatten().fieldErrors);
+  if (!validation.success)
+    return error(
+      "Dữ liệu không hợp lệ",
+      validation.error.flatten().fieldErrors
+    );
 
   const newPackage: ServicePackage = {
     id: `pkg_new_${Date.now()}`,
@@ -69,10 +82,16 @@ export async function createPackage(data: PackageCreateInput): Promise<ActionRes
   return success(newPackage, "Tạo gói dịch vụ thành công");
 }
 
-export async function updatePackage(data: PackageUpdateInput): Promise<ActionResponse<ServicePackage>> {
+export async function updatePackage(
+  data: PackageUpdateInput
+): Promise<ActionResponse<ServicePackage>> {
   const { id, ...updateData } = data;
   const validation = packageSchema.partial().safeParse(updateData);
-  if (!validation.success) return error("Dữ liệu không hợp lệ", validation.error.flatten().fieldErrors);
+  if (!validation.success)
+    return error(
+      "Dữ liệu không hợp lệ",
+      validation.error.flatten().fieldErrors
+    );
 
   const index = packages.findIndex((p) => p.id === id);
   if (index === -1) return error("Không tìm thấy gói dịch vụ");
@@ -101,7 +120,9 @@ export async function deletePackage(id: string): Promise<ActionResponse> {
   return success(undefined, "Đã xóa gói dịch vụ thành công");
 }
 
-export async function togglePackageStatus(id: string): Promise<ActionResponse<ServicePackage>> {
+export async function togglePackageStatus(
+  id: string
+): Promise<ActionResponse<ServicePackage>> {
   const index = packages.findIndex((p) => p.id === id);
   if (index === -1) return error("Không tìm thấy gói dịch vụ");
 
@@ -112,5 +133,8 @@ export async function togglePackageStatus(id: string): Promise<ActionResponse<Se
   };
 
   revalidatePath("/admin/packages");
-  return success(packages[index], packages[index].is_active ? "Đã kích hoạt gói" : "Đã tạm ngưng gói");
+  return success(
+    packages[index],
+    packages[index].is_active ? "Đã kích hoạt gói" : "Đã tạm ngưng gói"
+  );
 }

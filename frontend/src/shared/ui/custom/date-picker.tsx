@@ -1,42 +1,42 @@
-"use client"
+"use client";
 
-import { format, isValid, parse } from "date-fns"
-import { vi } from "date-fns/locale"
-import { Calendar as CalendarIcon, LucideIcon, LucideProps } from "lucide-react"
-import * as React from "react"
-
-import { cn } from "@/shared/lib/utils"
-import { Button } from "@/shared/ui/button"
-import { Calendar } from "@/shared/ui/calendar"
-import { Input } from "@/shared/ui/input"
+import { format, isValid, parse } from "date-fns";
+import { vi } from "date-fns/locale";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/shared/ui/popover"
-import { MaskedDateInput } from "./masked-date-input"
+  Calendar as CalendarIcon,
+  LucideIcon,
+  LucideProps,
+} from "lucide-react";
+import * as React from "react";
+
+import { cn } from "@/shared/lib/utils";
+import { Button } from "@/shared/ui/button";
+import { Calendar } from "@/shared/ui/calendar";
+import { Input } from "@/shared/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
+import { MaskedDateInput } from "./masked-date-input";
 
 interface DatePickerProps {
-  value?: Date
-  onChange?: (date: Date | undefined) => void
-  placeholder?: string
-  className?: string
-  disabled?: boolean
+  value?: Date;
+  onChange?: (date: Date | undefined) => void;
+  placeholder?: string;
+  className?: string;
+  disabled?: boolean;
   /**
    * Mode hiển thị:
    * - `calendar`: Input readonly + Popover Calendar (Mặc định)
    * - `input`: Masked Input cho phép nhập tay (DD/MM/YYYY)
    */
-  mode?: "calendar" | "input"
+  mode?: "calendar" | "input";
   /** Icon tùy chỉnh (chỉ dùng cho mode input hoặc trigger button) */
-  icon?: LucideIcon
-  iconProps?: LucideProps
+  icon?: LucideIcon;
+  iconProps?: LucideProps;
   /** Trạng thái lỗi (chỉ dùng cho mode input) */
-  error?: boolean | string
+  error?: boolean | string;
   /** Callback khi input không hợp lệ (chỉ dùng cho mode input) */
-  onInvalidInput?: (isInvalid: boolean) => void
-  minDate?: Date
-  maxDate?: Date
+  onInvalidInput?: (isInvalid: boolean) => void;
+  minDate?: Date;
+  maxDate?: Date;
 }
 
 export function DatePicker({
@@ -51,20 +51,20 @@ export function DatePicker({
   error,
   onInvalidInput,
   minDate,
-  maxDate
+  maxDate,
 }: DatePickerProps) {
-  const [open, setOpen] = React.useState(false)
-  const [inputValue, setInputValue] = React.useState("")
+  const [open, setOpen] = React.useState(false);
+  const [inputValue, setInputValue] = React.useState("");
 
   // Sync input value when date prop changes - valid for both modes effectively,
   // though mostly useful for calendar mode logic.
   React.useEffect(() => {
     if (value && isValid(value)) {
-      setInputValue(format(value, "dd/MM/yyyy", { locale: vi }))
+      setInputValue(format(value, "dd/MM/yyyy", { locale: vi }));
     } else {
-      setInputValue("")
+      setInputValue("");
     }
-  }, [value])
+  }, [value]);
 
   // --- MODE: INPUT (Masked) ---
   if (mode === "input") {
@@ -83,33 +83,35 @@ export function DatePicker({
           disabled={disabled}
         />
       </div>
-    )
+    );
   }
 
   // --- MODE: CALENDAR (Popover) ---
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value
-    setInputValue(newValue)
+    const newValue = e.target.value;
+    setInputValue(newValue);
 
     // Allow clearing
     if (newValue === "") {
-      onChange?.(undefined)
-      return
+      onChange?.(undefined);
+      return;
     }
 
-    const parsedDate = parse(newValue, "dd/MM/yyyy", new Date(), { locale: vi })
+    const parsedDate = parse(newValue, "dd/MM/yyyy", new Date(), {
+      locale: vi,
+    });
 
     if (isValid(parsedDate) && newValue.length === 10) {
-      onChange?.(parsedDate)
+      onChange?.(parsedDate);
     }
-  }
+  };
 
   const handleSelect = (selectedDate: Date | undefined) => {
     if (onChange) {
-      onChange(selectedDate)
+      onChange(selectedDate);
     }
-    setOpen(false) // Close popover after selection
-  }
+    setOpen(false); // Close popover after selection
+  };
 
   return (
     <div className={cn("relative w-full", className)}>
@@ -119,7 +121,7 @@ export function DatePicker({
         onChange={handleInputChange}
         placeholder={placeholder}
         disabled={disabled}
-        className={cn("pr-10 cursor-pointer", className)} // Add padding for icon
+        className={cn("cursor-pointer pr-10", className)} // Add padding for icon
         onClick={() => !disabled && setOpen(true)} // Open on click inputs
         readOnly // Make it readonly to force picker usage preference in 'calendar' mode
       />
@@ -129,7 +131,7 @@ export function DatePicker({
             type="button"
             variant="ghost"
             size="icon"
-            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
             disabled={disabled}
           >
             <Icon className="size-4" {...iconProps} />
@@ -153,5 +155,5 @@ export function DatePicker({
         </PopoverContent>
       </Popover>
     </div>
-  )
+  );
 }

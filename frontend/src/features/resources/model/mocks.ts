@@ -1,11 +1,31 @@
 import { MaintenanceTask, Resource, ResourceGroup } from "./types";
 
 export const mockResourceGroups: ResourceGroup[] = [
-  { id: "g1", name: "Phòng VIP", type: "ROOM", description: "Các phòng tiêu chuẩn cao cấp" },
-  { id: "g2", name: "Phòng Thường", type: "ROOM", description: "Phòng dịch vụ tiêu chuẩn" },
-  { id: "g3", name: "Thiết bị Công nghệ cao", type: "EQUIPMENT", description: "Máy móc laser, Hifu..." },
-  { id: "g4", name: "Giường Spa", type: "ROOM", description: "Giường đơn lẻ trong phòng chung" },
-]
+  {
+    id: "g1",
+    name: "Phòng VIP",
+    type: "ROOM",
+    description: "Các phòng tiêu chuẩn cao cấp",
+  },
+  {
+    id: "g2",
+    name: "Phòng Thường",
+    type: "ROOM",
+    description: "Phòng dịch vụ tiêu chuẩn",
+  },
+  {
+    id: "g3",
+    name: "Thiết bị Công nghệ cao",
+    type: "EQUIPMENT",
+    description: "Máy móc laser, Hifu...",
+  },
+  {
+    id: "g4",
+    name: "Giường Spa",
+    type: "ROOM",
+    description: "Giường đơn lẻ trong phòng chung",
+  },
+];
 
 export const mockResources: Resource[] = [
   {
@@ -45,7 +65,7 @@ export const mockResources: Resource[] = [
     description: "Đang bảo trì định kỳ",
     createdAt: "2023-03-05T00:00:00Z",
     updatedAt: "2023-12-01T00:00:00Z",
-  }
+  },
 ];
 
 export const mockMaintenanceTasks: MaintenanceTask[] = [
@@ -56,6 +76,6 @@ export const mockMaintenanceTasks: MaintenanceTask[] = [
     date: "2023-12-05T09:00:00Z",
     status: "in_progress",
     assignedTo: "staff-01",
-    notes: "Đang chờ nhập hàng"
-  }
+    notes: "Đang chờ nhập hàng",
+  },
 ];

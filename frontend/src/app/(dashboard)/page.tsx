@@ -1,21 +1,34 @@
-import { AppointmentTimeline, DashboardStats } from "@/features/customer-dashboard"
-import { getCustomerAppointments, getCustomerProfile, getCustomerTreatments } from "@/features/customer-dashboard/index.server"
+import {
+  AppointmentTimeline,
+  DashboardStats,
+} from "@/features/customer-dashboard";
+import {
+  getCustomerAppointments,
+  getCustomerProfile,
+  getCustomerTreatments,
+} from "@/features/customer-dashboard/index.server";
 
 export default async function DashboardPage() {
   const [appointments, treatments, profile] = await Promise.all([
     getCustomerAppointments(),
     getCustomerTreatments(),
     getCustomerProfile(),
-  ])
+  ]);
 
-  const upcomingAppointments = appointments.filter(a => a.status === 'CONFIRMED' || a.status === 'PENDING').length
-  const activeTreatments = treatments.filter(t => t.status === 'ACTIVE').length
+  const upcomingAppointments = appointments.filter(
+    (a) => a.status === "CONFIRMED" || a.status === "PENDING"
+  ).length;
+  const activeTreatments = treatments.filter(
+    (t) => t.status === "ACTIVE"
+  ).length;
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-serif font-bold">Xin chào, {profile.fullName}!</h1>
+          <h1 className="font-serif text-2xl font-bold">
+            Xin chào, {profile.fullName}!
+          </h1>
           <p className="text-muted-foreground">Chào mừng bạn quay trở lại</p>
         </div>
       </div>
@@ -24,16 +37,12 @@ export default async function DashboardPage() {
         upcomingAppointments={upcomingAppointments}
         activeTreatments={activeTreatments}
         loyaltyPoints={profile.loyaltyPoints ?? 0}
-        membershipTier={profile.membershipTier ?? 'SILVER'}
+        membershipTier={profile.membershipTier ?? "SILVER"}
       />
-
-
 
       <div className="flex-1 md:min-h-min">
         <AppointmentTimeline appointments={appointments} />
       </div>
     </div>
-  )
+  );
 }
-
-

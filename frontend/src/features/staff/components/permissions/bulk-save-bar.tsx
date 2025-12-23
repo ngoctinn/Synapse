@@ -1,17 +1,22 @@
-"use client"
+"use client";
 
-import { Button } from "@/shared/ui/button"
-import { AnimatePresence, motion } from "framer-motion"
-import { RotateCcw, Save } from "lucide-react"
+import { Button } from "@/shared/ui/button";
+import { AnimatePresence, motion } from "framer-motion";
+import { RotateCcw, Save } from "lucide-react";
 
 interface BulkSaveBarProps {
-  open: boolean
-  changeCount: number
-  onSave: () => void
-  onReset: () => void
+  open: boolean;
+  changeCount: number;
+  onSave: () => void;
+  onReset: () => void;
 }
 
-export function BulkSaveBar({ open, changeCount, onSave, onReset }: BulkSaveBarProps) {
+export function BulkSaveBar({
+  open,
+  changeCount,
+  onSave,
+  onReset,
+}: BulkSaveBarProps) {
   return (
     <AnimatePresence>
       {open && (
@@ -19,9 +24,9 @@ export function BulkSaveBar({ open, changeCount, onSave, onReset }: BulkSaveBarP
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 50 }}
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50"
+          className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2"
         >
-          <div className="flex items-center gap-4 bg-foreground text-background px-6 py-3 rounded-full shadow-lg">
+          <div className="bg-foreground text-background flex items-center gap-4 rounded-full px-6 py-3 shadow-lg">
             <span className="text-sm font-medium">
               Bạn đã thay đổi {changeCount} quyền hạn
             </span>
@@ -35,7 +40,12 @@ export function BulkSaveBar({ open, changeCount, onSave, onReset }: BulkSaveBarP
               >
                 Hoàn tác
               </Button>
-              <Button size="sm" onClick={onSave} className="bg-primary text-primary-foreground hover:bg-primary/90" startContent={<Save className="size-4" />}>
+              <Button
+                size="sm"
+                onClick={onSave}
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
+                startContent={<Save className="size-4" />}
+              >
                 Lưu thay đổi
               </Button>
             </div>
@@ -43,5 +53,5 @@ export function BulkSaveBar({ open, changeCount, onSave, onReset }: BulkSaveBarP
         </motion.div>
       )}
     </AnimatePresence>
-  )
+  );
 }

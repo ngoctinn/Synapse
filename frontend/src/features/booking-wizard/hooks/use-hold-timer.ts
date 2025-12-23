@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef } from 'react';
-import { differenceInSeconds } from 'date-fns';
+import { useEffect, useState, useRef } from "react";
+import { differenceInSeconds } from "date-fns";
 
 interface UseHoldTimerProps {
   expiresAt: Date | null;
@@ -13,7 +13,7 @@ export function useHoldTimer({ expiresAt, onExpire }: UseHoldTimerProps) {
     const diff = differenceInSeconds(expiresAt, new Date());
     return Math.max(0, diff);
   });
-  
+
   const [isExpired, setIsExpired] = useState(() => {
     if (!expiresAt) return false;
     return differenceInSeconds(expiresAt, new Date()) <= 0;
@@ -33,7 +33,7 @@ export function useHoldTimer({ expiresAt, onExpire }: UseHoldTimerProps) {
     const calculateTimeLeft = () => {
       const now = new Date();
       const diff = differenceInSeconds(expiresAt, now);
-      
+
       if (diff <= 0) {
         setTimeLeft(0);
         setIsExpired(true);
@@ -43,7 +43,7 @@ export function useHoldTimer({ expiresAt, onExpire }: UseHoldTimerProps) {
         }
         return 0;
       }
-      
+
       setTimeLeft(diff);
       setIsExpired(false);
       expireCallbackCalled.current = false;
@@ -70,6 +70,6 @@ export function useHoldTimer({ expiresAt, onExpire }: UseHoldTimerProps) {
     minutes,
     seconds,
     isExpired,
-    timeLeft // Total seconds
+    timeLeft, // Total seconds
   };
 }

@@ -65,7 +65,7 @@ export const getBreadcrumbTitle = (segment: string): string => {
   // Suy luận từ slug (ví dụ: user-profile -> User profile)
   return segment
     .split("-")
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 };
 
@@ -173,4 +173,6 @@ export const SIDEBAR_GROUPS: SidebarGroup[] = [
 ];
 
 // Giữ lại để không làm hỏng các component cũ đang import SIDEBAR_ITEMS (sẽ refactor sau)
-export const SIDEBAR_ITEMS: SidebarItem[] = SIDEBAR_GROUPS.flatMap(g => g.items);
+export const SIDEBAR_ITEMS: SidebarItem[] = SIDEBAR_GROUPS.flatMap(
+  (g) => g.items
+);

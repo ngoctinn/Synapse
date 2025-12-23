@@ -29,7 +29,7 @@ export function ActionBar({
       <Button
         variant="outline"
         size="sm"
-        className="h-8 px-3 gap-2"
+        className="h-8 gap-2 px-3"
         onClick={onManageShifts}
       >
         <Settings className="size-4" />
@@ -41,7 +41,7 @@ export function ActionBar({
         <Button
           variant="default"
           size="sm"
-          className="h-8 px-3 gap-2"
+          className="h-8 gap-2 px-3"
           onClick={onPublishAll}
           disabled={isPublishing}
         >
@@ -49,7 +49,7 @@ export function ActionBar({
           <span className="hidden sm:inline">Công bố</span>
           <Badge
             variant="secondary"
-            className="ml-1 h-5 px-1.5 text-[10px] bg-primary-foreground/20"
+            className="bg-primary-foreground/20 ml-1 h-5 px-1.5 text-[10px]"
           >
             {draftCount}
           </Badge>

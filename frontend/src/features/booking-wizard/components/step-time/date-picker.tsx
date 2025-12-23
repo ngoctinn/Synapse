@@ -26,7 +26,8 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
   const datesToShow = React.useMemo(() => {
     const dates = [];
-    for (let i = 0; i < 30; i++) { // Show 30 days from today
+    for (let i = 0; i < 30; i++) {
+      // Show 30 days from today
       dates.push(addDays(new Date(), i));
     }
     return dates;
@@ -42,7 +43,10 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     }
   }, [selectedDate]);
 
-  if (!hasHydrated) return <div className="h-20 w-full animate-pulse bg-muted rounded-md border" />;
+  if (!hasHydrated)
+    return (
+      <div className="bg-muted h-20 w-full animate-pulse rounded-md border" />
+    );
 
   return (
     <ScrollArea className="w-full whitespace-nowrap rounded-md border">
@@ -50,8 +54,12 @@ export const DatePicker: React.FC<DatePickerProps> = ({
         {datesToShow.map((date, index) => {
           const formattedDay = format(date, "EEE", { locale: vi }); // Mon, Tue
           const formattedDate = format(date, "dd/MM"); // 01/12
-          const isDateAvailable = availableDates.some((d) => isSameDay(d, date));
-          const isSelected = selectedDate ? isSameDay(selectedDate, date) : false;
+          const isDateAvailable = availableDates.some((d) =>
+            isSameDay(d, date)
+          );
+          const isSelected = selectedDate
+            ? isSameDay(selectedDate, date)
+            : false;
           const today = isToday(date);
 
           return (
@@ -59,20 +67,25 @@ export const DatePicker: React.FC<DatePickerProps> = ({
               key={index}
               ref={isSelected ? selectedDateRef : null}
               className={cn(
-                "flex flex-col items-center justify-center p-2 rounded-md min-w-[4.5rem]",
+                "flex min-w-[4.5rem] flex-col items-center justify-center rounded-md p-2",
                 "text-sm font-medium transition-colors duration-150",
                 "hover:bg-accent hover:text-accent-foreground",
-                "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
-                today && "border border-primary",
-                !isDateAvailable && "opacity-50 cursor-not-allowed",
-                isSelected && "bg-primary text-primary-foreground hover:bg-primary/90",
+                "focus:ring-primary focus:outline-none focus:ring-2 focus:ring-offset-2",
+                today && "border-primary border",
+                !isDateAvailable && "cursor-not-allowed opacity-50",
+                isSelected &&
+                  "bg-primary text-primary-foreground hover:bg-primary/90",
                 isLoading && "animate-pulse"
               )}
               onClick={() => onSelectDate(date)}
               disabled={!isDateAvailable || isLoading}
             >
-              <span className="capitalize">{today ? "Hôm nay" : formattedDay}</span>
-              <span className="text-xs text-muted-foreground">{formattedDate}</span>
+              <span className="capitalize">
+                {today ? "Hôm nay" : formattedDay}
+              </span>
+              <span className="text-muted-foreground text-xs">
+                {formattedDate}
+              </span>
             </button>
           );
         })}

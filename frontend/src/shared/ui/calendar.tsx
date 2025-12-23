@@ -176,8 +176,8 @@ function Calendar({
             orientation === "left"
               ? ChevronLeft
               : orientation === "right"
-              ? ChevronRight
-              : ChevronDown;
+                ? ChevronRight
+                : ChevronDown;
 
           return (
             <Icon
@@ -242,7 +242,7 @@ function CalendarDayButton({
       data-range-middle={modifiers.range_middle}
       className={cn(
         // Base styles
-        "flex aspect-square size-auto min-w-[var(--cell-size)] w-full flex-col gap-1",
+        "flex aspect-square size-auto w-full min-w-[var(--cell-size)] flex-col gap-1",
         "font-normal leading-none",
 
         // Single selection
@@ -251,13 +251,13 @@ function CalendarDayButton({
         // Range selection
         "data-[range-start=true]:rounded-l-md data-[range-start=true]:rounded-r-none",
         "data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground",
-        "data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground",
+        "data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-middle=true]:rounded-none",
         "data-[range-end=true]:rounded-l-none data-[range-end=true]:rounded-r-md",
         "data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground",
 
         // Focus states (keyboard navigation)
         "group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10",
-        "group-data-[focused=true]/day:ring-2 group-data-[focused=true]/day:ring-ring",
+        "group-data-[focused=true]/day:ring-ring group-data-[focused=true]/day:ring-2",
 
         // Hover state
         "hover:bg-accent hover:text-accent-foreground",

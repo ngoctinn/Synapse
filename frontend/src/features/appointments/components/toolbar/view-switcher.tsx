@@ -59,22 +59,20 @@ export function ViewSwitcher({
       onValueChange={(v) => onChange(v as CalendarViewType)}
       className={className}
     >
-      <TabsList className="h-9 w-fit p-1 bg-muted/50">
+      <TabsList className="bg-muted/50 h-9 w-fit p-1">
         {visibleViews.map((view) => (
           <TabsTrigger
             key={view}
             value={view}
             className={cn(
-              "px-0 min-w-8 w-8 h-7 data-[state=active]:bg-background data-[state=active]:shadow-sm",
+              "data-[state=active]:bg-background h-7 w-8 min-w-8 px-0 data-[state=active]:shadow-sm",
               "transition-all duration-200"
             )}
             title={CALENDAR_VIEW_CONFIG[view].description}
           >
             {VIEW_ICONS[view]}
             {/* Icon Only as requested */}
-            <span className="sr-only">
-              {CALENDAR_VIEW_CONFIG[view].label}
-            </span>
+            <span className="sr-only">{CALENDAR_VIEW_CONFIG[view].label}</span>
           </TabsTrigger>
         ))}
       </TabsList>

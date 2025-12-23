@@ -23,9 +23,9 @@ export const ServiceList = ({
   // Implementation: Filter by active category
 
   return (
-    <div className="space-y-4 pb-24 px-4 pt-4">
+    <div className="space-y-4 px-4 pb-24 pt-4">
       {services.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground">
+        <div className="text-muted-foreground py-12 text-center">
           Không có dịch vụ nào trong danh mục này.
         </div>
       ) : (

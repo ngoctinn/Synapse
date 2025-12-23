@@ -1,6 +1,6 @@
-import { Suspense } from "react"
-import { HeaderContainer } from "./header-container"
-import { HeaderSkeleton } from "./skeleton"
+import { Suspense } from "react";
+import { HeaderContainer } from "./header-container";
+import { HeaderSkeleton } from "./skeleton";
 
 /**
  * Header với Suspense wrapper - cho phép streaming và hiển thị skeleton
@@ -15,5 +15,5 @@ export function HeaderWithSuspense() {
     <Suspense fallback={<HeaderSkeleton />}>
       <HeaderContainer />
     </Suspense>
-  )
+  );
 }

@@ -1,8 +1,8 @@
 import {
-    dateOfBirthOptional,
-    emailOptional,
-    fullNameRequired,
-    phoneVNRequired,
+  dateOfBirthOptional,
+  emailOptional,
+  fullNameRequired,
+  phoneVNRequired,
 } from "@/shared/lib/validations";
 import { z } from "zod";
 

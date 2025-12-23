@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { Skill } from "@/features/services"
-import { Button } from "@/shared/ui/button"
-import { Plus } from "lucide-react"
-import { useState } from "react"
-import { StaffSheet } from "./staff-sheet"
+import { Skill } from "@/features/services";
+import { Button } from "@/shared/ui/button";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import { StaffSheet } from "./staff-sheet";
 
 interface CreateStaffTriggerProps {
-  skills: Skill[]
+  skills: Skill[];
 }
 
 export function CreateStaffTrigger({ skills }: CreateStaffTriggerProps) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   return (
     <>
@@ -31,5 +31,5 @@ export function CreateStaffTrigger({ skills }: CreateStaffTriggerProps) {
         skills={skills}
       />
     </>
-  )
+  );
 }

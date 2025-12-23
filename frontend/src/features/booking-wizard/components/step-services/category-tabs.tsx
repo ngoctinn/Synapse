@@ -29,7 +29,7 @@ export const CategoryTabs = ({
   }, [activeCategory]);
 
   return (
-    <div className="sticky top-[64px] z-40 w-full bg-background/95 backdrop-blur py-2 border-b">
+    <div className="bg-background/95 sticky top-[64px] z-40 w-full border-b py-2 backdrop-blur">
       <ScrollArea className="w-full whitespace-nowrap" ref={scrollRef}>
         <div className="flex w-max space-x-2 px-4">
           {categories.map((category) => (

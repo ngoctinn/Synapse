@@ -34,33 +34,33 @@ export function Testimonials() {
   return (
     <section
       id="testimonials"
-      className="container mx-auto px-4 py-16 md:py-24 relative"
+      className="container relative mx-auto px-4 py-16 md:py-24"
     >
       {/* Background gradient for depth */}
-      <div className="absolute inset-0 bg-gradient-to-b from-muted/30 to-background -z-10" />
+      <div className="from-muted/30 to-background absolute inset-0 -z-10 bg-gradient-to-b" />
 
-      <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center mb-16 animate-fade-in">
+      <div className="animate-fade-in mx-auto mb-16 flex max-w-[58rem] flex-col items-center space-y-4 text-center">
         <Badge variant="soft">Nhận xét của khách hàng</Badge>
-        <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-5xl font-bold">
+        <h2 className="font-heading text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">
           Khách hàng nói gì về chúng tôi
         </h2>
-        <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+        <p className="text-muted-foreground max-w-[85%] leading-normal sm:text-lg sm:leading-7">
           Được tin dùng bởi hơn 500+ Spa và thẩm mỹ viện trên toàn quốc.
         </p>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
+      <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-3">
         {testimonials.map((testimonial, index) => (
           <Card
             key={index}
-            className="h-full surface-card hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            className="surface-card h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
           >
-            <CardContent className="p-8 flex flex-col gap-6 h-full">
-              <Quote className="h-8 w-8 text-primary/40" />
-              <p className="text-muted-foreground leading-relaxed flex-1 italic relative z-10">
+            <CardContent className="flex h-full flex-col gap-6 p-8">
+              <Quote className="text-primary/40 h-8 w-8" />
+              <p className="text-muted-foreground relative z-10 flex-1 italic leading-relaxed">
                 &quot;{testimonial.content}&quot;
               </p>
-              <div className="flex items-center gap-4 pt-4 border-t border-border/50">
+              <div className="border-border/50 flex items-center gap-4 border-t pt-4">
                 <Avatar className="h-10 w-10 border">
                   <AvatarImage
                     src={testimonial.avatar}
@@ -69,10 +69,10 @@ export function Testimonials() {
                   <AvatarFallback>{testimonial.initials}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="font-semibold text-sm text-foreground">
+                  <p className="text-foreground text-sm font-semibold">
                     {testimonial.name}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-muted-foreground text-xs">
                     {testimonial.role}
                   </p>
                 </div>

@@ -7,4 +7,3 @@ export * from "./legend";
 export * from "./selection";
 export * from "./sheets";
 export * from "./toolbar";
-

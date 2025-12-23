@@ -2,10 +2,10 @@
 
 import { useDeleteAction } from "@/shared/hooks";
 import {
-    DeleteConfirmDialog,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    TableRowActions,
+  DeleteConfirmDialog,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  TableRowActions,
 } from "@/shared/ui";
 import { Copy } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -19,10 +19,7 @@ interface ServiceActionsProps {
   onEdit: () => void;
 }
 
-export function ServiceActions({
-  service,
-  onEdit,
-}: ServiceActionsProps) {
+export function ServiceActions({ service, onEdit }: ServiceActionsProps) {
   const router = useRouter();
   const [clonePending, startCloneTransition] = useTransition();
 

@@ -45,9 +45,7 @@ export const fullNameOptional = z
 /**
  * Email - Bắt buộc
  */
-export const emailRequired = z
-  .string()
-  .email(ValidationMessages.EMAIL_INVALID);
+export const emailRequired = z.string().email(ValidationMessages.EMAIL_INVALID);
 
 /**
  * Email - Tùy chọn (cho phép empty string)

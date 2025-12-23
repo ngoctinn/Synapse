@@ -64,11 +64,13 @@ export function ScheduleDetailSheet({
   return (
     <>
       <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent className="w-full sm:max-w-md p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
+        <SheetContent className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-md">
           {/* Header */}
-          <SheetHeader className="px-6 py-4 border-b shrink-0 space-y-0">
+          <SheetHeader className="shrink-0 space-y-0 border-b px-6 py-4">
             <div className="flex items-center justify-between">
-              <SheetTitle className="text-lg font-semibold">Chi tiết lịch làm việc</SheetTitle>
+              <SheetTitle className="text-lg font-semibold">
+                Chi tiết lịch làm việc
+              </SheetTitle>
               <Badge
                 variant={isDraft ? "warning" : "success"}
                 className="text-xs"
@@ -83,7 +85,9 @@ export function ScheduleDetailSheet({
             <div className="space-y-6">
               {/* Shift info card - Sử dụng style chữ đậm + nền nhạt */}
               <div className="space-y-3">
-                <h3 className="text-sm font-medium text-muted-foreground">Ca làm việc</h3>
+                <h3 className="text-muted-foreground text-sm font-medium">
+                  Ca làm việc
+                </h3>
                 <ShiftInfoCard shift={schedule.shift} />
               </div>
 
@@ -91,36 +95,44 @@ export function ScheduleDetailSheet({
 
               {/* Date */}
               <div className="space-y-3">
-                <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                <h3 className="text-muted-foreground flex items-center gap-2 text-sm font-medium">
                   <Calendar className="size-4" />
                   Ngày làm việc
                 </h3>
-                <div className="font-medium text-lg">{schedule.workDate}</div>
+                <div className="text-lg font-medium">{schedule.workDate}</div>
               </div>
             </div>
           </div>
 
           {/* Footer */}
-          <SheetFooter className="px-6 py-3 border-t bg-background flex-col gap-2">
+          <SheetFooter className="bg-background flex-col gap-2 border-t px-6 py-3">
             {/* Publish button (only for DRAFT) */}
             {isDraft && (
-              <Button variant="default" className="w-full h-9" onClick={handlePublish}>
-                <Send className="size-4 mr-2" />
+              <Button
+                variant="default"
+                className="h-9 w-full"
+                onClick={handlePublish}
+              >
+                <Send className="mr-2 size-4" />
                 Công bố lịch
               </Button>
             )}
 
             {/* Actions row */}
-            <div className="flex items-center gap-2 w-full">
+            <div className="flex w-full items-center gap-2">
               <Button
                 variant="outline"
-                className="flex-1 h-9 text-destructive hover:text-destructive hover:bg-destructive/10"
+                className="text-destructive hover:text-destructive hover:bg-destructive/10 h-9 flex-1"
                 onClick={() => setShowDeleteDialog(true)}
               >
-                <Trash2 className="size-4 mr-2" />
+                <Trash2 className="mr-2 size-4" />
                 Xóa
               </Button>
-              <Button variant="ghost" className="flex-1 h-9" onClick={() => onOpenChange(false)}>
+              <Button
+                variant="ghost"
+                className="h-9 flex-1"
+                onClick={() => onOpenChange(false)}
+              >
                 Đóng
               </Button>
             </div>
@@ -134,8 +146,8 @@ export function ScheduleDetailSheet({
           <AlertDialogHeader>
             <AlertDialogTitle>{SCHEDULER_UI.CONFIRM_DELETE}</AlertDialogTitle>
             <AlertDialogDescription>
-              Bạn có chắc muốn xóa ca <strong>{schedule.shift.name}</strong> này? Hành động
-              này không thể hoàn tác.
+              Bạn có chắc muốn xóa ca <strong>{schedule.shift.name}</strong>{" "}
+              này? Hành động này không thể hoàn tác.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

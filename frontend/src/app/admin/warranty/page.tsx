@@ -18,17 +18,14 @@ export default async function Page({
 
   // Fetch data
   const result = await getWarranties(page, 10, status, search);
-  const warranties = result.status === "success" ? result.data?.data ?? [] : [];
-  const total = result.status === "success" ? result.data?.total ?? 0 : 0;
+  const warranties =
+    result.status === "success" ? (result.data?.data ?? []) : [];
+  const total = result.status === "success" ? (result.data?.total ?? 0) : 0;
   const totalPages = Math.ceil(total / 10);
 
   return (
     <Suspense fallback={<div>Đang tải bảo hành...</div>}>
-      <WarrantyPage
-        data={warranties}
-        page={page}
-        totalPages={totalPages}
-      />
+      <WarrantyPage data={warranties} page={page} totalPages={totalPages} />
     </Suspense>
   );
 }

@@ -1,5 +1,4 @@
-
-export type ChannelId = 'zalo' | 'sms' | 'email';
+export type ChannelId = "zalo" | "sms" | "email";
 
 export interface NotificationChannel {
   id: ChannelId;
@@ -20,7 +19,7 @@ export interface NotificationEvent {
   id: string;
   name: string;
   description: string;
-  group: 'customer' | 'staff'; // Nhóm đối tượng
+  group: "customer" | "staff"; // Nhóm đối tượng
   channels: {
     [key in ChannelId]: boolean;
   };

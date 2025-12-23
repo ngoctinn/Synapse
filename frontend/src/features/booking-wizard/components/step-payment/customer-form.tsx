@@ -1,13 +1,13 @@
 "use client";
 
 import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-    Input,
-    Textarea,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+  Textarea,
 } from "@/shared/ui";
 import { UseFormReturn } from "react-hook-form";
 import { CustomerInfoSchema } from "../../schemas";
@@ -35,7 +35,7 @@ export const CustomerForm = ({ form }: CustomerFormProps) => {
         )}
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <FormField
           control={form.control}
           name="phone_number"
@@ -72,7 +72,11 @@ export const CustomerForm = ({ form }: CustomerFormProps) => {
           <FormItem>
             <FormLabel>Ghi chú cho Spa</FormLabel>
             <FormControl>
-              <Textarea placeholder="Ví dụ: Da nhạy cảm, dị ứng..." className="resize-none" {...field} />
+              <Textarea
+                placeholder="Ví dụ: Da nhạy cảm, dị ứng..."
+                className="resize-none"
+                {...field}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>

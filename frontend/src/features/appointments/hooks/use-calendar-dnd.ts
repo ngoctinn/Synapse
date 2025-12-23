@@ -12,8 +12,6 @@ import { toast } from "sonner";
 import { checkConflicts, updateAppointmentTime } from "../actions";
 import type { CalendarEvent } from "../model/types";
 
-
-
 interface UseCalendarDndOptions {
   /** Callback khi event được di chuyển thành công */
   onMoveSuccess?: (event: CalendarEvent, newStart: Date, newEnd: Date) => void;
@@ -40,23 +38,15 @@ interface UseCalendarDndReturn {
   setHoveredSlot: (slot: { date: Date } | null) => void;
 }
 
-
-
 export function useCalendarDnd(
   events: CalendarEvent[],
   options: UseCalendarDndOptions = {}
 ): UseCalendarDndReturn {
-  const {
-    onMoveSuccess,
-    onMoveError,
-    checkConflictsOnMove = true,
-  } = options;
+  const { onMoveSuccess, onMoveError, checkConflictsOnMove = true } = options;
 
   const [isMoving, startTransition] = useTransition();
   const [draggedEventId] = useState<string | null>(null);
   const [hoveredSlot, setHoveredSlot] = useState<{ date: Date } | null>(null);
-
-
 
   const handleEventMove = useCallback(
     async (eventId: string, newStart: Date, newEnd: Date) => {
@@ -97,11 +87,7 @@ export function useCalendarDnd(
             }
           }
 
-          const result = await updateAppointmentTime(
-            eventId,
-            newStart,
-            newEnd
-          );
+          const result = await updateAppointmentTime(eventId, newStart, newEnd);
 
           if (result.status === "success") {
             toast.success("Đã cập nhật thời gian lịch hẹn");

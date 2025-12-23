@@ -2,11 +2,17 @@ import { cn } from "@/shared/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { Button } from "@/shared/ui/button";
 import { ScrollArea } from "@/shared/ui/scroll-area";
-import { ChevronLeft, MessageSquareDashed, MoreHorizontal, Phone, Video } from "lucide-react";
-import { useEffect, useRef } from 'react';
-import { Conversation, Message } from '../model/types';
-import { MessageBubble } from './message-bubble';
-import { MessageInput } from './message-input';
+import {
+  ChevronLeft,
+  MessageSquareDashed,
+  MoreHorizontal,
+  Phone,
+  Video,
+} from "lucide-react";
+import { useEffect, useRef } from "react";
+import { Conversation, Message } from "../model/types";
+import { MessageBubble } from "./message-bubble";
+import { MessageInput } from "./message-input";
 
 interface ChatWindowProps {
   conversation?: Conversation;
@@ -17,93 +23,133 @@ interface ChatWindowProps {
   className?: string;
 }
 
-export function ChatWindow({ conversation, messages, currentUserId, onSendMessage, onBack, className }: ChatWindowProps) {
+export function ChatWindow({
+  conversation,
+  messages,
+  currentUserId,
+  onSendMessage,
+  onBack,
+  className,
+}: ChatWindowProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom directly without complex checks
   useEffect(() => {
     if (scrollRef.current) {
-        const scrollContainer = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
-        if (scrollContainer) {
-            scrollContainer.scrollTop = scrollContainer.scrollHeight;
-        }
+      const scrollContainer = scrollRef.current.querySelector(
+        "[data-radix-scroll-area-viewport]"
+      );
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      }
     }
   }, [messages]);
 
   if (!conversation) {
     return (
-      <div className={cn("flex flex-col items-center justify-center h-full w-full bg-white/30 dark:bg-card/30 backdrop-blur-sm rounded-r-2xl glass-card text-center p-8", className)}>
-        <div className="w-24 h-24 bg-primary/5 rounded-full flex items-center justify-center mb-6 animate-pulse-subtle">
-           <MessageSquareDashed className="w-10 h-10 text-primary/50" />
+      <div
+        className={cn(
+          "dark:bg-card/30 glass-card flex h-full w-full flex-col items-center justify-center rounded-r-2xl bg-white/30 p-8 text-center backdrop-blur-sm",
+          className
+        )}
+      >
+        <div className="bg-primary/5 animate-pulse-subtle mb-6 flex h-24 w-24 items-center justify-center rounded-full">
+          <MessageSquareDashed className="text-primary/50 h-10 w-10" />
         </div>
-        <h3 className="text-2xl font-serif font-semibold text-foreground mb-3">Synapse Chat</h3>
-        <p className="text-muted-foreground text-sm max-w-sm leading-relaxed">
-          Chọn một cuộc hội thoại từ danh sách bên trái để bắt đầu tư vấn và chăm sóc khách hàng.
+        <h3 className="text-foreground mb-3 font-serif text-2xl font-semibold">
+          Synapse Chat
+        </h3>
+        <p className="text-muted-foreground max-w-sm text-sm leading-relaxed">
+          Chọn một cuộc hội thoại từ danh sách bên trái để bắt đầu tư vấn và
+          chăm sóc khách hàng.
         </p>
       </div>
     );
   }
 
   return (
-    <div className={cn("flex flex-col flex-1 h-full bg-white/50 dark:bg-card/50 backdrop-blur-sm rounded-2xl md:rounded-l-none md:rounded-r-2xl glass-card overflow-hidden", className)}>
+    <div
+      className={cn(
+        "dark:bg-card/50 glass-card flex h-full flex-1 flex-col overflow-hidden rounded-2xl bg-white/50 backdrop-blur-sm md:rounded-l-none md:rounded-r-2xl",
+        className
+      )}
+    >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-border/50 bg-white/50 dark:bg-card/50 backdrop-blur-md z-10 h-[72px]">
+      <div className="border-border/50 dark:bg-card/50 z-10 flex h-[72px] items-center justify-between border-b bg-white/50 p-4 backdrop-blur-md">
         <div className="flex items-center gap-3">
-            {/* Back Button for Mobile */}
-            {onBack && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={onBack}
-                className="md:hidden -ml-2 text-muted-foreground hover:text-primary"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </Button>
-            )}
+          {/* Back Button for Mobile */}
+          {onBack && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onBack}
+              className="text-muted-foreground hover:text-primary -ml-2 md:hidden"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </Button>
+          )}
 
-            <Avatar className="h-10 w-10 border border-border shadow-sm">
-              <AvatarImage src={conversation.user.avatar} alt={conversation.user.name} />
-              <AvatarFallback>{conversation.user.name[0]}</AvatarFallback>
-            </Avatar>
-            <div>
-              <h3 className="font-semibold text-sm flex items-center gap-2">
-                {conversation.user.name}
-                <span className={cn(
-                  "w-2.5 h-2.5 rounded-full",
-                  conversation.user.status === 'online' ? "indicator-online" : "indicator-offline"
-                )} />
-              </h3>
-              <p className="text-xs text-muted-foreground">Khách hàng {conversation.user.role === 'customer' ? 'Thân thiết' : ''}</p>
-            </div>
+          <Avatar className="border-border h-10 w-10 border shadow-sm">
+            <AvatarImage
+              src={conversation.user.avatar}
+              alt={conversation.user.name}
+            />
+            <AvatarFallback>{conversation.user.name[0]}</AvatarFallback>
+          </Avatar>
+          <div>
+            <h3 className="flex items-center gap-2 text-sm font-semibold">
+              {conversation.user.name}
+              <span
+                className={cn(
+                  "h-2.5 w-2.5 rounded-full",
+                  conversation.user.status === "online"
+                    ? "indicator-online"
+                    : "indicator-offline"
+                )}
+              />
+            </h3>
+            <p className="text-muted-foreground text-xs">
+              Khách hàng{" "}
+              {conversation.user.role === "customer" ? "Thân thiết" : ""}
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-1">
-           <Button variant="ghost" size="icon" aria-label="Gọi điện">
-             <Phone className="w-4 h-4" />
-           </Button>
-           <Button variant="ghost" size="icon" aria-label="Video call">
-             <Video className="w-4 h-4" />
-           </Button>
-           <Button variant="ghost" size="icon" aria-label="Xem thêm tùy chọn">
-             <MoreHorizontal className="w-4 h-4" />
-           </Button>
+          <Button variant="ghost" size="icon" aria-label="Gọi điện">
+            <Phone className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="icon" aria-label="Video call">
+            <Video className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="icon" aria-label="Xem thêm tùy chọn">
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-hidden relative bg-gradient-to-b from-transparent to-white/20 dark:to-black/20">
-         <ScrollArea ref={scrollRef} className="h-full w-full p-4">
-            <div className="flex flex-col justify-end min-h-full pb-2">
-              {messages.map((message) => (
-                <MessageBubble
-                  key={message.id}
-                  message={message}
-                  isMe={message.senderId === currentUserId}
-                  senderName={message.senderId === currentUserId ? 'Tôi' : conversation.user.name}
-                  senderAvatar={message.senderId === currentUserId ? undefined : conversation.user.avatar}
-                />
-              ))}
-            </div>
-         </ScrollArea>
+      <div className="relative flex-1 overflow-hidden bg-gradient-to-b from-transparent to-white/20 dark:to-black/20">
+        <ScrollArea ref={scrollRef} className="h-full w-full p-4">
+          <div className="flex min-h-full flex-col justify-end pb-2">
+            {messages.map((message) => (
+              <MessageBubble
+                key={message.id}
+                message={message}
+                isMe={message.senderId === currentUserId}
+                senderName={
+                  message.senderId === currentUserId
+                    ? "Tôi"
+                    : conversation.user.name
+                }
+                senderAvatar={
+                  message.senderId === currentUserId
+                    ? undefined
+                    : conversation.user.avatar
+                }
+              />
+            ))}
+          </div>
+        </ScrollArea>
       </div>
 
       {/* Input */}

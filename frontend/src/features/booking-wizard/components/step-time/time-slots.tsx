@@ -30,7 +30,11 @@ export const TimeSlots: React.FC<TimeSlotsProps> = ({
 
     timeSlots.forEach((slot) => {
       // Construct Date object from slot.date and slot.start_time
-      const slotDateTime = parse(`${slot.date} ${slot.start_time}`, 'yyyy-MM-dd HH:mm', new Date());
+      const slotDateTime = parse(
+        `${slot.date} ${slot.start_time}`,
+        "yyyy-MM-dd HH:mm",
+        new Date()
+      );
       const hour = slotDateTime.getHours();
 
       for (const group of timeOfDayGroups) {
@@ -53,29 +57,40 @@ export const TimeSlots: React.FC<TimeSlotsProps> = ({
         }
         return (
           <div key={group.label}>
-            <h3 className="text-lg font-semibold mb-3">{group.label}</h3>
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
+            <h3 className="mb-3 text-lg font-semibold">{group.label}</h3>
+            <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
               {isLoading
                 ? Array.from({ length: 6 }).map((_, i) => (
                     <div
                       key={i}
-                      className="h-10 bg-muted rounded-md animate-pulse"
+                      className="bg-muted h-10 animate-pulse rounded-md"
                     />
                   ))
                 : slotsInGroup?.map((slot) => (
                     <SlotButton
                       key={slot.id}
                       // Construct Date object for formatting time
-                      time={format(parse(`${slot.date} ${slot.start_time}`, 'yyyy-MM-dd HH:mm', new Date()), "HH:mm")}
+                      time={format(
+                        parse(
+                          `${slot.date} ${slot.start_time}`,
+                          "yyyy-MM-dd HH:mm",
+                          new Date()
+                        ),
+                        "HH:mm"
+                      )}
                       isAvailable={slot.is_available && !slot.is_held}
-                      isSelected={selectedSlot ? selectedSlot.id === slot.id : false}
+                      isSelected={
+                        selectedSlot ? selectedSlot.id === slot.id : false
+                      }
                       isDisabled={!slot.is_available} // Disable if not available
                       onClick={() => onSelectSlot(slot)}
                     />
                   ))}
             </div>
             {slotsInGroup && slotsInGroup.length === 0 && !isLoading && (
-                <p className="text-muted-foreground text-sm">Không có khung giờ nào.</p>
+              <p className="text-muted-foreground text-sm">
+                Không có khung giờ nào.
+              </p>
             )}
           </div>
         );

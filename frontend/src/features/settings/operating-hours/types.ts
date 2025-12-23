@@ -20,28 +20,32 @@ export const DAY_LABELS: Record<DayOfWeek, string> = {
 
 export interface TimeSlot {
   start: string; // "HH:mm" - maps to open_time in DB
-  end: string;   // "HH:mm" - maps to close_time in DB
+  end: string; // "HH:mm" - maps to close_time in DB
 }
 
 export interface DaySchedule {
   dayOfWeek: DayOfWeek; // maps to day_of_week (1-7)
   label: string;
-  isOpen: boolean;      // inverse of is_closed
+  isOpen: boolean; // inverse of is_closed
   timeSlots: TimeSlot[]; // multiple periods support (period_number)
 }
 
 // Exceptions
 
-export type ExceptionType = "HOLIDAY" | "MAINTENANCE" | "SPECIAL_HOURS" | "CUSTOM";
+export type ExceptionType =
+  | "HOLIDAY"
+  | "MAINTENANCE"
+  | "SPECIAL_HOURS"
+  | "CUSTOM";
 
 export interface ExceptionDate {
   id: string;
-  date: Date;           // maps to exception_date
-  type: ExceptionType;  // maps to exception_type enum
-  reason: string;       // maps to reason VARCHAR(255)
-  isClosed: boolean;    // maps to is_closed
-  openTime?: string;    // maps to open_time (when isClosed=false)
-  closeTime?: string;   // maps to close_time (when isClosed=false)
+  date: Date; // maps to exception_date
+  type: ExceptionType; // maps to exception_type enum
+  reason: string; // maps to reason VARCHAR(255)
+  isClosed: boolean; // maps to is_closed
+  openTime?: string; // maps to open_time (when isClosed=false)
+  closeTime?: string; // maps to close_time (when isClosed=false)
 }
 
 // Config
@@ -59,5 +63,3 @@ export interface ExceptionValidationResult {
   duplicateId?: string;
   message?: string;
 }
-
-

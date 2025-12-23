@@ -1,30 +1,30 @@
-"use client"
+"use client";
 
-import { cn } from "@/shared/lib/utils"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
-import * as React from "react"
+import { cn } from "@/shared/lib/utils";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
+import * as React from "react";
 
 export interface FormTabItem {
-  value: string
-  label: string
-  icon?: React.ReactNode
+  value: string;
+  label: string;
+  icon?: React.ReactNode;
 }
 
 export interface FormTabsProps {
   /** Array of tab items */
-  tabs: FormTabItem[]
+  tabs: FormTabItem[];
   /** Default selected tab value */
-  defaultValue?: string
+  defaultValue?: string;
   /** Controlled value */
-  value?: string
+  value?: string;
   /** Callback when tab changes */
-  onValueChange?: (value: string) => void
+  onValueChange?: (value: string) => void;
   /** Render function for tab content */
-  children: React.ReactNode
+  children: React.ReactNode;
   /** Additional className for the container */
-  className?: string
+  className?: string;
   /** Additional className for the tabs list */
-  listClassName?: string
+  listClassName?: string;
 }
 
 /**
@@ -46,12 +46,12 @@ export function FormTabs({
       defaultValue={defaultValue ?? tabs[0]?.value}
       value={value}
       onValueChange={onValueChange}
-      className={cn("w-full h-full flex flex-col", className)}
+      className={cn("flex h-full w-full flex-col", className)}
     >
       <TabsList
         className={cn(
           // Standard form tabs styling
-          "grid w-full bg-muted/60 rounded-lg p-1 mb-4 h-11 shrink-0",
+          "bg-muted/60 mb-4 grid h-11 w-full shrink-0 rounded-lg p-1",
           listClassName
         )}
         style={{ gridTemplateColumns: `repeat(${tabs.length}, 1fr)` }}
@@ -69,8 +69,8 @@ export function FormTabs({
       </TabsList>
       {children}
     </Tabs>
-  )
+  );
 }
 
 // Re-export TabsContent for convenience
-export { TabsContent as FormTabsContent }
+export { TabsContent as FormTabsContent };

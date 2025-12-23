@@ -12,8 +12,15 @@ interface HoldTimerProps {
   className?: string;
 }
 
-export const HoldTimer: React.FC<HoldTimerProps> = ({ expiresAt, onExpire, className }) => {
-  const { minutes, seconds, timeLeft, isExpired } = useHoldTimer({ expiresAt, onExpire });
+export const HoldTimer: React.FC<HoldTimerProps> = ({
+  expiresAt,
+  onExpire,
+  className,
+}) => {
+  const { minutes, seconds, timeLeft, isExpired } = useHoldTimer({
+    expiresAt,
+    onExpire,
+  });
 
   if (!expiresAt || isExpired) return null;
 
@@ -29,16 +36,17 @@ export const HoldTimer: React.FC<HoldTimerProps> = ({ expiresAt, onExpire, class
     <Badge
       variant={variant}
       className={cn(
-        "px-3 py-1.5 rounded-full font-medium transition-colors duration-300",
+        "rounded-full px-3 py-1.5 font-medium transition-colors duration-300",
         timeLeft < 60 && "animate-pulse",
         className
       )}
       role="timer"
       aria-live="polite"
     >
-      <Clock className="w-4 h-4" />
+      <Clock className="h-4 w-4" />
       <span>
-        Giữ chỗ trong: {minutes.toString().padStart(2, '0')}:{seconds.toString().padStart(2, '0')}
+        Giữ chỗ trong: {minutes.toString().padStart(2, "0")}:
+        {seconds.toString().padStart(2, "0")}
       </span>
     </Badge>
   );

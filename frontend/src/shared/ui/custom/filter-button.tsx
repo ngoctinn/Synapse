@@ -1,26 +1,26 @@
-"use client"
+"use client";
 
-import { cn } from "@/shared/lib/utils"
-import { Button } from "@/shared/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover"
-import { SlidersHorizontal, X } from "lucide-react"
-import { ReactNode } from "react"
+import { cn } from "@/shared/lib/utils";
+import { Button } from "@/shared/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
+import { SlidersHorizontal, X } from "lucide-react";
+import { ReactNode } from "react";
 
 interface FilterButtonProps {
   /** Nội dung của bộ lọc (thường là các input hoặc checkbox) */
-  children?: ReactNode
+  children?: ReactNode;
   /** Trạng thái active của bộ lọc (có đang lọc hay không) */
-  isActive?: boolean
+  isActive?: boolean;
   /** Số lượng tiêu chí đang lọc */
-  count?: number
+  count?: number;
   /** ClassName tùy chỉnh */
-  className?: string
+  className?: string;
   /** Hàm callback khi người dùng xóa bộ lọc */
-  onClear?: () => void
+  onClear?: () => void;
   /** Label hiển thị cạnh icon (nếu có sẽ chuyển sang dạng button thường) */
-  label?: string
+  label?: string;
   /** Icon tùy chỉnh (mặc định là SlidersHorizontal) */
-  icon?: React.ElementType
+  icon?: React.ElementType;
 }
 
 export function FilterButton({
@@ -48,10 +48,12 @@ export function FilterButton({
           {label}
 
           {count > 0 && (
-            <span className={cn(
-              "absolute flex size-4 animate-in zoom-in duration-300 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground shadow-sm ring-2 ring-background",
-              label ? "-right-1 -top-1" : "-right-1 -top-1"
-            )}>
+            <span
+              className={cn(
+                "animate-in zoom-in bg-primary text-primary-foreground ring-background absolute flex size-4 items-center justify-center rounded-full text-[10px] font-medium shadow-sm ring-2 duration-300",
+                label ? "-right-1 -top-1" : "-right-1 -top-1"
+              )}
+            >
               {count}
             </span>
           )}
@@ -66,7 +68,7 @@ export function FilterButton({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-6 w-6 rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+                className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive h-6 w-6 rounded-full transition-colors"
                 onClick={onClear}
                 title="Xóa bộ lọc"
               >
@@ -76,7 +78,7 @@ export function FilterButton({
             )}
           </div>
           {children || (
-            <div className="flex flex-col items-center justify-center py-6 text-center text-muted-foreground animate-in fade-in zoom-in duration-300">
+            <div className="text-muted-foreground animate-in fade-in zoom-in flex flex-col items-center justify-center py-6 text-center duration-300">
               <SlidersHorizontal className="mb-2 h-8 w-8 opacity-20" />
               <p className="text-sm font-medium">Chưa có bộ lọc</p>
               <p className="text-xs opacity-70">Vui lòng thêm tiêu chí lọc</p>
@@ -85,5 +87,5 @@ export function FilterButton({
         </div>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

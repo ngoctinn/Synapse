@@ -1,6 +1,12 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/shared/ui/card";
 
 import { Button } from "@/shared/ui/button";
 import { Mail, MessageCircle, Settings2, Smartphone } from "lucide-react";
@@ -14,18 +20,24 @@ interface NotificationChannelsProps {
 
 const iconMap: Record<string, React.ReactNode> = {
   "message-circle": <MessageCircle className="h-6 w-6" />,
-  "smartphone": <Smartphone className="h-6 w-6" />,
-  "mail": <Mail className="h-6 w-6" />,
+  smartphone: <Smartphone className="h-6 w-6" />,
+  mail: <Mail className="h-6 w-6" />,
 };
 
-export function NotificationChannels({ channels, onConfigure }: NotificationChannelsProps) {
+export function NotificationChannels({
+  channels,
+  onConfigure,
+}: NotificationChannelsProps) {
   return (
     <div className="grid gap-4 md:grid-cols-3">
       {channels.map((channel) => (
-        <Card key={channel.id} className="relative overflow-hidden transition-all duration-300 hover:border-primary/50 hover:shadow-md group">
+        <Card
+          key={channel.id}
+          className="hover:border-primary/50 group relative overflow-hidden transition-all duration-300 hover:shadow-md"
+        >
           <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-            <CardTitle className="text-base font-medium flex items-center gap-2">
-              <span className="p-2 bg-muted rounded-full group-hover:bg-primary/10 group-hover:text-primary transition-colors duration-300">
+            <CardTitle className="flex items-center gap-2 text-base font-medium">
+              <span className="bg-muted group-hover:bg-primary/10 group-hover:text-primary rounded-full p-2 transition-colors duration-300">
                 {iconMap[channel.icon] || <Settings2 className="h-6 w-6" />}
               </span>
               {channel.name}
@@ -33,12 +45,12 @@ export function NotificationChannels({ channels, onConfigure }: NotificationChan
             <ChannelStatusBadge isConnected={channel.isConnected} />
           </CardHeader>
           <CardContent>
-            <CardDescription className="min-h-[40px] mb-4 text-sm leading-relaxed">
+            <CardDescription className="mb-4 min-h-[40px] text-sm leading-relaxed">
               {channel.description}
             </CardDescription>
             <Button
               variant="outline"
-              className="w-full group-hover:border-primary/50 transition-colors"
+              className="group-hover:border-primary/50 w-full transition-colors"
               onClick={() => onConfigure(channel.id)}
             >
               <Settings2 className="mr-2 size-4" />

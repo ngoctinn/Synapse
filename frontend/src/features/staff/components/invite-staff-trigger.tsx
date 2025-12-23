@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
-import { Skill } from "@/features/services"
-import { Button } from "@/shared/ui/button"
-import { Mail } from "lucide-react"
-import { useState } from "react"
-import { StaffSheet } from "./staff-sheet"
+import { Skill } from "@/features/services";
+import { Button } from "@/shared/ui/button";
+import { Mail } from "lucide-react";
+import { useState } from "react";
+import { StaffSheet } from "./staff-sheet";
 
 interface InviteStaffModalProps {
-  skills: Skill[]
+  skills: Skill[];
 }
 
 export function InviteStaffTrigger({ skills }: InviteStaffModalProps) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   return (
     <>
       <Button
         size="sm"
-        className="text-xs transition-all hover:scale-[1.02] shadow-sm"
+        className="text-xs shadow-sm transition-all hover:scale-[1.02]"
         onClick={() => setOpen(true)}
         startContent={<Mail className="size-3.5" />}
       >
@@ -31,5 +31,5 @@ export function InviteStaffTrigger({ skills }: InviteStaffModalProps) {
         skills={skills}
       />
     </>
-  )
+  );
 }

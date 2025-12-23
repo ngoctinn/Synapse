@@ -6,4 +6,3 @@
 
 export { EventCard } from "./event-card";
 export { EventPopover } from "./event-popover";
-

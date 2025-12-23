@@ -2,13 +2,13 @@ import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import {
-    Badge,
-    Button,
-    Separator,
-    Sheet,
-    SheetContent,
-    SheetHeader,
-    SheetTitle
+  Badge,
+  Button,
+  Separator,
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
 } from "@/shared/ui";
 
 // Billing components
@@ -20,12 +20,16 @@ import { ReviewPrompt } from "@/features/reviews/components/review-prompt";
 import { STATUS_TO_BADGE_PRESET } from "../../constants";
 import { MockService } from "../../model/mocks";
 import type {
-    Appointment,
-    CalendarEvent,
-    TimelineResource,
+  Appointment,
+  CalendarEvent,
+  TimelineResource,
 } from "../../model/types";
 import { AppointmentForm } from "./appointment-form";
-import { FormModeFooter, PaymentModeFooter, ViewModeFooter } from "./appointment-sheet-footer";
+import {
+  FormModeFooter,
+  PaymentModeFooter,
+  ViewModeFooter,
+} from "./appointment-sheet-footer";
 import { AppointmentViewContent } from "./appointment-view-content";
 
 // ============================================
@@ -148,17 +152,19 @@ export function AppointmentSheet({
   // COMPUTED
   // ============================================
 
-  const canCheckIn = appointment?.status === "CONFIRMED" || appointment?.status === "PENDING";
-  const canCancel = appointment?.status === "PENDING" || appointment?.status === "CONFIRMED";
+  const canCheckIn =
+    appointment?.status === "CONFIRMED" || appointment?.status === "PENDING";
+  const canCancel =
+    appointment?.status === "PENDING" || appointment?.status === "CONFIRMED";
   const canCreateInvoice = appointment?.status === "COMPLETED";
 
   const sheetTitle = isCreateMode
     ? "Tạo lịch hẹn mới"
     : isEditMode
-    ? "Chỉnh sửa lịch hẹn"
-    : isPaymentMode
-    ? "Thanh toán hóa đơn"
-    : "Chi tiết lịch hẹn";
+      ? "Chỉnh sửa lịch hẹn"
+      : isPaymentMode
+        ? "Thanh toán hóa đơn"
+        : "Chi tiết lịch hẹn";
 
   // ============================================
   // RENDER
@@ -166,24 +172,33 @@ export function AppointmentSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-lg p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
+      <SheetContent className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-lg">
         {/* HEADER */}
         <SheetHeader className="sheet-header shrink-0 space-y-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {isPaymentMode && (
-                <Button variant="ghost" size="icon" className="size-8" onClick={handleBackToView}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-8"
+                  onClick={handleBackToView}
+                >
                   <ArrowLeft className="size-4" />
                 </Button>
               )}
-              <SheetTitle className="text-lg font-semibold">{sheetTitle}</SheetTitle>
+              <SheetTitle className="text-lg font-semibold">
+                {sheetTitle}
+              </SheetTitle>
             </div>
 
             {isViewMode && appointment && (
               <Badge preset={STATUS_TO_BADGE_PRESET[appointment.status]} />
             )}
             {isPaymentMode && invoice && (
-              <Badge variant={invoice.status === "PAID" ? "success" : "warning"}>
+              <Badge
+                variant={invoice.status === "PAID" ? "success" : "warning"}
+              >
                 {invoice.status === "PAID" ? "Đã thanh toán" : "Chờ thanh toán"}
               </Badge>
             )}
@@ -216,7 +231,10 @@ export function AppointmentSheet({
 
         {/* FOOTER */}
         {isPaymentMode ? (
-          <PaymentModeFooter onBackToView={handleBackToView} onClose={handleClose} />
+          <PaymentModeFooter
+            onBackToView={handleBackToView}
+            onClose={handleClose}
+          />
         ) : isViewMode && appointment ? (
           <ViewModeFooter
             canCheckIn={canCheckIn}

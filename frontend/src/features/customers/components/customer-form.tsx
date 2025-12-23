@@ -49,7 +49,7 @@ export function CustomerForm({
   // --- Sub-render functions (Extracted for readability) ---
   const renderProfile = () => (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <FormField
           control={form.control}
           name="phone_number"
@@ -94,7 +94,7 @@ export function CustomerForm({
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <FormField
           control={form.control}
           name="gender"
@@ -243,7 +243,7 @@ export function CustomerForm({
               <Textarea
                 placeholder="Liệt kê: Hải sản, Phấn hoa, Thuốc kháng sinh..."
                 disabled={disabled}
-                className="resize-none min-h-[100px] border-destructive/30 focus:border-destructive focus:ring-destructive/20 disabled:opacity-50"
+                className="border-destructive/30 focus:border-destructive focus:ring-destructive/20 min-h-[100px] resize-none disabled:opacity-50"
                 {...field}
               />
             </FormControl>
@@ -262,7 +262,7 @@ export function CustomerForm({
               <Textarea
                 placeholder="Bệnh nền, tình trạng sức khỏe, đang mang thai (tháng thứ mấy)..."
                 disabled={disabled}
-                className="resize-none min-h-[120px]"
+                className="min-h-[120px] resize-none"
                 {...field}
               />
             </FormControl>
@@ -287,13 +287,13 @@ export function CustomerForm({
       {mode === "create" ? (
         <div className="space-y-6 pt-2">
           <div className="space-y-4">
-            <h3 className="font-semibold text-base">Hồ sơ cá nhân</h3>
+            <h3 className="text-base font-semibold">Hồ sơ cá nhân</h3>
             {renderProfile()}
           </div>
 
           <div className="space-y-4">
             <div className="border-t pt-4">
-              <h3 className="font-semibold text-base">Thông tin sức khỏe</h3>
+              <h3 className="text-base font-semibold">Thông tin sức khỏe</h3>
             </div>
             {renderHealth()}
           </div>

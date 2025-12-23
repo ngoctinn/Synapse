@@ -4,8 +4,8 @@
  */
 
 export {
-    getCustomerAppointments,
-    getCustomerProfile,
-    getCustomerTreatments,
-    updateProfile,
+  getCustomerAppointments,
+  getCustomerProfile,
+  getCustomerTreatments,
+  updateProfile,
 } from "./actions";

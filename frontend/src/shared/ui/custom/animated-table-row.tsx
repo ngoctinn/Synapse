@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { cn } from "@/shared/lib/utils"
+import { cn } from "@/shared/lib/utils";
 
 interface AnimatedTableRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
-  index: number
-  children: React.ReactNode
-  className?: string
+  index: number;
+  children: React.ReactNode;
+  className?: string;
 }
 
 export function AnimatedTableRow({
@@ -17,12 +17,12 @@ export function AnimatedTableRow({
   return (
     <tr
       className={cn(
-        "transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+        "hover:bg-muted/50 data-[state=selected]:bg-muted transition-colors",
         className
       )}
       {...props}
     >
       {children}
     </tr>
-  )
+  );
 }

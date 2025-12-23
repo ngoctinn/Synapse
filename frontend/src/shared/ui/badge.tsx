@@ -168,7 +168,11 @@ const BADGE_PRESETS: Record<BadgePreset, PresetConfig> = {
   // === EXCEPTION TYPES ===
   "exception-holiday": { variant: "destructive", size: "xs", label: "Nghỉ lễ" },
   "exception-maintenance": { variant: "outline", size: "xs", label: "Bảo trì" },
-  "exception-special": { variant: "secondary", size: "xs", label: "Giờ đặc biệt" },
+  "exception-special": {
+    variant: "secondary",
+    size: "xs",
+    label: "Giờ đặc biệt",
+  },
   "exception-custom": { variant: "outline", size: "xs", label: "Tùy chỉnh" },
 
   // === CHANNEL STATUS ===
@@ -189,8 +193,7 @@ const BADGE_PRESETS: Record<BadgePreset, PresetConfig> = {
 export type BadgeVariant = VariantProps<typeof badgeVariants>["variant"];
 
 interface BadgeProps
-  extends React.ComponentProps<"span">,
-    VariantProps<typeof badgeVariants> {
+  extends React.ComponentProps<"span">, VariantProps<typeof badgeVariants> {
   asChild?: boolean;
   /** Sử dụng preset có sẵn */
   preset?: BadgePreset;
@@ -262,14 +265,14 @@ function Badge({
           {finalIndicatorPulse && (
             <span
               className={cn(
-                "absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping",
+                "absolute inline-flex h-full w-full animate-ping rounded-full opacity-75",
                 getIndicatorColorClass()
               )}
             />
           )}
           <span
             className={cn(
-              "relative inline-flex rounded-full h-2 w-2",
+              "relative inline-flex h-2 w-2 rounded-full",
               getIndicatorColorClass()
             )}
           />

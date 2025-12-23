@@ -17,12 +17,12 @@ export const WizardHeader = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center max-w-2xl mx-auto px-4">
+    <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
+      <div className="container mx-auto flex h-16 max-w-2xl items-center px-4">
         <Button
           variant="ghost"
           size="icon"
-          className="mr-2 -ml-2"
+          className="-ml-2 mr-2"
           onClick={handleBack}
         >
           <ArrowLeft className="h-5 w-5" />

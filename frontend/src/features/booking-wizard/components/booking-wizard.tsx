@@ -12,7 +12,18 @@ import { WizardFooter } from "./wizard-footer";
 import { WizardHeader } from "./wizard-header";
 
 export const BookingWizard = () => {
-  const { currentStep, goToStep, selectedServices, staffId, holdExpiresAt, clearHold, selectedDate, selectedSlot, customerInfo, reset } = useBookingStore();
+  const {
+    currentStep,
+    goToStep,
+    selectedServices,
+    staffId,
+    holdExpiresAt,
+    clearHold,
+    selectedDate,
+    selectedSlot,
+    customerInfo,
+    reset,
+  } = useBookingStore();
   const [isSuccess, setIsSuccess] = useState(false);
 
   const renderStep = () => {
@@ -51,26 +62,35 @@ export const BookingWizard = () => {
   // Validation for enabling Next button
   const canProceed = () => {
     switch (currentStep) {
-      case 1: return selectedServices.length > 0;
-      case 2: return !!selectedDate && !!selectedSlot;
-      case 3: return !!staffId;
+      case 1:
+        return selectedServices.length > 0;
+      case 2:
+        return !!selectedDate && !!selectedSlot;
+      case 3:
+        return !!staffId;
       case 4:
         if (!customerInfo) return false;
         return customerInfoSchema.safeParse(customerInfo).success;
-      case 5: return true;
-      default: return true;
+      case 5:
+        return true;
+      default:
+        return true;
     }
   };
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center">
+      <div className="bg-background flex min-h-screen flex-col items-center justify-center">
         <BookingSuccess
           onBookAnother={() => {
             setIsSuccess(false);
             reset();
           }}
-          bookingTime={selectedSlot ? new Date(`${selectedSlot.date}T${selectedSlot.start_time}`) : new Date()}
+          bookingTime={
+            selectedSlot
+              ? new Date(`${selectedSlot.date}T${selectedSlot.start_time}`)
+              : new Date()
+          }
           serviceName={selectedServices[0]?.name}
           // staffName logic could be improved by fetching staff details
         />
@@ -79,11 +99,11 @@ export const BookingWizard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b">
+    <div className="bg-background flex min-h-screen flex-col">
+      <div className="bg-background/80 sticky top-0 z-50 border-b backdrop-blur-md">
         <WizardHeader />
         {holdExpiresAt && (
-          <div className="container max-w-2xl mx-auto px-4 py-2 flex justify-center">
+          <div className="container mx-auto flex max-w-2xl justify-center px-4 py-2">
             <HoldTimer
               expiresAt={holdExpiresAt}
               onExpire={() => {
@@ -95,7 +115,7 @@ export const BookingWizard = () => {
         )}
       </div>
 
-      <main className="flex-1 container max-w-2xl mx-auto px-4 py-6 pb-32 animate-in fade-in duration-500">
+      <main className="animate-in fade-in container mx-auto max-w-2xl flex-1 px-4 py-6 pb-32 duration-500">
         {renderStep()}
       </main>
 

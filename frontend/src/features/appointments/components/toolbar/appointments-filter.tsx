@@ -7,7 +7,11 @@ import { Label } from "@/shared/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import { Separator } from "@/shared/ui/separator";
 import { Filter, X } from "lucide-react";
-import type { AppointmentFilters, AppointmentStatus, TimelineResource } from "../../model/types";
+import type {
+  AppointmentFilters,
+  AppointmentStatus,
+  TimelineResource,
+} from "../../model/types";
 
 interface AppointmentsFilterProps {
   staffList: TimelineResource[];
@@ -15,7 +19,11 @@ interface AppointmentsFilterProps {
   onFilterChange: (newFilters: Partial<AppointmentFilters>) => void;
 }
 
-const STATUS_OPTIONS: { value: AppointmentStatus; label: string; color: string }[] = [
+const STATUS_OPTIONS: {
+  value: AppointmentStatus;
+  label: string;
+  color: string;
+}[] = [
   { value: "PENDING", label: "Chờ xác nhận", color: "bg-yellow-500" },
   { value: "CONFIRMED", label: "Đã xác nhận", color: "bg-blue-500" },
   { value: "IN_PROGRESS", label: "Đang thực hiện", color: "bg-emerald-500" },
@@ -74,7 +82,7 @@ export function AppointmentsFilter({
           {activeFilterCount > 0 && (
             <Badge
               variant="default"
-              className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-[10px]"
+              className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center p-0 text-[10px]"
             >
               {activeFilterCount}
             </Badge>
@@ -83,13 +91,13 @@ export function AppointmentsFilter({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-4" align="end">
-        <div className="flex items-center justify-between mb-4">
+        <div className="mb-4 flex items-center justify-between">
           <h4 className="font-medium leading-none">Bộ lọc hiển thị</h4>
           {activeFilterCount > 0 && (
             <Button
               variant="ghost"
               size="sm"
-              className="h-auto p-0 text-xs text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground h-auto p-0 text-xs"
               onClick={clearFilters}
             >
               Xóa lọc
@@ -101,7 +109,7 @@ export function AppointmentsFilter({
         <div className="space-y-4">
           {/* Status Filter */}
           <div className="space-y-2">
-            <Label className="text-xs font-semibold text-muted-foreground uppercase">
+            <Label className="text-muted-foreground text-xs font-semibold uppercase">
               Trạng thái
             </Label>
             <div className="grid grid-cols-2 gap-2">
@@ -116,7 +124,7 @@ export function AppointmentsFilter({
                   />
                   <Label
                     htmlFor={`status-${status.value}`}
-                    className="text-sm font-normal cursor-pointer"
+                    className="cursor-pointer text-sm font-normal"
                   >
                     {status.label}
                   </Label>
@@ -129,12 +137,12 @@ export function AppointmentsFilter({
 
           {/* Staff Filter */}
           <div className="space-y-2">
-            <Label className="text-xs font-semibold text-muted-foreground uppercase">
+            <Label className="text-muted-foreground text-xs font-semibold uppercase">
               Nhân viên
             </Label>
-            <div className="max-h-[200px] overflow-y-auto space-y-2 pr-1">
+            <div className="max-h-[200px] space-y-2 overflow-y-auto pr-1">
               {staffList.length === 0 ? (
-                <div className="text-sm text-muted-foreground">
+                <div className="text-muted-foreground text-sm">
                   Không có dữ liệu nhân viên
                 </div>
               ) : (
@@ -149,7 +157,7 @@ export function AppointmentsFilter({
                     />
                     <Label
                       htmlFor={`staff-${staff.id}`}
-                      className="text-sm font-normal cursor-pointer"
+                      className="cursor-pointer text-sm font-normal"
                     >
                       {staff.name}
                     </Label>

@@ -1,14 +1,14 @@
-import { cn } from "@/shared/lib/utils"
-import { Skeleton } from "@/shared/ui/skeleton"
+import { cn } from "@/shared/lib/utils";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 interface DataTableSkeletonProps {
-  columnCount?: number
-  rowCount?: number
-  showAction?: boolean
-  searchable?: boolean
-  filterable?: boolean
-  className?: string
-  variant?: "default" | "flush"
+  columnCount?: number;
+  rowCount?: number;
+  showAction?: boolean;
+  searchable?: boolean;
+  filterable?: boolean;
+  className?: string;
+  variant?: "default" | "flush";
 }
 
 export function DataTableSkeleton({
@@ -20,19 +20,22 @@ export function DataTableSkeleton({
   className,
   variant = "default",
 }: DataTableSkeletonProps) {
-  const showToolbar = showAction || searchable || filterable
+  const showToolbar = showAction || searchable || filterable;
 
   return (
-    <div className={cn(
-      "overflow-hidden",
-      variant === "default" && "rounded-md border bg-background shadow-sm",
-      variant === "flush" && "border-none shadow-none rounded-none bg-transparent",
-      className
-    )}>
+    <div
+      className={cn(
+        "overflow-hidden",
+        variant === "default" && "bg-background rounded-md border shadow-sm",
+        variant === "flush" &&
+          "rounded-none border-none bg-transparent shadow-none",
+        className
+      )}
+    >
       <div className="p-4">
         {/* Toolbar Skeleton */}
         {showToolbar && (
-          <div className="flex items-center justify-between mb-4">
+          <div className="mb-4 flex items-center justify-between">
             <div className="flex gap-2">
               {searchable && <Skeleton className="h-9 w-64" />}
               {filterable && (
@@ -47,7 +50,7 @@ export function DataTableSkeleton({
         )}
 
         {/* Table Header Skeleton */}
-        <div className="mb-4 flex items-center gap-4 px-4 py-2 border-b">
+        <div className="mb-4 flex items-center gap-4 border-b px-4 py-2">
           {Array.from({ length: columnCount }).map((_, i) => (
             <Skeleton key={i} className="h-4 w-24" />
           ))}
@@ -58,7 +61,7 @@ export function DataTableSkeleton({
           {Array.from({ length: rowCount }).map((_, i) => (
             <div key={i} className="flex items-center gap-4">
               <Skeleton className="h-12 w-12 rounded-full" />
-              <div className="space-y-2 flex-1">
+              <div className="flex-1 space-y-2">
                 <Skeleton className="h-4 w-[30%]" />
                 <Skeleton className="h-4 w-[20%]" />
               </div>
@@ -67,5 +70,5 @@ export function DataTableSkeleton({
         </div>
       </div>
     </div>
-  )
+  );
 }

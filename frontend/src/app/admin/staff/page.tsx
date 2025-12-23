@@ -1,31 +1,39 @@
-import { StaffPage, getPermissions, getSchedules, getSkills, getStaffList } from "@/features/staff"
-import { endOfWeek, format, startOfWeek } from "date-fns"
-import { Suspense } from "react"
+import {
+  StaffPage,
+  getPermissions,
+  getSchedules,
+  getSkills,
+  getStaffList,
+} from "@/features/staff";
+import { endOfWeek, format, startOfWeek } from "date-fns";
+import { Suspense } from "react";
 
 export default async function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>
+  searchParams: Promise<{ page?: string }>;
 }) {
-  const { page } = await searchParams
-  const pageNumber = Number(page) || 1
+  const { page } = await searchParams;
+  const pageNumber = Number(page) || 1;
 
-  const today = new Date()
-  const start = format(startOfWeek(today, { weekStartsOn: 1 }), "yyyy-MM-dd")
-  const end = format(endOfWeek(today, { weekStartsOn: 1 }), "yyyy-MM-dd")
+  const today = new Date();
+  const start = format(startOfWeek(today, { weekStartsOn: 1 }), "yyyy-MM-dd");
+  const end = format(endOfWeek(today, { weekStartsOn: 1 }), "yyyy-MM-dd");
 
   const [skillsRes, permissionsRes, schedulesRes] = await Promise.all([
     getSkills(),
     getPermissions(),
-    getSchedules(start, end)
-  ])
+    getSchedules(start, end),
+  ]);
 
-  const skills = skillsRes.status === "success" ? skillsRes.data || [] : []
-  const permissions = permissionsRes.status === "success" ? permissionsRes.data || {} : {}
-  const schedules = schedulesRes.status === "success" ? schedulesRes.data || [] : []
+  const skills = skillsRes.status === "success" ? skillsRes.data || [] : [];
+  const permissions =
+    permissionsRes.status === "success" ? permissionsRes.data || {} : {};
+  const schedules =
+    schedulesRes.status === "success" ? schedulesRes.data || [] : [];
 
   // Truyền Promise để Suspense hiển thị skeleton
-  const staffListPromise = getStaffList(pageNumber)
+  const staffListPromise = getStaffList(pageNumber);
 
   return (
     <Suspense fallback={<div>Đang tải nhân viên...</div>}>
@@ -37,5 +45,5 @@ export default async function Page({
         initialSchedules={schedules}
       />
     </Suspense>
-  )
+  );
 }

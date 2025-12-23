@@ -1,10 +1,13 @@
-"use client"
+"use client";
 
-import { HeaderLogo, HeaderUserDropdown } from "@/shared/components/layout/components/header"
-import { UserProfile } from "../model/types"
+import {
+  HeaderLogo,
+  HeaderUserDropdown,
+} from "@/shared/components/layout/components/header";
+import { UserProfile } from "../model/types";
 
 interface DashboardHeaderProps {
-  user: UserProfile
+  user: UserProfile;
 }
 
 export function DashboardHeader({ user }: DashboardHeaderProps) {
@@ -17,15 +20,15 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
 
         {/* Mobile Logo (Centered or Left) */}
         <div className="flex flex-1 md:hidden">
-            <HeaderLogo />
+          <HeaderLogo />
         </div>
 
         <div className="flex flex-1 items-center justify-end space-x-2">
           <HeaderUserDropdown
             user={{
-                name: user.fullName,
-                email: user.email,
-                avatar: user.avatarUrl
+              name: user.fullName,
+              email: user.email,
+              avatar: user.avatarUrl,
             }}
             onLogout={() => {
               // Logout action sẽ được triển khai sau
@@ -34,5 +37,5 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
         </div>
       </div>
     </header>
-  )
+  );
 }

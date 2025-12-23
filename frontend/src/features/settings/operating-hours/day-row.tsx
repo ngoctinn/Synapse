@@ -1,4 +1,4 @@
-  "use client";
+"use client";
 
 /**
  * DayRow - Component hiển thị và chỉnh sửa lịch 1 ngày
@@ -9,10 +9,19 @@ import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { TimeRangeInput } from "@/shared/ui/custom/time-range-input";
 import { Switch } from "@/shared/ui/switch";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/shared/ui/tooltip";
 import { AlertTriangle, Clipboard, Copy, Plus, X } from "lucide-react";
 import { useMemo } from "react";
-import { DEFAULT_CLOSE_TIME, DEFAULT_OPEN_TIME, validateTimeSlots } from "./constants";
+import {
+  DEFAULT_CLOSE_TIME,
+  DEFAULT_OPEN_TIME,
+  validateTimeSlots,
+} from "./constants";
 import { DaySchedule, TimeSlot } from "./types";
 
 interface DayRowProps {
@@ -37,22 +46,30 @@ export function DayRow({
   // Validate time slots for overlap
   const validation = useMemo(() => {
     if (!day.isOpen || day.timeSlots.length === 0) {
-      return { isValid: true, errors: [], invalidSlotIndexes: [], overlappingPairs: [] };
+      return {
+        isValid: true,
+        errors: [],
+        invalidSlotIndexes: [],
+        overlappingPairs: [],
+      };
     }
     return validateTimeSlots(day.timeSlots);
   }, [day.isOpen, day.timeSlots]);
 
   const isSlotOverlapping = (index: number) => {
-    return validation.overlappingPairs.some(([i, j]: [number, number]) => i === index || j === index);
+    return validation.overlappingPairs.some(
+      ([i, j]: [number, number]) => i === index || j === index
+    );
   };
 
   const handleToggle = (checked: boolean) => {
     onChange({
       ...day,
       isOpen: checked,
-      timeSlots: checked && day.timeSlots.length === 0
-        ? [{ start: DEFAULT_OPEN_TIME, end: DEFAULT_CLOSE_TIME }]
-        : day.timeSlots,
+      timeSlots:
+        checked && day.timeSlots.length === 0
+          ? [{ start: DEFAULT_OPEN_TIME, end: DEFAULT_CLOSE_TIME }]
+          : day.timeSlots,
     });
   };
 
@@ -80,15 +97,15 @@ export function DayRow({
     <TooltipProvider delayDuration={300}>
       <div
         className={cn(
-          "flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-xl border transition-all",
+          "flex flex-col items-start gap-4 rounded-xl border p-4 transition-all sm:flex-row sm:items-center",
           isCopySource
-            ? "bg-primary/5 border-primary ring-1 ring-primary"
+            ? "bg-primary/5 border-primary ring-primary ring-1"
             : "bg-card hover:border-sidebar-accent",
-            !day.isOpen && !isCopySource && "bg-muted/20 opacity-80"
+          !day.isOpen && !isCopySource && "bg-muted/20 opacity-80"
         )}
       >
         {/* Toggle & Label */}
-        <div className="flex items-center gap-3 w-32 shrink-0">
+        <div className="flex w-32 shrink-0 items-center gap-3">
           <Switch
             checked={day.isOpen}
             onCheckedChange={handleToggle}
@@ -98,7 +115,7 @@ export function DayRow({
           <label
             htmlFor={`switch-${day.dayOfWeek}`}
             className={cn(
-              "font-medium cursor-pointer text-sm select-none",
+              "cursor-pointer select-none text-sm font-medium",
               day.isOpen ? "text-foreground" : "text-muted-foreground"
             )}
           >
@@ -107,7 +124,7 @@ export function DayRow({
         </div>
 
         {/* Time Slots Area */}
-        <div className="flex-1 flex flex-col gap-2 w-full">
+        <div className="flex w-full flex-1 flex-col gap-2">
           {day.isOpen ? (
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-2">
@@ -130,7 +147,7 @@ export function DayRow({
                       variant="ghost"
                       size="icon"
                       onClick={addSlot}
-                      className="size-8 rounded-full text-primary hover:bg-primary/10 hover:text-primary"
+                      className="text-primary hover:bg-primary/10 hover:text-primary size-8 rounded-full"
                     >
                       <Plus className="size-4" />
                     </Button>
@@ -139,45 +156,52 @@ export function DayRow({
                 </Tooltip>
               </div>
 
-               {/* Errors */}
-               {!validation.isValid && (
-                <div className="flex items-start gap-1.5 text-destructive text-xs mt-1">
-                  <AlertTriangle className="size-3.5 mt-0.5 shrink-0" />
+              {/* Errors */}
+              {!validation.isValid && (
+                <div className="text-destructive mt-1 flex items-start gap-1.5 text-xs">
+                  <AlertTriangle className="mt-0.5 size-3.5 shrink-0" />
                   <span>{validation.errors.join(", ")}</span>
                 </div>
               )}
             </div>
           ) : (
-             <span className="text-sm text-muted-foreground italic px-2">Đóng cửa</span>
+            <span className="text-muted-foreground px-2 text-sm italic">
+              Đóng cửa
+            </span>
           )}
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-1 shrink-0 ml-auto sm:ml-0">
+        <div className="ml-auto flex shrink-0 items-center gap-1 sm:ml-0">
           {isCopySource ? (
             <Button
               variant="secondary"
               size="sm"
               onClick={onCancelCopy}
-              className="h-8 text-xs hover:bg-muted/80 text-foreground"
+              className="hover:bg-muted/80 text-foreground h-8 text-xs"
             >
-              <X className="size-3.5 mr-1.5" />
+              <X className="mr-1.5 size-3.5" />
               Hủy
             </Button>
           ) : isPasteTarget ? (
-             <Button
+            <Button
               variant="default"
               size="sm"
               onClick={onPaste}
-              className="h-8 text-xs animate-in fade-in zoom-in-95 duration-200"
+              className="animate-in fade-in zoom-in-95 h-8 text-xs duration-200"
             >
-              <Clipboard className="size-3.5 mr-1.5" />
+              <Clipboard className="mr-1.5 size-3.5" />
               Dán
             </Button>
           ) : (
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" onClick={onCopy} className="size-8 text-muted-foreground">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onCopy}
+                  className="text-muted-foreground size-8"
+                >
                   <Copy className="size-4" />
                 </Button>
               </TooltipTrigger>
@@ -189,4 +213,3 @@ export function DayRow({
     </TooltipProvider>
   );
 }
-

@@ -1,11 +1,11 @@
-export type MessageStatus = 'sent' | 'delivered' | 'read';
+export type MessageStatus = "sent" | "delivered" | "read";
 
 export interface ChatUser {
   id: string;
   name: string;
   avatar: string;
-  role: 'customer' | 'admin' | 'receptionist';
-  status: 'online' | 'offline' | 'busy';
+  role: "customer" | "admin" | "receptionist";
+  status: "online" | "offline" | "busy";
 }
 
 export interface Message {
@@ -14,7 +14,7 @@ export interface Message {
   content: string;
   timestamp: string;
   status: MessageStatus;
-  type: 'text' | 'image' | 'system';
+  type: "text" | "image" | "system";
   attachments?: string[];
 }
 

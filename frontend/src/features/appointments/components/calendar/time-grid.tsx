@@ -16,7 +16,6 @@ import { cn } from "@/shared/lib/utils";
 import { DEFAULT_WORKING_HOURS, HOUR_HEIGHT } from "../../constants";
 import type { DensityMode } from "../../model/types";
 
-
 interface TimeGridProps {
   /** Ngày để xác định current time indicator */
   date: Date;
@@ -41,7 +40,6 @@ interface TimeSlotInternal {
   label: string;
   isHourStart: boolean;
 }
-
 
 export function TimeGrid({
   date,
@@ -104,7 +102,7 @@ export function TimeGrid({
       {/* ============================================ */}
       {/* TIME LABELS COLUMN */}
       {/* ============================================ */}
-      <div className="flex-none w-14 sm:w-16 relative border-r border-border/50 bg-muted/30">
+      <div className="border-border/50 bg-muted/30 relative w-14 flex-none border-r sm:w-16">
         {timeSlots
           .filter((slot) => slot.isHourStart)
           .map((slot) => {
@@ -112,7 +110,7 @@ export function TimeGrid({
             return (
               <div
                 key={`label-${slot.hour}`}
-                className="absolute right-2 -translate-y-1/2 text-xs text-muted-foreground font-medium"
+                className="text-muted-foreground absolute right-2 -translate-y-1/2 text-xs font-medium"
                 style={{ top }}
               >
                 {slot.label}
@@ -124,7 +122,7 @@ export function TimeGrid({
       {/* ============================================ */}
       {/* GRID AREA */}
       {/* ============================================ */}
-      <div className="flex-1 relative">
+      <div className="relative flex-1">
         {/* Horizontal Lines (giờ và nửa giờ) */}
         {timeSlots.map((slot, index) => {
           const top = index * slotHeight;
@@ -144,7 +142,7 @@ export function TimeGrid({
 
         {/* Bottom border */}
         <div
-          className="absolute left-0 right-0 border-t border-border/60"
+          className="border-border/60 absolute left-0 right-0 border-t"
           style={{ top: totalHeight }}
         />
 
@@ -153,11 +151,11 @@ export function TimeGrid({
         {/* ============================================ */}
         {currentTimePosition !== null && (
           <div
-            className="absolute left-0 right-0 z-20 pointer-events-none"
+            className="pointer-events-none absolute left-0 right-0 z-20"
             style={{ top: currentTimePosition }}
           >
             {/* Red dot */}
-            <div className="absolute -left-1.5 -top-1.5 w-3 h-3 rounded-full bg-red-500 shadow-md" />
+            <div className="absolute -left-1.5 -top-1.5 h-3 w-3 rounded-full bg-red-500 shadow-md" />
             {/* Red line */}
             <div className="absolute left-0 right-0 h-0.5 bg-red-500 shadow-sm" />
           </div>
@@ -171,7 +169,6 @@ export function TimeGrid({
     </div>
   );
 }
-
 
 /**
  * Tính vị trí top và height cho một event dựa trên thời gian

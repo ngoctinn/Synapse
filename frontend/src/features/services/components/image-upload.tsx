@@ -13,7 +13,12 @@ interface ImageUploadProps {
   className?: string;
 }
 
-export function ImageUpload({ value, onChange, disabled, className }: ImageUploadProps) {
+export function ImageUpload({
+  value,
+  onChange,
+  disabled,
+  className,
+}: ImageUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | undefined>(value);
 
@@ -45,7 +50,7 @@ export function ImageUpload({ value, onChange, disabled, className }: ImageUploa
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-110"
             />
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
+            <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover:opacity-100">
               <Button
                 type="button"
                 variant="destructive"
@@ -53,7 +58,7 @@ export function ImageUpload({ value, onChange, disabled, className }: ImageUploa
                 onClick={handleRemove}
                 disabled={disabled}
                 aria-label="Xóa ảnh đại diện"
-                className="h-9 w-9 rounded-full shadow-lg scale-90 group-hover:scale-100 transition-transform duration-300"
+                className="h-9 w-9 scale-90 rounded-full shadow-lg transition-transform duration-300 group-hover:scale-100"
               >
                 <X className="size-4" />
               </Button>
@@ -64,11 +69,13 @@ export function ImageUpload({ value, onChange, disabled, className }: ImageUploa
             onClick={() => fileInputRef.current?.click()}
             className="upload-trigger-dashed group"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-transparent to-muted/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="p-4 rounded-full bg-background shadow-sm mb-3 group-hover:scale-110 group-hover:shadow-md transition-all duration-300 relative z-10">
-              <ImagePlus className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors duration-300" />
+            <div className="to-muted/20 absolute inset-0 bg-gradient-to-br from-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <div className="bg-background relative z-10 mb-3 rounded-full p-4 shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:shadow-md">
+              <ImagePlus className="text-muted-foreground group-hover:text-primary h-6 w-6 transition-colors duration-300" />
             </div>
-            <span className="text-xs text-muted-foreground font-medium group-hover:text-primary transition-colors duration-300 relative z-10">Tải ảnh lên</span>
+            <span className="text-muted-foreground group-hover:text-primary relative z-10 text-xs font-medium transition-colors duration-300">
+              Tải ảnh lên
+            </span>
           </div>
         )}
         <input

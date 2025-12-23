@@ -10,30 +10,30 @@
 import { differenceInMinutes, format } from "date-fns";
 import { vi } from "date-fns/locale";
 import {
-    Calendar,
-    CheckCircle2,
-    Clock,
-    Edit,
-    MoreHorizontal,
-    Phone,
-    Trash2,
-    User,
-    UserX,
-    XCircle,
+  Calendar,
+  CheckCircle2,
+  Clock,
+  Edit,
+  MoreHorizontal,
+  Phone,
+  Trash2,
+  User,
+  UserX,
+  XCircle,
 } from "lucide-react";
 
 import { cn } from "@/shared/lib/utils";
 import {
-    Button,
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-    Separator,
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Separator,
 } from "@/shared/ui";
 
 import { APPOINTMENT_STATUS_CONFIG } from "../../constants";
@@ -87,9 +87,7 @@ export function EventPopover({
     minutesSinceStart <= 30;
 
   // No-Show: Nếu đã quá 15 phút sau giờ hẹn mà vẫn chưa check-in
-  const canMarkNoShow =
-    event.status === "CONFIRMED" &&
-    minutesSinceStart > 15;
+  const canMarkNoShow = event.status === "CONFIRMED" && minutesSinceStart > 15;
 
   // Cancel: Chỉ có thể hủy pending hoặc confirmed
   const canCancel = event.status === "PENDING" || event.status === "CONFIRMED";
@@ -97,21 +95,17 @@ export function EventPopover({
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
-      <PopoverContent
-        className="w-80 p-0"
-        align="start"
-        sideOffset={8}
-      >
+      <PopoverContent className="w-80 p-0" align="start" sideOffset={8}>
         {/* Header với màu dịch vụ */}
         <div
-          className="p-4 rounded-t-lg"
+          className="rounded-t-lg p-4"
           style={{ backgroundColor: event.color + "15" }}
         >
           <div className="flex items-start justify-between gap-3">
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               {/* Service Name */}
               <h4
-                className="font-semibold text-base leading-tight"
+                className="text-base font-semibold leading-tight"
                 style={{ color: event.color }}
               >
                 {event.appointment.serviceName}
@@ -120,13 +114,13 @@ export function EventPopover({
               {/* Status Badge */}
               <div
                 className={cn(
-                  "inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-xs",
+                  "mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs",
                   statusConfig.bgColor,
                   statusConfig.color
                 )}
               >
                 <span
-                  className="w-1.5 h-1.5 rounded-full"
+                  className="h-1.5 w-1.5 rounded-full"
                   style={{ backgroundColor: "currentColor" }}
                 />
                 {statusConfig.label}
@@ -142,35 +136,44 @@ export function EventPopover({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={onView}>
-                  <Calendar className="size-4 mr-2" />
+                  <Calendar className="mr-2 size-4" />
                   Xem chi tiết
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={onEdit}>
-                  <Edit className="size-4 mr-2" />
+                  <Edit className="mr-2 size-4" />
                   Chỉnh sửa
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 {canCheckIn && (
-                  <DropdownMenuItem onClick={onCheckIn} className="text-emerald-600">
-                    <CheckCircle2 className="size-4 mr-2" />
+                  <DropdownMenuItem
+                    onClick={onCheckIn}
+                    className="text-emerald-600"
+                  >
+                    <CheckCircle2 className="mr-2 size-4" />
                     Check-in khách
                   </DropdownMenuItem>
                 )}
                 {canMarkNoShow && (
-                  <DropdownMenuItem onClick={onNoShow} className="text-gray-600">
-                    <UserX className="size-4 mr-2" />
+                  <DropdownMenuItem
+                    onClick={onNoShow}
+                    className="text-gray-600"
+                  >
+                    <UserX className="mr-2 size-4" />
                     Đánh dấu không đến
                   </DropdownMenuItem>
                 )}
                 {canCancel && (
-                  <DropdownMenuItem onClick={onCancel} className="text-amber-600">
-                    <XCircle className="size-4 mr-2" />
+                  <DropdownMenuItem
+                    onClick={onCancel}
+                    className="text-amber-600"
+                  >
+                    <XCircle className="mr-2 size-4" />
                     Hủy lịch hẹn
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={onDelete} className="text-red-600">
-                  <Trash2 className="size-4 mr-2" />
+                  <Trash2 className="mr-2 size-4" />
                   Xóa
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -179,25 +182,27 @@ export function EventPopover({
         </div>
 
         {/* Content */}
-        <div className="p-4 space-y-3">
+        <div className="space-y-3 p-4">
           {/* Time */}
           <div className="flex items-center gap-3 text-sm">
-            <Clock className="size-4 text-muted-foreground flex-shrink-0" />
+            <Clock className="text-muted-foreground size-4 flex-shrink-0" />
             <div>
               <div className="font-medium">{timeRange}</div>
-              <div className="text-xs text-muted-foreground">{dateStr}</div>
+              <div className="text-muted-foreground text-xs">{dateStr}</div>
             </div>
           </div>
 
           {/* Customer */}
           <div className="flex items-start gap-3 text-sm">
-            <User className="size-4 text-muted-foreground flex-shrink-0 mt-0.5" />
+            <User className="text-muted-foreground mt-0.5 size-4 flex-shrink-0" />
             <div>
-              <div className="font-medium">{event.appointment.customerName}</div>
+              <div className="font-medium">
+                {event.appointment.customerName}
+              </div>
               {event.appointment.customerPhone && (
                 <a
                   href={`tel:${event.appointment.customerPhone}`}
-                  className="text-xs text-primary hover:underline flex items-center gap-1"
+                  className="text-primary flex items-center gap-1 text-xs hover:underline"
                 >
                   <Phone className="h-3 w-3" />
                   {event.appointment.customerPhone}
@@ -209,7 +214,7 @@ export function EventPopover({
           {/* Staff */}
           <div className="flex items-center gap-3 text-sm">
             <div
-              className="w-4 h-4 rounded-full flex-shrink-0"
+              className="h-4 w-4 flex-shrink-0 rounded-full"
               style={{ backgroundColor: event.color }}
             />
             <span>{event.staffName}</span>
@@ -217,7 +222,7 @@ export function EventPopover({
 
           {/* Resource (if any) */}
           {event.appointment.resourceName && (
-            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+            <div className="text-muted-foreground flex items-center gap-3 text-sm">
               <span className="text-base">📍</span>
               <span>{event.appointment.resourceName}</span>
             </div>
@@ -227,7 +232,7 @@ export function EventPopover({
         <Separator />
 
         {/* Footer Actions */}
-        <div className="p-3 flex items-center gap-2">
+        <div className="flex items-center gap-2 p-3">
           {canCheckIn ? (
             <>
               <Button
@@ -243,7 +248,7 @@ export function EventPopover({
                 className="flex-1 bg-emerald-600 hover:bg-emerald-700"
                 onClick={onCheckIn}
               >
-                <CheckCircle2 className="size-4 mr-1.5" />
+                <CheckCircle2 className="mr-1.5 size-4" />
                 Check-in
               </Button>
             </>
@@ -263,7 +268,7 @@ export function EventPopover({
                 className="flex-1"
                 onClick={onNoShow}
               >
-                <UserX className="size-4 mr-1.5" />
+                <UserX className="mr-1.5 size-4" />
                 Không đến
               </Button>
             </>
@@ -287,4 +292,3 @@ export function EventPopover({
     </Popover>
   );
 }
-

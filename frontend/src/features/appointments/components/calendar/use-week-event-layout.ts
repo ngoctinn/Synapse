@@ -31,10 +31,7 @@ export function useWeekEventLayout({
 
   // Position events with overlap handling
   const positionedEventsByDay = useMemo(() => {
-    const result = new Map<
-      string,
-      ReturnType<typeof calculateEventLayout>
-    >();
+    const result = new Map<string, ReturnType<typeof calculateEventLayout>>();
 
     for (const [dateKey, dayEvents] of eventsByDay) {
       const positioned = calculateEventLayout(dayEvents, startHour, hourHeight);

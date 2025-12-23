@@ -288,5 +288,3 @@ export const MOCK_STAFF: Staff[] = [
     skills: [MOCK_SKILLS[7], MOCK_SKILLS[0]],
   },
 ];
-
-

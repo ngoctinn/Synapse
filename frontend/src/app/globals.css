@@ -41,7 +41,8 @@
   --font-mono: jetbrains mono, monospace;
   --radius: 0.5rem;
   --shadow-sm: 0 1px 2px 0 oklch(0% 0 0deg / 5%);
-  --shadow: 0 4px 6px -1px oklch(0% 0 0deg / 5%), 0 2px 4px -2px oklch(0% 0 0deg / 3%);
+  --shadow:
+    0 4px 6px -1px oklch(0% 0 0deg / 5%), 0 2px 4px -2px oklch(0% 0 0deg / 3%);
   --alert-warning: oklch(96% 0.08 85deg);
   --alert-warning-foreground: oklch(40% 0.1 50deg);
   --alert-warning-border: oklch(90% 0.08 85deg);
@@ -68,7 +69,7 @@
   --muted-foreground: oklch(70% 0.02 260deg);
   --accent: oklch(30% 0.08 85deg);
   --accent-foreground: oklch(95% 0.05 85deg);
-  --destructive: oklch(55.% 0.22 25deg);
+  --destructive: oklch(55% 0.22 25deg);
   --destructive-foreground: oklch(100% 0 0deg);
   --border: oklch(25% 0.02 260deg);
   --input: oklch(25% 0.02 260deg);
@@ -86,7 +87,7 @@
   --sidebar-accent-foreground: oklch(95% 0.01 260deg);
   --sidebar-border: oklch(25% 0.02 260deg);
   --sidebar-ring: oklch(68% 0.15 200deg);
-  --alert-warning: oklch(28.% 0.06 85deg);
+  --alert-warning: oklch(28% 0.06 85deg);
   --alert-warning-foreground: oklch(95% 0.08 85deg);
   --alert-warning-border: oklch(35% 0.06 85deg);
   --alert-success: oklch(25% 0.06 155deg);
@@ -164,7 +165,9 @@
   body {
     @apply bg-background text-foreground antialiased;
 
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
   }
 
   html {
@@ -178,27 +181,27 @@
 
 @layer utilities {
   .glass {
-    @apply bg-background border border-border shadow-sm;
+    @apply bg-background border-border border shadow-sm;
   }
 
   .focus-premium:not([aria-invalid="true"]) {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/50 transition-all duration-200;
+    @apply focus-visible:ring-primary/20 focus-visible:border-primary/50 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2;
   }
 
   .focus-premium[aria-invalid="true"] {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/20 focus-visible:border-destructive transition-all duration-200;
+    @apply focus-visible:ring-destructive/20 focus-visible:border-destructive transition-all duration-200 focus-visible:outline-none focus-visible:ring-2;
   }
 
   .glass-card {
-    @apply bg-card border border-border shadow-md transition-all duration-300;
+    @apply bg-card border-border border shadow-md transition-all duration-300;
   }
 
   .surface-card {
-    @apply bg-background rounded-lg border border-border;
+    @apply bg-background border-border rounded-lg border;
   }
 
   .header-sticky {
-    @apply sticky top-0 z-50 w-full border-b transition-all duration-200 bg-background;
+    @apply bg-background sticky top-0 z-50 w-full border-b transition-all duration-200;
   }
 
   .shadow-premium-sm {
@@ -214,19 +217,20 @@
   }
 
   .shadow-premium-primary {
-    box-shadow: 0 8px 12px -3px var(--primary-shadow, oklch(48% 0.14 200deg / 10%));
+    box-shadow: 0 8px 12px -3px
+      var(--primary-shadow, oklch(48% 0.14 200deg / 10%));
   }
 
   .text-gradient-premium {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-500 to-pink-500;
+    @apply from-primary bg-gradient-to-r via-purple-500 to-pink-500 bg-clip-text text-transparent;
   }
 
   .btn-hero {
-    @apply h-12 px-8 text-lg rounded-full transition-all hover:scale-105 active:scale-95;
+    @apply h-12 rounded-full px-8 text-lg transition-all hover:scale-105 active:scale-95;
   }
 
   .bg-blob {
-    @apply absolute rounded-full blur-[80px] -z-10 opacity-30 pointer-events-none;
+    @apply pointer-events-none absolute -z-10 rounded-full opacity-30 blur-[80px];
   }
 
   .table-first-cell-padding {
@@ -238,15 +242,15 @@
   }
 
   .indicator-online {
-    @apply bg-emerald-500 ring-2 ring-background;
+    @apply ring-background bg-emerald-500 ring-2;
   }
 
   .indicator-offline {
-    @apply bg-muted-foreground/30 ring-2 ring-background dark:bg-muted-foreground/40;
+    @apply bg-muted-foreground/30 ring-background dark:bg-muted-foreground/40 ring-2;
   }
 
   .indicator-busy {
-    @apply bg-amber-500 ring-2 ring-background;
+    @apply ring-background bg-amber-500 ring-2;
   }
 
   .animate-fade-in {
@@ -289,11 +293,11 @@
   }
 
   .sheet-header {
-    @apply px-6 py-3 border-b;
+    @apply border-b px-6 py-3;
   }
 
   .sheet-footer {
-    @apply px-6 py-3 border-t sm:justify-between flex-row items-center gap-4 bg-background;
+    @apply bg-background flex-row items-center gap-4 border-t px-6 py-3 sm:justify-between;
   }
 
   .sidebar-inner-base {
@@ -301,11 +305,11 @@
   }
 
   .empty-state-container {
-    @apply flex flex-col items-center justify-center py-16 text-center border rounded-lg bg-background border-dashed border-border;
+    @apply bg-background border-border flex flex-col items-center justify-center rounded-lg border border-dashed py-16 text-center;
   }
 
   .close-button-base {
-    @apply absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none ring-offset-background focus:ring-ring;
+    @apply rounded-xs focus:outline-hidden ring-offset-background focus:ring-ring absolute right-4 top-4 opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none;
   }
 
   .command-dialog-styling {
@@ -343,27 +347,27 @@
   }
 
   .slider-thumb-base {
-    @apply border-primary ring-ring/50 block size-4 shrink-0 rounded-full border bg-white shadow-sm transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50;
+    @apply border-primary ring-ring/50 focus-visible:outline-hidden block size-4 shrink-0 rounded-full border bg-white shadow-sm transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 disabled:pointer-events-none disabled:opacity-50;
   }
 
   .scroll-area-viewport-base {
-    @apply focus-visible:ring-ring/50 size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:outline-1;
+    @apply focus-visible:ring-ring/50 size-full rounded-[inherit] outline-none transition-[color,box-shadow] focus-visible:outline-1 focus-visible:ring-[3px];
   }
 
   .permission-checkbox {
-    @apply h-5 w-5 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground pointer-events-none;
+    @apply data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground pointer-events-none h-5 w-5;
   }
 
   .permission-locked-icon {
-    @apply h-8 w-8 flex items-center justify-center text-muted-foreground/30 bg-muted/10 rounded-md;
+    @apply text-muted-foreground/30 bg-muted/10 flex h-8 w-8 items-center justify-center rounded-md;
   }
 
   .sticky-header-blur {
-    @apply sticky top-0 z-30 bg-background border-b;
+    @apply bg-background sticky top-0 z-30 border-b;
   }
 
   .sidebar-rail-styling {
-    @apply hover:after:bg-sidebar-border absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] sm:flex;
+    @apply hover:after:bg-sidebar-border absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] group-data-[side=left]:-right-4 group-data-[side=right]:left-0 sm:flex;
   }
 
   .sheet-scroll-area {
@@ -371,15 +375,15 @@
   }
 
   .stats-card-premium {
-    @apply relative overflow-hidden border border-white/20 shadow-lg bg-card/80 backdrop-blur-2xl ring-1 ring-black/5 dark:bg-card/30 dark:ring-white/10 hover:scale-[1.01] hover:shadow-xl transition-all duration-200 cursor-pointer;
+    @apply bg-card/80 dark:bg-card/30 relative cursor-pointer overflow-hidden border border-white/20 shadow-lg ring-1 ring-black/5 backdrop-blur-2xl transition-all duration-200 hover:scale-[1.01] hover:shadow-xl dark:ring-white/10;
   }
 
   .hover-info-badge {
-    @apply flex items-center gap-1.5 py-1 px-2 rounded-md hover:bg-muted/50 transition-colors cursor-help border border-transparent hover:border-border;
+    @apply hover:bg-muted/50 hover:border-border flex cursor-help items-center gap-1.5 rounded-md border border-transparent px-2 py-1 transition-colors;
   }
 
   .selection-card-ring {
-    @apply flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer;
+    @apply border-muted bg-popover hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary flex cursor-pointer flex-col items-center justify-between rounded-md border-2 p-4;
   }
 
   .animate-in-top {
@@ -387,15 +391,15 @@
   }
 
   .upload-preview-container {
-    @apply w-[160px] h-[160px] rounded-xl overflow-hidden border border-border shrink-0 shadow-sm relative;
+    @apply border-border relative h-[160px] w-[160px] shrink-0 overflow-hidden rounded-xl border shadow-sm;
   }
 
   .upload-trigger-dashed {
-    @apply w-[160px] h-[160px] rounded-xl border-2 border-dashed border-muted-foreground/20 flex flex-col items-center justify-center cursor-pointer hover:bg-primary/5 hover:border-primary/50 transition-all duration-300 shrink-0 bg-muted/5 relative overflow-hidden;
+    @apply border-muted-foreground/20 hover:bg-primary/5 hover:border-primary/50 bg-muted/5 relative flex h-[160px] w-[160px] shrink-0 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed transition-all duration-300;
   }
 
   .sticky-alert-top {
-    @apply sticky top-0 z-20 mb-4 bg-primary/10 border border-primary/20 backdrop-blur-md text-primary rounded-lg p-3 flex items-center justify-between shadow-sm animate-in slide-in-from-top-2;
+    @apply bg-primary/10 border-primary/20 text-primary animate-in slide-in-from-top-2 sticky top-0 z-20 mb-4 flex items-center justify-between rounded-lg border p-3 shadow-sm backdrop-blur-md;
   }
 }
 

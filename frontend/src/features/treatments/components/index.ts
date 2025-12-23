@@ -1,3 +1,3 @@
-export * from "./treatment-table"
-export * from "./treatment-sheet"
-export * from "./treatments-page"
+export * from "./treatment-table";
+export * from "./treatment-sheet";
+export * from "./treatments-page";

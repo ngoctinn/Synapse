@@ -43,13 +43,16 @@ export function AddScheduleSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-md p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
+      <SheetContent className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-md">
         {/* Header */}
-        <SheetHeader className="px-6 py-4 border-b shrink-0 space-y-0">
-          <SheetTitle className="text-lg font-semibold">Thêm ca làm việc</SheetTitle>
+        <SheetHeader className="shrink-0 space-y-0 border-b px-6 py-4">
+          <SheetTitle className="text-lg font-semibold">
+            Thêm ca làm việc
+          </SheetTitle>
           {staffName && date && (
-            <p className="text-sm text-muted-foreground mt-1">
-              Chọn ca cho <strong className="text-foreground">{staffName}</strong>
+            <p className="text-muted-foreground mt-1 text-sm">
+              Chọn ca cho{" "}
+              <strong className="text-foreground">{staffName}</strong>
               <br />
               <span className="capitalize">{dateStr}</span>
             </p>
@@ -59,7 +62,7 @@ export function AddScheduleSheet({
         {/* Content */}
         <div className="sheet-scroll-area">
           <div className="space-y-3">
-            <p className="text-sm font-medium text-muted-foreground">
+            <p className="text-muted-foreground text-sm font-medium">
               Chọn ca làm việc:
             </p>
 
@@ -72,7 +75,7 @@ export function AddScheduleSheet({
             ))}
 
             {MOCK_SHIFTS.length === 0 && (
-              <div className="text-center py-8 text-muted-foreground">
+              <div className="text-muted-foreground py-8 text-center">
                 Chưa có ca làm việc nào. Vui lòng tạo ca trước.
               </div>
             )}
@@ -80,8 +83,12 @@ export function AddScheduleSheet({
         </div>
 
         {/* Footer */}
-        <SheetFooter className="px-6 py-3 border-t bg-background">
-          <Button variant="outline" className="w-full h-9" onClick={() => onOpenChange(false)}>
+        <SheetFooter className="bg-background border-t px-6 py-3">
+          <Button
+            variant="outline"
+            className="h-9 w-full"
+            onClick={() => onOpenChange(false)}
+          >
             Hủy
           </Button>
         </SheetFooter>

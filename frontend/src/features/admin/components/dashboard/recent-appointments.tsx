@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card"
-import { Badge } from "@/shared/ui/badge"
-import { Button } from "@/shared/ui/button"
-import { MoreHorizontal, Scissors, Clock } from "lucide-react"
-import Link from "next/link"
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Badge } from "@/shared/ui/badge";
+import { Button } from "@/shared/ui/button";
+import { MoreHorizontal, Scissors, Clock } from "lucide-react";
+import Link from "next/link";
 
 export function RecentAppointments() {
   const appointments = [
@@ -15,7 +15,7 @@ export function RecentAppointments() {
       time: "14:30",
       status: "checked-in",
       staff: "Nguyễn An",
-      staffAvatar: ""
+      staffAvatar: "",
     },
     {
       id: "2",
@@ -24,41 +24,43 @@ export function RecentAppointments() {
       time: "15:00",
       status: "pending",
       staff: "Lê Bình",
-      staffAvatar: ""
+      staffAvatar: "",
     },
     {
-        id: "3",
-        customer: "Phạm Hồng Nhung",
-        service: "Gội đầu dưỡng sinh",
-        time: "15:15",
-        status: "pending",
-        staff: "Trương Cường",
-        staffAvatar: ""
-      },
-      {
-        id: "4",
-        customer: "Ngô Quốc Bảo",
-        service: "Trị liệu vai gáy",
-        time: "16:00",
-        status: "pending",
-        staff: "Đặng Dũng",
-        staffAvatar: ""
-      }
-  ]
+      id: "3",
+      customer: "Phạm Hồng Nhung",
+      service: "Gội đầu dưỡng sinh",
+      time: "15:15",
+      status: "pending",
+      staff: "Trương Cường",
+      staffAvatar: "",
+    },
+    {
+      id: "4",
+      customer: "Ngô Quốc Bảo",
+      service: "Trị liệu vai gáy",
+      time: "16:00",
+      status: "pending",
+      staff: "Đặng Dũng",
+      staffAvatar: "",
+    },
+  ];
 
   const statusMap = {
-    "pending": { label: "Sắp tới", variant: "secondary" as const },
+    pending: { label: "Sắp tới", variant: "secondary" as const },
     "checked-in": { label: "Đã đến", variant: "default" as const },
-    "completed": { label: "Hoàn thành", variant: "success" as const },
-    "cancelled": { label: "Đã hủy", variant: "destructive" as const }
-  }
+    completed: { label: "Hoàn thành", variant: "success" as const },
+    cancelled: { label: "Đã hủy", variant: "destructive" as const },
+  };
 
   return (
-    <Card className="border-none shadow-sm col-span-3">
+    <Card className="col-span-3 border-none shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle className="text-lg font-bold">Lịch hẹn sắp tới</CardTitle>
-          <p className="text-sm text-muted-foreground">Theo dõi các ca làm việc tiếp theo</p>
+          <p className="text-muted-foreground text-sm">
+            Theo dõi các ca làm việc tiếp theo
+          </p>
         </div>
         <Button variant="outline" size="sm" asChild>
           <Link href="/admin/appointments">Xem tất cả</Link>
@@ -67,26 +69,38 @@ export function RecentAppointments() {
       <CardContent>
         <div className="space-y-6">
           {appointments.map((apt) => (
-            <div key={apt.id} className="flex items-center justify-between group">
+            <div
+              key={apt.id}
+              className="group flex items-center justify-between"
+            >
               <div className="flex items-center gap-4">
-                <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-muted text-muted-foreground w-14 shrink-0 shadow-inner">
+                <div className="bg-muted text-muted-foreground flex w-14 shrink-0 flex-col items-center justify-center rounded-lg p-2 shadow-inner">
                   <span className="text-xs font-bold">{apt.time}</span>
                   <Clock className="size-3" />
                 </div>
                 <div>
-                  <div className="text-sm font-bold group-hover:text-primary transition-colors cursor-pointer">{apt.customer}</div>
-                  <div className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                  <div className="group-hover:text-primary cursor-pointer text-sm font-bold transition-colors">
+                    {apt.customer}
+                  </div>
+                  <div className="text-muted-foreground mt-0.5 flex items-center gap-1 text-xs">
                     <Scissors className="size-3" />
                     {apt.service}
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-6">
-                <div className="hidden md:flex flex-col items-end">
-                   <div className="text-xs font-medium">{apt.staff}</div>
-                   <div className="text-[10px] text-muted-foreground">Chuyên viên</div>
+                <div className="hidden flex-col items-end md:flex">
+                  <div className="text-xs font-medium">{apt.staff}</div>
+                  <div className="text-muted-foreground text-[10px]">
+                    Chuyên viên
+                  </div>
                 </div>
-                <Badge variant={statusMap[apt.status as keyof typeof statusMap].variant} className="min-w-[80px] justify-center">
+                <Badge
+                  variant={
+                    statusMap[apt.status as keyof typeof statusMap].variant
+                  }
+                  className="min-w-[80px] justify-center"
+                >
                   {statusMap[apt.status as keyof typeof statusMap].label}
                 </Badge>
                 <Button variant="ghost" size="icon" className="size-8">
@@ -98,5 +112,5 @@ export function RecentAppointments() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

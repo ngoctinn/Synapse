@@ -60,12 +60,12 @@ export function DayView({
   }, [dayEvents, startHour, hourHeight]);
 
   return (
-    <div className={cn("flex flex-col h-full min-h-0", className)}>
+    <div className={cn("flex h-full min-h-0 flex-col", className)}>
       {/* Date Header */}
       <DateHeader startDate={date} numberOfDays={1} singleDay />
 
       {/* Scrollable Time Grid */}
-      <ScrollArea className="flex-1 min-h-0">
+      <ScrollArea className="min-h-0 flex-1">
         <TimeGrid
           date={date}
           startHour={startHour}

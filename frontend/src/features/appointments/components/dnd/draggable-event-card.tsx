@@ -15,7 +15,6 @@ import type { CalendarEvent } from "../../model/types";
 import { EventCard } from "../event/event-card";
 import type { DragData } from "./calendar-dnd-context";
 
-
 interface DraggableEventCardProps {
   event: CalendarEvent;
   /** Variant hiển thị */
@@ -26,7 +25,6 @@ interface DraggableEventCardProps {
   onClick?: () => void;
   className?: string;
 }
-
 
 export function DraggableEventCard({
   event,
@@ -40,17 +38,12 @@ export function DraggableEventCard({
     event,
   };
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    isDragging,
-  } = useDraggable({
-    id: event.id,
-    data: dragData,
-    disabled,
-  });
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id: event.id,
+      data: dragData,
+      disabled,
+    });
 
   // Transform style khi drag
   const style = transform
@@ -65,7 +58,7 @@ export function DraggableEventCard({
       style={style}
       className={cn(
         "touch-none select-none",
-        isDragging && "opacity-40 z-50",
+        isDragging && "z-50 opacity-40",
         className
       )}
       {...listeners}

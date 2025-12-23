@@ -10,12 +10,21 @@ import { Button } from "@/shared/ui";
 import { useScheduleFilters } from "../../hooks/use-schedule-filters";
 import { useScheduleNavigation } from "../../hooks/use-schedule-navigation";
 import { useSchedules } from "../../hooks/use-schedules";
-import type { Schedule, ScheduleWithShift, Shift, Staff } from "../../model/types";
+import type {
+  Schedule,
+  ScheduleWithShift,
+  Shift,
+  Staff,
+} from "../../model/types";
 
 import { MonthView, WeekView } from "./calendar";
 import { ShiftLegend } from "./legend";
 import { SelectionToolbar, useSelection } from "./selection";
-import { AddScheduleSheet, ScheduleDetailSheet, ShiftManagerSheet } from "./sheets";
+import {
+  AddScheduleSheet,
+  ScheduleDetailSheet,
+  ShiftManagerSheet,
+} from "./sheets";
 import { ActionBar, DateNavigator, StaffFilter, ViewSwitcher } from "./toolbar";
 
 interface StaffSchedulingPageProps {
@@ -48,8 +57,13 @@ export function StaffSchedulingPage({
   } = useScheduleNavigation();
 
   // Filters hook
-  const { filters, filteredStaff, setStaffFilter, setRoleFilter, clearFilters } =
-    useScheduleFilters({ staffList });
+  const {
+    filters,
+    filteredStaff,
+    setStaffFilter,
+    setRoleFilter,
+    clearFilters,
+  } = useScheduleFilters({ staffList });
 
   // Schedules hook
   const {
@@ -79,8 +93,12 @@ export function StaffSchedulingPage({
   const [addSheetOpen, setAddSheetOpen] = useState(false);
   const [detailSheetOpen, setDetailSheetOpen] = useState(false);
   const [shiftManagerOpen, setShiftManagerOpen] = useState(false);
-  const [selectedCell, setSelectedCell] = useState<{ staffId: string; date: Date } | null>(null);
-  const [selectedSchedule, setSelectedSchedule] = useState<ScheduleWithShift | null>(null);
+  const [selectedCell, setSelectedCell] = useState<{
+    staffId: string;
+    date: Date;
+  } | null>(null);
+  const [selectedSchedule, setSelectedSchedule] =
+    useState<ScheduleWithShift | null>(null);
 
   // Handlers
   const handleAddScheduleClick = (staffId: string, date: Date) => {
@@ -162,14 +180,15 @@ export function StaffSchedulingPage({
 
   // Get staff name for sheet
   const selectedStaffName = selectedCell
-    ? staffList.find((s) => s.user_id === selectedCell.staffId)?.user.full_name ?? undefined
+    ? (staffList.find((s) => s.user_id === selectedCell.staffId)?.user
+        .full_name ?? undefined)
     : undefined;
 
   return (
-    <div className={cn("flex flex-col h-full min-h-0", className)}>
+    <div className={cn("flex h-full min-h-0 flex-col", className)}>
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 sticky-header-blur">
-        <div className="flex items-center gap-2 flex-wrap">
+      <div className="sticky-header-blur flex flex-col justify-between gap-3 p-4 sm:flex-row sm:items-center">
+        <div className="flex flex-wrap items-center gap-2">
           <ViewSwitcher value={view} onChange={changeView} />
           <DateNavigator
             date={currentDate}
@@ -182,7 +201,7 @@ export function StaffSchedulingPage({
           />
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex flex-wrap items-center gap-2">
           <StaffFilter
             staffList={staffList}
             selectedStaffIds={filters.staffIds}
@@ -196,7 +215,10 @@ export function StaffSchedulingPage({
           <Button
             variant={selectionMode ? "secondary" : "outline"}
             size="sm"
-            className={cn("h-8 px-3 gap-2", selectionMode && "bg-primary/10 text-primary")}
+            className={cn(
+              "h-8 gap-2 px-3",
+              selectionMode && "bg-primary/10 text-primary"
+            )}
             onClick={toggleSelectionMode}
           >
             <MousePointer2 className="size-4" />
@@ -212,7 +234,7 @@ export function StaffSchedulingPage({
       </div>
 
       {/* Calendar View */}
-      <div className="flex-1 min-h-0 overflow-auto">
+      <div className="min-h-0 flex-1 overflow-auto">
         {view === "week" ? (
           <WeekView
             staffList={filteredStaff}
@@ -236,7 +258,7 @@ export function StaffSchedulingPage({
       </div>
 
       {/* Legend */}
-      <div className="hidden lg:flex items-center justify-center py-2 border-t bg-muted/20">
+      <div className="bg-muted/20 hidden items-center justify-center border-t py-2 lg:flex">
         <ShiftLegend />
       </div>
 
@@ -268,7 +290,10 @@ export function StaffSchedulingPage({
         onPublish={publishSchedule}
       />
 
-      <ShiftManagerSheet open={shiftManagerOpen} onOpenChange={setShiftManagerOpen} />
+      <ShiftManagerSheet
+        open={shiftManagerOpen}
+        onOpenChange={setShiftManagerOpen}
+      />
     </div>
   );
 }

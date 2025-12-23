@@ -13,20 +13,20 @@ import { useMemo, useState } from "react";
 
 import { cn } from "@/shared/lib/utils";
 import {
-    Button,
-    ToggleGroup,
-    ToggleGroupItem,
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger
+  Button,
+  ToggleGroup,
+  ToggleGroupItem,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
 } from "@/shared/ui";
 
 import { DEFAULT_WORKING_HOURS, ZOOM_LEVEL_OPTIONS } from "../../constants";
 import type {
-    CalendarEvent,
-    ResourceType,
-    TimelineResource,
-    ZoomLevel,
+  CalendarEvent,
+  ResourceType,
+  TimelineResource,
+  ZoomLevel,
 } from "../../model/types";
 import { TimelineHeader } from "./timeline-header";
 import { TimelineRow } from "./timeline-row";
@@ -115,11 +115,11 @@ export function ResourceTimeline({
   };
 
   return (
-    <div className={cn("flex flex-col h-full min-h-0", className)}>
+    <div className={cn("flex h-full min-h-0 flex-col", className)}>
       {/* ============================================ */}
       {/* TOOLBAR */}
       {/* ============================================ */}
-      <div className="flex items-center justify-between gap-4 p-3 border-b border-border/50 bg-muted/30">
+      <div className="border-border/50 bg-muted/30 flex items-center justify-between gap-4 border-b p-3">
         {/* Resource Type Toggle */}
         <ToggleGroup
           type="single"
@@ -130,7 +130,7 @@ export function ResourceTimeline({
           <ToggleGroupItem
             value="staff"
             size="sm"
-            className="gap-1.5 px-3 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+            className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground gap-1.5 px-3"
           >
             <Users className="size-4" />
             <span className="hidden sm:inline">Nhân viên</span>
@@ -138,7 +138,7 @@ export function ResourceTimeline({
           <ToggleGroupItem
             value="room"
             size="sm"
-            className="gap-1.5 px-3 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+            className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground gap-1.5 px-3"
           >
             <DoorOpen className="size-4" />
             <span className="hidden sm:inline">Phòng</span>
@@ -147,7 +147,7 @@ export function ResourceTimeline({
 
         {/* Zoom Controls */}
         <div className="flex items-center gap-1">
-          <span className="text-xs text-muted-foreground mr-2 hidden sm:inline">
+          <span className="text-muted-foreground mr-2 hidden text-xs sm:inline">
             Thu phóng:
           </span>
 
@@ -166,7 +166,7 @@ export function ResourceTimeline({
             <TooltipContent>Phóng to (chi tiết hơn)</TooltipContent>
           </Tooltip>
 
-          <span className="text-xs font-medium w-12 text-center bg-muted px-2 py-1 rounded">
+          <span className="bg-muted w-12 rounded px-2 py-1 text-center text-xs font-medium">
             {zoomLevel} phút
           </span>
 
@@ -204,8 +204,8 @@ export function ResourceTimeline({
           {/* Rows */}
           {resources.length === 0 ? (
             <div className="flex items-center justify-center py-12">
-              <div className="text-center space-y-2">
-                <p className="text-sm text-muted-foreground">
+              <div className="space-y-2 text-center">
+                <p className="text-muted-foreground text-sm">
                   {resourceType === "staff"
                     ? "Không có nhân viên nào đang làm việc"
                     : "Không có phòng nào khả dụng"}

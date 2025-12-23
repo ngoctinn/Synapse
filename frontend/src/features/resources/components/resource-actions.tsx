@@ -1,11 +1,11 @@
- "use client";
+"use client";
 
 import { useDeleteAction } from "@/shared/hooks";
 import {
-    DeleteConfirmDialog,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    TableRowActions,
+  DeleteConfirmDialog,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  TableRowActions,
 } from "@/shared/ui";
 import { History } from "lucide-react";
 import { deleteResource } from "../actions";

@@ -2,17 +2,8 @@
 
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger
-} from "@/shared/ui/popover";
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger
-} from "@/shared/ui/tabs";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { CheckCheck, Settings } from "lucide-react";
 import { useState } from "react";
 import { useNotificationStore } from "../hooks/use-notification-store";
@@ -23,10 +14,10 @@ interface NotificationPopoverProps {
 }
 
 export function NotificationPopover({ children }: NotificationPopoverProps) {
-  const notifications = useNotificationStore(state => state.notifications);
-  const unreadCount = useNotificationStore(state => state.unreadCount);
-  const markAllAsRead = useNotificationStore(state => state.markAllAsRead);
-  const markAsRead = useNotificationStore(state => state.markAsRead);
+  const notifications = useNotificationStore((state) => state.notifications);
+  const unreadCount = useNotificationStore((state) => state.unreadCount);
+  const markAllAsRead = useNotificationStore((state) => state.markAllAsRead);
+  const markAsRead = useNotificationStore((state) => state.markAsRead);
   const [open, setOpen] = useState(false);
 
   const handleMarkAllRead = () => {
@@ -39,51 +30,45 @@ export function NotificationPopover({ children }: NotificationPopoverProps) {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        {children}
-      </PopoverTrigger>
+      <PopoverTrigger asChild>{children}</PopoverTrigger>
       <PopoverContent className="w-[380px] p-0" align="end" sideOffset={8}>
-        <div className="flex items-center justify-between p-4 border-b">
+        <div className="flex items-center justify-between border-b p-4">
           <div className="flex items-center gap-2">
-            <h4 className="font-semibold text-sm">Thông báo</h4>
-            {unreadCount > 0 && (
-              <Badge preset="count">
-                {unreadCount}
-              </Badge>
-            )}
+            <h4 className="text-sm font-semibold">Thông báo</h4>
+            {unreadCount > 0 && <Badge preset="count">{unreadCount}</Badge>}
           </div>
           <div className="flex items-center gap-1">
-             <Button
+            <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-primary"
+              className="text-muted-foreground hover:text-primary h-8 w-8"
               title="Đánh dấu tất cả đã đọc"
               onClick={handleMarkAllRead}
             >
-              <CheckCheck className="w-4 h-4" />
+              <CheckCheck className="h-4 w-4" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground h-8 w-8"
               title="Cài đặt thông báo"
             >
-              <Settings className="w-4 h-4" />
+              <Settings className="h-4 w-4" />
             </Button>
           </div>
         </div>
 
         <Tabs defaultValue="all" className="w-full">
-          <TabsList className="w-full justify-start rounded-none border-b bg-transparent p-0 h-10">
+          <TabsList className="h-10 w-full justify-start rounded-none border-b bg-transparent p-0">
             <TabsTrigger
               value="all"
-              className="px-4 py-2.5 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent relative h-10"
+              className="data-[state=active]:border-primary relative h-10 rounded-none border-b-2 border-transparent px-4 py-2.5 data-[state=active]:bg-transparent"
             >
               Tất cả
             </TabsTrigger>
             <TabsTrigger
               value="unread"
-              className="px-4 py-2.5 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent h-10"
+              className="data-[state=active]:border-primary h-10 rounded-none border-b-2 border-transparent px-4 py-2.5 data-[state=active]:bg-transparent"
             >
               Chưa đọc
             </TabsTrigger>
@@ -91,14 +76,17 @@ export function NotificationPopover({ children }: NotificationPopoverProps) {
 
           <TabsContent value="all" className="m-0 focus-visible:outline-none">
             <NotificationList
-                notifications={notifications}
-                onItemClick={handleItemClick}
+              notifications={notifications}
+              onItemClick={handleItemClick}
             />
           </TabsContent>
-          <TabsContent value="unread" className="m-0 focus-visible:outline-none">
+          <TabsContent
+            value="unread"
+            className="m-0 focus-visible:outline-none"
+          >
             <NotificationList
-                notifications={notifications.filter(n => !n.read)}
-                onItemClick={handleItemClick}
+              notifications={notifications.filter((n) => !n.read)}
+              onItemClick={handleItemClick}
             />
           </TabsContent>
         </Tabs>

@@ -19,28 +19,28 @@ export function ServiceFilter({
   onSearch,
 }: ServiceFilterProps) {
   return (
-    <div className="space-y-6 mb-12">
+    <div className="mb-12 space-y-6">
       {/* Search Bar */}
-      <div className="relative max-w-lg mx-auto group">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors duration-300" />
+      <div className="group relative mx-auto max-w-lg">
+        <Search className="text-muted-foreground group-focus-within:text-primary absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 transition-colors duration-300" />
         <Input
           placeholder="Tìm kiếm liệu trình..."
-          className="pl-12 h-12 rounded-full bg-background border-border hover:border-primary/50 focus:border-primary transition-all shadow-sm text-base"
+          className="bg-background border-border hover:border-primary/50 focus:border-primary h-12 rounded-full pl-12 text-base shadow-sm transition-all"
           onChange={(e) => onSearch(e.target.value)}
         />
       </div>
 
       {/* Category Pills */}
-      <div className="flex justify-center flex-wrap gap-2">
+      <div className="flex flex-wrap justify-center gap-2">
         <Button
           variant={selectedCategory === "All" ? "default" : "outline"}
           size="sm"
           onClick={() => onSelectCategory("All")}
           className={cn(
-            "rounded-full px-6 h-9 transition-all duration-300",
+            "h-9 rounded-full px-6 transition-all duration-300",
             selectedCategory === "All"
-              ? "shadow-md bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105"
-              : "bg-background/50 backdrop-blur-sm border-dashed hover:border-solid hover:bg-muted/50"
+              ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md hover:scale-105"
+              : "bg-background/50 hover:bg-muted/50 border-dashed backdrop-blur-sm hover:border-solid"
           )}
         >
           Tất cả
@@ -52,10 +52,10 @@ export function ServiceFilter({
             size="sm"
             onClick={() => onSelectCategory(cat)}
             className={cn(
-              "rounded-full px-6 h-9 transition-all duration-300",
+              "h-9 rounded-full px-6 transition-all duration-300",
               selectedCategory === cat
-                ? "shadow-md bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105"
-                : "bg-background/50 backdrop-blur-sm border-dashed hover:border-solid hover:bg-muted/50"
+                ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md hover:scale-105"
+                : "bg-background/50 hover:bg-muted/50 border-dashed backdrop-blur-sm hover:border-solid"
             )}
           >
             {cat}

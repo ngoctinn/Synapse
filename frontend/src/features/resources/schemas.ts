@@ -9,7 +9,11 @@ export const resourceSchema = z.object({
   capacity: z.coerce.number().min(0).optional(),
   description: z.string().optional(),
   tags: z.array(z.string()).optional(),
-  setupTime: z.coerce.number().min(0, "Thời gian chuẩn bị không được âm").optional().default(0),
+  setupTime: z.coerce
+    .number()
+    .min(0, "Thời gian chuẩn bị không được âm")
+    .optional()
+    .default(0),
 });
 
 export type ResourceFormValues = z.infer<typeof resourceSchema>;

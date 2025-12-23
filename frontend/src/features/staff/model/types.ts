@@ -1,6 +1,6 @@
 import { Skill } from "@/features/services";
 
-export type Role = 'admin' | 'receptionist' | 'technician' | 'customer';
+export type Role = "admin" | "receptionist" | "technician" | "customer";
 
 export interface User {
   id: string;
@@ -61,10 +61,10 @@ export interface CommissionReportItem {
 // Scheduling Types - Maps to Database Design
 
 /** Chế độ xem lịch */
-export type ScheduleViewType = 'week' | 'month';
+export type ScheduleViewType = "week" | "month";
 
 /** Trạng thái lịch */
-export type ScheduleStatus = 'DRAFT' | 'PUBLISHED';
+export type ScheduleStatus = "DRAFT" | "PUBLISHED";
 
 /**
  * Ca làm việc (Master Data)
@@ -72,10 +72,10 @@ export type ScheduleStatus = 'DRAFT' | 'PUBLISHED';
  */
 export interface Shift {
   id: string;
-  name: string;           // "Ca Sáng", "Ca Chiều", "Ca Tối"
-  startTime: string;      // "08:00" (DB: start_time TIME)
-  endTime: string;        // "12:00" (DB: end_time TIME)
-  colorCode: string;      // "#3b82f6" (DB: color_code VARCHAR(7))
+  name: string; // "Ca Sáng", "Ca Chiều", "Ca Tối"
+  startTime: string; // "08:00" (DB: start_time TIME)
+  endTime: string; // "12:00" (DB: end_time TIME)
+  colorCode: string; // "#3b82f6" (DB: color_code VARCHAR(7))
 }
 
 /**
@@ -85,9 +85,9 @@ export interface Shift {
  */
 export interface Schedule {
   id: string;
-  staffId: string;        // DB: staff_id UUID FK → staff_profiles
-  shiftId: string;        // DB: shift_id UUID FK → shifts
-  workDate: string;       // DB: work_date DATE (format: "2025-12-16")
+  staffId: string; // DB: staff_id UUID FK → staff_profiles
+  shiftId: string; // DB: shift_id UUID FK → shifts
+  workDate: string; // DB: work_date DATE (format: "2025-12-16")
   status: ScheduleStatus; // DB: status schedule_status
 }
 
@@ -117,14 +117,14 @@ export interface ScheduleFilters {
 export interface ScheduleCell {
   staffId: string;
   date: Date;
-  dateStr: string;  // "yyyy-MM-dd"
+  dateStr: string; // "yyyy-MM-dd"
   schedules: ScheduleWithShift[];
 }
 
 /** Slot đã chọn (Selection Mode) */
 export interface SelectedSlot {
   staffId: string;
-  dateStr: string;  // "yyyy-MM-dd"
+  dateStr: string; // "yyyy-MM-dd"
 }
 
 // Permission Types

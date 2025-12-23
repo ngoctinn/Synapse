@@ -3,7 +3,14 @@
 import { Check, Send, Trash2, X } from "lucide-react";
 
 import { cn } from "@/shared/lib/utils";
-import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui";
+import {
+  Button,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/ui";
 
 import { MOCK_SHIFTS } from "../../../model/shifts";
 import type { Shift } from "../../../model/types";
@@ -40,16 +47,16 @@ export function SelectionToolbar({
   return (
     <div
       className={cn(
-        "fixed bottom-6 left-1/2 -translate-x-1/2 z-50",
-        "flex items-center gap-2 px-4 py-2.5 rounded-full",
-        "bg-background/95 backdrop-blur-md border shadow-xl",
+        "fixed bottom-6 left-1/2 z-50 -translate-x-1/2",
+        "flex items-center gap-2 rounded-full px-4 py-2.5",
+        "bg-background/95 border shadow-xl backdrop-blur-md",
         "animate-in slide-in-from-bottom-4 duration-300",
         className
       )}
     >
       {/* Selected count */}
-      <div className="flex items-center gap-2 px-2 border-r pr-3">
-        <Check className="size-4 text-primary" />
+      <div className="flex items-center gap-2 border-r px-2 pr-3">
+        <Check className="text-primary size-4" />
         <span className="text-sm font-medium">
           Đã chọn <strong>{selectedCount}</strong> ô
         </span>
@@ -65,7 +72,7 @@ export function SelectionToolbar({
             <SelectItem key={shift.id} value={shift.id}>
               <div className="flex items-center gap-2">
                 <div
-                  className="w-2 h-2 rounded-full"
+                  className="h-2 w-2 rounded-full"
                   style={{ backgroundColor: shift.colorCode }}
                 />
                 {shift.name}
@@ -79,7 +86,7 @@ export function SelectionToolbar({
       <Button
         variant="outline"
         size="sm"
-        className="h-8 px-3 gap-1.5"
+        className="h-8 gap-1.5 px-3"
         onClick={onPublishAll}
       >
         <Send className="size-3.5" />
@@ -90,7 +97,7 @@ export function SelectionToolbar({
       <Button
         variant="outline"
         size="sm"
-        className="h-8 px-3 gap-1.5 text-destructive hover:text-destructive"
+        className="text-destructive hover:text-destructive h-8 gap-1.5 px-3"
         onClick={onDeleteAll}
       >
         <Trash2 className="size-3.5" />

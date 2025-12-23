@@ -135,7 +135,7 @@ export function FilterSelect({
           </Label>
         )}
         <Select value={currentValue || "all"} onValueChange={handleChange}>
-          <SelectTrigger id={selectId} className="h-10 w-full bg-background">
+          <SelectTrigger id={selectId} className="bg-background h-10 w-full">
             <SelectValue placeholder={placeholder || allLabel} />
           </SelectTrigger>
           <SelectContent>
@@ -160,7 +160,7 @@ export function FilterSelect({
           </SelectContent>
         </Select>
       </div>
-      {withSeparator && <div className="h-[1px] bg-border/50 mt-6" />}
+      {withSeparator && <div className="bg-border/50 mt-6 h-[1px]" />}
     </div>
   );
 }

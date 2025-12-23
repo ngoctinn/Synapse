@@ -39,7 +39,9 @@ export function ConflictWarning({
     <Alert
       variant={hasError ? "destructive" : "default"}
       className={cn(
-        hasWarning && !hasError && "border-amber-500 bg-amber-50 dark:bg-amber-950/20",
+        hasWarning &&
+          !hasError &&
+          "border-amber-500 bg-amber-50 dark:bg-amber-950/20",
         className
       )}
     >
@@ -50,16 +52,12 @@ export function ConflictWarning({
         )}
       />
       <AlertTitle className="flex items-center justify-between">
-        <span>
-          {hasError
-            ? "Xung đột lịch hẹn"
-            : "Cảnh báo lịch hẹn"}
-        </span>
+        <span>{hasError ? "Xung đột lịch hẹn" : "Cảnh báo lịch hẹn"}</span>
         {onDismiss && (
           <Button
             variant="ghost"
             size="icon"
-            className="h-6 w-6 -mr-2"
+            className="-mr-2 h-6 w-6"
             onClick={onDismiss}
           >
             <X className="h-3 w-3" />
@@ -71,23 +69,23 @@ export function ConflictWarning({
           <div
             key={`${conflict.eventId}-${index}`}
             className={cn(
-              "flex items-start gap-2 text-sm p-2 rounded-md",
+              "flex items-start gap-2 rounded-md p-2 text-sm",
               conflict.severity === "error"
                 ? "bg-red-100 dark:bg-red-900/20"
                 : "bg-amber-100 dark:bg-amber-900/20"
             )}
           >
             {conflict.type === "overlap" ? (
-              <Clock className="size-4 flex-shrink-0 mt-0.5" />
+              <Clock className="mt-0.5 size-4 flex-shrink-0" />
             ) : (
-              <User className="size-4 flex-shrink-0 mt-0.5" />
+              <User className="mt-0.5 size-4 flex-shrink-0" />
             )}
             <div className="flex-1">
               <p>{conflict.message}</p>
               {onViewConflict && conflict.eventId && (
                 <button
                   type="button"
-                  className="text-primary text-xs hover:underline mt-1"
+                  className="text-primary mt-1 text-xs hover:underline"
                   onClick={() => onViewConflict(conflict.eventId)}
                 >
                   Xem lịch hẹn xung đột →
@@ -119,8 +117,8 @@ export function ConflictIndicator({
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-1 px-2 py-0.5 rounded-full",
-        "bg-red-100 text-red-700 text-xs font-medium",
+        "inline-flex items-center gap-1 rounded-full px-2 py-0.5",
+        "bg-red-100 text-xs font-medium text-red-700",
         "dark:bg-red-900/30 dark:text-red-400",
         className
       )}

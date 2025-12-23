@@ -11,7 +11,8 @@ const beVietnamPro = Be_Vietnam_Pro({
 
 export const metadata: Metadata = {
   title: "Synapse - Quản lý Spa Thông minh",
-  description: "Nền tảng quản lý vận hành và chăm sóc khách hàng chuyên biệt cho Spa",
+  description:
+    "Nền tảng quản lý vận hành và chăm sóc khách hàng chuyên biệt cho Spa",
 };
 
 export default function RootLayout({
@@ -22,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="vi" suppressHydrationWarning>
       <body
-        className={`${beVietnamPro.variable} antialiased font-sans`}
+        className={`${beVietnamPro.variable} font-sans antialiased`}
         suppressHydrationWarning
       >
         {children}

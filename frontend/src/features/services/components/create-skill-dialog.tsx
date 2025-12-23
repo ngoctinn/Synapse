@@ -2,12 +2,12 @@
 
 import { Button } from "@/shared/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/shared/ui/dialog";
 import { Plus } from "lucide-react";
 import { useState } from "react";
@@ -19,7 +19,11 @@ export function CreateSkillDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="text-xs transition-all hover:scale-[1.02] shadow-sm" startContent={<Plus className="size-3.5" />}>
+        <Button
+          size="sm"
+          className="text-xs shadow-sm transition-all hover:scale-[1.02]"
+          startContent={<Plus className="size-3.5" />}
+        >
           Thêm kỹ năng
         </Button>
       </DialogTrigger>

@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Button } from "@/shared/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover"
-import { cn } from "@/shared/lib/utils"
-import { getYear, setYear } from "date-fns"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import * as React from "react";
+import { Button } from "@/shared/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
+import { cn } from "@/shared/lib/utils";
+import { getYear, setYear } from "date-fns";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface YearPickerProps {
-  date?: Date | undefined
-  onSelect?: (date: Date) => void
-  disabled?: boolean
-  className?: string
+  date?: Date | undefined;
+  onSelect?: (date: Date) => void;
+  disabled?: boolean;
+  className?: string;
 }
 
 export function YearPicker({
@@ -20,34 +20,34 @@ export function YearPicker({
   disabled,
   className,
 }: YearPickerProps) {
-  const [open, setOpen] = React.useState(false)
-  const selectedYear = date ? getYear(date) : getYear(new Date())
-  const [currentYearPage, setCurrentYearPage] = React.useState(selectedYear)
+  const [open, setOpen] = React.useState(false);
+  const selectedYear = date ? getYear(date) : getYear(new Date());
+  const [currentYearPage, setCurrentYearPage] = React.useState(selectedYear);
 
   // 12 years per page (3 cols x 4 rows)
-  const startYear = Math.floor(currentYearPage / 12) * 12
-  const years = Array.from({ length: 12 }, (_, i) => startYear + i)
+  const startYear = Math.floor(currentYearPage / 12) * 12;
+  const years = Array.from({ length: 12 }, (_, i) => startYear + i);
 
   const handleYearSelect = (year: number) => {
-    const dateToEmit = date ? setYear(date, year) : setYear(new Date(), year)
-    onSelect?.(dateToEmit)
-    setOpen(false)
-  }
+    const dateToEmit = date ? setYear(date, year) : setYear(new Date(), year);
+    onSelect?.(dateToEmit);
+    setOpen(false);
+  };
 
   const navigate = (direction: "prev" | "next") => {
     if (direction === "prev") {
-      setCurrentYearPage((prev) => prev - 12)
+      setCurrentYearPage((prev) => prev - 12);
     } else {
-      setCurrentYearPage((prev) => prev + 12)
+      setCurrentYearPage((prev) => prev + 12);
     }
-  }
+  };
 
   // Sync page with selected date when opening
   React.useEffect(() => {
     if (open) {
-      setCurrentYearPage(selectedYear)
+      setCurrentYearPage(selectedYear);
     }
-  }, [open, selectedYear])
+  }, [open, selectedYear]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -65,7 +65,7 @@ export function YearPicker({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-4" align="center">
-        <div className="flex items-center justify-between mb-4">
+        <div className="mb-4 flex items-center justify-between">
           <Button
             variant="ghost"
             size="icon"
@@ -74,7 +74,7 @@ export function YearPicker({
           >
             <ChevronLeft className="size-4" />
           </Button>
-          <div className="font-semibold text-sm">
+          <div className="text-sm font-semibold">
             {startYear} - {startYear + 11}
           </div>
           <Button
@@ -105,5 +105,5 @@ export function YearPicker({
         </div>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

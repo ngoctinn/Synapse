@@ -21,23 +21,29 @@ export function ReviewCard({ review }: ReviewCardProps) {
   };
 
   return (
-    <div className="flex items-start space-x-4 p-4 border rounded-lg bg-card">
-      <Avatar className="w-10 h-10">
-        <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${review.customerName}`} />
+    <div className="bg-card flex items-start space-x-4 rounded-lg border p-4">
+      <Avatar className="h-10 w-10">
+        <AvatarImage
+          src={`https://api.dicebear.com/7.x/initials/svg?seed=${review.customerName}`}
+        />
         <AvatarFallback>{getInitials(review.customerName)}</AvatarFallback>
       </Avatar>
       <div className="flex-1 space-y-2">
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <div>
             <p className="font-semibold">{review.customerName}</p>
-            <p className="text-sm text-muted-foreground">{review.serviceName}</p>
+            <p className="text-muted-foreground text-sm">
+              {review.serviceName}
+            </p>
           </div>
           <StarRating rating={review.rating} size={16} readOnly />
         </div>
         {review.comment && (
-          <p className="text-sm text-muted-foreground italic">&quot;{review.comment}&quot;</p>
+          <p className="text-muted-foreground text-sm italic">
+            &quot;{review.comment}&quot;
+          </p>
         )}
-        <p className="text-xs text-right text-muted-foreground">
+        <p className="text-muted-foreground text-right text-xs">
           {format(review.createdAt, "dd/MM/yyyy", { locale: vi })}
         </p>
       </div>

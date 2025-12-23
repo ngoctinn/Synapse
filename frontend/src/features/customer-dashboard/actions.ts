@@ -11,33 +11,40 @@ import type { UserProfile } from "./model/types";
 // === Server-only API functions (gộp từ services/api.ts) ===
 
 export async function getCustomerProfile(): Promise<UserProfile> {
-  await new Promise(r => setTimeout(r, 200)); // Simulate delay
+  await new Promise((r) => setTimeout(r, 200)); // Simulate delay
   return MOCK_USER;
 }
 
 export async function getCustomerAppointments() {
-  await new Promise(r => setTimeout(r, 200));
+  await new Promise((r) => setTimeout(r, 200));
   return MOCK_APPOINTMENTS;
 }
 
 export async function getCustomerTreatments() {
-  await new Promise(r => setTimeout(r, 200));
+  await new Promise((r) => setTimeout(r, 200));
   return MOCK_TREATMENTS;
 }
 
-async function updateCustomerProfile(data: Partial<UserProfile>): Promise<UserProfile> {
-  await new Promise(r => setTimeout(r, 200));
+async function updateCustomerProfile(
+  data: Partial<UserProfile>
+): Promise<UserProfile> {
+  await new Promise((r) => setTimeout(r, 200));
   return { ...MOCK_USER, ...data };
 }
 
-export async function cancelBooking(id: string, reason: string): Promise<ActionResponse<unknown>> {
+export async function cancelBooking(
+  id: string,
+  reason: string
+): Promise<ActionResponse<unknown>> {
   const result = await adminCancelAppointment(id, reason);
   revalidatePath("/dashboard/appointments");
   return result;
 }
 
-
-export async function updateProfile(prevState: unknown, formData: FormData): Promise<ActionResponse> {
+export async function updateProfile(
+  prevState: unknown,
+  formData: FormData
+): Promise<ActionResponse> {
   const rawData = {
     fullName: formData.get("fullName"),
     phone: formData.get("phone")?.toString() || undefined,
@@ -50,7 +57,10 @@ export async function updateProfile(prevState: unknown, formData: FormData): Pro
   const validatedFields = profileSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
-    return error("Dữ liệu không hợp lệ", validatedFields.error.flatten().fieldErrors);
+    return error(
+      "Dữ liệu không hợp lệ",
+      validatedFields.error.flatten().fieldErrors
+    );
   }
 
   const avatarFile = formData.get("avatar") as File;
@@ -66,6 +76,8 @@ export async function updateProfile(prevState: unknown, formData: FormData): Pro
     revalidatePath("/dashboard/profile");
     return success(undefined, "Cập nhật hồ sơ thành công!");
   } catch (e) {
-    return error(`Đã có lỗi xảy ra: ${e instanceof Error ? e.message : String(e)}`);
+    return error(
+      `Đã có lỗi xảy ra: ${e instanceof Error ? e.message : String(e)}`
+    );
   }
 }

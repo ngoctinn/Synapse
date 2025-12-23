@@ -81,12 +81,12 @@ export function WeekView({
   });
 
   return (
-    <div className={cn("flex flex-col h-full min-h-0", className)}>
+    <div className={cn("flex h-full min-h-0 flex-col", className)}>
       {/* Date Header */}
       <DateHeader startDate={dateRange.start} numberOfDays={numberOfDays} />
 
       {/* Scrollable Grid Area */}
-      <ScrollArea className="flex-1 min-h-0">
+      <ScrollArea className="min-h-0 flex-1">
         <div
           className="grid"
           style={{
@@ -105,14 +105,15 @@ export function WeekView({
           {/* Day Columns */}
           {weekDays.map((day) => {
             const dateKey = day.toISOString().split("T")[0];
-            const dayPositionedEvents = positionedEventsByDay.get(dateKey) || [];
+            const dayPositionedEvents =
+              positionedEventsByDay.get(dateKey) || [];
             const isWeekend = day.getDay() === 0 || day.getDay() === 6;
 
             return (
               <div
                 key={dateKey}
                 className={cn(
-                  "relative border-r border-border/30 last:border-r-0",
+                  "border-border/30 relative border-r last:border-r-0",
                   isWeekend && "bg-muted/20"
                 )}
                 style={{ height: totalHeight }}
@@ -121,7 +122,7 @@ export function WeekView({
                 {Array.from({ length: totalHours }).map((_, hourIndex) => (
                   <div
                     key={`line-${hourIndex}`}
-                    className="absolute left-0 right-0 border-t border-border/30"
+                    className="border-border/30 absolute left-0 right-0 border-t"
                     style={{ top: hourIndex * hourHeight }}
                   />
                 ))}
@@ -130,7 +131,7 @@ export function WeekView({
                 {Array.from({ length: totalHours }).map((_, hourIndex) => (
                   <div
                     key={`half-${hourIndex}`}
-                    className="absolute left-0 right-0 border-t border-border/20 border-dashed"
+                    className="border-border/20 absolute left-0 right-0 border-t border-dashed"
                     style={{ top: hourIndex * hourHeight + hourHeight / 2 }}
                   />
                 ))}

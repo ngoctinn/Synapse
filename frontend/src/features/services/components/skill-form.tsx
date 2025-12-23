@@ -1,17 +1,17 @@
 "use client";
 
 import {
-    Button,
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-    Input,
-    showToast,
-    Textarea,
+  Button,
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+  showToast,
+  Textarea,
 } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Code, Tag } from "lucide-react";
@@ -47,7 +47,10 @@ export function SkillForm({ skill, onSuccess }: SkillFormProps) {
           : await createSkill(values);
 
         if (result.status === "success") {
-          showToast.success(skill ? "Cập nhật thành công" : "Tạo mới thành công", result.message);
+          showToast.success(
+            skill ? "Cập nhật thành công" : "Tạo mới thành công",
+            result.message
+          );
           if (onSuccess) {
             onSuccess();
           }
@@ -64,36 +67,44 @@ export function SkillForm({ skill, onSuccess }: SkillFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormField
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
-                <FormItem>
+              <FormItem>
                 <FormLabel>Tên kỹ năng</FormLabel>
                 <FormControl>
-                    <Input startContent={<Tag className="size-4" />} placeholder="VD: Massage Body" {...field} />
+                  <Input
+                    startContent={<Tag className="size-4" />}
+                    placeholder="VD: Massage Body"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
-                </FormItem>
+              </FormItem>
             )}
-            />
-            <FormField
+          />
+          <FormField
             control={form.control}
             name="code"
             render={({ field }) => (
-                <FormItem>
+              <FormItem>
                 <FormLabel>Mã kỹ năng</FormLabel>
                 <FormControl>
-                    <Input startContent={<Code className="size-4" />} placeholder="VD: SK_MASSAGE_BODY" {...field} />
+                  <Input
+                    startContent={<Code className="size-4" />}
+                    placeholder="VD: SK_MASSAGE_BODY"
+                    {...field}
+                  />
                 </FormControl>
                 <FormDescription>
-                    Mã duy nhất, viết hoa, không dấu cách.
+                  Mã duy nhất, viết hoa, không dấu cách.
                 </FormDescription>
                 <FormMessage />
-                </FormItem>
+              </FormItem>
             )}
-            />
+          />
         </div>
 
         <FormField
@@ -115,7 +126,7 @@ export function SkillForm({ skill, onSuccess }: SkillFormProps) {
           )}
         />
 
-        <div className="flex justify-end gap-4 pt-4 border-t">
+        <div className="flex justify-end gap-4 border-t pt-4">
           <Button type="submit" isLoading={isPending}>
             {skill ? "Cập nhật" : "Tạo mới"}
           </Button>

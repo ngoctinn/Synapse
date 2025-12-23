@@ -1,8 +1,8 @@
 import {
-    emailRequired,
-    fullNameRequired,
-    passwordRequired,
-    ValidationMessages,
+  emailRequired,
+  fullNameRequired,
+  passwordRequired,
+  ValidationMessages,
 } from "@/shared/lib/validations";
 import { z } from "zod";
 

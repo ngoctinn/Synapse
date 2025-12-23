@@ -56,7 +56,7 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
         <Calendar
-          className="h-12 w-12 text-muted-foreground/50"
+          className="text-muted-foreground/50 h-12 w-12"
           aria-hidden="true"
         />
         <h3 className="mt-4 text-lg font-semibold">Chưa có lịch hẹn</h3>
@@ -93,27 +93,27 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
       >
         {appointments.map((appt) => (
           <MotionItem key={appt.id} {...itemProps}>
-            <Card className="group overflow-hidden transition-all duration-200 hover:shadow-md hover:border-primary/50 h-full focus-within:ring-2 focus-within:ring-primary">
-              <CardHeader className="pb-3 bg-muted/30">
+            <Card className="hover:border-primary/50 focus-within:ring-primary group h-full overflow-hidden transition-all duration-200 focus-within:ring-2 hover:shadow-md">
+              <CardHeader className="bg-muted/30 pb-3">
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
                     <Badge
                       preset={getStatusPreset(appt.status)}
                       className="mb-2"
                     />
-                    <CardTitle className="text-base font-bold leading-tight group-hover:text-primary transition-colors">
+                    <CardTitle className="group-hover:text-primary text-base font-bold leading-tight transition-colors">
                       {appt.serviceName}
                     </CardTitle>
                   </div>
                 </div>
               </CardHeader>
               <CardContent className="grid gap-3 p-4 text-sm">
-                <div className="flex items-center gap-3 text-muted-foreground">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <div className="text-muted-foreground flex items-center gap-3">
+                  <div className="bg-primary/10 text-primary flex h-8 w-8 items-center justify-center rounded-full">
                     <Calendar className="size-4" aria-hidden="true" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-medium text-foreground">
+                    <span className="text-foreground font-medium">
                       {format(new Date(appt.startTime), "EEEE, dd/MM/yyyy", {
                         locale: vi,
                       })}
@@ -126,8 +126,8 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
                 </div>
 
                 {appt.resourceName && (
-                  <div className="flex items-center gap-3 text-muted-foreground">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                  <div className="text-muted-foreground flex items-center gap-3">
+                    <div className="bg-muted text-muted-foreground flex h-8 w-8 items-center justify-center rounded-full">
                       <MapPin className="size-4" aria-hidden="true" />
                     </div>
                     <span>{appt.resourceName || "Chưa xếp phòng"}</span>
@@ -135,21 +135,21 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
                 )}
 
                 {appt.staffName && (
-                  <div className="flex items-center gap-3 text-muted-foreground">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                  <div className="text-muted-foreground flex items-center gap-3">
+                    <div className="bg-muted text-muted-foreground flex h-8 w-8 items-center justify-center rounded-full">
                       <User className="size-4" aria-hidden="true" />
                     </div>
                     <span>KTV: {appt.staffName}</span>
                   </div>
                 )}
 
-                <div className="pt-2 mt-1 border-t flex gap-2 justify-end">
+                <div className="mt-1 flex justify-end gap-2 border-t pt-2">
                   {(appt.status === "PENDING" ||
                     appt.status === "CONFIRMED") && (
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                      className="text-red-500 hover:bg-red-50 hover:text-red-600"
                       onClick={() => handleCancelClick(appt)}
                     >
                       Hủy
@@ -158,7 +158,7 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="flex-1 group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+                    className="group-hover:bg-primary group-hover:text-primary-foreground flex-1 transition-colors"
                   >
                     Xem chi tiết
                   </Button>

@@ -1,8 +1,8 @@
-import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
-import { BOOKING_WIZARD_STORAGE_KEY } from '../constants';
-import { clearSessionId } from '../lib/session-id';
-import { BookingState, CustomerInfo, ServiceItem, TimeSlot } from '../types';
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
+import { BOOKING_WIZARD_STORAGE_KEY } from "../constants";
+import { clearSessionId } from "../lib/session-id";
+import { BookingState, CustomerInfo, ServiceItem, TimeSlot } from "../types";
 
 interface BookingActions {
   // Step 1: Services
@@ -11,10 +11,15 @@ interface BookingActions {
   setServices: (services: ServiceItem[]) => void;
 
   // Step 2: Staff
-  setStaff: (staffId: string | 'any' | null, staffName?: string) => void;
+  setStaff: (staffId: string | "any" | null, staffName?: string) => void;
 
   // Step 3: Time
-  setSlot: (date: Date, slot: TimeSlot, holdId: string, expiresAt: Date) => void;
+  setSlot: (
+    date: Date,
+    slot: TimeSlot,
+    holdId: string,
+    expiresAt: Date
+  ) => void;
   setSelectedDate: (date: Date | null) => void;
   setSelectedSlot: (slot: TimeSlot | null) => void;
   clearHold: () => void;
@@ -31,8 +36,8 @@ type BookingStore = BookingState & BookingActions;
 
 const initialState: BookingState = {
   selectedServices: [],
-  staffId: 'any', // Default to any staff for better availability
-  staffName: 'Bất kỳ nhân viên',
+  staffId: "any", // Default to any staff for better availability
+  staffName: "Bất kỳ nhân viên",
   selectedDate: null,
   selectedSlot: null,
   holdId: null,
@@ -53,12 +58,15 @@ export const useBookingStore = create<BookingStore>()(
         })),
       removeService: (serviceId) =>
         set((state) => ({
-          selectedServices: state.selectedServices.filter((s) => s.id !== serviceId),
+          selectedServices: state.selectedServices.filter(
+            (s) => s.id !== serviceId
+          ),
         })),
       setServices: (services) => set({ selectedServices: services }),
 
       // Step 2
-      setStaff: (staffId, staffName) => set({ staffId, staffName: staffName || null }),
+      setStaff: (staffId, staffName) =>
+        set({ staffId, staffName: staffName || null }),
 
       // Step 3
       setSlot: (date, slot, holdId, expiresAt) =>

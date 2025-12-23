@@ -20,7 +20,13 @@ import { Textarea } from "@/shared/ui/textarea";
 import { createWarranty, updateWarranty } from "../actions";
 import { warrantyCreateSchema, WarrantyFormValues } from "../model/schemas";
 import { WarrantyTicket } from "../model/types";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/ui/select";
 import { MOCK_TREATMENTS } from "@/features/treatments/model/mocks";
 
 interface WarrantySheetProps {
@@ -29,15 +35,22 @@ interface WarrantySheetProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function WarrantySheet({ mode, open, onOpenChange }: WarrantySheetProps) {
-
-  const { form, isPending, onSubmit } = useSheetForm<WarrantyFormValues, WarrantyTicket>({
+export function WarrantySheet({
+  mode,
+  open,
+  onOpenChange,
+}: WarrantySheetProps) {
+  const { form, isPending, onSubmit } = useSheetForm<
+    WarrantyFormValues,
+    WarrantyTicket
+  >({
     schema: warrantyCreateSchema,
     defaultValues: {
       customer_id: "",
       treatment_id: "",
       duration_months: 6,
-      terms: "Bảo hành kết quả điều trị trong thời hạn quy định. Không áp dụng nếu khách hàng không tuân thủ hướng dẫn chăm sóc.",
+      terms:
+        "Bảo hành kết quả điều trị trong thời hạn quy định. Không áp dụng nếu khách hàng không tuân thủ hướng dẫn chăm sóc.",
     },
     open,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -54,21 +67,29 @@ export function WarrantySheet({ mode, open, onOpenChange }: WarrantySheetProps) 
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-lg flex flex-col h-full">
+      <SheetContent className="flex h-full w-full flex-col sm:max-w-lg">
         <SheetHeader>
           <SheetTitle>Tạo phiếu bảo hành mới</SheetTitle>
         </SheetHeader>
 
         <Form {...form}>
-          <form onSubmit={onSubmit} className="flex-1 flex flex-col gap-6 mt-6 overflow-y-auto px-1">
+          <form
+            onSubmit={onSubmit}
+            className="mt-6 flex flex-1 flex-col gap-6 overflow-y-auto px-1"
+          >
             <div className="space-y-4">
               <FormField
                 control={form.control}
                 name="customer_id"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Khách hàng <span className="text-destructive">*</span></FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormLabel>
+                      Khách hàng <span className="text-destructive">*</span>
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Chọn khách hàng" />
@@ -76,13 +97,22 @@ export function WarrantySheet({ mode, open, onOpenChange }: WarrantySheetProps) 
                       </FormControl>
                       <SelectContent>
                         {/* Mock unique customers from treatments */}
-                        {Array.from(new Set(MOCK_TREATMENTS.map(t => JSON.stringify({id: t.customer_id, name: t.customer_name}))))
-                            .map(s => JSON.parse(s))
-                            .map((c: { id: string; name: string }) => (
-                          <SelectItem key={c.id} value={c.id}>
-                            {c.name}
-                          </SelectItem>
-                        ))}
+                        {Array.from(
+                          new Set(
+                            MOCK_TREATMENTS.map((t) =>
+                              JSON.stringify({
+                                id: t.customer_id,
+                                name: t.customer_name,
+                              })
+                            )
+                          )
+                        )
+                          .map((s) => JSON.parse(s))
+                          .map((c: { id: string; name: string }) => (
+                            <SelectItem key={c.id} value={c.id}>
+                              {c.name}
+                            </SelectItem>
+                          ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -95,15 +125,21 @@ export function WarrantySheet({ mode, open, onOpenChange }: WarrantySheetProps) 
                 name="treatment_id"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Liệu trình áp dụng <span className="text-destructive">*</span></FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormLabel>
+                      Liệu trình áp dụng{" "}
+                      <span className="text-destructive">*</span>
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Chọn liệu trình" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                         {MOCK_TREATMENTS.map((t) => (
+                        {MOCK_TREATMENTS.map((t) => (
                           <SelectItem key={t.id} value={t.id}>
                             {t.package_name} - {t.customer_name}
                           </SelectItem>
@@ -120,7 +156,10 @@ export function WarrantySheet({ mode, open, onOpenChange }: WarrantySheetProps) 
                 name="duration_months"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Thời hạn (tháng) <span className="text-destructive">*</span></FormLabel>
+                    <FormLabel>
+                      Thời hạn (tháng){" "}
+                      <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input type="number" min="1" {...field} />
                     </FormControl>
@@ -134,7 +173,10 @@ export function WarrantySheet({ mode, open, onOpenChange }: WarrantySheetProps) 
                 name="terms"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Điều khoản bảo hành <span className="text-destructive">*</span></FormLabel>
+                    <FormLabel>
+                      Điều khoản bảo hành{" "}
+                      <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Nhập điều khoản chi tiết..."
@@ -149,7 +191,11 @@ export function WarrantySheet({ mode, open, onOpenChange }: WarrantySheetProps) 
             </div>
 
             <SheetFooter className="mt-auto pt-6">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+              >
                 Hủy
               </Button>
               <Button type="submit" disabled={isPending}>

@@ -18,17 +18,14 @@ export default async function Page({
 
   // Fetch data
   const result = await getTreatments(page, 10, status, search);
-  const treatments = result.status === "success" ? result.data?.data ?? [] : [];
-  const total = result.status === "success" ? result.data?.total ?? 0 : 0;
+  const treatments =
+    result.status === "success" ? (result.data?.data ?? []) : [];
+  const total = result.status === "success" ? (result.data?.total ?? 0) : 0;
   const totalPages = Math.ceil(total / 10);
 
   return (
     <Suspense fallback={<div>Đang tải liệu trình...</div>}>
-      <TreatmentsPage
-        data={treatments}
-        page={page}
-        totalPages={totalPages}
-      />
+      <TreatmentsPage data={treatments} page={page} totalPages={totalPages} />
     </Suspense>
   );
 }

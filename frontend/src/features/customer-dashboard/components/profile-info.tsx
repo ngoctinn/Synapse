@@ -1,25 +1,41 @@
-"use client"
+"use client";
 
-import { PROFILE_LABELS } from "@/features/customer-dashboard/constants"
-import { ProfileInput } from "@/features/customer-dashboard"
-import { Button } from "@/shared/ui/button"
-import { DatePicker } from "@/shared/ui/custom/date-picker"
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/ui/form"
-import { Input } from "@/shared/ui/input"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip"
-import { format } from "date-fns"
-import { motion } from "framer-motion"
-import { Cake, Lock, MapPin, Phone, User } from "lucide-react"
-import { UseFormReturn } from "react-hook-form"
+import { PROFILE_LABELS } from "@/features/customer-dashboard/constants";
+import { ProfileInput } from "@/features/customer-dashboard";
+import { Button } from "@/shared/ui/button";
+import { DatePicker } from "@/shared/ui/custom/date-picker";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/shared/ui/form";
+import { Input } from "@/shared/ui/input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/shared/ui/tooltip";
+import { format } from "date-fns";
+import { motion } from "framer-motion";
+import { Cake, Lock, MapPin, Phone, User } from "lucide-react";
+import { UseFormReturn } from "react-hook-form";
 
 interface ProfileInfoProps {
-  form: UseFormReturn<ProfileInput>
-  isPending: boolean
-  minDate: Date
-  maxDate: Date
+  form: UseFormReturn<ProfileInput>;
+  isPending: boolean;
+  minDate: Date;
+  maxDate: Date;
 }
 
-export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoProps) {
+export function ProfileInfo({
+  form,
+  isPending,
+  minDate,
+  maxDate,
+}: ProfileInfoProps) {
   return (
     <div className="flex-1 space-y-6">
       <div className="grid grid-cols-1 gap-6">
@@ -31,7 +47,9 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
               <FormLabel>{PROFILE_LABELS.FULL_NAME}</FormLabel>
               <FormControl>
                 <Input
-                  startContent={<User className="w-4 h-4 text-muted-foreground" />}
+                  startContent={
+                    <User className="text-muted-foreground h-4 w-4" />
+                  }
                   placeholder={PROFILE_LABELS.FULL_NAME_PLACEHOLDER}
                   aria-invalid={!!form.formState.errors.fullName}
                   {...field}
@@ -56,7 +74,9 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
                     onChange={(date) => {
                       // Handle date selection: valid date -> format string, invalid -> error code, null -> empty
                       const newValue = date
-                        ? (isNaN(date.getTime()) ? "INVALID_DATE" : format(date, "yyyy-MM-dd"))
+                        ? isNaN(date.getTime())
+                          ? "INVALID_DATE"
+                          : format(date, "yyyy-MM-dd")
                         : "";
                       field.onChange(newValue);
                     }}
@@ -80,7 +100,9 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
                 <FormControl>
                   <Input
                     type="tel"
-                    startContent={<Phone className="w-4 h-4 text-muted-foreground" />}
+                    startContent={
+                      <Phone className="text-muted-foreground h-4 w-4" />
+                    }
                     placeholder={PROFILE_LABELS.PHONE_PLACEHOLDER}
                     aria-invalid={!!form.formState.errors.phone}
                     {...field}
@@ -103,19 +125,24 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
                   <Tooltip delayDuration={200}>
                     <TooltipTrigger asChild>
                       <div className="relative">
-                         <Input
+                        <Input
                           type="email"
                           readOnly
                           disabled
-                          startContent={<Lock className="w-4 h-4 text-muted-foreground" />}
+                          startContent={
+                            <Lock className="text-muted-foreground h-4 w-4" />
+                          }
                           placeholder={PROFILE_LABELS.EMAIL_PLACEHOLDER}
-                          className="h-10 bg-muted/30 text-muted-foreground cursor-not-allowed border-dashed focus-visible:ring-0 focus-visible:ring-offset-0"
+                          className="bg-muted/30 text-muted-foreground h-10 cursor-not-allowed border-dashed focus-visible:ring-0 focus-visible:ring-offset-0"
                           aria-invalid={!!form.formState.errors.email}
                           {...field}
                         />
                       </div>
                     </TooltipTrigger>
-                    <TooltipContent side="top" className="bg-popover text-popover-foreground text-xs shadow-md">
+                    <TooltipContent
+                      side="top"
+                      className="bg-popover text-popover-foreground text-xs shadow-md"
+                    >
                       <p>{PROFILE_LABELS.EMAIL_TOOLTIP}</p>
                     </TooltipContent>
                   </Tooltip>
@@ -134,7 +161,9 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
               <FormLabel>{PROFILE_LABELS.ADDRESS}</FormLabel>
               <FormControl>
                 <Input
-                  startContent={<MapPin className="w-4 h-4 text-muted-foreground" />}
+                  startContent={
+                    <MapPin className="text-muted-foreground h-4 w-4" />
+                  }
                   placeholder={PROFILE_LABELS.ADDRESS_PLACEHOLDER}
                   aria-invalid={!!form.formState.errors.address}
                   {...field}
@@ -153,12 +182,12 @@ export function ProfileInfo({ form, isPending, minDate, maxDate }: ProfileInfoPr
             disabled={!form.formState.isDirty}
             isLoading={isPending}
             size="default"
-            className="min-w-[140px] font-semibold shadow-lg shadow-primary/20 transition-all duration-300 hover:shadow-primary/40 hover:-translate-y-0.5"
+            className="shadow-primary/20 hover:shadow-primary/40 min-w-[140px] font-semibold shadow-lg transition-all duration-300 hover:-translate-y-0.5"
           >
             {PROFILE_LABELS.SUBMIT_BUTTON}
           </Button>
         </motion.div>
       </div>
     </div>
-  )
+  );
 }

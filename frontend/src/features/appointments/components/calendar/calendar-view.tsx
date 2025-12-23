@@ -2,11 +2,11 @@
 
 import { cn } from "@/shared/lib/utils";
 import type {
-    CalendarEvent,
-    CalendarViewType,
-    DateRange,
-    DensityMode,
-    TimelineResource,
+  CalendarEvent,
+  CalendarViewType,
+  DateRange,
+  DensityMode,
+  TimelineResource,
 } from "../../model/types";
 
 import { ResourceTimeline } from "../timeline";
@@ -56,10 +56,12 @@ export function CalendarView({
 }: CalendarViewProps) {
   if (isLoading) {
     return (
-      <div className={cn("flex items-center justify-center h-full", className)}>
+      <div className={cn("flex h-full items-center justify-center", className)}>
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-          <span className="text-sm text-muted-foreground">Đang tải lịch hẹn...</span>
+          <div className="border-primary h-8 w-8 animate-spin rounded-full border-2 border-t-transparent" />
+          <span className="text-muted-foreground text-sm">
+            Đang tải lịch hẹn...
+          </span>
         </div>
       </div>
     );

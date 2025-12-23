@@ -16,14 +16,11 @@ export const PaymentMethods = ({ value, onChange }: PaymentMethodsProps) => {
       <RadioGroup
         value={value}
         onValueChange={(val) => onChange(val as "COD" | "ONLINE")}
-        className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+        className="grid grid-cols-1 gap-4 sm:grid-cols-2"
       >
         <div>
           <RadioGroupItem value="COD" id="cod" className="peer sr-only" />
-          <Label
-            htmlFor="cod"
-            className="selection-card-ring"
-          >
+          <Label htmlFor="cod" className="selection-card-ring">
             <Wallet className="mb-3 h-6 w-6" />
             Thanh toán tại quầy
           </Label>
@@ -31,10 +28,7 @@ export const PaymentMethods = ({ value, onChange }: PaymentMethodsProps) => {
 
         <div>
           <RadioGroupItem value="ONLINE" id="online" className="peer sr-only" />
-          <Label
-            htmlFor="online"
-            className="selection-card-ring"
-          >
+          <Label htmlFor="online" className="selection-card-ring">
             <CreditCard className="mb-3 h-6 w-6" />
             Chuyển khoản ngân hàng
           </Label>

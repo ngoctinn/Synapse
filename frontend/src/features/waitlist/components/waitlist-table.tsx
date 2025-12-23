@@ -8,7 +8,14 @@ import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { showToast } from "@/shared/ui";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { CalendarClock, CheckCircle2, Clock, MoreHorizontal, Phone, XCircle } from "lucide-react";
+import {
+  CalendarClock,
+  CheckCircle2,
+  Clock,
+  MoreHorizontal,
+  Phone,
+  XCircle,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { updateWaitlistStatus, deleteWaitlistEntry } from "../actions";
@@ -44,7 +51,13 @@ export function WaitlistTable({
   const [editingEntry, setEditingEntry] = useState<WaitlistEntry | null>(null);
   const [, startTransition] = useTransition();
 
-  const { page: urlPage, sortBy, order, handlePageChange: urlPageChange, handleSort } = useTableParams({
+  const {
+    page: urlPage,
+    sortBy,
+    order,
+    handlePageChange: urlPageChange,
+    handleSort,
+  } = useTableParams({
     defaultSortBy: "created_at",
     defaultOrder: "desc",
   });
@@ -84,7 +97,7 @@ export function WaitlistTable({
       cell: (w) => (
         <div className="flex flex-col">
           <span className="font-medium">{w.customer_name}</span>
-          <div className="flex items-center text-xs text-muted-foreground gap-1">
+          <div className="text-muted-foreground flex items-center gap-1 text-xs">
             <Phone className="size-3" /> {w.phone_number}
           </div>
         </div>
@@ -101,8 +114,12 @@ export function WaitlistTable({
       sortable: true,
       cell: (w) => (
         <div className="flex flex-col text-sm">
-          <span>{format(new Date(w.preferred_date), "dd/MM/yyyy", { locale: vi })}</span>
-          <span className="text-muted-foreground text-xs">{w.preferred_time_slot}</span>
+          <span>
+            {format(new Date(w.preferred_date), "dd/MM/yyyy", { locale: vi })}
+          </span>
+          <span className="text-muted-foreground text-xs">
+            {w.preferred_time_slot}
+          </span>
         </div>
       ),
     },
@@ -110,7 +127,15 @@ export function WaitlistTable({
       header: "Trạng thái",
       accessorKey: "status",
       cell: (w) => {
-        const variants: Record<string, "default" | "secondary" | "destructive" | "outline" | "success" | "warning"> = {
+        const variants: Record<
+          string,
+          | "default"
+          | "secondary"
+          | "destructive"
+          | "outline"
+          | "success"
+          | "warning"
+        > = {
           pending: "warning",
           notified: "secondary", // Fixed invalid 'blue'
           converted: "success",
@@ -135,7 +160,10 @@ export function WaitlistTable({
       header: "Ghi chú",
       accessorKey: "notes",
       cell: (w) => (
-        <div className="max-w-[200px] truncate text-sm text-muted-foreground" title={w.notes || ""}>
+        <div
+          className="text-muted-foreground max-w-[200px] truncate text-sm"
+          title={w.notes || ""}
+        >
           {w.notes || "-"}
         </div>
       ),
@@ -154,17 +182,27 @@ export function WaitlistTable({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => handleStatusUpdate(w.id, "notified")}>
+              <DropdownMenuItem
+                onClick={() => handleStatusUpdate(w.id, "notified")}
+              >
                 <Clock className="mr-2 h-4 w-4" /> Đã thông báo
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleStatusUpdate(w.id, "converted")}>
+              <DropdownMenuItem
+                onClick={() => handleStatusUpdate(w.id, "converted")}
+              >
                 <CheckCircle2 className="mr-2 h-4 w-4" /> Chuyển thành lịch hẹn
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleStatusUpdate(w.id, "cancelled")} className="text-destructive">
+              <DropdownMenuItem
+                onClick={() => handleStatusUpdate(w.id, "cancelled")}
+                className="text-destructive"
+              >
                 <XCircle className="mr-2 h-4 w-4" /> Hủy yêu cầu
               </DropdownMenuItem>
-               <DropdownMenuItem onClick={() => handleDelete(w.id)} className="text-destructive">
+              <DropdownMenuItem
+                onClick={() => handleDelete(w.id)}
+                className="text-destructive"
+              >
                 Xóa vĩnh viễn
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -205,10 +243,10 @@ export function WaitlistTable({
 
       {/* Sheet create/edit placeholder - implemented next */}
       <WaitlistSheet
-         mode={editingEntry ? "edit" : "create"}
-         open={!!editingEntry}
-         onOpenChange={(open: boolean) => !open && setEditingEntry(null)}
-         data={editingEntry || undefined}
+        mode={editingEntry ? "edit" : "create"}
+        open={!!editingEntry}
+        onOpenChange={(open: boolean) => !open && setEditingEntry(null)}
+        data={editingEntry || undefined}
       />
     </>
   );

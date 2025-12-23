@@ -85,20 +85,20 @@ export function CustomerHistory() {
   return (
     <div className="space-y-6">
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {MOCK_STATS.map((stat, index) => (
           <div
             key={index}
-            className="flex items-center gap-4 p-4 rounded-xl border bg-card shadow-sm hover:shadow-md transition-shadow"
+            className="bg-card flex items-center gap-4 rounded-xl border p-4 shadow-sm transition-shadow hover:shadow-md"
           >
-            <div className={`p-3 rounded-full ${stat.bg} ${stat.color}`}>
-              <stat.icon className="w-5 h-5" />
+            <div className={`rounded-full p-3 ${stat.bg} ${stat.color}`}>
+              <stat.icon className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
                 {stat.label}
               </p>
-              <p className="text-lg font-bold text-foreground mt-0.5">
+              <p className="text-foreground mt-0.5 text-lg font-bold">
                 {stat.value}
               </p>
             </div>
@@ -107,9 +107,9 @@ export function CustomerHistory() {
       </div>
 
       {/* History Table */}
-      <div className="border rounded-xl bg-card overflow-hidden shadow-sm">
-        <div className="p-4 border-b bg-muted/30">
-          <h3 className="font-semibold text-foreground">Lịch sử đặt hẹn</h3>
+      <div className="bg-card overflow-hidden rounded-xl border shadow-sm">
+        <div className="bg-muted/30 border-b p-4">
+          <h3 className="text-foreground font-semibold">Lịch sử đặt hẹn</h3>
         </div>
         <Table>
           <TableHeader>
@@ -125,19 +125,19 @@ export function CustomerHistory() {
             {MOCK_HISTORY.map((item) => (
               <TableRow
                 key={item.id}
-                className="cursor-pointer hover:bg-muted/50"
+                className="hover:bg-muted/50 cursor-pointer"
               >
                 <TableCell className="font-medium">
                   <div className="flex flex-col">
                     <span>{item.date}</span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-muted-foreground text-xs">
                       {item.time}
                     </span>
                   </div>
                 </TableCell>
                 <TableCell>
-                  <span className="font-medium text-foreground">{item.id}</span>
-                  <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
+                  <span className="text-foreground font-medium">{item.id}</span>
+                  <p className="text-muted-foreground mt-0.5 line-clamp-1 text-xs">
                     {item.service}
                   </p>
                 </TableCell>

@@ -18,9 +18,18 @@ import {
 import { Input } from "@/shared/ui/input";
 import { Textarea } from "@/shared/ui/textarea";
 import { createWaitlistEntry, updateWaitlistEntry } from "../actions";
-import { waitlistCreateSchema, type WaitlistFormValues } from "../model/schemas";
+import {
+  waitlistCreateSchema,
+  type WaitlistFormValues,
+} from "../model/schemas";
 import { WaitlistEntry } from "../model/types";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/ui/select";
 import { MOCK_SERVICES } from "@/features/services/model/mocks"; // Import mock services for dropdown
 
 interface WaitlistSheetProps {
@@ -36,18 +45,21 @@ export function WaitlistSheet({
   open,
   onOpenChange,
   data,
-  defaultValues
+  defaultValues,
 }: WaitlistSheetProps) {
   const isCreate = mode === "create";
 
-  const { form, isPending, onSubmit } = useSheetForm<WaitlistFormValues, WaitlistEntry>({
+  const { form, isPending, onSubmit } = useSheetForm<
+    WaitlistFormValues,
+    WaitlistEntry
+  >({
     schema: waitlistCreateSchema,
     defaultValues: {
       customer_id: "",
       customer_name: "",
       phone_number: "",
       service_id: "",
-      preferred_date: new Date().toISOString().split('T')[0],
+      preferred_date: new Date().toISOString().split("T")[0],
       preferred_time_slot: "",
       notes: "",
       ...defaultValues, // Allow overrides
@@ -59,7 +71,9 @@ export function WaitlistSheet({
       customer_id: entry.customer_id, // Ensure all fields mapped
     }),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    action: (mode === "create" ? createWaitlistEntry : updateWaitlistEntry) as any,
+    action: (mode === "create"
+      ? createWaitlistEntry
+      : updateWaitlistEntry) as any,
     onSuccess: () => onOpenChange(false),
     toastMessages: {
       success: "Đã thêm vào danh sách chờ",
@@ -79,20 +93,27 @@ export function WaitlistSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-lg flex flex-col h-full">
+      <SheetContent className="flex h-full w-full flex-col sm:max-w-lg">
         <SheetHeader>
-          <SheetTitle>{isCreate ? "Thêm vào danh sách chờ" : "Chi tiết yêu cầu"}</SheetTitle>
+          <SheetTitle>
+            {isCreate ? "Thêm vào danh sách chờ" : "Chi tiết yêu cầu"}
+          </SheetTitle>
         </SheetHeader>
 
         <Form {...form}>
-          <form onSubmit={onSubmit} className="flex-1 flex flex-col gap-6 mt-6 overflow-y-auto px-1">
+          <form
+            onSubmit={onSubmit}
+            className="mt-6 flex flex-1 flex-col gap-6 overflow-y-auto px-1"
+          >
             <div className="space-y-4">
               <FormField
                 control={form.control}
                 name="customer_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tên khách hàng <span className="text-destructive">*</span></FormLabel>
+                    <FormLabel>
+                      Tên khách hàng <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="Nhập tên khách hàng" {...field} />
                     </FormControl>
@@ -106,7 +127,9 @@ export function WaitlistSheet({
                 name="phone_number"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Số điện thoại <span className="text-destructive">*</span></FormLabel>
+                    <FormLabel>
+                      Số điện thoại <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="09xxxx..." {...field} />
                     </FormControl>
@@ -120,8 +143,14 @@ export function WaitlistSheet({
                 name="service_id"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Dịch vụ quan tâm <span className="text-destructive">*</span></FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormLabel>
+                      Dịch vụ quan tâm{" "}
+                      <span className="text-destructive">*</span>
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Chọn dịch vụ" />
@@ -142,41 +171,50 @@ export function WaitlistSheet({
 
               <div className="grid grid-cols-2 gap-4">
                 <FormField
-                    control={form.control}
-                    name="preferred_date"
-                    render={({ field }) => (
+                  control={form.control}
+                  name="preferred_date"
+                  render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Ngày mong muốn</FormLabel>
-                        <FormControl>
+                      <FormLabel>Ngày mong muốn</FormLabel>
+                      <FormControl>
                         <Input type="date" {...field} />
-                        </FormControl>
-                        <FormMessage />
+                      </FormControl>
+                      <FormMessage />
                     </FormItem>
-                    )}
+                  )}
                 />
-                 <FormField
-                    control={form.control}
-                    name="preferred_time_slot"
-                    render={({ field }) => (
+                <FormField
+                  control={form.control}
+                  name="preferred_time_slot"
+                  render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Khung giờ</FormLabel>
-                         <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                                <SelectTrigger>
-                                <SelectValue placeholder="Chọn khung giờ" />
-                                </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                                <SelectItem value="Buổi sáng (9:00 - 12:00)">Buổi sáng</SelectItem>
-                                <SelectItem value="Buổi chiều (13:00 - 17:00)">Buổi chiều</SelectItem>
-                                <SelectItem value="Buổi tối (17:00 - 21:00)">Buổi tối</SelectItem>
-                                <SelectItem value="Sau 17:00">Sau 17:00</SelectItem>
-                                <SelectItem value="Cuối tuần">Cuối tuần</SelectItem>
-                            </SelectContent>
-                            </Select>
-                        <FormMessage />
+                      <FormLabel>Khung giờ</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Chọn khung giờ" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Buổi sáng (9:00 - 12:00)">
+                            Buổi sáng
+                          </SelectItem>
+                          <SelectItem value="Buổi chiều (13:00 - 17:00)">
+                            Buổi chiều
+                          </SelectItem>
+                          <SelectItem value="Buổi tối (17:00 - 21:00)">
+                            Buổi tối
+                          </SelectItem>
+                          <SelectItem value="Sau 17:00">Sau 17:00</SelectItem>
+                          <SelectItem value="Cuối tuần">Cuối tuần</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
                     </FormItem>
-                    )}
+                  )}
                 />
               </div>
 
@@ -187,7 +225,12 @@ export function WaitlistSheet({
                   <FormItem>
                     <FormLabel>Ghi chú</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Ghi chú thêm..." className="min-h-[100px]" {...field} value={field.value || ""} />
+                      <Textarea
+                        placeholder="Ghi chú thêm..."
+                        className="min-h-[100px]"
+                        {...field}
+                        value={field.value || ""}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -196,7 +239,11 @@ export function WaitlistSheet({
             </div>
 
             <SheetFooter className="mt-auto pt-6">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+              >
                 Hủy
               </Button>
               <Button type="submit" disabled={isPending}>

@@ -1,19 +1,19 @@
 "use client";
 
 import {
-    closestCenter,
-    DndContext,
-    DragEndEvent,
-    KeyboardSensor,
-    PointerSensor,
-    useSensor,
-    useSensors,
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
 } from "@dnd-kit/core";
 import {
-    arrayMove,
-    SortableContext,
-    sortableKeyboardCoordinates,
-    verticalListSortingStrategy,
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { ServiceCategory } from "../../model/types";
 import { SortableItem } from "./sortable-item";
@@ -45,10 +45,12 @@ export function SortableCategoryList({
       const oldIndex = items.findIndex((item) => item.id === active.id);
       const newIndex = items.findIndex((item) => item.id === over.id);
 
-      const newItems = arrayMove(items, oldIndex, newIndex).map((item, index) => ({
-        ...item,
-        sort_order: index,
-      }));
+      const newItems = arrayMove(items, oldIndex, newIndex).map(
+        (item, index) => ({
+          ...item,
+          sort_order: index,
+        })
+      );
 
       onReorder(newItems);
     }
@@ -61,7 +63,7 @@ export function SortableCategoryList({
       onDragEnd={handleDragEnd}
     >
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
-        <div className="flex flex-col w-full">
+        <div className="flex w-full flex-col">
           {items.map((category) => (
             <SortableItem
               key={category.id}

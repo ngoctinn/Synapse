@@ -17,7 +17,7 @@ export function useTimeStepData() {
     selectedDate,
     selectedSlot,
     setSelectedDate,
-    setSelectedSlot
+    setSelectedSlot,
   } = useBookingStore();
 
   const [fetchedSlots, setFetchedSlots] = useState<TimeSlot[]>([]);
@@ -45,13 +45,13 @@ export function useTimeStepData() {
       try {
         const [slotsRes, staffRes] = await Promise.all([
           getAvailableSlots({
-            serviceIds: selectedServices.map(s => s.id),
-            staffId: staffId || 'any',
+            serviceIds: selectedServices.map((s) => s.id),
+            staffId: staffId || "any",
             date: dateToFetch,
           }),
           getAvailableStaff({
-            serviceIds: selectedServices.map(s => s.id)
-          })
+            serviceIds: selectedServices.map((s) => s.id),
+          }),
         ]);
 
         if (isCancelled) return;
@@ -67,7 +67,9 @@ export function useTimeStepData() {
             setSelectedDate(new Date(slotsRes.data[0].date));
           }
         } else {
-          setFetchError(slotsRes.message || "Không thể tải khung giờ. Vui lòng thử lại.");
+          setFetchError(
+            slotsRes.message || "Không thể tải khung giờ. Vui lòng thử lại."
+          );
           setFetchedSlots([]);
         }
       } catch (err) {
@@ -97,6 +99,6 @@ export function useTimeStepData() {
     selectedSlot,
     setSelectedDate,
     setSelectedSlot,
-    selectedServices
+    selectedServices,
   };
 }

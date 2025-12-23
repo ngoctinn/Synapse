@@ -1,17 +1,20 @@
-"use client"
+"use client";
 
-import { Button } from "@/shared/ui/button"
-import Link from "next/link"
+import { Button } from "@/shared/ui/button";
+import Link from "next/link";
 
 interface HeaderAuthButtonsProps {
-  mobile?: boolean
-  onActionClick?: () => void
+  mobile?: boolean;
+  onActionClick?: () => void;
 }
 
-export function HeaderAuthButtons({ mobile = false, onActionClick }: HeaderAuthButtonsProps) {
+export function HeaderAuthButtons({
+  mobile = false,
+  onActionClick,
+}: HeaderAuthButtonsProps) {
   if (mobile) {
     return (
-      <div className="flex flex-col gap-3 w-full">
+      <div className="flex w-full flex-col gap-3">
         <Link href="/login" onClick={onActionClick} className="w-full">
           <Button variant="outline" size="lg" className="w-full justify-center">
             Đăng nhập
@@ -23,21 +26,19 @@ export function HeaderAuthButtons({ mobile = false, onActionClick }: HeaderAuthB
           </Button>
         </Link>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="hidden md:flex items-center gap-2">
+    <div className="hidden items-center gap-2 md:flex">
       <Link href="/login">
         <Button variant="link" size="sm">
           Đăng nhập
         </Button>
       </Link>
       <Link href="/register">
-        <Button size="sm">
-          Đăng ký ngay
-        </Button>
+        <Button size="sm">Đăng ký ngay</Button>
       </Link>
     </div>
-  )
+  );
 }

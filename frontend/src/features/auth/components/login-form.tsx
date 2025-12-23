@@ -11,17 +11,17 @@ import { loginAction } from "../actions";
 import { loginSchema, type LoginInput } from "../model/schemas";
 
 import {
-    Alert,
-    AlertDescription,
-    Button,
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-    Input,
-    showToast,
+  Alert,
+  AlertDescription,
+  Button,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+  showToast,
 } from "@/shared/ui";
 import { PasswordInput } from "@/shared/ui/custom/password-input";
 
@@ -45,7 +45,10 @@ export function LoginForm() {
 
   useEffect(() => {
     if (state?.status === "success") {
-      showToast.success("Đăng nhập thành công", "Chào mừng bạn quay trở lại hệ thống.");
+      showToast.success(
+        "Đăng nhập thành công",
+        "Chào mừng bạn quay trở lại hệ thống."
+      );
       router.push(returnUrl);
     } else if (state?.status === "error") {
       if (state.errors) {
@@ -53,7 +56,9 @@ export function LoginForm() {
         Object.entries(state.errors).forEach(([key, messages]) => {
           form.setError(key as keyof LoginInput, {
             type: "server",
-            message: Array.isArray(messages) ? messages[0] : (messages as string),
+            message: Array.isArray(messages)
+              ? messages[0]
+              : (messages as string),
           });
         });
       }
@@ -72,12 +77,12 @@ export function LoginForm() {
   }
 
   return (
-    <div className="w-full animate-fade-in">
-      <div className="flex flex-col space-y-2 text-center mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+    <div className="animate-fade-in w-full">
+      <div className="mb-8 flex flex-col space-y-2 text-center">
+        <h1 className="text-foreground text-2xl font-bold tracking-tight">
           Chào mừng trở lại
         </h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           Nhập thông tin đăng nhập để truy cập hệ thống
         </p>
       </div>
@@ -99,65 +104,63 @@ export function LoginForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      startContent={<Mail className="size-4 text-muted-foreground" />}
-                      placeholder="name@example.com"
-                      autoComplete="email"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <div className="flex items-center justify-between">
-                    <FormLabel>Mật khẩu</FormLabel>
-                    <Link
-                      href="/forgot-password"
-                      className="text-xs text-primary hover:underline underline-offset-4"
-                    >
-                      Quên mật khẩu?
-                    </Link>
-                  </div>
-                  <FormControl>
-                    <PasswordInput
-                      placeholder="Nhập mật khẩu"
-                      autoComplete="current-password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    startContent={
+                      <Mail className="text-muted-foreground size-4" />
+                    }
+                    placeholder="name@example.com"
+                    autoComplete="email"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex items-center justify-between">
+                  <FormLabel>Mật khẩu</FormLabel>
+                  <Link
+                    href="/forgot-password"
+                    className="text-primary text-xs underline-offset-4 hover:underline"
+                  >
+                    Quên mật khẩu?
+                  </Link>
+                </div>
+                <FormControl>
+                  <PasswordInput
+                    placeholder="Nhập mật khẩu"
+                    autoComplete="current-password"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <Button
-              type="submit"
-              className="w-full"
-              isLoading={isPending}
-            >
-              Đăng nhập
+          <Button type="submit" className="w-full" isLoading={isPending}>
+            Đăng nhập
           </Button>
         </form>
       </Form>
 
-      <p className="mt-6 text-center text-sm text-muted-foreground">
+      <p className="text-muted-foreground mt-6 text-center text-sm">
         Chưa có tài khoản?{" "}
         <Link
           href="/register"
-          className="text-primary font-medium hover:underline underline-offset-4"
+          className="text-primary font-medium underline-offset-4 hover:underline"
         >
           Đăng ký ngay
         </Link>

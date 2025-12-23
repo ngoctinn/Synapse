@@ -124,10 +124,10 @@ export function CustomerTable({
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
+            <span className="text-foreground group-hover:text-primary text-sm font-semibold transition-colors">
               {customer.full_name}
             </span>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-muted-foreground text-xs">
               {customer.email || "Chưa có email"}
             </span>
           </div>
@@ -138,7 +138,7 @@ export function CustomerTable({
       header: "Số điện thoại",
       accessorKey: "phone_number",
       cell: (c) => (
-        <div className="text-sm font-mono">{c.phone_number || "--"}</div>
+        <div className="font-mono text-sm">{c.phone_number || "--"}</div>
       ),
     },
     {
@@ -158,10 +158,10 @@ export function CustomerTable({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  <AlertCircle className="size-4 text-destructive" />
+                  <AlertCircle className="text-destructive size-4" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="font-semibold text-destructive">Dị ứng:</p>
+                  <p className="text-destructive font-semibold">Dị ứng:</p>
                   <p>{c.allergies}</p>
                 </TooltipContent>
               </Tooltip>
@@ -171,10 +171,10 @@ export function CustomerTable({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  <Activity className="size-4 text-info" />
+                  <Activity className="text-info size-4" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="font-semibold text-info">Ghi chú y tế:</p>
+                  <p className="text-info font-semibold">Ghi chú y tế:</p>
                   <p>{c.medical_notes}</p>
                 </TooltipContent>
               </Tooltip>
@@ -260,9 +260,9 @@ export function CustomerTable({
         />
       )}
       {isPending && (
-        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-background/50 backdrop-blur-[2px]">
-          <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
-          <p className="text-sm font-medium text-muted-foreground animate-pulse">
+        <div className="bg-background/50 absolute inset-0 z-50 flex flex-col items-center justify-center backdrop-blur-[2px]">
+          <Loader2 className="text-primary mb-2 h-8 w-8 animate-spin" />
+          <p className="text-muted-foreground animate-pulse text-sm font-medium">
             Đang xử lý...
           </p>
         </div>

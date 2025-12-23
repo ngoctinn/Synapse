@@ -8,10 +8,10 @@
 import type { BadgePreset } from "@/shared/ui";
 
 import type {
-    AppointmentStatus,
-    CalendarViewType,
-    DensityMode,
-    ZoomLevel,
+  AppointmentStatus,
+  CalendarViewType,
+  DensityMode,
+  ZoomLevel,
 } from "./model/types";
 
 /** Mapping từ AppointmentStatus sang BadgePreset để hiển thị badge */
@@ -23,9 +23,6 @@ export const STATUS_TO_BADGE_PRESET: Record<AppointmentStatus, BadgePreset> = {
   CANCELLED: "appointment-cancelled",
   NO_SHOW: "appointment-no-show",
 };
-
-
-
 
 export const APPOINTMENT_STATUS_CONFIG: Record<
   AppointmentStatus,
@@ -87,8 +84,6 @@ export const APPOINTMENT_STATUS_OPTIONS: {
   { value: "NO_SHOW", label: "Khách không đến" },
 ];
 
-
-
 /** Cấu hình các chế độ xem lịch */
 export const CALENDAR_VIEW_CONFIG: Record<
   CalendarViewType,
@@ -139,8 +134,6 @@ export const DENSITY_MODE_OPTIONS: { value: DensityMode; label: string }[] = [
   { value: "compact", label: "Thu gọn" },
 ];
 
-
-
 /** Giờ làm việc mặc định của Spa */
 export const DEFAULT_WORKING_HOURS = {
   startHour: 8,
@@ -170,8 +163,6 @@ export const WEEKDAYS = [
   { value: 0, label: "CN", fullLabel: "Chủ Nhật" },
 ] as const;
 
-
-
 /** Các tần suất lặp lại */
 export const RECURRENCE_FREQUENCY_OPTIONS = [
   { value: "daily", label: "Hàng ngày" },
@@ -186,8 +177,6 @@ export const RECURRENCE_END_OPTIONS = [
   { value: "count", label: "Sau số lần" },
   { value: "until", label: "Đến ngày" },
 ] as const;
-
-
 
 /** Số events tối đa hiển thị trong ô Month View */
 export const MAX_EVENTS_IN_MONTH_CELL = 2;
@@ -205,8 +194,6 @@ export const ANIMATION_DURATION = {
   slow: 300,
 } as const;
 
-
-
 /** Màu mặc định cho các dịch vụ (fallback) */
 export const DEFAULT_SERVICE_COLORS = [
   "#4CAF50", // Green - Massage
@@ -218,8 +205,6 @@ export const DEFAULT_SERVICE_COLORS = [
   "#795548", // Brown - Sauna
   "#607D8B", // Blue Grey - Others
 ] as const;
-
-
 
 export const EMPTY_STATE_MESSAGES = {
   noAppointments: {
@@ -235,8 +220,6 @@ export const EMPTY_STATE_MESSAGES = {
     description: "Không thể tải dữ liệu. Vui lòng thử lại.",
   },
 } as const;
-
-
 
 export const KEYBOARD_SHORTCUTS = {
   createEvent: { key: "c", description: "Tạo lịch hẹn mới" },

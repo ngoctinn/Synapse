@@ -58,7 +58,7 @@ const GroupActionButtons = ({ staff: _staff }: { staff: Staff }) => {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
+            className="text-muted-foreground hover:text-primary hover:bg-primary/10 h-8 w-8"
             onClick={handleViewSchedule}
           >
             <Calendar className="size-4" />
@@ -171,10 +171,10 @@ export function StaffTable({
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <span className="text-lg font-serif text-foreground group-hover:text-primary transition-colors tracking-tight">
+            <span className="text-foreground group-hover:text-primary font-serif text-lg tracking-tight transition-colors">
               {staff.user.full_name || "Chưa cập nhật tên"}
             </span>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-muted-foreground text-xs">
               {staff.user.email}
             </span>
           </div>
@@ -226,7 +226,7 @@ export function StaffTable({
               )}
             </>
           ) : (
-            <span className="text-xs text-muted-foreground italic pl-1">
+            <span className="text-muted-foreground pl-1 text-xs italic">
               --
             </span>
           )}
@@ -298,9 +298,9 @@ export function StaffTable({
         }
       />
       {isPending && (
-        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-background/50 backdrop-blur-[2px]">
-          <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
-          <p className="text-sm font-medium text-muted-foreground animate-pulse">
+        <div className="bg-background/50 absolute inset-0 z-50 flex flex-col items-center justify-center backdrop-blur-[2px]">
+          <Loader2 className="text-primary mb-2 h-8 w-8 animate-spin" />
+          <p className="text-muted-foreground animate-pulse text-sm font-medium">
             Đang xử lý...
           </p>
         </div>

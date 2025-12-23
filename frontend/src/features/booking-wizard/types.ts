@@ -41,7 +41,7 @@ export interface BookingState {
   selectedServices: ServiceItem[];
 
   // Step 2: Staff
-  staffId: string | 'any' | null;
+  staffId: string | "any" | null;
   staffName: string | null;
 
   // Step 3: Time

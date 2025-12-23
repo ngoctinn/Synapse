@@ -8,22 +8,22 @@ import { useForm } from "react-hook-form";
 import { Skill } from "@/features/services/model/types";
 import { manageStaff } from "@/features/staff/actions";
 import {
-    StaffCreateFormValues,
-    StaffUpdateFormValues,
-    staffCreateSchema,
-    staffUpdateSchema,
+  StaffCreateFormValues,
+  StaffUpdateFormValues,
+  staffCreateSchema,
+  staffUpdateSchema,
 } from "@/features/staff/model/schemas";
 import { Staff } from "@/features/staff/model/types";
 
 import {
-    Button,
-    Form,
-    Sheet,
-    SheetContent,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle,
-    showToast
+  Button,
+  Form,
+  Sheet,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  showToast,
 } from "@/shared/ui";
 import { StaffForm } from "./staff-form";
 
@@ -90,7 +90,10 @@ export function StaffSheet({
           : {
               full_name: staff?.user.full_name || "",
               phone_number: staff?.user.phone_number || "",
-              role: staff?.user.role === 'customer' ? 'technician' : staff?.user.role || 'technician',
+              role:
+                staff?.user.role === "customer"
+                  ? "technician"
+                  : staff?.user.role || "technician",
               title: staff?.title || "",
               bio: staff?.bio || "",
               color_code: staff?.color_code || "#3B82F6",
@@ -113,7 +116,7 @@ export function StaffSheet({
 
       if (Array.isArray(value)) {
         formData.append(key, JSON.stringify(value));
-      } else if (typeof value === 'number') {
+      } else if (typeof value === "number") {
         formData.append(key, String(value));
       } else {
         formData.append(key, value);
@@ -127,9 +130,9 @@ export function StaffSheet({
 
   return (
     <Sheet open={open} onOpenChange={(val) => !isPending && onOpenChange(val)}>
-      <SheetContent className="w-full sm:max-w-lg p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
-        <SheetHeader className="px-6 py-4 border-b shrink-0 space-y-0">
-          <SheetTitle className="text-lg font-semibold text-foreground">
+      <SheetContent className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-lg">
+        <SheetHeader className="shrink-0 space-y-0 border-b px-6 py-4">
+          <SheetTitle className="text-foreground text-lg font-semibold">
             {mode === "create" ? "Mời nhân viên" : "Hồ sơ nhân viên"}
           </SheetTitle>
         </SheetHeader>

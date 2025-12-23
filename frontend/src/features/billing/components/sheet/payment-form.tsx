@@ -1,20 +1,20 @@
 "use client";
 
 import {
-    Button,
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-    Input,
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-    showToast,
+  Button,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  showToast,
 } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
@@ -23,7 +23,10 @@ import { useForm } from "react-hook-form";
 
 import { createPayment } from "../../actions";
 import { PAYMENT_METHODS } from "../../constants";
-import { CreatePaymentFormValues, createPaymentSchema } from "../../model/schemas";
+import {
+  CreatePaymentFormValues,
+  createPaymentSchema,
+} from "../../model/schemas";
 import { Invoice } from "../../model/types";
 
 interface PaymentFormProps {
@@ -65,7 +68,10 @@ export function PaymentForm({ invoice, onSuccess }: PaymentFormProps) {
         showToast.success("Thanh toán thành công", result.message);
         onSuccess();
       } else {
-        showToast.error("Thanh toán thất bại", result.message || "Vui lòng thử lại");
+        showToast.error(
+          "Thanh toán thất bại",
+          result.message || "Vui lòng thử lại"
+        );
       }
     });
   }
@@ -73,7 +79,7 @@ export function PaymentForm({ invoice, onSuccess }: PaymentFormProps) {
   // Nếu đã thanh toán hết thì không hiện form
   if (invoice.status === "PAID" || remainingAmount <= 0) {
     return (
-      <div className="p-4 bg-success/10 text-success rounded-md border border-success/20 text-center">
+      <div className="bg-success/10 text-success border-success/20 rounded-md border p-4 text-center">
         Hóa đơn đã được thanh toán đầy đủ
       </div>
     );
@@ -82,7 +88,7 @@ export function PaymentForm({ invoice, onSuccess }: PaymentFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <h4 className="font-semibold text-sm">Thanh toán mới</h4>
+        <h4 className="text-sm font-semibold">Thanh toán mới</h4>
 
         <FormField
           control={form.control}
@@ -138,17 +144,17 @@ export function PaymentForm({ invoice, onSuccess }: PaymentFormProps) {
         />
 
         <FormField
-            control={form.control}
-            name="note"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Ghi chú</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ghi chú thêm..." {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+          control={form.control}
+          name="note"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Ghi chú</FormLabel>
+              <FormControl>
+                <Input placeholder="Ghi chú thêm..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
 
         <Button type="submit" className="w-full" disabled={isPending}>

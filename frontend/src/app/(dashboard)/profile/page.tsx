@@ -1,14 +1,14 @@
-import { ProfileForm } from "@/features/customer-dashboard"
-import { getCustomerProfile } from "@/features/customer-dashboard/index.server"
+import { ProfileForm } from "@/features/customer-dashboard";
+import { getCustomerProfile } from "@/features/customer-dashboard/index.server";
 
 export default async function ProfilePage() {
-  const user = await getCustomerProfile()
+  const user = await getCustomerProfile();
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="mx-auto max-w-4xl space-y-6">
       <div className="w-full">
         <ProfileForm user={user} />
       </div>
     </div>
-  )
+  );
 }

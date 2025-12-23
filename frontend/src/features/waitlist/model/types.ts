@@ -1,4 +1,9 @@
-export type WaitlistStatus = "pending" | "notified" | "converted" | "cancelled" | "expired";
+export type WaitlistStatus =
+  | "pending"
+  | "notified"
+  | "converted"
+  | "cancelled"
+  | "expired";
 
 export interface WaitlistEntry {
   id: string;

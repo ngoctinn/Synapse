@@ -32,31 +32,37 @@ export function TimeRangeInput({
   const hasError = isInvalid || hasOverlap;
 
   return (
-    <div className={cn(
-      "flex items-center gap-2 p-1 border rounded-md transition-colors",
-      hasError
-        ? "border-destructive/50 bg-destructive/5"
-        : "border-border hover:border-primary/50",
-      hasOverlap && !isInvalid && "border-warning/50 bg-warning/5",
-      className
-    )}>
+    <div
+      className={cn(
+        "flex items-center gap-2 rounded-md border p-1 transition-colors",
+        hasError
+          ? "border-destructive/50 bg-destructive/5"
+          : "border-border hover:border-primary/50",
+        hasOverlap && !isInvalid && "border-warning/50 bg-warning/5",
+        className
+      )}
+    >
       <TimePicker
         value={startTime}
         onChange={onStartTimeChange}
         hasError={hasError}
-        className="w-[100px] border-none shadow-none bg-transparent focus:ring-0 text-sm px-0 text-center font-medium"
+        className="w-[100px] border-none bg-transparent px-0 text-center text-sm font-medium shadow-none focus:ring-0"
       />
 
-      <span className={cn(
-        "text-sm",
-        hasError ? "text-destructive/50" : "text-muted-foreground/50"
-      )}>-</span>
+      <span
+        className={cn(
+          "text-sm",
+          hasError ? "text-destructive/50" : "text-muted-foreground/50"
+        )}
+      >
+        -
+      </span>
 
       <TimePicker
-         value={endTime}
-         onChange={onEndTimeChange}
-         hasError={hasError}
-         className="w-[100px] border-none shadow-none bg-transparent focus:ring-0 text-right text-sm px-0 text-center font-medium"
+        value={endTime}
+        onChange={onEndTimeChange}
+        hasError={hasError}
+        className="w-[100px] border-none bg-transparent px-0 text-center text-right text-sm font-medium shadow-none focus:ring-0"
       />
 
       {showRemoveButton && onRemove && (
@@ -65,7 +71,7 @@ export function TimeRangeInput({
           size="icon"
           onClick={onRemove}
           className={cn(
-            "size-6 shrink-0 rounded-full ml-1",
+            "ml-1 size-6 shrink-0 rounded-full",
             "hover:bg-destructive/10 hover:text-destructive text-muted-foreground",
             hasError && "text-destructive/70"
           )}
@@ -77,4 +83,3 @@ export function TimeRangeInput({
     </div>
   );
 }
-

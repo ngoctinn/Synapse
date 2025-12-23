@@ -28,7 +28,7 @@ export function TreatmentList({ treatments }: TreatmentListProps) {
   if (treatments.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <Sparkles className="h-12 w-12 text-muted-foreground/50" />
+        <Sparkles className="text-muted-foreground/50 h-12 w-12" />
         <h3 className="mt-4 text-lg font-semibold">Chưa có liệu trình</h3>
         <p className="text-muted-foreground">
           Bạn chưa đăng ký gói liệu trình nào.
@@ -73,7 +73,7 @@ export function TreatmentList({ treatments }: TreatmentListProps) {
                 <Progress value={progress} className="h-2" />
               </div>
               {treatment.expiryDate && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="text-muted-foreground flex items-center gap-2 text-sm">
                   <Calendar className="size-4" />
                   <span>
                     Hết hạn:{" "}

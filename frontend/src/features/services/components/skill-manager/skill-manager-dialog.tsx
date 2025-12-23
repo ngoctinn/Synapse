@@ -8,7 +8,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from "@/shared/ui/dialog";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
@@ -65,7 +65,7 @@ export function SkillManagerDialog({
 
   const handleDelete = (id: string) => {
     if (confirm("Bạn có chắc muốn xóa kỹ năng này?")) {
-      setSkills(skills.filter(s => s.id !== id));
+      setSkills(skills.filter((s) => s.id !== id));
       setHasChanges(true);
       if (editingId === id) resetForm();
     }
@@ -76,7 +76,11 @@ export function SkillManagerDialog({
 
     if (editingId) {
       // Update existing
-      setSkills(skills.map(s => s.id === editingId ? { ...s, name, code, description } : s));
+      setSkills(
+        skills.map((s) =>
+          s.id === editingId ? { ...s, name, code, description } : s
+        )
+      );
     } else {
       // Create new
       const newSkill: Skill = {
@@ -96,7 +100,7 @@ export function SkillManagerDialog({
   const handleSaveAll = async () => {
     setIsSaving(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 800));
+      await new Promise((resolve) => setTimeout(resolve, 800));
       onSkillsChange?.(skills);
       setHasChanges(false);
       toast.success("Đã lưu thay đổi kỹ năng");
@@ -110,151 +114,169 @@ export function SkillManagerDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-3xl flex flex-col h-[480px] p-0 gap-0">
-        <DialogHeader className="px-6 py-4 border-b shrink-0 space-y-0">
+      <DialogContent className="flex h-[480px] flex-col gap-0 p-0 sm:max-w-3xl">
+        <DialogHeader className="shrink-0 space-y-0 border-b px-6 py-4">
           <DialogTitle className="text-lg">Quản lý Kỹ năng</DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-1 overflow-hidden">
-            {/* Left Column: List - 45% width */}
-            <div className="w-[45%] min-w-[260px] border-r flex flex-col bg-muted/10">
-                <div className="p-3 border-b bg-background/50 backdrop-blur">
-                   <div className="relative">
-                        <Input
-                            placeholder="Tìm kiếm kỹ năng..."
-                            className="bg-background"
-                        />
-                   </div>
+          {/* Left Column: List - 45% width */}
+          <div className="bg-muted/10 flex w-[45%] min-w-[260px] flex-col border-r">
+            <div className="bg-background/50 border-b p-3 backdrop-blur">
+              <div className="relative">
+                <Input
+                  placeholder="Tìm kiếm kỹ năng..."
+                  className="bg-background"
+                />
+              </div>
+            </div>
+            <div className="flex-1 space-y-2 overflow-y-auto p-3">
+              {skills.length === 0 ? (
+                <div className="text-muted-foreground py-8 text-center text-sm">
+                  Chưa có kỹ năng nào.
                 </div>
-                <div className="flex-1 overflow-y-auto p-3 space-y-2">
-                    {skills.length === 0 ? (
-                        <div className="text-center py-8 text-muted-foreground text-sm">
-                            Chưa có kỹ năng nào.
-                        </div>
-                    ) : (
-                        skills.map((skill) => (
-                            <div
-                                key={skill.id}
-                                className={cn(
-                                    "flex items-start justify-between p-3 rounded-md border cursor-pointer transition-all hover:shadow-sm",
-                                    editingId === skill.id
-                                        ? "bg-primary/5 border-primary ring-1 ring-primary/20"
-                                        : "bg-card hover:bg-accent/50 hover:border-accent-foreground/20"
-                                )}
-                                onClick={() => handleEdit(skill)}
-                            >
-                                <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-                                    <div className="flex items-center gap-2">
-                                        <span className="font-medium text-sm truncate">{skill.name}</span>
-                                    </div>
-                                    <Badge variant="outline" className="w-fit text-[11px] h-5 px-1.5 font-mono text-muted-foreground bg-background/50">
-                                        {skill.code}
-                                    </Badge>
-                                </div>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0 -mr-2"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleDelete(skill.id);
-                                    }}
-                                >
-                                    <Trash2 className="h-4 w-4" />
-                                </Button>
-                            </div>
-                        ))
+              ) : (
+                skills.map((skill) => (
+                  <div
+                    key={skill.id}
+                    className={cn(
+                      "flex cursor-pointer items-start justify-between rounded-md border p-3 transition-all hover:shadow-sm",
+                      editingId === skill.id
+                        ? "bg-primary/5 border-primary ring-primary/20 ring-1"
+                        : "bg-card hover:bg-accent/50 hover:border-accent-foreground/20"
                     )}
-                </div>
-                <div className="p-3 border-t bg-background/50 text-xs text-muted-foreground text-center">
-                    {skills.length} kỹ năng trong hệ thống
-                </div>
-            </div>
-
-            {/* Right Column: Add/Edit Form */}
-            <div className="flex-1 flex flex-col bg-background">
-                <div className="p-6 flex-1 overflow-y-auto">
-                    <div className="flex items-center justify-between mb-6">
-                        <h3 className="font-semibold text-base flex items-center gap-2">
-                            {editingId ? <Pencil className="w-4 h-4 text-primary"/> : <Plus className="w-4 h-4 text-primary"/>}
-                            {editingId ? "Chỉnh sửa thông tin" : "Thêm kỹ năng mới"}
-                        </h3>
-                        {editingId && (
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={resetForm}
-                                className="ml-auto"
-                            >
-                                <Plus className="w-4 h-4 mr-1" /> Tạo mới
-                            </Button>
-                        )}
+                    onClick={() => handleEdit(skill)}
+                  >
+                    <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                      <div className="flex items-center gap-2">
+                        <span className="truncate text-sm font-medium">
+                          {skill.name}
+                        </span>
+                      </div>
+                      <Badge
+                        variant="outline"
+                        className="text-muted-foreground bg-background/50 h-5 w-fit px-1.5 font-mono text-[11px]"
+                      >
+                        {skill.code}
+                      </Badge>
                     </div>
-
-                    <div className="space-y-4">
-                        <div className="grid gap-4">
-                            <div className="space-y-2">
-                                <Label>Tên kỹ năng <span className="text-destructive">*</span></Label>
-                                <Input
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    placeholder="Ví dụ: Massage Mặt"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Mã tham chiếu (Code) <span className="text-destructive">*</span></Label>
-                                <Input
-                                    value={code}
-                                    onChange={(e) => setCode(e.target.value.toUpperCase())}
-                                    placeholder="Ví dụ: FACIAL"
-                                    className="font-mono uppercase"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Mô tả chi tiết</Label>
-                                <Input
-                                    value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
-                                    placeholder="Mô tả ngắn về kỹ năng..."
-                                    onKeyDown={(e) => e.key === "Enter" && handleSaveItem()}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="pt-4 flex justify-end">
-                            {editingId && (
-                                <Button
-                                    variant="outline"
-                                    className="mr-2"
-                                    onClick={resetForm}
-                                >
-                                    Hủy bỏ
-                                </Button>
-                            )}
-                            <Button
-                                onClick={handleSaveItem}
-                                disabled={!name.trim() || !code.trim()}
-                                className="min-w-[100px]"
-                            >
-                                {editingId ? "Cập nhật" : "Thêm vào danh sách"}
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-muted-foreground hover:text-destructive -mr-2 h-8 w-8 shrink-0"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(skill.id);
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))
+              )}
             </div>
+            <div className="bg-background/50 text-muted-foreground border-t p-3 text-center text-xs">
+              {skills.length} kỹ năng trong hệ thống
+            </div>
+          </div>
+
+          {/* Right Column: Add/Edit Form */}
+          <div className="bg-background flex flex-1 flex-col">
+            <div className="flex-1 overflow-y-auto p-6">
+              <div className="mb-6 flex items-center justify-between">
+                <h3 className="flex items-center gap-2 text-base font-semibold">
+                  {editingId ? (
+                    <Pencil className="text-primary h-4 w-4" />
+                  ) : (
+                    <Plus className="text-primary h-4 w-4" />
+                  )}
+                  {editingId ? "Chỉnh sửa thông tin" : "Thêm kỹ năng mới"}
+                </h3>
+                {editingId && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={resetForm}
+                    className="ml-auto"
+                  >
+                    <Plus className="mr-1 h-4 w-4" /> Tạo mới
+                  </Button>
+                )}
+              </div>
+
+              <div className="space-y-4">
+                <div className="grid gap-4">
+                  <div className="space-y-2">
+                    <Label>
+                      Tên kỹ năng <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Ví dụ: Massage Mặt"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>
+                      Mã tham chiếu (Code){" "}
+                      <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      value={code}
+                      onChange={(e) => setCode(e.target.value.toUpperCase())}
+                      placeholder="Ví dụ: FACIAL"
+                      className="font-mono uppercase"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Mô tả chi tiết</Label>
+                    <Input
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Mô tả ngắn về kỹ năng..."
+                      onKeyDown={(e) => e.key === "Enter" && handleSaveItem()}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end pt-4">
+                  {editingId && (
+                    <Button
+                      variant="outline"
+                      className="mr-2"
+                      onClick={resetForm}
+                    >
+                      Hủy bỏ
+                    </Button>
+                  )}
+                  <Button
+                    onClick={handleSaveItem}
+                    disabled={!name.trim() || !code.trim()}
+                    className="min-w-[100px]"
+                  >
+                    {editingId ? "Cập nhật" : "Thêm vào danh sách"}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <DialogFooter className="p-4 border-t bg-background shrink-0">
-         {hasChanges && (
-            <div className="flex-1 flex items-center text-amber-600 text-sm font-medium animate-pulse pl-2">
-                * Có thay đổi chưa lưu
+        <DialogFooter className="bg-background shrink-0 border-t p-4">
+          {hasChanges && (
+            <div className="flex flex-1 animate-pulse items-center pl-2 text-sm font-medium text-amber-600">
+              * Có thay đổi chưa lưu
             </div>
-         )}
+          )}
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Đóng
           </Button>
           <Button onClick={handleSaveAll} disabled={!hasChanges && !isSaving}>
-            {isSaving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+            {isSaving ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="mr-2 h-4 w-4" />
+            )}
             Lưu tất cả thay đổi
           </Button>
         </DialogFooter>

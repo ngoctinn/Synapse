@@ -1,4 +1,9 @@
-export type AppointmentStatus = 'PENDING' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW';
+export type AppointmentStatus =
+  | "PENDING"
+  | "CONFIRMED"
+  | "COMPLETED"
+  | "CANCELLED"
+  | "NO_SHOW";
 
 export interface Appointment {
   id: string;
@@ -10,7 +15,7 @@ export interface Appointment {
   technicianName?: string;
 }
 
-export type TreatmentStatus = 'ACTIVE' | 'COMPLETED' | 'EXPIRED';
+export type TreatmentStatus = "ACTIVE" | "COMPLETED" | "EXPIRED";
 
 export interface Treatment {
   id: string;
@@ -30,7 +35,7 @@ export interface UserProfile {
   avatarUrl?: string;
   address?: string;
   dateOfBirth?: string; // ISO String or YYYY-MM-DD
-  membershipTier?: 'SILVER' | 'GOLD' | 'PLATINUM';
+  membershipTier?: "SILVER" | "GOLD" | "PLATINUM";
   loyaltyPoints?: number;
 }
 
@@ -43,9 +48,8 @@ export type ActionState = {
 
 // --- Booking Types ---
 
-
 export interface TimeSlot {
-  time: string
-  isRecommended?: boolean // High utilization / optimization hint
-  isHighDemand?: boolean
+  time: string;
+  isRecommended?: boolean; // High utilization / optimization hint
+  isHighDemand?: boolean;
 }

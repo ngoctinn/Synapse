@@ -2,7 +2,7 @@ import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { Textarea } from "@/shared/ui/textarea";
 import { Paperclip, Send, Smile } from "lucide-react";
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState } from "react";
 
 interface MessageInputProps {
   onSendMessage: (content: string) => void;
@@ -30,10 +30,10 @@ export function MessageInput({ onSendMessage }: MessageInputProps) {
   };
 
   return (
-    <div className="p-4 border-t border-border bg-white/50 dark:bg-card/50 backdrop-blur-sm rounded-b-xl">
-      <div className="flex items-end gap-2 group p-1 rounded-xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:bg-background/80 transition-all duration-200">
+    <div className="border-border dark:bg-card/50 rounded-b-xl border-t bg-white/50 p-4 backdrop-blur-sm">
+      <div className="focus-within:ring-primary/20 focus-within:bg-background/80 group flex items-end gap-2 rounded-xl p-1 transition-all duration-200 focus-within:ring-2">
         <Button variant="ghost" size="icon" aria-label="Đính kèm file">
-          <Paperclip className="w-5 h-5" />
+          <Paperclip className="h-5 w-5" />
         </Button>
 
         <div className="relative flex-1">
@@ -44,14 +44,19 @@ export function MessageInput({ onSendMessage }: MessageInputProps) {
             onChange={(e) => setContent(e.target.value)}
             onKeyDown={handleKeyDown}
             className={cn(
-               "min-h-[44px] max-h-[120px] py-3 pr-10 resize-none rounded-xl",
-               "bg-transparent border-none focus-visible:ring-0 shadow-none px-0", // Clean style to merge with parent
-               "placeholder:text-muted-foreground/50"
+              "max-h-[120px] min-h-[44px] resize-none rounded-xl py-3 pr-10",
+              "border-none bg-transparent px-0 shadow-none focus-visible:ring-0", // Clean style to merge with parent
+              "placeholder:text-muted-foreground/50"
             )}
             rows={1}
           />
-           <Button variant="ghost" size="icon" className="h-7 w-7 absolute right-0 top-1" aria-label="Chọn emoji">
-            <Smile className="w-4 h-4" />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-0 top-1 h-7 w-7"
+            aria-label="Chọn emoji"
+          >
+            <Smile className="h-4 w-4" />
           </Button>
         </div>
 
@@ -60,13 +65,13 @@ export function MessageInput({ onSendMessage }: MessageInputProps) {
           disabled={!content.trim()}
           aria-label="Gửi tin nhắn"
           className={cn(
-            "h-10 w-10 rounded-full shadow-md transition-all duration-200 mb-0.5",
+            "mb-0.5 h-10 w-10 rounded-full shadow-md transition-all duration-200",
             content.trim()
               ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 active:scale-95"
-              : "bg-muted text-muted-foreground opacity-50 cursor-not-allowed"
+              : "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
           )}
         >
-          <Send className="w-4 h-4 ml-0.5" />
+          <Send className="ml-0.5 h-4 w-4" />
         </Button>
       </div>
     </div>

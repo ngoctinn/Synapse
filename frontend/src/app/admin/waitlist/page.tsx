@@ -18,17 +18,13 @@ export default async function Page({
 
   // Fetch data
   const result = await getWaitlist(page, 10, status, search);
-  const waitlist = result.status === "success" ? result.data?.data ?? [] : [];
-  const total = result.status === "success" ? result.data?.total ?? 0 : 0;
+  const waitlist = result.status === "success" ? (result.data?.data ?? []) : [];
+  const total = result.status === "success" ? (result.data?.total ?? 0) : 0;
   const totalPages = Math.ceil(total / 10);
 
   return (
     <Suspense fallback={<div>Đang tải danh sách chờ...</div>}>
-      <WaitlistPage
-        data={waitlist}
-        page={page}
-        totalPages={totalPages}
-      />
+      <WaitlistPage data={waitlist} page={page} totalPages={totalPages} />
     </Suspense>
   );
 }

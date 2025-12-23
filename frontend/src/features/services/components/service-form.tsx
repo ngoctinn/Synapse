@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Resource, RoomType } from "@/features/resources"
-import { cn } from "@/shared/lib/utils"
+import { Resource, RoomType } from "@/features/resources";
+import { cn } from "@/shared/lib/utils";
 import {
   FormControl,
   FormField,
@@ -18,53 +18,57 @@ import {
   Switch,
   Textarea,
   showToast,
-} from "@/shared/ui"
-import { Button } from "@/shared/ui/button"
-import { ColorSwatchGroup } from "@/shared/ui/custom/color-swatch-group"
-import { DurationPicker } from "@/shared/ui/custom/duration-picker"
-import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs"
-import { TagInput } from "@/shared/ui/custom/tag-input"
-import { Settings2 } from "lucide-react"
-import { useState } from "react"
-import { useFormContext } from "react-hook-form"
-import { SERVICE_COLORS } from "../constants"
-import { ServiceCategory, Skill } from "../model/types"
-import { CategoryManagerDialog } from "./category-manager/category-manager-dialog"
-import { EquipmentTimelineEditor } from "./equipment-timeline-editor"
-import { ImageUpload } from "./image-upload"
-import { ServiceTimeVisualizer } from "./service-time-visualizer"
-import { SkillManagerDialog } from "./skill-manager/skill-manager-dialog"
+} from "@/shared/ui";
+import { Button } from "@/shared/ui/button";
+import { ColorSwatchGroup } from "@/shared/ui/custom/color-swatch-group";
+import { DurationPicker } from "@/shared/ui/custom/duration-picker";
+import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs";
+import { TagInput } from "@/shared/ui/custom/tag-input";
+import { Settings2 } from "lucide-react";
+import { useState } from "react";
+import { useFormContext } from "react-hook-form";
+import { SERVICE_COLORS } from "../constants";
+import { ServiceCategory, Skill } from "../model/types";
+import { CategoryManagerDialog } from "./category-manager/category-manager-dialog";
+import { EquipmentTimelineEditor } from "./equipment-timeline-editor";
+import { ImageUpload } from "./image-upload";
+import { ServiceTimeVisualizer } from "./service-time-visualizer";
+import { SkillManagerDialog } from "./skill-manager/skill-manager-dialog";
 
 interface ServiceFormProps {
-  mode: "create" | "update"
-  availableSkills: Skill[]
-  availableRoomTypes: RoomType[]
-  availableEquipment: Resource[]
-  availableCategories: ServiceCategory[]
-  className?: string
+  mode: "create" | "update";
+  availableSkills: Skill[];
+  availableRoomTypes: RoomType[];
+  availableEquipment: Resource[];
+  availableCategories: ServiceCategory[];
+  className?: string;
 }
 
+// --- SUB-COMPONENTS ---
 
+function ServiceBasicInfo({
+  categories,
+  onCategoriesChange,
+}: {
+  categories: ServiceCategory[];
+  onCategoriesChange: (cats: ServiceCategory[]) => void;
+}) {
+  const form = useFormContext();
+  const [isCategoryManagerOpen, setCategoryManagerOpen] = useState(false);
 
-  // --- SUB-COMPONENTS ---
+  return (
+    <div className="space-y-6">
+      <CategoryManagerDialog
+        open={isCategoryManagerOpen}
+        onOpenChange={setCategoryManagerOpen}
+        onCategoriesChange={onCategoriesChange}
+      />
 
-  function ServiceBasicInfo({ categories, onCategoriesChange }: { categories: ServiceCategory[], onCategoriesChange: (cats: ServiceCategory[]) => void }) {
-    const form = useFormContext()
-    const [isCategoryManagerOpen, setCategoryManagerOpen] = useState(false)
-
-    return (
-      <div className="space-y-6">
-        <CategoryManagerDialog
-          open={isCategoryManagerOpen}
-          onOpenChange={setCategoryManagerOpen}
-          onCategoriesChange={onCategoriesChange}
-        />
-
-        {/* Active Toggle */}
-        <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border">
+      {/* Active Toggle */}
+      <div className="bg-muted/30 flex items-center justify-between rounded-lg border p-3">
         <div>
           <span className="text-sm font-medium">Trạng thái</span>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-muted-foreground text-xs">
             Ẩn/Hiện dịch vụ trên app khách hàng
           </p>
         </div>
@@ -80,7 +84,7 @@ interface ServiceFormProps {
                   className="data-[state=checked]:bg-primary"
                 />
               </FormControl>
-              <FormLabel className="cursor-pointer font-normal text-sm">
+              <FormLabel className="cursor-pointer text-sm font-normal">
                 {field.value ? "Hoạt động" : "Tạm ẩn"}
               </FormLabel>
             </FormItem>
@@ -91,26 +95,25 @@ interface ServiceFormProps {
       {/* Category Selection */}
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-            <FormLabel className="text-sm font-medium">Danh mục dịch vụ</FormLabel>
-            <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="h-6 text-xs text-muted-foreground hover:text-primary gap-1"
-                onClick={() => setCategoryManagerOpen(true)}
-            >
-                <Settings2 className="w-3 h-3" /> Quản lý danh mục
-            </Button>
+          <FormLabel className="text-sm font-medium">
+            Danh mục dịch vụ
+          </FormLabel>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground hover:text-primary h-6 gap-1 text-xs"
+            onClick={() => setCategoryManagerOpen(true)}
+          >
+            <Settings2 className="h-3 w-3" /> Quản lý danh mục
+          </Button>
         </div>
         <FormField
           control={form.control}
           name="category_id"
           render={({ field }) => (
             <FormItem className="w-full">
-              <Select
-                value={field.value}
-                onValueChange={field.onChange}
-              >
+              <Select value={field.value} onValueChange={field.onChange}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Chọn danh mục" />
@@ -131,28 +134,28 @@ interface ServiceFormProps {
       </div>
 
       <div className="flex flex-col gap-6">
-          <div className="flex justify-center">
-            <FormField
-              control={form.control}
-              name="image_url"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Ảnh đại diện</FormLabel>
-                   <FormControl>
-                    <ImageUpload
-                      value={field.value}
-                      onChange={field.onChange}
-                      className="aspect-video w-full h-[200px] object-cover rounded-md"
-                    />
-                  </FormControl>
-                  <p className="text-[11px] text-muted-foreground mt-1.5">
-                    Khuyến nghị: Tỷ lệ 16:9, tối đa 2MB (JPG, PNG)
-                  </p>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+        <div className="flex justify-center">
+          <FormField
+            control={form.control}
+            name="image_url"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Ảnh đại diện</FormLabel>
+                <FormControl>
+                  <ImageUpload
+                    value={field.value}
+                    onChange={field.onChange}
+                    className="aspect-video h-[200px] w-full rounded-md object-cover"
+                  />
+                </FormControl>
+                <p className="text-muted-foreground mt-1.5 text-[11px]">
+                  Khuyến nghị: Tỷ lệ 16:9, tối đa 2MB (JPG, PNG)
+                </p>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <div className="space-y-4">
           <FormField
@@ -175,24 +178,24 @@ interface ServiceFormProps {
             )}
           />
 
-            <FormField
-              control={form.control}
-              name="color"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-xs">Màu hiển thị</FormLabel>
-                  <FormControl>
-                    <ColorSwatchGroup
-                      value={field.value}
-                      onChange={field.onChange}
-                      options={SERVICE_COLORS}
-                      ariaLabel="Chọn màu hiển thị cho dịch vụ"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="color"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-xs">Màu hiển thị</FormLabel>
+                <FormControl>
+                  <ColorSwatchGroup
+                    value={field.value}
+                    onChange={field.onChange}
+                    options={SERVICE_COLORS}
+                    ariaLabel="Chọn màu hiển thị cho dịch vụ"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
       </div>
 
@@ -214,11 +217,17 @@ interface ServiceFormProps {
         )}
       />
     </div>
-  )
+  );
 }
 
-function ServiceTimePriceInfo({ duration, bufferTime }: { duration: number; bufferTime: number }) {
-  const form = useFormContext()
+function ServiceTimePriceInfo({
+  duration,
+  bufferTime,
+}: {
+  duration: number;
+  bufferTime: number;
+}) {
+  const form = useFormContext();
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
@@ -227,9 +236,7 @@ function ServiceTimePriceInfo({ duration, bufferTime }: { duration: number; buff
           name="duration"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
-                Thời lượng
-              </FormLabel>
+              <FormLabel>Thời lượng</FormLabel>
               <FormControl>
                 <DurationPicker
                   value={field.value}
@@ -249,9 +256,7 @@ function ServiceTimePriceInfo({ duration, bufferTime }: { duration: number; buff
           name="buffer_time"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
-                Nghỉ giữa ca
-              </FormLabel>
+              <FormLabel>Nghỉ giữa ca</FormLabel>
               <FormControl>
                 <DurationPicker
                   value={field.value}
@@ -271,7 +276,7 @@ function ServiceTimePriceInfo({ duration, bufferTime }: { duration: number; buff
       <ServiceTimeVisualizer
         duration={duration}
         bufferTime={bufferTime}
-        className="bg-muted/20 border-2 border-dashed border-primary/20 rounded-xl p-4"
+        className="bg-muted/20 border-primary/20 rounded-xl border-2 border-dashed p-4"
       />
 
       <FormField
@@ -279,24 +284,22 @@ function ServiceTimePriceInfo({ duration, bufferTime }: { duration: number; buff
         name="price"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>
-              Giá niêm yết
-            </FormLabel>
+            <FormLabel>Giá niêm yết</FormLabel>
             <FormControl>
               <Input
                 type="number"
                 min={0}
                 value={field.value ?? ""}
                 onChange={(e) => {
-                  const val = e.target.valueAsNumber
-                  field.onChange(isNaN(val) ? 0 : val)
+                  const val = e.target.valueAsNumber;
+                  field.onChange(isNaN(val) ? 0 : val);
                 }}
                 onBlur={() => {
                   // Ensure value is not negative on blur
-                  if (field.value < 0) field.onChange(0)
+                  if (field.value < 0) field.onChange(0);
                 }}
                 endContent={
-                  <div className="flex items-center justify-center h-full px-3 text-sm text-muted-foreground font-medium bg-muted/50 border-l">
+                  <div className="text-muted-foreground bg-muted/50 flex h-full items-center justify-center border-l px-3 text-sm font-medium">
                     VNĐ
                   </div>
                 }
@@ -308,7 +311,7 @@ function ServiceTimePriceInfo({ duration, bufferTime }: { duration: number; buff
         )}
       />
     </div>
-  )
+  );
 }
 
 function ServiceResourcesInfo({
@@ -316,17 +319,17 @@ function ServiceResourcesInfo({
   skills,
   onSkillsChange,
   availableEquipment,
-  duration
+  duration,
 }: {
-  availableRoomTypes: RoomType[]
-  skills: Skill[]
-  onSkillsChange: (skills: Skill[]) => void
-  availableEquipment: Resource[]
-  duration: number
+  availableRoomTypes: RoomType[];
+  skills: Skill[];
+  onSkillsChange: (skills: Skill[]) => void;
+  availableEquipment: Resource[];
+  duration: number;
 }) {
-  const form = useFormContext()
-  const [isSkillManagerOpen, setSkillManagerOpen] = useState(false)
-  const skillOptions = skills.map((s) => ({ id: s.id, label: s.name }))
+  const form = useFormContext();
+  const [isSkillManagerOpen, setSkillManagerOpen] = useState(false);
+  const skillOptions = skills.map((s) => ({ id: s.id, label: s.name }));
 
   return (
     <div className="space-y-6">
@@ -341,18 +344,11 @@ function ServiceResourcesInfo({
         name="resource_requirements.room_type_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>
-              Loại phòng yêu cầu
-            </FormLabel>
+            <FormLabel>Loại phòng yêu cầu</FormLabel>
             <FormControl>
-              <Select
-                value={field.value}
-                onValueChange={field.onChange}
-              >
+              <Select value={field.value} onValueChange={field.onChange}>
                 <FormControl>
-                  <SelectTrigger
-                    className="bg-background h-10 w-full"
-                  >
+                  <SelectTrigger className="bg-background h-10 w-full">
                     <SelectValue placeholder="-- Chọn loại phòng --" />
                   </SelectTrigger>
                 </FormControl>
@@ -372,43 +368,45 @@ function ServiceResourcesInfo({
 
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-            <FormLabel className="text-sm font-medium">Kỹ năng yêu cầu</FormLabel>
-            <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="h-6 text-xs text-muted-foreground hover:text-primary gap-1"
-                onClick={() => setSkillManagerOpen(true)}
-            >
-                <Settings2 className="w-3 h-3" /> Quản lý kỹ năng
-            </Button>
+          <FormLabel className="text-sm font-medium">Kỹ năng yêu cầu</FormLabel>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground hover:text-primary h-6 gap-1 text-xs"
+            onClick={() => setSkillManagerOpen(true)}
+          >
+            <Settings2 className="h-3 w-3" /> Quản lý kỹ năng
+          </Button>
         </div>
         <FormField
-            control={form.control}
-            name="skill_ids"
-            render={({ field }) => (
+          control={form.control}
+          name="skill_ids"
+          render={({ field }) => (
             <FormItem>
-                <FormControl>
+              <FormControl>
                 <TagInput
-                    options={skillOptions}
-                    selectedIds={field.value}
-                    newTags={[]}
-                    onSelectedChange={field.onChange}
-                    onNewTagsChange={() => showToast.info("Vui lòng dùng nút 'Quản lý kỹ năng' để thêm mới")}
-                    placeholder="Chọn kỹ năng..."
-                    className="min-h-[40px] text-sm bg-background"
+                  options={skillOptions}
+                  selectedIds={field.value}
+                  newTags={[]}
+                  onSelectedChange={field.onChange}
+                  onNewTagsChange={() =>
+                    showToast.info(
+                      "Vui lòng dùng nút 'Quản lý kỹ năng' để thêm mới"
+                    )
+                  }
+                  placeholder="Chọn kỹ năng..."
+                  className="bg-background min-h-[40px] text-sm"
                 />
-                </FormControl>
-                <FormMessage />
+              </FormControl>
+              <FormMessage />
             </FormItem>
-            )}
+          )}
         />
       </div>
 
-      <div className="space-y-3 pt-2 border-t">
-        <FormLabel>
-          Thiết bị & Timeline
-        </FormLabel>
+      <div className="space-y-3 border-t pt-2">
+        <FormLabel>Thiết bị & Timeline</FormLabel>
         <FormField
           control={form.control}
           name="resource_requirements.equipment_usage"
@@ -430,14 +428,14 @@ function ServiceResourcesInfo({
         />
       </div>
     </div>
-  )
+  );
 }
 
 const SERVICE_FORM_TABS = [
   { value: "basic", label: "Thông tin" },
   { value: "time", label: "Giá & Thời gian" },
   { value: "resources", label: "Tài nguyên" },
-]
+];
 
 export function ServiceForm({
   mode,
@@ -447,27 +445,30 @@ export function ServiceForm({
   availableCategories,
   className,
 }: ServiceFormProps) {
-  const form = useFormContext()
-  const duration = form.watch("duration")
-  const bufferTime = form.watch("buffer_time")
+  const form = useFormContext();
+  const duration = form.watch("duration");
+  const bufferTime = form.watch("buffer_time");
 
   // Local state for categories to support "Quick Add" updates
-  const [categories, setCategories] = useState(availableCategories)
-  const [skills, setSkills] = useState(availableSkills)
+  const [categories, setCategories] = useState(availableCategories);
+  const [skills, setSkills] = useState(availableSkills);
 
   if (mode === "create") {
     return (
       <div className={cn("w-full space-y-6 pt-2", className)}>
         {/* Basic Info Section */}
         <div className="space-y-4">
-          <h3 className="font-semibold text-base">Thông tin cơ bản</h3>
-          <ServiceBasicInfo categories={categories} onCategoriesChange={setCategories} />
+          <h3 className="text-base font-semibold">Thông tin cơ bản</h3>
+          <ServiceBasicInfo
+            categories={categories}
+            onCategoriesChange={setCategories}
+          />
         </div>
 
         {/* Time & Price Section */}
         <div className="space-y-4">
           <div className="border-t pt-4">
-            <h3 className="font-semibold text-base">Thời gian & Chi phí</h3>
+            <h3 className="text-base font-semibold">Thời gian & Chi phí</h3>
           </div>
           <ServiceTimePriceInfo duration={duration} bufferTime={bufferTime} />
         </div>
@@ -475,7 +476,7 @@ export function ServiceForm({
         {/* Resources Section */}
         <div className="space-y-4">
           <div className="border-t pt-4">
-            <h3 className="font-semibold text-base">Tài nguyên yêu cầu</h3>
+            <h3 className="text-base font-semibold">Tài nguyên yêu cầu</h3>
           </div>
           <ServiceResourcesInfo
             availableRoomTypes={availableRoomTypes}
@@ -486,31 +487,34 @@ export function ServiceForm({
           />
         </div>
       </div>
-    )
+    );
   }
 
   // Update Mode: Use Tabs
   return (
     <div className={cn("w-full", className)}>
       <FormTabs tabs={SERVICE_FORM_TABS} defaultValue="basic">
-         <div className="mt-4">
-            <FormTabsContent value="basic" className="mt-0">
-                <ServiceBasicInfo categories={categories} onCategoriesChange={setCategories} />
-            </FormTabsContent>
-            <FormTabsContent value="time" className="mt-0">
-                <ServiceTimePriceInfo duration={duration} bufferTime={bufferTime} />
-            </FormTabsContent>
-            <FormTabsContent value="resources" className="mt-0">
-                <ServiceResourcesInfo
-                  availableRoomTypes={availableRoomTypes}
-                  skills={skills}
-                  onSkillsChange={setSkills}
-                  availableEquipment={availableEquipment}
-                  duration={duration}
-                />
-            </FormTabsContent>
-         </div>
+        <div className="mt-4">
+          <FormTabsContent value="basic" className="mt-0">
+            <ServiceBasicInfo
+              categories={categories}
+              onCategoriesChange={setCategories}
+            />
+          </FormTabsContent>
+          <FormTabsContent value="time" className="mt-0">
+            <ServiceTimePriceInfo duration={duration} bufferTime={bufferTime} />
+          </FormTabsContent>
+          <FormTabsContent value="resources" className="mt-0">
+            <ServiceResourcesInfo
+              availableRoomTypes={availableRoomTypes}
+              skills={skills}
+              onSkillsChange={setSkills}
+              availableEquipment={availableEquipment}
+              duration={duration}
+            />
+          </FormTabsContent>
+        </div>
       </FormTabs>
     </div>
-  )
+  );
 }

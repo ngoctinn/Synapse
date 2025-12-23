@@ -13,14 +13,39 @@ export const MOCK_WEEKLY_SCHEDULE: DaySchedule[] = [
     isOpen: true,
     timeSlots: [
       { start: "08:00", end: "12:00" },
-      { start: "13:30", end: "21:00" }
-    ] // Split-shift example
+      { start: "13:30", end: "21:00" },
+    ], // Split-shift example
   },
-  { dayOfWeek: 2, label: "Thứ Ba", isOpen: true, timeSlots: [{ start: "08:00", end: "21:00" }] },
-  { dayOfWeek: 3, label: "Thứ Tư", isOpen: true, timeSlots: [{ start: "08:00", end: "21:00" }] },
-  { dayOfWeek: 4, label: "Thứ Năm", isOpen: true, timeSlots: [{ start: "08:00", end: "21:00" }] },
-  { dayOfWeek: 5, label: "Thứ Sáu", isOpen: true, timeSlots: [{ start: "08:00", end: "21:00" }] },
-  { dayOfWeek: 6, label: "Thứ Bảy", isOpen: true, timeSlots: [{ start: "09:00", end: "18:00" }] },
+  {
+    dayOfWeek: 2,
+    label: "Thứ Ba",
+    isOpen: true,
+    timeSlots: [{ start: "08:00", end: "21:00" }],
+  },
+  {
+    dayOfWeek: 3,
+    label: "Thứ Tư",
+    isOpen: true,
+    timeSlots: [{ start: "08:00", end: "21:00" }],
+  },
+  {
+    dayOfWeek: 4,
+    label: "Thứ Năm",
+    isOpen: true,
+    timeSlots: [{ start: "08:00", end: "21:00" }],
+  },
+  {
+    dayOfWeek: 5,
+    label: "Thứ Sáu",
+    isOpen: true,
+    timeSlots: [{ start: "08:00", end: "21:00" }],
+  },
+  {
+    dayOfWeek: 6,
+    label: "Thứ Bảy",
+    isOpen: true,
+    timeSlots: [{ start: "09:00", end: "18:00" }],
+  },
   { dayOfWeek: 7, label: "Chủ Nhật", isOpen: false, timeSlots: [] },
 ];
 
@@ -33,28 +58,28 @@ export const MOCK_EXCEPTIONS: ExceptionDate[] = [
     reason: "Giáng sinh (về sớm)",
     isClosed: false,
     openTime: "09:00",
-    closeTime: "16:00"
+    closeTime: "16:00",
   },
   {
     id: "exc-2",
     date: new Date("2025-12-25"),
     type: "HOLIDAY",
     reason: "Lễ Giáng sinh",
-    isClosed: true
+    isClosed: true,
   },
   {
     id: "exc-3",
     date: new Date("2026-01-01"),
     type: "HOLIDAY",
     reason: "Tết Dương Lịch",
-    isClosed: true
+    isClosed: true,
   },
   {
     id: "exc-4",
     date: new Date("2026-01-29"),
     type: "HOLIDAY",
     reason: "Tết Nguyên Đán",
-    isClosed: true
+    isClosed: true,
   },
 ];
 

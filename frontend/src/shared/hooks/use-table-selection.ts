@@ -1,33 +1,33 @@
-"use client"
+"use client";
 
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react";
 
-type SelectableId = string | number
+type SelectableId = string | number;
 
 interface UseTableSelectionOptions<T> {
   /** Hàm trích xuất ID từ item */
-  keyExtractor: (item: T) => SelectableId
+  keyExtractor: (item: T) => SelectableId;
   /** Data hiện tại để tính toán select all */
-  data: T[]
+  data: T[];
 }
 
 interface UseTableSelectionReturn {
   /** Set các IDs đã được chọn */
-  selectedIds: Set<SelectableId>
+  selectedIds: Set<SelectableId>;
   /** Toggle selection của một item */
-  toggleOne: (id: SelectableId) => void
+  toggleOne: (id: SelectableId) => void;
   /** Toggle select all/deselect all */
-  toggleAll: () => void
+  toggleAll: () => void;
   /** Xóa tất cả selection */
-  clearAll: () => void
+  clearAll: () => void;
   /** Kiểm tra item có được chọn không */
-  isSelected: (id: SelectableId) => boolean
+  isSelected: (id: SelectableId) => boolean;
   /** Kiểm tra có đang chọn tất cả không */
-  isAllSelected: boolean
+  isAllSelected: boolean;
   /** Kiểm tra có đang chọn một số (indeterminate) */
-  isPartiallySelected: boolean
+  isPartiallySelected: boolean;
   /** Số lượng đã chọn */
-  selectedCount: number
+  selectedCount: number;
 }
 
 /**
@@ -45,60 +45,55 @@ export function useTableSelection<T>({
   keyExtractor,
   data,
 }: UseTableSelectionOptions<T>): UseTableSelectionReturn {
-  const [selectedIds, setSelectedIds] = useState<Set<SelectableId>>(new Set())
-
+  const [selectedIds, setSelectedIds] = useState<Set<SelectableId>>(new Set());
 
   const toggleOne = useCallback((id: SelectableId) => {
     setSelectedIds((prev) => {
-      const next = new Set(prev)
+      const next = new Set(prev);
       if (next.has(id)) {
-        next.delete(id)
+        next.delete(id);
       } else {
-        next.add(id)
+        next.add(id);
       }
-      return next
-    })
-  }, [])
-
+      return next;
+    });
+  }, []);
 
   const toggleAll = useCallback(() => {
     setSelectedIds((prev) => {
-      const allIds = data.map(keyExtractor)
-      const allSelected = allIds.every((id) => prev.has(id))
+      const allIds = data.map(keyExtractor);
+      const allSelected = allIds.every((id) => prev.has(id));
 
       if (allSelected) {
-        return new Set()
+        return new Set();
       } else {
-        return new Set(allIds)
+        return new Set(allIds);
       }
-    })
-  }, [data, keyExtractor])
-
+    });
+  }, [data, keyExtractor]);
 
   const clearAll = useCallback(() => {
-    setSelectedIds(new Set())
-  }, [])
-
+    setSelectedIds(new Set());
+  }, []);
 
   const isSelected = useCallback(
     (id: SelectableId) => selectedIds.has(id),
     [selectedIds]
-  )
+  );
 
-
-  const allIds = useMemo(() => data.map(keyExtractor), [data, keyExtractor])
+  const allIds = useMemo(() => data.map(keyExtractor), [data, keyExtractor]);
 
   const isAllSelected = useMemo(
     () => allIds.length > 0 && allIds.every((id) => selectedIds.has(id)),
     [allIds, selectedIds]
-  )
+  );
 
   const isPartiallySelected = useMemo(
     () => selectedIds.size > 0 && !isAllSelected,
     [selectedIds.size, isAllSelected]
-  )
+  );
 
-  const selectedCount = selectedIds.size
+  const selectedCount = selectedIds.size;
 
   return {
     selectedIds,
@@ -109,5 +104,5 @@ export function useTableSelection<T>({
     isAllSelected,
     isPartiallySelected,
     selectedCount,
-  }
+  };
 }

@@ -44,12 +44,12 @@ export function ScheduleCell({
     <div
       onClick={handleCellClick}
       className={cn(
-        "p-1 border-r last:border-r-0 min-h-[80px] relative transition-all group/cell",
+        "group/cell relative min-h-[80px] border-r p-1 transition-all last:border-r-0",
         "flex flex-col gap-1",
         isToday ? "bg-primary/[0.03]" : "bg-background",
         !hasSchedules && !selectionMode && "hover:bg-muted/30",
-        selectionMode && "cursor-pointer hover:bg-primary/10",
-        isSelected && "bg-primary/10 ring-2 ring-inset ring-primary/50",
+        selectionMode && "hover:bg-primary/10 cursor-pointer",
+        isSelected && "bg-primary/10 ring-primary/50 ring-2 ring-inset",
         className
       )}
     >
@@ -73,11 +73,11 @@ export function ScheduleCell({
           }}
           aria-label="Thêm ca làm việc"
           className={cn(
-            "size-7 rounded-full bg-muted/50 hover:bg-primary/10 hover:text-primary",
-            "flex items-center justify-center transition-all cursor-pointer",
-            "focus:ring-2 focus:ring-primary/50 focus:outline-none",
+            "bg-muted/50 hover:bg-primary/10 hover:text-primary size-7 rounded-full",
+            "flex cursor-pointer items-center justify-center transition-all",
+            "focus:ring-primary/50 focus:outline-none focus:ring-2",
             hasSchedules
-              ? "opacity-0 group-hover/cell:opacity-100 absolute bottom-1 right-1"
+              ? "absolute bottom-1 right-1 opacity-0 group-hover/cell:opacity-100"
               : "mx-auto my-auto"
           )}
         >
@@ -87,8 +87,10 @@ export function ScheduleCell({
 
       {/* Selection indicator */}
       {selectionMode && isSelected && (
-        <div className="absolute top-1 right-1 size-4 rounded-full bg-primary flex items-center justify-center">
-          <span className="text-[10px] text-primary-foreground font-bold">✓</span>
+        <div className="bg-primary absolute right-1 top-1 flex size-4 items-center justify-center rounded-full">
+          <span className="text-primary-foreground text-[10px] font-bold">
+            ✓
+          </span>
         </div>
       )}
     </div>

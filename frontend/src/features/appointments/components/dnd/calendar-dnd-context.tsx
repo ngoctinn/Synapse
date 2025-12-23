@@ -23,14 +23,11 @@ import {
   type DragStartEvent,
   type Modifier,
 } from "@dnd-kit/core";
-import {
-  restrictToParentElement
-} from "@dnd-kit/modifiers";
+import { restrictToParentElement } from "@dnd-kit/modifiers";
 import { useCallback, useState } from "react";
 
 import type { CalendarEvent, ZoomLevel } from "../../model/types";
 import { EventCard } from "../event/event-card";
-
 
 interface CalendarDndContextProps {
   children: React.ReactNode;
@@ -75,7 +72,6 @@ function createGridSnapModifier(zoomLevel: ZoomLevel): Modifier {
     };
   };
 }
-
 
 export function CalendarDndContext({
   children,
@@ -204,6 +200,4 @@ export function CalendarDndContext({
   );
 }
 
-
 export { useDraggable, useDroppable } from "@dnd-kit/core";
-

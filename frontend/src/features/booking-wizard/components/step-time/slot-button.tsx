@@ -25,13 +25,15 @@ export const SlotButton: React.FC<SlotButtonProps> = ({
       variant="outline"
       size="sm"
       className={cn(
-        "relative flex-grow min-w-[5rem] md:min-w-[6rem] justify-center items-center gap-1",
+        "relative min-w-[5rem] flex-grow items-center justify-center gap-1 md:min-w-[6rem]",
         "transition-all duration-150 ease-in-out",
-        !isAvailable && "opacity-50 cursor-not-allowed line-through",
-        isDisabled && "opacity-30 cursor-not-allowed",
+        !isAvailable && "cursor-not-allowed line-through opacity-50",
+        isDisabled && "cursor-not-allowed opacity-30",
         isSelected &&
-          "bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-2 focus:ring-primary focus:ring-offset-2",
-        !isSelected && isAvailable && "hover:bg-accent hover:text-accent-foreground",
+          "bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary focus:ring-2 focus:ring-offset-2",
+        !isSelected &&
+          isAvailable &&
+          "hover:bg-accent hover:text-accent-foreground"
       )}
       onClick={onClick}
       disabled={!isAvailable || isDisabled}
@@ -39,9 +41,9 @@ export const SlotButton: React.FC<SlotButtonProps> = ({
       <Clock className="size-3.5" />
       <span>{time}</span>
       {isSelected && (
-        <span className="absolute -top-1 -right-1 flex h-3 w-3">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-foreground opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-3 w-3 bg-primary-foreground"></span>
+        <span className="absolute -right-1 -top-1 flex h-3 w-3">
+          <span className="bg-primary-foreground absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"></span>
+          <span className="bg-primary-foreground relative inline-flex h-3 w-3 rounded-full"></span>
         </span>
       )}
     </Button>

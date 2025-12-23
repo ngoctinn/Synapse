@@ -5,7 +5,12 @@ import { vi } from "date-fns/locale";
 
 import { cn } from "@/shared/lib/utils";
 import { getSchedulesByStaffAndDate } from "../../../model/schedules";
-import { Schedule, ScheduleWithShift, SelectedSlot, Staff } from "../../../model/types";
+import {
+  Schedule,
+  ScheduleWithShift,
+  SelectedSlot,
+  Staff,
+} from "../../../model/types";
 import { ScheduleCell } from "./schedule-cell";
 
 interface WeekViewProps {
@@ -39,12 +44,14 @@ export function WeekView({
 
   if (staffList.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 text-center border rounded-lg bg-muted/10 border-dashed m-4">
-        <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+      <div className="bg-muted/10 m-4 flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
+        <div className="bg-muted/50 mb-4 flex h-12 w-12 items-center justify-center rounded-full">
           <span className="text-2xl">👥</span>
         </div>
-        <h3 className="text-lg font-medium text-foreground">Chưa có nhân viên</h3>
-        <p className="text-sm text-muted-foreground max-w-sm mt-1">
+        <h3 className="text-foreground text-lg font-medium">
+          Chưa có nhân viên
+        </h3>
+        <p className="text-muted-foreground mt-1 max-w-sm text-sm">
           Thêm nhân viên vào hệ thống để bắt đầu xếp lịch làm việc.
         </p>
       </div>
@@ -55,16 +62,16 @@ export function WeekView({
     selectedSlots.some((s) => s.staffId === staffId && s.dateStr === dateStr);
 
   return (
-    <div className={cn("flex flex-col select-none", className)}>
+    <div className={cn("flex select-none flex-col", className)}>
       <div className="relative overflow-hidden">
         {/* Scroll indicators */}
-        <div className="absolute top-0 bottom-0 left-[180px] w-4 bg-gradient-to-r from-background to-transparent z-40 pointer-events-none lg:hidden" />
-        <div className="absolute top-0 bottom-0 right-0 w-4 bg-gradient-to-l from-background to-transparent z-40 pointer-events-none lg:hidden" />
+        <div className="from-background pointer-events-none absolute bottom-0 left-[180px] top-0 z-40 w-4 bg-gradient-to-r to-transparent lg:hidden" />
+        <div className="from-background pointer-events-none absolute bottom-0 right-0 top-0 z-40 w-4 bg-gradient-to-l to-transparent lg:hidden" />
 
         <div className="min-w-[800px] overflow-x-auto">
           {/* Header row - Days of week */}
-          <div className="grid grid-cols-[180px_repeat(7,1fr)] bg-background border-b sticky top-0 z-30">
-            <div className="p-2 font-medium text-sm border-r flex items-center text-muted-foreground sticky left-0 bg-background z-40">
+          <div className="bg-background sticky top-0 z-30 grid grid-cols-[180px_repeat(7,1fr)] border-b">
+            <div className="text-muted-foreground bg-background sticky left-0 z-40 flex items-center border-r p-2 text-sm font-medium">
               Nhân viên
             </div>
             {weekDays.map((day) => {
@@ -73,19 +80,26 @@ export function WeekView({
                 <div
                   key={day.toISOString()}
                   className={cn(
-                    "p-2 text-center border-r last:border-r-0 flex flex-col justify-center",
+                    "flex flex-col justify-center border-r p-2 text-center last:border-r-0",
                     isToday && "bg-primary/5"
                   )}
                 >
                   <div
                     className={cn(
-                      "text-xs capitalize mb-0.5",
-                      isToday ? "text-primary font-medium" : "text-muted-foreground"
+                      "mb-0.5 text-xs capitalize",
+                      isToday
+                        ? "text-primary font-medium"
+                        : "text-muted-foreground"
                     )}
                   >
                     {format(day, "EEEE", { locale: vi })}
                   </div>
-                  <div className={cn("font-semibold text-sm", isToday && "text-primary")}>
+                  <div
+                    className={cn(
+                      "text-sm font-semibold",
+                      isToday && "text-primary"
+                    )}
+                  >
                     {format(day, "dd/MM")}
                   </div>
                 </div>
@@ -98,23 +112,23 @@ export function WeekView({
             {staffList.map((staff) => (
               <div
                 key={staff.user_id}
-                className="grid grid-cols-[180px_repeat(7,1fr)] group hover:bg-muted/5 transition-colors"
+                className="hover:bg-muted/5 group grid grid-cols-[180px_repeat(7,1fr)] transition-colors"
               >
                 {/* Staff info column */}
-                <div className="p-2 border-r flex items-center gap-2 bg-background group-hover:bg-muted/5 transition-colors sticky left-0 z-20">
-                  <div className="w-8 h-8 rounded-full bg-muted overflow-hidden border shrink-0">
+                <div className="bg-background group-hover:bg-muted/5 sticky left-0 z-20 flex items-center gap-2 border-r p-2 transition-colors">
+                  <div className="bg-muted h-8 w-8 shrink-0 overflow-hidden rounded-full border">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={staff.user.avatar_url || "/placeholder-avatar.png"}
                       alt={staff.user.full_name || "Avatar"}
-                      className="w-full h-full object-cover"
+                      className="h-full w-full object-cover"
                     />
                   </div>
-                  <div className="flex flex-col overflow-hidden min-w-0">
-                    <span className="text-sm font-medium truncate">
+                  <div className="flex min-w-0 flex-col overflow-hidden">
+                    <span className="truncate text-sm font-medium">
                       {staff.user.full_name || "Chưa có tên"}
                     </span>
-                    <span className="text-xs text-muted-foreground capitalize truncate">
+                    <span className="text-muted-foreground truncate text-xs capitalize">
                       {staff.title}
                     </span>
                   </div>
@@ -123,7 +137,11 @@ export function WeekView({
                 {/* Day cells */}
                 {weekDays.map((day) => {
                   const dateStr = format(day, "yyyy-MM-dd");
-                  const daySchedules = getSchedulesByStaffAndDate(schedules, staff.user_id, dateStr);
+                  const daySchedules = getSchedulesByStaffAndDate(
+                    schedules,
+                    staff.user_id,
+                    dateStr
+                  );
                   const isToday = isSameDay(day, today);
                   const isSelected = isSlotSelected(staff.user_id, dateStr);
 

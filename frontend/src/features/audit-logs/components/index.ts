@@ -1,2 +1,2 @@
-export * from "./audit-table"
-export * from "./audit-logs-page"
+export * from "./audit-table";
+export * from "./audit-logs-page";

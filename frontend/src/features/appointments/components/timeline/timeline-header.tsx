@@ -70,13 +70,13 @@ export function TimelineHeader({
   return (
     <div
       className={cn(
-        "flex sticky top-0 z-20 bg-background border-b border-border/50",
+        "bg-background border-border/50 sticky top-0 z-20 flex border-b",
         className
       )}
     >
       {/* Resource column header (sticky left) */}
-      <div className="sticky left-0 z-30 w-48 flex-shrink-0 bg-background border-r border-border/50 p-2">
-        <span className="text-xs font-medium text-muted-foreground">
+      <div className="bg-background border-border/50 sticky left-0 z-30 w-48 flex-shrink-0 border-r p-2">
+        <span className="text-muted-foreground text-xs font-medium">
           Nhân viên / Phòng
         </span>
       </div>
@@ -87,7 +87,7 @@ export function TimelineHeader({
           <div
             key={`${slot.hour}-${slot.minute}`}
             className={cn(
-              "flex-shrink-0 border-r border-border/30",
+              "border-border/30 flex-shrink-0 border-r",
               "flex items-center justify-center py-2",
               slot.isHourStart ? "border-r-border/60" : "border-dashed"
             )}
@@ -97,7 +97,7 @@ export function TimelineHeader({
               className={cn(
                 "text-xs",
                 slot.isHourStart
-                  ? "font-medium text-foreground"
+                  ? "text-foreground font-medium"
                   : "text-muted-foreground"
               )}
             >

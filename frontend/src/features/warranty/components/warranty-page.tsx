@@ -1,50 +1,57 @@
-"use client"
+"use client";
 
-import { PageFooter } from "@/shared/components/layout/components/page-footer"
-import { PageContent, PageHeader, PageShell, SurfaceCard } from "@/shared/components/layout/page-layout"
-import { FilterBar } from "@/shared/ui/custom/filter-bar"
-import { Input } from "@/shared/ui/input"
-import { Search } from "lucide-react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useTransition } from "react"
-import { useDebouncedCallback } from "use-debounce"
-import { WarrantyTicket } from "../model/types"
-import { CreateWarrantyTrigger, WarrantyTable } from "./index"
+import { PageFooter } from "@/shared/components/layout/components/page-footer";
+import {
+  PageContent,
+  PageHeader,
+  PageShell,
+  SurfaceCard,
+} from "@/shared/components/layout/page-layout";
+import { FilterBar } from "@/shared/ui/custom/filter-bar";
+import { Input } from "@/shared/ui/input";
+import { Search } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useTransition } from "react";
+import { useDebouncedCallback } from "use-debounce";
+import { WarrantyTicket } from "../model/types";
+import { CreateWarrantyTrigger, WarrantyTable } from "./index";
 
 interface WarrantyPageProps {
-  data: WarrantyTicket[]
-  page: number
-  totalPages: number
+  data: WarrantyTicket[];
+  page: number;
+  totalPages: number;
 }
 
 export function WarrantyPage({ data, page, totalPages }: WarrantyPageProps) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-  const [, startTransition] = useTransition()
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [, startTransition] = useTransition();
 
-  const initialSearch = searchParams.get("search")?.toString() || ""
+  const initialSearch = searchParams.get("search")?.toString() || "";
 
   const handleSearch = useDebouncedCallback((term: string) => {
-    const params = new URLSearchParams(searchParams)
+    const params = new URLSearchParams(searchParams);
     if (term) {
-      params.set("search", term)
+      params.set("search", term);
     } else {
-      params.delete("search")
+      params.delete("search");
     }
-    params.set("page", "1")
+    params.set("page", "1");
 
     startTransition(() => {
-      router.replace(`${pathname}?${params.toString()}`)
-    })
-  }, 300)
+      router.replace(`${pathname}?${params.toString()}`);
+    });
+  }, 300);
 
   return (
     <PageShell>
       <PageHeader>
         <div className="flex flex-col gap-0.5">
-          <h1 className="text-lg font-medium md:text-xl tracking-tight">Bảo hành</h1>
-          <p className="text-sm text-muted-foreground hidden md:block">
+          <h1 className="text-lg font-medium tracking-tight md:text-xl">
+            Bảo hành
+          </h1>
+          <p className="text-muted-foreground hidden text-sm md:block">
             Quản lý phiếu bảo hành và cam kết chất lượng
           </p>
         </div>
@@ -52,13 +59,13 @@ export function WarrantyPage({ data, page, totalPages }: WarrantyPageProps) {
           <FilterBar
             startContent={
               <div className="relative w-full md:w-[250px]">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground/70" />
+                <Search className="text-muted-foreground/70 absolute left-2.5 top-2.5 h-4 w-4" />
                 <Input
                   type="search"
                   placeholder="Tìm mã phiếu hoặc khách hàng..."
                   defaultValue={initialSearch}
                   onChange={(e) => handleSearch(e.target.value)}
-                  className="w-full bg-background pl-9 h-9 border-muted-foreground/20 focus-premium"
+                  className="bg-background border-muted-foreground/20 focus-premium h-9 w-full pl-9"
                 />
               </div>
             }
@@ -69,14 +76,10 @@ export function WarrantyPage({ data, page, totalPages }: WarrantyPageProps) {
 
       <PageContent>
         <SurfaceCard className="border-muted/60">
-          <WarrantyTable
-            data={data}
-            page={page}
-            totalPages={totalPages}
-          />
+          <WarrantyTable data={data} page={page} totalPages={totalPages} />
         </SurfaceCard>
         <PageFooter />
       </PageContent>
     </PageShell>
-  )
+  );
 }

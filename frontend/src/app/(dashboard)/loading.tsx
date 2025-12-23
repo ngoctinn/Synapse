@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader } from "@/shared/ui/card"
-import { Skeleton } from "@/shared/ui/skeleton"
+import { Card, CardContent, CardHeader } from "@/shared/ui/card";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 export default function DashboardLoading() {
   return (
@@ -12,18 +12,18 @@ export default function DashboardLoading() {
               <Skeleton className="size-4 rounded-full" />
             </CardHeader>
             <CardContent>
-              <Skeleton className="h-8 w-[60px] mb-2" />
+              <Skeleton className="mb-2 h-8 w-[60px]" />
               <Skeleton className="h-3 w-[120px]" />
             </CardContent>
           </Card>
         ))}
       </div>
-      <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
-        <div className="p-4 space-y-4">
-            <Skeleton className="h-8 w-[200px]" />
-            <Skeleton className="h-[200px] w-full rounded-xl" />
+      <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min">
+        <div className="space-y-4 p-4">
+          <Skeleton className="h-8 w-[200px]" />
+          <Skeleton className="h-[200px] w-full rounded-xl" />
         </div>
       </div>
     </div>
-  )
+  );
 }

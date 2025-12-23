@@ -4,7 +4,7 @@ import {
   addDays,
   isSameDay,
   isSameMonth,
-  isToday as isTodayFn
+  isToday as isTodayFn,
 } from "date-fns";
 import { useMemo } from "react";
 
@@ -66,14 +66,14 @@ export function MonthView({
   }, [dateRange, currentMonth, events]);
 
   return (
-    <div className={cn("flex flex-col h-full min-h-0", className)}>
+    <div className={cn("flex h-full min-h-0 flex-col", className)}>
       {/* Weekday Header */}
-      <div className="grid grid-cols-7 border-b border-border/50">
+      <div className="border-border/50 grid grid-cols-7 border-b">
         {WEEKDAYS.map((day) => (
           <div
             key={day.value}
             className={cn(
-              "py-2 text-center text-xs font-medium text-muted-foreground",
+              "text-muted-foreground py-2 text-center text-xs font-medium",
               (day.value === 0 || day.value === 6) && "text-muted-foreground/60"
             )}
           >
@@ -84,9 +84,12 @@ export function MonthView({
       </div>
 
       {/* Weeks Grid */}
-      <div className="flex-1 grid grid-rows-[repeat(auto-fill,minmax(80px,1fr))]">
+      <div className="grid flex-1 grid-rows-[repeat(auto-fill,minmax(80px,1fr))]">
         {weeks.map((week, weekIndex) => (
-          <div key={weekIndex} className="grid grid-cols-7 border-b border-border/30 last:border-b-0">
+          <div
+            key={weekIndex}
+            className="border-border/30 grid grid-cols-7 border-b last:border-b-0"
+          >
             {week.map((dayCell) => (
               <DayCell
                 key={dayCell.date.toISOString()}

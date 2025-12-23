@@ -6,13 +6,7 @@
  * 4 cards: Hôm nay, Chờ xác nhận, Tỷ lệ lấp đầy, Doanh thu dự kiến
  */
 
-import {
-    Calendar,
-    Clock,
-    DollarSign,
-    TrendingUp,
-    Users,
-} from "lucide-react";
+import { Calendar, Clock, DollarSign, TrendingUp, Users } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/shared/lib/utils";
@@ -38,7 +32,10 @@ interface MetricCardData {
   color: string;
 }
 
-function useAnimatedNumber(targetValue: number, duration: number = 500): number {
+function useAnimatedNumber(
+  targetValue: number,
+  duration: number = 500
+): number {
   const [displayValue, setDisplayValue] = useState(0);
   const startValueRef = useRef(0);
 
@@ -54,7 +51,9 @@ function useAnimatedNumber(targetValue: number, duration: number = 500): number 
 
       // Easing function (ease-out)
       const easeOut = 1 - Math.pow(1 - progress, 3);
-      const currentValue = Math.round(startValue + (targetValue - startValue) * easeOut);
+      const currentValue = Math.round(
+        startValue + (targetValue - startValue) * easeOut
+      );
 
       setDisplayValue(currentValue);
       startValueRef.current = currentValue; // Update ref to current value
@@ -145,10 +144,10 @@ export function MetricsCards({
           )}
         >
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-muted-foreground text-sm font-medium">
               {card.title}
             </CardTitle>
-            <div className={cn("p-2 rounded-lg bg-muted/50", card.color)}>
+            <div className={cn("bg-muted/50 rounded-lg p-2", card.color)}>
               {card.icon}
             </div>
           </CardHeader>
@@ -158,7 +157,7 @@ export function MetricsCards({
                 {isLoading ? "—" : card.value}
               </span>
               {card.subValue && (
-                <span className="text-sm text-muted-foreground">
+                <span className="text-muted-foreground text-sm">
                   {card.subValue}
                 </span>
               )}
@@ -168,7 +167,7 @@ export function MetricsCards({
             {card.trend && !isLoading && (
               <div
                 className={cn(
-                  "flex items-center gap-1 mt-2 text-xs font-medium",
+                  "mt-2 flex items-center gap-1 text-xs font-medium",
                   card.trend.isPositive ? "text-success" : "text-destructive"
                 )}
               >

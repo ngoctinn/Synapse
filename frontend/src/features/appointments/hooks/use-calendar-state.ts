@@ -1,25 +1,25 @@
 "use client";
 
 import {
-    addDays,
-    addMonths,
-    addWeeks,
-    endOfDay,
-    endOfMonth,
-    endOfWeek,
-    startOfDay,
-    startOfMonth,
-    startOfWeek,
-    subDays,
-    subMonths,
-    subWeeks,
+  addDays,
+  addMonths,
+  addWeeks,
+  endOfDay,
+  endOfMonth,
+  endOfWeek,
+  startOfDay,
+  startOfMonth,
+  startOfWeek,
+  subDays,
+  subMonths,
+  subWeeks,
 } from "date-fns";
 import { useCallback, useMemo, useState } from "react";
 import type {
-    CalendarViewType,
-    DateRange,
-    DensityMode,
-    ZoomLevel,
+  CalendarViewType,
+  DateRange,
+  DensityMode,
+  ZoomLevel,
 } from "../model/types";
 
 interface UseCalendarStateOptions {

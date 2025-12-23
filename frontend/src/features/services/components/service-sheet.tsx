@@ -42,31 +42,37 @@ export function ServiceSheet({
   const isUpdateMode = mode === "update";
 
   // Transform Service entity thành form values
-  const transformData = useCallback((service: Service): Partial<ServiceFormValues> => ({
-    name: service.name || "",
-    duration: service.duration || SERVICE_DEFAULT_VALUES.duration,
-    buffer_time: service.buffer_time || SERVICE_DEFAULT_VALUES.buffer_time,
-    price: service.price || SERVICE_DEFAULT_VALUES.price,
-    is_active: service.is_active ?? true,
-    image_url: service.image_url || "",
-    color: service.color || SERVICE_DEFAULT_VALUES.color,
-    description: service.description || "",
-    resource_requirements: {
-      room_type_id: service.resource_requirements?.room_type_id || undefined,
-      equipment_ids: service.resource_requirements?.equipment_ids || [],
-      equipment_usage: service.resource_requirements?.equipment_usage || [],
-    },
-    skill_ids: service.skills?.map((s) => s.id) || [],
-    new_skills: [],
-  }), []);
+  const transformData = useCallback(
+    (service: Service): Partial<ServiceFormValues> => ({
+      name: service.name || "",
+      duration: service.duration || SERVICE_DEFAULT_VALUES.duration,
+      buffer_time: service.buffer_time || SERVICE_DEFAULT_VALUES.buffer_time,
+      price: service.price || SERVICE_DEFAULT_VALUES.price,
+      is_active: service.is_active ?? true,
+      image_url: service.image_url || "",
+      color: service.color || SERVICE_DEFAULT_VALUES.color,
+      description: service.description || "",
+      resource_requirements: {
+        room_type_id: service.resource_requirements?.room_type_id || undefined,
+        equipment_ids: service.resource_requirements?.equipment_ids || [],
+        equipment_usage: service.resource_requirements?.equipment_usage || [],
+      },
+      skill_ids: service.skills?.map((s) => s.id) || [],
+      new_skills: [],
+    }),
+    []
+  );
 
   // Action wrapper để phù hợp với useSheetForm API
-  const handleAction = useCallback(async (data: ServiceFormValues) => {
-    if (isUpdateMode && initialData) {
-      return updateService(initialData.id, data);
-    }
-    return createService(data);
-  }, [isUpdateMode, initialData]);
+  const handleAction = useCallback(
+    async (data: ServiceFormValues) => {
+      if (isUpdateMode && initialData) {
+        return updateService(initialData.id, data);
+      }
+      return createService(data);
+    },
+    [isUpdateMode, initialData]
+  );
 
   const { form, isPending, onSubmit } = useSheetForm({
     schema: serviceSchema,
@@ -93,16 +99,20 @@ export function ServiceSheet({
     action: handleAction,
     onSuccess: () => onOpenChange(false),
     toastMessages: {
-      success: isUpdateMode ? "Cập nhật dịch vụ thành công" : "Tạo dịch vụ thành công",
-      error: isUpdateMode ? "Không thể cập nhật dịch vụ" : "Không thể tạo dịch vụ",
+      success: isUpdateMode
+        ? "Cập nhật dịch vụ thành công"
+        : "Tạo dịch vụ thành công",
+      error: isUpdateMode
+        ? "Không thể cập nhật dịch vụ"
+        : "Không thể tạo dịch vụ",
     },
   });
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-lg p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
-        <SheetHeader className="px-6 py-4 border-b shrink-0 space-y-0">
-          <SheetTitle className="text-lg font-semibold text-foreground">
+      <SheetContent className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-lg">
+        <SheetHeader className="shrink-0 space-y-0 border-b px-6 py-4">
+          <SheetTitle className="text-foreground text-lg font-semibold">
             {isUpdateMode ? "Chỉnh sửa dịch vụ" : "Tạo dịch vụ mới"}
           </SheetTitle>
         </SheetHeader>
@@ -112,7 +122,7 @@ export function ServiceSheet({
             <form
               id="service-form"
               onSubmit={onSubmit}
-              className="h-full flex flex-col"
+              className="flex h-full flex-col"
             >
               <ServiceForm
                 mode={mode}

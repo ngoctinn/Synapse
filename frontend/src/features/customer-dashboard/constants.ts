@@ -1,4 +1,4 @@
-export * from "./constants/nav-items"
+export * from "./constants/nav-items";
 
 export const PROFILE_MESSAGES = {
   SUCCESS_TITLE: "Thành công",
@@ -6,7 +6,7 @@ export const PROFILE_MESSAGES = {
   VALIDATION_ERROR: "Đã có lỗi trong dữ liệu nhập. Vui lòng kiểm tra lại.",
   INVALID_DATE: "Ngày sinh không hợp lệ. Vui lòng chọn lại.",
   SAVE_SUCCESS: "Hồ sơ của bạn đã được cập nhật thành công.",
-}
+};
 
 export const PROFILE_LABELS = {
   TITLE: "Thông tin cá nhân",
@@ -27,4 +27,4 @@ export const PROFILE_LABELS = {
   SUBMITTING: "Đang lưu...",
   MEMBER_TIER: "Thành viên",
   DEFAULT_TIER: "Bạc",
-}
+};

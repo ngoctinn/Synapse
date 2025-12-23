@@ -71,10 +71,10 @@ export function EventCard({
         type="button"
         onClick={onClick}
         className={cn(
-          "flex items-center gap-1.5 px-1.5 py-0.5 rounded text-xs truncate w-full",
-          "hover:brightness-95 active:scale-98 transition-all",
+          "flex w-full items-center gap-1.5 truncate rounded px-1.5 py-0.5 text-xs",
+          "active:scale-98 transition-all hover:brightness-95",
           isDragging && "opacity-50",
-          isOverlay && "shadow-lg ring-2 ring-primary",
+          isOverlay && "ring-primary shadow-lg ring-2",
           hasConflict && "ring-2 ring-red-500",
           className
         )}
@@ -82,7 +82,7 @@ export function EventCard({
         title={`${event.title} (${timeRange})`}
       >
         <span
-          className="w-2 h-2 rounded-full flex-shrink-0"
+          className="h-2 w-2 flex-shrink-0 rounded-full"
           style={{ backgroundColor: event.color }}
         />
         <span className="truncate">{event.appointment.customerName}</span>
@@ -97,11 +97,11 @@ export function EventCard({
         type="button"
         onClick={onClick}
         className={cn(
-          "flex flex-col px-2 py-1 rounded-md text-left overflow-hidden",
+          "flex flex-col overflow-hidden rounded-md px-2 py-1 text-left",
           "border-l-3 cursor-pointer",
-          "hover:brightness-95 active:scale-[0.98] transition-all duration-150",
-          isDragging && "opacity-40 scale-95",
-          isOverlay && "shadow-xl ring-2 ring-offset-2 ring-primary scale-105",
+          "transition-all duration-150 hover:brightness-95 active:scale-[0.98]",
+          isDragging && "scale-95 opacity-40",
+          isOverlay && "ring-primary scale-105 shadow-xl ring-2 ring-offset-2",
           hasConflict && "ring-2 ring-red-500 ring-offset-1",
           className
         )}
@@ -112,26 +112,26 @@ export function EventCard({
         title={event.title}
       >
         {/* Time + Status */}
-        <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+        <div className="text-muted-foreground flex items-center gap-1 text-[10px]">
           <span style={{ color: event.color }}>
             {STATUS_ICONS[event.status]}
           </span>
           <span>{format(event.start, "HH:mm")}</span>
           {event.isRecurring && (
-            <Repeat className="h-2.5 w-2.5 text-muted-foreground" />
+            <Repeat className="text-muted-foreground h-2.5 w-2.5" />
           )}
         </div>
 
         {/* Customer Name */}
         <span
-          className="text-xs font-medium truncate mt-0.5"
+          className="mt-0.5 truncate text-xs font-medium"
           style={{ color: event.color }}
         >
           {event.appointment.customerName}
         </span>
 
         {/* Service Name (nếu đủ chiều cao) */}
-        <span className="text-[10px] text-muted-foreground truncate">
+        <span className="text-muted-foreground truncate text-[10px]">
           {event.appointment.serviceName}
         </span>
       </button>
@@ -144,40 +144,40 @@ export function EventCard({
       type="button"
       onClick={onClick}
       className={cn(
-        "flex flex-col w-full p-3 rounded-lg text-left",
-        "border-l-4 cursor-pointer",
-        "hover:shadow-md active:scale-[0.99] transition-all duration-200",
+        "flex w-full flex-col rounded-lg p-3 text-left",
+        "cursor-pointer border-l-4",
+        "transition-all duration-200 hover:shadow-md active:scale-[0.99]",
         "bg-card",
-        isDragging && "opacity-40 scale-95",
-        isOverlay && "shadow-2xl ring-2 ring-offset-2 ring-primary scale-105",
+        isDragging && "scale-95 opacity-40",
+        isOverlay && "ring-primary scale-105 shadow-2xl ring-2 ring-offset-2",
         hasConflict && "ring-2 ring-red-500",
         className
       )}
       style={{ borderLeftColor: event.color }}
     >
       {/* Header: Status + Time */}
-      <div className="flex items-center justify-between mb-2">
+      <div className="mb-2 flex items-center justify-between">
         <Badge preset={STATUS_TO_BADGE_PRESET[event.status]} size="xs">
           {STATUS_ICONS[event.status]}
         </Badge>
 
-        <span className="text-xs text-muted-foreground flex items-center gap-1">
+        <span className="text-muted-foreground flex items-center gap-1 text-xs">
           <Clock className="h-3 w-3" />
           {timeRange}
         </span>
       </div>
 
       {/* Customer */}
-      <div className="flex items-center gap-2 mb-1">
-        <User className="size-4 text-muted-foreground" />
-        <span className="font-medium text-sm">
+      <div className="mb-1 flex items-center gap-2">
+        <User className="text-muted-foreground size-4" />
+        <span className="text-sm font-medium">
           {event.appointment.customerName}
         </span>
       </div>
 
       {/* Service */}
       <div
-        className="text-sm px-2 py-1 rounded-md inline-flex items-center gap-1.5 w-fit"
+        className="inline-flex w-fit items-center gap-1.5 rounded-md px-2 py-1 text-sm"
         style={{ backgroundColor: event.color + "20", color: event.color }}
       >
         {event.appointment.serviceName}
@@ -185,7 +185,7 @@ export function EventCard({
       </div>
 
       {/* Staff & Room */}
-      <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+      <div className="text-muted-foreground mt-2 flex items-center gap-3 text-xs">
         <span>👤 {event.staffName}</span>
         {event.appointment.resourceName && (
           <span>📍 {event.appointment.resourceName}</span>

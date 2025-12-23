@@ -4,8 +4,8 @@
  */
 export function PageFooter() {
   return (
-    <div className="text-center text-sm text-muted-foreground py-6 mt-auto">
+    <div className="text-muted-foreground mt-auto py-6 text-center text-sm">
       © {new Date().getFullYear()} Synapse. All rights reserved.
     </div>
-  )
+  );
 }

@@ -4,18 +4,18 @@ import { Check, Filter, Users, X } from "lucide-react";
 
 import { cn } from "@/shared/lib/utils";
 import {
-    Badge,
-    Button,
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-    CommandSeparator,
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
+  Badge,
+  Button,
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/shared/ui";
 
 import { ROLE_CONFIG, ROLES } from "../../../model/constants";
@@ -73,7 +73,7 @@ export function StaffFilter({
             variant="outline"
             size="sm"
             className={cn(
-              "h-8 px-3 gap-2",
+              "h-8 gap-2 px-3",
               hasFilters && "border-primary/50 bg-primary/5 text-primary"
             )}
           >
@@ -99,7 +99,7 @@ export function StaffFilter({
                     >
                       <div
                         className={cn(
-                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                          "border-primary mr-2 flex h-4 w-4 items-center justify-center rounded-sm border",
                           isSelected
                             ? "bg-primary text-primary-foreground"
                             : "opacity-50 [&_svg]:invisible"
@@ -107,7 +107,10 @@ export function StaffFilter({
                       >
                         <Check className="h-3 w-3" />
                       </div>
-                      <Badge variant={ROLE_CONFIG[role.id as Role].variant} className="text-xs">
+                      <Badge
+                        variant={ROLE_CONFIG[role.id as Role].variant}
+                        className="text-xs"
+                      >
                         {role.name}
                       </Badge>
                     </CommandItem>
@@ -129,7 +132,7 @@ export function StaffFilter({
                     >
                       <div
                         className={cn(
-                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                          "border-primary mr-2 flex h-4 w-4 items-center justify-center rounded-sm border",
                           isSelected
                             ? "bg-primary text-primary-foreground"
                             : "opacity-50 [&_svg]:invisible"
@@ -138,7 +141,7 @@ export function StaffFilter({
                         <Check className="h-3 w-3" />
                       </div>
                       <div className="flex items-center gap-2">
-                        <Users className="size-3 text-muted-foreground" />
+                        <Users className="text-muted-foreground size-3" />
                         <span className="text-sm">{staff.user.full_name}</span>
                       </div>
                     </CommandItem>
@@ -152,7 +155,7 @@ export function StaffFilter({
                   <CommandGroup>
                     <CommandItem
                       onSelect={onClear}
-                      className="justify-center text-center cursor-pointer"
+                      className="cursor-pointer justify-center text-center"
                     >
                       <X className="mr-2 size-4" />
                       Xóa bộ lọc
@@ -167,12 +170,12 @@ export function StaffFilter({
 
       {/* Active filter badges */}
       {hasFilters && (
-        <div className="hidden sm:flex items-center gap-1">
+        <div className="hidden items-center gap-1 sm:flex">
           {selectedRoles.map((role) => (
             <Badge
               key={role}
               variant={ROLE_CONFIG[role].variant}
-              className="text-xs cursor-pointer hover:opacity-80"
+              className="cursor-pointer text-xs hover:opacity-80"
               onClick={() => toggleRole(role)}
             >
               {ROLE_CONFIG[role].label}
@@ -185,7 +188,7 @@ export function StaffFilter({
               <Badge
                 key={id}
                 variant="outline"
-                className="text-xs cursor-pointer hover:opacity-80"
+                className="cursor-pointer text-xs hover:opacity-80"
                 onClick={() => toggleStaff(id)}
               >
                 {staff?.user.full_name?.split(" ").pop()}

@@ -1,28 +1,111 @@
 {
-  "extends": [
-    "stylelint-config-standard",
-    "stylelint-config-tailwindcss"
-  ],
+  "extends": ["stylelint-config-standard", "stylelint-config-tailwindcss"],
   "plugins": ["stylelint-order"],
   "rules": {
     "at-rule-no-unknown": null,
     "no-descending-specificity": null,
     "keyframes-name-pattern": null,
     "selector-class-pattern": null,
-    "order/order": [
-      "custom-properties",
-      "declarations"
-    ],
+    "order/order": ["custom-properties", "declarations"],
     "order/properties-order": [
-      { "properties": ["position", "top", "right", "bottom", "left", "z-index"] },
-      { "properties": ["display", "flex", "flex-direction", "flex-wrap", "flex-flow", "justify-content", "align-items", "align-content", "order", "flex-grow", "flex-shrink", "flex-basis"] },
-      { "properties": ["grid", "grid-template-columns", "grid-template-rows", "grid-template-areas", "grid-auto-columns", "grid-auto-rows", "grid-auto-flow", "grid-column", "grid-row"] },
-      { "properties": ["width", "min-width", "max-width", "height", "min-height", "max-height"] },
-      { "properties": ["margin", "margin-top", "margin-right", "margin-bottom", "margin-left", "padding", "padding-top", "padding-right", "padding-bottom", "padding-left"] },
-      { "properties": ["font-family", "font-size", "font-weight", "font-style", "font-variant", "line-height", "letter-spacing", "text-align", "text-decoration", "text-transform"] },
-      { "properties": ["color", "background", "background-color", "background-image", "background-repeat", "background-position"] },
-      { "properties": ["border", "border-width", "border-style", "border-color", "border-radius"] },
-      { "properties": ["opacity", "visibility", "cursor", "transition", "animation"] }
+      {
+        "properties": ["position", "top", "right", "bottom", "left", "z-index"]
+      },
+      {
+        "properties": [
+          "display",
+          "flex",
+          "flex-direction",
+          "flex-wrap",
+          "flex-flow",
+          "justify-content",
+          "align-items",
+          "align-content",
+          "order",
+          "flex-grow",
+          "flex-shrink",
+          "flex-basis"
+        ]
+      },
+      {
+        "properties": [
+          "grid",
+          "grid-template-columns",
+          "grid-template-rows",
+          "grid-template-areas",
+          "grid-auto-columns",
+          "grid-auto-rows",
+          "grid-auto-flow",
+          "grid-column",
+          "grid-row"
+        ]
+      },
+      {
+        "properties": [
+          "width",
+          "min-width",
+          "max-width",
+          "height",
+          "min-height",
+          "max-height"
+        ]
+      },
+      {
+        "properties": [
+          "margin",
+          "margin-top",
+          "margin-right",
+          "margin-bottom",
+          "margin-left",
+          "padding",
+          "padding-top",
+          "padding-right",
+          "padding-bottom",
+          "padding-left"
+        ]
+      },
+      {
+        "properties": [
+          "font-family",
+          "font-size",
+          "font-weight",
+          "font-style",
+          "font-variant",
+          "line-height",
+          "letter-spacing",
+          "text-align",
+          "text-decoration",
+          "text-transform"
+        ]
+      },
+      {
+        "properties": [
+          "color",
+          "background",
+          "background-color",
+          "background-image",
+          "background-repeat",
+          "background-position"
+        ]
+      },
+      {
+        "properties": [
+          "border",
+          "border-width",
+          "border-style",
+          "border-color",
+          "border-radius"
+        ]
+      },
+      {
+        "properties": [
+          "opacity",
+          "visibility",
+          "cursor",
+          "transition",
+          "animation"
+        ]
+      }
     ]
   }
 }

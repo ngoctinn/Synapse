@@ -6,7 +6,12 @@ import { toast } from "sonner";
 
 import { SCHEDULER_UI } from "../model/constants";
 import { getShiftById } from "../model/shifts";
-import { Schedule, ScheduleStatus, ScheduleWithShift, Shift } from "../model/types";
+import {
+  Schedule,
+  ScheduleStatus,
+  ScheduleWithShift,
+  Shift,
+} from "../model/types";
 
 interface UseSchedulesProps {
   initialSchedules: Schedule[];
@@ -29,32 +34,38 @@ export function useSchedules({ initialSchedules }: UseSchedulesProps) {
     .filter((s): s is ScheduleWithShift => s !== null);
 
   // Add schedule
-  const addSchedule = useCallback((staffId: string, date: Date, shift: Shift) => {
-    const workDate = format(date, "yyyy-MM-dd");
+  const addSchedule = useCallback(
+    (staffId: string, date: Date, shift: Shift) => {
+      const workDate = format(date, "yyyy-MM-dd");
 
-    startTransition(() => {
-      // Check nếu đã có schedule với cùng shift
-      const exists = schedules.some(
-        (s) => s.staffId === staffId && s.workDate === workDate && s.shiftId === shift.id
-      );
+      startTransition(() => {
+        // Check nếu đã có schedule với cùng shift
+        const exists = schedules.some(
+          (s) =>
+            s.staffId === staffId &&
+            s.workDate === workDate &&
+            s.shiftId === shift.id
+        );
 
-      if (exists) {
-        toast.error("Ca này đã được phân công");
-        return;
-      }
+        if (exists) {
+          toast.error("Ca này đã được phân công");
+          return;
+        }
 
-      const newSchedule: Schedule = {
-        id: `sch_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
-        staffId,
-        shiftId: shift.id,
-        workDate,
-        status: "DRAFT",
-      };
+        const newSchedule: Schedule = {
+          id: `sch_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+          staffId,
+          shiftId: shift.id,
+          workDate,
+          status: "DRAFT",
+        };
 
-      setSchedules((prev) => [...prev, newSchedule]);
-      toast.success(SCHEDULER_UI.SUCCESS_ADD);
-    });
-  }, [schedules]);
+        setSchedules((prev) => [...prev, newSchedule]);
+        toast.success(SCHEDULER_UI.SUCCESS_ADD);
+      });
+    },
+    [schedules]
+  );
 
   // Remove schedule
   const removeSchedule = useCallback((scheduleId: string) => {
@@ -65,51 +76,60 @@ export function useSchedules({ initialSchedules }: UseSchedulesProps) {
   }, []);
 
   // Update schedule status
-  const updateScheduleStatus = useCallback((scheduleId: string, status: ScheduleStatus) => {
-    startTransition(() => {
-      setSchedules((prev) =>
-        prev.map((s) => (s.id === scheduleId ? { ...s, status } : s))
-      );
-      toast.success(SCHEDULER_UI.SUCCESS_UPDATE);
-    });
-  }, []);
+  const updateScheduleStatus = useCallback(
+    (scheduleId: string, status: ScheduleStatus) => {
+      startTransition(() => {
+        setSchedules((prev) =>
+          prev.map((s) => (s.id === scheduleId ? { ...s, status } : s))
+        );
+        toast.success(SCHEDULER_UI.SUCCESS_UPDATE);
+      });
+    },
+    []
+  );
 
   // Publish schedule (DRAFT → PUBLISHED)
-  const publishSchedule = useCallback((scheduleId: string) => {
-    updateScheduleStatus(scheduleId, "PUBLISHED");
-  }, [updateScheduleStatus]);
+  const publishSchedule = useCallback(
+    (scheduleId: string) => {
+      updateScheduleStatus(scheduleId, "PUBLISHED");
+    },
+    [updateScheduleStatus]
+  );
 
   // Batch add schedules (cho selection mode)
-  const batchAddSchedules = useCallback((
-    slots: { staffId: string; dateStr: string }[],
-    shift: Shift
-  ) => {
-    startTransition(() => {
-      const newSchedules: Schedule[] = [];
+  const batchAddSchedules = useCallback(
+    (slots: { staffId: string; dateStr: string }[], shift: Shift) => {
+      startTransition(() => {
+        const newSchedules: Schedule[] = [];
 
-      slots.forEach(({ staffId, dateStr }) => {
-        // Check nếu đã có
-        const exists = schedules.some(
-          (s) => s.staffId === staffId && s.workDate === dateStr && s.shiftId === shift.id
-        );
+        slots.forEach(({ staffId, dateStr }) => {
+          // Check nếu đã có
+          const exists = schedules.some(
+            (s) =>
+              s.staffId === staffId &&
+              s.workDate === dateStr &&
+              s.shiftId === shift.id
+          );
 
-        if (!exists) {
-          newSchedules.push({
-            id: `sch_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
-            staffId,
-            shiftId: shift.id,
-            workDate: dateStr,
-            status: "DRAFT",
-          });
+          if (!exists) {
+            newSchedules.push({
+              id: `sch_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+              staffId,
+              shiftId: shift.id,
+              workDate: dateStr,
+              status: "DRAFT",
+            });
+          }
+        });
+
+        if (newSchedules.length > 0) {
+          setSchedules((prev) => [...prev, ...newSchedules]);
+          toast.success(`Đã thêm ${newSchedules.length} ca làm việc`);
         }
       });
-
-      if (newSchedules.length > 0) {
-        setSchedules((prev) => [...prev, ...newSchedules]);
-        toast.success(`Đã thêm ${newSchedules.length} ca làm việc`);
-      }
-    });
-  }, [schedules]);
+    },
+    [schedules]
+  );
 
   // Batch remove schedules
   const batchRemoveSchedules = useCallback((scheduleIds: string[]) => {
@@ -124,7 +144,9 @@ export function useSchedules({ initialSchedules }: UseSchedulesProps) {
     startTransition(() => {
       setSchedules((prev) =>
         prev.map((s) =>
-          scheduleIds.includes(s.id) ? { ...s, status: "PUBLISHED" as const } : s
+          scheduleIds.includes(s.id)
+            ? { ...s, status: "PUBLISHED" as const }
+            : s
         )
       );
       toast.success(`Đã công bố ${scheduleIds.length} ca làm việc`);
@@ -132,14 +154,19 @@ export function useSchedules({ initialSchedules }: UseSchedulesProps) {
   }, []);
 
   // Get schedules for a specific cell
-  const getSchedulesForCell = useCallback((staffId: string, workDate: string): ScheduleWithShift[] => {
-    return schedulesWithShifts.filter(
-      (s) => s.staffId === staffId && s.workDate === workDate
-    );
-  }, [schedulesWithShifts]);
+  const getSchedulesForCell = useCallback(
+    (staffId: string, workDate: string): ScheduleWithShift[] => {
+      return schedulesWithShifts.filter(
+        (s) => s.staffId === staffId && s.workDate === workDate
+      );
+    },
+    [schedulesWithShifts]
+  );
 
   // Get all draft schedules
-  const draftSchedules = schedulesWithShifts.filter((s) => s.status === "DRAFT");
+  const draftSchedules = schedulesWithShifts.filter(
+    (s) => s.status === "DRAFT"
+  );
 
   return {
     // State

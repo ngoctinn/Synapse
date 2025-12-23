@@ -1,9 +1,9 @@
 import {
-    ArrowLeft,
-    CheckCircle2,
-    CreditCard,
-    Edit,
-    XCircle,
+  ArrowLeft,
+  CheckCircle2,
+  CreditCard,
+  Edit,
+  XCircle,
 } from "lucide-react";
 
 import { Button, SheetFooter } from "@/shared/ui";
@@ -34,17 +34,19 @@ export function ViewModeFooter({
   onClose,
 }: ViewModeFooterProps) {
   return (
-    <SheetFooter className="px-6 py-3 border-t bg-background flex-col gap-3 z-20">
+    <SheetFooter className="bg-background z-20 flex-col gap-3 border-t px-6 py-3">
       {/* Tạo hóa đơn */}
       {canCreateInvoice && (
-        <div className="flex items-center gap-2 w-full">
+        <div className="flex w-full items-center gap-2">
           <Button
             variant="success"
-            className="w-full h-9"
+            className="h-9 w-full"
             onClick={onCreateInvoiceAndPay}
             disabled={isCreatingInvoice}
             isLoading={isCreatingInvoice}
-            startContent={!isCreatingInvoice && <CreditCard className="size-4" />}
+            startContent={
+              !isCreatingInvoice && <CreditCard className="size-4" />
+            }
           >
             Tạo hóa đơn & Thanh toán
           </Button>
@@ -52,11 +54,11 @@ export function ViewModeFooter({
       )}
 
       {/* Check-in / Hủy */}
-      <div className="flex items-center gap-2 w-full">
+      <div className="flex w-full items-center gap-2">
         {canCheckIn && (
           <Button
             variant="outline-success"
-            className="flex-1 h-9"
+            className="h-9 flex-1"
             onClick={() => onCheckIn?.(appointmentId)}
             startContent={<CheckCircle2 className="size-4" />}
           >
@@ -66,7 +68,7 @@ export function ViewModeFooter({
         {canCancel && (
           <Button
             variant="outline-warning"
-            className="flex-1 h-9"
+            className="h-9 flex-1"
             onClick={() => onCancel?.(appointmentId)}
             startContent={<XCircle className="size-4" />}
           >
@@ -76,12 +78,12 @@ export function ViewModeFooter({
       </div>
 
       {/* Đóng / Chỉnh sửa */}
-      <div className="flex items-center gap-2 w-full">
-        <Button variant="ghost" className="flex-1 h-9" onClick={onClose}>
+      <div className="flex w-full items-center gap-2">
+        <Button variant="ghost" className="h-9 flex-1" onClick={onClose}>
           Đóng
         </Button>
         <Button
-          className="flex-1 h-9"
+          className="h-9 flex-1"
           onClick={onEdit}
           startContent={<Edit className="size-4" />}
         >
@@ -97,19 +99,22 @@ interface PaymentModeFooterProps {
   onClose: () => void;
 }
 
-export function PaymentModeFooter({ onBackToView, onClose }: PaymentModeFooterProps) {
+export function PaymentModeFooter({
+  onBackToView,
+  onClose,
+}: PaymentModeFooterProps) {
   return (
-    <SheetFooter className="px-6 py-3 border-t bg-background flex-col gap-3 z-20">
-      <div className="flex items-center gap-2 w-full">
+    <SheetFooter className="bg-background z-20 flex-col gap-3 border-t px-6 py-3">
+      <div className="flex w-full items-center gap-2">
         <Button
           variant="outline"
-          className="flex-1 h-9"
+          className="h-9 flex-1"
           onClick={onBackToView}
           startContent={<ArrowLeft className="size-4" />}
         >
           Quay lại
         </Button>
-        <Button variant="ghost" className="flex-1 h-9" onClick={onClose}>
+        <Button variant="ghost" className="h-9 flex-1" onClick={onClose}>
           Đóng
         </Button>
       </div>
@@ -123,19 +128,23 @@ interface FormModeFooterProps {
   onClose: () => void;
 }
 
-export function FormModeFooter({ isEditMode, onCancelEdit, onClose }: FormModeFooterProps) {
+export function FormModeFooter({
+  isEditMode,
+  onCancelEdit,
+  onClose,
+}: FormModeFooterProps) {
   return (
-    <SheetFooter className="px-6 py-3 border-t bg-background flex-col gap-3 z-20">
-      <div className="flex items-center gap-3 w-full">
+    <SheetFooter className="bg-background z-20 flex-col gap-3 border-t px-6 py-3">
+      <div className="flex w-full items-center gap-3">
         <Button
           type="button"
           variant="outline"
           onClick={isEditMode ? onCancelEdit : onClose}
-          className="flex-1 h-9"
+          className="h-9 flex-1"
         >
           Hủy bỏ
         </Button>
-        <Button type="submit" form="appointment-form" className="flex-1 h-9">
+        <Button type="submit" form="appointment-form" className="h-9 flex-1">
           {isEditMode ? "Lưu thay đổi" : "Tạo lịch hẹn"}
         </Button>
       </div>

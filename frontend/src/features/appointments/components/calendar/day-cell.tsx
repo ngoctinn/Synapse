@@ -4,7 +4,13 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 
 import { cn } from "@/shared/lib/utils";
-import { Button, Popover, PopoverContent, PopoverTrigger, ScrollArea } from "@/shared/ui";
+import {
+  Button,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  ScrollArea,
+} from "@/shared/ui";
 
 import { MAX_EVENTS_IN_MONTH_CELL } from "../../constants";
 import type { CalendarEvent } from "../../model/types";
@@ -33,7 +39,7 @@ export function DayCell({ data, onEventClick, onDayClick }: DayCellProps) {
   return (
     <div
       className={cn(
-        "min-h-[80px] flex flex-col p-1 border-r border-border/30 last:border-r-0",
+        "border-border/30 flex min-h-[80px] flex-col border-r p-1 last:border-r-0",
         !isCurrentMonth && "bg-muted/30",
         isWeekend && isCurrentMonth && "bg-muted/10",
         isToday && "bg-primary/5"
@@ -44,7 +50,7 @@ export function DayCell({ data, onEventClick, onDayClick }: DayCellProps) {
         type="button"
         onClick={() => onDayClick?.(date)}
         className={cn(
-          "w-7 h-7 mb-1 flex items-center justify-center rounded-full text-sm font-medium transition-colors hover:bg-accent",
+          "hover:bg-accent mb-1 flex h-7 w-7 items-center justify-center rounded-full text-sm font-medium transition-colors",
           !isCurrentMonth && "text-muted-foreground/50",
           isToday && "bg-primary text-primary-foreground hover:bg-primary/90"
         )}
@@ -70,7 +76,7 @@ export function DayCell({ data, onEventClick, onDayClick }: DayCellProps) {
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-5 w-full justify-start px-1.5 text-[10px] text-muted-foreground hover:text-foreground"
+                className="text-muted-foreground hover:text-foreground h-5 w-full justify-start px-1.5 text-[10px]"
               >
                 +{hiddenCount} thêm
               </Button>

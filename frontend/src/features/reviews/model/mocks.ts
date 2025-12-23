@@ -9,7 +9,8 @@ export const MOCK_REVIEWS: Review[] = [
     customerName: "Hoàng Minh Đức",
     serviceName: "Chăm sóc da mặt cơ bản",
     rating: 5,
-    comment: "Dịch vụ rất tốt, nhân viên nhiệt tình và chuyên nghiệp. Tôi rất hài lòng!",
+    comment:
+      "Dịch vụ rất tốt, nhân viên nhiệt tình và chuyên nghiệp. Tôi rất hài lòng!",
     createdAt: subDays(new Date(), 7),
     updatedAt: subDays(new Date(), 7),
   },

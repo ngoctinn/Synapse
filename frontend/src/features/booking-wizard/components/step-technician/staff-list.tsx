@@ -11,9 +11,13 @@ interface StaffListProps {
   onSelect: (staff: StaffItem) => void;
 }
 
-export const StaffList = ({ staff, selectedStaffId, onSelect }: StaffListProps) => {
+export const StaffList = ({
+  staff,
+  selectedStaffId,
+  onSelect,
+}: StaffListProps) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       {staff.map((member) => {
         const isSelected = selectedStaffId === member.id;
 
@@ -21,44 +25,48 @@ export const StaffList = ({ staff, selectedStaffId, onSelect }: StaffListProps) 
           <Card
             key={member.id}
             className={cn(
-              "cursor-pointer transition-all duration-200 border-2 hover:border-muted-foreground/20 bg-card relative overflow-hidden",
+              "hover:border-muted-foreground/20 bg-card relative cursor-pointer overflow-hidden border-2 transition-all duration-200",
               isSelected && "border-primary bg-primary/5 shadow-md",
-              !member.is_available && "opacity-60 cursor-not-allowed grayscale"
+              !member.is_available && "cursor-not-allowed opacity-60 grayscale"
             )}
             onClick={() => member.is_available && onSelect(member)}
           >
-            <div className="flex items-center p-4 gap-4">
-              <Avatar className="h-14 w-14 border-2 border-background">
+            <div className="flex items-center gap-4 p-4">
+              <Avatar className="border-background h-14 w-14 border-2">
                 <AvatarImage src={member.avatar_url} alt={member.name} />
-                <AvatarFallback className="bg-muted font-semibold text-muted-foreground">
+                <AvatarFallback className="bg-muted text-muted-foreground font-semibold">
                   {member.name.charAt(0)}
                 </AvatarFallback>
               </Avatar>
 
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between mb-1">
-                  <h3 className="font-semibold text-base truncate pr-2">{member.name}</h3>
+              <div className="min-w-0 flex-1">
+                <div className="mb-1 flex items-center justify-between">
+                  <h3 className="truncate pr-2 text-base font-semibold">
+                    {member.name}
+                  </h3>
                   {member.rating && (
-                    <div className="flex items-center text-xs font-medium text-amber-500 bg-amber-50 px-1.5 py-0.5 rounded-md">
-                      <Star className="w-3 h-3 fill-current mr-0.5" />
+                    <div className="flex items-center rounded-md bg-amber-50 px-1.5 py-0.5 text-xs font-medium text-amber-500">
+                      <Star className="mr-0.5 h-3 w-3 fill-current" />
                       {member.rating}
                     </div>
                   )}
                 </div>
 
-                <p className="text-sm text-muted-foreground truncate">{member.role}</p>
+                <p className="text-muted-foreground truncate text-sm">
+                  {member.role}
+                </p>
 
                 {member.is_available && (
-                   <div className="mt-2 flex items-center">
-                     <Badge variant="success" size="xs">
-                        Có chỗ hôm nay
-                     </Badge>
-                   </div>
+                  <div className="mt-2 flex items-center">
+                    <Badge variant="success" size="xs">
+                      Có chỗ hôm nay
+                    </Badge>
+                  </div>
                 )}
               </div>
 
               {isSelected && (
-                <div className="absolute top-4 right-4 h-6 w-6 rounded-full bg-primary flex items-center justify-center text-primary-foreground">
+                <div className="bg-primary text-primary-foreground absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full">
                   <Check className="h-4 w-4" />
                 </div>
               )}

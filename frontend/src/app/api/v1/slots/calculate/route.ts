@@ -1,12 +1,12 @@
-import { NextResponse } from 'next/server';
-import { addHours, format, parseISO } from 'date-fns';
+import { NextResponse } from "next/server";
+import { addHours, format, parseISO } from "date-fns";
 
 export async function POST(request: Request) {
   const { date: rawDate, staffId } = await request.json();
 
   if (!rawDate || !staffId) {
     return NextResponse.json(
-      { error: 'Missing date or staffId' },
+      { error: "Missing date or staffId" },
       { status: 400 }
     );
   }
@@ -36,7 +36,7 @@ function generateMockTimeSlots(baseDate: Date, staffId: string) {
       const isBooked = Math.random() > 0.8; // 20% chance of being booked
 
       slots.push({
-        id: `${format(slotTime, 'yyyy-MM-dd-HH-mm')}-${staffId}`,
+        id: `${format(slotTime, "yyyy-MM-dd-HH-mm")}-${staffId}`,
         time: slotTime.toISOString(),
         isAvailable: !isBooked,
         staffId: staffId,

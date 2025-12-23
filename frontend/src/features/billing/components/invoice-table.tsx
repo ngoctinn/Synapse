@@ -30,7 +30,7 @@ export function InvoiceTable({ data, onView, isLoading }: InvoiceTableProps) {
       cell: (item) => (
         <div className="flex flex-col">
           <span>{item.customerName}</span>
-          <span className="text-xs text-muted-foreground">
+          <span className="text-muted-foreground text-xs">
             {item.customerPhone}
           </span>
         </div>
@@ -41,9 +41,7 @@ export function InvoiceTable({ data, onView, isLoading }: InvoiceTableProps) {
       accessorKey: "finalAmount",
       header: "Tổng tiền",
       cell: (item) => (
-        <span className="font-medium">
-          {formatCurrency(item.finalAmount)}
-        </span>
+        <span className="font-medium">{formatCurrency(item.finalAmount)}</span>
       ),
     },
     {
@@ -51,7 +49,11 @@ export function InvoiceTable({ data, onView, isLoading }: InvoiceTableProps) {
       accessorKey: "paidAmount",
       header: "Đã thanh toán",
       cell: (item) => (
-        <span className={item.paidAmount < item.finalAmount ? "text-warning" : "text-success"}>
+        <span
+          className={
+            item.paidAmount < item.finalAmount ? "text-warning" : "text-success"
+          }
+        >
           {formatCurrency(item.paidAmount)}
         </span>
       ),
@@ -73,11 +75,7 @@ export function InvoiceTable({ data, onView, isLoading }: InvoiceTableProps) {
       header: "Hành động",
       className: "pr-6 text-right",
       cell: (item) => (
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => onView(item)}
-        >
+        <Button variant="ghost" size="icon" onClick={() => onView(item)}>
           <Eye className="size-4" />
         </Button>
       ),
@@ -93,4 +91,3 @@ export function InvoiceTable({ data, onView, isLoading }: InvoiceTableProps) {
     />
   );
 }
-

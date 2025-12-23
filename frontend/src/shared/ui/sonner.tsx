@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { cn } from "@/shared/lib/utils"
+import { cn } from "@/shared/lib/utils";
 import {
   AlertTriangle,
   CheckCircle2,
@@ -12,12 +12,12 @@ import {
   TriangleAlertIcon,
   X,
   XCircle,
-} from "lucide-react"
-import { useTheme } from "next-themes"
-import { Toaster as Sonner, toast, type ToasterProps } from "sonner"
+} from "lucide-react";
+import { useTheme } from "next-themes";
+import { Toaster as Sonner, toast, type ToasterProps } from "sonner";
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme()
+  const { theme = "system" } = useTheme();
 
   return (
     <Sonner
@@ -40,20 +40,20 @@ const Toaster = ({ ...props }: ToasterProps) => {
       }
       {...props}
     />
-  )
-}
+  );
+};
 
 // ==========================================
 // CUSTOM TOAST IMPLEMENTATION
 // ==========================================
 
-type ToastVariant = "success" | "info" | "warning" | "error"
+type ToastVariant = "success" | "info" | "warning" | "error";
 
 interface CustomToastProps {
-  variant: ToastVariant
-  title: string
-  description?: string
-  t: string | number
+  variant: ToastVariant;
+  title: string;
+  description?: string;
+  t: string | number;
 }
 
 const variantStyles = {
@@ -97,18 +97,18 @@ const variantStyles = {
     srLabel: "Lỗi",
     gradient: "from-destructive/10 to-transparent",
   },
-}
+};
 
 function CustomToast({ variant, title, description, t }: CustomToastProps) {
-  const style = variantStyles[variant]
-  const Icon = style.icon
+  const style = variantStyles[variant];
+  const Icon = style.icon;
 
   return (
     <div
       className={cn(
         "relative flex w-full overflow-hidden rounded-xl border p-4 shadow-lg backdrop-blur-xl",
         "motion-safe:transition-all motion-safe:duration-300 motion-safe:hover:shadow-md",
-        "dark:bg-zinc-900/90 bg-background/95 supports-[backdrop-filter]:bg-background/60",
+        "bg-background/95 supports-[backdrop-filter]:bg-background/60 dark:bg-zinc-900/90",
         style.container
       )}
       role="alert"
@@ -117,14 +117,15 @@ function CustomToast({ variant, title, description, t }: CustomToastProps) {
       <span className="sr-only">{style.srLabel}: </span>
 
       <div
-        className={cn("absolute inset-0 bg-gradient-to-br opacity-40 pointer-events-none", style.gradient)}
+        className={cn(
+          "pointer-events-none absolute inset-0 bg-gradient-to-br opacity-40",
+          style.gradient
+        )}
         aria-hidden="true"
       />
 
       <div className="relative flex w-full items-start gap-4">
-        <div
-          className={cn("flex-shrink-0 rounded-full p-2", style.iconBg)}
-        >
+        <div className={cn("flex-shrink-0 rounded-full p-2", style.iconBg)}>
           <Icon
             size={18}
             className={style.iconColor}
@@ -133,8 +134,13 @@ function CustomToast({ variant, title, description, t }: CustomToastProps) {
           />
         </div>
 
-        <div className="flex-1 grid gap-1 pt-0.5">
-          <h3 className={cn("font-semibold text-sm leading-none tracking-tight", style.title)}>
+        <div className="grid flex-1 gap-1 pt-0.5">
+          <h3
+            className={cn(
+              "text-sm font-semibold leading-none tracking-tight",
+              style.title
+            )}
+          >
             {title}
           </h3>
           {description && (
@@ -147,11 +153,11 @@ function CustomToast({ variant, title, description, t }: CustomToastProps) {
         <button
           onClick={() => toast.dismiss(t)}
           className={cn(
-            "flex-shrink-0 flex items-center justify-center",
-            "w-8 h-8 -mr-2 -mt-2",
-            "rounded-full text-muted-foreground/60",
+            "flex flex-shrink-0 items-center justify-center",
+            "-mr-2 -mt-2 h-8 w-8",
+            "text-muted-foreground/60 rounded-full",
             "hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10",
-            "focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+            "focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-2",
             "transition-colors"
           )}
           aria-label="Đóng thông báo"
@@ -160,34 +166,62 @@ function CustomToast({ variant, title, description, t }: CustomToastProps) {
         </button>
       </div>
     </div>
-  )
+  );
 }
 
 interface ShowToastOptions {
-  duration?: number
+  duration?: number;
 }
 
 const showToast = {
   success: (title: string, description?: string, options?: ShowToastOptions) =>
     toast.custom(
-      (t) => <CustomToast variant="success" title={title} description={description} t={t} />,
+      (t) => (
+        <CustomToast
+          variant="success"
+          title={title}
+          description={description}
+          t={t}
+        />
+      ),
       { duration: options?.duration }
     ),
   info: (title: string, description?: string, options?: ShowToastOptions) =>
     toast.custom(
-      (t) => <CustomToast variant="info" title={title} description={description} t={t} />,
+      (t) => (
+        <CustomToast
+          variant="info"
+          title={title}
+          description={description}
+          t={t}
+        />
+      ),
       { duration: options?.duration }
     ),
   warning: (title: string, description?: string, options?: ShowToastOptions) =>
     toast.custom(
-      (t) => <CustomToast variant="warning" title={title} description={description} t={t} />,
+      (t) => (
+        <CustomToast
+          variant="warning"
+          title={title}
+          description={description}
+          t={t}
+        />
+      ),
       { duration: options?.duration }
     ),
   error: (title: string, description?: string, options?: ShowToastOptions) =>
     toast.custom(
-      (t) => <CustomToast variant="error" title={title} description={description} t={t} />,
+      (t) => (
+        <CustomToast
+          variant="error"
+          title={title}
+          description={description}
+          t={t}
+        />
+      ),
       { duration: options?.duration }
     ),
-}
+};
 
-export { Toaster, showToast }
+export { Toaster, showToast };

@@ -27,7 +27,7 @@ export function ResourceToolbar() {
             <button
               type="button"
               onClick={clear}
-              className="p-0.5 rounded-full hover:bg-muted transition-colors"
+              className="hover:bg-muted rounded-full p-0.5 transition-colors"
               aria-label="Xóa tìm kiếm"
             >
               <X className="size-3" />
@@ -35,10 +35,8 @@ export function ResourceToolbar() {
             </button>
           ) : null
         }
-        className="h-9 bg-background"
+        className="bg-background h-9"
       />
     </div>
   );
 }
-
-

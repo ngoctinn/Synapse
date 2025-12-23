@@ -1,27 +1,27 @@
-"use client"
+"use client";
 
-import { cn } from "@/shared/lib/utils"
+import { cn } from "@/shared/lib/utils";
 
 export interface ColorSwatchGroupProps {
   /** Current selected color value */
-  value: string
+  value: string;
   /** Callback when color changes */
-  onChange: (color: string) => void
+  onChange: (color: string) => void;
   /** Array of color options (hex values) */
-  options: string[]
+  options: string[];
   /** Accessible label for the radio group */
-  ariaLabel: string
+  ariaLabel: string;
   /** Size variant */
-  size?: "sm" | "default" | "lg"
+  size?: "sm" | "default" | "lg";
   /** Additional className */
-  className?: string
+  className?: string;
 }
 
 const sizeClasses = {
   sm: "w-6 h-6",
   default: "w-8 h-8",
   lg: "w-10 h-10",
-}
+};
 
 /**
  * ColorSwatchGroup - Shared component cho việc chọn màu sắc
@@ -42,7 +42,7 @@ export function ColorSwatchGroup({
       className={cn("flex flex-wrap gap-2", className)}
     >
       {options.map((color) => {
-        const isSelected = value === color
+        const isSelected = value === color;
         return (
           <button
             key={color}
@@ -54,18 +54,18 @@ export function ColorSwatchGroup({
             className={cn(
               // Base styles
               sizeClasses[size],
-              "rounded-full border-2 transition-all duration-200 flex-shrink-0 cursor-pointer",
+              "flex-shrink-0 cursor-pointer rounded-full border-2 transition-all duration-200",
               // Focus styles
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+              "focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
               // Selection states
               isSelected
-                ? "border-foreground scale-110 ring-2 ring-primary ring-offset-1"
-                : "border-transparent opacity-70 hover:opacity-100 hover:scale-110 hover:shadow-sm"
+                ? "border-foreground ring-primary scale-110 ring-2 ring-offset-1"
+                : "border-transparent opacity-70 hover:scale-110 hover:opacity-100 hover:shadow-sm"
             )}
             style={{ backgroundColor: color }}
           />
-        )
+        );
       })}
     </div>
-  )
+  );
 }

@@ -7,7 +7,10 @@ export const INVOICE_STATUS_LABELS: Record<InvoiceStatus, string> = {
   OVERDUE: "Quá hạn",
 };
 
-export const INVOICE_STATUS_COLORS: Record<InvoiceStatus, "default" | "secondary" | "destructive" | "outline" | "success" | "warning"> = {
+export const INVOICE_STATUS_COLORS: Record<
+  InvoiceStatus,
+  "default" | "secondary" | "destructive" | "outline" | "success" | "warning"
+> = {
   UNPAID: "warning",
   PAID: "success",
   REFUNDED: "destructive",

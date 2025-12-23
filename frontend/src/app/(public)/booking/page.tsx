@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { BookingWizard } from "@/features/booking-wizard";
 

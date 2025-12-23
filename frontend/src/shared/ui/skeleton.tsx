@@ -1,5 +1,5 @@
-import { cn } from "@/shared/lib/utils"
-import { cva, type VariantProps } from "class-variance-authority"
+import { cn } from "@/shared/lib/utils";
+import { cva, type VariantProps } from "class-variance-authority";
 
 const skeletonVariants = cva(
   // Base: respects prefers-reduced-motion
@@ -24,11 +24,10 @@ const skeletonVariants = cva(
       size: "default",
     },
   }
-)
+);
 
 export interface SkeletonProps
-  extends React.ComponentProps<"div">,
-    VariantProps<typeof skeletonVariants> {}
+  extends React.ComponentProps<"div">, VariantProps<typeof skeletonVariants> {}
 
 /**
  * Skeleton component - Base loading placeholder
@@ -47,8 +46,7 @@ function Skeleton({ className, variant, size, ...props }: SkeletonProps) {
       className={cn(skeletonVariants({ variant, size }), className)}
       {...props}
     />
-  )
+  );
 }
 
-export { Skeleton, skeletonVariants }
-
+export { Skeleton, skeletonVariants };

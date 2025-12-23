@@ -3,41 +3,85 @@
 import { createInvoice, getInvoice } from "@/features/billing/actions";
 import { getBookingReview } from "@/features/reviews/actions";
 import { ReviewPrompt } from "@/features/reviews/components/review-prompt";
-import { PageContent, PageHeader, PageShell, SurfaceCard } from "@/shared/components/layout/page-layout";
+import {
+  PageContent,
+  PageHeader,
+  PageShell,
+  SurfaceCard,
+} from "@/shared/components/layout/page-layout";
 import { ActionResponse } from "@/shared/lib/action-response";
 import { cn } from "@/shared/lib/utils";
-import { Button, DeleteConfirmDialog, Tooltip, TooltipContent, TooltipTrigger } from "@/shared/ui";
+import {
+  Button,
+  DeleteConfirmDialog,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/shared/ui";
 import { showToast } from "@/shared/ui/sonner";
-import { Activity, CalendarCheck, Clock, LucideIcon, Plus, RefreshCw, Settings2 } from "lucide-react";
+import {
+  Activity,
+  CalendarCheck,
+  Clock,
+  LucideIcon,
+  Plus,
+  RefreshCw,
+  Settings2,
+} from "lucide-react";
 import { use, useCallback, useEffect, useState, useTransition } from "react";
 import {
-  checkInAppointment, deleteAppointment,
-  getAppointmentMetrics, getAppointments, markNoShow
+  checkInAppointment,
+  deleteAppointment,
+  getAppointmentMetrics,
+  getAppointments,
+  markNoShow,
 } from "../actions";
 import { useCalendarState } from "../hooks/use-calendar-state";
 import { MockService } from "../model/mocks";
-import type { Appointment, AppointmentFilters, AppointmentMetrics, CalendarEvent, TimelineResource } from "../model/types";
+import type {
+  Appointment,
+  AppointmentFilters,
+  AppointmentMetrics,
+  CalendarEvent,
+  TimelineResource,
+} from "../model/types";
 import { CalendarView } from "./calendar";
 import { AppointmentSheet } from "./sheet";
 import { CancelDialog } from "./sheet/cancel-dialog";
 import { DateNavigator, ViewSwitcher } from "./toolbar";
 import { AppointmentsFilter } from "./toolbar/appointments-filter";
 
-function StatBadge({ icon: Icon, value, label, highlight = false, badge = false }: { icon: LucideIcon, value: number | string, label: string, highlight?: boolean, badge?: boolean }) {
+function StatBadge({
+  icon: Icon,
+  value,
+  label,
+  highlight = false,
+  badge = false,
+}: {
+  icon: LucideIcon;
+  value: number | string;
+  label: string;
+  highlight?: boolean;
+  badge?: boolean;
+}) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div className={cn(
-          "flex items-center gap-2 px-3 py-1.5 rounded-md transition-colors cursor-help border",
-          highlight
-            ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-500 dark:border-amber-800"
-            : "border-transparent hover:bg-muted/50 hover:border-border/50 text-muted-foreground"
-        )}>
+        <div
+          className={cn(
+            "flex cursor-help items-center gap-2 rounded-md border px-3 py-1.5 transition-colors",
+            highlight
+              ? "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-500"
+              : "hover:bg-muted/50 hover:border-border/50 text-muted-foreground border-transparent"
+          )}
+        >
           <div className="relative">
             <Icon className="size-4" />
-            {badge && <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-amber-500 animate-pulse border border-background" />}
+            {badge && (
+              <span className="border-background absolute -right-0.5 -top-0.5 h-2 w-2 animate-pulse rounded-full border bg-amber-500" />
+            )}
           </div>
-          <span className="font-semibold tabular-nums text-sm">{value}</span>
+          <span className="text-sm font-semibold tabular-nums">{value}</span>
         </div>
       </TooltipTrigger>
       <TooltipContent>{label}</TooltipContent>
@@ -53,8 +97,25 @@ interface AppointmentsPageProps {
   fullStaffList?: TimelineResource[];
 }
 
-export function AppointmentsPage({ appointmentsPromise, staffListPromise, resourceListPromise, serviceListPromise }: AppointmentsPageProps) {
-  const { view, setView, date, dateRange, formattedDateRange, isToday, goNext, goPrev, goToday, goToDate, densityMode } = useCalendarState();
+export function AppointmentsPage({
+  appointmentsPromise,
+  staffListPromise,
+  resourceListPromise,
+  serviceListPromise,
+}: AppointmentsPageProps) {
+  const {
+    view,
+    setView,
+    date,
+    dateRange,
+    formattedDateRange,
+    isToday,
+    goNext,
+    goPrev,
+    goToday,
+    goToDate,
+    densityMode,
+  } = useCalendarState();
   const [filters, setFilters] = useState<Partial<AppointmentFilters>>({});
 
   const appointmentsRes = use(appointmentsPromise);
@@ -62,17 +123,30 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
   const resourceRes = use(resourceListPromise);
   const serviceRes = use(serviceListPromise);
 
-  const [events, setEvents] = useState<CalendarEvent[]>(appointmentsRes.status === 'success' ? appointmentsRes.data || [] : []);
+  const [events, setEvents] = useState<CalendarEvent[]>(
+    appointmentsRes.status === "success" ? appointmentsRes.data || [] : []
+  );
   const [metrics, setMetrics] = useState<AppointmentMetrics | null>(null);
-  const [staffList] = useState<TimelineResource[]>(staffRes.status === 'success' ? staffRes.data || [] : []);
-  const [roomList] = useState<TimelineResource[]>(resourceRes.status === 'success' ? resourceRes.data || [] : []);
-  const serviceList = serviceRes.status === 'success' ? serviceRes.data || [] : [];
+  const [staffList] = useState<TimelineResource[]>(
+    staffRes.status === "success" ? staffRes.data || [] : []
+  );
+  const [roomList] = useState<TimelineResource[]>(
+    resourceRes.status === "success" ? resourceRes.data || [] : []
+  );
+  const serviceList =
+    serviceRes.status === "success" ? serviceRes.data || [] : [];
 
   const [isPending, startTransition] = useTransition();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
-  const [sheetMode, setSheetMode] = useState<"view" | "edit" | "create">("view");
-  const [selectedBookingForReview, setSelectedBookingForReview] = useState<string | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
+    null
+  );
+  const [sheetMode, setSheetMode] = useState<"view" | "edit" | "create">(
+    "view"
+  );
+  const [selectedBookingForReview, setSelectedBookingForReview] = useState<
+    string | null
+  >(null);
 
   // Dialog states
   const [actionEvent, setActionEvent] = useState<CalendarEvent | null>(null);
@@ -102,37 +176,60 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
   }, [handleRefresh]);
 
   const handleEventClick = (event: CalendarEvent) => {
-    setSelectedEvent(event); setSheetMode("view"); setIsSheetOpen(true);
+    setSelectedEvent(event);
+    setSheetMode("view");
+    setIsSheetOpen(true);
   };
 
   const handleCreateClick = () => {
-    setSelectedEvent(null); setSheetMode("create"); setIsSheetOpen(true);
+    setSelectedEvent(null);
+    setSheetMode("create");
+    setIsSheetOpen(true);
   };
 
-  const handleReviewNeeded = useCallback(async (bookingId: string) => {
-    const booking = events.find(e => e.id === bookingId)?.appointment;
-    if (!booking || booking.status !== "COMPLETED") return;
-    const invoiceRes = await getInvoice(bookingId);
-    if (invoiceRes.status !== "success" || !invoiceRes.data || invoiceRes.data.status !== "PAID") return;
-    const reviewRes = await getBookingReview(bookingId);
-    if (!(reviewRes.status === "success" && reviewRes.data)) setSelectedBookingForReview(bookingId);
-  }, [events]);
+  const handleReviewNeeded = useCallback(
+    async (bookingId: string) => {
+      const booking = events.find((e) => e.id === bookingId)?.appointment;
+      if (!booking || booking.status !== "COMPLETED") return;
+      const invoiceRes = await getInvoice(bookingId);
+      if (
+        invoiceRes.status !== "success" ||
+        !invoiceRes.data ||
+        invoiceRes.data.status !== "PAID"
+      )
+        return;
+      const reviewRes = await getBookingReview(bookingId);
+      if (!(reviewRes.status === "success" && reviewRes.data))
+        setSelectedBookingForReview(bookingId);
+    },
+    [events]
+  );
 
   const handleSaveAppointment = (appointment: Appointment) => {
-    setIsSheetOpen(false); handleRefresh();
+    setIsSheetOpen(false);
+    handleRefresh();
     if (appointment.status === "COMPLETED") handleReviewNeeded(appointment.id);
   };
 
-  const wrapAction = useCallback((fn: (id: string) => Promise<ActionResponse<Appointment | undefined>>, successMsg: string, errorMsg: string) => {
-    return async (event: CalendarEvent) => {
-      if (!event.id) return;
-      startTransition(async () => {
-        const res = await fn(event.id!);
-        if (res.status === "success") { showToast.success(res.message || successMsg); handleRefresh(); }
-        else showToast.error(res.message || errorMsg);
-      });
-    };
-  }, [handleRefresh]);
+  const wrapAction = useCallback(
+    (
+      fn: (id: string) => Promise<ActionResponse<Appointment | undefined>>,
+      successMsg: string,
+      errorMsg: string
+    ) => {
+      return async (event: CalendarEvent) => {
+        if (!event.id) return;
+        startTransition(async () => {
+          const res = await fn(event.id!);
+          if (res.status === "success") {
+            showToast.success(res.message || successMsg);
+            handleRefresh();
+          } else showToast.error(res.message || errorMsg);
+        });
+      };
+    },
+    [handleRefresh]
+  );
 
   // Dialog Handlers
   const handleCancelRequest = (event: CalendarEvent) => {
@@ -171,30 +268,58 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
   }, []);
 
   // Called after payment success from AppointmentSheet
-  const handlePaymentSuccess = useCallback((_bookingId: string) => {
-    handleRefresh();
-    // Review prompt is now handled inside AppointmentSheet after payment
-  }, [handleRefresh]);
+  const handlePaymentSuccess = useCallback(
+    (_bookingId: string) => {
+      handleRefresh();
+      // Review prompt is now handled inside AppointmentSheet after payment
+    },
+    [handleRefresh]
+  );
 
   const handleSlotClick = (date: Date, hour: number, minute: number) => {
-    const startTime = new Date(date); startTime.setHours(hour, minute, 0, 0);
+    const startTime = new Date(date);
+    startTime.setHours(hour, minute, 0, 0);
     const endTime = new Date(startTime.getTime() + 36e5);
     const staffId = filters.staffIds?.[0] || staffList[0]?.id || "";
     setSelectedEvent({
-      id: "new", start: startTime, end: endTime, title: "Lịch hẹn mới",
-      staffId, staffName: "", color: "gray", status: "PENDING", isRecurring: false,
+      id: "new",
+      start: startTime,
+      end: endTime,
+      title: "Lịch hẹn mới",
+      staffId,
+      staffName: "",
+      color: "gray",
+      status: "PENDING",
+      isRecurring: false,
       appointment: {
-        id: "new", customerId: "", customerName: "", customerPhone: "", items: [], totalPrice: 0, totalDuration: 60,
-        staffId, staffName: "", serviceId: "", serviceName: "", serviceColor: "#gray",
-        startTime, endTime, duration: 60, status: "PENDING", isRecurring: false,
-        createdAt: new Date(), updatedAt: new Date(), createdBy: ""
-      }
+        id: "new",
+        customerId: "",
+        customerName: "",
+        customerPhone: "",
+        items: [],
+        totalPrice: 0,
+        totalDuration: 60,
+        staffId,
+        staffName: "",
+        serviceId: "",
+        serviceName: "",
+        serviceColor: "#gray",
+        startTime,
+        endTime,
+        duration: 60,
+        status: "PENDING",
+        isRecurring: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        createdBy: "",
+      },
     });
-    setSheetMode("create"); setIsSheetOpen(true);
+    setSheetMode("create");
+    setIsSheetOpen(true);
   };
 
-  if (appointmentsRes.status === 'error' || staffRes.status === 'error')
-    return <div className="p-4 text-destructive">Lỗi tải dữ liệu</div>;
+  if (appointmentsRes.status === "error" || staffRes.status === "error")
+    return <div className="text-destructive p-4">Lỗi tải dữ liệu</div>;
 
   const pending = metrics?.todayPending ?? 0;
 
@@ -202,45 +327,151 @@ export function AppointmentsPage({ appointmentsPromise, staffListPromise, resour
     <PageShell className="h-screen overflow-hidden">
       <PageHeader>
         <div className="flex items-center gap-4">
-          <DateNavigator date={date} formattedDateRange={formattedDateRange} isToday={isToday} onPrev={goPrev} onNext={goNext} onToday={goToday} onDateSelect={goToDate} />
-          <div className="hidden xl:flex items-center gap-2">
-            <StatBadge icon={CalendarCheck} value={metrics?.todayTotal ?? 0} label="Tổng lịch hẹn hôm nay" />
-            <StatBadge icon={Clock} value={pending} label="Lịch hẹn chờ duyệt" highlight={pending > 0} badge={pending > 0} />
-            <StatBadge icon={Activity} value={`${metrics?.occupancyRate ?? 0}%`} label="Công suất phục vụ" />
+          <DateNavigator
+            date={date}
+            formattedDateRange={formattedDateRange}
+            isToday={isToday}
+            onPrev={goPrev}
+            onNext={goNext}
+            onToday={goToday}
+            onDateSelect={goToDate}
+          />
+          <div className="hidden items-center gap-2 xl:flex">
+            <StatBadge
+              icon={CalendarCheck}
+              value={metrics?.todayTotal ?? 0}
+              label="Tổng lịch hẹn hôm nay"
+            />
+            <StatBadge
+              icon={Clock}
+              value={pending}
+              label="Lịch hẹn chờ duyệt"
+              highlight={pending > 0}
+              badge={pending > 0}
+            />
+            <StatBadge
+              icon={Activity}
+              value={`${metrics?.occupancyRate ?? 0}%`}
+              label="Công suất phục vụ"
+            />
           </div>
         </div>
         <div className="flex items-center gap-1.5">
           <ViewSwitcher value={view} onChange={setView} />
-          <div className="hidden sm:flex items-center gap-1 pl-1">
-            <AppointmentsFilter staffList={staffList} filters={filters} onFilterChange={setFilters} />
-            <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" onClick={handleRefresh} disabled={isPending} className="size-8 text-muted-foreground hover:text-foreground"><RefreshCw className={cn("size-4", isPending && "animate-spin")} /><span className="sr-only">Làm mới</span></Button></TooltipTrigger><TooltipContent>Làm mới</TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="size-8 text-muted-foreground hover:text-foreground"><Settings2 className="size-4" /><span className="sr-only">Cài đặt</span></Button></TooltipTrigger><TooltipContent>Cài đặt hiển thị</TooltipContent></Tooltip>
+          <div className="hidden items-center gap-1 pl-1 sm:flex">
+            <AppointmentsFilter
+              staffList={staffList}
+              filters={filters}
+              onFilterChange={setFilters}
+            />
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleRefresh}
+                  disabled={isPending}
+                  className="text-muted-foreground hover:text-foreground size-8"
+                >
+                  <RefreshCw
+                    className={cn("size-4", isPending && "animate-spin")}
+                  />
+                  <span className="sr-only">Làm mới</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Làm mới</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground hover:text-foreground size-8"
+                >
+                  <Settings2 className="size-4" />
+                  <span className="sr-only">Cài đặt</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Cài đặt hiển thị</TooltipContent>
+            </Tooltip>
           </div>
           <div className="pl-1">
-            <Button size="sm" onClick={handleCreateClick} className="h-9 px-4 shadow-sm"><Plus className="size-4 sm:mr-2" /><span className="hidden sm:inline font-medium">Đặt lịch</span></Button>
+            <Button
+              size="sm"
+              onClick={handleCreateClick}
+              className="h-9 px-4 shadow-sm"
+            >
+              <Plus className="size-4 sm:mr-2" />
+              <span className="hidden font-medium sm:inline">Đặt lịch</span>
+            </Button>
           </div>
         </div>
       </PageHeader>
-      <PageContent fullWidth className="p-0 gap-0 flex flex-col">
-        <div className="flex-1 p-4 min-h-0 flex flex-col">
-            <SurfaceCard className="flex-1 min-h-0 rounded-lg border flex flex-col overflow-hidden">
+      <PageContent fullWidth className="flex flex-col gap-0 p-0">
+        <div className="flex min-h-0 flex-1 flex-col p-4">
+          <SurfaceCard className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border">
             <CalendarView
-                view={view} date={date} dateRange={dateRange} events={events} densityMode={densityMode}
-                staffList={staffList} roomList={roomList} onEventClick={handleEventClick} onSlotClick={handleSlotClick}
-                isLoading={isPending && events.length === 0} className="flex-1 min-h-0"
-                onCheckIn={wrapAction(checkInAppointment, "Check-in thành công", "Không thể check-in")}
-                onNoShow={wrapAction(markNoShow, "Đã đánh dấu No-show", "Không thể đánh dấu No-show")}
-                onCancel={handleCancelRequest}
-                onDelete={handleDeleteRequest}
-                onEdit={(e) => { setSelectedEvent(e); setSheetMode("edit"); setIsSheetOpen(true); }}
+              view={view}
+              date={date}
+              dateRange={dateRange}
+              events={events}
+              densityMode={densityMode}
+              staffList={staffList}
+              roomList={roomList}
+              onEventClick={handleEventClick}
+              onSlotClick={handleSlotClick}
+              isLoading={isPending && events.length === 0}
+              className="min-h-0 flex-1"
+              onCheckIn={wrapAction(
+                checkInAppointment,
+                "Check-in thành công",
+                "Không thể check-in"
+              )}
+              onNoShow={wrapAction(
+                markNoShow,
+                "Đã đánh dấu No-show",
+                "Không thể đánh dấu No-show"
+              )}
+              onCancel={handleCancelRequest}
+              onDelete={handleDeleteRequest}
+              onEdit={(e) => {
+                setSelectedEvent(e);
+                setSheetMode("edit");
+                setIsSheetOpen(true);
+              }}
             />
-            </SurfaceCard>
+          </SurfaceCard>
         </div>
       </PageContent>
-      <AppointmentSheet open={isSheetOpen} onOpenChange={setIsSheetOpen} mode={sheetMode} event={selectedEvent} onSave={handleSaveAppointment} onCreateInvoice={handleCreateInvoice} onPaymentSuccess={handlePaymentSuccess} onReviewNeeded={handleReviewNeeded} availableStaff={staffList} availableResources={roomList} availableServices={serviceList} />
-      {selectedEvent?.appointment && selectedBookingForReview === selectedEvent.appointment.id && (
-        <ReviewPrompt bookingId={selectedBookingForReview} open={!!selectedBookingForReview} onOpenChange={(open) => { if (!open) setSelectedBookingForReview(null); }} onReviewSubmitted={() => { setSelectedBookingForReview(null); handleRefresh(); }} customerName={selectedEvent?.appointment?.customerName || ""} serviceName={selectedEvent?.appointment?.serviceName || ""} />
-      )}
+      <AppointmentSheet
+        open={isSheetOpen}
+        onOpenChange={setIsSheetOpen}
+        mode={sheetMode}
+        event={selectedEvent}
+        onSave={handleSaveAppointment}
+        onCreateInvoice={handleCreateInvoice}
+        onPaymentSuccess={handlePaymentSuccess}
+        onReviewNeeded={handleReviewNeeded}
+        availableStaff={staffList}
+        availableResources={roomList}
+        availableServices={serviceList}
+      />
+      {selectedEvent?.appointment &&
+        selectedBookingForReview === selectedEvent.appointment.id && (
+          <ReviewPrompt
+            bookingId={selectedBookingForReview}
+            open={!!selectedBookingForReview}
+            onOpenChange={(open) => {
+              if (!open) setSelectedBookingForReview(null);
+            }}
+            onReviewSubmitted={() => {
+              setSelectedBookingForReview(null);
+              handleRefresh();
+            }}
+            customerName={selectedEvent?.appointment?.customerName || ""}
+            serviceName={selectedEvent?.appointment?.serviceName || ""}
+          />
+        )}
 
       {/* Dialogs */}
       <CancelDialog

@@ -7,16 +7,13 @@
 
 import { z } from "zod";
 
-
 import { ValidationMessages } from "@/shared/lib/validations";
 
 /** Schema cho form tạo/sửa cuộc hẹn */
 export const appointmentFormSchema = z.object({
   customerId: z.string().min(1, ValidationMessages.REQUIRED),
 
-  serviceIds: z
-    .array(z.string())
-    .min(1, ValidationMessages.REQUIRED),
+  serviceIds: z.array(z.string()).min(1, ValidationMessages.REQUIRED),
 
   staffId: z.string().min(1, ValidationMessages.REQUIRED),
 
@@ -28,10 +25,7 @@ export const appointmentFormSchema = z.object({
     .string()
     .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Giờ không hợp lệ (HH:mm)"),
 
-  notes: z
-    .string()
-    .max(500, "Ghi chú tối đa 500 ký tự")
-    .optional(),
+  notes: z.string().max(500, "Ghi chú tối đa 500 ký tự").optional(),
 
   isRecurring: z.boolean().default(false),
 
@@ -56,22 +50,19 @@ export type AppointmentFormValues = z.infer<typeof appointmentFormSchema>;
 /** Schema đơn giản cho form (không có recurrence) */
 export const quickAppointmentFormSchema = z.object({
   customerId: z.string().min(1, "Vui lòng chọn khách hàng"),
-  serviceIds: z
-    .array(z.string())
-    .min(1, "Vui lòng chọn ít nhất một dịch vụ"),
+  serviceIds: z.array(z.string()).min(1, "Vui lòng chọn ít nhất một dịch vụ"),
   staffId: z.string().min(1, "Vui lòng chọn kỹ thuật viên"),
   resourceId: z.string().optional(),
   date: z.date({ message: "Ngày không hợp lệ" }),
   startTime: z
     .string()
     .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Giờ không hợp lệ (HH:mm)"),
-  notes: z
-    .string()
-    .max(500, "Ghi chú tối đa 500 ký tự")
-    .optional(),
+  notes: z.string().max(500, "Ghi chú tối đa 500 ký tự").optional(),
 });
 
-export type QuickAppointmentFormValues = z.infer<typeof quickAppointmentFormSchema>;
+export type QuickAppointmentFormValues = z.infer<
+  typeof quickAppointmentFormSchema
+>;
 
 /** Schema cho form chỉnh sửa nhanh (khi drag-drop) */
 export const updateAppointmentTimeSchema = z.object({
@@ -80,8 +71,9 @@ export const updateAppointmentTimeSchema = z.object({
   endTime: z.date(),
 });
 
-export type UpdateAppointmentTimeValues = z.infer<typeof updateAppointmentTimeSchema>;
-
+export type UpdateAppointmentTimeValues = z.infer<
+  typeof updateAppointmentTimeSchema
+>;
 
 /** Schema cho bộ lọc lịch hẹn */
 export const appointmentFilterSchema = z.object({
@@ -104,7 +96,6 @@ export const appointmentFilterSchema = z.object({
 });
 
 export type AppointmentFilterValues = z.infer<typeof appointmentFilterSchema>;
-
 
 /** Schema cho cấu hình lịch lặp lại */
 export const recurrenceSchema = z
@@ -135,7 +126,6 @@ export const recurrenceSchema = z
 
 export type RecurrenceValues = z.infer<typeof recurrenceSchema>;
 
-
 /** Schema cho request tạo appointment (gửi lên API) */
 export const createAppointmentRequestSchema = z.object({
   customer_id: z.string(),
@@ -149,13 +139,17 @@ export const createAppointmentRequestSchema = z.object({
   recurrence_rule: z.string().optional(),
 });
 
-export type CreateAppointmentRequest = z.infer<typeof createAppointmentRequestSchema>;
+export type CreateAppointmentRequest = z.infer<
+  typeof createAppointmentRequestSchema
+>;
 
 /** Schema cho request cập nhật appointment */
-export const updateAppointmentRequestSchema = createAppointmentRequestSchema.partial();
+export const updateAppointmentRequestSchema =
+  createAppointmentRequestSchema.partial();
 
-export type UpdateAppointmentRequest = z.infer<typeof updateAppointmentRequestSchema>;
-
+export type UpdateAppointmentRequest = z.infer<
+  typeof updateAppointmentRequestSchema
+>;
 
 /**
  * Validate thời gian cuộc hẹn không ở quá khứ
@@ -183,7 +177,10 @@ export function validateWorkingHours(
 /**
  * Parse time string thành { hours, minutes }
  */
-export function parseTimeString(time: string): { hours: number; minutes: number } {
+export function parseTimeString(time: string): {
+  hours: number;
+  minutes: number;
+} {
   const [hours, minutes] = time.split(":").map(Number);
   return { hours, minutes };
 }

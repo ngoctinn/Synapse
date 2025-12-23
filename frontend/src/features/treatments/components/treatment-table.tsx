@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useTableParams } from "@/shared/hooks";
@@ -33,10 +32,17 @@ export function TreatmentTable({
   isLoading,
 }: TreatmentTableProps) {
   const router = useRouter();
-  const [editingTreatment, setEditingTreatment] = useState<CustomerTreatment | null>(null);
+  const [editingTreatment, setEditingTreatment] =
+    useState<CustomerTreatment | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  const { page: urlPage, sortBy, order, handlePageChange: urlPageChange, handleSort } = useTableParams({
+  const {
+    page: urlPage,
+    sortBy,
+    order,
+    handlePageChange: urlPageChange,
+    handleSort,
+  } = useTableParams({
     defaultSortBy: "created_at",
     defaultOrder: "desc",
   });
@@ -64,26 +70,30 @@ export function TreatmentTable({
       cell: (t) => (
         <div className="flex flex-col">
           <span className="text-sm font-semibold">{t.customer_name}</span>
-          <span className="text-xs text-muted-foreground">ID: {t.customer_id}</span>
+          <span className="text-muted-foreground text-xs">
+            ID: {t.customer_id}
+          </span>
         </div>
       ),
     },
     {
       header: "Gói dịch vụ",
       accessorKey: "package_name",
-      cell: (t) => (
-        <div className="font-medium text-sm">{t.package_name}</div>
-      ),
+      cell: (t) => <div className="text-sm font-medium">{t.package_name}</div>,
     },
     {
       header: "Tiến độ",
       accessorKey: "progress",
       sortable: true,
       cell: (t) => (
-        <div className="flex flex-col gap-1.5 w-[140px]">
+        <div className="flex w-[140px] flex-col gap-1.5">
           <div className="flex justify-between text-xs">
-            <span>{t.sessions_completed}/{t.total_sessions} buổi</span>
-            <span className="text-muted-foreground">{Math.round(t.progress)}%</span>
+            <span>
+              {t.sessions_completed}/{t.total_sessions} buổi
+            </span>
+            <span className="text-muted-foreground">
+              {Math.round(t.progress)}%
+            </span>
           </div>
           <Progress value={t.progress} className="h-2" />
         </div>
@@ -95,14 +105,17 @@ export function TreatmentTable({
       sortable: true,
       cell: (t) => {
         const date = new Date(t.start_date).toLocaleDateString("vi-VN");
-        return <div className="text-sm text-muted-foreground">{date}</div>;
+        return <div className="text-muted-foreground text-sm">{date}</div>;
       },
     },
     {
       header: "Trạng thái",
       accessorKey: "status",
       cell: (t) => {
-        const variants: Record<string, "default" | "secondary" | "destructive" | "outline" | "success"> = {
+        const variants: Record<
+          string,
+          "default" | "secondary" | "destructive" | "outline" | "success"
+        > = {
           active: "success",
           completed: "default",
           cancelled: "destructive",
@@ -137,7 +150,7 @@ export function TreatmentTable({
               }}
               disabled={isPending}
             >
-              <CheckCircle2 className="size-3.5 mr-1" />
+              <CheckCircle2 className="mr-1 size-3.5" />
               Check-in
             </Button>
           )}

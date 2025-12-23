@@ -5,11 +5,24 @@ import { vi } from "date-fns/locale";
 import { useMemo } from "react";
 
 import { cn } from "@/shared/lib/utils";
-import { Button, Popover, PopoverContent, PopoverTrigger, ScrollArea } from "@/shared/ui";
+import {
+  Button,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  ScrollArea,
+} from "@/shared/ui";
 
 import { WEEKDAYS } from "../../../model/constants";
-import { countSchedulesOnDate, getSchedulesWithShifts } from "../../../model/schedules";
-import type { DateRange, Schedule, ScheduleWithShift } from "../../../model/types";
+import {
+  countSchedulesOnDate,
+  getSchedulesWithShifts,
+} from "../../../model/schedules";
+import type {
+  DateRange,
+  Schedule,
+  ScheduleWithShift,
+} from "../../../model/types";
 import { ShiftChipMini } from "./shift-chip";
 
 interface MonthViewProps {
@@ -79,14 +92,14 @@ export function MonthView({
   }, [dateRange, currentMonth, schedules]);
 
   return (
-    <div className={cn("flex flex-col h-full", className)}>
+    <div className={cn("flex h-full flex-col", className)}>
       {/* Weekday Header */}
-      <div className="grid grid-cols-7 border-b border-border/50">
+      <div className="border-border/50 grid grid-cols-7 border-b">
         {WEEKDAYS.map((day) => (
           <div
             key={day.value}
             className={cn(
-              "py-2 text-center text-xs font-medium text-muted-foreground",
+              "text-muted-foreground py-2 text-center text-xs font-medium",
               (day.value === 0 || day.value === 6) && "text-muted-foreground/60"
             )}
           >
@@ -97,9 +110,12 @@ export function MonthView({
       </div>
 
       {/* Weeks Grid */}
-      <div className="flex-1 grid grid-rows-[repeat(auto-fill,minmax(100px,1fr))]">
+      <div className="grid flex-1 grid-rows-[repeat(auto-fill,minmax(100px,1fr))]">
         {weeks.map((week, weekIndex) => (
-          <div key={weekIndex} className="grid grid-cols-7 border-b border-border/30 last:border-b-0">
+          <div
+            key={weekIndex}
+            className="border-border/30 grid grid-cols-7 border-b last:border-b-0"
+          >
             {week.map((dayCell) => (
               <DayCellComponent
                 key={dayCell.dateStr}
@@ -123,7 +139,11 @@ interface DayCellComponentProps {
   onScheduleClick: (schedule: ScheduleWithShift) => void;
 }
 
-function DayCellComponent({ dayCell, onDayClick, onScheduleClick }: DayCellComponentProps) {
+function DayCellComponent({
+  dayCell,
+  onDayClick,
+  onScheduleClick,
+}: DayCellComponentProps) {
   const { date, isCurrentMonth, isToday, isWeekend, schedules } = dayCell;
 
   const visibleSchedules = schedules.slice(0, 2);
@@ -132,7 +152,7 @@ function DayCellComponent({ dayCell, onDayClick, onScheduleClick }: DayCellCompo
   return (
     <div
       className={cn(
-        "min-h-[100px] p-1 border-r border-border/30 last:border-r-0",
+        "border-border/30 min-h-[100px] border-r p-1 last:border-r-0",
         "flex flex-col",
         !isCurrentMonth && "bg-muted/30",
         isWeekend && isCurrentMonth && "bg-muted/10",
@@ -144,8 +164,8 @@ function DayCellComponent({ dayCell, onDayClick, onScheduleClick }: DayCellCompo
         type="button"
         onClick={() => onDayClick(date)}
         className={cn(
-          "w-7 h-7 rounded-full flex items-center justify-center text-sm font-medium",
-          "hover:bg-accent transition-colors mb-1",
+          "flex h-7 w-7 items-center justify-center rounded-full text-sm font-medium",
+          "hover:bg-accent mb-1 transition-colors",
           !isCurrentMonth && "text-muted-foreground/50",
           isToday && "bg-primary text-primary-foreground hover:bg-primary/90"
         )}
@@ -171,13 +191,13 @@ function DayCellComponent({ dayCell, onDayClick, onScheduleClick }: DayCellCompo
               <Button
                 variant="ghost"
                 size="sm"
-                className="w-full h-5 text-[10px] text-muted-foreground hover:text-foreground justify-start px-1.5"
+                className="text-muted-foreground hover:text-foreground h-5 w-full justify-start px-1.5 text-[10px]"
               >
                 +{hiddenCount} ca khác
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-64 p-2" align="start">
-              <div className="text-sm font-medium mb-2">
+              <div className="mb-2 text-sm font-medium">
                 {format(date, "EEEE, d MMMM", { locale: vi })}
               </div>
               <ScrollArea className="max-h-48">

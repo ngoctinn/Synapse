@@ -2,7 +2,9 @@ import { createClient } from "@/shared/lib/supabase/server";
 
 export async function fetchWithAuth(path: string, options: RequestInit = {}) {
   const supabase = await createClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
   const token = session?.access_token;
 
   const headers = new Headers(options.headers);
@@ -21,7 +23,6 @@ export async function fetchWithAuth(path: string, options: RequestInit = {}) {
   });
 
   if (!response.ok) {
-
     if (response.status === 401) {
       console.error("Unauthorized API call");
     }

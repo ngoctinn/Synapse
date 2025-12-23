@@ -1,24 +1,25 @@
-"use client"
+"use client";
 
-import { Button } from "@/shared/ui/button"
-import { Plus } from "lucide-react"
-import { useState } from "react"
-import { CustomerSheet } from "./customer-sheet"
+import { Button } from "@/shared/ui/button";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import { CustomerSheet } from "./customer-sheet";
 
 export function CreateCustomerTrigger() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   return (
     <>
-      <Button size="sm" className="text-xs transition-all hover:scale-[1.02] shadow-sm" onClick={() => setOpen(true)} startContent={<Plus className="mr-2 h-3.5 w-3.5" />}>
+      <Button
+        size="sm"
+        className="text-xs shadow-sm transition-all hover:scale-[1.02]"
+        onClick={() => setOpen(true)}
+        startContent={<Plus className="mr-2 h-3.5 w-3.5" />}
+      >
         Thêm khách hàng
       </Button>
 
-      <CustomerSheet
-        mode="create"
-        open={open}
-        onOpenChange={setOpen}
-      />
+      <CustomerSheet mode="create" open={open} onOpenChange={setOpen} />
     </>
-  )
+  );
 }

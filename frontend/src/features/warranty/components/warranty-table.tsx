@@ -9,7 +9,12 @@ import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { showToast } from "@/shared/ui";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { AlertTriangle, MoreHorizontal, ShieldCheck, XCircle } from "lucide-react";
+import {
+  AlertTriangle,
+  MoreHorizontal,
+  ShieldCheck,
+  XCircle,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { updateWarrantyStatus } from "../actions";
 import { WarrantyTicket } from "../model/types";
@@ -42,7 +47,13 @@ export function WarrantyTable({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const { page: urlPage, sortBy, order, handlePageChange: urlPageChange, handleSort } = useTableParams({
+  const {
+    page: urlPage,
+    sortBy,
+    order,
+    handlePageChange: urlPageChange,
+    handleSort,
+  } = useTableParams({
     defaultSortBy: "created_at",
     defaultOrder: "desc",
   });
@@ -75,7 +86,9 @@ export function WarrantyTable({
     {
       header: "Dịch vụ/Liệu trình",
       accessorKey: "service_name",
-      cell: (w) => <div className="text-sm max-w-[200px] truncate">{w.service_name}</div>,
+      cell: (w) => (
+        <div className="max-w-[200px] truncate text-sm">{w.service_name}</div>
+      ),
     },
     {
       header: "Thời hạn",
@@ -84,14 +97,18 @@ export function WarrantyTable({
       cell: (w) => {
         const end = new Date(w.end_date);
         const now = new Date();
-        const daysLeft = Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+        const daysLeft = Math.ceil(
+          (end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+        );
         const isExpired = daysLeft < 0;
 
         return (
           <div className="flex flex-col text-sm">
             <span>{format(end, "dd/MM/yyyy", { locale: vi })}</span>
-            <span className={`text-xs ${isExpired ? "text-destructive" : "text-success"}`}>
-                {isExpired ? "Đã hết hạn" : `Còn ${daysLeft} ngày`}
+            <span
+              className={`text-xs ${isExpired ? "text-destructive" : "text-success"}`}
+            >
+              {isExpired ? "Đã hết hạn" : `Còn ${daysLeft} ngày`}
             </span>
           </div>
         );
@@ -101,7 +118,15 @@ export function WarrantyTable({
       header: "Trạng thái",
       accessorKey: "status",
       cell: (w) => {
-        const variants: Record<string, "default" | "secondary" | "destructive" | "outline" | "success" | "warning"> = {
+        const variants: Record<
+          string,
+          | "default"
+          | "secondary"
+          | "destructive"
+          | "outline"
+          | "success"
+          | "warning"
+        > = {
           active: "success",
           expired: "secondary",
           voided: "destructive",
@@ -134,11 +159,16 @@ export function WarrantyTable({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => handleStatusUpdate(w.id, "claimed")}>
+              <DropdownMenuItem
+                onClick={() => handleStatusUpdate(w.id, "claimed")}
+              >
                 <AlertTriangle className="mr-2 h-4 w-4" /> Yêu cầu bảo hành
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleStatusUpdate(w.id, "voided")} className="text-destructive">
+              <DropdownMenuItem
+                onClick={() => handleStatusUpdate(w.id, "voided")}
+                className="text-destructive"
+              >
                 <XCircle className="mr-2 h-4 w-4" /> Hủy hiệu lực
               </DropdownMenuItem>
             </DropdownMenuContent>

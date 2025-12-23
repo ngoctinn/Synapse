@@ -121,7 +121,9 @@ export function FilterBar({
       case "status":
         onFiltersChange({
           ...filters,
-          statuses: filters.statuses.filter((s: AppointmentStatus) => s !== value as AppointmentStatus),
+          statuses: filters.statuses.filter(
+            (s: AppointmentStatus) => s !== (value as AppointmentStatus)
+          ),
         });
         break;
       case "search":
@@ -135,13 +137,13 @@ export function FilterBar({
       {/* Filter Controls */}
       <div className="flex flex-wrap items-center gap-2">
         {/* Search Input */}
-        <div className="relative flex-1 min-w-[200px] max-w-[300px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+        <div className="relative min-w-[200px] max-w-[300px] flex-1">
+          <Search className="text-muted-foreground absolute left-3 top-1/2 size-4 -translate-y-1/2" />
           <Input
             placeholder="Tìm khách hàng, dịch vụ..."
             value={filters.searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="pl-9 h-9"
+            className="h-9 pl-9"
           />
         </div>
 
@@ -156,14 +158,12 @@ export function FilterBar({
                 filters.staffIds.length > 0 && "border-primary"
               )}
             >
-              <Filter className="size-4 mr-2" />
+              <Filter className="mr-2 size-4" />
               Kỹ thuật viên
               {filters.staffIds.length > 0 && (
-                <Badge preset="count">
-                  {filters.staffIds.length}
-                </Badge>
+                <Badge preset="count">{filters.staffIds.length}</Badge>
               )}
-              <ChevronsUpDown className="size-4 ml-2 opacity-50" />
+              <ChevronsUpDown className="ml-2 size-4 opacity-50" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0" align="start">
@@ -206,14 +206,12 @@ export function FilterBar({
                 filters.serviceIds.length > 0 && "border-primary"
               )}
             >
-              <Filter className="size-4 mr-2" />
+              <Filter className="mr-2 size-4" />
               Dịch vụ
               {filters.serviceIds.length > 0 && (
-                <Badge preset="count">
-                  {filters.serviceIds.length}
-                </Badge>
+                <Badge preset="count">{filters.serviceIds.length}</Badge>
               )}
-              <ChevronsUpDown className="size-4 ml-2 opacity-50" />
+              <ChevronsUpDown className="ml-2 size-4 opacity-50" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0" align="start">
@@ -258,11 +256,9 @@ export function FilterBar({
             >
               Trạng thái
               {filters.statuses.length > 0 && (
-                <Badge preset="count">
-                  {filters.statuses.length}
-                </Badge>
+                <Badge preset="count">{filters.statuses.length}</Badge>
               )}
-              <ChevronsUpDown className="size-4 ml-2 opacity-50" />
+              <ChevronsUpDown className="ml-2 size-4 opacity-50" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0" align="start">
@@ -287,7 +283,7 @@ export function FilterBar({
                         />
                         <span
                           className={cn(
-                            "w-2 h-2 rounded-full mr-2",
+                            "mr-2 h-2 w-2 rounded-full",
                             config.bgColor
                           )}
                         />
@@ -306,10 +302,10 @@ export function FilterBar({
           <Button
             variant="ghost"
             size="sm"
-            className="h-9 text-muted-foreground"
+            className="text-muted-foreground h-9"
             onClick={handleClearAll}
           >
-            <X className="size-4 mr-1" />
+            <X className="mr-1 size-4" />
             Xóa bộ lọc ({activeFilterCount})
           </Button>
         )}
@@ -322,13 +318,10 @@ export function FilterBar({
           {filters.staffIds.map((staffId) => {
             const staff = staffOptions.find((s) => s.id === staffId);
             return (
-              <Badge
-                key={`staff-${staffId}`}
-                preset="tag"
-              >
+              <Badge key={`staff-${staffId}`} preset="tag">
                 {staff?.name || staffId}
                 <button
-                  className="ml-1 rounded-full hover:bg-muted p-0.5"
+                  className="hover:bg-muted ml-1 rounded-full p-0.5"
                   onClick={() => handleRemoveFilter("staff", staffId)}
                 >
                   <X className="h-3 w-3" />
@@ -341,13 +334,10 @@ export function FilterBar({
           {filters.serviceIds.map((serviceId) => {
             const service = serviceOptions.find((s) => s.id === serviceId);
             return (
-              <Badge
-                key={`service-${serviceId}`}
-                preset="tag"
-              >
+              <Badge key={`service-${serviceId}`} preset="tag">
                 {service?.name || serviceId}
                 <button
-                  className="ml-1 rounded-full hover:bg-muted p-0.5"
+                  className="hover:bg-muted ml-1 rounded-full p-0.5"
                   onClick={() => handleRemoveFilter("service", serviceId)}
                 >
                   <X className="h-3 w-3" />
@@ -360,13 +350,10 @@ export function FilterBar({
           {filters.statuses.map((status) => {
             const config = APPOINTMENT_STATUS_CONFIG[status];
             return (
-              <Badge
-                key={`status-${status}`}
-                preset="tag"
-              >
+              <Badge key={`status-${status}`} preset="tag">
                 {config.label}
                 <button
-                  className="ml-1 rounded-full hover:bg-muted/50 p-0.5"
+                  className="hover:bg-muted/50 ml-1 rounded-full p-0.5"
                   onClick={() => handleRemoveFilter("status", status)}
                 >
                   <X className="h-3 w-3" />
@@ -380,7 +367,7 @@ export function FilterBar({
             <Badge preset="tag">
               &quot;{filters.searchQuery}&quot;
               <button
-                className="ml-1 rounded-full hover:bg-muted p-0.5"
+                className="hover:bg-muted ml-1 rounded-full p-0.5"
                 onClick={() => handleRemoveFilter("search", "")}
               >
                 <X className="h-3 w-3" />

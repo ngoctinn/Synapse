@@ -2,11 +2,11 @@
 
 import { showToast } from "@/shared/ui/sonner";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
 } from "@/shared/ui/dialog";
 import { useTransition } from "react";
 import { createReview } from "../actions";
@@ -40,7 +40,10 @@ export function ReviewPrompt({
         onOpenChange(false);
         onReviewSubmitted?.();
       } else {
-        showToast.error("Đánh giá thất bại", result.message || "Gửi đánh giá thất bại");
+        showToast.error(
+          "Đánh giá thất bại",
+          result.message || "Gửi đánh giá thất bại"
+        );
       }
     });
   };
@@ -51,8 +54,9 @@ export function ReviewPrompt({
         <DialogHeader>
           <DialogTitle>Bạn đã sử dụng dịch vụ {serviceName}</DialogTitle>
           <DialogDescription>
-            Chào {customerName}, bạn có thể chia sẻ trải nghiệm của mình về dịch vụ này chứ?
-            Đánh giá của bạn sẽ giúp chúng tôi cải thiện chất lượng phục vụ.
+            Chào {customerName}, bạn có thể chia sẻ trải nghiệm của mình về dịch
+            vụ này chứ? Đánh giá của bạn sẽ giúp chúng tôi cải thiện chất lượng
+            phục vụ.
           </DialogDescription>
         </DialogHeader>
 

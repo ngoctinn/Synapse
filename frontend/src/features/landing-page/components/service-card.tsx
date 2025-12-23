@@ -9,7 +9,8 @@ import Link from "next/link";
 import { useState } from "react";
 
 // Fallback image khi URL rỗng hoặc load thất bại
-const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=1000";
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=1000";
 
 interface ServiceCardProps {
   service: Service;
@@ -27,7 +28,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
   };
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-lg surface-card text-card-foreground hover:shadow-xl hover:ring-1 hover:ring-primary/50 transition-all duration-300 hover:-translate-y-1">
+    <div className="surface-card text-card-foreground hover:ring-primary/50 group relative flex flex-col overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:ring-1">
       {/* Image Container */}
       <div className="relative aspect-[4/3] w-full overflow-hidden">
         <Image
@@ -41,11 +42,11 @@ export function ServiceCard({ service }: ServiceCardProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80" />
 
         {/* Chips/Badges overlay */}
-        <div className="absolute top-3 right-3 flex gap-2">
+        <div className="absolute right-3 top-3 flex gap-2">
           {service.is_popular && (
             <Badge
               variant="warning"
-              className="shadow-sm backdrop-blur-md border animate-pulse"
+              className="animate-pulse border shadow-sm backdrop-blur-md"
             >
               Phổ biến
             </Badge>
@@ -55,7 +56,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
         <div className="absolute bottom-3 left-3">
           <Badge
             variant="glass"
-            className="backdrop-blur-md bg-black/40 text-white border-white/20"
+            className="border-white/20 bg-black/40 text-white backdrop-blur-md"
           >
             {service.category}
           </Badge>
@@ -64,22 +65,22 @@ export function ServiceCard({ service }: ServiceCardProps) {
 
       {/* Content */}
       <div className="flex flex-1 flex-col p-5">
-        <div className="flex justify-between items-start gap-2 mb-2">
-          <h3 className="text-lg font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
+        <div className="mb-2 flex items-start justify-between gap-2">
+          <h3 className="group-hover:text-primary line-clamp-2 text-lg font-bold leading-tight transition-colors">
             {service.name}
           </h3>
         </div>
 
-        <p className="text-sm text-muted-foreground line-clamp-3 mb-4 flex-1">
+        <p className="text-muted-foreground mb-4 line-clamp-3 flex-1 text-sm">
           {service.description}
         </p>
 
-        <div className="flex items-center justify-between text-sm text-muted-foreground mb-4 pt-4 border-t border-border/50">
+        <div className="text-muted-foreground border-border/50 mb-4 flex items-center justify-between border-t pt-4 text-sm">
           <div className="flex items-center gap-1.5">
-            <Clock className="size-4 text-primary" />
+            <Clock className="text-primary size-4" />
             <span>{service.duration} phút</span>
           </div>
-          <div className="flex items-center gap-1.5 font-bold text-primary text-base">
+          <div className="text-primary flex items-center gap-1.5 text-base font-bold">
             <Tag className="size-4" />
             <span>
               {new Intl.NumberFormat("vi-VN", {
@@ -90,7 +91,10 @@ export function ServiceCard({ service }: ServiceCardProps) {
           </div>
         </div>
 
-        <Button asChild className="w-full rounded-xl group-hover:scale-[1.02] transition-transform duration-200 shadow-md">
+        <Button
+          asChild
+          className="w-full rounded-xl shadow-md transition-transform duration-200 group-hover:scale-[1.02]"
+        >
           <Link href="/booking">
             <Calendar className="mr-2 size-4" />
             Đặt lịch ngay
@@ -100,4 +104,3 @@ export function ServiceCard({ service }: ServiceCardProps) {
     </div>
   );
 }
-

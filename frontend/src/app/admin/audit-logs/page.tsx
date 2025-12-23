@@ -9,7 +9,11 @@ export const metadata = {
 export default async function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; action?: string; entityType?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    action?: string;
+    entityType?: string;
+  }>;
 }) {
   const { page, action, entityType } = await searchParams;
   const pageNum = Number(page) || 1;
@@ -17,16 +21,12 @@ export default async function Page({
   // Fetch data
   const { data, totalPages } = await getAuditLogs(pageNum, 10, {
     action: action as string,
-    entityType: entityType as string
+    entityType: entityType as string,
   });
 
   return (
     <Suspense fallback={<div>Đang tải nhật ký...</div>}>
-      <AuditLogsPage
-        data={data}
-        page={pageNum}
-        totalPages={totalPages}
-      />
+      <AuditLogsPage data={data} page={pageNum} totalPages={totalPages} />
     </Suspense>
   );
 }

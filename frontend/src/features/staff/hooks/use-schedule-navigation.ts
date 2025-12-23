@@ -1,17 +1,17 @@
 "use client";
 
 import {
-    addDays,
-    addMonths,
-    addWeeks,
-    endOfMonth,
-    endOfWeek,
-    format,
-    isSameDay,
-    startOfMonth,
-    startOfWeek,
-    subMonths,
-    subWeeks,
+  addDays,
+  addMonths,
+  addWeeks,
+  endOfMonth,
+  endOfWeek,
+  format,
+  isSameDay,
+  startOfMonth,
+  startOfWeek,
+  subMonths,
+  subWeeks,
 } from "date-fns";
 import { vi } from "date-fns/locale";
 import { useCallback, useMemo, useState } from "react";
@@ -37,14 +37,18 @@ export function useScheduleNavigation({
   // Tính toán date range dựa trên view
   const dateRange: DateRange = useMemo(() => {
     if (view === "week") {
-      const start = startOfWeek(currentDate, { weekStartsOn: DEFAULT_WEEK_START });
+      const start = startOfWeek(currentDate, {
+        weekStartsOn: DEFAULT_WEEK_START,
+      });
       const end = endOfWeek(currentDate, { weekStartsOn: DEFAULT_WEEK_START });
       return { start, end };
     } else {
       // Month view - bao gồm cả ngày từ tuần trước/sau
       const monthStart = startOfMonth(currentDate);
       const monthEnd = endOfMonth(currentDate);
-      const start = startOfWeek(monthStart, { weekStartsOn: DEFAULT_WEEK_START });
+      const start = startOfWeek(monthStart, {
+        weekStartsOn: DEFAULT_WEEK_START,
+      });
       const end = endOfWeek(monthEnd, { weekStartsOn: DEFAULT_WEEK_START });
       return { start, end };
     }
@@ -63,7 +67,9 @@ export function useScheduleNavigation({
 
   // Tạo mảng 7 ngày trong tuần (cho week view)
   const weekDays = useMemo(() => {
-    const start = startOfWeek(currentDate, { weekStartsOn: DEFAULT_WEEK_START });
+    const start = startOfWeek(currentDate, {
+      weekStartsOn: DEFAULT_WEEK_START,
+    });
     return Array.from({ length: 7 }).map((_, i) => addDays(start, i));
   }, [currentDate]);
 

@@ -3,12 +3,12 @@
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/shared/ui/dialog";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
@@ -41,14 +41,17 @@ export function TemplateEditor({
   useEffect(() => {
     if (template) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setContent(prev => prev !== template.content ? template.content : prev);
+      setContent((prev) =>
+        prev !== template.content ? template.content : prev
+      );
 
-      setSubject(prev => prev !== (template.subject || "") ? (template.subject || "") : prev);
+      setSubject((prev) =>
+        prev !== (template.subject || "") ? template.subject || "" : prev
+      );
     } else {
+      setContent((prev) => (prev !== "" ? "" : prev));
 
-      setContent(prev => prev !== "" ? "" : prev);
-
-      setSubject(prev => prev !== "" ? "" : prev);
+      setSubject((prev) => (prev !== "" ? "" : prev));
     }
   }, [template, isOpen]);
 
@@ -75,14 +78,15 @@ export function TemplateEditor({
         <DialogHeader>
           <DialogTitle>Chỉnh sửa mẫu tin: {title}</DialogTitle>
           <DialogDescription>
-            Tùy chỉnh nội dung tin nhắn gửi đi. Sử dụng các biến để chèn dữ liệu động.
+            Tùy chỉnh nội dung tin nhắn gửi đi. Sử dụng các biến để chèn dữ liệu
+            động.
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
           {/* Subject Field (Only for Email) */}
           {(template.subject !== undefined || title.includes("Email")) && (
-             <div className="grid gap-2">
+            <div className="grid gap-2">
               <Label htmlFor="subject">Tiêu đề (Email Subject)</Label>
               <Input
                 id="subject"
@@ -96,10 +100,10 @@ export function TemplateEditor({
           {/* Content Field */}
           <div className="grid gap-2">
             <div className="flex justify-between">
-                <Label htmlFor="content">Nội dung</Label>
-                <span className="text-xs text-muted-foreground">
-                    {content.length} ký tự
-                </span>
+              <Label htmlFor="content">Nội dung</Label>
+              <span className="text-muted-foreground text-xs">
+                {content.length} ký tự
+              </span>
             </div>
             <Textarea
               id="content"
@@ -113,13 +117,13 @@ export function TemplateEditor({
           {/* Variables List */}
           <div className="grid gap-2">
             <Label>Biến có sẵn (Nhấn để chèn)</Label>
-            <ScrollArea className="h-[100px] w-full rounded-md border p-4 bg-muted/50">
+            <ScrollArea className="bg-muted/50 h-[100px] w-full rounded-md border p-4">
               <div className="flex flex-wrap gap-2">
                 {template.variables.map((variable) => (
                   <Badge
                     key={variable}
                     variant="secondary"
-                    className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+                    className="hover:bg-primary hover:text-primary-foreground cursor-pointer transition-colors"
                     onClick={() => handleInsertVariable(variable)}
                   >
                     {`{{${variable}}}`}
@@ -131,7 +135,11 @@ export function TemplateEditor({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isSaving}>
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={isSaving}
+          >
             Hủy
           </Button>
           <Button onClick={handleSave} disabled={isSaving}>

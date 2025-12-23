@@ -1,6 +1,10 @@
 "use client";
 
-import { useBulkAction, useTableParams, useTableSelection } from "@/shared/hooks";
+import {
+  useBulkAction,
+  useTableParams,
+  useTableSelection,
+} from "@/shared/hooks";
 import { Badge } from "@/shared/ui/badge";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
@@ -45,13 +49,15 @@ export function SkillTable({
   });
 
   // Use custom hook for bulk delete
-  const { execute: executeBulkDelete, isPending, showDialog: showBulkDeleteDialog, setShowDialog: setShowBulkDeleteDialog } = useBulkAction(
-    deleteSkill,
-    {
-      successMessage: (count) => `Đã xóa ${count} kỹ năng`,
-      errorMessage: (count) => `Không thể xóa ${count} kỹ năng`,
-    }
-  );
+  const {
+    execute: executeBulkDelete,
+    isPending,
+    showDialog: showBulkDeleteDialog,
+    setShowDialog: setShowBulkDeleteDialog,
+  } = useBulkAction(deleteSkill, {
+    successMessage: (count) => `Đã xóa ${count} kỹ năng`,
+    errorMessage: (count) => `Không thể xóa ${count} kỹ năng`,
+  });
 
   const handleBulkDelete = () => {
     const ids = Array.from(selection.selectedIds) as string[];
@@ -59,11 +65,10 @@ export function SkillTable({
   };
 
   const columns: Column<Skill>[] = [
-
     {
       header: "Tên kỹ năng",
       cell: (skill) => (
-        <span className="text-lg font-serif text-foreground group-hover:text-primary transition-colors tracking-tight">
+        <span className="text-foreground group-hover:text-primary font-serif text-lg tracking-tight transition-colors">
           {skill.name}
         </span>
       ),
@@ -79,7 +84,7 @@ export function SkillTable({
     {
       header: "Mô tả",
       cell: (skill) => (
-        <span className="text-muted-foreground max-w-md truncate block">
+        <span className="text-muted-foreground block max-w-md truncate">
           {skill.description || "-"}
         </span>
       ),
@@ -104,7 +109,6 @@ export function SkillTable({
         variant={variant}
         isLoading={isLoading}
         skeletonCount={5}
-
         selection={{
           isSelected: selection.isSelected,
           onToggleOne: selection.toggleOne,

@@ -9,14 +9,16 @@ interface StepIndicatorProps {
 export const StepIndicator = ({ currentStep }: StepIndicatorProps) => {
   return (
     <div className="w-full py-4">
-      <div className="relative flex items-center justify-between mx-auto max-w-sm sm:max-w-md">
+      <div className="relative mx-auto flex max-w-sm items-center justify-between sm:max-w-md">
         {/* Progress Bar Background */}
-        <div className="absolute top-1/2 left-0 w-full h-1 bg-muted -z-10 -translate-y-1/2 rounded-full" />
+        <div className="bg-muted absolute left-0 top-1/2 -z-10 h-1 w-full -translate-y-1/2 rounded-full" />
 
         {/* Active Progress Bar */}
         <div
-          className="absolute top-1/2 left-0 h-1 bg-primary -z-10 -translate-y-1/2 rounded-full transition-all duration-300 ease-in-out"
-          style={{ width: `${((currentStep - 1) / (STEPS.length - 1)) * 100}%` }}
+          className="bg-primary absolute left-0 top-1/2 -z-10 h-1 -translate-y-1/2 rounded-full transition-all duration-300 ease-in-out"
+          style={{
+            width: `${((currentStep - 1) / (STEPS.length - 1)) * 100}%`,
+          }}
         />
 
         {STEPS.map((step) => {
@@ -24,15 +26,18 @@ export const StepIndicator = ({ currentStep }: StepIndicatorProps) => {
           const isCurrent = currentStep === step.id;
 
           return (
-            <div key={step.id} className="flex flex-col items-center gap-2 bg-background px-1">
+            <div
+              key={step.id}
+              className="bg-background flex flex-col items-center gap-2 px-1"
+            >
               <div
                 className={cn(
                   "flex h-8 w-8 items-center justify-center rounded-full border-2 transition-colors duration-300",
                   isCompleted
                     ? "border-primary bg-primary text-primary-foreground"
                     : isCurrent
-                    ? "border-primary bg-background text-primary"
-                    : "border-muted-foreground/30 bg-background text-muted-foreground"
+                      ? "border-primary bg-background text-primary"
+                      : "border-muted-foreground/30 bg-background text-muted-foreground"
                 )}
               >
                 {isCompleted ? (
@@ -43,7 +48,7 @@ export const StepIndicator = ({ currentStep }: StepIndicatorProps) => {
               </div>
               <span
                 className={cn(
-                  "hidden sm:block text-xs font-medium transition-colors duration-300",
+                  "hidden text-xs font-medium transition-colors duration-300 sm:block",
                   isCurrent ? "text-foreground" : "text-muted-foreground"
                 )}
               >
@@ -54,8 +59,8 @@ export const StepIndicator = ({ currentStep }: StepIndicatorProps) => {
         })}
       </div>
       {/* Mobile Title Display */}
-      <div className="sm:hidden text-center mt-2 flex flex-col items-center">
-        <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
+      <div className="mt-2 flex flex-col items-center text-center sm:hidden">
+        <span className="text-muted-foreground text-[10px] font-bold uppercase tracking-wider">
           Bước {currentStep} / {STEPS.length}
         </span>
         <span className="text-sm font-semibold">

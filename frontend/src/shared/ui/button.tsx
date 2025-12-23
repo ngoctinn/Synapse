@@ -4,9 +4,9 @@ import { Loader2 } from "lucide-react";
 import * as React from "react";
 
 import {
-    type ButtonVariant,
-    type ComponentSize,
-    warnDeprecated,
+  type ButtonVariant,
+  type ComponentSize,
+  warnDeprecated,
 } from "@/shared/lib/design-system.types";
 import { cn } from "@/shared/lib/utils";
 
@@ -53,7 +53,8 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   /** Trạng thái loading của button */
@@ -148,4 +149,3 @@ Button.displayName = "Button";
 
 export { Button, buttonVariants };
 export type { ButtonVariant, ComponentSize };
-

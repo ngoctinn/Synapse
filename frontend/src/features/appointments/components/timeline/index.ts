@@ -7,4 +7,3 @@
 export { ResourceTimeline } from "./resource-timeline";
 export { TimelineHeader } from "./timeline-header";
 export { TimelineRow } from "./timeline-row";
-

@@ -1,26 +1,30 @@
-  "use client"
+"use client";
 
-import { cn } from "@/shared/lib/utils"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { useEffect, useState } from "react"
+import { cn } from "@/shared/lib/utils";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export const NAV_ITEMS = [
   { href: "/#hero", label: "Trang chủ" },
   { href: "/#features", label: "Tính năng" },
   { href: "/#testimonials", label: "Khách hàng" },
   { href: "/#contact", label: "Liên hệ" },
-]
+];
 
 interface HeaderNavProps {
-  mobile?: boolean
-  className?: string
-  onLinkClick?: () => void
+  mobile?: boolean;
+  className?: string;
+  onLinkClick?: () => void;
 }
 
-export function HeaderNav({ mobile = false, className, onLinkClick }: HeaderNavProps) {
-  const pathname = usePathname()
-  const [activeSection, setActiveSection] = useState<string>("")
+export function HeaderNav({
+  mobile = false,
+  className,
+  onLinkClick,
+}: HeaderNavProps) {
+  const pathname = usePathname();
+  const [activeSection, setActiveSection] = useState<string>("");
 
   useEffect(() => {
     if (pathname === "/") {
@@ -28,42 +32,48 @@ export function HeaderNav({ mobile = false, className, onLinkClick }: HeaderNavP
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              setActiveSection(entry.target.id)
+              setActiveSection(entry.target.id);
             }
-          })
+          });
         },
         {
           rootMargin: "-50% 0px -50% 0px", // Trigger when section is in middle of viewport
         }
-      )
+      );
 
-      const sections = document.querySelectorAll("section[id]")
-      sections.forEach((section) => observer.observe(section))
+      const sections = document.querySelectorAll("section[id]");
+      sections.forEach((section) => observer.observe(section));
 
       return () => {
-        sections.forEach((section) => observer.unobserve(section))
-      }
+        sections.forEach((section) => observer.unobserve(section));
+      };
     }
-  }, [pathname])
+  }, [pathname]);
 
   return (
-    <div className={cn("flex", mobile ? "flex-col space-y-4 w-full" : "items-center space-x-6", className)}>
+    <div
+      className={cn(
+        "flex",
+        mobile ? "w-full flex-col space-y-4" : "items-center space-x-6",
+        className
+      )}
+    >
       {NAV_ITEMS.map((item) => {
         // Check if item is active based on pathname OR hash
-        const isHome = pathname === "/"
-        const itemHash = item.href.split("#")[1]
+        const isHome = pathname === "/";
+        const itemHash = item.href.split("#")[1];
 
-        let isActive = false
+        let isActive = false;
 
         if (item.href === "/#hero" && isHome && !activeSection) {
-             // Default to hero if no section active on home
-             isActive = true
+          // Default to hero if no section active on home
+          isActive = true;
         } else if (isHome && itemHash) {
-             // Match hash with active scroll section
-             isActive = activeSection === itemHash
+          // Match hash with active scroll section
+          isActive = activeSection === itemHash;
         } else {
-             // Fallback to exact path match for non-hash links
-             isActive = pathname === item.href
+          // Fallback to exact path match for non-hash links
+          isActive = pathname === item.href;
         }
 
         return (
@@ -72,7 +82,7 @@ export function HeaderNav({ mobile = false, className, onLinkClick }: HeaderNavP
             href={item.href}
             onClick={onLinkClick}
             className={cn(
-              "relative text-sm font-medium transition-colors duration-300 flex items-center px-3 py-2 rounded-full whitespace-nowrap",
+              "relative flex items-center whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium transition-colors duration-300",
               isActive
                 ? "bg-primary/10 text-primary font-semibold"
                 : "text-muted-foreground hover:text-[var(--primary)]",
@@ -81,16 +91,14 @@ export function HeaderNav({ mobile = false, className, onLinkClick }: HeaderNavP
           >
             {isActive && (
               <span className="relative mr-2 flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                <span className="bg-primary absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"></span>
+                <span className="bg-primary relative inline-flex h-2 w-2 rounded-full"></span>
               </span>
             )}
-            <span>
-              {item.label}
-            </span>
+            <span>{item.label}</span>
           </Link>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

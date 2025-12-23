@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import * as TabsPrimitive from "@radix-ui/react-tabs"
-import { cva, type VariantProps } from "class-variance-authority"
-import * as React from "react"
+import * as TabsPrimitive from "@radix-ui/react-tabs";
+import { cva, type VariantProps } from "class-variance-authority";
+import * as React from "react";
 
-import { cn } from "@/shared/lib/utils"
+import { cn } from "@/shared/lib/utils";
 
 // =============================================================================
 // TABS ROOT
@@ -20,7 +20,7 @@ function Tabs({
       className={cn("flex flex-col gap-2", className)}
       {...props}
     />
-  )
+  );
 }
 
 // =============================================================================
@@ -62,13 +62,14 @@ const tabsListVariants = cva(
       fullWidth: false,
     },
   }
-)
+);
 
 interface TabsListProps
-  extends React.ComponentProps<typeof TabsPrimitive.List>,
+  extends
+    React.ComponentProps<typeof TabsPrimitive.List>,
     VariantProps<typeof tabsListVariants> {
   /** Số cột grid (chỉ áp dụng khi fullWidth=true) */
-  gridCols?: 2 | 3 | 4 | 5
+  gridCols?: 2 | 3 | 4 | 5;
 }
 
 function TabsList({
@@ -80,7 +81,7 @@ function TabsList({
   ...props
 }: TabsListProps) {
   // Tạo grid class nếu fullWidth và có gridCols
-  const gridClass = fullWidth && gridCols ? `grid grid-cols-${gridCols}` : ""
+  const gridClass = fullWidth && gridCols ? `grid grid-cols-${gridCols}` : "";
 
   return (
     <TabsPrimitive.List
@@ -92,7 +93,7 @@ function TabsList({
       )}
       {...props}
     />
-  )
+  );
 }
 
 // =============================================================================
@@ -151,7 +152,7 @@ const tabsTriggerVariants = cva(
       stretch: {
         true: "flex-1",
         false: "",
-      }
+      },
     },
     defaultVariants: {
       variant: "default",
@@ -159,10 +160,11 @@ const tabsTriggerVariants = cva(
       stretch: false,
     },
   }
-)
+);
 
 interface TabsTriggerProps
-  extends React.ComponentProps<typeof TabsPrimitive.Trigger>,
+  extends
+    React.ComponentProps<typeof TabsPrimitive.Trigger>,
     VariantProps<typeof tabsTriggerVariants> {}
 
 function TabsTrigger({
@@ -178,7 +180,7 @@ function TabsTrigger({
       className={cn(tabsTriggerVariants({ variant, size, stretch }), className)}
       {...props}
     />
-  )
+  );
 }
 
 // =============================================================================
@@ -200,7 +202,7 @@ function TabsContent({
       )}
       {...props}
     />
-  )
+  );
 }
 
 // =============================================================================
@@ -210,27 +212,27 @@ function TabsContent({
 
 /** @deprecated Sử dụng <TabsList variant="default" size="sm"> thay thế */
 export const PAGE_TABS_LIST_CLASS =
-  "h-9 bg-muted/50 p-1 w-full md:w-auto justify-start"
+  "h-9 bg-muted/50 p-1 w-full md:w-auto justify-start";
 
 /** @deprecated Sử dụng <TabsTrigger variant="default" size="sm" stretch> thay thế */
 export const PAGE_TABS_TRIGGER_CLASS =
-  "data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 min-w-[100px] transition-all duration-200 flex-1 md:flex-none"
+  "data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 min-w-[100px] transition-all duration-200 flex-1 md:flex-none";
 
 /** @deprecated Sử dụng <TabsList variant="form" size="lg" fullWidth gridCols={3}> thay thế */
 export const FORM_TABS_LIST_CLASS =
-  "grid w-full bg-muted/60 rounded-lg p-1 mb-6 h-11"
+  "grid w-full bg-muted/60 rounded-lg p-1 mb-6 h-11";
 
 /** @deprecated Sử dụng <TabsTrigger variant="form"> thay thế */
 export const FORM_TABS_TRIGGER_CLASS =
-  "data-[state=active]:bg-background data-[state=active]:shadow-sm"
+  "data-[state=active]:bg-background data-[state=active]:shadow-sm";
 
 /** @deprecated Sử dụng <TabsList variant="default" size="default" fullWidth gridCols={2}> thay thế */
 export const SHEET_TABS_LIST_CLASS =
-  "grid w-full mb-6 bg-muted/50 rounded-lg p-1 h-10"
+  "grid w-full mb-6 bg-muted/50 rounded-lg p-1 h-10";
 
 /** @deprecated Sử dụng <TabsTrigger variant="default"> thay thế */
 export const SHEET_TABS_TRIGGER_CLASS =
-  "data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium transition-all duration-200"
+  "data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium transition-all duration-200";
 
 /** @deprecated Sử dụng gridCols prop trên TabsList thay thế */
 export function getFormTabsGridCols(count: 2 | 3 | 4 | 5): string {
@@ -239,8 +241,8 @@ export function getFormTabsGridCols(count: 2 | 3 | 4 | 5): string {
     3: "grid-cols-3",
     4: "grid-cols-4",
     5: "grid-cols-5",
-  }
-  return gridMap[count] || "grid-cols-2"
+  };
+  return gridMap[count] || "grid-cols-2";
 }
 
 // =============================================================================
@@ -248,9 +250,11 @@ export function getFormTabsGridCols(count: 2 | 3 | 4 | 5): string {
 // =============================================================================
 
 export {
-    Tabs,
-    TabsContent,
-    TabsList, tabsListVariants, TabsTrigger, tabsTriggerVariants
-}
-export type { TabsListProps, TabsTriggerProps }
-
+  Tabs,
+  TabsContent,
+  TabsList,
+  tabsListVariants,
+  TabsTrigger,
+  tabsTriggerVariants,
+};
+export type { TabsListProps, TabsTriggerProps };

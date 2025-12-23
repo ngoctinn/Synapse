@@ -1,11 +1,14 @@
-
-import { ResourcePage } from "@/features/resources"
-import { getMaintenanceTasks, getResourceGroups, getResources } from "@/features/resources/actions"
+import { ResourcePage } from "@/features/resources";
+import {
+  getMaintenanceTasks,
+  getResourceGroups,
+  getResources,
+} from "@/features/resources/actions";
 
 export default async function Page() {
-  const resourcesPromise = getResources()
-  const groupsPromise = getResourceGroups()
-  const tasksPromise = getMaintenanceTasks()
+  const resourcesPromise = getResources();
+  const groupsPromise = getResourceGroups();
+  const tasksPromise = getMaintenanceTasks();
 
   return (
     <ResourcePage
@@ -13,5 +16,5 @@ export default async function Page() {
       groupsPromise={groupsPromise}
       tasksPromise={tasksPromise}
     />
-  )
+  );
 }

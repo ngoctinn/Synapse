@@ -8,5 +8,3 @@ export { useCalendarDnd } from "./use-calendar-dnd";
 export { useCalendarState } from "./use-calendar-state";
 export { useConflictCheck } from "./use-conflict-check";
 export { useCustomerSearch } from "./use-customer-search";
-
-

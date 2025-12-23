@@ -12,67 +12,74 @@ interface ServiceCardProps {
   onToggle: (service: ServiceItem) => void;
 }
 
-export const ServiceCard = ({ service, isSelected, onToggle }: ServiceCardProps) => {
+export const ServiceCard = ({
+  service,
+  isSelected,
+  onToggle,
+}: ServiceCardProps) => {
   return (
     <Card
       className={cn(
-        "relative overflow-hidden cursor-pointer transition-all duration-200 border-2 group",
+        "group relative cursor-pointer overflow-hidden border-2 transition-all duration-200",
         isSelected
           ? "border-primary bg-primary/5 shadow-md"
-          : "border-transparent hover:border-muted-foreground/20 bg-card"
+          : "hover:border-muted-foreground/20 bg-card border-transparent"
       )}
       onClick={() => onToggle(service)}
     >
       <div className="flex gap-4 p-4">
         {/* Image / Thumbnail */}
-        <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
-           {service.image_url ? (
-             // Using simple img tag for prototype if next/image config is tricky, 
-             // but will use next/image here assuming domains are configured or will be.
-             // Fallback to div color if url is empty
-             <Image 
-                src={service.image_url} 
-                alt={service.name}
-                fill
-                className="object-cover"
-             />
-           ) : (
-             <div className="h-full w-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl">
-               {service.name.charAt(0)}
-             </div>
-           )}
+        <div className="bg-muted relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg">
+          {service.image_url ? (
+            // Using simple img tag for prototype if next/image config is tricky,
+            // but will use next/image here assuming domains are configured or will be.
+            // Fallback to div color if url is empty
+            <Image
+              src={service.image_url}
+              alt={service.name}
+              fill
+              className="object-cover"
+            />
+          ) : (
+            <div className="bg-primary/10 text-primary flex h-full w-full items-center justify-center text-xl font-bold">
+              {service.name.charAt(0)}
+            </div>
+          )}
         </div>
 
         {/* Content */}
-        <div className="flex-1 flex flex-col justify-between min-w-0">
+        <div className="flex min-w-0 flex-1 flex-col justify-between">
           <div>
-            <h3 className="font-semibold text-base truncate pr-6">{service.name}</h3>
+            <h3 className="truncate pr-6 text-base font-semibold">
+              {service.name}
+            </h3>
             {service.description && (
-              <p className="text-sm text-muted-foreground line-clamp-1 mt-1">
+              <p className="text-muted-foreground mt-1 line-clamp-1 text-sm">
                 {service.description}
               </p>
             )}
           </div>
-          
-          <div className="flex items-center justify-between mt-2">
-            <div className="flex items-center text-sm text-muted-foreground">
-              <Clock className="size-4 mr-1" />
+
+          <div className="mt-2 flex items-center justify-between">
+            <div className="text-muted-foreground flex items-center text-sm">
+              <Clock className="mr-1 size-4" />
               <span>{service.duration} phút</span>
             </div>
-            <span className="font-semibold text-primary">
+            <span className="text-primary font-semibold">
               {formatCurrency(service.price)}
             </span>
           </div>
         </div>
 
         {/* Checkbox (Visual only, controlled by card click) */}
-        <div className="absolute top-4 right-4">
-          <Checkbox 
-            checked={isSelected} 
+        <div className="absolute right-4 top-4">
+          <Checkbox
+            checked={isSelected}
             className={cn(
               "data-[state=checked]:bg-primary data-[state=checked]:border-primary",
               // Mobile: Always visible. Desktop: Hidden unless selected or hovered.
-              !isSelected && "opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
+              !isSelected &&
+                "opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100"
             )}
           />
         </div>

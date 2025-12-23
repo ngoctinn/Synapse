@@ -24,16 +24,16 @@ export function ChatSidebar({
   return (
     <div
       className={cn(
-        "flex flex-col w-96 h-full border-r border-border/50 bg-white/50 dark:bg-card/50 backdrop-blur-sm rounded-2xl md:rounded-r-none md:rounded-l-2xl glass-card",
+        "border-border/50 dark:bg-card/50 glass-card flex h-full w-96 flex-col rounded-2xl border-r bg-white/50 backdrop-blur-sm md:rounded-l-2xl md:rounded-r-none",
         className
       )}
     >
-      <div className="p-4 border-b border-border/50">
-        <h2 className="text-lg font-serif font-semibold mb-4 text-primary">
+      <div className="border-border/50 border-b p-4">
+        <h2 className="text-primary mb-4 font-serif text-lg font-semibold">
           Tin nhắn
         </h2>
         <Input
-          startContent={<Search className="w-4 h-4 text-muted-foreground" />}
+          startContent={<Search className="text-muted-foreground h-4 w-4" />}
           placeholder="Tìm kiếm khách hàng..."
         />
       </div>
@@ -47,32 +47,32 @@ export function ChatSidebar({
                 key={conv.id}
                 onClick={() => onSelect(conv.id)}
                 className={cn(
-                  "flex items-start gap-3 p-3 rounded-xl transition-all duration-200 text-left w-full group relative cursor-pointer",
+                  "group relative flex w-full cursor-pointer items-start gap-3 rounded-xl p-3 text-left transition-all duration-200",
                   isSelected
-                    ? "bg-primary/5 border border-primary/20 shadow-sm"
+                    ? "bg-primary/5 border-primary/20 border shadow-sm"
                     : "hover:bg-accent/50 hover:border-accent border border-transparent"
                 )}
               >
                 <div className="relative">
-                  <Avatar className="h-10 w-10 border border-border">
+                  <Avatar className="border-border h-10 w-10 border">
                     <AvatarImage src={conv.user.avatar} alt={conv.user.name} />
                     <AvatarFallback>{conv.user.name[0]}</AvatarFallback>
                   </Avatar>
                   {conv.user.status === "online" && (
-                    <span className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 rounded-full border-2 border-white dark:border-card" />
+                    <span className="dark:border-card absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white bg-green-500" />
                   )}
                 </div>
 
                 <div
                   className={cn(
-                    "flex-1 min-w-0",
+                    "min-w-0 flex-1",
                     conv.unreadCount > 0 ? "pr-8" : "pr-2"
                   )}
                 >
-                  <div className="flex justify-between items-start mb-1">
+                  <div className="mb-1 flex items-start justify-between">
                     <span
                       className={cn(
-                        "font-medium text-sm truncate",
+                        "truncate text-sm font-medium",
                         isSelected
                           ? "text-primary font-semibold"
                           : "text-foreground"
@@ -80,7 +80,7 @@ export function ChatSidebar({
                     >
                       {conv.user.name}
                     </span>
-                    <span className="text-[10px] text-muted-foreground shrink-0 ml-2">
+                    <span className="text-muted-foreground ml-2 shrink-0 text-[10px]">
                       {formatDistanceToNow(new Date(conv.updatedAt), {
                         addSuffix: true,
                         locale: vi,
@@ -90,7 +90,7 @@ export function ChatSidebar({
 
                   <p
                     className={cn(
-                      "text-xs line-clamp-2 break-words text-left",
+                      "line-clamp-2 break-words text-left text-xs",
                       isSelected ? "text-foreground" : "text-muted-foreground"
                     )}
                   >
@@ -99,7 +99,7 @@ export function ChatSidebar({
                   </p>
 
                   {conv.tags && conv.tags.length > 0 && (
-                    <div className="flex gap-1 mt-2">
+                    <div className="mt-2 flex gap-1">
                       {conv.tags.map((tag) => (
                         <Badge key={tag} variant="indigo" size="xs">
                           {tag}
@@ -110,7 +110,7 @@ export function ChatSidebar({
                 </div>
 
                 {conv.unreadCount > 0 && (
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 h-5 min-w-[20px] px-1.5 flex items-center justify-center bg-primary text-primary-foreground text-[10px] font-bold rounded-full shadow-sm animate-scale-in">
+                  <div className="bg-primary text-primary-foreground animate-scale-in absolute right-3 top-1/2 flex h-5 min-w-[20px] -translate-y-1/2 items-center justify-center rounded-full px-1.5 text-[10px] font-bold shadow-sm">
                     {conv.unreadCount}
                   </div>
                 )}

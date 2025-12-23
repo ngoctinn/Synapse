@@ -18,13 +18,17 @@ import { z } from "zod";
  */
 type ActionResult =
   | { success: boolean; message?: string; error?: string }
-  | { status: 'success' | 'error'; message?: string; data?: unknown };
+  | { status: "success" | "error"; message?: string; data?: unknown };
 
 /**
  * Normalize action result để xử lý cả hai format
  */
-function normalizeResult(result: ActionResult): { isSuccess: boolean; message?: string; error?: string } {
-  if ('success' in result) {
+function normalizeResult(result: ActionResult): {
+  isSuccess: boolean;
+  message?: string;
+  error?: string;
+} {
+  if ("success" in result) {
     return {
       isSuccess: result.success,
       message: result.message,
@@ -32,9 +36,9 @@ function normalizeResult(result: ActionResult): { isSuccess: boolean; message?: 
     };
   }
   return {
-    isSuccess: result.status === 'success',
+    isSuccess: result.status === "success",
     message: result.message,
-    error: result.status === 'error' ? result.message : undefined,
+    error: result.status === "error" ? result.message : undefined,
   };
 }
 
@@ -43,7 +47,7 @@ function normalizeResult(result: ActionResult): { isSuccess: boolean; message?: 
  */
 interface UseSheetFormOptions<
   TFormValues extends FieldValues,
-  TData = unknown
+  TData = unknown,
 > {
   /** Zod schema để validate form */
   schema: z.ZodType<TFormValues>;

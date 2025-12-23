@@ -49,34 +49,34 @@ const features = [
 export function Features() {
   return (
     <section id="features" className="container mx-auto px-4 py-16 md:py-24">
-      <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center mb-16 animate-fade-in">
+      <div className="animate-fade-in mx-auto mb-16 flex max-w-[58rem] flex-col items-center space-y-4 text-center">
         <Badge variant="soft">Tại sao chọn chúng tôi</Badge>
-        <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-5xl font-bold">
+        <h2 className="font-heading text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">
           Tính năng vượt trội
         </h2>
-        <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+        <p className="text-muted-foreground max-w-[85%] leading-normal sm:text-lg sm:leading-7">
           Mọi thứ bạn cần để vận hành Spa trơn tru, từ đặt lịch đến báo cáo
           doanh thu.
         </p>
       </div>
 
-      <div className="mx-auto grid justify-center gap-6 sm:grid-cols-2 md:grid-cols-3 max-w-6xl">
+      <div className="mx-auto grid max-w-6xl justify-center gap-6 sm:grid-cols-2 md:grid-cols-3">
         {features.map((feature, index) => (
           <div
             key={index}
-            className="group relative flex h-full flex-col justify-between overflow-hidden rounded-lg surface-card p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+            className="surface-card group relative flex h-full flex-col justify-between overflow-hidden rounded-lg p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="from-primary/10 absolute inset-0 bg-gradient-to-br via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
             <div className="relative">
-              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 shadow-sm group-hover:shadow-md group-hover:scale-110">
+              <div className="bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:shadow-md">
                 <feature.icon className="h-6 w-6" />
               </div>
               <div className="space-y-2">
-                <h3 className="font-bold text-xl group-hover:text-primary transition-colors duration-300">
+                <h3 className="group-hover:text-primary text-xl font-bold transition-colors duration-300">
                   {feature.title}
                 </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-muted-foreground text-sm leading-relaxed">
                   {feature.description}
                 </p>
               </div>

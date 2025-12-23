@@ -5,14 +5,14 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 
 import {
-    Button,
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-    Textarea,
+  Button,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Textarea,
 } from "@/shared/ui";
 
 import { CreateReviewFormValues, createReviewSchema } from "../model/schemas";
@@ -106,7 +106,11 @@ export function ReviewForm({
               Hủy
             </Button>
           )}
-          <Button type="submit" disabled={isSubmitting} isLoading={isSubmitting}>
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            isLoading={isSubmitting}
+          >
             Gửi đánh giá
           </Button>
         </div>

@@ -10,7 +10,11 @@ export const MOCK_PACKAGES: ServicePackage[] = [
     is_active: true,
     services: [
       { service_id: "svc-1", service_name: "Chăm sóc da mặt", quantity: 5 },
-      { service_id: "svc-2", service_name: "Massage body thư giãn", quantity: 2 },
+      {
+        service_id: "svc-2",
+        service_name: "Massage body thư giãn",
+        quantity: 2,
+      },
     ],
     created_at: "2024-01-15T08:00:00Z",
     updated_at: "2024-01-15T08:00:00Z",
@@ -38,7 +42,11 @@ export const MOCK_PACKAGES: ServicePackage[] = [
     validity_days: 60,
     is_active: true,
     services: [
-      { service_id: "svc-2", service_name: "Massage body thư giãn", quantity: 4 },
+      {
+        service_id: "svc-2",
+        service_name: "Massage body thư giãn",
+        quantity: 4,
+      },
       { service_id: "svc-6", service_name: "Xông hơi thảo dược", quantity: 4 },
     ],
     created_at: "2024-03-10T14:00:00Z",

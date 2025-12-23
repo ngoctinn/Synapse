@@ -1,7 +1,7 @@
-import { cva, type VariantProps } from "class-variance-authority"
-import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority";
+import * as React from "react";
 
-import { cn } from "@/shared/lib/utils"
+import { cn } from "@/shared/lib/utils";
 
 const inputVariants = cva(
   "flex w-full min-w-0 rounded-lg border bg-transparent text-base transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
@@ -30,14 +30,15 @@ const inputVariants = cva(
       size: "default",
     },
   }
-)
+);
 
 export interface InputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
+  extends
+    Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
     VariantProps<typeof inputVariants> {
-  startContent?: React.ReactNode
-  endContent?: React.ReactNode
-  containerClassName?: string
+  startContent?: React.ReactNode;
+  endContent?: React.ReactNode;
+  containerClassName?: string;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -57,13 +58,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ) => {
     return (
       <div
-        className={cn(
-          "relative flex items-center w-full",
-          containerClassName
-        )}
+        className={cn("relative flex w-full items-center", containerClassName)}
       >
         {startContent && (
-          <div className="absolute left-3 flex items-center pointer-events-none text-muted-foreground z-10">
+          <div className="text-muted-foreground pointer-events-none absolute left-3 z-10 flex items-center">
             {startContent}
           </div>
         )}
@@ -79,15 +77,14 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {endContent && (
-          <div className="absolute right-3 flex items-center text-muted-foreground z-10">
+          <div className="text-muted-foreground absolute right-3 z-10 flex items-center">
             {endContent}
           </div>
         )}
       </div>
-    )
+    );
   }
-)
-Input.displayName = "Input"
+);
+Input.displayName = "Input";
 
-export { Input, inputVariants }
-
+export { Input, inputVariants };

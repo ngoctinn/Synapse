@@ -1,28 +1,28 @@
-"use client"
+"use client";
 
-import { ActionResponse } from "@/shared/lib/action-response"
-import { useRouter } from "next/navigation"
-import { useCallback, useState, useTransition } from "react"
-import { toast } from "sonner"
+import { ActionResponse } from "@/shared/lib/action-response";
+import { useRouter } from "next/navigation";
+import { useCallback, useState, useTransition } from "react";
+import { toast } from "sonner";
 
 interface BulkActionOptions {
   /** Success message formatter */
-  successMessage?: (count: number) => string
+  successMessage?: (count: number) => string;
   /** Error message formatter */
-  errorMessage?: (count: number, failedMessages?: string[]) => string
+  errorMessage?: (count: number, failedMessages?: string[]) => string;
   /** Should refresh router after success */
-  refreshOnSuccess?: boolean
+  refreshOnSuccess?: boolean;
 }
 
 interface UseBulkActionReturn<T extends string = string> {
   /** Execute bulk action on array of IDs */
-  execute: (ids: T[], onComplete?: () => void) => void
+  execute: (ids: T[], onComplete?: () => void) => void;
   /** Whether the action is currently pending */
-  isPending: boolean
+  isPending: boolean;
   /** Dialog open state for confirmation */
-  showDialog: boolean
+  showDialog: boolean;
   /** Set dialog open state */
-  setShowDialog: (open: boolean) => void
+  setShowDialog: (open: boolean) => void;
 }
 
 /**
@@ -48,61 +48,67 @@ export function useBulkAction<T extends string = string>(
 ): UseBulkActionReturn<T> {
   const {
     successMessage = (count) => `Đã xử lý ${count} mục`,
-    errorMessage = (count, failedMessages) => `Không thể xử lý ${count} mục. Chi tiết: ${failedMessages?.join(", ") || "Lỗi không xác định."}`,
+    errorMessage = (count, failedMessages) =>
+      `Không thể xử lý ${count} mục. Chi tiết: ${failedMessages?.join(", ") || "Lỗi không xác định."}`,
     refreshOnSuccess = true,
-  } = options
+  } = options;
 
-  const router = useRouter()
-  const [isPending, startTransition] = useTransition()
-  const [showDialog, setShowDialog] = useState(false)
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [showDialog, setShowDialog] = useState(false);
 
   const execute = useCallback(
     (ids: T[], onComplete?: () => void) => {
-      if (ids.length === 0) return
+      if (ids.length === 0) return;
 
       startTransition(async () => {
-        let successCount = 0
-        const failedMessages: string[] = []
+        let successCount = 0;
+        const failedMessages: string[] = [];
 
         for (const id of ids) {
           try {
-            const result = await actionFn(id)
+            const result = await actionFn(id);
             if (result.status === "success") {
-                successCount++
+              successCount++;
             } else {
-                failedMessages.push(result.message || `Lỗi không xác định khi xử lý ${id}`)
+              failedMessages.push(
+                result.message || `Lỗi không xác định khi xử lý ${id}`
+              );
             }
           } catch (error: unknown) {
-            console.error(`Failed to process ${id}:`, error)
-            const message = error instanceof Error ? error.message : "Lỗi không xác định";
-            failedMessages.push(message || `Lỗi không xác định khi xử lý ${id}`)
+            console.error(`Failed to process ${id}:`, error);
+            const message =
+              error instanceof Error ? error.message : "Lỗi không xác định";
+            failedMessages.push(
+              message || `Lỗi không xác định khi xử lý ${id}`
+            );
           }
         }
 
         // Show success toast
         if (successCount > 0) {
-          toast.success(successMessage(successCount))
-          onComplete?.()
+          toast.success(successMessage(successCount));
+          onComplete?.();
           if (refreshOnSuccess) {
-            router.refresh()
+            router.refresh();
           }
         }
 
         // Show error toast for failed items
         if (failedMessages.length > 0) {
-          toast.error(errorMessage(failedMessages.length, failedMessages))
+          toast.error(errorMessage(failedMessages.length, failedMessages));
         }
 
-        setShowDialog(false)
-      })
+        setShowDialog(false);
+      });
     },
     [actionFn, successMessage, errorMessage, refreshOnSuccess, router]
-  )
+  );
 
   return {
     execute,
     isPending,
     showDialog,
     setShowDialog,
-  }
+  };
 }

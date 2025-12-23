@@ -31,25 +31,33 @@ export function ShiftChip({
     <button
       type="button"
       onClick={onClick}
-      title={isDraft ? "Bản nháp - Nhấp để xem và công bố" : "Đã công bố - Nhấp để xem chi tiết"}
+      title={
+        isDraft
+          ? "Bản nháp - Nhấp để xem và công bố"
+          : "Đã công bố - Nhấp để xem chi tiết"
+      }
       className={cn(
-        "w-full rounded-md px-2.5 py-1.5 text-left relative",
-        "transition-all cursor-pointer",
-        "focus:ring-2 focus:ring-primary/50 focus:outline-none",
+        "relative w-full rounded-md px-2.5 py-1.5 text-left",
+        "cursor-pointer transition-all",
+        "focus:ring-primary/50 focus:outline-none focus:ring-2",
         "hover:shadow-sm",
         isDraft && "border-2 border-dashed",
-        isSelected && "ring-2 ring-primary ring-offset-1",
+        isSelected && "ring-primary ring-2 ring-offset-1",
         className
       )}
       style={{
-        backgroundColor: isDraft ? `${shift.colorCode}08` : `${shift.colorCode}18`,
+        backgroundColor: isDraft
+          ? `${shift.colorCode}08`
+          : `${shift.colorCode}18`,
         color: shift.colorCode,
         borderColor: isDraft ? shift.colorCode : "transparent",
       }}
     >
       <div className="flex items-start justify-between gap-1">
-        <div className="flex-1 min-w-0">
-          <div className="font-semibold text-xs truncate leading-tight">{shift.name}</div>
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-xs font-semibold leading-tight">
+            {shift.name}
+          </div>
           <div
             className="text-[10px] leading-tight opacity-70"
             style={{ color: shift.colorCode }}
@@ -58,9 +66,7 @@ export function ShiftChip({
           </div>
         </div>
         {/* Draft indicator */}
-        {isDraft && (
-          <FileEdit className="size-3 shrink-0 opacity-60 mt-0.5" />
-        )}
+        {isDraft && <FileEdit className="mt-0.5 size-3 shrink-0 opacity-60" />}
       </div>
     </button>
   );
@@ -95,14 +101,16 @@ export function ShiftChipMini({
       onClick={onClick}
       title={isDraft ? "Bản nháp" : "Đã công bố"}
       className={cn(
-        "w-full h-5 rounded px-1.5 text-[10px] font-medium truncate",
-        "transition-colors cursor-pointer text-left flex items-center gap-1",
+        "h-5 w-full truncate rounded px-1.5 text-[10px] font-medium",
+        "flex cursor-pointer items-center gap-1 text-left transition-colors",
         "hover:opacity-80",
         isDraft && "border border-dashed",
         className
       )}
       style={{
-        backgroundColor: isDraft ? `${shift.colorCode}10` : `${shift.colorCode}20`,
+        backgroundColor: isDraft
+          ? `${shift.colorCode}10`
+          : `${shift.colorCode}20`,
         color: shift.colorCode,
         borderColor: isDraft ? shift.colorCode : "transparent",
       }}
@@ -117,19 +125,15 @@ export function ShiftChipMini({
  * Variant lớn cho hiển thị trong List/Sheet
  * Style: Chữ đậm + nền nhạt (cho AddScheduleSheet, ShiftManagerSheet)
  */
-export function ShiftChipLarge({
-  shift,
-  onClick,
-  className,
-}: ShiftChipProps) {
+export function ShiftChipLarge({ shift, onClick, className }: ShiftChipProps) {
   return (
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        "w-full flex items-center gap-3 p-4 rounded-lg",
-        "transition-colors cursor-pointer text-left",
-        "focus:ring-2 focus:ring-primary/50 focus:outline-none",
+        "flex w-full items-center gap-3 rounded-lg p-4",
+        "cursor-pointer text-left transition-colors",
+        "focus:ring-primary/50 focus:outline-none focus:ring-2",
         "hover:opacity-90",
         className
       )}
@@ -138,7 +142,7 @@ export function ShiftChipLarge({
       }}
     >
       <div
-        className="w-1.5 h-12 rounded-full shrink-0"
+        className="h-12 w-1.5 shrink-0 rounded-full"
         style={{ backgroundColor: shift.colorCode }}
       />
       <div className="flex-1">
@@ -165,13 +169,16 @@ export function ShiftInfoCard({
 }) {
   return (
     <div
-      className={cn("p-4 rounded-lg", className)}
+      className={cn("rounded-lg p-4", className)}
       style={{ backgroundColor: `${shift.colorCode}12` }}
     >
-      <div className="font-semibold text-lg" style={{ color: shift.colorCode }}>
+      <div className="text-lg font-semibold" style={{ color: shift.colorCode }}>
         {shift.name}
       </div>
-      <div className="text-sm mt-1 opacity-80" style={{ color: shift.colorCode }}>
+      <div
+        className="mt-1 text-sm opacity-80"
+        style={{ color: shift.colorCode }}
+      >
         {shift.startTime} - {shift.endTime}
       </div>
     </div>

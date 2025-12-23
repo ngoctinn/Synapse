@@ -47,12 +47,20 @@ export const MOCK_EVENTS: NotificationEvent[] = [
     },
     templates: {
       zalo: {
-        content: "Xin chào {{customer_name}}, lịch hẹn của bạn lúc {{time}} ngày {{date}} đã được xác nhận. Mã đặt lịch: {{booking_id}}.",
-        variables: ["customer_name", "time", "date", "booking_id", "service_name"],
+        content:
+          "Xin chào {{customer_name}}, lịch hẹn của bạn lúc {{time}} ngày {{date}} đã được xác nhận. Mã đặt lịch: {{booking_id}}.",
+        variables: [
+          "customer_name",
+          "time",
+          "date",
+          "booking_id",
+          "service_name",
+        ],
       },
       email: {
         subject: "Xác nhận đặt lịch hẹn - Synapse Spa",
-        content: "<p>Kính gửi {{customer_name}},</p><p>Chúng tôi đã nhận được lịch hẹn của bạn...</p>",
+        content:
+          "<p>Kính gửi {{customer_name}},</p><p>Chúng tôi đã nhận được lịch hẹn của bạn...</p>",
         variables: ["customer_name", "time", "date", "booking_id", "location"],
       },
     },
@@ -69,11 +77,13 @@ export const MOCK_EVENTS: NotificationEvent[] = [
     },
     templates: {
       zalo: {
-        content: "Nhắc nhở: Bạn có lịch hẹn tại Synapse Spa vào lúc {{time}} hôm nay. Vui lòng đến đúng giờ nhé!",
+        content:
+          "Nhắc nhở: Bạn có lịch hẹn tại Synapse Spa vào lúc {{time}} hôm nay. Vui lòng đến đúng giờ nhé!",
         variables: ["customer_name", "time", "service_name"],
       },
       sms: {
-        content: "Synapse Spa nhac: Ban co lich hen luc {{time}}. LH: 1900xxxx.",
+        content:
+          "Synapse Spa nhac: Ban co lich hen luc {{time}}. LH: 1900xxxx.",
         variables: ["time"],
       },
     },
@@ -90,12 +100,13 @@ export const MOCK_EVENTS: NotificationEvent[] = [
     },
     templates: {
       zalo: {
-        content: "Bạn có lịch hẹn mới với khách hàng {{customer_name}} vào lúc {{time}}.",
+        content:
+          "Bạn có lịch hẹn mới với khách hàng {{customer_name}} vào lúc {{time}}.",
         variables: ["customer_name", "time", "service_name"],
       },
     },
   },
-   {
+  {
     id: "evt_booking_cancelled",
     name: "Lịch hẹn bị hủy",
     description: "Thông báo xác nhận khi lịch hẹn bị hủy.",
@@ -105,7 +116,7 @@ export const MOCK_EVENTS: NotificationEvent[] = [
       sms: false,
       email: true,
     },
-     templates: {
+    templates: {
       zalo: {
         content: "Lịch hẹn {{booking_id}} của bạn đã hủy thành công.",
         variables: ["booking_id"],

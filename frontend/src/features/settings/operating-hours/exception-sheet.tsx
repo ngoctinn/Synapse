@@ -30,7 +30,7 @@ import {
   SheetHeader,
   SheetTitle,
   Switch,
-  TimeRangeInput
+  TimeRangeInput,
 } from "@/shared/ui";
 import { isSameDay } from "date-fns";
 import { AlertTriangle, Plus, Save } from "lucide-react";
@@ -143,9 +143,9 @@ export function ExceptionSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-lg p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
-        <SheetHeader className="px-6 py-4 border-b shrink-0 space-y-0">
-          <SheetTitle className="text-lg font-semibold text-foreground">
+      <SheetContent className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-lg">
+        <SheetHeader className="shrink-0 space-y-0 border-b px-6 py-4">
+          <SheetTitle className="text-foreground text-lg font-semibold">
             {isEditMode ? "Sửa ngày ngoại lệ" : "Thêm ngày ngoại lệ"}
           </SheetTitle>
         </SheetHeader>
@@ -166,7 +166,7 @@ export function ExceptionSheet({
               {duplicateCheck.isDuplicate && (
                 <FieldError>
                   <div className="flex items-start gap-2">
-                    <AlertTriangle className="size-3.5 shrink-0 mt-0.5" />
+                    <AlertTriangle className="mt-0.5 size-3.5 shrink-0" />
                     <span>{duplicateCheck.message}</span>
                   </div>
                 </FieldError>
@@ -222,7 +222,7 @@ export function ExceptionSheet({
                   <p className="text-sm font-medium">
                     {isClosed ? "Đóng cửa cả ngày" : "Hoạt động giờ đặc biệt"}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-muted-foreground text-xs">
                     {isClosed
                       ? "Spa sẽ không nhận khách trong ngày này"
                       : "Spa mở cửa với giờ khác thường lệ"}

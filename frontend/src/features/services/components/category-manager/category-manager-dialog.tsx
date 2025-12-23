@@ -6,7 +6,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from "@/shared/ui/dialog";
 import { Input } from "@/shared/ui/input";
 import { Loader2, Plus, Save } from "lucide-react";
@@ -29,7 +29,8 @@ export function CategoryManagerDialog({
   onCategoriesChange,
 }: CategoryManagerDialogProps) {
   // Local state for categories (initialized from mocks for now, normally would be props)
-  const [categories, setCategories] = useState<ServiceCategory[]>(MOCK_CATEGORIES);
+  const [categories, setCategories] =
+    useState<ServiceCategory[]>(MOCK_CATEGORIES);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -64,13 +65,13 @@ export function CategoryManagerDialog({
   };
 
   const handleUpdate = (id: string, name: string) => {
-    setCategories(categories.map(c => c.id === id ? { ...c, name } : c));
+    setCategories(categories.map((c) => (c.id === id ? { ...c, name } : c)));
     setHasChanges(true);
   };
 
   const handleDelete = (id: string) => {
     if (confirm("Bạn có chắc muốn xóa danh mục này?")) {
-      setCategories(categories.filter(c => c.id !== id));
+      setCategories(categories.filter((c) => c.id !== id));
       setHasChanges(true);
     }
   };
@@ -79,7 +80,7 @@ export function CategoryManagerDialog({
     setIsSaving(true);
     try {
       // Mock API call
-      await new Promise(resolve => setTimeout(resolve, 800));
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
       // Notify parent
       onCategoriesChange?.(categories);
@@ -96,49 +97,58 @@ export function CategoryManagerDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md flex flex-col max-h-[80vh] p-0 gap-0">
-        <DialogHeader className="px-6 py-4 border-b shrink-0 space-y-0">
-          <DialogTitle className="text-lg">Quản lý Danh mục Dịch vụ</DialogTitle>
+      <DialogContent className="flex max-h-[80vh] flex-col gap-0 p-0 sm:max-w-md">
+        <DialogHeader className="shrink-0 space-y-0 border-b px-6 py-4">
+          <DialogTitle className="text-lg">
+            Quản lý Danh mục Dịch vụ
+          </DialogTitle>
         </DialogHeader>
 
-        <div className="flex gap-2 p-4 border-b">
+        <div className="flex gap-2 border-b p-4">
           <Input
             placeholder="Tên danh mục mới..."
             value={newCategoryName}
             onChange={(e) => setNewCategoryName(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleAddCategory()}
           />
-          <Button onClick={handleAddCategory} disabled={!newCategoryName.trim()}>
-            <Plus className="h-4 w-4 mr-1" /> Thêm
+          <Button
+            onClick={handleAddCategory}
+            disabled={!newCategoryName.trim()}
+          >
+            <Plus className="mr-1 h-4 w-4" /> Thêm
           </Button>
         </div>
 
         <div className="flex-1 overflow-y-auto pr-1">
-             {categories.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground text-sm">
-                    Chưa có danh mục nào.
-                </div>
-             ) : (
-                <SortableCategoryList
-                    items={categories}
-                    onReorder={handleReorder}
-                    onUpdate={handleUpdate}
-                    onDelete={handleDelete}
-                />
-             )}
+          {categories.length === 0 ? (
+            <div className="text-muted-foreground py-8 text-center text-sm">
+              Chưa có danh mục nào.
+            </div>
+          ) : (
+            <SortableCategoryList
+              items={categories}
+              onReorder={handleReorder}
+              onUpdate={handleUpdate}
+              onDelete={handleDelete}
+            />
+          )}
         </div>
 
-        <DialogFooter className="mt-4 pt-4 border-t gap-2 sm:gap-0">
-         {hasChanges && (
-            <div className="flex-1 flex items-center text-amber-600 text-sm font-medium animate-pulse">
-                Thứ tự/Dữ liệu đã thay đổi *
+        <DialogFooter className="mt-4 gap-2 border-t pt-4 sm:gap-0">
+          {hasChanges && (
+            <div className="flex flex-1 animate-pulse items-center text-sm font-medium text-amber-600">
+              Thứ tự/Dữ liệu đã thay đổi *
             </div>
-         )}
+          )}
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Đóng
           </Button>
           <Button onClick={handleSave} disabled={!hasChanges && !isSaving}>
-            {isSaving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+            {isSaving ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="mr-2 h-4 w-4" />
+            )}
             Lưu thay đổi
           </Button>
         </DialogFooter>

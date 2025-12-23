@@ -13,7 +13,6 @@ import { useMemo } from "react";
 import { cn } from "@/shared/lib/utils";
 import { WEEKDAYS } from "../../constants";
 
-
 interface DateHeaderProps {
   /** Ngày bắt đầu của tuần/khoảng thời gian */
   startDate: Date;
@@ -34,7 +33,6 @@ interface DayInfo {
   isWeekend: boolean;
 }
 
-
 export function DateHeader({
   startDate,
   numberOfDays = 7,
@@ -52,7 +50,8 @@ export function DateHeader({
 
       result.push({
         date,
-        dayOfWeek: WEEKDAYS.find((d) => d.value === dayOfWeekIndex)?.label || "",
+        dayOfWeek:
+          WEEKDAYS.find((d) => d.value === dayOfWeekIndex)?.label || "",
         dayOfMonth: date.getDate(),
         isToday: isTodayFn(date),
         isWeekend: dayOfWeekIndex === 0 || dayOfWeekIndex === 6,
@@ -68,7 +67,7 @@ export function DateHeader({
     return (
       <div
         className={cn(
-          "flex items-center justify-center py-3 px-4 border-b border-border/50 bg-background",
+          "border-border/50 bg-background flex items-center justify-center border-b px-4 py-3",
           sticky && "sticky top-0 z-10",
           className
         )}
@@ -76,7 +75,7 @@ export function DateHeader({
         <div className="flex items-center gap-3">
           <span
             className={cn(
-              "flex items-center justify-center w-10 h-10 rounded-full text-lg font-bold",
+              "flex h-10 w-10 items-center justify-center rounded-full text-lg font-bold",
               day.isToday
                 ? "bg-primary text-primary-foreground"
                 : "bg-muted text-foreground"
@@ -88,7 +87,7 @@ export function DateHeader({
             <span className="text-sm font-medium">
               {format(day.date, "EEEE", { locale: vi })}
             </span>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-muted-foreground text-xs">
               {format(day.date, "d MMMM, yyyy", { locale: vi })}
             </span>
           </div>
@@ -101,7 +100,7 @@ export function DateHeader({
   return (
     <div
       className={cn(
-        "grid border-b border-border/50 bg-background",
+        "border-border/50 bg-background grid border-b",
         sticky && "sticky top-0 z-10",
         className
       )}
@@ -110,14 +109,14 @@ export function DateHeader({
       }}
     >
       {/* Empty cell for time column */}
-      <div className="border-r border-border/50" />
+      <div className="border-border/50 border-r" />
 
       {/* Day headers */}
       {days.map((day) => (
         <div
           key={day.date.toISOString()}
           className={cn(
-            "flex flex-col items-center justify-center py-2 border-r border-border/30 last:border-r-0",
+            "border-border/30 flex flex-col items-center justify-center border-r py-2 last:border-r-0",
             day.isWeekend && "bg-muted/30",
             day.isToday && "bg-primary/5"
           )}
@@ -135,7 +134,7 @@ export function DateHeader({
           {/* Day of month number */}
           <span
             className={cn(
-              "flex items-center justify-center w-7 h-7 rounded-full text-sm font-bold mt-0.5",
+              "mt-0.5 flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold",
               day.isToday
                 ? "bg-primary text-primary-foreground"
                 : "text-foreground"

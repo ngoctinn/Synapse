@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useSyncExternalStore } from "react"
+import { useSyncExternalStore } from "react";
 
 /**
  * Hook kiểm tra xem người dùng có bật tùy chọn "reduce motion" trong hệ thống hay không.
@@ -19,24 +19,24 @@ import { useSyncExternalStore } from "react"
  */
 export function useReducedMotion(): boolean {
   const subscribe = (callback: () => void) => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
-    mediaQuery.addEventListener("change", callback)
-    return () => mediaQuery.removeEventListener("change", callback)
-  }
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    mediaQuery.addEventListener("change", callback);
+    return () => mediaQuery.removeEventListener("change", callback);
+  };
 
   const getSnapshot = () => {
-    return window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  }
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  };
 
-  const getServerSnapshot = () => false
+  const getServerSnapshot = () => false;
 
   // Safe check for window availability for SSR
-  const isServer = typeof window === "undefined"
+  const isServer = typeof window === "undefined";
 
   // Use useSyncExternalStore or fallback for server
   return useSyncExternalStore(
     subscribe,
     isServer ? getServerSnapshot : getSnapshot,
     getServerSnapshot
-  )
+  );
 }

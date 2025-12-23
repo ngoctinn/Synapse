@@ -22,7 +22,10 @@ export async function getAuditLogs(
   }
 
   // Sort by created_at desc
-  filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  filtered.sort(
+    (a, b) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
 
   const total = filtered.length;
   const start = (page - 1) * pageSize;

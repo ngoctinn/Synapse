@@ -59,17 +59,20 @@ function ShiftItem({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 p-3 rounded-lg transition-all",
-        isEditing ? "ring-2 ring-primary ring-offset-2" : ""
+        "flex items-center gap-3 rounded-lg p-3 transition-all",
+        isEditing ? "ring-primary ring-2 ring-offset-2" : ""
       )}
       style={{ backgroundColor: `${shift.colorCode}12` }}
     >
       <div
-        className="w-1.5 h-10 rounded-full shrink-0"
+        className="h-10 w-1.5 shrink-0 rounded-full"
         style={{ backgroundColor: shift.colorCode }}
       />
-      <div className="flex-1 min-w-0">
-        <div className="font-semibold truncate" style={{ color: shift.colorCode }}>
+      <div className="min-w-0 flex-1">
+        <div
+          className="truncate font-semibold"
+          style={{ color: shift.colorCode }}
+        >
           {shift.name}
         </div>
         <div className="text-xs opacity-70" style={{ color: shift.colorCode }}>
@@ -88,7 +91,7 @@ function ShiftItem({
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-destructive hover:text-destructive hover:bg-white/50"
+          className="text-destructive hover:text-destructive h-8 w-8 hover:bg-white/50"
           onClick={onDelete}
         >
           <Trash2 className="size-4" />
@@ -101,7 +104,10 @@ function ShiftItem({
 /**
  * Sheet quản lý Master Data ca làm việc (CRUD)
  */
-export function ShiftManagerSheet({ open, onOpenChange }: ShiftManagerSheetProps) {
+export function ShiftManagerSheet({
+  open,
+  onOpenChange,
+}: ShiftManagerSheetProps) {
   // Local state cho shifts (mock)
   const [shifts, setShifts] = useState<Shift[]>(MOCK_SHIFTS);
   const [isAdding, setIsAdding] = useState(false);
@@ -183,11 +189,13 @@ export function ShiftManagerSheet({ open, onOpenChange }: ShiftManagerSheetProps
   return (
     <>
       <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent className="w-full sm:max-w-lg p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
+        <SheetContent className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-lg">
           {/* Header */}
-          <SheetHeader className="px-6 py-4 border-b shrink-0 space-y-0">
-            <SheetTitle className="text-lg font-semibold">Quản lý ca làm việc</SheetTitle>
-            <p className="text-sm text-muted-foreground mt-1">
+          <SheetHeader className="shrink-0 space-y-0 border-b px-6 py-4">
+            <SheetTitle className="text-lg font-semibold">
+              Quản lý ca làm việc
+            </SheetTitle>
+            <p className="text-muted-foreground mt-1 text-sm">
               Tạo và chỉnh sửa các ca làm việc (Master Data)
             </p>
           </SheetHeader>
@@ -197,7 +205,9 @@ export function ShiftManagerSheet({ open, onOpenChange }: ShiftManagerSheetProps
             <div className="space-y-4">
               {/* Shift list */}
               <div className="space-y-3">
-                <h3 className="text-sm font-medium text-muted-foreground">Danh sách ca</h3>
+                <h3 className="text-muted-foreground text-sm font-medium">
+                  Danh sách ca
+                </h3>
                 <div className="space-y-2">
                   {shifts.map((shift) => (
                     <ShiftItem
@@ -222,7 +232,9 @@ export function ShiftManagerSheet({ open, onOpenChange }: ShiftManagerSheetProps
 
                   {/* Name */}
                   <div className="space-y-1.5">
-                    <label className="text-sm text-muted-foreground">Tên ca</label>
+                    <label className="text-muted-foreground text-sm">
+                      Tên ca
+                    </label>
                     <Input
                       value={formName}
                       onChange={(e) => setFormName(e.target.value)}
@@ -234,7 +246,9 @@ export function ShiftManagerSheet({ open, onOpenChange }: ShiftManagerSheetProps
                   {/* Time */}
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1.5">
-                      <label className="text-sm text-muted-foreground">Bắt đầu</label>
+                      <label className="text-muted-foreground text-sm">
+                        Bắt đầu
+                      </label>
                       <Input
                         type="time"
                         value={formStartTime}
@@ -244,7 +258,9 @@ export function ShiftManagerSheet({ open, onOpenChange }: ShiftManagerSheetProps
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-sm text-muted-foreground">Kết thúc</label>
+                      <label className="text-muted-foreground text-sm">
+                        Kết thúc
+                      </label>
                       <Input
                         type="time"
                         value={formEndTime}
@@ -257,7 +273,9 @@ export function ShiftManagerSheet({ open, onOpenChange }: ShiftManagerSheetProps
 
                   {/* Color */}
                   <div className="space-y-1.5">
-                    <label className="text-sm text-muted-foreground">Màu sắc</label>
+                    <label className="text-muted-foreground text-sm">
+                      Màu sắc
+                    </label>
                     <div className="flex gap-2">
                       {DEFAULT_COLORS.map((color) => (
                         <button
@@ -265,8 +283,9 @@ export function ShiftManagerSheet({ open, onOpenChange }: ShiftManagerSheetProps
                           type="button"
                           onClick={() => setFormColor(color)}
                           className={cn(
-                            "w-8 h-8 rounded-full transition-all",
-                            formColor === color && "ring-2 ring-offset-2 ring-primary"
+                            "h-8 w-8 rounded-full transition-all",
+                            formColor === color &&
+                              "ring-primary ring-2 ring-offset-2"
                           )}
                           style={{ backgroundColor: color }}
                         />
@@ -276,10 +295,19 @@ export function ShiftManagerSheet({ open, onOpenChange }: ShiftManagerSheetProps
 
                   {/* Actions */}
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="h-9" onClick={resetForm}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-9"
+                      onClick={resetForm}
+                    >
                       Hủy
                     </Button>
-                    <Button size="sm" className="h-9" onClick={editingId ? handleUpdate : handleAdd}>
+                    <Button
+                      size="sm"
+                      className="h-9"
+                      onClick={editingId ? handleUpdate : handleAdd}
+                    >
                       {editingId ? "Cập nhật" : "Thêm"}
                     </Button>
                   </div>
@@ -290,10 +318,10 @@ export function ShiftManagerSheet({ open, onOpenChange }: ShiftManagerSheetProps
               {!isAdding && !editingId && (
                 <Button
                   variant="outline"
-                  className="w-full h-9"
+                  className="h-9 w-full"
                   onClick={() => setIsAdding(true)}
                 >
-                  <Plus className="size-4 mr-2" />
+                  <Plus className="mr-2 size-4" />
                   Thêm ca mới
                 </Button>
               )}
@@ -301,8 +329,12 @@ export function ShiftManagerSheet({ open, onOpenChange }: ShiftManagerSheetProps
           </div>
 
           {/* Footer */}
-          <SheetFooter className="px-6 py-3 border-t bg-background">
-            <Button variant="default" className="w-full h-9" onClick={() => onOpenChange(false)}>
+          <SheetFooter className="bg-background border-t px-6 py-3">
+            <Button
+              variant="default"
+              className="h-9 w-full"
+              onClick={() => onOpenChange(false)}
+            >
               Xong
             </Button>
           </SheetFooter>
@@ -315,8 +347,8 @@ export function ShiftManagerSheet({ open, onOpenChange }: ShiftManagerSheetProps
           <AlertDialogHeader>
             <AlertDialogTitle>Xác nhận xóa</AlertDialogTitle>
             <AlertDialogDescription>
-              Bạn có chắc muốn xóa ca <strong>{shiftToDelete?.name}</strong>? Các lịch đã
-              phân công ca này sẽ bị ảnh hưởng.
+              Bạn có chắc muốn xóa ca <strong>{shiftToDelete?.name}</strong>?
+              Các lịch đã phân công ca này sẽ bị ảnh hưởng.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

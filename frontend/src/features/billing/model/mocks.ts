@@ -115,7 +115,7 @@ export const MOCK_INVOICES: Invoice[] = [
         totalPrice: 200000,
         type: "SERVICE",
       },
-       {
+      {
         id: "ITEM-006",
         invoiceId: "INV-003",
         serviceId: "SERV-004",

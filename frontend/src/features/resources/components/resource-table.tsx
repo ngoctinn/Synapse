@@ -81,8 +81,8 @@ export function ResourceTable({
       header: "Tên & Mã",
       cell: (row) => (
         <div className="flex flex-col">
-          <span className="font-medium text-foreground">{row.name}</span>
-          <span className="text-xs text-muted-foreground">{row.code}</span>
+          <span className="text-foreground font-medium">{row.name}</span>
+          <span className="text-muted-foreground text-xs">{row.code}</span>
         </div>
       ),
     },
@@ -142,16 +142,16 @@ export function ResourceTable({
 
         if (row.type === "EQUIPMENT") {
           return (
-            <div className="text-sm flex items-center gap-3">
+            <div className="flex items-center gap-3 text-sm">
               {row.tags && row.tags.length > 0 ? (
-                <div className="flex gap-1 flex-wrap">
+                <div className="flex flex-wrap gap-1">
                   {row.tags.slice(0, 2).map((tag, i) => (
                     <Badge key={i} preset="tag">
                       {tag}
                     </Badge>
                   ))}
                   {row.tags.length > 2 && (
-                    <span className="text-[10px] text-muted-foreground">
+                    <span className="text-muted-foreground text-[10px]">
                       +{row.tags.length - 2}
                     </span>
                   )}
@@ -206,7 +206,7 @@ export function ResourceTable({
 
       {/* Loading Overlay */}
       {isPending && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center gap-2 bg-background/50 backdrop-blur-[1px] text-sm text-muted-foreground">
+        <div className="bg-background/50 text-muted-foreground absolute inset-0 z-50 flex items-center justify-center gap-2 text-sm backdrop-blur-[1px]">
           <Loader2 className="size-4 animate-spin" />
           <span>Đang xử lý...</span>
         </div>

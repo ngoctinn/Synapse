@@ -3,7 +3,7 @@ import {
   Sheet,
   SheetContent,
   SheetHeader,
-  SheetTitle
+  SheetTitle,
 } from "@/shared/ui";
 import { Invoice } from "../../model/types";
 import { InvoiceDetails } from "./invoice-details";
@@ -26,9 +26,11 @@ export function InvoiceSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-lg p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
-        <SheetHeader className="px-6 py-4 border-b shrink-0 space-y-0">
-          <SheetTitle className="text-lg font-semibold">Chi tiết hóa đơn {invoice.id}</SheetTitle>
+      <SheetContent className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-lg">
+        <SheetHeader className="shrink-0 space-y-0 border-b px-6 py-4">
+          <SheetTitle className="text-lg font-semibold">
+            Chi tiết hóa đơn {invoice.id}
+          </SheetTitle>
         </SheetHeader>
 
         <div className="sheet-scroll-area">

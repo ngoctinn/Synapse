@@ -57,20 +57,17 @@ export function useSelection() {
   );
 
   // Select all slots for a specific staff
-  const selectAllForStaff = useCallback(
-    (staffId: string, dates: string[]) => {
-      const newSlots: SelectedSlot[] = dates.map((dateStr) => ({
-        staffId,
-        dateStr,
-      }));
-      setSelectedSlots((prev) => {
-        // Remove existing slots for this staff, then add all
-        const filtered = prev.filter((s) => s.staffId !== staffId);
-        return [...filtered, ...newSlots];
-      });
-    },
-    []
-  );
+  const selectAllForStaff = useCallback((staffId: string, dates: string[]) => {
+    const newSlots: SelectedSlot[] = dates.map((dateStr) => ({
+      staffId,
+      dateStr,
+    }));
+    setSelectedSlots((prev) => {
+      // Remove existing slots for this staff, then add all
+      const filtered = prev.filter((s) => s.staffId !== staffId);
+      return [...filtered, ...newSlots];
+    });
+  }, []);
 
   // Select all slots for a specific date
   const selectAllForDate = useCallback(

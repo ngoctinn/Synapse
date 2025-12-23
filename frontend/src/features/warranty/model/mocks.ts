@@ -10,7 +10,8 @@ export const MOCK_WARRANTIES: WarrantyTicket[] = [
     service_name: "Điều trị mụn chuyên sâu",
     start_date: "2024-05-01T00:00:00Z",
     end_date: "2024-11-01T00:00:00Z", // 6 months
-    terms: "Bảo hành tái phát mụn trong vòng 6 tháng. Miễn phí 100% chi phí xử lý.",
+    terms:
+      "Bảo hành tái phát mụn trong vòng 6 tháng. Miễn phí 100% chi phí xử lý.",
     status: "active",
     created_at: "2024-05-01T10:00:00Z",
     updated_at: "2024-05-01T10:00:00Z",

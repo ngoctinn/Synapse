@@ -13,7 +13,7 @@ interface InvoiceDetailsProps {
 
 export function InvoiceDetails({ invoice }: InvoiceDetailsProps) {
   return (
-    <div className="flex flex-col h-full space-y-6">
+    <div className="flex h-full flex-col space-y-6">
       {/* Header Info */}
       <div className="grid grid-cols-2 gap-4 text-sm">
         <div>
@@ -29,7 +29,9 @@ export function InvoiceDetails({ invoice }: InvoiceDetailsProps) {
         <div>
           <p className="text-muted-foreground">Khách hàng</p>
           <p className="font-medium">{invoice.customerName}</p>
-          <p className="text-muted-foreground text-xs">{invoice.customerPhone}</p>
+          <p className="text-muted-foreground text-xs">
+            {invoice.customerPhone}
+          </p>
         </div>
         <div>
           <p className="text-muted-foreground">Trạng thái</p>
@@ -41,13 +43,18 @@ export function InvoiceDetails({ invoice }: InvoiceDetailsProps) {
 
       {/* Items List */}
       <div className="space-y-4">
-        <h4 className="font-semibold text-sm">Chi tiết dịch vụ & sản phẩm</h4>
-        <div className="border rounded-md divide-y">
+        <h4 className="text-sm font-semibold">Chi tiết dịch vụ & sản phẩm</h4>
+        <div className="divide-y rounded-md border">
           {invoice.items.map((item) => (
-            <div key={item.id} className="p-3 flex justify-between items-start text-sm">
+            <div
+              key={item.id}
+              className="flex items-start justify-between p-3 text-sm"
+            >
               <div>
-                <p className="font-medium">{item.serviceName || item.productName}</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="font-medium">
+                  {item.serviceName || item.productName}
+                </p>
+                <p className="text-muted-foreground text-xs">
                   {item.quantity} x {formatCurrency(item.unitPrice)}
                 </p>
               </div>
@@ -69,17 +76,19 @@ export function InvoiceDetails({ invoice }: InvoiceDetailsProps) {
             <span>-{formatCurrency(invoice.discountAmount)}</span>
           </div>
         )}
-        <div className="flex justify-between font-bold text-lg pt-2 border-t">
+        <div className="flex justify-between border-t pt-2 text-lg font-bold">
           <span>Thành tiền:</span>
           <span>{formatCurrency(invoice.finalAmount)}</span>
         </div>
-        <div className="flex justify-between text-muted-foreground">
+        <div className="text-muted-foreground flex justify-between">
           <span>Đã thanh toán:</span>
           <span>{formatCurrency(invoice.paidAmount)}</span>
         </div>
-        <div className="flex justify-between text-orange-600 font-medium">
+        <div className="flex justify-between font-medium text-orange-600">
           <span>Còn lại:</span>
-          <span>{formatCurrency(invoice.finalAmount - invoice.paidAmount)}</span>
+          <span>
+            {formatCurrency(invoice.finalAmount - invoice.paidAmount)}
+          </span>
         </div>
       </div>
 
@@ -88,12 +97,12 @@ export function InvoiceDetails({ invoice }: InvoiceDetailsProps) {
       {/* Payment History */}
       {invoice.payments && invoice.payments.length > 0 && (
         <div className="space-y-3">
-          <h4 className="font-semibold text-sm">Lịch sử thanh toán</h4>
+          <h4 className="text-sm font-semibold">Lịch sử thanh toán</h4>
           <div className="space-y-2">
             {invoice.payments.map((payment) => (
               <div
                 key={payment.id}
-                className="bg-muted/30 p-2 rounded text-sm flex justify-between items-center"
+                className="bg-muted/30 flex items-center justify-between rounded p-2 text-sm"
               >
                 <div>
                   <div className="flex items-center gap-2">
@@ -104,16 +113,19 @@ export function InvoiceDetails({ invoice }: InvoiceDetailsProps) {
                       {PAYMENT_METHOD_LABELS[payment.method]}
                     </Badge>
                   </div>
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-muted-foreground text-[10px]">
                     {format(payment.transactionTime, "dd/MM/yyyy HH:mm", {
                       locale: vi,
                     })}
                   </p>
                 </div>
                 {payment.note && (
-                   <span className="text-xs text-muted-foreground max-w-[100px] truncate" title={payment.note}>
-                      {payment.note}
-                   </span>
+                  <span
+                    className="text-muted-foreground max-w-[100px] truncate text-xs"
+                    title={payment.note}
+                  >
+                    {payment.note}
+                  </span>
                 )}
               </div>
             ))}

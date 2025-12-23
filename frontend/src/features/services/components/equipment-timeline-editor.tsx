@@ -7,17 +7,17 @@ import { Card } from "@/shared/ui/card";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/shared/ui/select";
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/shared/ui/tooltip";
 import { GripVertical, Plus, Trash2, X } from "lucide-react";
 import { EquipmentUsage } from "../model/types";
@@ -53,7 +53,6 @@ export function EquipmentTimelineEditor({
   onChange,
   disabled,
 }: EquipmentTimelineEditorProps) {
-
   const handleAdd = () => {
     if (availableEquipment.length === 0) return;
     const firstAvailable = availableEquipment.find(
@@ -71,29 +70,26 @@ export function EquipmentTimelineEditor({
     ]);
   };
 
-
   const handleUpdate = (index: number, updates: Partial<EquipmentUsage>) => {
     const newValue = [...value];
     newValue[index] = { ...newValue[index], ...updates };
     onChange(newValue);
   };
 
-
   const handleRemove = (index: number) => {
     onChange(value.filter((_, i) => i !== index));
   };
-
 
   const getPercent = (minutes: number) => {
     if (serviceDuration <= 0) return 0;
     return Math.min(100, (minutes / serviceDuration) * 100);
   };
 
-
   const getEquipmentName = (id: string) => {
-    return availableEquipment.find((eq) => eq.id === id)?.name || "Không xác định";
+    return (
+      availableEquipment.find((eq) => eq.id === id)?.name || "Không xác định"
+    );
   };
-
 
   const unusedEquipment = availableEquipment.filter(
     (eq) => !value.some((v) => v.equipment_id === eq.id)
@@ -101,18 +97,18 @@ export function EquipmentTimelineEditor({
 
   return (
     <div className="space-y-4">
-
-      <div className="relative bg-muted/30 rounded-xl p-4 border">
-        <div className="flex items-center justify-between mb-3">
-          <Label className="text-sm font-medium">Timeline sử dụng thiết bị</Label>
-          <span className="text-xs text-muted-foreground">
+      <div className="bg-muted/30 relative rounded-xl border p-4">
+        <div className="mb-3 flex items-center justify-between">
+          <Label className="text-sm font-medium">
+            Timeline sử dụng thiết bị
+          </Label>
+          <span className="text-muted-foreground text-xs">
             Tổng: {serviceDuration} phút
           </span>
         </div>
 
-
-        <div className="relative h-6 mb-2">
-          <div className="absolute inset-x-0 flex justify-between text-[10px] text-muted-foreground">
+        <div className="relative mb-2 h-6">
+          <div className="text-muted-foreground absolute inset-x-0 flex justify-between text-[10px]">
             <span>0</span>
             <span>{Math.round(serviceDuration / 4)}p</span>
             <span>{Math.round(serviceDuration / 2)}p</span>
@@ -121,27 +117,24 @@ export function EquipmentTimelineEditor({
           </div>
         </div>
 
-
-        <div className="relative h-auto min-h-[60px] bg-muted/20 rounded-lg overflow-hidden border">
-
+        <div className="bg-muted/20 relative h-auto min-h-[60px] overflow-hidden rounded-lg border">
           <div className="absolute inset-0 flex">
             {[0, 25, 50, 75, 100].map((pct) => (
               <div
                 key={pct}
-                className="absolute h-full border-l border-border/30"
+                className="border-border/30 absolute h-full border-l"
                 style={{ left: `${pct}%` }}
               />
             ))}
           </div>
 
-
           <TooltipProvider>
             {value.length === 0 ? (
-              <div className="flex items-center justify-center h-[60px] text-sm text-muted-foreground">
+              <div className="text-muted-foreground flex h-[60px] items-center justify-center text-sm">
                 Chưa có thiết bị nào được cấu hình
               </div>
             ) : (
-              <div className="relative py-2 space-y-1.5">
+              <div className="relative space-y-1.5 py-2">
                 {value.map((item, index) => {
                   const leftPct = getPercent(item.start_offset);
                   const widthPct = getPercent(item.duration);
@@ -154,10 +147,10 @@ export function EquipmentTimelineEditor({
                       <TooltipTrigger asChild>
                         <div
                           className={cn(
-                            "relative h-7 rounded-md flex items-center px-2 text-[11px] font-medium text-white shadow-sm cursor-pointer transition-all",
-                            "hover:ring-2 hover:ring-white/50 hover:shadow-md",
+                            "relative flex h-7 cursor-pointer items-center rounded-md px-2 text-[11px] font-medium text-white shadow-sm transition-all",
+                            "hover:shadow-md hover:ring-2 hover:ring-white/50",
                             colorClass,
-                            isOverflow && "ring-2 ring-destructive"
+                            isOverflow && "ring-destructive ring-2"
                           )}
                           style={{
                             marginLeft: `${leftPct}%`,
@@ -165,19 +158,24 @@ export function EquipmentTimelineEditor({
                             minWidth: "60px",
                           }}
                         >
-                          <GripVertical className="w-3 h-3 mr-1 opacity-50 shrink-0" />
-                          <span className="truncate">{getEquipmentName(item.equipment_id)}</span>
+                          <GripVertical className="mr-1 h-3 w-3 shrink-0 opacity-50" />
+                          <span className="truncate">
+                            {getEquipmentName(item.equipment_id)}
+                          </span>
                           {isOverflow && (
-                            <span className="ml-auto text-[9px] bg-destructive/80 px-1 rounded">
+                            <span className="bg-destructive/80 ml-auto rounded px-1 text-[9px]">
                               Vượt quá!
                             </span>
                           )}
                         </div>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p className="font-medium">{getEquipmentName(item.equipment_id)}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {item.start_offset}p → {endTime}p ({item.duration} phút)
+                        <p className="font-medium">
+                          {getEquipmentName(item.equipment_id)}
+                        </p>
+                        <p className="text-muted-foreground text-xs">
+                          {item.start_offset}p → {endTime}p ({item.duration}{" "}
+                          phút)
                         </p>
                       </TooltipContent>
                     </Tooltip>
@@ -189,24 +187,23 @@ export function EquipmentTimelineEditor({
         </div>
       </div>
 
-
       <div className="space-y-3">
         {value.map((item, index) => (
-          <Card key={index} className="p-3 bg-muted/10">
+          <Card key={index} className="bg-muted/10 p-3">
             <div className="flex items-start gap-3">
-
               <div
                 className={cn(
-                  "w-3 h-3 rounded-full mt-2.5 shrink-0",
+                  "mt-2.5 h-3 w-3 shrink-0 rounded-full",
                   COLORS[index % COLORS.length]
                 )}
               />
 
-
               <div className="flex-1 space-y-2">
                 <Select
                   value={item.equipment_id}
-                  onValueChange={(v) => handleUpdate(index, { equipment_id: v })}
+                  onValueChange={(v) =>
+                    handleUpdate(index, { equipment_id: v })
+                  }
                   disabled={disabled}
                 >
                   <SelectTrigger className="h-9">
@@ -227,10 +224,9 @@ export function EquipmentTimelineEditor({
                   </SelectContent>
                 </Select>
 
-
                 <div className="flex items-center gap-2">
                   <div className="flex-1">
-                    <Label className="text-[10px] text-muted-foreground uppercase">
+                    <Label className="text-muted-foreground text-[10px] uppercase">
                       Bắt đầu (phút)
                     </Label>
                     <Input
@@ -240,14 +236,16 @@ export function EquipmentTimelineEditor({
                       step={5}
                       value={item.start_offset}
                       onChange={(e) =>
-                        handleUpdate(index, { start_offset: Number(e.target.value) })
+                        handleUpdate(index, {
+                          start_offset: Number(e.target.value),
+                        })
                       }
                       disabled={disabled}
                       className="h-8 text-sm"
                     />
                   </div>
                   <div className="flex-1">
-                    <Label className="text-[10px] text-muted-foreground uppercase">
+                    <Label className="text-muted-foreground text-[10px] uppercase">
                       Thời lượng (phút)
                     </Label>
                     <Input
@@ -257,7 +255,9 @@ export function EquipmentTimelineEditor({
                       step={5}
                       value={item.duration}
                       onChange={(e) =>
-                        handleUpdate(index, { duration: Number(e.target.value) })
+                        handleUpdate(index, {
+                          duration: Number(e.target.value),
+                        })
                       }
                       disabled={disabled}
                       className="h-8 text-sm"
@@ -267,19 +267,18 @@ export function EquipmentTimelineEditor({
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 mt-4 text-muted-foreground hover:text-destructive"
+                    className="text-muted-foreground hover:text-destructive mt-4 h-8 w-8"
                     onClick={() => handleRemove(index)}
                     disabled={disabled}
                     aria-label="Xóa thiết bị"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
             </div>
           </Card>
         ))}
-
 
         {unusedEquipment.length > 0 && (
           <Button
@@ -290,18 +289,19 @@ export function EquipmentTimelineEditor({
             onClick={handleAdd}
             disabled={disabled}
           >
-            <Plus className="w-4 h-4 mr-2" />
+            <Plus className="mr-2 h-4 w-4" />
             Thêm thiết bị ({unusedEquipment.length} còn lại)
           </Button>
         )}
       </div>
 
-
       {availableEquipment.length === 0 && (
-        <div className="text-center py-6 text-muted-foreground text-sm">
-          <Trash2 className="w-8 h-8 mx-auto mb-2 opacity-50" />
+        <div className="text-muted-foreground py-6 text-center text-sm">
+          <Trash2 className="mx-auto mb-2 h-8 w-8 opacity-50" />
           <p>Chưa có thiết bị nào trong hệ thống</p>
-          <p className="text-xs">Vui lòng thêm thiết bị trong Quản lý Tài nguyên</p>
+          <p className="text-xs">
+            Vui lòng thêm thiết bị trong Quản lý Tài nguyên
+          </p>
         </div>
       )}
     </div>

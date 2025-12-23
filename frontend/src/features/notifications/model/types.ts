@@ -1,4 +1,4 @@
-export type NotificationType = 'booking' | 'system' | 'alert' | 'staff';
+export type NotificationType = "booking" | "system" | "alert" | "staff";
 
 export interface Notification {
   id: string;
@@ -15,4 +15,4 @@ export interface Notification {
   };
 }
 
-export type NotificationFilter = 'all' | 'unread';
+export type NotificationFilter = "all" | "unread";

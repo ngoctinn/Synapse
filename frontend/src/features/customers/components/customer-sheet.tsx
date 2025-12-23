@@ -132,7 +132,7 @@ export function CustomerSheet({
     Object.entries(data).forEach(([key, value]) => {
       if (value === undefined || value === null) return;
 
-      if (typeof value === 'number') {
+      if (typeof value === "number") {
         formData.append(key, String(value));
       } else {
         formData.append(key, value);
@@ -148,13 +148,13 @@ export function CustomerSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         className={cn(
-          "w-full p-0 gap-0 flex flex-col bg-background border-l shadow-2xl transition-all duration-300",
+          "bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl transition-all duration-300",
           mode === "update" ? "sm:max-w-3xl" : "sm:max-w-lg"
         )}
       >
-        <SheetHeader className="px-6 py-4 border-b shrink-0 space-y-0">
+        <SheetHeader className="shrink-0 space-y-0 border-b px-6 py-4">
           <div className="flex items-center justify-between">
-            <SheetTitle className="text-lg font-semibold text-foreground flex items-center gap-3">
+            <SheetTitle className="text-foreground flex items-center gap-3 text-lg font-semibold">
               {mode === "create" ? "Thêm khách hàng mới" : "Hồ sơ khách hàng"}
             </SheetTitle>
             <div className="flex items-center gap-2">

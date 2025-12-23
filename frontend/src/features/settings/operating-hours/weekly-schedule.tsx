@@ -20,23 +20,34 @@ import {
 import { Copy, X } from "lucide-react";
 import { useCallback, useState } from "react";
 import { DayRow } from "./day-row";
-import { DAY_LABELS, DayOfWeek, DaySchedule, OperatingHoursConfig } from "./types";
+import {
+  DAY_LABELS,
+  DayOfWeek,
+  DaySchedule,
+  OperatingHoursConfig,
+} from "./types";
 
 interface WeeklyScheduleProps {
   config: OperatingHoursConfig;
   onConfigChange: (config: OperatingHoursConfig) => void;
 }
 
-export function WeeklySchedule({ config, onConfigChange }: WeeklyScheduleProps) {
+export function WeeklySchedule({
+  config,
+  onConfigChange,
+}: WeeklyScheduleProps) {
   const [copySourceDay, setCopySourceDay] = useState<DayOfWeek | null>(null);
   const [pasteToAllOpen, setPasteToAllOpen] = useState(false);
 
   // Handle single day change
-  const handleDayChange = useCallback((index: number, updatedDay: DaySchedule) => {
-    const newSchedule = [...config.weeklySchedule];
-    newSchedule[index] = updatedDay;
-    onConfigChange({ ...config, weeklySchedule: newSchedule });
-  }, [config, onConfigChange]);
+  const handleDayChange = useCallback(
+    (index: number, updatedDay: DaySchedule) => {
+      const newSchedule = [...config.weeklySchedule];
+      newSchedule[index] = updatedDay;
+      onConfigChange({ ...config, weeklySchedule: newSchedule });
+    },
+    [config, onConfigChange]
+  );
 
   // Copy a day's schedule
   const handleCopy = useCallback((dayOfWeek: DayOfWeek) => {
@@ -44,32 +55,41 @@ export function WeeklySchedule({ config, onConfigChange }: WeeklyScheduleProps) 
   }, []);
 
   // Paste to a specific day
-  const handlePaste = useCallback((targetIndex: number) => {
-    if (copySourceDay === null) return;
+  const handlePaste = useCallback(
+    (targetIndex: number) => {
+      if (copySourceDay === null) return;
 
-    const sourceDay = config.weeklySchedule.find(d => d.dayOfWeek === copySourceDay);
-    if (!sourceDay) return;
+      const sourceDay = config.weeklySchedule.find(
+        (d) => d.dayOfWeek === copySourceDay
+      );
+      if (!sourceDay) return;
 
-    const targetDay = config.weeklySchedule[targetIndex];
-    const newSchedule = [...config.weeklySchedule];
-    newSchedule[targetIndex] = {
-      ...targetDay,
-      isOpen: sourceDay.isOpen,
-      timeSlots: [...sourceDay.timeSlots],
-    };
+      const targetDay = config.weeklySchedule[targetIndex];
+      const newSchedule = [...config.weeklySchedule];
+      newSchedule[targetIndex] = {
+        ...targetDay,
+        isOpen: sourceDay.isOpen,
+        timeSlots: [...sourceDay.timeSlots],
+      };
 
-    onConfigChange({ ...config, weeklySchedule: newSchedule });
-    showToast.success(`Đã dán lịch từ ${DAY_LABELS[copySourceDay]} sang ${targetDay.label}`);
-  }, [copySourceDay, config, onConfigChange]);
+      onConfigChange({ ...config, weeklySchedule: newSchedule });
+      showToast.success(
+        `Đã dán lịch từ ${DAY_LABELS[copySourceDay]} sang ${targetDay.label}`
+      );
+    },
+    [copySourceDay, config, onConfigChange]
+  );
 
   // Paste to all days
   const handlePasteToAll = useCallback(() => {
     if (copySourceDay === null) return;
 
-    const sourceDay = config.weeklySchedule.find(d => d.dayOfWeek === copySourceDay);
+    const sourceDay = config.weeklySchedule.find(
+      (d) => d.dayOfWeek === copySourceDay
+    );
     if (!sourceDay) return;
 
-    const newSchedule = config.weeklySchedule.map(day => {
+    const newSchedule = config.weeklySchedule.map((day) => {
       if (day.dayOfWeek === copySourceDay) return day;
       return {
         ...day,
@@ -79,7 +99,9 @@ export function WeeklySchedule({ config, onConfigChange }: WeeklyScheduleProps) 
     });
 
     onConfigChange({ ...config, weeklySchedule: newSchedule });
-    showToast.success(`Đã áp dụng lịch từ ${DAY_LABELS[copySourceDay]} cho tất cả các ngày`);
+    showToast.success(
+      `Đã áp dụng lịch từ ${DAY_LABELS[copySourceDay]} cho tất cả các ngày`
+    );
     setCopySourceDay(null);
     setPasteToAllOpen(false);
   }, [copySourceDay, config, onConfigChange]);
@@ -91,14 +113,17 @@ export function WeeklySchedule({ config, onConfigChange }: WeeklyScheduleProps) 
 
   return (
     <>
-      <div className="space-y-4 relative">
+      <div className="relative space-y-4">
         {/* Copy Mode Indicator - Sticky Top */}
         {copySourceDay !== null && (
           <div className="sticky-alert-top">
             <div className="flex items-center gap-2">
               <Copy className="size-4" />
               <span className="text-sm font-medium">
-                Đang sao chép từ <span className="font-bold underline decoration-primary/50 underline-offset-2">{DAY_LABELS[copySourceDay]}</span>
+                Đang sao chép từ{" "}
+                <span className="decoration-primary/50 font-bold underline underline-offset-2">
+                  {DAY_LABELS[copySourceDay]}
+                </span>
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -114,7 +139,7 @@ export function WeeklySchedule({ config, onConfigChange }: WeeklyScheduleProps) 
                 variant="ghost"
                 size="sm"
                 onClick={handleCancelCopy}
-                className="h-8 w-8 p-0 text-primary hover:text-primary hover:bg-primary/20"
+                className="text-primary hover:text-primary hover:bg-primary/20 h-8 w-8 p-0"
               >
                 <X className="size-4" />
               </Button>
@@ -135,7 +160,9 @@ export function WeeklySchedule({ config, onConfigChange }: WeeklyScheduleProps) 
             }
             onCancelCopy={handleCancelCopy}
             isCopySource={copySourceDay === day.dayOfWeek}
-            isPasteTarget={copySourceDay !== null && copySourceDay !== day.dayOfWeek}
+            isPasteTarget={
+              copySourceDay !== null && copySourceDay !== day.dayOfWeek
+            }
           />
         ))}
       </div>
@@ -146,7 +173,10 @@ export function WeeklySchedule({ config, onConfigChange }: WeeklyScheduleProps) 
           <AlertDialogHeader>
             <AlertDialogTitle>Áp dụng cho tất cả các ngày?</AlertDialogTitle>
             <AlertDialogDescription>
-              Hành động này sẽ ghi đè lịch làm việc của tất cả các ngày khác bằng lịch của ngày {copySourceDay ? DAY_LABELS[copySourceDay] : ""}. Dữ liệu cũ sẽ bị mất.
+              Hành động này sẽ ghi đè lịch làm việc của tất cả các ngày khác
+              bằng lịch của ngày{" "}
+              {copySourceDay ? DAY_LABELS[copySourceDay] : ""}. Dữ liệu cũ sẽ bị
+              mất.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -160,5 +190,3 @@ export function WeeklySchedule({ config, onConfigChange }: WeeklyScheduleProps) 
     </>
   );
 }
-
-

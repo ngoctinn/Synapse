@@ -2,9 +2,9 @@
 
 import { Resource, RoomType } from "@/features/resources";
 import {
-    useBulkAction,
-    useTableParams,
-    useTableSelection,
+  useBulkAction,
+  useTableParams,
+  useTableSelection,
 } from "@/shared/hooks";
 import { formatCurrency } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
@@ -14,10 +14,10 @@ import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
 import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/shared/ui/tooltip";
 import { Plus } from "lucide-react";
 import { useState } from "react";
@@ -88,31 +88,35 @@ export function ServiceTable({
       header: "Tên dịch vụ",
       cell: (service) => (
         <div className="flex flex-col">
-          <span className="text-lg font-serif text-foreground group-hover:text-primary transition-colors tracking-tight">
+          <span className="text-foreground group-hover:text-primary font-serif text-lg tracking-tight transition-colors">
             {service.name}
           </span>
         </div>
       ),
     },
     {
-        header: "Danh mục",
-        cell: (service) => {
-            const category = MOCK_CATEGORIES.find(c => c.id === service.category_id);
-            return category ? (
-                <Badge variant="secondary" className="font-normal">
-                    {category.name}
-                </Badge>
-            ) : (
-                <span className="text-muted-foreground text-xs italic">Chưa phân loại</span>
-            );
-        }
+      header: "Danh mục",
+      cell: (service) => {
+        const category = MOCK_CATEGORIES.find(
+          (c) => c.id === service.category_id
+        );
+        return category ? (
+          <Badge variant="secondary" className="font-normal">
+            {category.name}
+          </Badge>
+        ) : (
+          <span className="text-muted-foreground text-xs italic">
+            Chưa phân loại
+          </span>
+        );
+      },
     },
     {
       header: "Thời lượng",
       cell: (service) => (
-        <div className="flex flex-col text-xs gap-1.5">
-          <span className="font-medium flex items-center gap-2 text-foreground/80">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary/60"></span>
+        <div className="flex flex-col gap-1.5 text-xs">
+          <span className="text-foreground/80 flex items-center gap-2 font-medium">
+            <span className="bg-primary/60 h-1.5 w-1.5 rounded-full"></span>
             Phục vụ: {service.duration}p
           </span>
           <span className="text-muted-foreground flex items-center gap-2 pl-3.5">
@@ -136,7 +140,7 @@ export function ServiceTable({
             </Badge>
           ))}
           {service.skills.length === 0 && (
-            <span className="text-xs text-muted-foreground italic pl-1">
+            <span className="text-muted-foreground pl-1 text-xs italic">
               Không yêu cầu
             </span>
           )}

@@ -8,15 +8,13 @@ import { FloatingSummary } from "./floating-summary";
 import { Loader2 } from "lucide-react";
 
 export const ServicesStep = () => {
-  const { 
-    selectedServices, 
-    addService, 
-    removeService, 
-    goToStep 
-  } = useBookingStore();
+  const { selectedServices, addService, removeService, goToStep } =
+    useBookingStore();
 
   const [isLoading, setIsLoading] = useState(true);
-  const [groupedServices, setGroupedServices] = useState<Record<string, ServiceItem[]>>({});
+  const [groupedServices, setGroupedServices] = useState<
+    Record<string, ServiceItem[]>
+  >({});
   const [activeCategory, setActiveCategory] = useState<string>("");
 
   useEffect(() => {
@@ -36,14 +34,17 @@ export const ServicesStep = () => {
     fetchServices();
   }, []);
 
-  const categories = useMemo(() => Object.keys(groupedServices), [groupedServices]);
-  
+  const categories = useMemo(
+    () => Object.keys(groupedServices),
+    [groupedServices]
+  );
+
   const currentServices = useMemo(() => {
     return activeCategory ? groupedServices[activeCategory] || [] : [];
   }, [activeCategory, groupedServices]);
 
   const handleToggleService = (service: ServiceItem) => {
-    const isSelected = selectedServices.some(s => s.id === service.id);
+    const isSelected = selectedServices.some((s) => s.id === service.id);
     if (isSelected) {
       removeService(service.id);
     } else {
@@ -52,7 +53,10 @@ export const ServicesStep = () => {
   };
 
   const totalPrice = selectedServices.reduce((sum, s) => sum + s.price, 0);
-  const totalDuration = selectedServices.reduce((sum, s) => sum + s.duration, 0);
+  const totalDuration = selectedServices.reduce(
+    (sum, s) => sum + s.duration,
+    0
+  );
 
   const handleNext = () => {
     if (selectedServices.length > 0) {
@@ -62,35 +66,35 @@ export const ServicesStep = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="text-primary h-8 w-8 animate-spin" />
       </div>
     );
   }
 
   return (
     <div className="relative min-h-[calc(100vh-200px)]">
-      <div className="px-4 pt-4 pb-2">
+      <div className="px-4 pb-2 pt-4">
         <h2 className="text-2xl font-bold tracking-tight">Chọn dịch vụ</h2>
         <p className="text-muted-foreground mt-1 text-sm">
           Khám phá và chọn các liệu trình phù hợp với bạn
         </p>
       </div>
 
-      <CategoryTabs 
-        categories={categories} 
-        activeCategory={activeCategory} 
-        onSelectCategory={setActiveCategory} 
+      <CategoryTabs
+        categories={categories}
+        activeCategory={activeCategory}
+        onSelectCategory={setActiveCategory}
       />
-      
-      <ServiceList 
+
+      <ServiceList
         services={currentServices}
-        selectedServiceIds={selectedServices.map(s => s.id)}
+        selectedServiceIds={selectedServices.map((s) => s.id)}
         activeCategory={activeCategory}
         onToggleService={handleToggleService}
       />
 
-      <FloatingSummary 
+      <FloatingSummary
         totalCount={selectedServices.length}
         totalPrice={totalPrice}
         totalDuration={totalDuration}

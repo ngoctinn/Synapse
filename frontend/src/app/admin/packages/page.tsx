@@ -18,17 +18,13 @@ export default async function Page({
 
   // Fetch data
   const result = await getPackages(page, 10, search, status);
-  const packages = result.status === "success" ? result.data?.data ?? [] : [];
-  const total = result.status === "success" ? result.data?.total ?? 0 : 0;
+  const packages = result.status === "success" ? (result.data?.data ?? []) : [];
+  const total = result.status === "success" ? (result.data?.total ?? 0) : 0;
   const totalPages = Math.ceil(total / 10);
 
   return (
     <Suspense fallback={<div>Đang tải gói dịch vụ...</div>}>
-      <PackagesPage
-        data={packages}
-        page={page}
-        totalPages={totalPages}
-      />
+      <PackagesPage data={packages} page={page} totalPages={totalPages} />
     </Suspense>
   );
 }

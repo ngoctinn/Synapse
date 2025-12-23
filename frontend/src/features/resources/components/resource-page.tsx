@@ -40,7 +40,7 @@ function ResourceListWrapper({
 
   if (resourcesError) {
     return (
-      <div className="p-4 text-destructive">
+      <div className="text-destructive p-4">
         Lỗi tải tài nguyên: {resourcesError}
       </div>
     );
@@ -89,7 +89,7 @@ export function ResourcePage({
     <PageShell>
       <Tabs
         defaultValue="list"
-        className="flex flex-col flex-1 w-full gap-0"
+        className="flex w-full flex-1 flex-col gap-0"
         onValueChange={setActiveTab}
       >
         <PageHeader>
@@ -102,7 +102,7 @@ export function ResourcePage({
             </TabsTrigger>
           </TabsList>
 
-          <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="flex w-full items-center gap-3 md:w-auto">
             {activeTab === "list" && (
               <FilterBar
                 startContent={<ResourceToolbar />}
@@ -111,7 +111,7 @@ export function ResourcePage({
             )}
             <Suspense
               fallback={
-                <div className="w-[130px] h-9 bg-muted animate-pulse rounded-md" />
+                <div className="bg-muted h-9 w-[130px] animate-pulse rounded-md" />
               }
             >
               <AddResourceWrapper groupsPromise={groupsPromise} />
@@ -119,10 +119,10 @@ export function ResourcePage({
           </div>
         </PageHeader>
 
-        <div className="flex-1 flex flex-col overflow-hidden page-entry-animation">
+        <div className="page-entry-animation flex flex-1 flex-col overflow-hidden">
           <TabsContent
             value="list"
-            className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden"
+            className="mt-0 flex flex-1 flex-col border-0 p-0 data-[state=inactive]:hidden"
           >
             <PageContent>
               <SurfaceCard>
@@ -139,13 +139,13 @@ export function ResourcePage({
 
           <TabsContent
             value="maintenance"
-            className="flex-1 flex flex-col mt-0 border-0 p-0 data-[state=inactive]:hidden"
+            className="mt-0 flex flex-1 flex-col border-0 p-0 data-[state=inactive]:hidden"
           >
             <PageContent>
               <SurfaceCard className="p-4">
                 <Suspense
                   fallback={
-                    <div className="p-4 text-center text-muted-foreground">
+                    <div className="text-muted-foreground p-4 text-center">
                       Đang tải lịch bảo trì...
                     </div>
                   }

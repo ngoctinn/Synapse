@@ -7,7 +7,9 @@ import { Schedule, ScheduleWithShift } from "./types";
  */
 const getCurrentWeekDates = () => {
   const start = startOfWeek(new Date(), { weekStartsOn: 1 });
-  return Array.from({ length: 7 }).map((_, i) => format(addDays(start, i), "yyyy-MM-dd"));
+  return Array.from({ length: 7 }).map((_, i) =>
+    format(addDays(start, i), "yyyy-MM-dd")
+  );
 };
 
 const weekDates = getCurrentWeekDates();
@@ -19,31 +21,123 @@ const weekDates = getCurrentWeekDates();
  */
 export const MOCK_SCHEDULES: Schedule[] = [
   // Staff 4 (KTV 1) - Có ngày làm 2 ca
-  { id: "sch_1", staffId: "4", workDate: weekDates[0], shiftId: "shift_morning", status: "PUBLISHED" },
-  { id: "sch_2", staffId: "4", workDate: weekDates[0], shiftId: "shift_afternoon", status: "PUBLISHED" },
-  { id: "sch_3", staffId: "4", workDate: weekDates[1], shiftId: "shift_morning", status: "PUBLISHED" },
-  { id: "sch_4", staffId: "4", workDate: weekDates[3], shiftId: "shift_morning", status: "PUBLISHED" },
-  { id: "sch_5", staffId: "4", workDate: weekDates[4], shiftId: "shift_evening", status: "DRAFT" },
+  {
+    id: "sch_1",
+    staffId: "4",
+    workDate: weekDates[0],
+    shiftId: "shift_morning",
+    status: "PUBLISHED",
+  },
+  {
+    id: "sch_2",
+    staffId: "4",
+    workDate: weekDates[0],
+    shiftId: "shift_afternoon",
+    status: "PUBLISHED",
+  },
+  {
+    id: "sch_3",
+    staffId: "4",
+    workDate: weekDates[1],
+    shiftId: "shift_morning",
+    status: "PUBLISHED",
+  },
+  {
+    id: "sch_4",
+    staffId: "4",
+    workDate: weekDates[3],
+    shiftId: "shift_morning",
+    status: "PUBLISHED",
+  },
+  {
+    id: "sch_5",
+    staffId: "4",
+    workDate: weekDates[4],
+    shiftId: "shift_evening",
+    status: "DRAFT",
+  },
 
   // Staff 5 (KTV 2)
-  { id: "sch_6", staffId: "5", workDate: weekDates[0], shiftId: "shift_afternoon", status: "PUBLISHED" },
-  { id: "sch_7", staffId: "5", workDate: weekDates[1], shiftId: "shift_afternoon", status: "PUBLISHED" },
-  { id: "sch_8", staffId: "5", workDate: weekDates[2], shiftId: "shift_evening", status: "PUBLISHED" },
-  { id: "sch_9", staffId: "5", workDate: weekDates[3], shiftId: "shift_morning", status: "DRAFT" },
-  { id: "sch_10", staffId: "5", workDate: weekDates[3], shiftId: "shift_afternoon", status: "DRAFT" },
+  {
+    id: "sch_6",
+    staffId: "5",
+    workDate: weekDates[0],
+    shiftId: "shift_afternoon",
+    status: "PUBLISHED",
+  },
+  {
+    id: "sch_7",
+    staffId: "5",
+    workDate: weekDates[1],
+    shiftId: "shift_afternoon",
+    status: "PUBLISHED",
+  },
+  {
+    id: "sch_8",
+    staffId: "5",
+    workDate: weekDates[2],
+    shiftId: "shift_evening",
+    status: "PUBLISHED",
+  },
+  {
+    id: "sch_9",
+    staffId: "5",
+    workDate: weekDates[3],
+    shiftId: "shift_morning",
+    status: "DRAFT",
+  },
+  {
+    id: "sch_10",
+    staffId: "5",
+    workDate: weekDates[3],
+    shiftId: "shift_afternoon",
+    status: "DRAFT",
+  },
 
   // Staff 2 (Receptionist 1)
-  { id: "sch_11", staffId: "2", workDate: weekDates[0], shiftId: "shift_morning", status: "PUBLISHED" },
-  { id: "sch_12", staffId: "2", workDate: weekDates[1], shiftId: "shift_morning", status: "PUBLISHED" },
-  { id: "sch_13", staffId: "2", workDate: weekDates[2], shiftId: "shift_morning", status: "PUBLISHED" },
-  { id: "sch_14", staffId: "2", workDate: weekDates[3], shiftId: "shift_morning", status: "PUBLISHED" },
-  { id: "sch_15", staffId: "2", workDate: weekDates[4], shiftId: "shift_morning", status: "PUBLISHED" },
+  {
+    id: "sch_11",
+    staffId: "2",
+    workDate: weekDates[0],
+    shiftId: "shift_morning",
+    status: "PUBLISHED",
+  },
+  {
+    id: "sch_12",
+    staffId: "2",
+    workDate: weekDates[1],
+    shiftId: "shift_morning",
+    status: "PUBLISHED",
+  },
+  {
+    id: "sch_13",
+    staffId: "2",
+    workDate: weekDates[2],
+    shiftId: "shift_morning",
+    status: "PUBLISHED",
+  },
+  {
+    id: "sch_14",
+    staffId: "2",
+    workDate: weekDates[3],
+    shiftId: "shift_morning",
+    status: "PUBLISHED",
+  },
+  {
+    id: "sch_15",
+    staffId: "2",
+    workDate: weekDates[4],
+    shiftId: "shift_morning",
+    status: "PUBLISHED",
+  },
 ];
 
 /**
  * Helper: Enrich schedules with shift data
  */
-export function getSchedulesWithShifts(schedules: Schedule[]): ScheduleWithShift[] {
+export function getSchedulesWithShifts(
+  schedules: Schedule[]
+): ScheduleWithShift[] {
   return schedules
     .map((schedule) => {
       const shift = getShiftById(schedule.shiftId);
@@ -70,6 +164,9 @@ export function getSchedulesByStaffAndDate(
 /**
  * Helper: Đếm tổng schedules trong 1 ngày
  */
-export function countSchedulesOnDate(schedules: Schedule[], workDate: string): number {
+export function countSchedulesOnDate(
+  schedules: Schedule[],
+  workDate: string
+): number {
   return schedules.filter((s) => s.workDate === workDate).length;
 }

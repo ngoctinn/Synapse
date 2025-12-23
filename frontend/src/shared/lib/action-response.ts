@@ -13,14 +13,14 @@
  */
 export type ActionResponse<T = void> = {
   /** Trạng thái của action */
-  status: "success" | "error"
+  status: "success" | "error";
   /** Thông báo cho người dùng (tiếng Việt) */
-  message?: string
+  message?: string;
   /** Dữ liệu trả về (nếu có) */
-  data?: T
+  data?: T;
   /** Field-level errors cho form validation */
-  errors?: Record<string, string[]>
-}
+  errors?: Record<string, string[]>;
+};
 
 /**
  * Tạo response thành công
@@ -33,7 +33,7 @@ export function success<T = void>(
     status: "success",
     message,
     data,
-  }
+  };
 }
 
 /**
@@ -47,7 +47,7 @@ export function error(
     status: "error",
     message,
     errors,
-  }
+  };
 }
 
 /**
@@ -56,7 +56,7 @@ export function error(
 export function isSuccess<T>(
   response: ActionResponse<T>
 ): response is ActionResponse<T> & { status: "success" } {
-  return response.status === "success"
+  return response.status === "success";
 }
 
 /**
@@ -65,7 +65,7 @@ export function isSuccess<T>(
 export function isError<T>(
   response: ActionResponse<T>
 ): response is ActionResponse<T> & { status: "error" } {
-  return response.status === "error"
+  return response.status === "error";
 }
 
 // ============================================
@@ -76,10 +76,10 @@ export function isError<T>(
  * Type này được giữ lại để tương thích ngược với code cũ.
  */
 export type ActionState = {
-  success?: boolean
-  error?: string
-  message?: string
-}
+  success?: boolean;
+  error?: string;
+  message?: string;
+};
 
 /**
  * Chuyển đổi ActionState cũ sang ActionResponse mới
@@ -90,7 +90,7 @@ export function fromLegacyState<T = void>(
   data?: T
 ): ActionResponse<T> {
   if (state.success) {
-    return success(data, state.message)
+    return success(data, state.message);
   }
-  return error(state.error || "Đã xảy ra lỗi không xác định")
+  return error(state.error || "Đã xảy ra lỗi không xác định");
 }

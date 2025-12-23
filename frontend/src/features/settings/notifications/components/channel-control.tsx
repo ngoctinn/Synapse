@@ -24,7 +24,7 @@ export function ChannelControl({
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-muted-foreground hover:text-primary"
+            className="text-muted-foreground hover:text-primary h-8 w-8"
             onClick={onEdit}
             aria-label={`Edit template for ${ariaLabel}`}
           >
@@ -42,7 +42,7 @@ export function ChannelControl({
 
   // Desktop variant
   return (
-    <div className="flex flex-col items-center gap-2 min-h-[60px] justify-center">
+    <div className="flex min-h-[60px] flex-col items-center justify-center gap-2">
       <Switch
         checked={checked}
         onCheckedChange={onCheckedChange}
@@ -53,10 +53,10 @@ export function ChannelControl({
           <Button
             variant="ghost"
             size="sm"
-            className="h-6 text-xs text-muted-foreground hover:text-primary animate-fade-zoom"
+            className="text-muted-foreground hover:text-primary animate-fade-zoom h-6 text-xs"
             onClick={onEdit}
           >
-            <Edit2 className="h-3 w-3 mr-1" />
+            <Edit2 className="mr-1 h-3 w-3" />
             Mẫu tin
           </Button>
         )}

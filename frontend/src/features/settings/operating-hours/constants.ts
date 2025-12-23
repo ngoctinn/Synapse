@@ -12,13 +12,15 @@ export const EXCEPTION_TYPE_LABELS: Record<ExceptionType, string> = {
   CUSTOM: "Tùy chỉnh",
 };
 
-export const EXCEPTION_TYPE_VARIANTS: Record<ExceptionType, "destructive" | "secondary" | "outline" | "default"> = {
+export const EXCEPTION_TYPE_VARIANTS: Record<
+  ExceptionType,
+  "destructive" | "secondary" | "outline" | "default"
+> = {
   HOLIDAY: "destructive",
   MAINTENANCE: "secondary",
   SPECIAL_HOURS: "default",
   CUSTOM: "outline",
 };
-
 
 /**
  * Chuyển đổi time string "HH:mm" thành số phút từ 00:00
@@ -32,7 +34,10 @@ export function timeToMinutes(time: string): number {
  * Kiểm tra xem 2 time slot có overlap không
  * @returns true nếu có overlap
  */
-export function checkTimeSlotOverlap(slot1: TimeSlot, slot2: TimeSlot): boolean {
+export function checkTimeSlotOverlap(
+  slot1: TimeSlot,
+  slot2: TimeSlot
+): boolean {
   const start1 = timeToMinutes(slot1.start);
   const end1 = timeToMinutes(slot1.end);
   const start2 = timeToMinutes(slot2.start);

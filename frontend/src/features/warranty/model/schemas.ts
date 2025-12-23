@@ -2,7 +2,12 @@ import { z } from "zod";
 
 import { ValidationMessages } from "@/shared/lib/validations";
 
-export const warrantyStatusSchema = z.enum(["active", "expired", "voided", "claimed"]);
+export const warrantyStatusSchema = z.enum([
+  "active",
+  "expired",
+  "voided",
+  "claimed",
+]);
 
 export const warrantyCreateSchema = z.object({
   customer_id: z.string().min(1, ValidationMessages.REQUIRED),

@@ -1,7 +1,7 @@
-'use server';
+"use server";
 
-import { ActionResponse, success } from '@/shared/lib/action-response';
-import { NotificationChannel, NotificationEvent } from './model/types';
+import { ActionResponse, success } from "@/shared/lib/action-response";
+import { NotificationChannel, NotificationEvent } from "./model/types";
 
 // Mock data simulation helpers
 const DELAY_MS = 800;
@@ -13,7 +13,10 @@ export async function toggleChannelAction(
   checked: boolean
 ): Promise<ActionResponse> {
   await delay();
-  return success(undefined, `Đã ${checked ? 'bật' : 'tắt'} gửi thông báo qua kênh này`);
+  return success(
+    undefined,
+    `Đã ${checked ? "bật" : "tắt"} gửi thông báo qua kênh này`
+  );
 }
 
 export async function updateChannelConfigAction(
@@ -21,7 +24,7 @@ export async function updateChannelConfigAction(
   _config: Record<string, unknown>
 ): Promise<ActionResponse> {
   await delay();
-  return success(undefined, 'Đã lưu cấu hình kênh thông báo');
+  return success(undefined, "Đã lưu cấu hình kênh thông báo");
 }
 
 export async function updateTemplateAction(
@@ -30,17 +33,19 @@ export async function updateTemplateAction(
   _template: Record<string, unknown>
 ): Promise<ActionResponse> {
   await delay();
-  return success(undefined, 'Đã lưu mẫu tin nhắn thành công');
+  return success(undefined, "Đã lưu mẫu tin nhắn thành công");
 }
 
-export async function getNotificationsConfig(): Promise<ActionResponse<{
-  channels: NotificationChannel[];
-  events: NotificationEvent[];
-}>> {
+export async function getNotificationsConfig(): Promise<
+  ActionResponse<{
+    channels: NotificationChannel[];
+    events: NotificationEvent[];
+  }>
+> {
   // This would be a real DB fetch
   await delay();
   return success({
     channels: [], // Should be populated in a real app
-    events: []
+    events: [],
   });
 }

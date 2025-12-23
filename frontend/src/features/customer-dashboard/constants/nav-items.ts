@@ -1,9 +1,9 @@
-import { Calendar, Home, LucideIcon, Sparkles, User } from "lucide-react"
+import { Calendar, Home, LucideIcon, Sparkles, User } from "lucide-react";
 
 export interface NavItem {
-  href: string
-  label: string
-  icon: LucideIcon
+  href: string;
+  label: string;
+  icon: LucideIcon;
 }
 
 /**
@@ -15,4 +15,4 @@ export const DASHBOARD_NAV_ITEMS: NavItem[] = [
   { href: "/dashboard/appointments", label: "Lịch hẹn", icon: Calendar },
   { href: "/dashboard/treatments", label: "Liệu trình", icon: Sparkles },
   { href: "/dashboard/profile", label: "Hồ sơ", icon: User },
-]
+];

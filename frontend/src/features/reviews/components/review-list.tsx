@@ -17,7 +17,7 @@ export function ReviewList({
 }: ReviewListProps) {
   if (reviews.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground">
+      <div className="text-muted-foreground flex flex-col items-center justify-center py-8 text-center">
         <Frown className="h-12 w-12" />
         <p className="mt-3 text-sm">{emptyMessage}</p>
       </div>

@@ -1,5 +1,5 @@
-export type InvoiceStatus = 'UNPAID' | 'PAID' | 'REFUNDED' | 'OVERDUE';
-export type PaymentMethod = 'CASH' | 'CARD' | 'TRANSFER';
+export type InvoiceStatus = "UNPAID" | "PAID" | "REFUNDED" | "OVERDUE";
+export type PaymentMethod = "CASH" | "CARD" | "TRANSFER";
 
 export interface Invoice {
   id: string;
@@ -29,7 +29,7 @@ export interface InvoiceItem {
   quantity: number;
   unitPrice: number;
   totalPrice: number;
-  type: 'SERVICE' | 'PRODUCT';
+  type: "SERVICE" | "PRODUCT";
 }
 
 export interface Payment {

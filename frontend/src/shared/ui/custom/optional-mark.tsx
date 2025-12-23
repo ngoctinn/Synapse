@@ -8,7 +8,10 @@
  */
 export function OptionalMark() {
   return (
-    <span className="text-muted-foreground font-normal text-xs ml-1" aria-hidden="true">
+    <span
+      className="text-muted-foreground ml-1 text-xs font-normal"
+      aria-hidden="true"
+    >
       (Tùy chọn)
     </span>
   );

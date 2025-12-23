@@ -1,30 +1,30 @@
-"use client"
+"use client";
 
-import { cn } from "@/shared/lib/utils"
-import { Button } from "@/shared/ui/button"
+import { cn } from "@/shared/lib/utils";
+import { Button } from "@/shared/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from "@/shared/ui/dropdown-menu"
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react"
-import { ReactNode } from "react"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/shared/ui/dropdown-menu";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { ReactNode } from "react";
 
 interface TableRowActionsProps {
   /** Handler cho action Edit */
-  onEdit?: () => void
+  onEdit?: () => void;
   /** Handler cho action Delete */
-  onDelete?: () => void
+  onDelete?: () => void;
   /** Label cho Edit button, mặc định "Sửa" */
-  editLabel?: string
+  editLabel?: string;
   /** Label cho Delete button, mặc định "Xóa" */
-  deleteLabel?: string
+  deleteLabel?: string;
   /** Actions phụ trong dropdown menu */
-  extraActions?: ReactNode
+  extraActions?: ReactNode;
   /** Disable tất cả actions */
-  disabled?: boolean
+  disabled?: boolean;
   /** Custom class cho container */
-  className?: string
+  className?: string;
 }
 
 /**
@@ -56,15 +56,15 @@ export function TableRowActions({
   disabled = false,
   className,
 }: TableRowActionsProps) {
-  const hasQuickActions = onEdit || onDelete
-  const hasExtraActions = !!extraActions
+  const hasQuickActions = onEdit || onDelete;
+  const hasExtraActions = !!extraActions;
 
   return (
     <div
       className={cn(
         "flex items-center justify-end gap-1",
         // Fade in khi hover row (group được set ở AnimatedTableRow)
-        "opacity-0 group-hover:opacity-100 transition-opacity duration-150",
+        "opacity-0 transition-opacity duration-150 group-hover:opacity-100",
         className
       )}
     >
@@ -73,7 +73,7 @@ export function TableRowActions({
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 hover:bg-primary/10 hover:text-primary"
+          className="hover:bg-primary/10 hover:text-primary h-8 w-8"
           onClick={onEdit}
           disabled={disabled}
           title={editLabel}
@@ -88,7 +88,7 @@ export function TableRowActions({
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+          className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive h-8 w-8"
           onClick={onDelete}
           disabled={disabled}
           title={deleteLabel}
@@ -105,7 +105,7 @@ export function TableRowActions({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 hover:bg-muted"
+              className="hover:bg-muted h-8 w-8"
               disabled={disabled}
             >
               <span className="sr-only">Mở menu</span>
@@ -120,8 +120,8 @@ export function TableRowActions({
 
       {/* Fallback: Nếu không có quick actions, chỉ có more button */}
       {!hasQuickActions && !hasExtraActions && (
-        <span className="text-xs text-muted-foreground">-</span>
+        <span className="text-muted-foreground text-xs">-</span>
       )}
     </div>
-  )
+  );
 }

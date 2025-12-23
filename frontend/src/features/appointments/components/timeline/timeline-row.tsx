@@ -7,7 +7,11 @@ import { cn } from "@/shared/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage, Badge } from "@/shared/ui";
 
 import { DEFAULT_WORKING_HOURS } from "../../constants";
-import type { CalendarEvent, TimelineResource, ZoomLevel } from "../../model/types";
+import type {
+  CalendarEvent,
+  TimelineResource,
+  ZoomLevel,
+} from "../../model/types";
 import {
   calculateTimelinePosition,
   calculateTimelineWidth,
@@ -69,13 +73,13 @@ export function TimelineRow({
 
   return (
     <div
-      className={cn("flex border-b border-border/30", className)}
+      className={cn("border-border/30 flex border-b", className)}
       style={{ height: rowHeight }}
     >
       <div
         className={cn(
           "sticky left-0 z-10 w-48 flex-shrink-0",
-          "bg-background border-r border-border/50",
+          "bg-background border-border/50 border-r",
           "flex items-center gap-3 px-3"
         )}
       >
@@ -94,9 +98,9 @@ export function TimelineRow({
         </Avatar>
 
         {/* Info */}
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
-            <span className="text-sm font-medium truncate">
+            <span className="truncate text-sm font-medium">
               {resource.name}
             </span>
             {!resource.isActive && (
@@ -105,7 +109,7 @@ export function TimelineRow({
               </Badge>
             )}
           </div>
-          <span className="text-xs text-muted-foreground">
+          <span className="text-muted-foreground text-xs">
             {resource.type === "staff" ? "Kỹ thuật viên" : "Phòng"}
           </span>
         </div>
@@ -137,10 +141,10 @@ export function TimelineRow({
             type="button"
             onClick={() => onEventClick?.(event)}
             className={cn(
-              "absolute top-1 bottom-1 rounded-md px-2",
+              "absolute bottom-1 top-1 rounded-md px-2",
               "flex flex-col justify-center overflow-hidden",
-              "text-left cursor-pointer",
-              "hover:brightness-95 active:scale-[0.99] transition-all",
+              "cursor-pointer text-left",
+              "transition-all hover:brightness-95 active:scale-[0.99]",
               "border-l-3"
             )}
             style={{
@@ -152,12 +156,12 @@ export function TimelineRow({
             title={`${event.appointment.customerName} - ${event.appointment.serviceName}`}
           >
             <span
-              className="text-xs font-medium truncate"
+              className="truncate text-xs font-medium"
               style={{ color: event.color }}
             >
               {event.appointment.customerName}
             </span>
-            <span className="text-[10px] text-muted-foreground truncate">
+            <span className="text-muted-foreground truncate text-[10px]">
               {format(event.start, "HH:mm")} - {event.appointment.serviceName}
             </span>
           </button>
@@ -165,7 +169,7 @@ export function TimelineRow({
 
         {events.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-xs text-muted-foreground/50 italic">
+            <span className="text-muted-foreground/50 text-xs italic">
               Không có lịch hẹn
             </span>
           </div>

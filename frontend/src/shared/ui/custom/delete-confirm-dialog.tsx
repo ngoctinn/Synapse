@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/shared/ui/alert-dialog"
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/shared/ui/alert-dialog";
 
 interface DeleteConfirmDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onConfirm: () => void
-  entityName: string
-  entityLabel?: string
-  isDeleting?: boolean
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+  entityName: string;
+  entityLabel?: string;
+  isDeleting?: boolean;
 }
 
 export function DeleteConfirmDialog({
@@ -45,8 +45,8 @@ export function DeleteConfirmDialog({
           <AlertDialogCancel disabled={isDeleting}>Hủy</AlertDialogCancel>
           <AlertDialogAction
             onClick={(e) => {
-              e.preventDefault()
-              onConfirm()
+              e.preventDefault();
+              onConfirm();
             }}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             disabled={isDeleting}
@@ -56,5 +56,5 @@ export function DeleteConfirmDialog({
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  )
+  );
 }

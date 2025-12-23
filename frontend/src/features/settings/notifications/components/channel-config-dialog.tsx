@@ -6,7 +6,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from "@/shared/ui/dialog";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
@@ -36,7 +36,7 @@ export function ChannelConfigDialog({
       setLocalConfig((prev) => {
         const newConfig = channel.config || {};
         if (JSON.stringify(prev) !== JSON.stringify(newConfig)) {
-            return newConfig;
+          return newConfig;
         }
         return prev;
       });
@@ -58,15 +58,21 @@ export function ChannelConfigDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md p-0 gap-0">
-        <DialogHeader className="px-6 py-4 border-b shrink-0 space-y-0">
+      <DialogContent className="gap-0 p-0 sm:max-w-md">
+        <DialogHeader className="shrink-0 space-y-0 border-b px-6 py-4">
           <DialogTitle className="text-lg">Cấu hình {channel.name}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 p-6">
           {Object.keys(channel.config).length > 0 ? (
             Object.keys(channel.config).map((key) => (
-              <div key={key} className="grid grid-cols-1 sm:grid-cols-4 items-start sm:items-center gap-2 sm:gap-4">
-                <Label htmlFor={key} className="text-left sm:text-right capitalize cursor-pointer">
+              <div
+                key={key}
+                className="grid grid-cols-1 items-start gap-2 sm:grid-cols-4 sm:items-center sm:gap-4"
+              >
+                <Label
+                  htmlFor={key}
+                  className="cursor-pointer text-left capitalize sm:text-right"
+                >
                   {key}
                 </Label>
                 <Input
@@ -74,12 +80,17 @@ export function ChannelConfigDialog({
                   value={(localConfig[key] as string) || ""}
                   onChange={(e) => handleChange(key, e.target.value)}
                   className="col-span-1 sm:col-span-3"
-                  type={key.toLowerCase().includes("password") || key.toLowerCase().includes("token") ? "password" : "text"}
+                  type={
+                    key.toLowerCase().includes("password") ||
+                    key.toLowerCase().includes("token")
+                      ? "password"
+                      : "text"
+                  }
                 />
               </div>
             ))
           ) : (
-            <div className="text-center text-muted-foreground py-4">
+            <div className="text-muted-foreground py-4 text-center">
               Không có cấu hình nào cần thiết cho kênh này.
             </div>
           )}

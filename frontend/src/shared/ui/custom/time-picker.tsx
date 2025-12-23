@@ -4,11 +4,7 @@ import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/shared/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import { ScrollArea } from "@/shared/ui/scroll-area";
 import { Clock } from "lucide-react";
 import * as React from "react";
@@ -20,7 +16,12 @@ interface TimePickerProps {
   hasError?: boolean;
 }
 
-export function TimePicker({ value, onChange, className, hasError }: TimePickerProps) {
+export function TimePicker({
+  value,
+  onChange,
+  className,
+  hasError,
+}: TimePickerProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [displayHour, setDisplayHour] = React.useState<number | null>(null);
   const [displayMinute, setDisplayMinute] = React.useState<number | null>(null);
@@ -60,39 +61,52 @@ export function TimePicker({ value, onChange, className, hasError }: TimePickerP
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <div className="cursor-pointer group">
+        <div className="group cursor-pointer">
           <Input
             startContent={
-              <Clock className={cn("w-4 h-4 transition-colors",
-                hasError ? "text-destructive/70" : "text-muted-foreground group-hover:text-primary"
-              )} />
+              <Clock
+                className={cn(
+                  "h-4 w-4 transition-colors",
+                  hasError
+                    ? "text-destructive/70"
+                    : "text-muted-foreground group-hover:text-primary"
+                )}
+              />
             }
             value={value || ""}
             placeholder="--:--"
             readOnly
             className={cn(
               "cursor-pointer font-medium transition-all duration-200",
-              "hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20",
-              hasError && "border-destructive/50 hover:border-destructive text-destructive focus:border-destructive focus:ring-destructive/20",
+              "hover:border-primary/50 focus:border-primary focus:ring-primary/20 focus:ring-1",
+              hasError &&
+                "border-destructive/50 hover:border-destructive text-destructive focus:border-destructive focus:ring-destructive/20",
               className
             )}
           />
         </div>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 rounded-xl shadow-xl border-border/60" align="start">
-        <div className="flex h-[280px] divide-x divide-border/50">
+      <PopoverContent
+        className="border-border/60 w-auto rounded-xl p-0 shadow-xl"
+        align="start"
+      >
+        <div className="divide-border/50 flex h-[280px] divide-x">
           {/* Cột Giờ (24h) */}
           <ScrollArea className="h-full w-[70px]">
-             <div className="flex flex-col p-2 gap-1 items-center">
-              <Label className="mb-2 text-[10px] uppercase font-bold text-muted-foreground">Giờ</Label>
+            <div className="flex flex-col items-center gap-1 p-2">
+              <Label className="text-muted-foreground mb-2 text-[10px] font-bold uppercase">
+                Giờ
+              </Label>
               {hoursList.map((h) => (
                 <Button
                   key={h}
                   variant={displayHour === h ? "default" : "ghost"}
                   size="sm"
                   className={cn(
-                    "w-full h-8 rounded-lg font-medium tabular-nums",
-                    displayHour === h ? "bg-primary text-primary-foreground" : "text-foreground/80 hover:bg-muted"
+                    "h-8 w-full rounded-lg font-medium tabular-nums",
+                    displayHour === h
+                      ? "bg-primary text-primary-foreground"
+                      : "text-foreground/80 hover:bg-muted"
                   )}
                   onClick={() => handleTimeChange("hour", h)}
                 >
@@ -104,16 +118,20 @@ export function TimePicker({ value, onChange, className, hasError }: TimePickerP
 
           {/* Cột Phút */}
           <ScrollArea className="h-full w-[70px]">
-            <div className="flex flex-col p-2 gap-1 items-center">
-              <Label className="mb-2 text-[10px] uppercase font-bold text-muted-foreground">Phút</Label>
+            <div className="flex flex-col items-center gap-1 p-2">
+              <Label className="text-muted-foreground mb-2 text-[10px] font-bold uppercase">
+                Phút
+              </Label>
               {minutesList.map((m) => (
                 <Button
                   key={m}
                   variant={displayMinute === m ? "default" : "ghost"}
                   size="sm"
                   className={cn(
-                    "w-full h-8 rounded-lg font-medium tabular-nums",
-                    displayMinute === m ? "bg-primary text-primary-foreground" : "text-foreground/80 hover:bg-muted"
+                    "h-8 w-full rounded-lg font-medium tabular-nums",
+                    displayMinute === m
+                      ? "bg-primary text-primary-foreground"
+                      : "text-foreground/80 hover:bg-muted"
                   )}
                   onClick={() => handleTimeChange("minute", m)}
                 >
@@ -127,4 +145,3 @@ export function TimePicker({ value, onChange, className, hasError }: TimePickerP
     </Popover>
   );
 }
-

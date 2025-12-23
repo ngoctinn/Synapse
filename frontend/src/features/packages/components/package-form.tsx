@@ -71,7 +71,7 @@ export function PackageForm({ mode, className }: PackageFormProps) {
             <FormControl>
               <Textarea
                 placeholder="Mô tả chi tiết về gói dịch vụ..."
-                className="resize-none min-h-[80px]"
+                className="min-h-[80px] resize-none"
                 {...field}
                 value={field.value || ""}
               />
@@ -134,13 +134,13 @@ export function PackageForm({ mode, className }: PackageFormProps) {
         </div>
 
         {fields.length === 0 && (
-          <div className="text-sm text-muted-foreground text-center py-4 border border-dashed rounded-lg">
+          <div className="text-muted-foreground rounded-lg border border-dashed py-4 text-center text-sm">
             Chưa có dịch vụ nào. Nhấn &quot;Thêm dịch vụ&quot; để bắt đầu.
           </div>
         )}
 
         {fields.map((field, index) => (
-          <div key={field.id} className="flex gap-2 items-start">
+          <div key={field.id} className="flex items-start gap-2">
             <FormField
               control={form.control}
               name={`services.${index}.service_id`}
@@ -186,7 +186,7 @@ export function PackageForm({ mode, className }: PackageFormProps) {
           <FormItem className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
             <div className="space-y-0.5">
               <FormLabel>Kích hoạt gói</FormLabel>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-muted-foreground text-xs">
                 Gói đang bán và hiển thị cho khách hàng
               </p>
             </div>

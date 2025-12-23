@@ -1,14 +1,14 @@
 "use client";
 
 import {
-    Button,
-    Form,
-    Sheet,
-    SheetContent,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle,
-    showToast
+  Button,
+  Form,
+  Sheet,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  showToast,
 } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Save } from "lucide-react";
@@ -89,12 +89,10 @@ export function ResourceSheet({
 
   return (
     <Sheet open={open} onOpenChange={(val) => !isPending && onOpenChange(val)}>
-      <SheetContent className="w-full sm:max-w-lg p-0 gap-0 flex flex-col bg-background border-l shadow-2xl">
-        <SheetHeader className="px-6 py-4 border-b shrink-0 space-y-0">
-          <SheetTitle className="text-lg font-semibold text-foreground">
-            {mode === "update"
-              ? "Chỉnh sửa tài nguyên"
-              : "Thêm tài nguyên mới"}
+      <SheetContent className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-lg">
+        <SheetHeader className="shrink-0 space-y-0 border-b px-6 py-4">
+          <SheetTitle className="text-foreground text-lg font-semibold">
+            {mode === "update" ? "Chỉnh sửa tài nguyên" : "Thêm tài nguyên mới"}
           </SheetTitle>
         </SheetHeader>
 

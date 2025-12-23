@@ -44,13 +44,17 @@ export function ExceptionsPanel({
   onRemoveException,
 }: ExceptionsPanelProps) {
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [editingException, setEditingException] = useState<ExceptionDate | undefined>(undefined);
+  const [editingException, setEditingException] = useState<
+    ExceptionDate | undefined
+  >(undefined);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // Sort exceptions by date
   const sortedExceptions = useMemo(() => {
-    return [...exceptions].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    return [...exceptions].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
   }, [exceptions]);
 
   // Separate closed and special hours dates for different styling
@@ -103,12 +107,14 @@ export function ExceptionsPanel({
   };
 
   return (
-    <div className="flex flex-col h-full gap-6">
+    <div className="flex h-full flex-col gap-6">
       {/* Header Row */}
-      <div className="flex items-center justify-between shrink-0">
+      <div className="flex shrink-0 items-center justify-between">
         <div className="space-y-1">
-          <h3 className="text-lg font-medium leading-none tracking-tight">Danh sách ngoại lệ</h3>
-          <p className="text-sm text-muted-foreground">
+          <h3 className="text-lg font-medium leading-none tracking-tight">
+            Danh sách ngoại lệ
+          </h3>
+          <p className="text-muted-foreground text-sm">
             Quản lý các ngày nghỉ lễ và giờ làm việc đặc biệt
           </p>
         </div>
@@ -118,125 +124,146 @@ export function ExceptionsPanel({
         </Button>
       </div>
 
-      <div className="flex-1 min-h-0">
-         <div className="flex flex-col xl:flex-row gap-6 h-full">
-            {/* Left: Exceptions List */}
-            <div className="flex-1 overflow-hidden flex flex-col">
-              <div className="flex-1 min-h-0">
-                {sortedExceptions.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center p-8 text-center border-2 border-dashed rounded-xl bg-muted/10">
-                    <CalendarDays className="size-12 text-muted-foreground/20 mb-3" />
-                    <h3 className="font-medium text-muted-foreground">Chưa có ngày ngoại lệ</h3>
-                    <p className="text-xs text-muted-foreground/60 max-w-[200px] mt-1">
-                      Thêm các ngày nghỉ lễ hoặc giờ làm việc đặc biệt tại đây.
-                    </p>
-                  </div>
-                ) : (
-                  <ScrollArea className="h-full">
-                    <div className="space-y-3 pr-4 pb-4">
-                      {sortedExceptions.map((exception) => (
-                        <div
-                          key={exception.id}
-                          className="flex items-center justify-between p-4 rounded-xl border bg-card/50 transition-colors hover:bg-card hover:border-primary/20"
-                        >
-                          <div className="flex items-start gap-4">
-                            {/* Date Box */}
-                            <div className={cn(
-                              "flex flex-col items-center justify-center w-14 h-14 rounded-lg border bg-background shrink-0",
+      <div className="min-h-0 flex-1">
+        <div className="flex h-full flex-col gap-6 xl:flex-row">
+          {/* Left: Exceptions List */}
+          <div className="flex flex-1 flex-col overflow-hidden">
+            <div className="min-h-0 flex-1">
+              {sortedExceptions.length === 0 ? (
+                <div className="bg-muted/10 flex h-full flex-col items-center justify-center rounded-xl border-2 border-dashed p-8 text-center">
+                  <CalendarDays className="text-muted-foreground/20 mb-3 size-12" />
+                  <h3 className="text-muted-foreground font-medium">
+                    Chưa có ngày ngoại lệ
+                  </h3>
+                  <p className="text-muted-foreground/60 mt-1 max-w-[200px] text-xs">
+                    Thêm các ngày nghỉ lễ hoặc giờ làm việc đặc biệt tại đây.
+                  </p>
+                </div>
+              ) : (
+                <ScrollArea className="h-full">
+                  <div className="space-y-3 pb-4 pr-4">
+                    {sortedExceptions.map((exception) => (
+                      <div
+                        key={exception.id}
+                        className="bg-card/50 hover:bg-card hover:border-primary/20 flex items-center justify-between rounded-xl border p-4 transition-colors"
+                      >
+                        <div className="flex items-start gap-4">
+                          {/* Date Box */}
+                          <div
+                            className={cn(
+                              "bg-background flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-lg border",
                               exception.isClosed
                                 ? "border-destructive/20 text-destructive"
                                 : "border-primary/20 text-primary"
-                            )}>
-                              <span className="text-[10px] uppercase font-bold text-muted-foreground/70">
-                                Thg {format(new Date(exception.date), "MM")}
+                            )}
+                          >
+                            <span className="text-muted-foreground/70 text-[10px] font-bold uppercase">
+                              Thg {format(new Date(exception.date), "MM")}
+                            </span>
+                            <span className="text-xl font-bold leading-none">
+                              {format(new Date(exception.date), "dd")}
+                            </span>
+                          </div>
+
+                          {/* Details */}
+                          <div className="my-auto space-y-1">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium">
+                                {format(
+                                  new Date(exception.date),
+                                  "EEEE, dd/MM/yyyy",
+                                  { locale: vi }
+                                )}
                               </span>
-                              <span className="text-xl font-bold leading-none">
-                                {format(new Date(exception.date), "dd")}
-                              </span>
+                              <Badge
+                                preset={
+                                  exception.isClosed
+                                    ? "exception-holiday"
+                                    : (`exception-${exception.type.toLowerCase().replace("_", "-")}` as
+                                        | "exception-holiday"
+                                        | "exception-maintenance"
+                                        | "exception-special"
+                                        | "exception-custom")
+                                }
+                              >
+                                {exception.isClosed
+                                  ? "Đóng cửa"
+                                  : EXCEPTION_TYPE_LABELS[exception.type]}
+                              </Badge>
                             </div>
 
-                            {/* Details */}
-                            <div className="space-y-1 my-auto">
-                              <div className="flex items-center gap-2">
-                                <span className="font-medium text-sm">
-                                  {format(new Date(exception.date), "EEEE, dd/MM/yyyy", { locale: vi })}
-                                </span>
-                                <Badge
-                                  preset={exception.isClosed ? "exception-holiday" : `exception-${exception.type.toLowerCase().replace("_", "-")}` as "exception-holiday" | "exception-maintenance" | "exception-special" | "exception-custom"}
-                                >
-                                  {exception.isClosed ? "Đóng cửa" : EXCEPTION_TYPE_LABELS[exception.type]}
-                                </Badge>
-                              </div>
-
-                              <div className="text-sm text-muted-foreground line-clamp-1">
-                                {exception.reason}
-                                {!exception.isClosed && exception.openTime && exception.closeTime && (
-                                  <span className="ml-2 font-mono text-xs text-foreground/80 bg-muted px-1.5 py-0.5 rounded">
+                            <div className="text-muted-foreground line-clamp-1 text-sm">
+                              {exception.reason}
+                              {!exception.isClosed &&
+                                exception.openTime &&
+                                exception.closeTime && (
+                                  <span className="text-foreground/80 bg-muted ml-2 rounded px-1.5 py-0.5 font-mono text-xs">
                                     {exception.openTime} - {exception.closeTime}
                                   </span>
                                 )}
-                              </div>
                             </div>
                           </div>
-
-                          {/* Actions */}
-                          <div className="flex gap-1 shrink-0">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleEditClick(exception)}
-                              className="size-8 text-muted-foreground hover:text-foreground"
-                            >
-                               <Pencil className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleDeleteClick(exception.id)}
-                              className="size-8 text-muted-foreground hover:text-destructive"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
                         </div>
-                      ))}
-                    </div>
-                  </ScrollArea>
-                )}
-              </div>
+
+                        {/* Actions */}
+                        <div className="flex shrink-0 gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleEditClick(exception)}
+                            className="text-muted-foreground hover:text-foreground size-8"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDeleteClick(exception.id)}
+                            className="text-muted-foreground hover:text-destructive size-8"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              )}
             </div>
+          </div>
 
           {/* Right: Mini Calendar (Desktop only) */}
-          <div className="hidden xl:block shrink-0">
-            <div className="w-[320px] rounded-xl border bg-card text-card-foreground shadow-sm p-4 sticky top-0">
-               <Calendar
-                  mode="single"
-                  selected={undefined}
-                  onSelect={(day) => day && handleDayClick(day)}
-                  locale={vi}
-                  modifiers={{
-                    closed: closedDates,
-                    special: specialHoursDates,
-                  }}
-                  modifiersClassNames={{
-                    closed: "bg-destructive/20 text-destructive hover:bg-destructive/30",
-                    special: "bg-primary/20 text-primary hover:bg-primary/30",
-                  }}
-                  className="rounded-md w-full"
-                  classNames={{
-                    day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 transition-colors hover:bg-accent cursor-pointer",
-                  }}
-                />
-                <div className="mt-4 flex flex-wrap gap-3 text-xs justify-center">
-                  <div className="flex items-center gap-1.5">
-                    <div className="size-3 rounded bg-destructive/20 border border-destructive/30" />
-                    <span className="text-muted-foreground">Đóng cửa</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <div className="size-3 rounded bg-primary/20 border border-primary/30" />
-                    <span className="text-muted-foreground">Giờ đặc biệt</span>
-                  </div>
+          <div className="hidden shrink-0 xl:block">
+            <div className="bg-card text-card-foreground sticky top-0 w-[320px] rounded-xl border p-4 shadow-sm">
+              <Calendar
+                mode="single"
+                selected={undefined}
+                onSelect={(day) => day && handleDayClick(day)}
+                locale={vi}
+                modifiers={{
+                  closed: closedDates,
+                  special: specialHoursDates,
+                }}
+                modifiersClassNames={{
+                  closed:
+                    "bg-destructive/20 text-destructive hover:bg-destructive/30",
+                  special: "bg-primary/20 text-primary hover:bg-primary/30",
+                }}
+                className="w-full rounded-md"
+                classNames={{
+                  day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 transition-colors hover:bg-accent cursor-pointer",
+                }}
+              />
+              <div className="mt-4 flex flex-wrap justify-center gap-3 text-xs">
+                <div className="flex items-center gap-1.5">
+                  <div className="bg-destructive/20 border-destructive/30 size-3 rounded border" />
+                  <span className="text-muted-foreground">Đóng cửa</span>
                 </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="bg-primary/20 border-primary/30 size-3 rounded border" />
+                  <span className="text-muted-foreground">Giờ đặc biệt</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

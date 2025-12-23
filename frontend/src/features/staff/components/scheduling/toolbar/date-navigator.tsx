@@ -7,11 +7,11 @@ import { useState } from "react";
 
 import { cn } from "@/shared/lib/utils";
 import {
-    Button,
-    Calendar as CalendarPicker,
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
+  Button,
+  Calendar as CalendarPicker,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/shared/ui";
 
 interface DateNavigatorProps {
@@ -67,7 +67,7 @@ export function DateNavigator({
         variant={isToday ? "secondary" : "outline"}
         size="sm"
         className={cn(
-          "h-8 px-2 sm:px-3 text-xs sm:text-sm",
+          "h-8 px-2 text-xs sm:px-3 sm:text-sm",
           isToday && "bg-primary/10 text-primary hover:bg-primary/20"
         )}
         onClick={onToday}
@@ -94,11 +94,11 @@ export function DateNavigator({
           <Button
             variant="ghost"
             className={cn(
-              "h-8 gap-2 px-2 sm:px-3 text-sm font-medium",
+              "h-8 gap-2 px-2 text-sm font-medium sm:px-3",
               "hover:bg-accent hover:text-accent-foreground"
             )}
           >
-            <CalendarIcon className="size-4 text-muted-foreground" />
+            <CalendarIcon className="text-muted-foreground size-4" />
             <span className="hidden sm:inline">{formattedDateRange}</span>
             <span className="sm:hidden">
               {format(date, "dd/MM", { locale: vi })}

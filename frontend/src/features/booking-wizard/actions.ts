@@ -9,7 +9,9 @@ import { fetchWithAuth } from "@/shared/lib/api";
 
 // ... (getServicesForBooking and getAvailableStaff remain unchanged)
 
-export async function getServicesForBooking(): Promise<ActionResponse<Record<string, ServiceItem[]>>> {
+export async function getServicesForBooking(): Promise<
+  ActionResponse<Record<string, ServiceItem[]>>
+> {
   try {
     // Fetch all active services using existing module
     // Passing a large limit to get all services for now
@@ -52,7 +54,6 @@ export async function getAvailableStaff(_params: {
   date?: Date;
 }): Promise<ActionResponse<StaffItem[]>> {
   try {
-
     // Fetch all staff
     const staffResponse = await getStaffList(1, 100);
     if (staffResponse.status === "error" || !staffResponse.data) {
@@ -97,8 +98,8 @@ export async function getAvailableSlots(params: {
 
     const body = {
       service_id: serviceIds[0],
-      target_date: format(date, 'yyyy-MM-dd'),
-      preferred_staff_id: staffId === 'any' ? null : staffId,
+      target_date: format(date, "yyyy-MM-dd"),
+      preferred_staff_id: staffId === "any" ? null : staffId,
     };
 
     const response = await fetchWithAuth("/scheduling/find-slots", {
@@ -115,15 +116,17 @@ export async function getAvailableSlots(params: {
     const result = await response.json();
 
     // Convert backend SlotOption to frontend TimeSlot
-    const slots: TimeSlot[] = (result.available_slots || []).map((opt: any) => ({
-      id: `${format(new Date(opt.start_time), 'yyyy-MM-dd-HH-mm')}-${opt.staff.id}`,
-      date: format(new Date(opt.start_time), 'yyyy-MM-dd'),
-      start_time: format(new Date(opt.start_time), 'HH:mm'),
-      end_time: format(new Date(opt.end_time), 'HH:mm'),
-      staff_id: opt.staff.id,
-      staff_name: opt.staff.name,
-      is_available: true,
-    }));
+    const slots: TimeSlot[] = (result.available_slots || []).map(
+      (opt: any) => ({
+        id: `${format(new Date(opt.start_time), "yyyy-MM-dd-HH-mm")}-${opt.staff.id}`,
+        date: format(new Date(opt.start_time), "yyyy-MM-dd"),
+        start_time: format(new Date(opt.start_time), "HH:mm"),
+        end_time: format(new Date(opt.end_time), "HH:mm"),
+        staff_id: opt.staff.id,
+        staff_name: opt.staff.name,
+        is_available: true,
+      })
+    );
 
     return success(slots);
   } catch (err) {
@@ -131,4 +134,3 @@ export async function getAvailableSlots(params: {
     return error("Lỗi kết nối máy chủ lập lịch");
   }
 }
-

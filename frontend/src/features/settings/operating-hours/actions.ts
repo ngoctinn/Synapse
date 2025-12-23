@@ -12,14 +12,16 @@ import { OperatingHoursConfig } from "./types";
 /**
  * Lấy cấu hình giờ hoạt động hiện tại
  */
-export async function getOperatingHours(): Promise<ActionResponse<OperatingHoursConfig>> {
+export async function getOperatingHours(): Promise<
+  ActionResponse<OperatingHoursConfig>
+> {
   // TODO: Replace with real API call to GET /api/operating-hours
   // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 100));
+  await new Promise((resolve) => setTimeout(resolve, 100));
 
   return {
     status: "success",
-    data: MOCK_OPERATING_HOURS
+    data: MOCK_OPERATING_HOURS,
   };
 }
 
@@ -32,10 +34,10 @@ export async function updateOperatingHours(
   // TODO: Replace with real API call to PUT /api/operating-hours
 
   // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 300));
+  await new Promise((resolve) => setTimeout(resolve, 300));
 
   return {
     status: "success",
-    message: "Đã lưu cấu hình giờ hoạt động thành công"
+    message: "Đã lưu cấu hình giờ hoạt động thành công",
   };
 }

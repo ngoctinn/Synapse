@@ -3,25 +3,21 @@
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { Calendar } from "@/shared/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/shared/ui/popover";
-import {
-    addMonths,
-    addWeeks,
-    endOfDay,
-    endOfMonth,
-    endOfWeek,
-    endOfYear,
-    format,
-    isSameDay,
-    startOfDay,
-    startOfMonth,
-    startOfWeek,
-    startOfYear,
-    subDays,
+  addMonths,
+  addWeeks,
+  endOfDay,
+  endOfMonth,
+  endOfWeek,
+  endOfYear,
+  format,
+  isSameDay,
+  startOfDay,
+  startOfMonth,
+  startOfWeek,
+  startOfYear,
+  subDays,
 } from "date-fns";
 import { vi } from "date-fns/locale";
 import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
@@ -115,10 +111,7 @@ export function DateRangeFilter({
       return "yesterday";
 
     if (
-      isRange(
-        startOfWeek(now, { locale: vi }),
-        endOfWeek(now, { locale: vi })
-      )
+      isRange(startOfWeek(now, { locale: vi }), endOfWeek(now, { locale: vi }))
     )
       return "this_week";
     if (
@@ -129,12 +122,7 @@ export function DateRangeFilter({
     )
       return "next_week";
     if (isRange(startOfMonth(now), endOfMonth(now))) return "this_month";
-    if (
-      isRange(
-        startOfMonth(addMonths(now, 1)),
-        endOfMonth(addMonths(now, 1))
-      )
-    )
+    if (isRange(startOfMonth(addMonths(now, 1)), endOfMonth(addMonths(now, 1))))
       return "next_month";
     if (isRange(startOfYear(now), endOfYear(now))) return "this_year";
 
@@ -180,88 +168,88 @@ export function DateRangeFilter({
         <Button
           variant="outline"
           className={cn(
-            "w-full h-9 justify-start text-left font-normal transition-colors hover:border-primary/50",
+            "hover:border-primary/50 h-9 w-full justify-start text-left font-normal transition-colors",
             !dateRange && "text-muted-foreground",
             className
           )}
         >
-          <CalendarIcon className="mr-2 size-4 shrink-0 text-muted-foreground/70" />
+          <CalendarIcon className="text-muted-foreground/70 mr-2 size-4 shrink-0" />
           <span className="truncate">{getTriggerLabel()}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         {!showCalendar ? (
-          <div className="flex flex-col p-1 min-w-[180px] gap-0.5">
+          <div className="flex min-w-[180px] flex-col gap-0.5 p-1">
             <Button
               variant="ghost"
-              className="justify-start font-normal h-8 px-2 data-[state=active]:bg-accent"
+              className="data-[state=active]:bg-accent h-8 justify-start px-2 font-normal"
               onClick={() => handlePresetChange("all")}
             >
               Toàn thời gian
             </Button>
-            <div className="h-[1px] bg-border/50 my-1 mx-2" />
+            <div className="bg-border/50 mx-2 my-1 h-[1px]" />
             <Button
               variant="ghost"
-              className="justify-start font-normal h-8 px-2"
+              className="h-8 justify-start px-2 font-normal"
               onClick={() => handlePresetChange("today")}
             >
               Hôm nay
             </Button>
             <Button
               variant="ghost"
-              className="justify-start font-normal h-8 px-2"
+              className="h-8 justify-start px-2 font-normal"
               onClick={() => handlePresetChange("yesterday")}
             >
               Hôm qua
             </Button>
             <Button
               variant="ghost"
-              className="justify-start font-normal h-8 px-2"
+              className="h-8 justify-start px-2 font-normal"
               onClick={() => handlePresetChange("this_week")}
             >
               Tuần này
             </Button>
             <Button
               variant="ghost"
-              className="justify-start font-normal h-8 px-2"
+              className="h-8 justify-start px-2 font-normal"
               onClick={() => handlePresetChange("next_week")}
             >
               Tuần tới
             </Button>
             <Button
               variant="ghost"
-              className="justify-start font-normal h-8 px-2"
+              className="h-8 justify-start px-2 font-normal"
               onClick={() => handlePresetChange("this_month")}
             >
               Tháng này
             </Button>
             <Button
               variant="ghost"
-              className="justify-start font-normal h-8 px-2"
+              className="h-8 justify-start px-2 font-normal"
               onClick={() => handlePresetChange("next_month")}
             >
               Tháng sau
             </Button>
             <Button
               variant="ghost"
-              className="justify-start font-normal h-8 px-2"
+              className="h-8 justify-start px-2 font-normal"
               onClick={() => handlePresetChange("this_year")}
             >
               Năm nay
             </Button>
-            <div className="h-[1px] bg-border/50 my-1 mx-2" />
+            <div className="bg-border/50 mx-2 my-1 h-[1px]" />
             <Button
               variant="ghost"
-              className="justify-between font-normal h-8 px-2 text-primary hover:text-primary transition-colors group"
+              className="text-primary hover:text-primary group h-8 justify-between px-2 font-normal transition-colors"
               onClick={() => setShowCalendar(true)}
             >
               Tùy chọn...
-              <ChevronRight className="size-4 opacity-50 group-hover:translate-x-0.5 transition-transform" />
+              <ChevronRight className="size-4 opacity-50 transition-transform group-hover:translate-x-0.5" />
             </Button>
           </div>
         ) : (
           <div className="p-2">
-            <div className="flex items-center gap-1 mb-2 pb-2 border-b border-border/50">
+            <div className="border-border/50 mb-2 flex items-center gap-1 border-b pb-2">
               <Button
                 variant="ghost"
                 size="icon"

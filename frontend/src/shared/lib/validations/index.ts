@@ -13,8 +13,17 @@ export { CONSTRAINTS, PATTERNS } from "./primitives";
 
 // Atomic Validators
 export {
-    colorHexOptional,
-    colorHexWithDefault, dateOfBirthOptional, dateOfBirthOptionalNonNull, emailOptional, emailRequired, fullNameOptional, fullNameRequired, passwordRequired, phoneVNOptional, phoneVNRequired
+  colorHexOptional,
+  colorHexWithDefault,
+  dateOfBirthOptional,
+  dateOfBirthOptionalNonNull,
+  emailOptional,
+  emailRequired,
+  fullNameOptional,
+  fullNameRequired,
+  passwordRequired,
+  phoneVNOptional,
+  phoneVNRequired,
 } from "./primitives";
 
 // Composite Schemas

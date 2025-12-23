@@ -1,8 +1,13 @@
-'use client';
+"use client";
 
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/shared/ui/tooltip";
 import { Loader2, RotateCcw, Save } from "lucide-react";
 import * as React from "react";
 
@@ -28,33 +33,41 @@ export function SettingsHeader({
   className,
 }: SettingsHeaderProps) {
   return (
-    <div className={cn(
-      "sticky top-0 z-40 px-4 py-3 bg-background/95 backdrop-blur-sm border-b flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300 support-[backdrop-filter]:bg-background/60",
-      className
-    )}>
+    <div
+      className={cn(
+        "bg-background/95 support-[backdrop-filter]:bg-background/60 sticky top-0 z-40 flex flex-col items-center justify-between gap-4 border-b px-4 py-3 backdrop-blur-sm transition-all duration-300 md:flex-row",
+        className
+      )}
+    >
       {/* Left Content (Usually Tabs or Title) */}
-      <div className="w-full md:w-auto flex justify-center md:justify-start">
+      <div className="flex w-full justify-center md:w-auto md:justify-start">
         {children}
       </div>
 
       {/* Right Content (Actions) */}
       <div className="flex items-center gap-3">
         {/* Status Indicator */}
-        <div className={cn(
-          "px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-300 flex items-center gap-2",
-          isDirty
-            ? "bg-warning/10 text-warning border-warning/20"
-            : "bg-success/10 text-success border-success/20"
-        )}>
+        <div
+          className={cn(
+            "flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-all duration-300",
+            isDirty
+              ? "bg-warning/10 text-warning border-warning/20"
+              : "bg-success/10 text-success border-success/20"
+          )}
+        >
           <span className="relative flex h-2 w-2">
-            <span className={cn(
-              "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75",
-              isDirty ? "bg-warning" : "bg-success"
-            )} />
-            <span className={cn(
-              "relative inline-flex rounded-full h-2 w-2",
-              isDirty ? "bg-warning" : "bg-success"
-            )} />
+            <span
+              className={cn(
+                "absolute inline-flex h-full w-full animate-ping rounded-full opacity-75",
+                isDirty ? "bg-warning" : "bg-success"
+              )}
+            />
+            <span
+              className={cn(
+                "relative inline-flex h-2 w-2 rounded-full",
+                isDirty ? "bg-warning" : "bg-success"
+              )}
+            />
           </span>
           {isDirty ? dirtyLabel : cleanLabel}
         </div>
@@ -68,9 +81,9 @@ export function SettingsHeader({
                   variant="ghost"
                   onClick={onReset}
                   disabled={!isDirty || isPending}
-                  className="h-9 px-4 hidden sm:flex"
+                  className="hidden h-9 px-4 sm:flex"
                 >
-                  <RotateCcw className="w-4 h-4 mr-2" />
+                  <RotateCcw className="mr-2 h-4 w-4" />
                   Khôi phục
                 </Button>
               </TooltipTrigger>
@@ -93,9 +106,9 @@ export function SettingsHeader({
                   )}
                 >
                   {isPending ? (
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   ) : (
-                    <Save className="w-4 h-4 mr-2" />
+                    <Save className="mr-2 h-4 w-4" />
                   )}
                   {isPending ? "Đang lưu..." : "Lưu thay đổi"}
                 </Button>
