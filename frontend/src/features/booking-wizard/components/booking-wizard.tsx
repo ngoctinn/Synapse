@@ -20,9 +20,9 @@ export const BookingWizard = () => {
       case 1:
         return <ServicesStep />;
       case 2:
-        return <TechnicianStep />;
-      case 3:
         return <TimeStep />;
+      case 3:
+        return <TechnicianStep />;
       case 4:
         return <CustomerInfoStep />;
       case 5:
@@ -51,8 +51,8 @@ export const BookingWizard = () => {
   // Validation for enabling Next button
   const canProceed = () => {
     if (currentStep === 1) return selectedServices.length > 0;
-    if (currentStep === 2) return !!staffId;
-    if (currentStep === 3) return !!selectedDate && !!selectedSlot;
+    if (currentStep === 2) return !!selectedDate && !!selectedSlot;
+    if (currentStep === 3) return !!staffId;
     if (currentStep === 4) {
       if (!customerInfo) return false;
       const result = customerInfoSchema.safeParse(customerInfo);

@@ -65,9 +65,14 @@ export const BookingSummary = () => {
         <Separator />
 
         {/* Total */}
-        <div className="flex justify-between items-center font-bold text-lg">
-          <span>Tổng cộng</span>
-          <span className="text-primary">{formatCurrency(totalPrice)}</span>
+        <div className="space-y-2">
+          <div className="flex justify-between items-center font-bold text-lg">
+            <span>Tổng cộng</span>
+            <span className="text-primary">{formatCurrency(totalPrice)}</span>
+          </div>
+          <p className="text-[10px] text-muted-foreground text-center uppercase tracking-wider">
+            Thanh toán tại quầy
+          </p>
         </div>
       </CardContent>
     </Card>

@@ -1,10 +1,11 @@
 "use server";
 
 import { ActionResponse, error, success } from "@/shared/lib/action-response";
-import { addHours, format } from "date-fns";
+import { format } from "date-fns";
 import { getServices } from "../services/actions";
 import { getStaffList } from "../staff/actions";
 import { ServiceItem, StaffItem, TimeSlot } from "./types";
+import { fetchWithAuth } from "@/shared/lib/api";
 
 // ... (getServicesForBooking and getAvailableStaff remain unchanged)
 
@@ -87,84 +88,47 @@ export async function getAvailableSlots(params: {
   date: Date;
 }): Promise<ActionResponse<TimeSlot[]>> {
   try {
-    const { staffId, date } = params;
+    const { staffId, date, serviceIds } = params;
 
-    if (staffId === 'any') {
-      // Fetch all staff to get technicians
-      const staffResponse = await getStaffList(1, 100);
-      if (staffResponse.status === "error" || !staffResponse.data) {
-        return error("Failed to load staff for aggregate availability");
-      }
+    // We use the first service as the primary one for the backend API for now
+    // as the backend find-slots currently only accepts a single service_id.
+    // In a future refactor, the backend should support multiple service_ids.
+    if (serviceIds.length === 0) return success([]);
 
-      const technicians = staffResponse.data.data.filter(
-        (s) => s.user.role === "technician" && s.user.is_active
-      );
+    const body = {
+      service_id: serviceIds[0],
+      target_date: format(date, 'yyyy-MM-dd'),
+      preferred_staff_id: staffId === 'any' ? null : staffId,
+    };
 
-      // Aggregate slots from all technicians
-      const allSlots: TimeSlot[] = [];
-      const seenTimes = new Set<string>();
+    const response = await fetchWithAuth("/scheduling/find-slots", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
 
-      technicians.forEach(tech => {
-        const techSlots = generateMockTimeSlots(date, tech.user_id);
-        techSlots.forEach(slot => {
-          if (slot.is_available && !seenTimes.has(slot.start_time)) {
-            allSlots.push({
-              ...slot,
-              staff_id: 'any', // Mark as any for the UI
-              id: `${slot.date}-${slot.start_time}-any`
-            });
-            seenTimes.add(slot.start_time);
-          }
-        });
-      });
-
-      // Sort by time
-      allSlots.sort((a, b) => a.start_time.localeCompare(b.start_time));
-
-      return success(allSlots);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      return error(errorData.detail || "Không thể tải khung giờ từ hệ thống");
     }
 
-    // Single staff logic
-    const mockSlots = generateMockTimeSlots(date, staffId);
+    const result = await response.json();
 
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    // Convert backend SlotOption to frontend TimeSlot
+    const slots: TimeSlot[] = (result.available_slots || []).map((opt: any) => ({
+      id: `${format(new Date(opt.start_time), 'yyyy-MM-dd-HH-mm')}-${opt.staff.id}`,
+      date: format(new Date(opt.start_time), 'yyyy-MM-dd'),
+      start_time: format(new Date(opt.start_time), 'HH:mm'),
+      end_time: format(new Date(opt.end_time), 'HH:mm'),
+      staff_id: opt.staff.id,
+      staff_name: opt.staff.name,
+      is_available: true,
+    }));
 
-    return success(mockSlots);
+    return success(slots);
   } catch (err) {
     console.error("Error fetching available slots:", err);
-    return error("Failed to fetch available slots");
+    return error("Lỗi kết nối máy chủ lập lịch");
   }
-}
-
-// Helper function to generate mock time slots (moved from API route)
-function generateMockTimeSlots(baseDate: Date, staffId: string): TimeSlot[] {
-  const slots: TimeSlot[] = [];
-  const startHour = 9; // 9 AM
-  const endHour = 17; // 5 PM (not inclusive)
-  const intervalMinutes = 30;
-
-  // Ensure we're working with the start of the day for the given date
-  const startOfDay = new Date(baseDate);
-  startOfDay.setHours(0, 0, 0, 0);
-
-  for (let hour = startHour; hour < endHour; hour++) {
-    for (let minute = 0; minute < 60; minute += intervalMinutes) {
-      const slotTime = addHours(startOfDay, hour);
-      slotTime.setMinutes(minute);
-
-      const isBooked = Math.random() > 0.8; // 20% chance of being booked
-
-      slots.push({
-        id: `${format(slotTime, 'yyyy-MM-dd-HH-mm')}-${staffId}`,
-        date: format(slotTime, 'yyyy-MM-dd'),
-        start_time: format(slotTime, 'HH:mm'),
-        end_time: format(addHours(slotTime, 0.5), 'HH:mm'), // 30 min duration mock
-        staff_id: staffId,
-        is_available: !isBooked,
-      });
-    }
-  }
-  return slots;
 }
 

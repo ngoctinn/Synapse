@@ -140,6 +140,12 @@ export const SummaryStep = () => {
             </CardContent>
           </Card>
 
+          <div className="p-4 rounded-xl border border-blue-200 bg-blue-50 dark:bg-blue-950/20 dark:border-blue-900/30">
+            <p className="text-xs text-blue-800 dark:text-blue-400 font-medium leading-relaxed">
+              <strong>Thanh toán tại quầy:</strong> Lịch hẹn của bạn sẽ được giữ chỗ. Quý khách vui lòng thanh toán trực tiếp tại quầy lễ tân sau khi hoàn thành liệu trình.
+            </p>
+          </div>
+
           <div className="p-4 rounded-xl border border-amber-200 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-900/30">
             <p className="text-xs text-amber-800 dark:text-amber-400 font-medium">
               Lưu ý: Bạn có thể thay đổi thông tin bằng cách nhấn nút quay lại. Sau khi xác nhận, lịch hẹn sẽ được ghi nhận vào hệ thống.

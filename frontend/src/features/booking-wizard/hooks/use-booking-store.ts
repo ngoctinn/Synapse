@@ -31,8 +31,8 @@ type BookingStore = BookingState & BookingActions;
 
 const initialState: BookingState = {
   selectedServices: [],
-  staffId: null,
-  staffName: null,
+  staffId: 'any', // Default to any staff for better availability
+  staffName: 'Bất kỳ nhân viên',
   selectedDate: null,
   selectedSlot: null,
   holdId: null,

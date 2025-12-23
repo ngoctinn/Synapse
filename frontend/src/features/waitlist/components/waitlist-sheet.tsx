@@ -28,21 +28,29 @@ interface WaitlistSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   data?: WaitlistEntry;
+  defaultValues?: Partial<WaitlistFormValues>;
 }
 
-export function WaitlistSheet({ mode, open, onOpenChange, data }: WaitlistSheetProps) {
+export function WaitlistSheet({
+  mode,
+  open,
+  onOpenChange,
+  data,
+  defaultValues
+}: WaitlistSheetProps) {
   const isCreate = mode === "create";
 
   const { form, isPending, onSubmit } = useSheetForm<WaitlistFormValues, WaitlistEntry>({
     schema: waitlistCreateSchema,
     defaultValues: {
-      customer_id: "", // Added missing field
+      customer_id: "",
       customer_name: "",
       phone_number: "",
       service_id: "",
       preferred_date: new Date().toISOString().split('T')[0],
       preferred_time_slot: "",
       notes: "",
+      ...defaultValues, // Allow overrides
     },
     open,
     data,

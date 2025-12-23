@@ -60,6 +60,7 @@
 6. **`chuong4_bang_4.34_config_hours.md`** - Test Cases C1 & C2 (4 TCs)
 7. **`chuong4_bang_4.35_package_mgmt.md`** - Test Cases C6 (4 TCs)
 8. **`chuong4_bang_4.36_promotion_mgmt.md`** - Test Cases C8 (4 TCs)
+9. **`chuong4_bang_4.37_supplemental_tests.md`** - Test Cases bổ sung (Waitlist, Billing, Skills, Records) (11 TCs)
 
 ---
 
@@ -74,7 +75,8 @@
 | **Bảng 4.34** | C1 & C2 - Operating Hours | 4 | 100% ✅ | `chuong4_bang_4.34_config_hours.md` |
 | **Bảng 4.35** | C6 - Package Management | 4 | 100% ✅ | `chuong4_bang_4.35_package_mgmt.md` |
 | **Bảng 4.36** | C8 - Promotion Management | 4 | 100% ✅ | `chuong4_bang_4.36_promotion_mgmt.md` |
-| **TỔNG** | **8 UC** | **29 TCs** | **100%** ✅ | 7 files |
+| **Bảng 4.37-4.41** | Waitlist, Billing, Skills, Records | 11 | 100% ✅ | `chuong4_bang_4.37_supplemental_tests.md` |
+| **TỔNG** | **12 UC** | **40 TCs** | **100%** ✅ | 8 files |
 
 ---
 
@@ -97,6 +99,8 @@
 | `chuong4_bang_4.34_config_hours.md` | 4.3.2.5 (Quản trị viên - C) | Bảng 4.34 |
 | `chuong4_bang_4.35_package_mgmt.md` | 4.3.2.5 (Quản trị viên - C) | Bảng 4.35 |
 | `chuong4_bang_4.36_promotion_mgmt.md` | 4.3.2.5 (Quản trị viên - C) | Bảng 4.36 |
+| `chuong4_bang_4.37_supplemental_tests.md` | 4.3.2.7 - 4.3.2.11 | Bảng 4.37 - 4.41 |
+
 
 **Lưu ý quan trọng**:
 - Đánh số lại các Bảng và Biểu đồ sau khi chèn
