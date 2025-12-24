@@ -67,7 +67,7 @@ export function MultiServiceSelector({
                 <Badge
                   key={service.id}
                   variant="secondary"
-                  className="mr-1 gap-1 pr-1 font-normal last:mr-0"
+                  className="gap-1 pr-1 font-normal last:mr-0"
                 >
                   {service.name}
                   <div

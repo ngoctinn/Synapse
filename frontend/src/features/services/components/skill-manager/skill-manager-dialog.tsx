@@ -199,7 +199,7 @@ export function SkillManagerDialog({
                     onClick={resetForm}
                     className="ml-auto"
                   >
-                    <Plus className="mr-1 h-4 w-4" /> Tạo mới
+                    <Plus className="h-4 w-4" /> Tạo mới
                   </Button>
                 )}
               </div>
@@ -273,9 +273,9 @@ export function SkillManagerDialog({
           </Button>
           <Button onClick={handleSaveAll} disabled={!hasChanges && !isSaving}>
             {isSaving ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              <Save className="mr-2 h-4 w-4" />
+              <Save className="h-4 w-4" />
             )}
             Lưu tất cả thay đổi
           </Button>

@@ -68,7 +68,7 @@ export function MobileMenuOverlay({
                   onClose();
                 }}
               >
-                <LogOut className="mr-2 size-4" />
+                <LogOut className="size-4" />
                 Đăng xuất
               </Button>
             )}

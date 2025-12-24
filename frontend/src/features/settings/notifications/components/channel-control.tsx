@@ -56,7 +56,7 @@ export function ChannelControl({
             className="text-muted-foreground hover:text-primary animate-fade-zoom h-6 text-xs"
             onClick={onEdit}
           >
-            <Edit2 className="mr-1 h-3 w-3" />
+            <Edit2 className="h-3 w-3" />
             Mẫu tin
           </Button>
         )}

@@ -157,7 +157,7 @@ export function StaffFilter({
                       onSelect={onClear}
                       className="cursor-pointer justify-center text-center"
                     >
-                      <X className="mr-2 size-4" />
+                      <X className="size-4" />
                       Xóa bộ lọc
                     </CommandItem>
                   </CommandGroup>

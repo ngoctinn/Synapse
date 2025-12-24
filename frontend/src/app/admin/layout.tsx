@@ -45,7 +45,7 @@ export default async function AdminLayout({
           user={userProfile}
           loading={!userProfile && session?.access_token ? true : false}
         />
-        <div className="flex flex-1 flex-col overflow-y-auto ml-2 mr-2 pb-2">
+        <div className="flex flex-1 flex-col overflow-y-auto mx-2 mt-3 pb-6 scrollbar-none">
           {children}
         </div>
         <BottomNav />

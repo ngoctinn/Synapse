@@ -136,11 +136,11 @@ export function EventPopover({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={onView}>
-                  <Calendar className="mr-2 size-4" />
+                  <Calendar className="size-4" />
                   Xem chi tiết
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={onEdit}>
-                  <Edit className="mr-2 size-4" />
+                  <Edit className="size-4" />
                   Chỉnh sửa
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -149,7 +149,7 @@ export function EventPopover({
                     onClick={onCheckIn}
                     className="text-emerald-600"
                   >
-                    <CheckCircle2 className="mr-2 size-4" />
+                    <CheckCircle2 className="size-4" />
                     Check-in khách
                   </DropdownMenuItem>
                 )}
@@ -158,7 +158,7 @@ export function EventPopover({
                     onClick={onNoShow}
                     className="text-gray-600"
                   >
-                    <UserX className="mr-2 size-4" />
+                    <UserX className="size-4" />
                     Đánh dấu không đến
                   </DropdownMenuItem>
                 )}
@@ -167,13 +167,13 @@ export function EventPopover({
                     onClick={onCancel}
                     className="text-amber-600"
                   >
-                    <XCircle className="mr-2 size-4" />
+                    <XCircle className="size-4" />
                     Hủy lịch hẹn
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={onDelete} className="text-red-600">
-                  <Trash2 className="mr-2 size-4" />
+                  <Trash2 className="size-4" />
                   Xóa
                 </DropdownMenuItem>
               </DropdownMenuContent>

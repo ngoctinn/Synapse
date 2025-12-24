@@ -11,7 +11,7 @@ export function CreateWarrantyTrigger() {
   return (
     <>
       <Button onClick={() => setOpen(true)}>
-        <Plus className="mr-2 h-4 w-4" />
+        <Plus className="h-4 w-4" />
         Tạo phiếu mới
       </Button>
       <WarrantySheet mode="create" open={open} onOpenChange={setOpen} />

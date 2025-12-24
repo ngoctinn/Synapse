@@ -52,7 +52,7 @@ export function StatsCards() {
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
       {stats.map((stat) => (
         <Card
           key={stat.title}
@@ -72,11 +72,11 @@ export function StatsCards() {
             <div className="text-2xl font-bold">{stat.value}</div>
             <p className="text-muted-foreground mt-1 flex items-center text-xs">
               {stat.trend === "up" ? (
-                <ArrowUpRight className="mr-1 size-3 text-emerald-500" />
+                <ArrowUpRight className="size-3 text-emerald-500" />
               ) : stat.trend === "down" ? (
-                <ArrowDownRight className="mr-1 size-3 text-rose-500" />
+                <ArrowDownRight className="size-3 text-rose-500" />
               ) : (
-                <Clock className="mr-1 size-3 text-amber-500" />
+                <Clock className="size-3 text-amber-500" />
               )}
               {stat.description}
             </p>

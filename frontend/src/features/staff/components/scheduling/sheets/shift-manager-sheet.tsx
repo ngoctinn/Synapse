@@ -321,7 +321,7 @@ export function ShiftManagerSheet({
                   className="w-full"
                   onClick={() => setIsAdding(true)}
                 >
-                  <Plus className="mr-2 size-4" />
+                  <Plus className="size-4" />
                   Thêm ca mới
                 </Button>
               )}

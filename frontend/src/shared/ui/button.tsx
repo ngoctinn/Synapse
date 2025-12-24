@@ -11,7 +11,7 @@ import {
 import { cn } from "@/shared/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium leading-none transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 active:scale-95 cursor-pointer",
+  "inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-lg text-sm font-medium leading-none transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 active:scale-95 cursor-pointer",
   {
     variants: {
       variant: {
@@ -133,13 +133,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={isRunning || disabled}
         {...props}
       >
-        {isRunning && <Loader2 className="mr-2 size-4 animate-spin" />}
+        {isRunning && <Loader2 className="animate-spin" />}
         {!isRunning && leftContent && (
-          <span className="mr-1">{leftContent}</span>
+          <span>{leftContent}</span>
         )}
         {children}
         {!isRunning && rightContent && (
-          <span className="ml-1">{rightContent}</span>
+          <span>{rightContent}</span>
         )}
       </Comp>
     );

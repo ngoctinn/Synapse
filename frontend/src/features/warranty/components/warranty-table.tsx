@@ -162,14 +162,14 @@ export function WarrantyTable({
               <DropdownMenuItem
                 onClick={() => handleStatusUpdate(w.id, "claimed")}
               >
-                <AlertTriangle className="mr-2 h-4 w-4" /> Yêu cầu bảo hành
+                <AlertTriangle className="h-4 w-4" /> Yêu cầu bảo hành
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => handleStatusUpdate(w.id, "voided")}
                 className="text-destructive"
               >
-                <XCircle className="mr-2 h-4 w-4" /> Hủy hiệu lực
+                <XCircle className="h-4 w-4" /> Hủy hiệu lực
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

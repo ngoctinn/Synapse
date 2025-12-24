@@ -21,20 +21,10 @@ import {
   DropdownMenuTrigger as DropdownMenuRootTrigger,
 } from "@/shared/ui/dropdown-menu";
 
-import { ChevronRightIcon } from "@heroicons/react/20/solid";
-import * as SolidIcons from "@heroicons/react/24/solid";
-import * as OutlineIcons from "@heroicons/react/24/outline";
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SidebarItem as SidebarItemType } from "../constants";
-
-// Map outline to solid based on the export name from Heroicons
-const iconMap: Record<string, any> = {};
-Object.keys(OutlineIcons).forEach((key) => {
-  if ((SolidIcons as any)[key]) {
-    iconMap[key] = (SolidIcons as any)[key];
-  }
-});
 
 interface SidebarItemProps {
   item: SidebarItemType;
@@ -51,16 +41,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
 
   const isSubItemActive = (href: string) => pathname === href;
 
-  // Get the icon to display (Solid if active, Otherwise Outline)
-  const IconComponent = item.icon;
-
-  // Find the key by reference comparison (100% reliable)
-  const iconKey = Object.keys(OutlineIcons).find(
-    (key) => (OutlineIcons as any)[key] === IconComponent
-  );
-
-  const SolidIcon = iconKey ? iconMap[iconKey] : null;
-  const Icon = isActive && SolidIcon ? SolidIcon : IconComponent;
+  const Icon = item.icon;
 
   // Render khi thu gọn
   if (isCollapsed) {
@@ -77,7 +58,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
                   isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 )}
               >
-                <Icon className="size-6 shrink-0" strokeWidth={2} />
+                <Icon className="size-6 shrink-0" strokeWidth={isActive ? 2.5 : 2} />
               </SidebarMenuButton>
             </DropdownMenuRootTrigger>
             <DropdownMenuContentRoot side="right" align="start" className="min-w-[190px] rounded-lg ml-4 shadow-md">
@@ -114,7 +95,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
           )}
         >
           <Link href={item.href}>
-            <Icon className="size-6 shrink-0" strokeWidth={2} />
+            <Icon className="size-6 shrink-0" strokeWidth={isActive ? 2.5 : 2} />
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -135,9 +116,9 @@ export function SidebarItem({ item }: SidebarItemProps) {
                 isActive ? "bg-primary/10 text-primary font-semibold" : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
               )}
             >
-              <Icon className="size-6 shrink-0" strokeWidth={2} />
+              <Icon className="size-6 shrink-0" strokeWidth={isActive ? 2.5 : 2} />
               <span className="truncate ml-3">{item.title}</span>
-              <ChevronRightIcon
+              <ChevronRight
                 className="text-muted-foreground/50 ml-auto size-4 transition-transform group-data-[state=open]/collapsible:rotate-90"
                 aria-hidden="true"
               />
@@ -181,7 +162,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
         )}
       >
         <Link href={item.href} className="flex items-center">
-          <Icon className="size-6 shrink-0" strokeWidth={2} />
+          <Icon className="size-6 shrink-0" strokeWidth={isActive ? 2.5 : 2} />
           <span className="truncate ml-3">{item.title}</span>
         </Link>
       </SidebarMenuButton>

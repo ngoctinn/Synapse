@@ -59,7 +59,7 @@ export function ServiceActions({ service, onEdit }: ServiceActionsProps) {
           <>
             <DropdownMenuLabel>Thao tác khác</DropdownMenuLabel>
             <DropdownMenuItem onClick={handleClone} disabled={isPending}>
-              <Copy className="mr-2 size-4" />
+              <Copy className="size-4" />
               <span>Nhân bản</span>
             </DropdownMenuItem>
           </>

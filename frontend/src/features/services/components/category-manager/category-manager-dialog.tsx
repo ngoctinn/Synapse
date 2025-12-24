@@ -115,7 +115,7 @@ export function CategoryManagerDialog({
             onClick={handleAddCategory}
             disabled={!newCategoryName.trim()}
           >
-            <Plus className="mr-1 h-4 w-4" /> Thêm
+            <Plus className="h-4 w-4" /> Thêm
           </Button>
         </div>
 
@@ -145,9 +145,9 @@ export function CategoryManagerDialog({
           </Button>
           <Button onClick={handleSave} disabled={!hasChanges && !isSaving}>
             {isSaving ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              <Save className="mr-2 h-4 w-4" />
+              <Save className="h-4 w-4" />
             )}
             Lưu thay đổi
           </Button>

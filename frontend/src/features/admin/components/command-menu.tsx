@@ -58,7 +58,7 @@ export function CommandMenu() {
         )}
         onClick={() => setOpen(true)}
       >
-        <Search className="mr-2 h-4 w-4 shrink-0" />
+        <Search className="h-4 w-4 shrink-0" />
         <span className="hidden lg:inline-flex">Tìm kiếm...</span>
         <span className="inline-flex lg:hidden">Tìm kiếm...</span>
         <kbd className="pointer-events-none absolute right-[0.3rem] top-[0.3rem] hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
@@ -73,25 +73,25 @@ export function CommandMenu() {
             <CommandItem
               onSelect={() => runCommand(() => router.push("/admin/dashboard"))}
             >
-              <LayoutDashboard className="mr-2 h-4 w-4" />
+              <LayoutDashboard className="h-4 w-4" />
               <span>Dashboard</span>
             </CommandItem>
             <CommandItem
               onSelect={() => runCommand(() => router.push("/admin/customers"))}
             >
-              <Users className="mr-2 h-4 w-4" />
+              <Users className="h-4 w-4" />
               <span>Khách hàng</span>
             </CommandItem>
             <CommandItem
               onSelect={() => runCommand(() => router.push("/admin/staff"))}
             >
-              <Briefcase className="mr-2 h-4 w-4" />
+              <Briefcase className="h-4 w-4" />
               <span>Nhân viên</span>
             </CommandItem>
             <CommandItem
               onSelect={() => runCommand(() => router.push("/admin/services"))}
             >
-              <FileText className="mr-2 h-4 w-4" />
+              <FileText className="h-4 w-4" />
               <span>Dịch vụ</span>
             </CommandItem>
           </CommandGroup>
@@ -100,21 +100,21 @@ export function CommandMenu() {
             <CommandItem
               onSelect={() => runCommand(() => router.push("/admin/settings"))}
             >
-              <User className="mr-2 h-4 w-4" />
+              <User className="h-4 w-4" />
               <span>Hồ sơ</span>
               <CommandShortcut>⌘P</CommandShortcut>
             </CommandItem>
             <CommandItem
               onSelect={() => runCommand(() => router.push("/admin/settings/billing"))}
             >
-              <CreditCard className="mr-2 h-4 w-4" />
+              <CreditCard className="h-4 w-4" />
               <span>Thanh toán</span>
               <CommandShortcut>⌘B</CommandShortcut>
             </CommandItem>
             <CommandItem
               onSelect={() => runCommand(() => router.push("/admin/settings"))}
             >
-              <Settings className="mr-2 h-4 w-4" />
+              <Settings className="h-4 w-4" />
               <span>Cài đặt chung</span>
               <CommandShortcut>⌘S</CommandShortcut>
             </CommandItem>

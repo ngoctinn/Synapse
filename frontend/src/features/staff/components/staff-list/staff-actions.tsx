@@ -32,7 +32,7 @@ export function StaffActions({ staff, onEdit }: StaffActionsProps) {
           <>
             <DropdownMenuLabel>Thao tác khác</DropdownMenuLabel>
             <DropdownMenuItem>
-              <KeyRound className="mr-2 size-4" />
+              <KeyRound className="size-4" />
               <span>Đổi mật khẩu</span>
             </DropdownMenuItem>
           </>

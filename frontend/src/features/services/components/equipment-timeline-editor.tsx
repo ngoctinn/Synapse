@@ -158,7 +158,7 @@ export function EquipmentTimelineEditor({
                             minWidth: "60px",
                           }}
                         >
-                          <GripVertical className="mr-1 h-3 w-3 shrink-0 opacity-50" />
+                          <GripVertical className="h-3 w-3 shrink-0 opacity-50" />
                           <span className="truncate">
                             {getEquipmentName(item.equipment_id)}
                           </span>
@@ -289,7 +289,7 @@ export function EquipmentTimelineEditor({
             onClick={handleAdd}
             disabled={disabled}
           >
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="h-4 w-4" />
             Thêm thiết bị ({unusedEquipment.length} còn lại)
           </Button>
         )}

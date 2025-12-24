@@ -80,11 +80,11 @@ export function UserNav({
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer">
-          <User className="mr-2 h-4 w-4" />
+          <User className="h-4 w-4" />
           <span>Hồ sơ</span>
         </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer">
-          <Settings className="mr-2 h-4 w-4" />
+          <Settings className="h-4 w-4" />
           <span>Cài đặt</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
@@ -92,7 +92,7 @@ export function UserNav({
           className="cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/5"
           onSelect={handleLogout}
         >
-          <LogOut className="mr-2 h-4 w-4" />
+          <LogOut className="h-4 w-4" />
           <span>Đăng xuất</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

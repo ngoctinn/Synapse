@@ -13,7 +13,7 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/shared/ui/sidebar";
-import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
+import { CircleHelp } from "lucide-react";
 import { SIDEBAR_GROUPS } from "../constants";
 import { SidebarItem } from "./sidebar-item";
 import { UserProfile } from "@/shared/components/layout/components/header/types";
@@ -84,7 +84,7 @@ export function AdminSidebar({
               aria-label="Hỗ trợ"
               className="text-muted-foreground hover:text-foreground hover:bg-muted/50 h-9 min-h-[36px] rounded-lg font-medium transition-all duration-200 justify-start px-2.5"
             >
-              <QuestionMarkCircleIcon className="size-6 shrink-0" strokeWidth={2} />
+              <CircleHelp className="size-6 shrink-0" strokeWidth={2} />
               <span className="group-data-[collapsible=icon]:hidden ml-3">
                 Hỗ trợ
               </span>

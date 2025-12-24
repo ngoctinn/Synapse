@@ -120,7 +120,7 @@ export function TableActionBar({
         disabled={isLoading}
         className="text-muted-foreground hover:text-foreground h-8"
       >
-        <X className="mr-1 size-4" />
+        <X className="size-4" />
         Bỏ chọn
       </Button>
     </div>

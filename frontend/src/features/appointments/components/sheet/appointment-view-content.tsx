@@ -45,7 +45,7 @@ export function AppointmentViewContent({
             {format(event.start, "EEEE, d MMMM yyyy", { locale: vi })}
           </div>
           <div className="text-muted-foreground mt-1 text-sm">
-            <Clock className="mr-1 inline h-3.5 w-3.5" />
+            <Clock className="inline h-3.5 w-3.5" />
             {appointment.duration} phút
           </div>
         </div>

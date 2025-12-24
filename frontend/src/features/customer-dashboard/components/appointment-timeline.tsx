@@ -252,7 +252,7 @@ export function AppointmentTimeline({
               className="h-8"
               onClick={() => onSlotClick?.(new Date())}
             >
-              <Plus className="mr-1 size-4" /> Đặt mới
+              <Plus className="size-4" /> Đặt mới
             </Button>
           </div>
         </div>

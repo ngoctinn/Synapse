@@ -118,7 +118,7 @@ export function DataTable<T>({
       <div className={containerClasses}>
         <div className="w-full overflow-x-auto">
           <Table>
-            <TableHeader className="bg-background sticky top-0 z-50">
+            <TableHeader className="bg-background sticky top-0 z-10">
               <TableRow className="border-border/60 border-b hover:bg-transparent">
                 {selection && (
                   <TableHead className="w-12 pl-6">

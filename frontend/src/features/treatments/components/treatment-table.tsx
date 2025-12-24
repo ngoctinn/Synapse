@@ -150,7 +150,7 @@ export function TreatmentTable({
               }}
               disabled={isPending}
             >
-              <CheckCircle2 className="mr-1 size-3.5" />
+              <CheckCircle2 className="size-3.5" />
               Check-in
             </Button>
           )}

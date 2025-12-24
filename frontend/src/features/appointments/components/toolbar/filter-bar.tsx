@@ -157,12 +157,12 @@ export function FilterBar({
                 filters.staffIds.length > 0 && "border-primary"
               )}
             >
-              <Filter className="mr-2 size-4" />
+              <Filter className="size-4" />
               Kỹ thuật viên
               {filters.staffIds.length > 0 && (
                 <Badge preset="count">{filters.staffIds.length}</Badge>
               )}
-              <ChevronsUpDown className="ml-2 size-4 opacity-50" />
+              <ChevronsUpDown className="size-4 opacity-50" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0" align="start">
@@ -179,7 +179,7 @@ export function FilterBar({
                     >
                       <Check
                         className={cn(
-                          "mr-2 size-4",
+                          "size-4",
                           filters.staffIds.includes(staff.id)
                             ? "opacity-100"
                             : "opacity-0"
@@ -204,12 +204,12 @@ export function FilterBar({
                 filters.serviceIds.length > 0 && "border-primary"
               )}
             >
-              <Filter className="mr-2 size-4" />
+              <Filter className="size-4" />
               Dịch vụ
               {filters.serviceIds.length > 0 && (
                 <Badge preset="count">{filters.serviceIds.length}</Badge>
               )}
-              <ChevronsUpDown className="ml-2 size-4 opacity-50" />
+              <ChevronsUpDown className="size-4 opacity-50" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0" align="start">
@@ -226,7 +226,7 @@ export function FilterBar({
                     >
                       <Check
                         className={cn(
-                          "mr-2 size-4",
+                          "size-4",
                           filters.serviceIds.includes(service.id)
                             ? "opacity-100"
                             : "opacity-0"
@@ -255,7 +255,7 @@ export function FilterBar({
               {filters.statuses.length > 0 && (
                 <Badge preset="count">{filters.statuses.length}</Badge>
               )}
-              <ChevronsUpDown className="ml-2 size-4 opacity-50" />
+              <ChevronsUpDown className="size-4 opacity-50" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0" align="start">
@@ -272,7 +272,7 @@ export function FilterBar({
                       >
                         <Check
                           className={cn(
-                            "mr-2 size-4",
+                            "size-4",
                             filters.statuses.includes(status)
                               ? "opacity-100"
                               : "opacity-0"
@@ -302,7 +302,7 @@ export function FilterBar({
             className="text-muted-foreground"
             onClick={handleClearAll}
           >
-            <X className="mr-1 size-4" />
+            <X className="size-4" />
             Xóa bộ lọc ({activeFilterCount})
           </Button>
         )}

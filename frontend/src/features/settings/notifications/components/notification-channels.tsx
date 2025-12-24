@@ -53,7 +53,7 @@ export function NotificationChannels({
               className="group-hover:border-primary/50 w-full transition-colors"
               onClick={() => onConfigure(channel.id)}
             >
-              <Settings2 className="mr-2 size-4" />
+              <Settings2 className="size-4" />
               Cấu hình
             </Button>
           </CardContent>

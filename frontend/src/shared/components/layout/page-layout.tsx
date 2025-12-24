@@ -15,7 +15,7 @@ export function PageShell({
   return (
     <div
       className={cn(
-        "bg-background flex min-h-screen w-full flex-col",
+        "bg-muted/40 flex min-h-screen w-full flex-col",
         animate && "page-entry-animation",
         className
       )}
@@ -44,10 +44,10 @@ export function PageHeader({
 }: PageHeaderProps) {
   return (
     <header
-      className={cn("header-sticky bg-card border-b z-20", className)}
+      className={cn("z-20 flex flex-col gap-4", className)}
       {...props}
     >
-      <div className="flex h-14 items-center justify-between gap-4 px-0">
+      <div className="flex min-h-[3rem] items-center justify-between gap-4 px-0 py-2">
         {(title || subtitle) && (
           <div className="flex flex-col gap-0.5">
             {title && (
@@ -83,7 +83,7 @@ export function PageContent({
     <main
       className={cn(
         "flex flex-1 flex-col overflow-hidden",
-        !fullWidth && "gap-4 px-0 py-4 md:py-6",
+        !fullWidth && "gap-4 px-0 py-3",
         className
       )}
       {...props}
@@ -105,7 +105,7 @@ export function SurfaceCard({
   return (
     <div
       className={cn(
-        "surface-card flex flex-1 flex-col overflow-hidden rounded-lg",
+        "surface-card relative flex flex-1 flex-col overflow-hidden rounded-xl",
         className
       )}
       {...props}

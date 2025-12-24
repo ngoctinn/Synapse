@@ -106,7 +106,7 @@ export function CommissionReport({ data }: CommissionReportProps) {
           </Button>
         </div>
         <Button variant="outline" size="sm">
-          <Download className="mr-2 h-4 w-4" /> Xuất Excel
+          <Download className="h-4 w-4" /> Xuất Excel
         </Button>
       </div>
 

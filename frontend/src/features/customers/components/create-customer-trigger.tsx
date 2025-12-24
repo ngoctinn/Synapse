@@ -13,7 +13,7 @@ export function CreateCustomerTrigger() {
       <Button
         className="text-xs shadow-sm transition-all hover:scale-[1.02]"
         onClick={() => setOpen(true)}
-        startContent={<Plus className="mr-2 h-3.5 w-3.5" />}
+        startContent={<Plus className="h-3.5 w-3.5" />}
       >
         Thêm khách hàng
       </Button>

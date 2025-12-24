@@ -143,7 +143,7 @@ export function HeaderUserDropdown({
           onClick={onLogout}
         >
           <div className="flex w-full items-center transition-transform duration-200 group-hover:translate-x-1">
-            <LogOut className="mr-2 size-4 transition-transform group-hover:scale-110" />
+            <LogOut className="size-4 transition-transform group-hover:scale-110" />
             <span>Đăng xuất</span>
           </div>
         </DropdownMenuItem>

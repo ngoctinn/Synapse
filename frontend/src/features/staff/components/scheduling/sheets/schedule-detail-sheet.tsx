@@ -113,7 +113,7 @@ export function ScheduleDetailSheet({
                 className="h-9 w-full"
                 onClick={handlePublish}
               >
-                <Send className="mr-2 size-4" />
+                <Send className="size-4" />
                 Công bố lịch
               </Button>
             )}
@@ -125,7 +125,7 @@ export function ScheduleDetailSheet({
                 className="text-destructive hover:text-destructive hover:bg-destructive/10 h-9 flex-1"
                 onClick={() => setShowDeleteDialog(true)}
               >
-                <Trash2 className="mr-2 size-4" />
+                <Trash2 className="size-4" />
                 Xóa
               </Button>
               <Button

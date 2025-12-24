@@ -142,7 +142,7 @@ export function StaffPage({
         onValueChange={handleTabChange}
       >
         <PageHeader>
-          <TabsList variant="default" size="default" aria-label="Quản lý nhân viên">
+          <TabsList variant="default" size="default" className="shadow-premium-sm" aria-label="Quản lý nhân viên">
             <TabsTrigger value="list" variant="default" stretch={false}>
               Danh sách
             </TabsTrigger>

@@ -100,7 +100,7 @@ export function MobileUserSheet({ user, onLogout }: MobileUserSheetProps) {
                 setIsOpen(false);
               }}
             >
-              <LogOut className="mr-2 h-5 w-5" />
+              <LogOut className="h-5 w-5" />
               Đăng xuất
             </Button>
           </div>

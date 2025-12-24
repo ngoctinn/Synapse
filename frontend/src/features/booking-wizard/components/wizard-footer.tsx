@@ -24,7 +24,7 @@ export const WizardFooter = ({
           onClick={onNext}
           disabled={isDisabled || isLoading}
         >
-          {isLoading && <Spinner className="mr-2 h-5 w-5" />}
+          {isLoading && <Spinner className="h-5 w-5" />}
           {nextLabel}
         </Button>
       </div>

@@ -62,7 +62,7 @@ export const ServiceCard = ({
 
           <div className="mt-2 flex items-center justify-between">
             <div className="text-muted-foreground flex items-center text-sm">
-              <Clock className="mr-1 size-4" />
+              <Clock className="size-4" />
               <span>{service.duration} phút</span>
             </div>
             <span className="text-primary font-semibold">

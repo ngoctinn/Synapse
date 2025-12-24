@@ -158,7 +158,7 @@ export function PaymentForm({ invoice, onSuccess }: PaymentFormProps) {
         />
 
         <Button type="submit" className="w-full" disabled={isPending}>
-          {isPending && <Spinner className="mr-2 size-4" />}
+          {isPending && <Spinner className="size-4" />}
           Xác nhận thanh toán
         </Button>
       </form>

@@ -261,7 +261,7 @@ export function MaintenanceTimeline({
                                     getStatusColor(task.status)
                                   )}
                                 >
-                                  <span className="mr-1 font-medium">
+                                  <span className="font-medium">
                                     {format(new Date(task.date), "HH:mm")}
                                   </span>
                                   {task.title}

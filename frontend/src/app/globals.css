@@ -199,7 +199,7 @@
   }
 
   .surface-card {
-    @apply bg-background border-border rounded-lg border p-6 transition-all duration-300;
+    @apply bg-background border-border rounded-xl border p-0 transition-all duration-300 shadow-sm overflow-hidden;
   }
 
   .prose-vi {
@@ -208,7 +208,7 @@
   }
 
   .header-sticky {
-    @apply bg-background sticky top-0 z-50 w-full border-b transition-all duration-200;
+    @apply bg-background sticky top-0 z-30 w-full border-b transition-all duration-200;
   }
 
   .shadow-premium-sm {

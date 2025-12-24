@@ -96,7 +96,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
           className="w-full rounded-xl shadow-md transition-transform duration-200 group-hover:scale-[1.02]"
         >
           <Link href="/booking">
-            <Calendar className="mr-2 size-4" />
+            <Calendar className="size-4" />
             Đặt lịch ngay
           </Link>
         </Button>

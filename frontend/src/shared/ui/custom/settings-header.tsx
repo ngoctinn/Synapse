@@ -83,7 +83,7 @@ export function SettingsHeader({
                   disabled={!isDirty || isPending}
                   className="hidden h-9 px-4 sm:flex"
                 >
-                  <RotateCcw className="mr-2 h-4 w-4" />
+                  <RotateCcw className="h-4 w-4" />
                   Khôi phục
                 </Button>
               </TooltipTrigger>
@@ -106,9 +106,9 @@ export function SettingsHeader({
                   )}
                 >
                   {isPending ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    <Save className="mr-2 h-4 w-4" />
+                    <Save className="h-4 w-4" />
                   )}
                   {isPending ? "Đang lưu..." : "Lưu thay đổi"}
                 </Button>

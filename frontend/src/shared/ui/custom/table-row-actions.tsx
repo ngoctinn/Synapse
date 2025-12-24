@@ -41,7 +41,7 @@ interface TableRowActionsProps {
  *   onDelete={() => setDeleteOpen(true)}
  *   extraActions={
  *     <DropdownMenuItem onClick={handleClone}>
- *       <Copy className="mr-2 size-4" />
+ *       <Copy className="size-4" />
  *       Nhân bản
  *     </DropdownMenuItem>
  *   }
