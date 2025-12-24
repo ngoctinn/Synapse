@@ -8,7 +8,16 @@ import {
 import { MOCK_APPOINTMENTS } from "@/features/appointments"; // Temporary
 import { endOfMonth, startOfMonth } from "date-fns";
 import { Suspense } from "react";
+import { createInvoice, getInvoice } from "@/features/billing/actions";
+import { getBookingReview } from "@/features/reviews/actions";
 import { AppointmentsPageSkeleton } from "@/features/appointments/components/appointments-page-skeleton";
+
+/**
+ * PAGE COMPONENT (Orchestrator)
+ * ----------------------------
+ * Tầng này chịu trách nhiệm quản lý sự phụ thuộc giữa các features.
+ * Nó "tiêm" (inject) các actions từ billing và reviews vào module appointments.
+ */
 
 export default async function Appointments() {
   const today = new Date();
@@ -32,7 +41,10 @@ export default async function Appointments() {
         staffListPromise={staffListPromise}
         resourceListPromise={resourceListPromise}
         serviceListPromise={serviceListPromise}
-        // fullStaffList={fullStaffList}
+        // Injecting cross-feature actions (Dependency Injection)
+        createInvoiceAction={createInvoice}
+        getInvoiceAction={getInvoice}
+        getBookingReviewAction={getBookingReview}
       />
     </Suspense>
   );

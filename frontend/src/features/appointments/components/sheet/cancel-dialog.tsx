@@ -18,14 +18,14 @@ import {
 } from "@/shared/ui/dialog";
 import { Textarea } from "@/shared/ui/textarea";
 
-import { cancelAppointment } from "../../actions";
 import type { CalendarEvent } from "../../model/types";
 
 interface CancelDialogProps {
   event: CalendarEvent | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSuccess?: () => void;
+  onConfirm: (event: CalendarEvent, reason?: string) => void;
+  isPending?: boolean;
 }
 
 const CANCELLATION_POLICY = {
@@ -37,10 +37,10 @@ export function CancelDialog({
   event,
   open,
   onOpenChange,
-  onSuccess,
+  onConfirm,
+  isPending = false,
 }: CancelDialogProps) {
   const [reason, setReason] = useState("");
-  const [isPending, startTransition] = useTransition();
 
   if (!event) return null;
 
@@ -50,24 +50,7 @@ export function CancelDialog({
   const dateStr = format(event.start, "EEEE, d MMMM yyyy", { locale: vi });
 
   const handleCancel = () => {
-    startTransition(async () => {
-      const result = await cancelAppointment(event.id, reason || undefined);
-
-      if (result.status === "success") {
-        showToast.success(
-          "Hủy thành công",
-          result.message || "Đã hủy lịch hẹn"
-        );
-        setReason("");
-        onOpenChange(false);
-        onSuccess?.();
-      } else {
-        showToast.error(
-          "Hủy thất bại",
-          result.message || "Không thể hủy lịch hẹn"
-        );
-      }
-    });
+    onConfirm(event, reason || undefined);
   };
 
   return (

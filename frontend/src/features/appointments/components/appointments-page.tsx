@@ -1,7 +1,5 @@
 "use client";
 
-import { createInvoice, getInvoice } from "@/features/billing/actions";
-import { getBookingReview } from "@/features/reviews/actions";
 import { ReviewPrompt } from "@/features/reviews/components/review-prompt";
 import {
   PageContent,
@@ -18,7 +16,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/shared/ui";
-import { showToast } from "@/shared/ui/sonner";
 import {
   Activity,
   CalendarCheck,
@@ -28,20 +25,17 @@ import {
   RefreshCw,
   Settings2,
 } from "lucide-react";
-import { use, useCallback, useEffect, useState, useTransition } from "react";
+import { use, useState } from "react";
 import {
-  checkInAppointment,
-  deleteAppointment,
-  getAppointmentMetrics,
-  getAppointments,
-  markNoShow,
-} from "../actions";
-import { useCalendarState } from "../hooks/use-calendar-state";
+  useCalendarState,
+  useAppointmentMetrics,
+  useAppointmentEvents,
+  useAppointmentDialogs,
+  useAppointmentActions,
+} from "../hooks";
 import { MockService } from "../model/mocks";
 import type {
-  Appointment,
   AppointmentFilters,
-  AppointmentMetrics,
   CalendarEvent,
   TimelineResource,
 } from "../model/types";
@@ -50,7 +44,6 @@ import { AppointmentSheet } from "./sheet";
 import { CancelDialog } from "./sheet/cancel-dialog";
 import { DateNavigator, ViewSwitcher } from "./toolbar";
 import { AppointmentsFilter } from "./toolbar/appointments-filter";
-
 function StatBadge({
   icon: Icon,
   value,
@@ -94,7 +87,11 @@ interface AppointmentsPageProps {
   staffListPromise: Promise<ActionResponse<TimelineResource[]>>;
   resourceListPromise: Promise<ActionResponse<TimelineResource[]>>;
   serviceListPromise: Promise<ActionResponse<MockService[]>>;
-  fullStaffList?: TimelineResource[];
+
+  // Dependency Injection for cross-feature actions (FSD compliance)
+  createInvoiceAction: (bookingId: string) => Promise<ActionResponse<unknown>>;
+  getInvoiceAction: (bookingId: string) => Promise<ActionResponse<unknown>>;
+  getBookingReviewAction: (bookingId: string) => Promise<ActionResponse<unknown>>;
 }
 
 export function AppointmentsPage({
@@ -102,7 +99,15 @@ export function AppointmentsPage({
   staffListPromise,
   resourceListPromise,
   serviceListPromise,
+  createInvoiceAction,
+  getInvoiceAction,
+  getBookingReviewAction,
 }: AppointmentsPageProps) {
+  const appointmentsRes = use(appointmentsPromise);
+  const staffRes = use(staffListPromise);
+  const resourceRes = use(resourceListPromise);
+  const serviceRes = use(serviceListPromise);
+
   const {
     view,
     setView,
@@ -118,169 +123,66 @@ export function AppointmentsPage({
   } = useCalendarState();
   const [filters, setFilters] = useState<Partial<AppointmentFilters>>({});
 
-  const appointmentsRes = use(appointmentsPromise);
-  const staffRes = use(staffListPromise);
-  const resourceRes = use(resourceListPromise);
-  const serviceRes = use(serviceListPromise);
+  const staffList = staffRes.status === "success" ? staffRes.data || [] : [];
+  const roomList = resourceRes.status === "success" ? resourceRes.data || [] : [];
+  const serviceList = serviceRes.status === "success" ? serviceRes.data || [] : [];
 
-  const [events, setEvents] = useState<CalendarEvent[]>(
-    appointmentsRes.status === "success" ? appointmentsRes.data || [] : []
-  );
-  const [metrics, setMetrics] = useState<AppointmentMetrics | null>(null);
-  const [staffList] = useState<TimelineResource[]>(
-    staffRes.status === "success" ? staffRes.data || [] : []
-  );
-  const [roomList] = useState<TimelineResource[]>(
-    resourceRes.status === "success" ? resourceRes.data || [] : []
-  );
-  const serviceList =
-    serviceRes.status === "success" ? serviceRes.data || [] : [];
+  const { metrics, refreshMetrics, isPending: isMetricsPending } = useAppointmentMetrics(date);
 
-  const [isPending, startTransition] = useTransition();
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
-    null
-  );
-  const [sheetMode, setSheetMode] = useState<"view" | "edit" | "create">(
-    "view"
-  );
-  const [selectedBookingForReview, setSelectedBookingForReview] = useState<
-    string | null
-  >(null);
+  const { events, refreshEvents, isPending: isEventsPending, addOptimisticEvent } = useAppointmentEvents({
+    dateRange,
+    filters,
+    initialEvents: appointmentsRes.status === "success" ? appointmentsRes.data || [] : [],
+    onRefreshMetrics: refreshMetrics,
+  });
 
-  // Dialog states
-  const [actionEvent, setActionEvent] = useState<CalendarEvent | null>(null);
-  const [isCancelOpen, setIsCancelOpen] = useState(false);
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [isDeleting, startDeleteTransition] = useTransition();
+  const {
+    isSheetOpen, setIsSheetOpen,
+    selectedEvent, setSelectedEvent,
+    sheetMode, setSheetMode,
+    selectedBookingForReview, setSelectedBookingForReview,
+    actionEvent, isCancelOpen, setIsCancelOpen,
+    isDeleteOpen, setIsDeleteOpen,
+    handleEventClick, handleCreateClick, handleEditRequest,
+    handleCancelRequest, handleDeleteRequest,
+  } = useAppointmentDialogs();
 
-  useEffect(() => {
-    startTransition(async () => {
-      const res = await getAppointmentMetrics(date);
-      if (res.status === "success" && res.data) setMetrics(res.data);
-    });
-  }, [date]);
+  const {
+    isPending: isActionPending,
+    isDeleting,
+    isCancelling,
+    handleSaveAppointment,
+    handleConfirmDelete,
+    handleConfirmCancel,
+    handleCreateInvoice,
+    handleReviewNeeded,
+    onCheckIn,
+    onNoShow,
+  } = useAppointmentActions({
+    events,
+    refreshEvents,
+    setSelectedBookingForReview,
+    setIsSheetOpen,
+    setIsDeleteOpen,
+    setIsCancelOpen,
+    addOptimisticEvent,
+    createInvoice: createInvoiceAction,
+    getInvoice: getInvoiceAction,
+    getBookingReview: getBookingReviewAction,
+  });
 
-  const handleRefresh = useCallback(() => {
-    startTransition(async () => {
-      const result = await getAppointments(dateRange, filters);
-      if (result.status === "success" && result.data) setEvents(result.data);
-      const mRes = await getAppointmentMetrics(date);
-      if (mRes.status === "success" && mRes.data) setMetrics(mRes.data);
-    });
-  }, [dateRange, filters, date]);
+  const isRefreshing = isMetricsPending || isEventsPending || isActionPending;
 
-  // Auto-refresh when filters or dateRange change
-  useEffect(() => {
-    handleRefresh();
-  }, [handleRefresh]);
-
-  const handleEventClick = (event: CalendarEvent) => {
-    setSelectedEvent(event);
-    setSheetMode("view");
-    setIsSheetOpen(true);
+  const handlePaymentSuccess = () => {
+    refreshEvents();
   };
 
-  const handleCreateClick = () => {
-    setSelectedEvent(null);
-    setSheetMode("create");
-    setIsSheetOpen(true);
-  };
-
-  const handleReviewNeeded = useCallback(
-    async (bookingId: string) => {
-      const booking = events.find((e) => e.id === bookingId)?.appointment;
-      if (!booking || booking.status !== "COMPLETED") return;
-      const invoiceRes = await getInvoice(bookingId);
-      if (
-        invoiceRes.status !== "success" ||
-        !invoiceRes.data ||
-        invoiceRes.data.status !== "PAID"
-      )
-        return;
-      const reviewRes = await getBookingReview(bookingId);
-      if (!(reviewRes.status === "success" && reviewRes.data))
-        setSelectedBookingForReview(bookingId);
-    },
-    [events]
-  );
-
-  const handleSaveAppointment = (appointment: Appointment) => {
-    setIsSheetOpen(false);
-    handleRefresh();
-    if (appointment.status === "COMPLETED") handleReviewNeeded(appointment.id);
-  };
-
-  const wrapAction = useCallback(
-    (
-      fn: (id: string) => Promise<ActionResponse<Appointment | undefined>>,
-      successMsg: string,
-      errorMsg: string
-    ) => {
-      return async (event: CalendarEvent) => {
-        if (!event.id) return;
-        startTransition(async () => {
-          const res = await fn(event.id!);
-          if (res.status === "success") {
-            showToast.success(res.message || successMsg);
-            handleRefresh();
-          } else showToast.error(res.message || errorMsg);
-        });
-      };
-    },
-    [handleRefresh]
-  );
-
-  // Dialog Handlers
-  const handleCancelRequest = (event: CalendarEvent) => {
-    setActionEvent(event);
-    setIsCancelOpen(true);
-  };
-
-  const handleDeleteRequest = (event: CalendarEvent) => {
-    setActionEvent(event);
-    setIsDeleteOpen(true);
-  };
-
-  const handleConfirmDelete = () => {
-    if (!actionEvent?.id) return;
-    startDeleteTransition(async () => {
-      const res = await deleteAppointment(actionEvent.id!);
-      if (res.status === "success") {
-        showToast.success(res.message || "Xóa lịch hẹn thành công");
-        handleRefresh();
-        setIsDeleteOpen(false);
-      } else {
-        showToast.error(res.message || "Không thể xóa lịch hẹn");
-      }
-    });
-  };
-
-  const handleCreateInvoice = useCallback(async (bookingId: string) => {
-    const res = await createInvoice(bookingId);
-    if (res.status === "success" && res.data) {
-      showToast.success(res.message || "Tạo hóa đơn thành công");
-      return res.data; // Return invoice for inline payment
-    } else {
-      showToast.error(res.message || "Không thể tạo hóa đơn");
-      return null;
-    }
-  }, []);
-
-  // Called after payment success from AppointmentSheet
-  const handlePaymentSuccess = useCallback(
-    (_bookingId: string) => {
-      handleRefresh();
-      // Review prompt is now handled inside AppointmentSheet after payment
-    },
-    [handleRefresh]
-  );
-
-  const handleSlotClick = (date: Date, hour: number, minute: number) => {
-    const startTime = new Date(date);
+  const handleSlotClick = (clickedDate: Date, hour: number, minute: number) => {
+    const startTime = new Date(clickedDate);
     startTime.setHours(hour, minute, 0, 0);
     const endTime = new Date(startTime.getTime() + 36e5);
     const staffId = filters.staffIds?.[0] || staffList[0]?.id || "";
+
     setSelectedEvent({
       id: "new",
       start: startTime,
@@ -321,7 +223,7 @@ export function AppointmentsPage({
   if (appointmentsRes.status === "error" || staffRes.status === "error")
     return <div className="text-destructive p-4">Lỗi tải dữ liệu</div>;
 
-  const pending = metrics?.todayPending ?? 0;
+  const pendingCount = metrics?.todayPending ?? 0;
 
   return (
     <PageShell className="h-screen overflow-hidden">
@@ -344,10 +246,10 @@ export function AppointmentsPage({
             />
             <StatBadge
               icon={Clock}
-              value={pending}
+              value={pendingCount}
               label="Lịch hẹn chờ duyệt"
-              highlight={pending > 0}
-              badge={pending > 0}
+              highlight={pendingCount > 0}
+              badge={pendingCount > 0}
             />
             <StatBadge
               icon={Activity}
@@ -369,12 +271,12 @@ export function AppointmentsPage({
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={handleRefresh}
-                  disabled={isPending}
+                  onClick={refreshEvents}
+                  disabled={isRefreshing}
                   className="text-muted-foreground hover:text-foreground size-8"
                 >
                   <RefreshCw
-                    className={cn("size-4", isPending && "animate-spin")}
+                    className={cn("size-4", isRefreshing && "animate-spin")}
                   />
                   <span className="sr-only">Làm mới</span>
                 </Button>
@@ -407,6 +309,7 @@ export function AppointmentsPage({
           </div>
         </div>
       </PageHeader>
+
       <PageContent fullWidth className="flex flex-col gap-0 p-0">
         <div className="flex min-h-0 flex-1 flex-col p-4">
           <SurfaceCard className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border">
@@ -420,29 +323,18 @@ export function AppointmentsPage({
               roomList={roomList}
               onEventClick={handleEventClick}
               onSlotClick={handleSlotClick}
-              isLoading={isPending && events.length === 0}
+              isLoading={isEventsPending && events.length === 0}
               className="min-h-0 flex-1"
-              onCheckIn={wrapAction(
-                checkInAppointment,
-                "Check-in thành công",
-                "Không thể check-in"
-              )}
-              onNoShow={wrapAction(
-                markNoShow,
-                "Đã đánh dấu No-show",
-                "Không thể đánh dấu No-show"
-              )}
+              onCheckIn={onCheckIn}
+              onNoShow={onNoShow}
               onCancel={handleCancelRequest}
               onDelete={handleDeleteRequest}
-              onEdit={(e) => {
-                setSelectedEvent(e);
-                setSheetMode("edit");
-                setIsSheetOpen(true);
-              }}
+              onEdit={handleEditRequest}
             />
           </SurfaceCard>
         </div>
       </PageContent>
+
       <AppointmentSheet
         open={isSheetOpen}
         onOpenChange={setIsSheetOpen}
@@ -456,6 +348,7 @@ export function AppointmentsPage({
         availableResources={roomList}
         availableServices={serviceList}
       />
+
       {selectedEvent?.appointment &&
         selectedBookingForReview === selectedEvent.appointment.id && (
           <ReviewPrompt
@@ -466,7 +359,7 @@ export function AppointmentsPage({
             }}
             onReviewSubmitted={() => {
               setSelectedBookingForReview(null);
-              handleRefresh();
+              refreshEvents();
             }}
             customerName={selectedEvent?.appointment?.customerName || ""}
             serviceName={selectedEvent?.appointment?.serviceName || ""}
@@ -478,12 +371,13 @@ export function AppointmentsPage({
         event={actionEvent}
         open={isCancelOpen}
         onOpenChange={setIsCancelOpen}
-        onSuccess={handleRefresh}
+        onConfirm={handleConfirmCancel}
+        isPending={isCancelling}
       />
       <DeleteConfirmDialog
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
-        onConfirm={handleConfirmDelete}
+        onConfirm={() => handleConfirmDelete(actionEvent)}
         isDeleting={isDeleting}
         entityName="lịch hẹn"
         entityLabel={actionEvent?.title}
