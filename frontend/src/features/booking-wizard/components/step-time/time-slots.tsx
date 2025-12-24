@@ -86,7 +86,7 @@ export const TimeSlots: React.FC<TimeSlotsProps> = ({
                 ? Array.from({ length: 6 }).map((_, i) => (
                     <div
                       key={i}
-                      className="bg-muted h-10 animate-pulse rounded-xl"
+                      className="bg-muted h-9 animate-pulse rounded-md"
                     />
                   ))
                 : slotsInGroup?.map((slot) => (

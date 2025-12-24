@@ -93,7 +93,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
 
         <Button
           asChild
-          className="w-full rounded-xl shadow-md transition-transform duration-200 group-hover:scale-[1.02]"
+          className="w-full rounded-lg shadow-md transition-transform duration-200 group-hover:scale-[1.02]"
         >
           <Link href="/booking">
             <Calendar className="size-4" />

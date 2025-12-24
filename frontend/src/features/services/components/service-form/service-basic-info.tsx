@@ -42,7 +42,7 @@ export function ServiceBasicInfo({
       />
 
       {/* Active Toggle */}
-      <div className="bg-muted/30 flex items-center justify-between rounded-xl border p-4">
+      <div className="bg-muted/30 flex items-center justify-between rounded-lg border p-4">
         <div>
           <span className="text-sm font-medium">Trạng thái</span>
           <p className="text-muted-foreground text-xs">

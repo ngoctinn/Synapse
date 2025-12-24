@@ -51,7 +51,7 @@ export function MobileMenuOverlay({
       />
 
       {/* Menu Content */}
-      <div className="bg-background/95 animate-in slide-in-from-top-2 fade-in pointer-events-auto absolute left-4 right-4 top-[calc(100%+0.5rem)] z-50 rounded-2xl border p-6 shadow-lg backdrop-blur-md duration-200 md:hidden">
+      <div className="bg-background/95 animate-in slide-in-from-top-2 fade-in pointer-events-auto absolute left-4 right-4 top-[calc(100%+0.5rem)] z-50 rounded-lg border p-6 shadow-lg backdrop-blur-md duration-200 md:hidden">
         <div className="flex flex-col items-center space-y-6 text-center">
           <nav className="flex w-full flex-col items-center space-y-4">
             <HeaderNav mobile onLinkClick={onClose} />
@@ -62,7 +62,7 @@ export function MobileMenuOverlay({
             ) : (
               <Button
                 variant="outline"
-                className="text-destructive hover:text-destructive hover:bg-destructive/10 h-11 w-full cursor-pointer justify-center rounded-xl"
+                className="text-destructive hover:text-destructive hover:bg-destructive/10 h-9 w-full cursor-pointer justify-center rounded-lg"
                 onClick={() => {
                   onLogout();
                   onClose();

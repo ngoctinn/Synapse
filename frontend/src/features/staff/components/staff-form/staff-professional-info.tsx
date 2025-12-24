@@ -156,7 +156,7 @@ export function StaffProfessionalInfo({ mode, skills }: StaffProfessionalInfoPro
                     onNewTagsChange={() => showToast.info("Vui lòng dùng nút 'Quản lý kỹ năng' để thêm mới")}
                     placeholder="Chọn kỹ năng..."
                     isError={fieldState.invalid}
-                    className="bg-background min-h-[40px] text-sm"
+                    className="bg-background min-h-9 text-sm"
                   />
                 </FormControl>
                 <FormMessage />

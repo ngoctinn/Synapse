@@ -57,7 +57,7 @@ export function ServicesSection() {
         />
 
         {filteredServices.length === 0 ? (
-          <div className="text-muted-foreground bg-background mx-auto max-w-2xl rounded-2xl border border-dashed py-16 text-center">
+          <div className="text-muted-foreground bg-background mx-auto max-w-2xl rounded-lg border border-dashed py-16 text-center">
             <SearchX className="text-muted-foreground/50 mx-auto mb-4 h-12 w-12" />
             <p className="font-medium">Không tìm thấy dịch vụ phù hợp</p>
             <p className="mt-2 text-sm">

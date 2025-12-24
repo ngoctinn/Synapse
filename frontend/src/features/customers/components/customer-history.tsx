@@ -89,7 +89,7 @@ export function CustomerHistory() {
         {MOCK_STATS.map((stat, index) => (
           <div
             key={index}
-            className="bg-card flex items-center gap-4 rounded-xl border p-4 shadow-sm transition-shadow hover:shadow-md"
+            className="bg-card flex items-center gap-4 rounded-lg border p-4 shadow-sm transition-shadow hover:shadow-md"
           >
             <div className={`rounded-full p-3 ${stat.bg} ${stat.color}`}>
               <stat.icon className="h-5 w-5" />
@@ -107,7 +107,7 @@ export function CustomerHistory() {
       </div>
 
       {/* History Table */}
-      <div className="bg-card overflow-hidden rounded-xl border shadow-sm">
+      <div className="bg-card overflow-hidden rounded-lg border shadow-sm">
         <div className="bg-muted/30 border-b p-4">
           <h3 className="text-foreground font-semibold">Lịch sử đặt hẹn</h3>
         </div>

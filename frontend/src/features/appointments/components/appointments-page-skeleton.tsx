@@ -21,9 +21,9 @@ export function AppointmentsPageSkeleton() {
       </div>
 
       {/* Calendar Area */}
-      <div
-        className={cn(
-          "bg-card flex flex-1 flex-col gap-4 rounded-xl border p-4",
+    <div
+      className={cn(
+        "bg-card flex flex-1 flex-col gap-4 rounded-lg border p-4",
           "h-[calc(100vh-200px)]" // Adjust height as needed
         )}
       >

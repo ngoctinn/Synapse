@@ -62,7 +62,7 @@ export const TechnicianStep = () => {
       </div>
 
       {/* Selected Staff Detail Card */}
-      <div className="bg-card flex flex-col items-center gap-6 rounded-2xl border p-6 shadow-sm sm:flex-row">
+      <div className="bg-card flex flex-col items-center gap-6 rounded-lg border p-6 shadow-sm sm:flex-row">
         <Avatar className="border-primary/10 size-24 border-4">
           <AvatarImage src={undefined} />
           <AvatarFallback className="bg-primary/5 text-primary">

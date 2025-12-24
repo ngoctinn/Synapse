@@ -24,7 +24,7 @@ export function StaffGeneralInfo({ mode }: StaffGeneralInfoProps) {
   return (
     <div className="space-y-4">
       {/* Avatar Placeholder */}
-      <div className="bg-muted/20 flex items-center gap-4 rounded-xl border p-4">
+      <div className="bg-muted/20 flex items-center gap-4 rounded-lg border p-4">
         <div className="bg-background border-muted-foreground/30 flex size-12 items-center justify-center rounded-full border border-dashed text-muted-foreground/50">
           <Icon icon={User} size="xl" strokeWidth={1.5} />
         </div>

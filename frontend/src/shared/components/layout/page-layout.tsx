@@ -105,7 +105,7 @@ export function SurfaceCard({
   return (
     <div
       className={cn(
-        "surface-card relative flex flex-1 flex-col overflow-hidden rounded-xl",
+        "surface-card relative flex flex-1 flex-col overflow-hidden rounded-lg",
         className
       )}
       {...props}

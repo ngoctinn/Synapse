@@ -30,8 +30,8 @@ export function MessageInput({ onSendMessage }: MessageInputProps) {
   };
 
   return (
-    <div className="border-border dark:bg-card/50 rounded-b-xl border-t bg-white/50 p-4 backdrop-blur-sm">
-      <div className="focus-within:ring-primary/20 focus-within:bg-background/80 group flex items-end gap-2 rounded-xl p-1 transition-all duration-200 focus-within:ring-2">
+    <div className="border-border dark:bg-card/50 rounded-b-lg border-t bg-white/50 p-4 backdrop-blur-sm">
+      <div className="focus-within:ring-primary/20 focus-within:bg-background/80 group flex items-end gap-2 rounded-lg p-1 transition-all duration-200 focus-within:ring-2">
         <Button variant="ghost" size="icon" aria-label="Đính kèm file">
           <Paperclip className="h-5 w-5" />
         </Button>
@@ -44,7 +44,7 @@ export function MessageInput({ onSendMessage }: MessageInputProps) {
             onChange={(e) => setContent(e.target.value)}
             onKeyDown={handleKeyDown}
             className={cn(
-              "max-h-[120px] min-h-[44px] resize-none rounded-xl py-3 pr-10",
+              "max-h-[120px] min-h-[44px] resize-none rounded-lg py-3 pr-10",
               "border-none bg-transparent px-0 shadow-none focus-visible:ring-0", // Clean style to merge with parent
               "placeholder:text-muted-foreground/50"
             )}
@@ -65,7 +65,7 @@ export function MessageInput({ onSendMessage }: MessageInputProps) {
           disabled={!content.trim()}
           aria-label="Gửi tin nhắn"
           className={cn(
-            "mb-0.5 h-10 w-10 rounded-full shadow-md transition-all duration-200",
+            "mb-0.5 h-9 w-9 rounded-full shadow-md transition-all duration-200",
             content.trim()
               ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 active:scale-95"
               : "bg-muted text-muted-foreground cursor-not-allowed opacity-50"

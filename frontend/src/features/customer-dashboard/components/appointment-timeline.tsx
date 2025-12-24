@@ -323,7 +323,7 @@ export function AppointmentTimeline({
                 <div
                   key={app.id}
                   className={cn(
-                    "group/item focus-visible:ring-primary absolute cursor-pointer overflow-hidden rounded-lg border p-2 text-xs shadow-sm transition-all hover:z-30 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 md:text-sm",
+                    "group/item focus-visible:ring-primary absolute cursor-pointer overflow-hidden rounded-md border p-2 text-xs shadow-sm transition-all hover:z-30 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 md:text-sm",
                     status.bgClass,
                     status.borderClass
                   )}

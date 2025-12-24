@@ -130,7 +130,7 @@ export function ExceptionsPanel({
           <div className="flex flex-1 flex-col overflow-hidden">
             <div className="min-h-0 flex-1">
               {sortedExceptions.length === 0 ? (
-                <div className="bg-muted/10 flex h-full flex-col items-center justify-center rounded-xl border-2 border-dashed p-8 text-center">
+                <div className="bg-muted/10 flex h-full flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 text-center">
                   <CalendarDays className="text-muted-foreground/20 mb-3 size-12" />
                   <h3 className="text-muted-foreground font-medium">
                     Chưa có ngày ngoại lệ
@@ -145,7 +145,7 @@ export function ExceptionsPanel({
                     {sortedExceptions.map((exception) => (
                       <div
                         key={exception.id}
-                        className="bg-card/50 hover:bg-card hover:border-primary/20 flex items-center justify-between rounded-xl border p-4 transition-colors"
+                        className="bg-card/50 hover:bg-card hover:border-primary/20 flex items-center justify-between rounded-lg border p-4 transition-colors"
                       >
                         <div className="flex items-start gap-4">
                           {/* Date Box */}
@@ -234,7 +234,7 @@ export function ExceptionsPanel({
 
           {/* Right: Mini Calendar (Desktop only) */}
           <div className="hidden shrink-0 xl:block">
-            <div className="bg-card text-card-foreground sticky top-0 w-[320px] rounded-xl border p-4 shadow-sm">
+            <div className="bg-card text-card-foreground sticky top-0 w-[320px] rounded-lg border p-4 shadow-sm">
               <Calendar
                 mode="single"
                 selected={undefined}
@@ -251,7 +251,7 @@ export function ExceptionsPanel({
                 }}
                 className="w-full rounded-lg"
                 classNames={{
-                  day: "h-10 w-10 p-0 font-normal aria-selected:opacity-100 transition-colors hover:bg-accent cursor-pointer",
+                  day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 transition-colors hover:bg-accent cursor-pointer",
                 }}
               />
               <div className="mt-4 flex flex-wrap justify-center gap-3 text-xs">

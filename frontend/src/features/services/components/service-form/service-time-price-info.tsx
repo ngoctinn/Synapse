@@ -70,7 +70,7 @@ export function ServiceTimePriceInfo({
       <ServiceTimeVisualizer
         duration={duration}
         bufferTime={bufferTime}
-        className="bg-muted/20 border-primary/20 rounded-xl border-2 border-dashed p-4"
+        className="bg-muted/20 border-primary/20 rounded-lg border-2 border-dashed p-4"
       />
 
       <FormField

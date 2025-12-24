@@ -23,7 +23,7 @@ export function OperationalStatus() {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-primary/5 border-primary/10 flex flex-col gap-1 rounded-xl border p-3">
+          <div className="bg-primary/5 border-primary/10 flex flex-col gap-1 rounded-lg border p-3">
             <span className="text-primary/60 text-[10px] font-bold uppercase">
               Bận rộn
             </span>
@@ -32,7 +32,7 @@ export function OperationalStatus() {
               <Zap className="mb-1 size-4 text-amber-500" />
             </div>
           </div>
-          <div className="flex flex-col gap-1 rounded-xl border border-blue-500/10 bg-blue-500/5 p-3">
+          <div className="flex flex-col gap-1 rounded-lg border border-blue-500/10 bg-blue-500/5 p-3">
             <span className="text-[10px] font-bold uppercase text-blue-500/60">
               Hiệu suất KTV
             </span>

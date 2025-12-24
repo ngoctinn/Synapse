@@ -96,7 +96,7 @@ export function MaintenanceTimeline({
   };
 
   return (
-    <div className="bg-card ring-border/50 flex h-full flex-col overflow-hidden rounded-xl border shadow-sm ring-1">
+    <div className="bg-card ring-border/50 flex h-full flex-col overflow-hidden rounded-lg border shadow-sm ring-1">
       {/* Header Toolbar */}
       <div className="bg-muted/20 flex flex-col items-start justify-between gap-4 border-b p-4 sm:flex-row sm:items-center">
         <div className="flex items-center gap-4">
@@ -200,7 +200,7 @@ export function MaintenanceTimeline({
               >
                 {/* Sticky Resource Cell */}
                 <div className="bg-background/95 supports-[backdrop-filter]:bg-background/60 group-hover:bg-muted/20 sticky left-0 z-20 flex items-center gap-3 border-r p-3 backdrop-blur transition-colors">
-                  <div className="bg-muted relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border shadow-sm">
+                  <div className="bg-muted relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md border shadow-sm">
                     {res.image ? (
                       <Image
                         src={res.image}
@@ -255,7 +255,7 @@ export function MaintenanceTimeline({
                                 <button
                                   onClick={() => onTaskClick?.(task)}
                                   className={cn(
-                                    "w-full cursor-pointer truncate rounded-lg border p-1.5 text-left text-xs shadow-sm transition-all",
+                                    "w-full cursor-pointer truncate rounded-md border p-1.5 text-left text-xs shadow-sm transition-all",
                                     "hover:scale-[1.02] hover:shadow-md",
                                     "focus:ring-ring focus:z-10 focus:outline-none focus:ring-2 focus:ring-offset-1",
                                     getStatusColor(task.status)

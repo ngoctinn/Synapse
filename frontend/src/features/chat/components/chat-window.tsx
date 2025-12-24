@@ -49,7 +49,7 @@ export function ChatWindow({
     return (
       <div
         className={cn(
-          "dark:bg-card/30 glass-card flex h-full w-full flex-col items-center justify-center rounded-r-2xl bg-white/30 p-8 text-center backdrop-blur-sm",
+          "dark:bg-card/30 glass-card flex h-full w-full flex-col items-center justify-center rounded-r-lg bg-white/30 p-8 text-center backdrop-blur-sm",
           className
         )}
       >
@@ -70,7 +70,7 @@ export function ChatWindow({
   return (
     <div
       className={cn(
-        "dark:bg-card/50 glass-card flex h-full flex-1 flex-col overflow-hidden rounded-2xl bg-white/50 backdrop-blur-sm md:rounded-l-none md:rounded-r-2xl",
+        "dark:bg-card/50 glass-card flex h-full flex-1 flex-col overflow-hidden rounded-lg bg-white/50 backdrop-blur-sm md:rounded-l-none md:rounded-r-lg",
         className
       )}
     >
@@ -89,7 +89,7 @@ export function ChatWindow({
             </Button>
           )}
 
-          <Avatar className="border-border h-10 w-10 border shadow-sm">
+          <Avatar className="border-border h-9 w-9 border shadow-sm">
             <AvatarImage
               src={conversation.user.avatar}
               alt={conversation.user.name}

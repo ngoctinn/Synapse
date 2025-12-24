@@ -5,7 +5,7 @@ import Link from "next/link";
 export function CTASection() {
   return (
     <section id="contact" className="container mx-auto px-4 py-16 md:py-24">
-      <div className="bg-primary relative overflow-hidden rounded-3xl px-6 py-16 text-center shadow-2xl md:px-16 md:py-24">
+      <div className="bg-primary relative overflow-hidden rounded-lg px-6 py-16 text-center shadow-2xl md:px-16 md:py-24">
         <div className="animate-fade-in relative z-10 mx-auto max-w-3xl space-y-6">
           <h2 className="font-heading text-primary-foreground text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
             Sẵn sàng nâng tầm Spa của bạn?

@@ -199,7 +199,7 @@
   }
 
   .surface-card {
-    @apply bg-background border-border rounded-xl border p-0 transition-all duration-300 shadow-sm overflow-hidden;
+    @apply bg-background border-border rounded-lg border p-0 transition-all duration-300 shadow-sm overflow-hidden;
   }
 
   .prose-vi {

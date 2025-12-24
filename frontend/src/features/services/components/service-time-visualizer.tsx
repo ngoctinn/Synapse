@@ -20,7 +20,7 @@ export function ServiceTimeVisualizer({
     totalTime > 0 ? (Number(bufferTime) / totalTime) * 100 : 0;
 
   return (
-    <div className={cn("bg-card rounded-xl border p-5 shadow-sm", className)}>
+    <div className={cn("bg-card rounded-lg border p-5 shadow-sm", className)}>
       <h4 className="text-foreground mb-3 text-sm font-medium">
         Trực quan hóa thời gian
       </h4>

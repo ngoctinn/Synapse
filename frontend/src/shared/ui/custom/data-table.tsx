@@ -88,7 +88,7 @@ export function DataTable<T>({
   const containerClasses = cn(
     "relative w-full overflow-hidden",
     disabled && "pointer-events-none opacity-60 grayscale",
-    variant === "default" && "border rounded-lg shadow-premium-sm bg-background",
+    variant === "default" && "border rounded-lg shadow-sm bg-background",
     className
   );
 

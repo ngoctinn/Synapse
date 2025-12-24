@@ -44,11 +44,11 @@ const tabsListVariants = cva(
       },
       size: {
         /** Compact cho inline/popup (36px) */
-        sm: "h-9",
+        sm: "h-8",
         /** Default cho page headers (40px) */
-        default: "h-10",
+        default: "h-9",
         /** Large cho form sections (44px) */
-        lg: "h-11",
+        lg: "h-10",
       },
       /** Chế độ responsive: auto-width hoặc full-width */
       fullWidth: {
@@ -122,13 +122,13 @@ const tabsTriggerVariants = cva(
           // Hover state
           "hover:text-foreground hover:bg-background/50",
           // Active state - nổi bật với shadow
-          "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-premium-sm data-[state=active]:border-border/50",
+          "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm data-[state=active]:border-border/50",
         ],
         /** Form - active có background, padding nhỏ hơn */
         form: [
           "rounded-lg px-3 py-1.5",
           "hover:text-foreground",
-          "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-premium-sm",
+          "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm",
         ],
         /** Underline - active có border-bottom */
         underline: [
@@ -216,23 +216,23 @@ export const PAGE_TABS_LIST_CLASS =
 
 /** @deprecated Sử dụng <TabsTrigger variant="default" size="sm" stretch> thay thế */
 export const PAGE_TABS_TRIGGER_CLASS =
-  "data-[state=active]:bg-background data-[state=active]:shadow-premium-sm text-sm font-medium px-4 min-w-[100px] transition-all duration-200 flex-1 md:flex-none";
+  "data-[state=active]:bg-background data-[state=active]:shadow-md text-sm font-medium px-4 min-w-[100px] transition-all duration-200 flex-1 md:flex-none";
 
 /** @deprecated Sử dụng <TabsList variant="form" size="lg" fullWidth gridCols={3}> thay thế */
 export const FORM_TABS_LIST_CLASS =
-  "grid w-full bg-muted/60 rounded-lg p-1 mb-6 h-11";
+  "grid w-full bg-muted/60 rounded-xl p-1 mb-6 h-11";
 
 /** @deprecated Sử dụng <TabsTrigger variant="form"> thay thế */
 export const FORM_TABS_TRIGGER_CLASS =
-  "data-[state=active]:bg-background data-[state=active]:shadow-premium-sm";
+  "data-[state=active]:bg-background data-[state=active]:shadow-sm";
 
 /** @deprecated Sử dụng <TabsList variant="default" size="default" fullWidth gridCols={2}> thay thế */
 export const SHEET_TABS_LIST_CLASS =
-  "grid w-full mb-6 bg-muted/50 rounded-lg p-1 h-10";
+  "grid w-full mb-6 bg-muted/50 rounded-lg p-1 h-9";
 
 /** @deprecated Sử dụng <TabsTrigger variant="default"> thay thế */
 export const SHEET_TABS_TRIGGER_CLASS =
-  "data-[state=active]:bg-background data-[state=active]:shadow-premium-sm text-sm font-medium transition-all duration-200";
+  "data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium transition-all duration-200";
 
 /** @deprecated Sử dụng gridCols prop trên TabsList thay thế */
 export function getFormTabsGridCols(count: 2 | 3 | 4 | 5): string {

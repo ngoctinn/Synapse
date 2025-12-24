@@ -52,7 +52,7 @@ export function HeaderUserDropdown({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="w-64 rounded-xl border-white/20 bg-white/80 p-2 shadow-xl backdrop-blur-xl dark:bg-zinc-900/80"
+        className="w-64 rounded-lg border-white/20 bg-white/80 p-2 shadow-xl backdrop-blur-xl dark:bg-zinc-900/80"
         align="end"
         sideOffset={12}
         alignOffset={-20}
@@ -60,7 +60,7 @@ export function HeaderUserDropdown({
       >
         <DropdownMenuLabel className="p-2 font-normal">
           <div className="flex items-center gap-3">
-            <Avatar className="border-border h-10 w-10 border">
+            <Avatar className="border-border h-9 w-9 border">
               <AvatarImage src={user.avatar} alt={user.name} />
               <AvatarFallback>
                 {user.name.charAt(0).toUpperCase()}

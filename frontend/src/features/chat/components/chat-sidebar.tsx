@@ -24,7 +24,7 @@ export function ChatSidebar({
   return (
     <div
       className={cn(
-        "border-border/50 dark:bg-card/50 glass-card flex h-full w-96 flex-col rounded-2xl border-r bg-white/50 backdrop-blur-sm md:rounded-l-2xl md:rounded-r-none",
+        "border-border/50 dark:bg-card/50 glass-card flex h-full w-96 flex-col rounded-lg border-r bg-white/50 backdrop-blur-sm md:rounded-l-lg md:rounded-r-none",
         className
       )}
     >
@@ -47,14 +47,14 @@ export function ChatSidebar({
                 key={conv.id}
                 onClick={() => onSelect(conv.id)}
                 className={cn(
-                  "group relative flex w-full cursor-pointer items-start gap-3 rounded-xl p-3 text-left transition-all duration-200",
+                  "group relative flex w-full cursor-pointer items-start gap-3 rounded-lg p-3 text-left transition-all duration-200",
                   isSelected
                     ? "bg-primary/5 border-primary/20 border shadow-sm"
                     : "hover:bg-accent/50 hover:border-accent border border-transparent"
                 )}
               >
                 <div className="relative">
-                  <Avatar className="border-border h-10 w-10 border">
+                  <Avatar className="border-border h-9 w-9 border">
                     <AvatarImage src={conv.user.avatar} alt={conv.user.name} />
                     <AvatarFallback>{conv.user.name[0]}</AvatarFallback>
                   </Avatar>

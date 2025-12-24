@@ -20,7 +20,7 @@ export const FloatingSummary = ({
     <div className="animate-in slide-in-from-bottom-10 fixed bottom-0 left-0 right-0 z-40 duration-300">
       <div className="mx-auto max-w-2xl px-4 pb-4">
         <div
-          className="bg-foreground text-background flex cursor-pointer items-center justify-between rounded-xl p-4 shadow-lg"
+          className="bg-foreground text-background flex cursor-pointer items-center justify-between rounded-lg p-4 shadow-lg"
           onClick={onNext}
         >
           <div className="flex flex-col">

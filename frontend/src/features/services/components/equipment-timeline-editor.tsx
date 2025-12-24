@@ -97,7 +97,7 @@ export function EquipmentTimelineEditor({
 
   return (
     <div className="space-y-4">
-      <div className="bg-muted/30 relative rounded-xl border p-4">
+      <div className="bg-muted/30 relative rounded-lg border p-4">
         <div className="mb-3 flex items-center justify-between">
           <Label className="text-sm font-medium">
             Timeline sử dụng thiết bị

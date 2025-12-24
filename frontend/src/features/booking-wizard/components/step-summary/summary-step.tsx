@@ -181,7 +181,7 @@ export const SummaryStep = () => {
             </CardContent>
           </Card>
 
-          <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-900/30 dark:bg-blue-950/20">
+          <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-900/30 dark:bg-blue-950/20">
             <p className="text-xs font-medium leading-relaxed text-blue-800 dark:text-blue-400">
               <strong>Thanh toán tại quầy:</strong> Lịch hẹn của bạn sẽ được giữ
               chỗ. Quý khách vui lòng thanh toán trực tiếp tại quầy lễ tân sau
@@ -189,7 +189,7 @@ export const SummaryStep = () => {
             </p>
           </div>
 
-          <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/30 dark:bg-amber-950/20">
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/30 dark:bg-amber-950/20">
             <p className="text-xs font-medium text-amber-800 dark:text-amber-400">
               Lưu ý: Bạn có thể thay đổi thông tin bằng cách nhấn nút quay lại.
               Sau khi xác nhận, lịch hẹn sẽ được ghi nhận vào hệ thống.

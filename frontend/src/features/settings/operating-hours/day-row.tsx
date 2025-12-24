@@ -97,7 +97,7 @@ export function DayRow({
     <TooltipProvider delayDuration={300}>
       <div
         className={cn(
-          "flex flex-col items-start gap-4 rounded-xl border p-4 transition-all sm:flex-row sm:items-center",
+          "flex flex-col items-start gap-4 rounded-lg border p-4 transition-all sm:flex-row sm:items-center",
           isCopySource
             ? "bg-primary/5 border-primary ring-primary ring-1"
             : "bg-card hover:border-sidebar-accent",

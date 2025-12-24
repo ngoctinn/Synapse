@@ -39,7 +39,7 @@ export function MessageBubble({
       >
         <div
           className={cn(
-            "group relative rounded-2xl p-3 text-sm shadow-sm transition-all duration-200 hover:shadow-md",
+            "group relative rounded-lg p-3 text-sm shadow-sm transition-all duration-200 hover:shadow-md",
             isMe
               ? "bg-primary text-primary-foreground rounded-tr-sm"
               : "dark:bg-card border-border text-foreground glass-card rounded-tl-sm border bg-white"

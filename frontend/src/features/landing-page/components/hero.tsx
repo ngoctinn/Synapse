@@ -65,11 +65,11 @@ export function Hero() {
               {/* Mock Content */}
               <div className="flex-1 space-y-4 p-6">
                 <div className="flex gap-4">
-                  <div className="bg-primary/5 border-primary/10 h-24 flex-1 rounded-xl border" />
-                  <div className="h-24 flex-1 rounded-xl border border-purple-500/10 bg-purple-500/5" />
-                  <div className="h-24 flex-1 rounded-xl border border-pink-500/10 bg-pink-500/5" />
+                  <div className="bg-primary/5 border-primary/10 h-24 flex-1 rounded-lg border" />
+                  <div className="h-24 flex-1 rounded-lg border border-purple-500/10 bg-purple-500/5" />
+                  <div className="h-24 flex-1 rounded-lg border border-pink-500/10 bg-pink-500/5" />
                 </div>
-                <div className="bg-muted/20 border-muted h-64 rounded-xl border border-dashed" />
+                <div className="bg-muted/20 border-muted h-64 rounded-lg border border-dashed" />
               </div>
             </div>
           </div>

@@ -36,7 +36,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
         <NavMain />
       </SidebarContent>
       <SidebarFooter className="p-4 group-data-[collapsible=icon]:p-2">
-        <div className="border-border/50 bg-background/50 hover:bg-background rounded-xl border p-1 shadow-sm transition-all hover:shadow-md group-data-[collapsible=icon]:border-none group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:shadow-none">
+        <div className="border-border/50 bg-background/50 hover:bg-background rounded-lg border p-1 shadow-sm transition-all hover:shadow-md group-data-[collapsible=icon]:border-none group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:shadow-none">
           <HeaderUserDropdown
             user={{
               name: user.fullName,

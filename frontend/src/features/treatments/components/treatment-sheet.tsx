@@ -195,7 +195,7 @@ export function TreatmentSheet({
                 </div>
               </div>
             ) : (
-              <div className="text-muted-foreground rounded-xl border border-amber-200/50 bg-amber-50/50 p-4 text-sm italic leading-relaxed dark:border-amber-900/30 dark:bg-amber-900/10">
+              <div className="text-muted-foreground rounded-lg border border-amber-200/50 bg-amber-50/50 p-4 text-sm italic leading-relaxed dark:border-amber-900/30 dark:bg-amber-900/10">
                 {data.notes
                   ? `"${data.notes}"`
                   : "Chưa có ghi chú chuyên môn cho liệu trình này."}

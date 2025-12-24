@@ -4,12 +4,12 @@ import * as React from "react";
 import { cn } from "@/shared/lib/utils";
 
 const inputVariants = cva(
-  "flex w-full min-w-0 rounded-lg border bg-transparent text-base leading-none transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+  "flex w-full min-w-0 rounded-md border bg-transparent text-base leading-none transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
   {
     variants: {
       variant: {
         default:
-          "border-input bg-background shadow-premium-sm hover:border-input hover:shadow-md focus-premium dark:bg-input/30",
+          "border-input bg-background shadow-md hover:border-input hover:shadow-lg focus-premium dark:bg-input/30",
         glass:
           "bg-background/60 backdrop-blur-xl border-white/10 shadow-none focus-premium",
         flat: "bg-secondary/50 border-transparent shadow-none hover:bg-secondary/80 focus-premium focus-visible:bg-background",
