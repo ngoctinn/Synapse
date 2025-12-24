@@ -51,7 +51,7 @@ const badgeVariants = cva(
 
         // === SPECIFIC STATUS ===
         "status-active":
-          "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:bg-emerald-500/20 dark:border-emerald-500/30",
+          "bg-alert-success text-alert-success-foreground border-alert-success-border",
         "status-inactive": "bg-muted text-muted-foreground border-border",
       },
       size: {
@@ -249,9 +249,10 @@ function Badge({
       return colorMap[indicatorColor];
     }
     // Map variant to indicator color
-    if (finalVariant === "success") return "bg-emerald-500";
+    if (finalVariant === "success") return "bg-emerald-500"; // Keep explicit good color for dot
+    if (finalVariant === "status-active") return "bg-emerald-500";
     if (finalVariant === "warning") return "bg-amber-500";
-    if (finalVariant === "destructive") return "bg-red-500";
+    if (finalVariant === "destructive") return "bg-destructive"; // Use token
     if (finalVariant === "info") return "bg-blue-500";
     if (finalVariant === "secondary") return "bg-primary";
     return "bg-current";

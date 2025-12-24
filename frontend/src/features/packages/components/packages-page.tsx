@@ -65,7 +65,7 @@ export function PackagesPage({ data, page, totalPages }: PackagesPageProps) {
                   placeholder="Tìm gói dịch vụ..."
                   defaultValue={initialSearch}
                   onChange={(e) => handleSearch(e.target.value)}
-                  className="bg-background border-muted-foreground/20 focus-premium h-9 w-full pl-9"
+                  className="bg-background border-muted-foreground/20 focus-premium w-full pl-9"
                 />
               </div>
             }

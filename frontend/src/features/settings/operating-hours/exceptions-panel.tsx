@@ -251,7 +251,7 @@ export function ExceptionsPanel({
                 }}
                 className="w-full rounded-md"
                 classNames={{
-                  day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 transition-colors hover:bg-accent cursor-pointer",
+                  day: "h-10 w-10 p-0 font-normal aria-selected:opacity-100 transition-colors hover:bg-accent cursor-pointer",
                 }}
               />
               <div className="mt-4 flex flex-wrap justify-center gap-3 text-xs">

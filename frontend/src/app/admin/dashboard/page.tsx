@@ -14,8 +14,13 @@ export default function Page() {
           <h1 className="text-3xl font-black tracking-tight">
             Xin chào, Lễ tân 👋
           </h1>
-          <p className="text-muted-foreground mt-1">
-            Hôm nay là một ngày bận rộn. Đây là những gì đang diễn ra.
+          <p className="text-muted-foreground mt-1 capitalize">
+            Hôm nay là {new Intl.DateTimeFormat("vi-VN", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+              year: "numeric"
+            }).format(new Date())}.
           </p>
         </div>
         <div className="flex items-center gap-2">

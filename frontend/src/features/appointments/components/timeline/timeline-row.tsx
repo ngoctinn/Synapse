@@ -84,7 +84,7 @@ export function TimelineRow({
         )}
       >
         {/* Avatar */}
-        <Avatar className="h-9 w-9 flex-shrink-0">
+        <Avatar className="h-10 w-10 flex-shrink-0">
           <AvatarImage src={resource.avatar} alt={resource.name} />
           <AvatarFallback
             className="text-xs font-medium"

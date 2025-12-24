@@ -15,9 +15,9 @@ import {
   SelectTrigger,
   SelectValue,
   showToast,
+  Spinner,
 } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 
@@ -158,7 +158,7 @@ export function PaymentForm({ invoice, onSuccess }: PaymentFormProps) {
         />
 
         <Button type="submit" className="w-full" disabled={isPending}>
-          {isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
+          {isPending && <Spinner className="mr-2 size-4" />}
           Xác nhận thanh toán
         </Button>
       </form>

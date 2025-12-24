@@ -21,10 +21,20 @@ import {
   DropdownMenuTrigger as DropdownMenuRootTrigger,
 } from "@/shared/ui/dropdown-menu";
 
-import { ChevronRight } from "lucide-react";
+import { ChevronRightIcon } from "@heroicons/react/20/solid";
+import * as SolidIcons from "@heroicons/react/24/solid";
+import * as OutlineIcons from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SidebarItem as SidebarItemType } from "../constants";
+
+// Map outline to solid based on the export name from Heroicons
+const iconMap: Record<string, any> = {};
+Object.keys(OutlineIcons).forEach((key) => {
+  if ((SolidIcons as any)[key]) {
+    iconMap[key] = (SolidIcons as any)[key];
+  }
+});
 
 interface SidebarItemProps {
   item: SidebarItemType;
@@ -33,7 +43,6 @@ interface SidebarItemProps {
 export function SidebarItem({ item }: SidebarItemProps) {
   const pathname = usePathname();
   const { state } = useSidebar();
-  const Icon = item.icon;
   const isCollapsed = state === "collapsed";
 
   const isActive = item.items
@@ -42,9 +51,19 @@ export function SidebarItem({ item }: SidebarItemProps) {
 
   const isSubItemActive = (href: string) => pathname === href;
 
+  // Get the icon to display (Solid if active, Otherwise Outline)
+  const IconComponent = item.icon;
+
+  // Find the key by reference comparison (100% reliable)
+  const iconKey = Object.keys(OutlineIcons).find(
+    (key) => (OutlineIcons as any)[key] === IconComponent
+  );
+
+  const SolidIcon = iconKey ? iconMap[iconKey] : null;
+  const Icon = isActive && SolidIcon ? SolidIcon : IconComponent;
+
   // Render khi thu gọn
   if (isCollapsed) {
-    // Trường hợp 1: Có menu con -> Dùng Dropdown
     if (item.items) {
       return (
         <SidebarMenuItem className="px-3">
@@ -54,11 +73,11 @@ export function SidebarItem({ item }: SidebarItemProps) {
                 tooltip={item.title}
                 isActive={isActive}
                 className={cn(
-                  "h-10 w-full justify-start rounded-lg transition-colors px-2.5",
+                  "h-10 w-full justify-start rounded-md transition-colors px-2.5",
                   isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 )}
               >
-                <Icon className="size-5 shrink-0" />
+                <Icon className="size-6 shrink-0" strokeWidth={2} />
               </SidebarMenuButton>
             </DropdownMenuRootTrigger>
             <DropdownMenuContentRoot side="right" align="start" className="min-w-[190px] rounded-lg ml-4 shadow-md">
@@ -83,7 +102,6 @@ export function SidebarItem({ item }: SidebarItemProps) {
       );
     }
 
-    // Trường hợp 2: Không có con -> Link trực tiếp
     return (
       <SidebarMenuItem className="px-3">
         <SidebarMenuButton
@@ -91,12 +109,12 @@ export function SidebarItem({ item }: SidebarItemProps) {
           tooltip={item.title}
           isActive={isActive}
           className={cn(
-            "h-10 w-full justify-start rounded-lg transition-colors px-2.5",
+            "h-10 w-full justify-start rounded-md transition-colors px-2.5",
             isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
           )}
         >
           <Link href={item.href}>
-            <Icon className="size-5 shrink-0" />
+            <Icon className="size-6 shrink-0" strokeWidth={2} />
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -113,13 +131,13 @@ export function SidebarItem({ item }: SidebarItemProps) {
               tooltip={item.title}
               isActive={isActive}
               className={cn(
-                "h-10 rounded-lg px-2.5 transition-colors justify-start",
+                "h-10 rounded-md px-2.5 transition-colors justify-start",
                 isActive ? "bg-primary/10 text-primary font-semibold" : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
               )}
             >
-              <Icon className="size-5 shrink-0" />
+              <Icon className="size-6 shrink-0" strokeWidth={2} />
               <span className="truncate ml-3">{item.title}</span>
-              <ChevronRight
+              <ChevronRightIcon
                 className="text-muted-foreground/50 ml-auto size-4 transition-transform group-data-[state=open]/collapsible:rotate-90"
                 aria-hidden="true"
               />
@@ -133,7 +151,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
                     asChild
                     isActive={isSubItemActive(subItem.href)}
                     className={cn(
-                      "h-9 px-3 rounded-md transition-colors",
+                      "h-10 px-3 rounded-md transition-colors",
                       isSubItemActive(subItem.href) ? "text-primary font-medium bg-primary/5" : "text-muted-foreground hover:text-foreground"
                     )}
                   >
@@ -158,12 +176,12 @@ export function SidebarItem({ item }: SidebarItemProps) {
         isActive={isActive}
         tooltip={item.title}
         className={cn(
-          "h-10 rounded-lg px-2.5 transition-colors justify-start",
+          "h-10 rounded-md px-2.5 transition-colors justify-start",
           isActive ? "bg-primary/10 text-primary font-semibold" : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
         )}
       >
         <Link href={item.href} className="flex items-center">
-          <Icon className="size-5 shrink-0" />
+          <Icon className="size-6 shrink-0" strokeWidth={2} />
           <span className="truncate ml-3">{item.title}</span>
         </Link>
       </SidebarMenuButton>

@@ -10,7 +10,7 @@ export function CreateWarrantyTrigger() {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} className="h-9">
+      <Button onClick={() => setOpen(true)}>
         <Plus className="mr-2 h-4 w-4" />
         Tạo phiếu mới
       </Button>

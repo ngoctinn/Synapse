@@ -30,19 +30,21 @@ import {
 import { LogOut, Settings, User } from "lucide-react";
 import { usePathname } from "next/navigation";
 import React, { useEffect } from "react";
+import { UserNav } from "./user-nav";
+import { CommandMenu } from "./command-menu";
 
-import { getBreadcrumbTitle } from "../constants"; // Dùng hàm mới
+import { getBreadcrumbTitle } from "../constants";
 
 interface AdminHeaderProps {
   className?: string;
   user: UserProfile | null;
-  loading?: boolean; // Thêm loading prop
+  loading?: boolean;
 }
 
 export function AdminHeader({
   className,
   user,
-  loading = false,
+  loading,
 }: AdminHeaderProps) {
   const pathname = usePathname();
   const unreadCount = useNotificationStore((state) => state.unreadCount);
@@ -56,14 +58,6 @@ export function AdminHeader({
     fetchNotifications();
   }, [fetchNotifications]);
 
-  const handleLogout = async () => {
-    await logoutAction();
-  };
-
-  const displayName = user?.full_name || user?.email || "Admin";
-  const displayEmail = user?.email || "";
-  const avatarUrl = user?.avatar_url || "";
-  const initials = displayName.substring(0, 2).toUpperCase();
 
   return (
     <header
@@ -73,6 +67,7 @@ export function AdminHeader({
       )}
     >
       <div className="flex items-center gap-2 px-4">
+        <SidebarTrigger className="-ml-1" />
         <nav aria-label="Breadcrumb">
           <Breadcrumb>
             <BreadcrumbList>
@@ -109,71 +104,17 @@ export function AdminHeader({
       </div>
 
       <div className="ml-auto flex items-center gap-3 px-4">
+        {/* Command Menu */}
+        <CommandMenu />
+
         {/* Notification Button */}
         <NotificationPopover>
           <NotificationBell unreadCount={unreadCount} />
         </NotificationPopover>
 
-        <div className="bg-border mx-1 h-6 w-px" />
-
-        {loading ? (
-          <div className="flex items-center gap-2">
-            <Skeleton className="h-8 w-8 rounded-full" />
-            <div className="hidden flex-col gap-1 md:flex">
-              <Skeleton className="h-3 w-20" />
-              <Skeleton className="h-2 w-24" />
-            </div>
-          </div>
-        ) : (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full focus-visible:ring-0"
-              >
-                <Avatar className="h-8 w-8 border border-slate-200 shadow-sm">
-                  <AvatarImage src={avatarUrl} />
-                  <AvatarFallback>{initials}</AvatarFallback>
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              sideOffset={12}
-              alignOffset={-24}
-              className="w-56 p-2"
-            >
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {displayName}
-                  </p>
-                  <p className="text-muted-foreground text-xs leading-none">
-                    {displayEmail}
-                  </p>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="group cursor-pointer">
-                <User className="group-hover:text-primary mr-2 size-4 transition-colors" />
-                <span>Hồ sơ</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="group cursor-pointer">
-                <Settings className="group-hover:text-primary mr-2 size-4 transition-colors" />
-                <span>Cài đặt</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="group cursor-pointer text-red-600 focus:bg-red-50 focus:text-red-600"
-                onSelect={handleLogout}
-              >
-                <LogOut className="mr-2 size-4 text-red-600 transition-transform group-hover:translate-x-1" />
-                <span>Đăng xuất</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
+        {/* User Profile */}
+        <Separator orientation="vertical" className="h-4 mx-1" />
+        <UserNav user={user} loading={loading} />
       </div>
     </header>
   );

@@ -76,7 +76,7 @@ export function ReviewsAdminPage() {
                 onChange={(e) =>
                   setFilters((prev) => ({ ...prev, search: e.target.value }))
                 }
-                className="h-9 w-full"
+                className="w-full"
               />
             </div>
           }

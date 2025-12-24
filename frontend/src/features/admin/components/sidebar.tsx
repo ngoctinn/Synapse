@@ -13,13 +13,16 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/shared/ui/sidebar";
-import { HelpCircle, Menu } from "lucide-react";
+import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import { SIDEBAR_GROUPS } from "../constants";
 import { SidebarItem } from "./sidebar-item";
+import { UserProfile } from "@/shared/components/layout/components/header/types";
+
+interface AdminSidebarProps extends React.ComponentProps<typeof Sidebar> {}
 
 export function AdminSidebar({
   ...props
-}: React.ComponentProps<typeof Sidebar>) {
+}: AdminSidebarProps) {
   const { toggleSidebar } = useSidebar();
 
   return (
@@ -39,9 +42,11 @@ export function AdminSidebar({
               tooltip="Thu gọn / Mở rộng"
               className="h-10 w-full justify-start rounded-lg transition-colors px-2.5 hover:bg-muted/80"
             >
-              <Menu className="size-5 shrink-0" />
-              <span className="font-bold text-primary text-base tracking-tight uppercase group-data-[collapsible=icon]:hidden ml-3 truncate">
+              <span className="font-bold text-primary text-base tracking-tight uppercase group-data-[collapsible=icon]:hidden truncate">
                 Synapse
+              </span>
+              <span className="font-bold text-primary text-xl hidden group-data-[collapsible=icon]:block">
+                S
               </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -71,7 +76,7 @@ export function AdminSidebar({
         ))}
       </SidebarContent>
 
-      <SidebarFooter className="p-3">
+      <SidebarFooter className="p-3 gap-3">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
@@ -79,7 +84,7 @@ export function AdminSidebar({
               aria-label="Hỗ trợ"
               className="text-muted-foreground hover:text-foreground hover:bg-muted/50 h-10 min-h-[40px] rounded-lg font-medium transition-all duration-200 justify-start px-2.5"
             >
-              <HelpCircle className="size-5 shrink-0" />
+              <QuestionMarkCircleIcon className="size-6 shrink-0" strokeWidth={2} />
               <span className="group-data-[collapsible=icon]:hidden ml-3">
                 Hỗ trợ
               </span>

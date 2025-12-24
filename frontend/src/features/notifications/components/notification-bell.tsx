@@ -19,7 +19,7 @@ export const NotificationBell = React.forwardRef<
       variant="ghost"
       size="icon"
       className={cn(
-        "hover:bg-muted text-muted-foreground relative h-9 w-9 rounded-full transition-transform hover:scale-105",
+        "hover:bg-muted text-muted-foreground relative h-10 w-10 rounded-full transition-transform hover:scale-105",
         className
       )}
       {...props}

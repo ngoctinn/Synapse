@@ -88,7 +88,7 @@ export function DataTable<T>({
   const containerClasses = cn(
     "relative w-full overflow-hidden",
     disabled && "pointer-events-none opacity-60 grayscale",
-    variant === "default" && "border rounded-lg shadow-sm bg-background",
+    variant === "default" && "border rounded-lg shadow-premium-sm bg-background",
     className
   );
 
@@ -116,9 +116,9 @@ export function DataTable<T>({
   return (
     <div className="flex flex-col gap-4">
       <div className={containerClasses}>
-        <div className="w-full overflow-auto">
+        <div className="w-full overflow-x-auto">
           <Table>
-            <TableHeader>
+            <TableHeader className="bg-background sticky top-0 z-50">
               <TableRow className="border-border/60 border-b hover:bg-transparent">
                 {selection && (
                   <TableHead className="w-12 pl-6">

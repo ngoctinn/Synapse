@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 const skeletonVariants = cva(
   // Base: respects prefers-reduced-motion
-  "bg-accent rounded-md motion-safe:animate-pulse",
+  "bg-accent rounded-lg motion-safe:animate-pulse",
   {
     variants: {
       variant: {

@@ -124,7 +124,7 @@ export function ResourcePage({
             )}
             <Suspense
               fallback={
-                <div className="bg-muted h-9 w-[130px] animate-pulse rounded-md" />
+                <div className="bg-muted h-10 w-[130px] animate-pulse rounded-md" />
               }
             >
               <AddResourceWrapper groupsPromise={groupsPromise} />

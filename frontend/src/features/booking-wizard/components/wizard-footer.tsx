@@ -1,5 +1,4 @@
-import { Button } from "@/shared/ui/button";
-import { Loader2 } from "lucide-react";
+import { Button, Spinner } from "@/shared/ui";
 
 interface WizardFooterProps {
   isLoading?: boolean;
@@ -25,7 +24,7 @@ export const WizardFooter = ({
           onClick={onNext}
           disabled={isDisabled || isLoading}
         >
-          {isLoading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+          {isLoading && <Spinner className="mr-2 h-5 w-5" />}
           {nextLabel}
         </Button>
       </div>

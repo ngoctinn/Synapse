@@ -143,7 +143,7 @@ export function FilterBar({
             placeholder="Tìm khách hàng, dịch vụ..."
             value={filters.searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="h-9 pl-9"
+            className="pl-9"
           />
         </div>
 
@@ -154,7 +154,6 @@ export function FilterBar({
               variant="outline"
               size="sm"
               className={cn(
-                "h-9",
                 filters.staffIds.length > 0 && "border-primary"
               )}
             >
@@ -202,7 +201,6 @@ export function FilterBar({
               variant="outline"
               size="sm"
               className={cn(
-                "h-9",
                 filters.serviceIds.length > 0 && "border-primary"
               )}
             >
@@ -250,7 +248,6 @@ export function FilterBar({
               variant="outline"
               size="sm"
               className={cn(
-                "h-9",
                 filters.statuses.length > 0 && "border-primary"
               )}
             >
@@ -302,7 +299,7 @@ export function FilterBar({
           <Button
             variant="ghost"
             size="sm"
-            className="text-muted-foreground h-9"
+            className="text-muted-foreground"
             onClick={handleClearAll}
           >
             <X className="mr-1 size-4" />

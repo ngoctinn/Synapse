@@ -9,7 +9,7 @@ const inputVariants = cva(
     variants: {
       variant: {
         default:
-          "border-input bg-background shadow-sm hover:border-input hover:shadow-md focus-premium dark:bg-input/30",
+          "border-input bg-background shadow-premium-sm hover:border-input hover:shadow-md focus-premium dark:bg-input/30",
         glass:
           "bg-background/60 backdrop-blur-xl border-white/10 shadow-none focus-premium",
         flat: "bg-secondary/50 border-transparent shadow-none hover:bg-secondary/80 focus-premium focus-visible:bg-background",
@@ -61,7 +61,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         className={cn("relative flex w-full items-center", containerClassName)}
       >
         {startContent && (
-          <div className="text-muted-foreground pointer-events-none absolute left-3 z-10 flex items-center">
+          <div className="text-muted-foreground pointer-events-none absolute left-3 top-0 bottom-0 z-10 flex items-center justify-center">
             {startContent}
           </div>
         )}
@@ -77,7 +77,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {endContent && (
-          <div className="text-muted-foreground absolute right-3 z-10 flex items-center">
+          <div className="text-muted-foreground pointer-events-none absolute right-3 top-0 bottom-0 z-10 flex items-center justify-center">
             {endContent}
           </div>
         )}

@@ -3,7 +3,7 @@
 import { Skill } from "@/features/services";
 import { deleteStaff } from "@/features/staff/actions";
 import { useTableParams, useTableSelection } from "@/shared/hooks";
-import { DeleteConfirmDialog, showToast } from "@/shared/ui";
+import { DeleteConfirmDialog, showToast, Spinner } from "@/shared/ui";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
@@ -18,7 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/shared/ui/tooltip";
-import { Calendar, Loader2 } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { Icon } from "@/shared/ui/custom/icon";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -303,7 +303,7 @@ export function StaffTable({
       />
       {isPending && (
         <div className="bg-background/50 absolute inset-0 z-50 flex flex-col items-center justify-center backdrop-blur-[2px]">
-          <Loader2 className="text-primary mb-2 h-8 w-8 animate-spin" />
+          <Spinner className="text-primary mb-2 h-8 w-8" />
           <p className="text-muted-foreground animate-pulse text-sm font-medium">
             Đang xử lý...
           </p>

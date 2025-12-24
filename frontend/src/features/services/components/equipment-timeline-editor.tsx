@@ -206,7 +206,7 @@ export function EquipmentTimelineEditor({
                   }
                   disabled={disabled}
                 >
-                  <SelectTrigger className="h-9">
+                  <SelectTrigger>
                     <SelectValue placeholder="Chọn thiết bị" />
                   </SelectTrigger>
                   <SelectContent>
@@ -241,7 +241,7 @@ export function EquipmentTimelineEditor({
                         })
                       }
                       disabled={disabled}
-                      className="h-8 text-sm"
+                      size="sm"
                     />
                   </div>
                   <div className="flex-1">
@@ -260,14 +260,14 @@ export function EquipmentTimelineEditor({
                         })
                       }
                       disabled={disabled}
-                      className="h-8 text-sm"
+                      size="sm"
                     />
                   </div>
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="text-muted-foreground hover:text-destructive mt-4 h-8 w-8"
+                    className="text-muted-foreground hover:text-destructive mt-4 h-9 w-9"
                     onClick={() => handleRemove(index)}
                     disabled={disabled}
                     aria-label="Xóa thiết bị"

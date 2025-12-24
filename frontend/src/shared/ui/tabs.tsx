@@ -122,13 +122,13 @@ const tabsTriggerVariants = cva(
           // Hover state
           "hover:text-foreground hover:bg-background/50",
           // Active state - nổi bật với shadow
-          "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm data-[state=active]:border-border/50",
+          "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-premium-sm data-[state=active]:border-border/50",
         ],
         /** Form - active có background, padding nhỏ hơn */
         form: [
           "rounded-md px-3 py-1.5",
           "hover:text-foreground",
-          "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm",
+          "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-premium-sm",
         ],
         /** Underline - active có border-bottom */
         underline: [
@@ -216,7 +216,7 @@ export const PAGE_TABS_LIST_CLASS =
 
 /** @deprecated Sử dụng <TabsTrigger variant="default" size="sm" stretch> thay thế */
 export const PAGE_TABS_TRIGGER_CLASS =
-  "data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium px-4 min-w-[100px] transition-all duration-200 flex-1 md:flex-none";
+  "data-[state=active]:bg-background data-[state=active]:shadow-premium-sm text-sm font-medium px-4 min-w-[100px] transition-all duration-200 flex-1 md:flex-none";
 
 /** @deprecated Sử dụng <TabsList variant="form" size="lg" fullWidth gridCols={3}> thay thế */
 export const FORM_TABS_LIST_CLASS =
@@ -224,7 +224,7 @@ export const FORM_TABS_LIST_CLASS =
 
 /** @deprecated Sử dụng <TabsTrigger variant="form"> thay thế */
 export const FORM_TABS_TRIGGER_CLASS =
-  "data-[state=active]:bg-background data-[state=active]:shadow-sm";
+  "data-[state=active]:bg-background data-[state=active]:shadow-premium-sm";
 
 /** @deprecated Sử dụng <TabsList variant="default" size="default" fullWidth gridCols={2}> thay thế */
 export const SHEET_TABS_LIST_CLASS =
@@ -232,7 +232,7 @@ export const SHEET_TABS_LIST_CLASS =
 
 /** @deprecated Sử dụng <TabsTrigger variant="default"> thay thế */
 export const SHEET_TABS_TRIGGER_CLASS =
-  "data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium transition-all duration-200";
+  "data-[state=active]:bg-background data-[state=active]:shadow-premium-sm text-sm font-medium transition-all duration-200";
 
 /** @deprecated Sử dụng gridCols prop trên TabsList thay thế */
 export function getFormTabsGridCols(count: 2 | 3 | 4 | 5): string {
