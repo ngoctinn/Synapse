@@ -150,7 +150,7 @@ export function ServiceSheet({
             type="submit"
             form="service-form"
             isLoading={isPending}
-            className="min-w-[140px]"
+            className="px-8"
             startContent={
               isUpdateMode ? (
                 <Icon icon={Save} />

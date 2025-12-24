@@ -48,7 +48,7 @@ const tabsListVariants = cva(
         /** Default cho page headers (40px) */
         default: "h-9",
         /** Large cho form sections (44px) */
-        lg: "h-10",
+        lg: "h-11",
       },
       /** Chế độ responsive: auto-width hoặc full-width */
       fullWidth: {

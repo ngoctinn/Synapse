@@ -144,7 +144,7 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
                 min={0}
                 value={maxPrice || undefined}
                 onChange={(e) => handleMaxPriceChange(Number(e.target.value))}
-                placeholder="Max"
+                placeholder="Tối đa"
                 endContent={
                   <span className="text-muted-foreground text-xs">VNĐ</span>
                 }
@@ -154,7 +154,7 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
           </div>
         </div>
 
-        <div className="bg-border/50 h-[1px]" />
+        <div className="bg-border/50 h-px" />
 
         <div className="space-y-3">
           <Label className="text-sm font-medium">Danh mục</Label>
@@ -176,7 +176,7 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
           </Select>
         </div>
 
-        <div className="bg-border/50 h-[1px]" />
+        <div className="bg-border/50 h-px" />
 
         <div className="space-y-3">
           <Label className="text-sm font-medium">Thời lượng</Label>
@@ -198,7 +198,7 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
           </Select>
         </div>
 
-        <div className="bg-border/50 h-[1px]" />
+        <div className="bg-border/50 h-px" />
 
         <div className="space-y-3">
           <Label className="text-sm font-medium">Kỹ năng yêu cầu</Label>
@@ -209,7 +209,7 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
             onSelectedChange={handleSkillsChange}
             onNewTagsChange={() => {}}
             placeholder="Chọn kỹ năng..."
-            className="bg-background min-h-[36px] w-full"
+            className="bg-background w-full"
           />
         </div>
       </div>

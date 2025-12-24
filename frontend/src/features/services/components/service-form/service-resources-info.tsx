@@ -107,7 +107,7 @@ export function ServiceResourcesInfo({
                     )
                   }
                   placeholder="Chọn kỹ năng..."
-                  className="bg-background min-h-[36px] text-sm"
+                  className="bg-background text-sm"
                 />
               </FormControl>
               <FormMessage />

@@ -64,7 +64,7 @@ export function SelectionToolbar({
 
       {/* Apply shift dropdown */}
       <Select onValueChange={handleShiftSelect}>
-        <SelectTrigger className="h-8 w-[140px] text-xs">
+        <SelectTrigger className="h-8 w-36 text-xs">
           <SelectValue placeholder="Áp dụng ca..." />
         </SelectTrigger>
         <SelectContent>

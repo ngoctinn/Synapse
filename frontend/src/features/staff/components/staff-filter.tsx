@@ -59,7 +59,7 @@ export function StaffFilter() {
           </Select>
         </div>
 
-        <div className="bg-border/50 h-[1px]" />
+        <div className="bg-border/50 h-px" />
 
         <div className="space-y-3">
           <Label htmlFor="status" className="text-sm font-medium">

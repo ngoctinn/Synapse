@@ -82,7 +82,7 @@ export function AdminSidebar({
             <SidebarMenuButton
               tooltip="Hỗ trợ"
               aria-label="Hỗ trợ"
-              className="text-muted-foreground hover:text-foreground hover:bg-muted/50 h-9 min-h-[36px] rounded-lg font-medium transition-all duration-200 justify-start px-2.5"
+              className="text-muted-foreground hover:text-foreground hover:bg-muted/50 h-9 rounded-lg font-medium transition-all duration-200 justify-start px-2.5"
             >
               <CircleHelp className="size-6 shrink-0" strokeWidth={2} />
               <span className="group-data-[collapsible=icon]:hidden ml-3">

@@ -105,7 +105,7 @@ export function MaintenanceTimeline({
             <Button
               variant="ghost"
               size="icon"
-              className="hover:bg-muted h-8 min-h-[32px] w-8 min-w-[32px] rounded-r-none"
+              className="hover:bg-muted h-8 w-8 rounded-r-none"
               onClick={handlePrevWeek}
               aria-label="Tuần trước"
             >
@@ -117,7 +117,7 @@ export function MaintenanceTimeline({
             <Button
               variant="ghost"
               size="icon"
-              className="hover:bg-muted h-8 min-h-[32px] w-8 min-w-[32px] rounded-l-none"
+              className="hover:bg-muted h-8 w-8 rounded-l-none"
               onClick={handleNextWeek}
               aria-label="Tuần sau"
             >

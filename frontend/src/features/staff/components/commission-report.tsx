@@ -80,7 +80,7 @@ export function CommissionReport({ data }: CommissionReportProps) {
       <div className="flex flex-col items-end justify-between gap-4 sm:flex-row sm:items-center">
         <div className="flex gap-2">
           <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-            <SelectTrigger className="w-[100px]">
+            <SelectTrigger className="w-24">
               <SelectValue placeholder="Tháng" />
             </SelectTrigger>
             <SelectContent>
@@ -92,7 +92,7 @@ export function CommissionReport({ data }: CommissionReportProps) {
             </SelectContent>
           </Select>
           <Select value={selectedYear} onValueChange={setSelectedYear}>
-            <SelectTrigger className="w-[100px]">
+            <SelectTrigger className="w-24">
               <SelectValue placeholder="Năm" />
             </SelectTrigger>
             <SelectContent>

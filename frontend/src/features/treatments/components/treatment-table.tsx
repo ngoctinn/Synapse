@@ -86,7 +86,7 @@ export function TreatmentTable({
       accessorKey: "progress",
       sortable: true,
       cell: (t) => (
-        <div className="flex w-[140px] flex-col gap-1.5">
+        <div className="flex w-36 flex-col gap-1.5">
           <div className="flex justify-between text-xs">
             <span>
               {t.sessions_completed}/{t.total_sessions} buổi

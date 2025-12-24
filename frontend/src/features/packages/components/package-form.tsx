@@ -71,7 +71,7 @@ export function PackageForm({ mode, className }: PackageFormProps) {
             <FormControl>
               <Textarea
                 placeholder="Mô tả chi tiết về gói dịch vụ..."
-                className="min-h-[80px] resize-none"
+                className="min-h-20 resize-none"
                 {...field}
                 value={field.value || ""}
               />
@@ -159,7 +159,7 @@ export function PackageForm({ mode, className }: PackageFormProps) {
               render={({ field }) => (
                 <FormItem className="w-20">
                   <FormControl>
-                    <Input type="number" min={1} placeholder="SL" {...field} />
+                    <Input type="number" min={1} placeholder="Số lượng" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
