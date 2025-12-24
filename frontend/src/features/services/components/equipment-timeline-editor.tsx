@@ -147,7 +147,7 @@ export function EquipmentTimelineEditor({
                       <TooltipTrigger asChild>
                         <div
                           className={cn(
-                            "relative flex h-7 cursor-pointer items-center rounded-md px-2 text-[11px] font-medium text-white shadow-sm transition-all",
+                            "relative flex h-7 cursor-pointer items-center rounded-lg px-2 text-[11px] font-medium text-white shadow-sm transition-all",
                             "hover:shadow-md hover:ring-2 hover:ring-white/50",
                             colorClass,
                             isOverflow && "ring-destructive ring-2"

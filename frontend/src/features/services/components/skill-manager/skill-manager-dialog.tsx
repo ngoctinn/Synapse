@@ -140,7 +140,7 @@ export function SkillManagerDialog({
                   <div
                     key={skill.id}
                     className={cn(
-                      "flex cursor-pointer items-start justify-between rounded-md border p-3 transition-all hover:shadow-sm",
+                      "flex cursor-pointer items-start justify-between rounded-lg border p-3 transition-all hover:shadow-sm",
                       editingId === skill.id
                         ? "bg-primary/5 border-primary ring-primary/20 ring-1"
                         : "bg-card hover:bg-accent/50 hover:border-accent-foreground/20"

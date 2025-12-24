@@ -126,7 +126,7 @@ export const TimeStep: React.FC = () => {
               <div className="flex w-full max-w-xs flex-col gap-2">
                 <button
                   onClick={() => setIsWaitlistOpen(true)}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2 font-medium transition-colors"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 font-medium transition-colors"
                 >
                   Đăng ký danh sách chờ
                 </button>

@@ -125,7 +125,7 @@ export function ResourceTimeline({
           type="single"
           value={resourceType}
           onValueChange={(val) => val && setResourceType(val as ResourceType)}
-          className="bg-background rounded-md p-0.5"
+          className="bg-background rounded-lg p-0.5"
         >
           <ToggleGroupItem
             value="staff"

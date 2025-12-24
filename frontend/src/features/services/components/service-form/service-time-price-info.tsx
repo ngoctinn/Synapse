@@ -37,7 +37,7 @@ export function ServiceTimePriceInfo({
                   onChange={field.onChange}
                   min={15}
                   step={15}
-                  className="h-10 text-sm"
+                  className=""
                 />
               </FormControl>
               <FormMessage />
@@ -57,7 +57,7 @@ export function ServiceTimePriceInfo({
                   onChange={field.onChange}
                   min={0}
                   step={15}
-                  className="h-10 text-sm"
+                  className=""
                   iconClassName="text-muted-foreground"
                 />
               </FormControl>
@@ -96,7 +96,7 @@ export function ServiceTimePriceInfo({
                     VNĐ
                   </div>
                 }
-                className="h-10 text-sm"
+                className=""
               />
             </FormControl>
             <FormMessage />

@@ -56,9 +56,9 @@ const tabsListVariants = cva(
         false: "w-fit",
       },
     },
-    defaultVariants: {
+      defaultVariants: {
       variant: "default",
-      size: "default",
+      size: "sm",
       fullWidth: false,
     },
   }
@@ -118,7 +118,7 @@ const tabsTriggerVariants = cva(
       variant: {
         /** Default - active có background */
         default: [
-          "rounded-md border border-transparent px-3 py-1.5",
+          "rounded-lg border border-transparent px-3 py-1.5",
           // Hover state
           "hover:text-foreground hover:bg-background/50",
           // Active state - nổi bật với shadow
@@ -126,7 +126,7 @@ const tabsTriggerVariants = cva(
         ],
         /** Form - active có background, padding nhỏ hơn */
         form: [
-          "rounded-md px-3 py-1.5",
+          "rounded-lg px-3 py-1.5",
           "hover:text-foreground",
           "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-premium-sm",
         ],
@@ -138,7 +138,7 @@ const tabsTriggerVariants = cva(
         ],
         /** Ghost - minimal styling */
         ghost: [
-          "rounded-md px-3 py-1.5",
+          "rounded-lg px-3 py-1.5",
           "hover:text-foreground hover:bg-accent",
           "data-[state=active]:text-foreground data-[state=active]:font-semibold",
         ],

@@ -35,7 +35,7 @@ export function NavMain() {
                 <SidebarMenuButton
                   asChild
                   isActive={isActive}
-                  className="text-muted-foreground hover:bg-primary/5 hover:text-primary data-[active=true]:bg-primary/10 data-[active=true]:text-primary h-10 px-3 font-medium transition-all duration-200 data-[active=true]:font-semibold"
+                  className="text-muted-foreground hover:bg-primary/5 hover:text-primary data-[active=true]:bg-primary/10 data-[active=true]:text-primary h-9 px-3 font-medium transition-all duration-200 data-[active=true]:font-semibold"
                 >
                   <Link
                     href={item.href}

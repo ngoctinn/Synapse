@@ -37,7 +37,7 @@ export function ShiftChip({
           : "Đã công bố - Nhấp để xem chi tiết"
       }
       className={cn(
-        "relative w-full rounded-md px-2.5 py-1.5 text-left",
+        "relative w-full rounded-lg px-2.5 py-1.5 text-left",
         "cursor-pointer transition-all",
         "focus:ring-primary/50 focus:outline-none focus:ring-2",
         "hover:shadow-sm",

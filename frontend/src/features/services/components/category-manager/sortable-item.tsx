@@ -62,7 +62,7 @@ export function SortableItem({
     <div
       ref={setNodeRef}
       style={style}
-      className={`bg-background group mb-2 flex items-center gap-2 rounded-md border p-2 ${
+      className={`bg-background group mb-2 flex items-center gap-2 rounded-lg border p-2 ${
         isDragging
           ? "ring-primary/20 shadow-lg ring-2"
           : "hover:border-primary/50"

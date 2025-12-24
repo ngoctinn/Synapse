@@ -59,7 +59,7 @@ export function ServiceResourcesInfo({
             <FormControl>
               <Select value={field.value} onValueChange={field.onChange}>
                 <FormControl>
-                  <SelectTrigger className="bg-background h-10 w-full">
+                  <SelectTrigger className="bg-background w-full">
                     <SelectValue placeholder="-- Chọn loại phòng --" />
                   </SelectTrigger>
                 </FormControl>
@@ -107,7 +107,7 @@ export function ServiceResourcesInfo({
                     )
                   }
                   placeholder="Chọn kỹ năng..."
-                  className="bg-background min-h-[40px] text-sm"
+                  className="bg-background min-h-[36px] text-sm"
                 />
               </FormControl>
               <FormMessage />

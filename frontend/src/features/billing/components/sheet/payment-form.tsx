@@ -79,7 +79,7 @@ export function PaymentForm({ invoice, onSuccess }: PaymentFormProps) {
   // Nếu đã thanh toán hết thì không hiện form
   if (invoice.status === "PAID" || remainingAmount <= 0) {
     return (
-      <div className="bg-success/10 text-success border-success/20 rounded-md border p-4 text-center">
+      <div className="bg-success/10 text-success border-success/20 rounded-lg border p-4 text-center">
         Hóa đơn đã được thanh toán đầy đủ
       </div>
     );

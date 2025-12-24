@@ -320,7 +320,7 @@ export function AppointmentForm({
 
           {/* Warnings */}
           {(timeWarning || conflicts.length > 0) && (
-            <div className="col-span-2 space-y-1 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm dark:border-amber-800 dark:bg-amber-950/20">
+            <div className="col-span-2 space-y-1 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm dark:border-amber-800 dark:bg-amber-950/20">
               {timeWarning && (
                 <div className="flex items-center gap-2 font-medium text-amber-800 dark:text-amber-500">
                   <Icon icon={AlertTriangle} /> {timeWarning}

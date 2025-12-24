@@ -65,7 +65,7 @@ function ShiftItem({
       style={{ backgroundColor: `${shift.colorCode}12` }}
     >
       <div
-        className="h-10 w-1.5 shrink-0 rounded-full"
+        className="h-9 w-1.5 shrink-0 rounded-full"
         style={{ backgroundColor: shift.colorCode }}
       />
       <div className="min-w-0 flex-1">
@@ -239,7 +239,7 @@ export function ShiftManagerSheet({
                       value={formName}
                       onChange={(e) => setFormName(e.target.value)}
                       placeholder="Ví dụ: Ca sáng, Ca tối..."
-                      className="h-10"
+                      className=""
                     />
                   </div>
 
@@ -254,7 +254,7 @@ export function ShiftManagerSheet({
                         value={formStartTime}
                         onChange={(e) => setFormStartTime(e.target.value)}
                         startContent={<Clock className="size-4" />}
-                        className="h-10"
+                        className=""
                       />
                     </div>
                     <div className="space-y-1.5">
@@ -266,7 +266,7 @@ export function ShiftManagerSheet({
                         value={formEndTime}
                         onChange={(e) => setFormEndTime(e.target.value)}
                         startContent={<Clock className="size-4" />}
-                        className="h-10"
+                        className=""
                       />
                     </div>
                   </div>
@@ -298,14 +298,14 @@ export function ShiftManagerSheet({
                     <Button
                       variant="outline"
                       size="sm"
-                      className="h-9"
+                      className="flex-1"
                       onClick={resetForm}
                     >
                       Hủy
                     </Button>
                     <Button
                       size="sm"
-                      className="h-9"
+                      className="flex-1"
                       onClick={editingId ? handleUpdate : handleAdd}
                     >
                       {editingId ? "Cập nhật" : "Thêm"}
@@ -318,7 +318,7 @@ export function ShiftManagerSheet({
               {!isAdding && !editingId && (
                 <Button
                   variant="outline"
-                  className="h-9 w-full"
+                  className="w-full"
                   onClick={() => setIsAdding(true)}
                 >
                   <Plus className="mr-2 size-4" />
@@ -332,7 +332,7 @@ export function ShiftManagerSheet({
           <SheetFooter className="bg-background border-t px-6 py-3">
             <Button
               variant="default"
-              className="h-9 w-full"
+              className="w-full"
               onClick={() => onOpenChange(false)}
             >
               Xong

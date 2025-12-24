@@ -64,7 +64,7 @@ function StatBadge({
       <TooltipTrigger asChild>
         <div
           className={cn(
-            "flex cursor-default items-center gap-2 rounded-md border px-3 py-1.5 transition-all duration-300 hover:shadow-md",
+            "flex cursor-default items-center gap-2 rounded-lg border px-3 py-1.5 transition-all duration-300 hover:shadow-md",
             highlight
               ? "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-500"
               : "text-muted-foreground hover:border-border/50 hover:bg-muted/50 border-transparent shadow-sm"

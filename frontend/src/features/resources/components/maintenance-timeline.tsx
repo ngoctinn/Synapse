@@ -101,7 +101,7 @@ export function MaintenanceTimeline({
       <div className="bg-muted/20 flex flex-col items-start justify-between gap-4 border-b p-4 sm:flex-row sm:items-center">
         <div className="flex items-center gap-4">
           <h3 className="font-serif text-lg font-semibold">Lịch Bảo Trì</h3>
-          <div className="bg-background flex items-center rounded-md border shadow-sm">
+          <div className="bg-background flex items-center rounded-lg border shadow-sm">
             <Button
               variant="ghost"
               size="icon"
@@ -255,7 +255,7 @@ export function MaintenanceTimeline({
                                 <button
                                   onClick={() => onTaskClick?.(task)}
                                   className={cn(
-                                    "w-full cursor-pointer truncate rounded-md border p-1.5 text-left text-xs shadow-sm transition-all",
+                                    "w-full cursor-pointer truncate rounded-lg border p-1.5 text-left text-xs shadow-sm transition-all",
                                     "hover:scale-[1.02] hover:shadow-md",
                                     "focus:ring-ring focus:z-10 focus:outline-none focus:ring-2 focus:ring-offset-1",
                                     getStatusColor(task.status)

@@ -107,7 +107,7 @@ export function EventCard({
         type="button"
         onClick={onClick}
         className={cn(
-          "flex flex-col overflow-hidden rounded-md px-2 py-1 text-left",
+          "flex flex-col overflow-hidden rounded-lg px-2 py-1 text-left",
           "border-l-3 cursor-pointer",
           "transition-all duration-150 hover:brightness-95",
           isDragging && "scale-95 opacity-40",
@@ -187,7 +187,7 @@ export function EventCard({
 
       {/* Service */}
       <div
-        className="inline-flex w-fit items-center gap-1.5 rounded-md px-2 py-1 text-sm font-medium"
+        className="inline-flex w-fit items-center gap-1.5 rounded-lg px-2 py-1 text-sm font-medium"
         style={getEventStyles(event.color, "20")}
       >
         {event.appointment.serviceName}

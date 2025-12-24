@@ -300,7 +300,7 @@ function SettingsContent({
 function SettingsTabSkeleton() {
   return (
     <div className="animate-pulse space-y-6 px-0 py-6">
-      <div className="bg-muted h-10 w-64 rounded-md" />
+      <div className="bg-muted h-10 w-64 rounded-lg" />
       <div className="space-y-4">
         {[1, 2, 3, 4, 5, 6, 7].map((i) => (
           <div key={i} className="bg-muted h-16 rounded-xl" />

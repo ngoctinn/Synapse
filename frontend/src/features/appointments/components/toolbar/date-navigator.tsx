@@ -124,7 +124,7 @@ export function DateNavigator({
             initialFocus
             locale={vi}
             weekStartsOn={1}
-            className="rounded-md border"
+            className="rounded-lg border"
           />
         </PopoverContent>
       </Popover>

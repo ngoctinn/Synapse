@@ -112,7 +112,6 @@ export function ServiceBasicInfo({
                 <FormControl>
                   <Input
                     placeholder="VD: Massage Body"
-                    className="h-10 text-sm"
                     {...field}
                   />
                 </FormControl>

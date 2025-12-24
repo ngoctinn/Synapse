@@ -71,7 +71,7 @@ export function NotificationList({
                   {channels.map((channelId) => (
                     <div
                       key={channelId}
-                      className="bg-muted/50 flex items-center justify-between rounded-md p-2"
+                      className="bg-muted/50 flex items-center justify-between rounded-lg p-2"
                     >
                       <span className="text-sm font-medium capitalize">
                         {channelId}
@@ -93,7 +93,7 @@ export function NotificationList({
           </div>
 
           {/* Desktop View (Table) */}
-          <div className="bg-card hidden overflow-hidden rounded-md border md:block">
+          <div className="bg-card hidden overflow-hidden rounded-lg border md:block">
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/50">

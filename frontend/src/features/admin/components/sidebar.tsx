@@ -40,7 +40,7 @@ export function AdminSidebar({
             <SidebarMenuButton
               onClick={() => toggleSidebar()}
               tooltip="Thu gọn / Mở rộng"
-              className="h-10 w-full justify-start rounded-lg transition-colors px-2.5 hover:bg-muted/80"
+              className="h-9 w-full justify-start rounded-lg transition-colors px-2.5 hover:bg-muted/80"
             >
               <span className="font-bold text-primary text-base tracking-tight uppercase group-data-[collapsible=icon]:hidden truncate">
                 Synapse
@@ -82,7 +82,7 @@ export function AdminSidebar({
             <SidebarMenuButton
               tooltip="Hỗ trợ"
               aria-label="Hỗ trợ"
-              className="text-muted-foreground hover:text-foreground hover:bg-muted/50 h-10 min-h-[40px] rounded-lg font-medium transition-all duration-200 justify-start px-2.5"
+              className="text-muted-foreground hover:text-foreground hover:bg-muted/50 h-9 min-h-[36px] rounded-lg font-medium transition-all duration-200 justify-start px-2.5"
             >
               <QuestionMarkCircleIcon className="size-6 shrink-0" strokeWidth={2} />
               <span className="group-data-[collapsible=icon]:hidden ml-3">

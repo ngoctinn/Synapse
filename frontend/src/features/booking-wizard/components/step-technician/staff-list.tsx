@@ -45,7 +45,7 @@ export const StaffList = ({
                     {member.name}
                   </h3>
                   {member.rating && (
-                    <div className="flex items-center rounded-md bg-amber-50 px-1.5 py-0.5 text-xs font-medium text-amber-500">
+                    <div className="flex items-center rounded-lg bg-amber-50 px-1.5 py-0.5 text-xs font-medium text-amber-500">
                       <Star className="mr-0.5 h-3 w-3 fill-current" />
                       {member.rating}
                     </div>

@@ -45,11 +45,11 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
   if (!hasHydrated)
     return (
-      <div className="bg-muted h-20 w-full animate-pulse rounded-md border" />
+      <div className="bg-muted h-20 w-full animate-pulse rounded-lg border" />
     );
 
   return (
-    <ScrollArea className="w-full whitespace-nowrap rounded-md border">
+    <ScrollArea className="w-full whitespace-nowrap rounded-lg border">
       <div className="flex w-max space-x-2 p-2" ref={scrollAreaRef}>
         {datesToShow.map((date, index) => {
           const formattedDay = format(date, "EEE", { locale: vi }); // Mon, Tue
@@ -67,7 +67,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
               key={index}
               ref={isSelected ? selectedDateRef : null}
               className={cn(
-                "flex min-w-[4.5rem] flex-col items-center justify-center rounded-md p-2",
+                "flex min-w-[4.5rem] flex-col items-center justify-center rounded-lg p-2",
                 "text-sm font-medium transition-colors duration-150",
                 "hover:bg-accent hover:text-accent-foreground",
                 "focus:ring-primary focus:outline-none focus:ring-2 focus:ring-offset-2",

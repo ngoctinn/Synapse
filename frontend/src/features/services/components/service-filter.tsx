@@ -96,7 +96,7 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
       isActive={activeCount > 0}
       count={activeCount}
       onClear={clearFilters}
-      className="size-10"
+      className="size-9"
     >
       <div className="grid gap-6 p-1">
         <div className="space-y-4">
@@ -132,7 +132,7 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
                 endContent={
                   <span className="text-muted-foreground text-xs">VNĐ</span>
                 }
-                className="bg-background pr-10 text-sm"
+                className="bg-background pr-10"
               />
             </div>
             <div className="flex-1 space-y-1.5">
@@ -148,7 +148,7 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
                 endContent={
                   <span className="text-muted-foreground text-xs">VNĐ</span>
                 }
-                className="bg-background pr-10 text-sm"
+                className="bg-background pr-10"
               />
             </div>
           </div>
@@ -162,7 +162,7 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
             value={categoryId || "all"}
             onValueChange={handleCategoryChange}
           >
-            <SelectTrigger className="bg-background h-10 w-full">
+            <SelectTrigger className="bg-background w-full">
               <SelectValue placeholder="Tất cả danh mục" />
             </SelectTrigger>
             <SelectContent>
@@ -184,7 +184,7 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
             value={duration || "all"}
             onValueChange={handleDurationChange}
           >
-            <SelectTrigger className="bg-background h-10 w-full">
+            <SelectTrigger className="bg-background w-full">
               <SelectValue placeholder="Tất cả thời lượng" />
             </SelectTrigger>
             <SelectContent>
@@ -209,7 +209,7 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
             onSelectedChange={handleSkillsChange}
             onNewTagsChange={() => {}}
             placeholder="Chọn kỹ năng..."
-            className="bg-background min-h-[40px] w-full"
+            className="bg-background min-h-[36px] w-full"
           />
         </div>
       </div>

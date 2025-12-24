@@ -249,7 +249,7 @@ export function ExceptionsPanel({
                     "bg-destructive/20 text-destructive hover:bg-destructive/30",
                   special: "bg-primary/20 text-primary hover:bg-primary/30",
                 }}
-                className="w-full rounded-md"
+                className="w-full rounded-lg"
                 classNames={{
                   day: "h-10 w-10 p-0 font-normal aria-selected:opacity-100 transition-colors hover:bg-accent cursor-pointer",
                 }}

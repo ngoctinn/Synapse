@@ -117,7 +117,7 @@ export function TemplateEditor({
           {/* Variables List */}
           <div className="grid gap-2">
             <Label>Biến có sẵn (Nhấn để chèn)</Label>
-            <ScrollArea className="bg-muted/50 h-[100px] w-full rounded-md border p-4">
+            <ScrollArea className="bg-muted/50 h-[100px] w-full rounded-lg border p-4">
               <div className="flex flex-wrap gap-2">
                 {template.variables.map((variable) => (
                   <Badge

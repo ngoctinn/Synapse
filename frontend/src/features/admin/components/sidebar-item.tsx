@@ -73,7 +73,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
                 tooltip={item.title}
                 isActive={isActive}
                 className={cn(
-                  "h-10 w-full justify-start rounded-md transition-colors px-2.5",
+                  "h-9 w-full justify-start rounded-lg transition-colors px-2.5",
                   isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 )}
               >
@@ -88,7 +88,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
                     key={subItem.title}
                     asChild
                     className={cn(
-                      "my-0.5 cursor-pointer rounded-md focus:bg-primary/10 focus:text-primary px-3 py-2 text-sm",
+                      "my-0.5 cursor-pointer rounded-lg focus:bg-primary/10 focus:text-primary px-3 py-2 text-sm",
                       isSubItemActive(subItem.href) && "bg-primary/10 text-primary font-medium"
                     )}
                   >
@@ -109,7 +109,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
           tooltip={item.title}
           isActive={isActive}
           className={cn(
-            "h-10 w-full justify-start rounded-md transition-colors px-2.5",
+            "h-9 w-full justify-start rounded-lg transition-colors px-2.5",
             isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
           )}
         >
@@ -131,7 +131,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
               tooltip={item.title}
               isActive={isActive}
               className={cn(
-                "h-10 rounded-md px-2.5 transition-colors justify-start",
+                "h-9 rounded-lg px-2.5 transition-colors justify-start",
                 isActive ? "bg-primary/10 text-primary font-semibold" : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
               )}
             >
@@ -151,7 +151,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
                     asChild
                     isActive={isSubItemActive(subItem.href)}
                     className={cn(
-                      "h-10 px-3 rounded-md transition-colors",
+                      "h-9 px-3 rounded-lg transition-colors",
                       isSubItemActive(subItem.href) ? "text-primary font-medium bg-primary/5" : "text-muted-foreground hover:text-foreground"
                     )}
                   >
@@ -176,7 +176,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
         isActive={isActive}
         tooltip={item.title}
         className={cn(
-          "h-10 rounded-md px-2.5 transition-colors justify-start",
+          "h-9 rounded-lg px-2.5 transition-colors justify-start",
           isActive ? "bg-primary/10 text-primary font-semibold" : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
         )}
       >

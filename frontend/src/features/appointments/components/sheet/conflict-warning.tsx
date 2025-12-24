@@ -69,7 +69,7 @@ export function ConflictWarning({
           <div
             key={`${conflict.eventId}-${index}`}
             className={cn(
-              "flex items-start gap-2 rounded-md p-2 text-sm",
+              "flex items-start gap-2 rounded-lg p-2 text-sm",
               conflict.severity === "error"
                 ? "bg-red-100 dark:bg-red-900/20"
                 : "bg-amber-100 dark:bg-amber-900/20"

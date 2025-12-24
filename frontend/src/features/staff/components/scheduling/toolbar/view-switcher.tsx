@@ -33,14 +33,14 @@ export function ViewSwitcher({
       onValueChange={(v) => onChange(v as ScheduleViewType)}
       className={className}
     >
-      <TabsList className="bg-muted/50 h-10 w-fit p-1">
+      <TabsList size="sm" className="w-fit">
         {(Object.keys(SCHEDULE_VIEW_CONFIG) as ScheduleViewType[]).map(
           (view) => (
             <TabsTrigger
               key={view}
               value={view}
               className={cn(
-                "h-8 gap-1.5 px-3 text-xs",
+                "h-7 gap-1.5 px-3 text-xs",
                 "data-[state=active]:bg-background data-[state=active]:shadow-sm",
                 "transition-all duration-200"
               )}

@@ -140,7 +140,7 @@ export function CustomerForm({
                       field.onChange("");
                     }
                   }}
-                  className="h-10"
+                  className=""
                   placeholder="DD/MM/YYYY"
                   disabled={disabled}
                 />

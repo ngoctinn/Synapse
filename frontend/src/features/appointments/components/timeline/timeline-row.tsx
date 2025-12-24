@@ -141,7 +141,7 @@ export function TimelineRow({
             type="button"
             onClick={() => onEventClick?.(event)}
             className={cn(
-              "absolute bottom-1 top-1 rounded-md px-2",
+              "absolute bottom-1 top-1 rounded-lg px-2",
               "flex flex-col justify-center overflow-hidden",
               "cursor-pointer text-left",
               "transition-all hover:brightness-95 active:scale-[0.99]",

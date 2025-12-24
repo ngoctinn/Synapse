@@ -7,16 +7,16 @@ export function AppointmentsPageSkeleton() {
     <div className="flex flex-col gap-4 p-4">
       {/* Header */}
       <div className="flex items-center justify-between gap-4">
-        <Skeleton className="h-10 w-48 rounded-lg" />
-        <Skeleton className="h-10 w-32 rounded-lg" />
+        <Skeleton className="h-9 w-48 rounded-lg" />
+        <Skeleton className="h-9 w-32 rounded-lg" />
       </div>
 
       {/* Toolbar */}
       <div className="flex items-center justify-between gap-4">
-        <Skeleton className="h-10 w-64 rounded-lg" />
+        <Skeleton className="h-9 w-64 rounded-lg" />
         <div className="flex gap-2">
-          <Skeleton className="h-10 w-24 rounded-lg" />
-          <Skeleton className="h-10 w-24 rounded-lg" />
+          <Skeleton className="h-9 w-24 rounded-lg" />
+          <Skeleton className="h-9 w-24 rounded-lg" />
         </div>
       </div>
 
@@ -30,7 +30,7 @@ export function AppointmentsPageSkeleton() {
         {/* Days/Timeline Header */}
         <div className="grid grid-cols-7 gap-2">
           {[...Array(7)].map((_, i) => (
-            <Skeleton key={i} className="h-8 rounded-md" />
+            <Skeleton key={i} className="h-8 rounded-lg" />
           ))}
         </div>
         {/* Main Grid */}
@@ -40,7 +40,7 @@ export function AppointmentsPageSkeleton() {
               {[...Array(7)].map((_, dayIdx) => (
                 <Skeleton
                   key={`${timeIdx}-${dayIdx}`}
-                  className="h-12 rounded-md"
+                  className="h-12 rounded-lg"
                 />
               ))}
             </div>

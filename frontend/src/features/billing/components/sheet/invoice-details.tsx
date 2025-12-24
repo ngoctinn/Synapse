@@ -44,7 +44,7 @@ export function InvoiceDetails({ invoice }: InvoiceDetailsProps) {
       {/* Items List */}
       <div className="space-y-4">
         <h4 className="text-sm font-semibold">Chi tiết dịch vụ & sản phẩm</h4>
-        <div className="divide-y rounded-md border">
+        <div className="divide-y rounded-lg border">
           {invoice.items.map((item) => (
             <div
               key={item.id}

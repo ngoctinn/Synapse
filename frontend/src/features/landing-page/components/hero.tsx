@@ -52,15 +52,15 @@ export function Hero() {
                 <div className="h-3 w-3 rounded-full bg-yellow-400/80" />
                 <div className="h-3 w-3 rounded-full bg-green-400/80" />
               </div>
-              <div className="bg-muted ml-4 h-6 w-32 rounded-md" />
+              <div className="bg-muted ml-4 h-6 w-32 rounded-lg" />
             </div>
             {/* Mock Body */}
             <div className="flex h-full">
               {/* Mock Sidebar */}
               <div className="bg-muted/10 hidden w-16 space-y-3 border-r p-4 sm:block md:w-48">
-                <div className="bg-muted/50 h-8 w-full rounded-md" />
-                <div className="bg-muted/50 h-8 w-3/4 rounded-md" />
-                <div className="bg-muted/50 h-8 w-5/6 rounded-md" />
+                <div className="bg-muted/50 h-8 w-full rounded-lg" />
+                <div className="bg-muted/50 h-8 w-3/4 rounded-lg" />
+                <div className="bg-muted/50 h-8 w-5/6 rounded-lg" />
               </div>
               {/* Mock Content */}
               <div className="flex-1 space-y-4 p-6">
