@@ -7,9 +7,9 @@ import Link from "next/link";
 
 export default function Page() {
   return (
-    <div className="flex flex-col gap-8 p-4 md:p-8">
+    <div className="flex flex-col gap-6">
       {/* Header Section */}
-      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center px-0 py-4">
         <div>
           <h1 className="text-3xl font-black tracking-tight">
             Xin chào, Lễ tân 👋
@@ -31,6 +31,8 @@ export default function Page() {
         </div>
       </div>
 
+      <div className="flex flex-col gap-8 px-0 pb-8">
+
       {/* KPI Section */}
       <StatsCards />
 
@@ -38,6 +40,7 @@ export default function Page() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         <RecentAppointments />
         <OperationalStatus />
+      </div>
       </div>
     </div>
   );

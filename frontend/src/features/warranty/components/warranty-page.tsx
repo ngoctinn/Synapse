@@ -1,6 +1,5 @@
 "use client";
 
-import { PageFooter } from "@/shared/components/layout/components/page-footer";
 import {
   PageContent,
   PageHeader,
@@ -78,7 +77,6 @@ export function WarrantyPage({ data, page, totalPages }: WarrantyPageProps) {
         <SurfaceCard className="border-muted/60">
           <WarrantyTable data={data} page={page} totalPages={totalPages} />
         </SurfaceCard>
-        <PageFooter />
       </PageContent>
     </PageShell>
   );

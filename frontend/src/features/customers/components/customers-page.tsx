@@ -1,6 +1,5 @@
 "use client";
 
-import { PageFooter } from "@/shared/components/layout/components/page-footer";
 import {
   PageContent,
   PageHeader,
@@ -151,7 +150,6 @@ export function CustomersPage({
                   />
                 </Suspense>
               </SurfaceCard>
-              <PageFooter />
             </PageContent>
           </TabsContent>
 
@@ -166,7 +164,6 @@ export function CustomersPage({
                   phát triển.
                 </p>
               </SurfaceCard>
-              <PageFooter />
             </PageContent>
           </TabsContent>
         </div>

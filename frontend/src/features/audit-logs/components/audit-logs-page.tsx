@@ -1,6 +1,5 @@
 "use client";
 
-import { PageFooter } from "@/shared/components/layout/components/page-footer";
 import {
   PageContent,
   PageHeader,
@@ -91,7 +90,6 @@ export function AuditLogsPage({ data, page, totalPages }: AuditLogsPageProps) {
         <SurfaceCard className="border-muted/60">
           <AuditTable data={data} page={page} totalPages={totalPages} />
         </SurfaceCard>
-        <PageFooter />
       </PageContent>
     </PageShell>
   );

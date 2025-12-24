@@ -187,7 +187,7 @@ export function StaffSchedulingPage({
   return (
     <div className={cn("flex h-full min-h-0 flex-col", className)}>
       {/* Toolbar */}
-      <div className="sticky-header-blur flex flex-col justify-between gap-3 p-4 sm:flex-row sm:items-center">
+      <div className="sticky-header-blur flex flex-col justify-between gap-3 px-0 py-4 sm:flex-row sm:items-center">
         <div className="flex flex-wrap items-center gap-2">
           <ViewSwitcher value={view} onChange={changeView} />
           <DateNavigator

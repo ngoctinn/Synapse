@@ -1,7 +1,6 @@
 "use client";
 
 import { Skill } from "@/features/services";
-import { PageFooter } from "@/shared/components/layout/components/page-footer";
 import {
   PageContent,
   PageHeader,
@@ -65,44 +64,11 @@ function StaffListWrapper({
       totalPages={totalPages}
       variant="flush"
       className="border-none"
-      hidePagination={true}
+      hidePagination={false}
     />
   );
 }
 
-function StaffFooterWrapper({
-  staffListPromise,
-  page,
-  pathname,
-  searchParams,
-}: {
-  staffListPromise: Promise<ActionResponse<StaffListResponse>>;
-  page: number;
-  pathname: string;
-  searchParams: URLSearchParams;
-}) {
-  const router = useRouter(); // Use transition-aware router
-  const [, startTransition] = useTransition();
-  const response = use(staffListPromise);
-  const total = response.status === "success" && response.data ? response.data.total : 0;
-  const totalPages = Math.ceil(total / 10);
-
-  const handlePageChange = (p: number) => {
-    const params = new URLSearchParams(searchParams);
-    params.set("page", p.toString());
-    startTransition(() => {
-      router.push(`${pathname}?${params.toString()}`);
-    });
-  };
-
-  return (
-    <PageFooter
-      page={page}
-      totalPages={totalPages}
-      onPageChange={handlePageChange}
-    />
-  );
-}
 
 function StaffSchedulerWrapper({
   staffListPromise,
@@ -220,14 +186,6 @@ export function StaffPage({
                   />
                 </Suspense>
               </SurfaceCard>
-              <Suspense fallback={<PageFooter />}>
-                <StaffFooterWrapper
-                  staffListPromise={staffListPromise}
-                  page={page}
-                  pathname={pathname}
-                  searchParams={searchParams}
-                />
-              </Suspense>
             </PageContent>
           </TabsContent>
 
@@ -242,7 +200,6 @@ export function StaffPage({
                   className="border-none"
                 />
               </SurfaceCard>
-              <PageFooter />
             </PageContent>
           </TabsContent>
 
@@ -252,7 +209,7 @@ export function StaffPage({
           >
             <Suspense
               fallback={
-                <div className="flex flex-1 flex-col space-y-4 p-4">
+                <div className="flex flex-1 flex-col space-y-4 p-0">
                   <div className="flex items-center justify-between">
                     <div className="bg-muted h-10 w-48 animate-pulse rounded" />
                     <div className="flex gap-2">

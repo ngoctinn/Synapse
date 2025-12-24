@@ -47,7 +47,7 @@ export function PageHeader({
       className={cn("header-sticky bg-card border-b z-20", className)}
       {...props}
     >
-      <div className="flex h-14 items-center justify-between gap-4 px-4">
+      <div className="flex h-14 items-center justify-between gap-4 px-0">
         {(title || subtitle) && (
           <div className="flex flex-col gap-0.5">
             {title && (
@@ -83,7 +83,7 @@ export function PageContent({
     <main
       className={cn(
         "flex flex-1 flex-col overflow-hidden",
-        !fullWidth && "gap-4 px-4 py-4 md:py-6",
+        !fullWidth && "gap-4 px-0 py-4 md:py-6",
         className
       )}
       {...props}

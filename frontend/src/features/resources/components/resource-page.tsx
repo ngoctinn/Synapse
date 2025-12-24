@@ -1,6 +1,5 @@
 "use client";
 
-import { PageFooter } from "@/shared/components/layout/components/page-footer";
 import {
   PageContent,
   PageHeader,
@@ -40,7 +39,7 @@ function ResourceListWrapper({
 
   if (resourcesError) {
     return (
-      <div className="text-destructive p-4">
+      <div className="animate-pulse space-y-6 px-0 py-6">
         Lỗi tải tài nguyên: {resourcesError}
       </div>
     );
@@ -147,7 +146,6 @@ export function ResourcePage({
                   />
                 </Suspense>
               </SurfaceCard>
-              <PageFooter />
             </PageContent>
           </TabsContent>
 
@@ -156,7 +154,7 @@ export function ResourcePage({
             className="mt-0 flex flex-1 flex-col border-0 p-0 data-[state=inactive]:hidden"
           >
             <PageContent>
-              <SurfaceCard className="p-4">
+              <SurfaceCard className="p-0">
                 <Suspense
                   fallback={
                     <div className="text-muted-foreground p-4 text-center">
@@ -170,7 +168,6 @@ export function ResourcePage({
                   />
                 </Suspense>
               </SurfaceCard>
-              <PageFooter />
             </PageContent>
           </TabsContent>
         </div>

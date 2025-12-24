@@ -1,6 +1,5 @@
 "use client";
 
-import { PageFooter } from "@/shared/components/layout/components/page-footer";
 import {
   PageContent,
   PageHeader,
@@ -81,7 +80,6 @@ export function TreatmentsPage({
         <SurfaceCard className="border-muted/60">
           <TreatmentTable data={data} page={page} totalPages={totalPages} />
         </SurfaceCard>
-        <PageFooter />
       </PageContent>
     </PageShell>
   );

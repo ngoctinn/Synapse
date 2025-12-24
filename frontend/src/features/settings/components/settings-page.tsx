@@ -237,20 +237,27 @@ function SettingsForm({
 
           <TabsContent
             value="exceptions"
-            className="animate-in fade-in slide-in-from-bottom-4 h-full flex-1 p-6 duration-500"
+            className="mt-0 flex flex-1 flex-col border-0 p-0 data-[state=inactive]:hidden"
           >
-            <ExceptionsPanel
-              exceptions={config.exceptions}
-              onAddExceptions={handleAddExceptions}
-              onRemoveException={handleRemoveException}
-            />
+            <PageContent className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <ExceptionsPanel
+                exceptions={config.exceptions}
+                onAddExceptions={handleAddExceptions}
+                onRemoveException={handleRemoveException}
+              />
+            </PageContent>
           </TabsContent>
 
-          <TabsContent value="notifications" className="h-full flex-1 p-6">
-            <NotificationsSettings
-              initialChannels={channels}
-              initialEvents={events}
-            />
+          <TabsContent
+            value="notifications"
+            className="mt-0 flex flex-1 flex-col border-0 p-0 data-[state=inactive]:hidden"
+          >
+            <PageContent>
+              <NotificationsSettings
+                initialChannels={channels}
+                initialEvents={events}
+              />
+            </PageContent>
           </TabsContent>
         </div>
       </Tabs>
@@ -292,7 +299,7 @@ function SettingsContent({
 // Loading skeleton
 function SettingsTabSkeleton() {
   return (
-    <div className="animate-pulse space-y-6 p-6">
+    <div className="animate-pulse space-y-6 px-0 py-6">
       <div className="bg-muted h-10 w-64 rounded-md" />
       <div className="space-y-4">
         {[1, 2, 3, 4, 5, 6, 7].map((i) => (

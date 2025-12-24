@@ -1,6 +1,5 @@
 "use client";
 
-import { PageFooter } from "@/shared/components/layout/components/page-footer";
 import {
   PageContent,
   PageHeader,
@@ -72,17 +71,6 @@ export function WaitlistPage({ data, page, totalPages }: WaitlistPageProps) {
             hidePagination={true}
           />
         </SurfaceCard>
-        <PageFooter
-          page={page}
-          totalPages={totalPages}
-          onPageChange={(p) => {
-            const params = new URLSearchParams(searchParams);
-            params.set("page", p.toString());
-            startTransition(() => {
-              router.push(`${pathname}?${params.toString()}`);
-            });
-          }}
-        />
       </PageContent>
     </PageShell>
   );

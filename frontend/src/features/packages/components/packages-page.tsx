@@ -1,6 +1,5 @@
 "use client";
 
-import { PageFooter } from "@/shared/components/layout/components/page-footer";
 import {
   PageContent,
   PageHeader,
@@ -109,7 +108,6 @@ export function PackagesPage({ data, page, totalPages }: PackagesPageProps) {
         <SurfaceCard className="border-muted/60">
           <PackageTable data={data} page={page} totalPages={totalPages} />
         </SurfaceCard>
-        <PageFooter />
       </PageContent>
     </PageShell>
   );

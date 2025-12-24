@@ -1,7 +1,6 @@
 "use client";
 
 import { Resource, RoomType } from "@/features/resources";
-import { PageFooter } from "@/shared/components/layout/components/page-footer";
 import {
   PageContent,
   PageHeader,
@@ -70,45 +69,11 @@ function ServiceListWrapper({
       totalPages={totalPages}
       variant="flush"
       className="border-none"
-      hidePagination={true}
+      hidePagination={false}
     />
   );
 }
 
-function ServicesFooterWrapper({
-  servicesPromise,
-  page,
-  pathname,
-  searchParams,
-}: {
-  servicesPromise: Promise<ActionResponse<PaginatedResponse<Service>>>;
-  page: number;
-  pathname: string;
-  searchParams: URLSearchParams;
-}) {
-  const router = useRouter();
-  const [, startTransition] = useTransition();
-  const response = use(servicesPromise);
-  const total =
-    response.status === "success" && response.data ? response.data.total : 0;
-  const totalPages = Math.ceil(total / 10);
-
-  const handlePageChange = (p: number) => {
-    const params = new URLSearchParams(searchParams);
-    params.set("page", p.toString());
-    startTransition(() => {
-      router.push(`${pathname}?${params.toString()}`);
-    });
-  };
-
-  return (
-    <PageFooter
-      page={page}
-      totalPages={totalPages}
-      onPageChange={handlePageChange}
-    />
-  );
-}
 
 export function ServicesPage({
   page,
@@ -226,14 +191,6 @@ export function ServicesPage({
                   />
                 </Suspense>
               </SurfaceCard>
-              <Suspense fallback={<PageFooter />}>
-                <ServicesFooterWrapper
-                  servicesPromise={servicesPromise}
-                  page={page}
-                  pathname={pathname}
-                  searchParams={searchParams}
-                />
-              </Suspense>
             </PageContent>
           </TabsContent>
 
@@ -245,7 +202,6 @@ export function ServicesPage({
               <SurfaceCard>
                 <SkillTable skills={skills} className="border-none" />
               </SurfaceCard>
-              <PageFooter />
             </PageContent>
           </TabsContent>
         </div>
