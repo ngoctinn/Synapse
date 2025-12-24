@@ -1,6 +1,5 @@
 "use client";
 
-import { HeaderLogo } from "@/shared/ui/branding/header-logo";
 import {
   Sidebar,
   SidebarContent,
@@ -12,43 +11,55 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  useSidebar,
 } from "@/shared/ui/sidebar";
-import { HelpCircle } from "lucide-react";
+import { HelpCircle, Menu } from "lucide-react";
 import { SIDEBAR_GROUPS } from "../constants";
 import { SidebarItem } from "./sidebar-item";
 
 export function AdminSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
+  const { toggleSidebar } = useSidebar();
+
   return (
     <Sidebar
       collapsible="icon"
+      variant="floating"
       role="navigation"
       aria-label="Menu điều hướng Admin"
-      className="bg-background z-40 border-r-0 shadow-none"
+      className="z-40"
       {...props}
     >
-      <SidebarHeader className="flex h-16 items-center justify-between px-4 group-data-[collapsible=icon]:px-0">
-        <div className="flex w-full items-center justify-center transition-all duration-300 ease-in-out">
-          <HeaderLogo
-            className="w-full group-data-[collapsible=icon]:w-auto group-data-[collapsible=icon]:justify-center"
-            textClassName="group-data-[collapsible=icon]:hidden opacity-100 transition-all duration-300 translate-x-0"
-          />
-        </div>
+      <SidebarHeader className="h-14 flex items-center px-3">
+        <SidebarMenu className="w-full">
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={() => toggleSidebar()}
+              tooltip="Thu gọn / Mở rộng"
+              className="h-10 w-full justify-start rounded-lg transition-colors px-2.5 hover:bg-muted/80"
+            >
+              <Menu className="size-5 shrink-0" />
+              <span className="font-bold text-primary text-base tracking-tight uppercase group-data-[collapsible=icon]:hidden ml-3 truncate">
+                Synapse
+              </span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent className="scrollbar-none gap-4 overflow-y-auto px-3 py-4 group-data-[collapsible=icon]:px-2">
+      <SidebarContent className="scrollbar-none gap-2 overflow-y-auto py-4">
         {SIDEBAR_GROUPS.map((group) => (
           <SidebarGroup
             key={group.group}
-            className="p-0 group-data-[collapsible=icon]:items-center"
+            className="p-0"
           >
-            <div className="text-muted-foreground/40 mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.1em] group-data-[collapsible=icon]:hidden">
+            <div className="text-muted-foreground/40 mb-2 px-6 text-[10px] font-bold uppercase tracking-[0.1em] group-data-[collapsible=icon]:hidden">
               {group.group}
             </div>
-            <SidebarGroupContent>
+            <SidebarGroupContent className="w-full">
               <SidebarMenu
-                className="gap-1"
+                className="gap-1 w-full"
                 aria-label={`Danh mục ${group.group}`}
               >
                 {group.items.map((item) => (
@@ -60,16 +71,16 @@ export function AdminSidebar({
         ))}
       </SidebarContent>
 
-      <SidebarFooter className="border-t p-3 group-data-[collapsible=icon]:border-t-0 group-data-[collapsible=icon]:p-2">
+      <SidebarFooter className="p-3">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               tooltip="Hỗ trợ"
               aria-label="Hỗ trợ"
-              className="text-muted-foreground hover:text-foreground hover:bg-muted/50 focus-visible:ring-sidebar-ring h-10 min-h-[40px] rounded-lg font-medium transition-all duration-200 group-data-[collapsible=icon]:size-10 group-data-[collapsible=icon]:justify-center"
+              className="text-muted-foreground hover:text-foreground hover:bg-muted/50 h-10 min-h-[40px] rounded-lg font-medium transition-all duration-200 justify-start px-2.5"
             >
-              <HelpCircle className="size-4.5" aria-hidden="true" />
-              <span className="group-data-[collapsible=icon]:hidden">
+              <HelpCircle className="size-5 shrink-0" />
+              <span className="group-data-[collapsible=icon]:hidden ml-3">
                 Hỗ trợ
               </span>
             </SidebarMenuButton>

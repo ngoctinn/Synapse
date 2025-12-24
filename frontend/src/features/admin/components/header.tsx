@@ -68,13 +68,11 @@ export function AdminHeader({
   return (
     <header
       className={cn(
-        "bg-background/80 sticky top-0 z-30 flex h-14 shrink-0 items-center gap-2 border-b backdrop-blur-md transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12",
+        "bg-background sticky top-2 z-30 ml-2 mr-2 flex h-14 shrink-0 items-center gap-2 rounded-lg shadow-sm transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12",
         className
       )}
     >
       <div className="flex items-center gap-2 px-4">
-        <SidebarTrigger className="-ml-1" />
-        <Separator orientation="vertical" className="mr-2 h-4" />
         <nav aria-label="Breadcrumb">
           <Breadcrumb>
             <BreadcrumbList>

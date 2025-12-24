@@ -58,7 +58,7 @@ export function TableActionBar({
         // Positioning
         "fixed bottom-6 left-1/2 z-50 -translate-x-1/2",
         // Appearance
-        "bg-background/95 rounded-xl border shadow-lg backdrop-blur-sm",
+        "bg-background/95 rounded-lg border shadow-lg backdrop-blur-sm",
         // Layout
         "flex items-center gap-4 px-5 py-3",
         // Animation

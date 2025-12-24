@@ -6,7 +6,8 @@
 
 | Task | Mô tả | Trạng thái |
 |------|-------|------------|
-| - [x] [Giai đoạn 2] Phase 16: Global Design System Synchronization (Đồng bộ hóa 100+ vị trí style) [Hoàn thành] | | Hoàn thành |
+| [x] [Giai đoạn 1] Phase 17: Sidebar & Header Premium Visual Refactor | Glassmorphism & Elevation Synchronization | Hoàn thành |
+| [x] [Giai đoạn 2] Phase 16: Global Design System Synchronization (Đồng bộ hóa 100+ vị trí style) [Hoàn thành] | | Hoàn thành |
 | [x] [Giai đoạn 1] Phase 15: Sidebar Premium UX/UI Refactor | Refine labels, icons & sticky header | Hoàn thành |
 | [x] [Giai đoạn 1] Phase 14: Audited UI/UX & A11y Refinement | Fix 30+ issues from audit | Hoàn thành |
 | Phase 13 | UI/UX Consistency Audit & Refinement | Stage 4: Visual System (Done) | ✅ Hoàn thành |

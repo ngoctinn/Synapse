@@ -18,10 +18,10 @@ export default function DashboardLoading() {
           </Card>
         ))}
       </div>
-      <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min">
+      <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-lg md:min-h-min">
         <div className="space-y-4 p-4">
           <Skeleton className="h-8 w-[200px]" />
-          <Skeleton className="h-[200px] w-full rounded-xl" />
+          <Skeleton className="h-[200px] w-full rounded-lg" />
         </div>
       </div>
     </div>

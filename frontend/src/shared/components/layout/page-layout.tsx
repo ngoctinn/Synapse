@@ -83,7 +83,7 @@ export function PageContent({
     <main
       className={cn(
         "flex flex-1 flex-col overflow-hidden",
-        !fullWidth && "gap-4 p-4 md:p-6",
+        !fullWidth && "gap-4 px-4 py-4 md:py-6",
         className
       )}
       {...props}
@@ -105,7 +105,7 @@ export function SurfaceCard({
   return (
     <div
       className={cn(
-        "surface-card flex flex-1 flex-col overflow-hidden rounded-xl",
+        "surface-card flex flex-1 flex-col overflow-hidden rounded-lg",
         className
       )}
       {...props}

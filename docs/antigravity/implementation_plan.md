@@ -1,49 +1,29 @@
-# Kế hoạch Thực thi: Đồng bộ hóa Hệ thống Thiết kế (Design System)
+# Kế hoạch Thực thi: Nâng cấp Hiệu ứng Thị giác Sidebar & Header (Premium Design)
 
-## 1. Vấn đề (Problem)
-Sau khi thiết lập các tiêu chuẩn UX/UI mới cho thị trường Việt Nam (Premium Vietnamese Design System), nhiều component trong codebase vẫn đang sử dụng các style "cũ" (hardcoded overrides) như `h-9`, `px-4`, `rounded-lg` cho card, gây ra sự thiếu nhất quán và không tối ưu cho hiển thị tiếng Việt.
+## 1. Mục tiêu
+- Nâng cấp Sidebar và Header của trang Admin để có hiệu ứng "nổi" (elevation) và vật liệu (material) đồng nhất với các card hiện tại.
+- Đảm bảo giao diện hiện đại, sạch sẽ nhưng vẫn giữ được sự đơn giản và dễ sử dụng.
 
-## 2. Mục đích (Objectives)
-- Đồng bộ hóa toàn bộ 100% các thành phần UI với tiêu chuẩn mới.
-- Loại bỏ các class ghi đè (overrides) không cần thiết để tận dụng style mặc định đã được tối ưu.
-- Đảm bảo trải nghiệm "Premium" nhất quán xuyên suốt ứng dụng.
+## 2. Phân tích Hiện trạng
+- **Sidebar**: Đang dùng `bg-background` phẳng, không shadow, gắn sát lề.
+- **Header**: Đã có `backdrop-blur` nhưng chưa có shadow để tạo chiều sâu khi trôi trên nội dung.
+- **Background**: `bg-muted/50` cung cấp độ tương phản tốt với các card trắng (`bg-background`).
 
-## 3. Ràng buộc (Constraints)
-- Giữ nguyên logic nghiệp vụ.
-- Không phá vỡ layout hiện tại trong khi nâng cấp kích thước.
-- Đảm bảo Dark Mode vẫn hoạt động hoàn hảo.
-- Tuân thủ quy tắc `cd frontend` và `pnpm`.
+## 3. Giải pháp Thiết kế
+- **Sidebar**:
+  - Thêm shadow cao cấp (`shadow-premium-md`).
+  - Sử dụng border mảnh (`border-r`) hoặc để Sidebar là một khối nổi (Floating Sidebar) nếu thiết kế cho phép. Tuy nhiên, để giữ sự gọn gàng, chúng ta sẽ bắt đầu bằng việc thêm shadow và tinh chỉnh vật liệu.
+  - Tinh chỉnh `SidebarHeader` để đồng nhất với Header chính.
+- **Header**:
+  - Thêm shadow (`shadow-premium-sm`) để tạo hiệu ứng tách lớp rõ ràng hơn khi scroll.
+  - Tăng cường hiệu ứng Glassmorphism.
 
-## 4. Chiến lược thực hiện (Strategy)
-Audit và Refactor theo từng nhóm thành phần:
-1.  **Nhóm Button**: Xóa bỏ `h-9`, `px-4` và các class liên quan đến padding/height thủ công.
-2.  **Nhóm Card/Container**: Nâng cấp từ `rounded-lg` lên `rounded-xl` hoặc sử dụng class `.surface-card`.
-3.  **Nhóm Typography**: Loại bỏ `leading-` không cần thiết, áp dụng `.prose-vi` cho vùng nội dung văn bản dài.
-4.  **Nhóm Input & Form**: Đồng bộ chiều cao `h-10` và padding.
+## 4. Các bước Thực hiện
+1. **Tinh chỉnh CSS (nếu cần)**: Kiểm tra lại các utility shadows trong `globals.css`.
+2. **Refactor AdminHeader**: Thêm shadow và tinh chỉnh class backdrop.
+3. **Refactor AdminSidebar**: Thêm shadow, border và tinh chỉnh hiệu ứng chuyển cảnh.
+4. **Kiểm tra Layout**: Đảm bảo sự kết nối giữa Sidebar và Header mượt mà.
 
-## 5. Danh sách Task (SPLIT)
-
-### Phase 1: Chuẩn hóa Button (40+ vị trí)
-- [ ] Refactor `features/appointments` buttons.
-- [ ] Refactor `features/customers` buttons.
-- [ ] Refactor `features/staff` buttons.
-- [ ] Refactor `features/services` buttons.
-- [ ] Refactor `shared/components`.
-
-### Phase 2: Chuẩn hóa Card & Container (30+ vị trí)
-- [ ] Thay thế `rounded-lg border` bằng `.surface-card` trong các trang Dashboard.
-- [ ] Cập nhật `rounded-xl` cho các thành phần `Card`.
-- [ ] Tối ưu hóa `padding` (`p-6`) cho các card chính.
-
-### Phase 3: Chuẩn hóa Typography & Spacing (30+ vị trí)
-- [ ] Rà soát và loại bỏ `leading-normal`, `leading-snug` nơi không cần thiết.
-- [ ] Áp dụng `.prose-vi` cho các mô tả dịch vụ, chính sách, liệu trình.
-- [ ] Kiểm tra font-size của Breadcrumb và Header.
-
-## 6. Giải pháp chi tiết (Solutions)
-- Sử dụng `grep` để tìm chính xác các mẫu class cần thay thế.
-- Ưu tiên sử dụng class utility của Design System thay vì Tailwind thủ công.
-- Kiểm tra trực quan bằng `pnpm build` để đảm bảo không lỗi kiểu dữ liệu.
-
----
-**Agent Notes**: Kế hoạch này sẽ thực hiện refactor hàng loạt nhưng có kiểm soát. Tôi sẽ bắt đầu rà soát từng module.
+## 5. Rủi ro & Giải pháp
+- **Rủi ro**: Hiệu ứng quá đà gây rối mắt.
+- **Giải pháp**: Sử dụng các giá trị shadow mờ và opacity thấp để giữ sự tinh tế.

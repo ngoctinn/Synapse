@@ -87,7 +87,7 @@ export function TimePicker({
         </div>
       </PopoverTrigger>
       <PopoverContent
-        className="border-border/60 w-auto rounded-xl p-0 shadow-xl"
+        className="border-border/60 w-auto rounded-lg p-0 shadow-xl"
         align="start"
       >
         <div className="divide-border/50 flex h-[280px] divide-x">

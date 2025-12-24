@@ -106,7 +106,7 @@ function CustomToast({ variant, title, description, t }: CustomToastProps) {
   return (
     <div
       className={cn(
-        "relative flex w-full overflow-hidden rounded-xl border p-4 shadow-lg backdrop-blur-xl",
+        "relative flex w-full overflow-hidden rounded-lg border p-4 shadow-lg backdrop-blur-xl",
         "motion-safe:transition-all motion-safe:duration-300 motion-safe:hover:shadow-md",
         "bg-background/95 supports-[backdrop-filter]:bg-background/60 dark:bg-zinc-900/90",
         style.container

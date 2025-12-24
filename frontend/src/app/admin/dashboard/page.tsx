@@ -19,10 +19,10 @@ export default function Page() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" className="rounded-xl shadow-sm">
+          <Button variant="outline" className="rounded-lg shadow-sm">
             Báo cáo nhanh
           </Button>
-          <Button asChild className="rounded-xl shadow-md">
+          <Button asChild className="rounded-lg shadow-md">
             <Link href="/booking">
               <Plus className="mr-2 size-4" />
               Tạo lịch hẹn mới

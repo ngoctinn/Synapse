@@ -38,14 +38,14 @@ export default async function AdminLayout({
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
 
   return (
-    <SidebarProvider defaultOpen={defaultOpen}>
+    <SidebarProvider defaultOpen={defaultOpen} className="bg-muted">
       <AdminSidebar />
-      <SidebarInset className="h-screen max-h-svh overflow-hidden">
+      <SidebarInset className="bg-transparent h-screen max-h-svh overflow-hidden">
         <AdminHeader
           user={userProfile}
           loading={!userProfile && session?.access_token ? true : false}
         />
-        <div className="bg-muted/50 flex flex-1 flex-col overflow-y-auto pb-20 md:pb-0">
+        <div className="flex flex-1 flex-col overflow-y-auto ml-2 mr-2 pb-2">
           {children}
         </div>
         <BottomNav />

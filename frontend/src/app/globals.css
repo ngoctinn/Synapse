@@ -199,7 +199,7 @@
   }
 
   .surface-card {
-    @apply bg-background border-border rounded-xl border p-6 transition-all duration-300;
+    @apply bg-background border-border rounded-lg border p-6 transition-all duration-300;
   }
 
   .prose-vi {
@@ -398,11 +398,11 @@
   }
 
   .upload-preview-container {
-    @apply border-border relative h-[160px] w-[160px] shrink-0 overflow-hidden rounded-xl border shadow-sm;
+    @apply border-border relative h-[160px] w-[160px] shrink-0 overflow-hidden rounded-lg border shadow-sm;
   }
 
   .upload-trigger-dashed {
-    @apply border-muted-foreground/20 hover:bg-primary/5 hover:border-primary/50 bg-muted/5 relative flex h-[160px] w-[160px] shrink-0 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed transition-all duration-300;
+    @apply border-muted-foreground/20 hover:bg-primary/5 hover:border-primary/50 bg-muted/5 relative flex h-[160px] w-[160px] shrink-0 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border-2 border-dashed transition-all duration-300;
   }
 
   .sticky-alert-top {
