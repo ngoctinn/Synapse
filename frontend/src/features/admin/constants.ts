@@ -36,7 +36,7 @@ export const BREADCRUMB_MAP: Record<string, string> = {
   dashboard: "Báo cáo",
   workspace: "Làm việc",
   appointments: "Lịch hẹn",
-  staff: "Nhân sự",
+  staff: "Nhân viên",
   permissions: "Phân quyền",
   schedule: "Lịch làm việc",
   skills: "Kỹ năng",
@@ -49,10 +49,10 @@ export const BREADCRUMB_MAP: Record<string, string> = {
   resources: "Tài nguyên",
   customers: "Khách hàng",
   waitlist: "Danh sách chờ",
-  billing: "Thanh toán",
+  billing: "Hóa đơn",
   treatments: "Liệu trình",
   warranty: "Bảo hành",
-  "audit-logs": "Nhật ký hệ thống",
+  "audit-logs": "Nhật ký",
   packages: "Gói dịch vụ",
   reviews: "Đánh giá",
   "customer-info": "Thông tin khách hàng", // Sửa từ 'payment'
@@ -74,12 +74,12 @@ export const SIDEBAR_GROUPS: SidebarGroup[] = [
     group: "Bảng điều khiển",
     items: [
       {
-        title: "Làm việc (KTV)",
+        title: "Làm việc",
         href: "/admin/workspace",
         icon: LayoutDashboard,
       },
       {
-        title: "Báo cáo (Quản lý)",
+        title: "Báo cáo",
         href: "/admin/dashboard",
         icon: FileText,
       },
@@ -99,22 +99,22 @@ export const SIDEBAR_GROUPS: SidebarGroup[] = [
         icon: CalendarClock,
       },
       {
-        title: "Hóa đơn & Billing",
+        title: "Hóa đơn",
         href: "/admin/billing",
         icon: CreditCard,
       },
     ],
   },
   {
-    group: "Quản lý khách hàng",
+    group: "Khách hàng",
     items: [
       {
-        title: "Khách hàng",
+        title: "Danh sách",
         href: "/admin/customers",
         icon: Users,
       },
       {
-        title: "Liệu trình dịch vụ",
+        title: "Liệu trình",
         href: "/admin/treatments",
         icon: ClipboardList,
       },
@@ -136,20 +136,20 @@ export const SIDEBAR_GROUPS: SidebarGroup[] = [
     ],
   },
   {
-    group: "Nguồn lực & Nhân sự",
+    group: "Nhân sự & Menu",
     items: [
       {
-        title: "Đội ngũ nhân viên",
+        title: "Nhân viên",
         href: "/admin/staff",
         icon: User,
       },
       {
-        title: "Dịch vụ & Menu",
+        title: "Dịch vụ",
         href: "/admin/services",
         icon: Scissors,
       },
       {
-        title: "Gói tài nguyên",
+        title: "Tài nguyên",
         href: "/admin/resources",
         icon: Box,
       },
@@ -159,12 +159,12 @@ export const SIDEBAR_GROUPS: SidebarGroup[] = [
     group: "Hệ thống",
     items: [
       {
-        title: "Nhật ký hệ thống",
+        title: "Nhật ký",
         href: "/admin/audit-logs",
         icon: FileText,
       },
       {
-        title: "Cài đặt chung",
+        title: "Cài đặt",
         href: "/admin/settings",
         icon: Settings,
       },

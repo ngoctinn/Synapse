@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Icon } from "./icon";
 import { ReactNode } from "react";
 
 interface TableRowActionsProps {
@@ -79,7 +80,7 @@ export function TableRowActions({
           title={editLabel}
         >
           <span className="sr-only">{editLabel}</span>
-          <Pencil className="size-4" />
+          <Icon icon={Pencil} />
         </Button>
       )}
 
@@ -94,7 +95,7 @@ export function TableRowActions({
           title={deleteLabel}
         >
           <span className="sr-only">{deleteLabel}</span>
-          <Trash2 className="size-4" />
+          <Icon icon={Trash2} />
         </Button>
       )}
 
@@ -109,7 +110,7 @@ export function TableRowActions({
               disabled={disabled}
             >
               <span className="sr-only">Mở menu</span>
-              <MoreHorizontal className="size-4" />
+              <Icon icon={MoreHorizontal} />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-[160px]">

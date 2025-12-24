@@ -15,7 +15,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  RequiredMark,
   Select,
   SelectContent,
   SelectItem,
@@ -23,6 +22,7 @@ import {
   SelectValue,
   Textarea,
 } from "@/shared/ui";
+import { Icon } from "@/shared/ui/custom/icon";
 import { Combobox } from "@/shared/ui/custom/combobox";
 import { DatePicker } from "@/shared/ui/custom/date-picker";
 import { TimePicker } from "@/shared/ui/custom/time-picker";
@@ -137,11 +137,11 @@ export function AppointmentForm({
         });
 
         const currentTotalDuration = bookingItems.reduce(
-          (acc: number, item: any) => acc + item.duration,
+          (acc, item) => acc + item.duration,
           0
         );
         const currentTotalPrice = bookingItems.reduce(
-          (acc: number, item: any) => acc + item.price,
+          (acc, item) => acc + item.price,
           0
         );
         const finalEndTime = new Date(
@@ -207,9 +207,7 @@ export function AppointmentForm({
           name="customerId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
-                Khách hàng <RequiredMark />
-              </FormLabel>
+              <FormLabel required>Khách hàng</FormLabel>
               <FormControl>
                 <Combobox
                   options={customerOptions.map((c) => ({
@@ -237,9 +235,7 @@ export function AppointmentForm({
           name="serviceIds"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
-                Dịch vụ trị liệu <RequiredMark />
-              </FormLabel>
+              <FormLabel required>Dịch vụ trị liệu</FormLabel>
               <FormControl>
                 <MultiServiceSelector
                   selectedIds={field.value}
@@ -261,9 +257,7 @@ export function AppointmentForm({
           name="staffId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
-                Kỹ thuật viên <RequiredMark />
-              </FormLabel>
+              <FormLabel required>Kỹ thuật viên</FormLabel>
               <Select value={field.value} onValueChange={field.onChange}>
                 <FormControl>
                   <SelectTrigger>
@@ -296,9 +290,7 @@ export function AppointmentForm({
             name="date"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Ngày <RequiredMark />
-                </FormLabel>
+                <FormLabel required>Ngày</FormLabel>
                 <FormControl>
                   <DatePicker
                     value={field.value}
@@ -317,9 +309,7 @@ export function AppointmentForm({
             name="startTime"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Giờ bắt đầu <RequiredMark />
-                </FormLabel>
+                <FormLabel required>Giờ bắt đầu</FormLabel>
                 <FormControl>
                   <TimePicker value={field.value} onChange={field.onChange} />
                 </FormControl>
@@ -333,7 +323,7 @@ export function AppointmentForm({
             <div className="col-span-2 space-y-1 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm dark:border-amber-800 dark:bg-amber-950/20">
               {timeWarning && (
                 <div className="flex items-center gap-2 font-medium text-amber-800 dark:text-amber-500">
-                  <AlertTriangle className="h-4 w-4" /> {timeWarning}
+                  <Icon icon={AlertTriangle} /> {timeWarning}
                 </div>
               )}
               {conflicts.map((c) => (
@@ -341,7 +331,7 @@ export function AppointmentForm({
                   key={c.eventId}
                   className="text-destructive flex items-center gap-2 font-medium"
                 >
-                  <AlertTriangle className="h-4 w-4" /> {c.message}
+                  <Icon icon={AlertTriangle} /> {c.message}
                 </div>
               ))}
             </div>

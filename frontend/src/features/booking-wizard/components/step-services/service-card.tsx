@@ -20,10 +20,10 @@ export const ServiceCard = ({
   return (
     <Card
       className={cn(
-        "group relative cursor-pointer overflow-hidden border-2 transition-all duration-200",
+        "group relative cursor-pointer overflow-hidden border-2 transition-all duration-300 active:scale-[0.99]",
         isSelected
-          ? "border-primary bg-primary/5 shadow-md"
-          : "hover:border-muted-foreground/20 bg-card border-transparent"
+          ? "border-primary bg-primary/5 ring-primary/20 shadow-lg ring-2 ring-offset-2"
+          : "hover:border-muted-foreground/20 bg-card border-transparent hover:shadow-md"
       )}
       onClick={() => onToggle(service)}
     >
@@ -50,11 +50,11 @@ export const ServiceCard = ({
         {/* Content */}
         <div className="flex min-w-0 flex-1 flex-col justify-between">
           <div>
-            <h3 className="truncate pr-6 text-base font-semibold">
+            <h3 className="line-clamp-2 pr-6 text-base font-semibold leading-tight">
               {service.name}
             </h3>
             {service.description && (
-              <p className="text-muted-foreground mt-1 line-clamp-1 text-sm">
+              <p className="text-muted-foreground mt-1.5 line-clamp-2 text-sm leading-relaxed">
                 {service.description}
               </p>
             )}

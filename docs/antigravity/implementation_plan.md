@@ -1,35 +1,49 @@
-# Kế hoạch Triển khai: Tối ưu UI/UX Auth Feature
+# Kế hoạch Thực thi: Đồng bộ hóa Hệ thống Thiết kế (Design System)
 
-Kế hoạch này giải quyết các vấn đề được nêu trong báo cáo audit `audit_admin_auth_billing.md` cho phần Auth.
+## 1. Vấn đề (Problem)
+Sau khi thiết lập các tiêu chuẩn UX/UI mới cho thị trường Việt Nam (Premium Vietnamese Design System), nhiều component trong codebase vẫn đang sử dụng các style "cũ" (hardcoded overrides) như `h-9`, `px-4`, `rounded-lg` cho card, gây ra sự thiếu nhất quán và không tối ưu cho hiển thị tiếng Việt.
 
-## Vấn đề
+## 2. Mục đích (Objectives)
+- Đồng bộ hóa toàn bộ 100% các thành phần UI với tiêu chuẩn mới.
+- Loại bỏ các class ghi đè (overrides) không cần thiết để tận dụng style mặc định đã được tối ưu.
+- Đảm bảo trải nghiệm "Premium" nhất quán xuyên suốt ứng dụng.
 
-1.  **Luồng Đăng ký gây gián đoạn**: Chuyển hướng về `/login` sau khi đăng ký thành công buộc người dùng nhập lại thông tin.
-2.  **Thiếu Inline Errors**: Các lỗi từ server (validation) chỉ hiển thị qua Toast, khó xác định field bị lỗi.
+## 3. Ràng buộc (Constraints)
+- Giữ nguyên logic nghiệp vụ.
+- Không phá vỡ layout hiện tại trong khi nâng cấp kích thước.
+- Đảm bảo Dark Mode vẫn hoạt động hoàn hảo.
+- Tuân thủ quy tắc `cd frontend` và `pnpm`.
 
-## Mục đích
+## 4. Chiến lược thực hiện (Strategy)
+Audit và Refactor theo từng nhóm thành phần:
+1.  **Nhóm Button**: Xóa bỏ `h-9`, `px-4` và các class liên quan đến padding/height thủ công.
+2.  **Nhóm Card/Container**: Nâng cấp từ `rounded-lg` lên `rounded-xl` hoặc sử dụng class `.surface-card`.
+3.  **Nhóm Typography**: Loại bỏ `leading-` không cần thiết, áp dụng `.prose-vi` cho vùng nội dung văn bản dài.
+4.  **Nhóm Input & Form**: Đồng bộ chiều cao `h-10` và padding.
 
-- Tự động đăng nhập sau khi đăng ký thành công.
-- Hiển thị lỗi validation trực tiếp dưới các trường nhập liệu.
+## 5. Danh sách Task (SPLIT)
 
-## Ràng buộc
+### Phase 1: Chuẩn hóa Button (40+ vị trí)
+- [ ] Refactor `features/appointments` buttons.
+- [ ] Refactor `features/customers` buttons.
+- [ ] Refactor `features/staff` buttons.
+- [ ] Refactor `features/services` buttons.
+- [ ] Refactor `shared/components`.
 
-- Sử dụng `useActionState` và `react-hook-form`.
-- Đảm bảo an toàn bảo mật khi tự động đăng nhập.
+### Phase 2: Chuẩn hóa Card & Container (30+ vị trí)
+- [ ] Thay thế `rounded-lg border` bằng `.surface-card` trong các trang Dashboard.
+- [ ] Cập nhật `rounded-xl` cho các thành phần `Card`.
+- [ ] Tối ưu hóa `padding` (`p-6`) cho các card chính.
 
-## Chiến lược & Giải pháp
+### Phase 3: Chuẩn hóa Typography & Spacing (30+ vị trí)
+- [ ] Rà soát và loại bỏ `leading-normal`, `leading-snug` nơi không cần thiết.
+- [ ] Áp dụng `.prose-vi` cho các mô tả dịch vụ, chính sách, liệu trình.
+- [ ] Kiểm tra font-size của Breadcrumb và Header.
 
-### 1. Auto-login sau khi Đăng ký
-- **Giải pháp**: Cập nhật `registerAction` để tự động đăng nhập bằng mật khẩu vừa tạo nếu việc đăng ký thành công (hoặc sử dụng session trả về từ `signUp` nếu config cho phép bypass confirm email).
-- **File ảnh hưởng**: `frontend/src/features/auth/actions.ts`.
+## 6. Giải pháp chi tiết (Solutions)
+- Sử dụng `grep` để tìm chính xác các mẫu class cần thay thế.
+- Ưu tiên sử dụng class utility của Design System thay vì Tailwind thủ công.
+- Kiểm tra trực quan bằng `pnpm build` để đảm bảo không lỗi kiểu dữ liệu.
 
-### 2. Inline Server Errors
-- **Giải pháp**: Trong `RegisterForm` và `LoginForm`, sử dụng `setError` từ `react-hook-form` để map các lỗi trường (field errors) trả về từ `actionState`.
-- **File ảnh hưởng**: `frontend/src/features/auth/components/register-form.tsx`, `frontend/src/features/auth/components/login-form.tsx`.
-
-## Kế hoạch hành động (Atomic Tasks)
-
-- [ ] Phân tích logic `signUp` của Supabase (Hiện tại đang yêu cầu confirm email).
-- [ ] Cập nhật `registerAction` để hỗ trợ auto-login (nếu được phép).
-- [ ] Triển khai hiển thị lỗi inline cho `RegisterForm`.
-- [ ] Triển khai hiển thị lỗi inline cho `LoginForm`.
+---
+**Agent Notes**: Kế hoạch này sẽ thực hiện refactor hàng loạt nhưng có kiểm soát. Tôi sẽ bắt đầu rà soát từng module.

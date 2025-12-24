@@ -96,7 +96,7 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
       isActive={activeCount > 0}
       count={activeCount}
       onClear={clearFilters}
-      className="h-9 w-9"
+      className="size-10"
     >
       <div className="grid gap-6 p-1">
         <div className="space-y-4">
@@ -132,7 +132,7 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
                 endContent={
                   <span className="text-muted-foreground text-xs">VNĐ</span>
                 }
-                className="bg-background h-9 pr-10 text-sm"
+                className="bg-background pr-10 text-sm"
               />
             </div>
             <div className="flex-1 space-y-1.5">
@@ -148,7 +148,7 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
                 endContent={
                   <span className="text-muted-foreground text-xs">VNĐ</span>
                 }
-                className="bg-background h-9 pr-10 text-sm"
+                className="bg-background pr-10 text-sm"
               />
             </div>
           </div>

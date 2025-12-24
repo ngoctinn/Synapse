@@ -50,6 +50,16 @@ const STATUS_ICONS: Record<AppointmentStatus, React.ReactNode> = {
   NO_SHOW: <UserX className="h-3 w-3" />,
 };
 
+// Helper to handle background color with opacity safely
+const getEventStyles = (color: string, opacity: string) => {
+  // If color is hex, we can safely use it with opacity if we ensure it starts with #
+  const baseColor = color.startsWith("#") ? color : `#${color}`;
+  return {
+    backgroundColor: `${baseColor}${opacity}`,
+    color: baseColor,
+  };
+};
+
 export function EventCard({
   event,
   variant = "default",
@@ -71,19 +81,19 @@ export function EventCard({
         type="button"
         onClick={onClick}
         className={cn(
-          "flex w-full items-center gap-1.5 truncate rounded px-1.5 py-0.5 text-xs",
-          "active:scale-98 transition-all hover:brightness-95",
+          "flex w-full items-center gap-1.5 truncate rounded px-1.5 py-0.5 text-xs transition-all",
+          "active:bg-muted/50 hover:brightness-95",
           isDragging && "opacity-50",
           isOverlay && "ring-primary shadow-lg ring-2",
           hasConflict && "ring-2 ring-red-500",
           className
         )}
-        style={{ backgroundColor: event.color + "20", color: event.color }}
+        style={getEventStyles(event.color, "20")}
         title={`${event.title} (${timeRange})`}
       >
         <span
           className="h-2 w-2 flex-shrink-0 rounded-full"
-          style={{ backgroundColor: event.color }}
+          style={{ backgroundColor: event.color.startsWith("#") ? event.color : `#${event.color}` }}
         />
         <span className="truncate">{event.appointment.customerName}</span>
       </button>
@@ -99,21 +109,21 @@ export function EventCard({
         className={cn(
           "flex flex-col overflow-hidden rounded-md px-2 py-1 text-left",
           "border-l-3 cursor-pointer",
-          "transition-all duration-150 hover:brightness-95 active:scale-[0.98]",
+          "transition-all duration-150 hover:brightness-95",
           isDragging && "scale-95 opacity-40",
           isOverlay && "ring-primary scale-105 shadow-xl ring-2 ring-offset-2",
           hasConflict && "ring-2 ring-red-500 ring-offset-1",
           className
         )}
         style={{
-          backgroundColor: event.color + "15",
-          borderLeftColor: event.color,
+          ...getEventStyles(event.color, "15"),
+          borderLeftColor: event.color.startsWith("#") ? event.color : `#${event.color}`,
         }}
         title={event.title}
       >
         {/* Time + Status */}
         <div className="text-muted-foreground flex items-center gap-1 text-[10px]">
-          <span style={{ color: event.color }}>
+          <span style={{ color: event.color.startsWith("#") ? event.color : `#${event.color}` }}>
             {STATUS_ICONS[event.status]}
           </span>
           <span>{format(event.start, "HH:mm")}</span>
@@ -125,7 +135,7 @@ export function EventCard({
         {/* Customer Name */}
         <span
           className="mt-0.5 truncate text-xs font-medium"
-          style={{ color: event.color }}
+          style={{ color: event.color.startsWith("#") ? event.color : `#${event.color}` }}
         >
           {event.appointment.customerName}
         </span>
@@ -146,14 +156,14 @@ export function EventCard({
       className={cn(
         "flex w-full flex-col rounded-lg p-3 text-left",
         "cursor-pointer border-l-4",
-        "transition-all duration-200 hover:shadow-md active:scale-[0.99]",
+        "transition-all duration-200 hover:shadow-md",
         "bg-card",
         isDragging && "scale-95 opacity-40",
         isOverlay && "ring-primary scale-105 shadow-2xl ring-2 ring-offset-2",
         hasConflict && "ring-2 ring-red-500",
         className
       )}
-      style={{ borderLeftColor: event.color }}
+      style={{ borderLeftColor: event.color.startsWith("#") ? event.color : `#${event.color}` }}
     >
       {/* Header: Status + Time */}
       <div className="mb-2 flex items-center justify-between">
@@ -177,8 +187,8 @@ export function EventCard({
 
       {/* Service */}
       <div
-        className="inline-flex w-fit items-center gap-1.5 rounded-md px-2 py-1 text-sm"
-        style={{ backgroundColor: event.color + "20", color: event.color }}
+        className="inline-flex w-fit items-center gap-1.5 rounded-md px-2 py-1 text-sm font-medium"
+        style={getEventStyles(event.color, "20")}
       >
         {event.appointment.serviceName}
         {event.isRecurring && <Repeat className="h-3 w-3" />}

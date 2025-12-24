@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Save, Send } from "lucide-react";
+import { Icon } from "@/shared/ui/custom/icon";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 
@@ -166,9 +167,9 @@ export function StaffSheet({
             isLoading={isPending}
             startContent={
               mode === "create" ? (
-                <Send className="size-4" />
+                <Icon icon={Send} />
               ) : (
-                <Save className="size-4" />
+                <Icon icon={Save} />
               )
             }
           >

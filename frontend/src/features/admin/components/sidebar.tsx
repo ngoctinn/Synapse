@@ -25,30 +25,30 @@ export function AdminSidebar({
       collapsible="icon"
       role="navigation"
       aria-label="Menu điều hướng Admin"
-      className="bg-background z-30 border-r-0 shadow-none"
+      className="bg-background z-40 border-r-0 shadow-none"
       {...props}
     >
-      <SidebarHeader className="h-16 justify-center px-3 group-data-[collapsible=icon]:px-0">
-        <div className="flex w-full items-center justify-center transition-all duration-200 ease-out">
+      <SidebarHeader className="flex h-16 items-center justify-between px-4 group-data-[collapsible=icon]:px-0">
+        <div className="flex w-full items-center justify-center transition-all duration-300 ease-in-out">
           <HeaderLogo
             className="w-full group-data-[collapsible=icon]:w-auto group-data-[collapsible=icon]:justify-center"
-            textClassName="group-data-[collapsible=icon]:hidden transition-all duration-200"
+            textClassName="group-data-[collapsible=icon]:hidden opacity-100 transition-all duration-300 translate-x-0"
           />
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="scrollbar-none px-2 py-2 group-data-[collapsible=icon]:px-1">
+      <SidebarContent className="scrollbar-none gap-4 overflow-y-auto px-3 py-4 group-data-[collapsible=icon]:px-2">
         {SIDEBAR_GROUPS.map((group) => (
           <SidebarGroup
             key={group.group}
-            className="group-data-[collapsible=icon]:items-center"
+            className="p-0 group-data-[collapsible=icon]:items-center"
           >
-            <div className="text-muted-foreground/50 px-2 py-1.5 text-xs font-semibold uppercase tracking-wider group-data-[collapsible=icon]:hidden">
+            <div className="text-muted-foreground/40 mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.1em] group-data-[collapsible=icon]:hidden">
               {group.group}
             </div>
             <SidebarGroupContent>
               <SidebarMenu
-                className="gap-2"
+                className="gap-1"
                 aria-label={`Danh mục ${group.group}`}
               >
                 {group.items.map((item) => (
@@ -60,15 +60,15 @@ export function AdminSidebar({
         ))}
       </SidebarContent>
 
-      <SidebarFooter className="p-4 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-2">
+      <SidebarFooter className="border-t p-3 group-data-[collapsible=icon]:border-t-0 group-data-[collapsible=icon]:p-2">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               tooltip="Hỗ trợ"
               aria-label="Hỗ trợ"
-              className="text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent focus-visible:ring-sidebar-ring active:bg-sidebar-accent/80 h-11 min-h-[44px] rounded-xl font-medium transition-all duration-200 ease-out focus-visible:ring-2 active:scale-[0.98] group-data-[collapsible=icon]:!size-11 group-data-[collapsible=icon]:!min-h-[44px] group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:hover:translate-x-0 motion-safe:hover:translate-x-1"
+              className="text-muted-foreground hover:text-foreground hover:bg-muted/50 focus-visible:ring-sidebar-ring h-10 min-h-[40px] rounded-lg font-medium transition-all duration-200 group-data-[collapsible=icon]:size-10 group-data-[collapsible=icon]:justify-center"
             >
-              <HelpCircle className="size-5" aria-hidden="true" />
+              <HelpCircle className="size-4.5" aria-hidden="true" />
               <span className="group-data-[collapsible=icon]:hidden">
                 Hỗ trợ
               </span>

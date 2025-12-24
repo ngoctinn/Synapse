@@ -59,13 +59,13 @@ export function ViewSwitcher({
       onValueChange={(v) => onChange(v as CalendarViewType)}
       className={className}
     >
-      <TabsList className="bg-muted/50 h-9 w-fit p-1">
+      <TabsList className="bg-muted/50 h-10 w-fit p-1">
         {visibleViews.map((view) => (
           <TabsTrigger
             key={view}
             value={view}
             className={cn(
-              "data-[state=active]:bg-background h-7 w-8 min-w-8 px-0 data-[state=active]:shadow-sm",
+              "data-[state=active]:bg-background h-8 w-9 min-w-9 px-0 data-[state=active]:shadow-sm",
               "transition-all duration-200"
             )}
             title={CALENDAR_VIEW_CONFIG[view].description}

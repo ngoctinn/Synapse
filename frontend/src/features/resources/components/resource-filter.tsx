@@ -33,7 +33,7 @@ export function ResourceFilter() {
     <FilterButton
       count={activeCount}
       onClear={clearFilters}
-      className="h-9 w-9"
+      className="size-10"
     >
       <div className="grid gap-6 p-1">
         <div className="space-y-3">
@@ -41,7 +41,7 @@ export function ResourceFilter() {
             Loại tài nguyên
           </Label>
           <Select value={type || "all"} onValueChange={handleTypeChange}>
-            <SelectTrigger id="type" className="bg-background h-10 w-full">
+            <SelectTrigger id="type" className="bg-background w-full">
               <SelectValue placeholder="Tất cả loại" />
             </SelectTrigger>
             <SelectContent>
@@ -69,7 +69,7 @@ export function ResourceFilter() {
             Trạng thái
           </Label>
           <Select value={status || "all"} onValueChange={handleStatusChange}>
-            <SelectTrigger id="status" className="bg-background h-10 w-full">
+            <SelectTrigger id="status" className="bg-background w-full">
               <SelectValue placeholder="Tất cả trạng thái" />
             </SelectTrigger>
             <SelectContent>

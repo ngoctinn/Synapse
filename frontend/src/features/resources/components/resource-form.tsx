@@ -11,7 +11,6 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  RequiredMark,
   Select,
   SelectContent,
   SelectItem,
@@ -24,6 +23,7 @@ import {
   TagInput,
   Textarea,
 } from "@/shared/ui";
+import { Icon } from "@/shared/ui/custom/icon";
 
 import { ResourceGroup } from "../model/types";
 
@@ -84,9 +84,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Tên tài nguyên <RequiredMark />
-                </FormLabel>
+                <FormLabel required>Tên tài nguyên</FormLabel>
                 <FormControl>
                   <Input placeholder="Ví dụ: Phòng VIP 1" {...field} />
                 </FormControl>
@@ -101,9 +99,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
               name="code"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
-                    Mã định danh <RequiredMark />
-                  </FormLabel>
+                  <FormLabel required>Mã định danh</FormLabel>
                   <FormControl>
                     <Input placeholder="Ví dụ: R-VIP-01" {...field} />
                   </FormControl>
@@ -117,9 +113,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
               name="groupId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
-                    Nhóm tài nguyên <RequiredMark />
-                  </FormLabel>
+                  <FormLabel required>Nhóm tài nguyên</FormLabel>
                   <Select
                     onValueChange={(val) => {
                       field.onChange(val);
@@ -179,9 +173,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
             name="status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Trạng thái hiện tại <RequiredMark />
-                </FormLabel>
+                <FormLabel required>Trạng thái hiện tại</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -252,7 +244,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                     />
                   </FormControl>
                   <div className="text-muted-foreground mt-2 flex items-center gap-1.5 text-[0.8rem]">
-                    <Tags className="size-3.5" />
+                    <Icon icon={Tags} size="xs" />
                     <span>
                       Nhấn Enter để thêm thẻ mới. Dùng để lọc thiết bị (VD:
                       #may-cong-nghe-cao)

@@ -16,7 +16,6 @@ export function InviteStaffTrigger({ skills }: InviteStaffModalProps) {
   return (
     <>
       <Button
-        size="sm"
         className="text-xs shadow-sm transition-all hover:scale-[1.02]"
         onClick={() => setOpen(true)}
         startContent={<Mail className="size-3.5" />}

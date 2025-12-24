@@ -44,7 +44,7 @@ export function CustomerFilter() {
     <FilterButton
       count={activeCount}
       onClear={clearFilters}
-      className="h-9 w-9"
+      className="size-10"
     >
       <div className="grid min-w-[220px] gap-5 p-1">
         {/* Filter: Trạng thái */}
@@ -56,7 +56,7 @@ export function CustomerFilter() {
             <Activity className="size-3.5" /> Trạng thái
           </Label>
           <Select value={status || "all"} onValueChange={handleStatusChange}>
-            <SelectTrigger id="status" className="bg-background h-9 w-full">
+            <SelectTrigger id="status" className="bg-background w-full">
               <SelectValue placeholder="Tất cả" />
             </SelectTrigger>
             <SelectContent>
@@ -79,7 +79,7 @@ export function CustomerFilter() {
             <User className="size-3.5" /> Giới tính
           </Label>
           <Select value={gender || "all"} onValueChange={handleGenderChange}>
-            <SelectTrigger id="gender" className="bg-background h-9 w-full">
+            <SelectTrigger id="gender" className="bg-background w-full">
               <SelectValue placeholder="Tất cả" />
             </SelectTrigger>
             <SelectContent>

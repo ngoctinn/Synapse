@@ -10,8 +10,8 @@ import {
 import { ActionResponse } from "@/shared/lib/action-response";
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
-
-import { Suspense, use, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Suspense, use, useTransition } from "react";
 import { MaintenanceTask, Resource, ResourceGroup } from "../model/types";
 import { CreateResourceTrigger } from "./create-resource-trigger";
 import { MaintenanceTimeline } from "./maintenance-timeline";
@@ -83,17 +83,31 @@ export function ResourcePage({
   groupsPromise,
   tasksPromise,
 }: ResourcePageProps) {
-  const [activeTab, setActiveTab] = useState("list");
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [, startTransition] = useTransition();
+
+  // Get active tab from URL or default to 'list'
+  const activeTab = searchParams.get("view") || "list";
+
+  const handleTabChange = (value: string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("view", value);
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`);
+    });
+  };
 
   return (
     <PageShell>
       <Tabs
-        defaultValue="list"
+        value={activeTab}
         className="flex w-full flex-1 flex-col gap-0"
-        onValueChange={setActiveTab}
+        onValueChange={handleTabChange}
       >
         <PageHeader>
-          <TabsList variant="default" size="default">
+          <TabsList variant="default" size="default" aria-label="Quản lý tài nguyên">
             <TabsTrigger value="list" variant="default" stretch={false}>
               Danh sách
             </TabsTrigger>

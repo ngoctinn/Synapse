@@ -19,6 +19,7 @@ import {
   TooltipTrigger,
 } from "@/shared/ui/tooltip";
 import { Calendar, Loader2 } from "lucide-react";
+import { Icon } from "@/shared/ui/custom/icon";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { ROLE_CONFIG } from "../../model/constants";
@@ -36,6 +37,7 @@ interface StaffTableProps {
   className?: string;
   variant?: "default" | "flush";
   isLoading?: boolean;
+  hidePagination?: boolean;
 }
 
 const GroupActionButtons = ({ staff: _staff }: { staff: Staff }) => {
@@ -61,7 +63,7 @@ const GroupActionButtons = ({ staff: _staff }: { staff: Staff }) => {
             className="text-muted-foreground hover:text-primary hover:bg-primary/10 h-8 w-8"
             onClick={handleViewSchedule}
           >
-            <Calendar className="size-4" />
+            <Icon icon={Calendar} />
           </Button>
         </TooltipTrigger>
         <TooltipContent>
@@ -81,6 +83,7 @@ export function StaffTable({
   className,
   variant = "default",
   isLoading,
+  hidePagination,
 }: StaffTableProps) {
   const router = useRouter();
   const [editingStaff, setEditingStaff] = useState<Staff | null>(null);
@@ -274,6 +277,7 @@ export function StaffTable({
         variant={variant}
         isLoading={isLoading}
         skeletonCount={5}
+        hidePagination={hidePagination}
         disabled={isPending}
         selection={{
           isSelected: selection.isSelected,

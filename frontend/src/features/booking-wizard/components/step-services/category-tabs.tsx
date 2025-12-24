@@ -37,7 +37,7 @@ export const CategoryTabs = ({
               key={category}
               id={`tab-${category}`}
               variant={activeCategory === category ? "default" : "outline"}
-              size="sm"
+              size="default"
               onClick={() => onSelectCategory(category)}
               className={cn(
                 "rounded-full transition-all duration-300",

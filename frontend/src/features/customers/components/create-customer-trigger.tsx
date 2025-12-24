@@ -11,7 +11,6 @@ export function CreateCustomerTrigger() {
   return (
     <>
       <Button
-        size="sm"
         className="text-xs shadow-sm transition-all hover:scale-[1.02]"
         onClick={() => setOpen(true)}
         startContent={<Plus className="mr-2 h-3.5 w-3.5" />}

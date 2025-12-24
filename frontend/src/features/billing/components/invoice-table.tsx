@@ -4,7 +4,7 @@ import { Button } from "@/shared/ui/button";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { formatCurrency } from "@/shared/lib/utils";
+import { cn, formatCurrency } from "@/shared/lib/utils";
 import { Eye } from "lucide-react";
 import { Invoice } from "../model/types";
 import { InvoiceStatusBadge } from "./invoice-status-badge";
@@ -50,9 +50,12 @@ export function InvoiceTable({ data, onView, isLoading }: InvoiceTableProps) {
       header: "Đã thanh toán",
       cell: (item) => (
         <span
-          className={
-            item.paidAmount < item.finalAmount ? "text-warning" : "text-success"
-          }
+          className={cn(
+            "font-medium",
+            item.paidAmount < item.finalAmount
+              ? "text-amber-600 dark:text-amber-500" // Increased contrast for A11y
+              : "text-emerald-600 dark:text-emerald-500"
+          )}
         >
           {formatCurrency(item.paidAmount)}
         </span>
@@ -75,7 +78,13 @@ export function InvoiceTable({ data, onView, isLoading }: InvoiceTableProps) {
       header: "Hành động",
       className: "pr-6 text-right",
       cell: (item) => (
-        <Button variant="ghost" size="icon" onClick={() => onView(item)}>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-8"
+          onClick={() => onView(item)}
+          aria-label={`Xem chi tiết hóa đơn ${item.id}`} // Fix Issue 21
+        >
           <Eye className="size-4" />
         </Button>
       ),

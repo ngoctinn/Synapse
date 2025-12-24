@@ -39,6 +39,7 @@ interface ServiceTableProps {
   className?: string;
   variant?: "default" | "flush";
   isLoading?: boolean;
+  hidePagination?: boolean;
 }
 
 export function ServiceTable({
@@ -52,6 +53,7 @@ export function ServiceTable({
   className,
   variant = "default",
   isLoading,
+  hidePagination,
 }: ServiceTableProps) {
   const [editingService, setEditingService] = useState<Service | null>(null);
 
@@ -201,6 +203,7 @@ export function ServiceTable({
         variant={variant}
         isLoading={isLoading}
         skeletonCount={6}
+        hidePagination={hidePagination}
         selection={{
           isSelected: selection.isSelected,
           onToggleOne: (id) => !isPending && selection.toggleOne(id),

@@ -76,7 +76,7 @@ export function WaitlistSheet({
       : updateWaitlistEntry) as any,
     onSuccess: () => onOpenChange(false),
     toastMessages: {
-      success: "Đã thêm vào danh sách chờ",
+      success: isCreate ? "Đã thêm vào danh sách chờ" : "Đã cập nhật yêu cầu",
     },
   });
 
@@ -93,12 +93,14 @@ export function WaitlistSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="flex h-full w-full flex-col sm:max-w-lg">
-        <SheetHeader>
-          <SheetTitle>
+      <SheetContent className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-lg">
+        <SheetHeader className="shrink-0 space-y-0 border-b px-6 py-4">
+          <SheetTitle className="text-foreground text-lg font-semibold">
             {isCreate ? "Thêm vào danh sách chờ" : "Chi tiết yêu cầu"}
           </SheetTitle>
         </SheetHeader>
+
+        <div className="sheet-scroll-area">
 
         <Form {...form}>
           <form
@@ -111,9 +113,7 @@ export function WaitlistSheet({
                 name="customer_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Tên khách hàng <span className="text-destructive">*</span>
-                    </FormLabel>
+                    <FormLabel required>Tên khách hàng</FormLabel>
                     <FormControl>
                       <Input placeholder="Nhập tên khách hàng" {...field} />
                     </FormControl>
@@ -127,9 +127,7 @@ export function WaitlistSheet({
                 name="phone_number"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Số điện thoại <span className="text-destructive">*</span>
-                    </FormLabel>
+                    <FormLabel required>Số điện thoại</FormLabel>
                     <FormControl>
                       <Input placeholder="09xxxx..." {...field} />
                     </FormControl>
@@ -143,10 +141,7 @@ export function WaitlistSheet({
                 name="service_id"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Dịch vụ quan tâm{" "}
-                      <span className="text-destructive">*</span>
-                    </FormLabel>
+                    <FormLabel required>Dịch vụ quan tâm</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -238,20 +233,22 @@ export function WaitlistSheet({
               />
             </div>
 
-            <SheetFooter className="mt-auto pt-6">
+            <SheetFooter className="mt-auto shrink-0 border-t p-6">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
+                disabled={isPending}
               >
-                Hủy
+                Hủy bỏ
               </Button>
-              <Button type="submit" disabled={isPending}>
-                {isCreate ? "Thêm mới" : "Lưu thay đổi"}
+              <Button type="submit" isLoading={isPending} disabled={isPending}>
+                {isCreate ? "Gửi yêu cầu" : "Lưu thay đổi"}
               </Button>
             </SheetFooter>
           </form>
         </Form>
+        </div>
       </SheetContent>
     </Sheet>
   );

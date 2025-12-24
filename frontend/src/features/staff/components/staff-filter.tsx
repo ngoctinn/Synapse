@@ -34,7 +34,7 @@ export function StaffFilter() {
     <FilterButton
       count={activeCount}
       onClear={clearFilters}
-      className="h-9 w-9"
+      className="size-10"
     >
       <div className="grid gap-6 p-1">
         <div className="space-y-3">
@@ -42,7 +42,7 @@ export function StaffFilter() {
             Vai trò
           </Label>
           <Select value={role || "all"} onValueChange={handleRoleChange}>
-            <SelectTrigger id="role" className="bg-background h-10 w-full">
+            <SelectTrigger id="role" className="bg-background w-full">
               <SelectValue placeholder="Tất cả vai trò" />
             </SelectTrigger>
             <SelectContent>
@@ -66,7 +66,7 @@ export function StaffFilter() {
             Trạng thái
           </Label>
           <Select value={isActive || "all"} onValueChange={handleStatusChange}>
-            <SelectTrigger id="status" className="bg-background h-10 w-full">
+            <SelectTrigger id="status" className="bg-background w-full">
               <SelectValue placeholder="Tất cả trạng thái" />
             </SelectTrigger>
             <SelectContent>

@@ -68,44 +68,46 @@ export function AdminHeader({
   return (
     <header
       className={cn(
-        "bg-card/50 relative flex h-14 shrink-0 items-center gap-2 border-b backdrop-blur-sm transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12",
+        "bg-background/80 sticky top-0 z-30 flex h-14 shrink-0 items-center gap-2 border-b backdrop-blur-md transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12",
         className
       )}
     >
       <div className="flex items-center gap-2 px-4">
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
-        <Breadcrumb>
-          <BreadcrumbList>
-            {pathSegments.map((segment, index) => {
-              const isLast = index === pathSegments.length - 1;
-              const href = `/${pathSegments.slice(0, index + 1).join("/")}`;
-              const title = getBreadcrumbTitle(segment);
+        <nav aria-label="Breadcrumb">
+          <Breadcrumb>
+            <BreadcrumbList>
+              {pathSegments.map((segment, index) => {
+                const isLast = index === pathSegments.length - 1;
+                const href = `/${pathSegments.slice(0, index + 1).join("/")}`;
+                const title = getBreadcrumbTitle(segment);
 
-              return (
-                <React.Fragment key={href}>
-                  <BreadcrumbItem className="hidden md:block">
-                    {isLast ? (
-                      <BreadcrumbPage className="font-semibold text-slate-800">
-                        {title}
-                      </BreadcrumbPage>
-                    ) : (
-                      <BreadcrumbLink
-                        href={href}
-                        className="hover:text-primary text-slate-500"
-                      >
-                        {title}
-                      </BreadcrumbLink>
+                return (
+                  <React.Fragment key={href}>
+                    <BreadcrumbItem className="hidden md:block">
+                      {isLast ? (
+                        <BreadcrumbPage className="text-foreground font-semibold">
+                          {title}
+                        </BreadcrumbPage>
+                      ) : (
+                        <BreadcrumbLink
+                          href={href}
+                          className="text-muted-foreground hover:text-primary transition-colors"
+                        >
+                          {title}
+                        </BreadcrumbLink>
+                      )}
+                    </BreadcrumbItem>
+                    {!isLast && (
+                      <BreadcrumbSeparator className="hidden md:block" />
                     )}
-                  </BreadcrumbItem>
-                  {!isLast && (
-                    <BreadcrumbSeparator className="hidden md:block" />
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </BreadcrumbList>
-        </Breadcrumb>
+                  </React.Fragment>
+                );
+              })}
+            </BreadcrumbList>
+          </Breadcrumb>
+        </nav>
       </div>
 
       <div className="ml-auto flex items-center gap-3 px-4">
@@ -114,7 +116,7 @@ export function AdminHeader({
           <NotificationBell unreadCount={unreadCount} />
         </NotificationPopover>
 
-        <div className="mx-1 h-6 w-px bg-slate-200" />
+        <div className="bg-border mx-1 h-6 w-px" />
 
         {loading ? (
           <div className="flex items-center gap-2">

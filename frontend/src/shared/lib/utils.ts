@@ -14,6 +14,53 @@ export function formatCurrency(amount: number): string {
   return currencyFormatter.format(amount);
 }
 
+/**
+ * Định dạng ngày theo chuẩn Việt Nam (DD/MM/YYYY)
+ */
+export function formatDate(date: Date | string | number): string {
+  if (!date) return "--";
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return "--";
+  return new Intl.DateTimeFormat("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(d);
+}
+
+/**
+ * Định dạng ngày giờ theo chuẩn Việt Nam (HH:mm DD/MM/YYYY)
+ */
+export function formatDateTime(date: Date | string | number): string {
+  if (!date) return "--";
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return "--";
+  return new Intl.DateTimeFormat("vi-VN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour12: false,
+  })
+    .format(d)
+    .replace(",", "");
+}
+
+/**
+ * Định dạng giờ theo chuẩn Việt Nam (HH:mm)
+ */
+export function formatTime(date: Date | string | number): string {
+  if (!date) return "--";
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return "--";
+  return new Intl.DateTimeFormat("vi-VN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(d);
+}
+
 export function toCamelCase(obj: unknown): unknown {
   const seen = new WeakSet();
 

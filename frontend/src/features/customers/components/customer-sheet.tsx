@@ -4,6 +4,7 @@ import { cn } from "@/shared/lib/utils";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Save, UserPlus } from "lucide-react";
+import { Icon } from "@/shared/ui/custom/icon";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 
@@ -160,7 +161,7 @@ export function CustomerSheet({
             <div className="flex items-center gap-2">
               {mode === "update" && customer?.allergies && (
                 <Badge variant="destructive" size="sm">
-                  <AlertCircle className="size-3.5" />
+                  <Icon icon={AlertCircle} />
                   Dị ứng
                 </Badge>
               )}
@@ -231,10 +232,10 @@ export function CustomerSheet({
             className="min-w-[140px]"
             isLoading={isPending}
             startContent={
-              mode === "create" ? (
-                <UserPlus className="size-4" />
+               mode === "create" ? (
+                <Icon icon={UserPlus} />
               ) : (
-                <Save className="size-4" />
+                <Icon icon={Save} />
               )
             }
           >

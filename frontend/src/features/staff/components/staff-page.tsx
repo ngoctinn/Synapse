@@ -10,9 +10,8 @@ import {
 } from "@/shared/components/layout/page-layout";
 import { ActionResponse } from "@/shared/lib/action-response";
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
-import { Input } from "@/shared/ui/input";
+import { SearchInput } from "@/shared/ui/custom/search-input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
-import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, use, useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -66,6 +65,41 @@ function StaffListWrapper({
       totalPages={totalPages}
       variant="flush"
       className="border-none"
+      hidePagination={true}
+    />
+  );
+}
+
+function StaffFooterWrapper({
+  staffListPromise,
+  page,
+  pathname,
+  searchParams,
+}: {
+  staffListPromise: Promise<ActionResponse<StaffListResponse>>;
+  page: number;
+  pathname: string;
+  searchParams: URLSearchParams;
+}) {
+  const router = useRouter(); // Use transition-aware router
+  const [, startTransition] = useTransition();
+  const response = use(staffListPromise);
+  const total = response.status === "success" && response.data ? response.data.total : 0;
+  const totalPages = Math.ceil(total / 10);
+
+  const handlePageChange = (p: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", p.toString());
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`);
+    });
+  };
+
+  return (
+    <PageFooter
+      page={page}
+      totalPages={totalPages}
+      onPageChange={handlePageChange}
     />
   );
 }
@@ -142,7 +176,7 @@ export function StaffPage({
         onValueChange={handleTabChange}
       >
         <PageHeader>
-          <TabsList variant="default" size="default">
+          <TabsList variant="default" size="default" aria-label="Quản lý nhân viên">
             <TabsTrigger value="list" variant="default" stretch={false}>
               Danh sách
             </TabsTrigger>
@@ -158,14 +192,10 @@ export function StaffPage({
             {activeTab === "list" && (
               <FilterBar
                 startContent={
-                  <Input
+                  <SearchInput
                     placeholder="Tìm kiếm nhân viên..."
                     defaultValue={initialSearch}
                     onChange={(e) => handleSearch(e.target.value)}
-                    startContent={
-                      <Search className="text-muted-foreground size-4" />
-                    }
-                    className="bg-background h-9 w-full md:w-[250px]"
                   />
                 }
                 endContent={<StaffFilter />}
@@ -190,7 +220,14 @@ export function StaffPage({
                   />
                 </Suspense>
               </SurfaceCard>
-              <PageFooter />
+              <Suspense fallback={<PageFooter />}>
+                <StaffFooterWrapper
+                  staffListPromise={staffListPromise}
+                  page={page}
+                  pathname={pathname}
+                  searchParams={searchParams}
+                />
+              </Suspense>
             </PageContent>
           </TabsContent>
 
@@ -219,8 +256,8 @@ export function StaffPage({
                   <div className="flex items-center justify-between">
                     <div className="bg-muted h-10 w-48 animate-pulse rounded" />
                     <div className="flex gap-2">
-                      <div className="bg-muted h-9 w-24 animate-pulse rounded" />
-                      <div className="bg-muted h-9 w-24 animate-pulse rounded" />
+                      <div className="bg-muted h-10 w-24 animate-pulse rounded" />
+                      <div className="bg-muted h-10 w-24 animate-pulse rounded" />
                     </div>
                   </div>
                   <div className="bg-muted/20 border-muted min-h-[300px] w-full flex-1 animate-pulse rounded-lg border border-dashed" />

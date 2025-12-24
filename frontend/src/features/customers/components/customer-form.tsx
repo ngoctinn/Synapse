@@ -9,8 +9,6 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  OptionalMark,
-  RequiredMark,
   Select,
   SelectContent,
   SelectItem,
@@ -55,9 +53,7 @@ export function CustomerForm({
           name="phone_number"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
-                Số điện thoại <RequiredMark />
-              </FormLabel>
+              <FormLabel required>Số điện thoại</FormLabel>
               <FormControl>
                 <Input
                   type="tel"
@@ -78,9 +74,7 @@ export function CustomerForm({
           name="full_name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
-                Họ và tên <RequiredMark />
-              </FormLabel>
+              <FormLabel required>Họ và tên</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Nguyễn Văn A"
@@ -162,9 +156,7 @@ export function CustomerForm({
         name="email"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>
-              Email <OptionalMark />
-            </FormLabel>
+            <FormLabel>Email</FormLabel>
             <FormControl>
               <Input
                 type="email"

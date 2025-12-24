@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 
 import { loginAction } from "../actions";
 import { loginSchema, type LoginInput } from "../model/schemas";
+import { cn } from "@/shared/lib/utils";
 
 import {
   Alert,
@@ -77,8 +78,8 @@ export function LoginForm() {
   }
 
   return (
-    <div className="animate-fade-in w-full">
-      <div className="mb-8 flex flex-col space-y-2 text-center">
+    <div className="mx-auto w-full max-w-md">
+      <div className="animate-in fade-in slide-in-from-bottom-4 mb-8 flex flex-col space-y-2 text-center duration-500">
         <h1 className="text-foreground text-2xl font-bold tracking-tight">
           Chào mừng trở lại
         </h1>
@@ -88,14 +89,14 @@ export function LoginForm() {
       </div>
 
       {registered && (
-        <Alert variant="success" className="mb-4">
+        <Alert variant="success" className="animate-in zoom-in-95 mb-4 duration-300">
           <AlertDescription>
             Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.
           </AlertDescription>
         </Alert>
       )}
       {passwordReset && (
-        <Alert variant="info" className="mb-4">
+        <Alert variant="info" className="animate-in zoom-in-95 mb-4 duration-300">
           <AlertDescription>
             Email đặt lại mật khẩu đã được gửi. Vui lòng kiểm tra hộp thư.
           </AlertDescription>
@@ -109,7 +110,7 @@ export function LoginForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel required>Email</FormLabel>
                 <FormControl>
                   <Input
                     startContent={
@@ -130,10 +131,13 @@ export function LoginForm() {
             render={({ field }) => (
               <FormItem>
                 <div className="flex items-center justify-between">
-                  <FormLabel>Mật khẩu</FormLabel>
+                  <FormLabel required>Mật khẩu</FormLabel>
                   <Link
-                    href="/forgot-password"
-                    className="text-primary text-xs underline-offset-4 hover:underline"
+                    href={isPending ? "#" : "/forgot-password"}
+                    className={cn(
+                      "text-primary text-xs underline-offset-4 hover:underline",
+                      isPending && "pointer-events-none opacity-50"
+                    )}
                   >
                     Quên mật khẩu?
                   </Link>

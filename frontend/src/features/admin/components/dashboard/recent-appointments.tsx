@@ -74,24 +74,28 @@ export function RecentAppointments() {
               className="group flex items-center justify-between"
             >
               <div className="flex items-center gap-4">
-                <div className="bg-muted text-muted-foreground flex w-14 shrink-0 flex-col items-center justify-center rounded-lg p-2 shadow-inner">
-                  <span className="text-xs font-bold">{apt.time}</span>
-                  <Clock className="size-3" />
+                <div className="bg-muted text-muted-foreground flex w-14 shrink-0 flex-col items-center justify-center rounded-lg py-2.5">
+                  <span className="text-xs font-bold leading-none">
+                    {apt.time}
+                  </span>
+                  <Clock className="mt-1 size-3 opacity-60" />
                 </div>
                 <div>
                   <div className="group-hover:text-primary cursor-pointer text-sm font-bold transition-colors">
                     {apt.customer}
                   </div>
                   <div className="text-muted-foreground mt-0.5 flex items-center gap-1 text-xs">
-                    <Scissors className="size-3" />
+                    <Scissors className="size-3 opacity-60" />
                     {apt.service}
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-6">
                 <div className="hidden flex-col items-end md:flex">
-                  <div className="text-xs font-medium">{apt.staff}</div>
-                  <div className="text-muted-foreground text-[10px]">
+                  <div className="text-sm font-medium leading-none">
+                    {apt.staff}
+                  </div>
+                  <div className="text-muted-foreground mt-1 text-xs opacity-80">
                     Chuyên viên
                   </div>
                 </div>
@@ -99,7 +103,7 @@ export function RecentAppointments() {
                   variant={
                     statusMap[apt.status as keyof typeof statusMap].variant
                   }
-                  className="min-w-[80px] justify-center"
+                  className="px-3 py-0.5 font-medium"
                 >
                   {statusMap[apt.status as keyof typeof statusMap].label}
                 </Badge>

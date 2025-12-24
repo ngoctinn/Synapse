@@ -11,6 +11,7 @@ import {
   SheetTitle,
 } from "@/shared/ui";
 import { Save, Send } from "lucide-react";
+import { Icon } from "@/shared/ui/custom/icon";
 import { createService, updateService } from "../actions";
 import { SERVICE_DEFAULT_VALUES } from "../constants";
 import { MOCK_CATEGORIES } from "../model/mocks";
@@ -152,9 +153,9 @@ export function ServiceSheet({
             className="min-w-[140px]"
             startContent={
               isUpdateMode ? (
-                <Save className="size-4" />
+                <Icon icon={Save} />
               ) : (
-                <Send className="size-4" />
+                <Icon icon={Send} />
               )
             }
           >

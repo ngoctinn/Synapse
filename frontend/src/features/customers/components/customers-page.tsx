@@ -127,7 +127,7 @@ export function CustomersPage({
                     startContent={
                       <Search className="text-muted-foreground size-4" />
                     }
-                    className="bg-background h-9 w-full md:w-[250px]"
+                    className="bg-background w-full md:w-[250px]"
                   />
                 }
                 endContent={<CustomerFilter />}

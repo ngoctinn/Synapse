@@ -37,15 +37,15 @@ export function DataTableSkeleton({
         {showToolbar && (
           <div className="mb-4 flex items-center justify-between">
             <div className="flex gap-2">
-              {searchable && <Skeleton className="h-9 w-64" />}
+              {searchable && <Skeleton className="h-10 w-64" />}
               {filterable && (
                 <>
-                  <Skeleton className="h-9 w-24" />
-                  <Skeleton className="h-9 w-24" />
+                  <Skeleton className="h-10 w-24" />
+                  <Skeleton className="h-10 w-24" />
                 </>
               )}
             </div>
-            {showAction && <Skeleton className="h-9 w-32" />}
+            {showAction && <Skeleton className="h-10 w-32" />}
           </div>
         )}
 

@@ -58,7 +58,7 @@ export function ImageUpload({
                 onClick={handleRemove}
                 disabled={disabled}
                 aria-label="Xóa ảnh đại diện"
-                className="h-9 w-9 scale-90 rounded-full shadow-lg transition-transform duration-300 group-hover:scale-100"
+                className="scale-90 rounded-full shadow-lg transition-transform duration-300 group-hover:scale-100"
               >
                 <X className="size-4" />
               </Button>

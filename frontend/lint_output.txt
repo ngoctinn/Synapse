@@ -1,0 +1,152 @@
+
+> frontend@0.1.0 lint D:\ReactJSLearning\Synapse\frontend
+> eslint
+
+
+D:\ReactJSLearning\Synapse\frontend\src\app\(dashboard)\appointments\page.tsx
+  8:10  warning  'MOCK_APPOINTMENTS' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\ReactJSLearning\Synapse\frontend\src\app\admin\appointments\page.tsx
+  8:10  warning  'MOCK_APPOINTMENTS' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\ReactJSLearning\Synapse\frontend\src\app\admin\workspace\page.tsx
+  1:29  warning  'CardHeader' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  1:41  warning  'CardTitle' is defined but never used. Allowed unused vars must match /^_/u   @typescript-eslint/no-unused-vars
+  3:10  warning  'Button' is defined but never used. Allowed unused vars must match /^_/u      @typescript-eslint/no-unused-vars
+
+D:\ReactJSLearning\Synapse\frontend\src\features\admin\components\dashboard\operational-status.tsx
+  4:10  warning  'Badge' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  6:10  warning  'Hotel' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\ReactJSLearning\Synapse\frontend\src\features\appointments\actions.ts
+  4:8   warning  'ActionResponse' is defined but never used. Allowed unused vars must match /^_/u         @typescript-eslint/no-unused-vars
+  5:12  warning  'createErrorResponse' is defined but never used. Allowed unused vars must match /^_/u    @typescript-eslint/no-unused-vars
+  6:14  warning  'createSuccessResponse' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\ReactJSLearning\Synapse\frontend\src\features\appointments\components\appointments-page.tsx
+  15:3  warning  'showToast' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\ReactJSLearning\Synapse\frontend\src\features\appointments\components\sheet\appointment-form.tsx
+  140:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  144:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ReactJSLearning\Synapse\frontend\src\features\appointments\components\sheet\cancel-dialog.tsx
+  3:10  warning  'showToast' is defined but never used. Allowed unused vars must match /^_/u      @typescript-eslint/no-unused-vars
+  7:20  warning  'useTransition' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\ReactJSLearning\Synapse\frontend\src\features\appointments\components\walk-in-booking-dialog.tsx
+  43:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ReactJSLearning\Synapse\frontend\src\features\appointments\hooks\use-appointment-actions.ts
+  144:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ReactJSLearning\Synapse\frontend\src\features\appointments\hooks\use-appointment-metrics.ts
+  26:6  warning  React Hook useEffect has a missing dependency: 'fetchMetrics'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\ReactJSLearning\Synapse\frontend\src\features\audit-logs\actions.ts
+  4:10  warning  'AuditLog' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\ReactJSLearning\Synapse\frontend\src\features\auth\components\login-form.tsx
+  4:10  warning  'Lock' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\ReactJSLearning\Synapse\frontend\src\features\auth\components\register-form.tsx
+  4:10  warning  'Lock' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\ReactJSLearning\Synapse\frontend\src\features\auth\components\update-password-form.tsx
+   4:10  warning  'Lock' is defined but never used. Allowed unused vars must match /^_/u   @typescript-eslint/no-unused-vars
+  24:3   warning  'Input' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\ReactJSLearning\Synapse\frontend\src\features\billing\actions.ts
+  8:10  warning  'error' is defined but never used. Allowed unused vars must match /^_/u    @typescript-eslint/no-unused-vars
+  8:17  warning  'success' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\ReactJSLearning\Synapse\frontend\src\features\booking-wizard\actions.ts
+  120:13  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ReactJSLearning\Synapse\frontend\src\features\booking-wizard\components\step-payment\customer-info-step.tsx
+  12:10  warning  'Info' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\ReactJSLearning\Synapse\frontend\src\features\booking-wizard\components\step-summary\summary-step.tsx
+   5:10  warning  'Badge' is defined but never used. Allowed unused vars must match /^_/u             @typescript-eslint/no-unused-vars
+  13:3   warning  'MapPin' is defined but never used. Allowed unused vars must match /^_/u            @typescript-eslint/no-unused-vars
+  23:5   warning  'staffId' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\ReactJSLearning\Synapse\frontend\src\features\resources\components\resource-table.tsx
+  107:41  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ReactJSLearning\Synapse\frontend\src\features\reviews\actions.ts
+   24:13  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   31:13  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   37:13  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   42:11  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   44:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   77:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   82:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   84:36  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   92:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  100:11  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  100:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  113:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  126:54  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  151:13  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  154:11  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  154:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ReactJSLearning\Synapse\frontend\src\features\services\components\service-form\service-basic-info.tsx
+   5:10  warning  'Settings2' is defined but never used. Allowed unused vars must match /^_/u   @typescript-eslint/no-unused-vars
+  16:3   warning  'Button' is defined but never used. Allowed unused vars must match /^_/u      @typescript-eslint/no-unused-vars
+  30:3   warning  'categories' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\ReactJSLearning\Synapse\frontend\src\features\services\components\services-page.tsx
+  16:25  warning  'useState' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\ReactJSLearning\Synapse\frontend\src\features\settings\components\notifications-settings.tsx
+  108:3   warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  112:15  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+
+D:\ReactJSLearning\Synapse\frontend\src\features\staff\components\commission-report.tsx
+  3:10  warning  'useTableSelection' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\ReactJSLearning\Synapse\frontend\src\features\treatments\components\treatment-sheet.tsx
+  21:20  warning  'useEffect' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\ReactJSLearning\Synapse\frontend\src\features\waitlist\components\waitlist-sheet.tsx
+  73:5   warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  76:33  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+
+D:\ReactJSLearning\Synapse\frontend\src\features\waitlist\components\waitlist-table.tsx
+  133:15  warning  'variants' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  148:15  warning  'labels' is assigned a value but never used. Allowed unused vars must match /^_/u    @typescript-eslint/no-unused-vars
+  155:39  error    Unexpected any. Specify a different type                                             @typescript-eslint/no-explicit-any
+
+D:\ReactJSLearning\Synapse\frontend\src\features\warranty\components\warranty-table.tsx
+  48:10  warning  'isPending' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\ReactJSLearning\Synapse\frontend\src\shared\components\layout\page-layout.tsx
+  42:3  warning  'backHref' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\ReactJSLearning\Synapse\frontend\src\shared\hooks\use-has-hydrated.ts
+  14:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\ReactJSLearning\Synapse\frontend\src\shared\hooks\use-has-hydrated.ts:14:5
+  12 |
+  13 |   useEffect(() => {
+> 14 |     setHasHydrated(true);
+     |     ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  15 |   }, []);
+  16 |
+  17 |   return hasHydrated;  react-hooks/set-state-in-effect
+
+D:\ReactJSLearning\Synapse\frontend\tailwind.config.js
+  2:1  warning  Assign object to a variable before exporting as module default  import/no-anonymous-default-export
+
+✖ 64 problems (26 errors, 38 warnings)
+  0 errors and 2 warnings potentially fixable with the `--fix` option.
+
+ ELIFECYCLE  Command failed with exit code 1.

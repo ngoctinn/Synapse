@@ -112,7 +112,10 @@ export type BadgePreset =
   | "tag"
   | "count"
   | "new"
-  | "skill";
+  | "skill"
+  // Statuses
+  | "status-active"
+  | "status-inactive";
 
 type PresetConfig = {
   variant: NonNullable<VariantProps<typeof badgeVariants>["variant"]>;
@@ -184,6 +187,9 @@ const BADGE_PRESETS: Record<BadgePreset, PresetConfig> = {
   count: { variant: "secondary", size: "xs" },
   new: { variant: "success", label: "Mới", size: "sm" },
   skill: { variant: "violet", size: "sm" },
+  // Statuses
+  "status-active": { variant: "status-active", label: "Hoạt động" },
+  "status-inactive": { variant: "status-inactive", label: "Ngưng" },
 };
 
 // ============================================

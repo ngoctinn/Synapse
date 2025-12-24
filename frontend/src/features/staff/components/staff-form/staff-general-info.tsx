@@ -11,6 +11,7 @@ import {
   Input,
   Textarea,
 } from "@/shared/ui";
+import { Icon } from "@/shared/ui/custom/icon";
 
 interface StaffGeneralInfoProps {
   mode: "create" | "update";
@@ -24,8 +25,8 @@ export function StaffGeneralInfo({ mode }: StaffGeneralInfoProps) {
     <div className="space-y-4">
       {/* Avatar Placeholder */}
       <div className="bg-muted/20 flex items-center gap-4 rounded-xl border p-4">
-        <div className="bg-background border-muted-foreground/30 flex size-12 items-center justify-center rounded-full border border-dashed">
-          <User className="text-muted-foreground/50 size-6" />
+        <div className="bg-background border-muted-foreground/30 flex size-12 items-center justify-center rounded-full border border-dashed text-muted-foreground/50">
+          <Icon icon={User} size="xl" strokeWidth={1.5} />
         </div>
         <div className="flex-1">
           <p className="text-foreground text-sm font-medium">Ảnh đại diện</p>
@@ -41,10 +42,10 @@ export function StaffGeneralInfo({ mode }: StaffGeneralInfoProps) {
           name="full_name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Họ và tên</FormLabel>
+              <FormLabel required>Họ và tên</FormLabel>
               <FormControl>
                 <Input
-                  startContent={<User className="size-4" />}
+                  startContent={<Icon icon={User} className="text-muted-foreground/60" />}
                   placeholder="Nguyễn Văn A"
                   {...field}
                   className="bg-background"
@@ -61,10 +62,12 @@ export function StaffGeneralInfo({ mode }: StaffGeneralInfoProps) {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel required>Email</FormLabel>
                 <FormControl>
                   <Input
-                    startContent={<Mail className="size-4" />}
+                    startContent={
+                      <Icon icon={Mail} className="text-muted-foreground/60" />
+                    }
                     type="email"
                     placeholder="email@example.com"
                     {...field}
@@ -81,10 +84,12 @@ export function StaffGeneralInfo({ mode }: StaffGeneralInfoProps) {
             name="phone_number"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Số điện thoại</FormLabel>
+                <FormLabel required>Số điện thoại</FormLabel>
                 <FormControl>
                   <Input
-                    startContent={<Phone className="size-4" />}
+                    startContent={
+                      <Icon icon={Phone} className="text-muted-foreground/60" />
+                    }
                     type="tel"
                     placeholder="0912 345 678"
                     {...field}

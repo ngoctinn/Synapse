@@ -58,6 +58,7 @@ interface DataTableProps<T> {
   sort?: SortConfig;
 
   onRowClick?: (item: T) => void;
+  hidePagination?: boolean;
 }
 
 export function DataTable<T>({
@@ -73,6 +74,7 @@ export function DataTable<T>({
   isLoading = false,
   skeletonCount = 5,
   disabled = false,
+  hidePagination = false,
 
   // Grouped configs
   selection,
@@ -249,7 +251,7 @@ export function DataTable<T>({
           </Table>
         </div>
       </div>
-      {totalPages > 1 && onPageChange && (
+      {!hidePagination && totalPages > 1 && onPageChange && (
         <div className="py-2">
           <PaginationControls
             currentPage={page}

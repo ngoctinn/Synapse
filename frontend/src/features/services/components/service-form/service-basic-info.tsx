@@ -42,7 +42,7 @@ export function ServiceBasicInfo({
       />
 
       {/* Active Toggle */}
-      <div className="bg-muted/30 flex items-center justify-between rounded-lg border p-3">
+      <div className="bg-muted/30 flex items-center justify-between rounded-xl border p-4">
         <div>
           <span className="text-sm font-medium">Trạng thái</span>
           <p className="text-muted-foreground text-xs">
@@ -88,7 +88,7 @@ export function ServiceBasicInfo({
                   <ImageUpload
                     value={field.value}
                     onChange={field.onChange}
-                    className="aspect-video h-[200px] w-full rounded-md object-cover"
+                    className="aspect-video h-[200px] w-full rounded-lg object-cover"
                   />
                 </FormControl>
                 <p className="text-muted-foreground mt-1.5 text-[11px]">

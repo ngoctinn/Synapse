@@ -6,8 +6,10 @@
 
 | Task | Mô tả | Trạng thái |
 |------|-------|------------|
-| Phase 12 | Admin Feature Audit Refactor | UI/UX & Data Sync | ⏳ In Progress |
-| Phase 11 | Comprehensive Backend Testing | coverage for 17 modules | ⏳ In Progress |
+| - [x] [Giai đoạn 2] Phase 16: Global Design System Synchronization (Đồng bộ hóa 100+ vị trí style) [Hoàn thành] | | Hoàn thành |
+| [x] [Giai đoạn 1] Phase 15: Sidebar Premium UX/UI Refactor | Refine labels, icons & sticky header | Hoàn thành |
+| [x] [Giai đoạn 1] Phase 14: Audited UI/UX & A11y Refinement | Fix 30+ issues from audit | Hoàn thành |
+| Phase 13 | UI/UX Consistency Audit & Refinement | Stage 4: Visual System (Done) | ✅ Hoàn thành |
 | Phase 10 | Scheduling Optimization | Load Balancing & Gap Minimization | ✅ Hoàn thành |
 | Phase 5 | Warranty Management (Treatment) | ✅ Hoàn thành |
 | Phase 4 | Waitlist Module | ✅ Hoàn thành |

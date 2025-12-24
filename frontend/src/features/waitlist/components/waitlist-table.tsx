@@ -21,6 +21,7 @@ import { useState, useTransition } from "react";
 import { updateWaitlistStatus, deleteWaitlistEntry } from "../actions";
 import { WaitlistEntry } from "../model/types";
 import { WaitlistSheet } from "./waitlist-sheet";
+import { Icon } from "@/shared/ui/custom/icon";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,6 +38,7 @@ interface WaitlistTableProps {
   onPageChange?: (page: number) => void;
   className?: string;
   isLoading?: boolean;
+  hidePagination?: boolean;
 }
 
 export function WaitlistTable({
@@ -46,6 +48,7 @@ export function WaitlistTable({
   onPageChange: onPageChangeProp,
   className,
   isLoading,
+  hidePagination,
 }: WaitlistTableProps) {
   const router = useRouter();
   const [editingEntry, setEditingEntry] = useState<WaitlistEntry | null>(null);
@@ -69,7 +72,7 @@ export function WaitlistTable({
     startTransition(async () => {
       const result = await updateWaitlistStatus(id, status);
       if (result.status === "success") {
-        showToast.success("Thành công", `Đã cập nhật trạng thái: ${status}`);
+        showToast.success("Thành công", `Đã cập nhật trạng thái yêu cầu`);
         router.refresh();
       } else {
         showToast.error("Thất bại", result.message);
@@ -82,7 +85,7 @@ export function WaitlistTable({
     startTransition(async () => {
       const result = await deleteWaitlistEntry(id);
       if (result.status === "success") {
-        showToast.success("Thành công", "Đã xóa yêu cầu");
+        showToast.success("Thành công", "Đã xóa yêu cầu khỏi danh sách");
         router.refresh();
       } else {
         showToast.error("Thất bại", result.message);
@@ -96,9 +99,9 @@ export function WaitlistTable({
       accessorKey: "customer_name",
       cell: (w) => (
         <div className="flex flex-col">
-          <span className="font-medium">{w.customer_name}</span>
-          <div className="text-muted-foreground flex items-center gap-1 text-xs">
-            <Phone className="size-3" /> {w.phone_number}
+          <span className="font-medium text-foreground">{w.customer_name}</span>
+          <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
+            <Icon icon={Phone} size="xs" /> {w.phone_number}
           </div>
         </div>
       ),
@@ -149,11 +152,14 @@ export function WaitlistTable({
           cancelled: "Đã hủy",
           expired: "Hết hạn",
         };
-        return (
-          <Badge variant={variants[w.status] || "outline"}>
-            {labels[w.status] || w.status}
-          </Badge>
-        );
+        const presets: Record<string, any> = {
+          pending: "appointment-pending",
+          notified: "appointment-confirmed",
+          converted: "appointment-completed",
+          cancelled: "appointment-cancelled",
+          expired: "appointment-no-show",
+        };
+        return <Badge preset={presets[w.status]} />;
       },
     },
     {
@@ -177,7 +183,7 @@ export function WaitlistTable({
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Mở menu</span>
-                <MoreHorizontal className="h-4 w-4" />
+                <Icon icon={MoreHorizontal} className="text-muted-foreground" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -185,19 +191,20 @@ export function WaitlistTable({
               <DropdownMenuItem
                 onClick={() => handleStatusUpdate(w.id, "notified")}
               >
-                <Clock className="mr-2 h-4 w-4" /> Đã thông báo
+                <Icon icon={Clock} className="mr-2" size="sm" /> Đã thông báo
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleStatusUpdate(w.id, "converted")}
               >
-                <CheckCircle2 className="mr-2 h-4 w-4" /> Chuyển thành lịch hẹn
+                <Icon icon={CheckCircle2} className="mr-2" size="sm" /> Chuyển
+                thành lịch hẹn
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => handleStatusUpdate(w.id, "cancelled")}
                 className="text-destructive"
               >
-                <XCircle className="mr-2 h-4 w-4" /> Hủy yêu cầu
+                <Icon icon={XCircle} className="mr-2" size="sm" /> Hủy yêu cầu
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleDelete(w.id)}
@@ -225,6 +232,7 @@ export function WaitlistTable({
         isLoading={isLoading}
         skeletonCount={5}
         variant="flush"
+        hidePagination={hidePagination}
         // onRowClick={(w) => setEditingEntry(w)}
         sort={{
           column: sortBy,

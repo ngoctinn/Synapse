@@ -50,15 +50,15 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
             <TabsTrigger value="hr" variant="form"> Nhân sự </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="general" className="bg-card space-y-4 rounded-lg border p-4">
+          <TabsContent value="general" className="bg-card space-y-4 rounded-xl border p-6">
             <StaffGeneralInfo mode={mode} />
           </TabsContent>
 
-          <TabsContent value="professional" className="bg-card space-y-4 rounded-lg border p-4">
+          <TabsContent value="professional" className="bg-card space-y-4 rounded-xl border p-6">
             <StaffProfessionalInfo mode={mode} skills={skills} />
           </TabsContent>
 
-          <TabsContent value="hr" className="bg-card space-y-4 rounded-lg border p-4">
+          <TabsContent value="hr" className="bg-card space-y-4 rounded-xl border p-6">
             <StaffHRInfo />
           </TabsContent>
         </Tabs>

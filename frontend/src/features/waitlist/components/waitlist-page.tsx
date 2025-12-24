@@ -8,8 +8,7 @@ import {
   SurfaceCard,
 } from "@/shared/components/layout/page-layout";
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
-import { Input } from "@/shared/ui/input";
-import { Search } from "lucide-react";
+import { SearchInput } from "@/shared/ui/custom/search-input";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -46,28 +45,18 @@ export function WaitlistPage({ data, page, totalPages }: WaitlistPageProps) {
 
   return (
     <PageShell>
-      <PageHeader>
-        <div className="flex flex-col gap-0.5">
-          <h1 className="text-lg font-medium tracking-tight md:text-xl">
-            Danh sách chờ
-          </h1>
-          <p className="text-muted-foreground hidden text-sm md:block">
-            Quản lý yêu cầu đặt lịch của khách hàng
-          </p>
-        </div>
+      <PageHeader
+        title="Danh sách chờ"
+        subtitle="Quản lý yêu cầu đặt lịch của khách hàng"
+      >
         <div className="flex items-center gap-3">
           <FilterBar
             startContent={
-              <div className="relative w-full md:w-[250px]">
-                <Search className="text-muted-foreground/70 absolute left-2.5 top-2.5 h-4 w-4" />
-                <Input
-                  type="search"
-                  placeholder="Tìm khách hàng..."
-                  defaultValue={initialSearch}
-                  onChange={(e) => handleSearch(e.target.value)}
-                  className="bg-background border-muted-foreground/20 focus-premium h-9 w-full pl-9"
-                />
-              </div>
+              <SearchInput
+                placeholder="Tìm khách hàng..."
+                defaultValue={initialSearch}
+                onChange={(e) => handleSearch(e.target.value)}
+              />
             }
           />
           <CreateWaitlistTrigger />
@@ -76,9 +65,24 @@ export function WaitlistPage({ data, page, totalPages }: WaitlistPageProps) {
 
       <PageContent>
         <SurfaceCard className="border-muted/60">
-          <WaitlistTable data={data} page={page} totalPages={totalPages} />
+          <WaitlistTable
+            data={data}
+            page={page}
+            totalPages={totalPages}
+            hidePagination={true}
+          />
         </SurfaceCard>
-        <PageFooter />
+        <PageFooter
+          page={page}
+          totalPages={totalPages}
+          onPageChange={(p) => {
+            const params = new URLSearchParams(searchParams);
+            params.set("page", p.toString());
+            startTransition(() => {
+              router.push(`${pathname}?${params.toString()}`);
+            });
+          }}
+        />
       </PageContent>
     </PageShell>
   );

@@ -12,10 +12,12 @@ import { cn } from "@/shared/lib/utils";
 import {
   Button,
   DeleteConfirmDialog,
+  showToast,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/shared/ui";
+import { Icon } from "@/shared/ui/custom/icon";
 import {
   Activity,
   CalendarCheck,
@@ -45,7 +47,7 @@ import { CancelDialog } from "./sheet/cancel-dialog";
 import { DateNavigator, ViewSwitcher } from "./toolbar";
 import { AppointmentsFilter } from "./toolbar/appointments-filter";
 function StatBadge({
-  icon: Icon,
+  icon: InnerIcon,
   value,
   label,
   highlight = false,
@@ -62,22 +64,24 @@ function StatBadge({
       <TooltipTrigger asChild>
         <div
           className={cn(
-            "flex cursor-help items-center gap-2 rounded-md border px-3 py-1.5 transition-colors",
+            "flex cursor-default items-center gap-2 rounded-md border px-3 py-1.5 transition-all duration-300 hover:shadow-md",
             highlight
               ? "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-500"
-              : "hover:bg-muted/50 hover:border-border/50 text-muted-foreground border-transparent"
+              : "text-muted-foreground hover:border-border/50 hover:bg-muted/50 border-transparent shadow-sm"
           )}
         >
           <div className="relative">
-            <Icon className="size-4" />
+            <Icon icon={InnerIcon} className="size-4" />
             {badge && (
               <span className="border-background absolute -right-0.5 -top-0.5 h-2 w-2 animate-pulse rounded-full border bg-amber-500" />
             )}
           </div>
-          <span className="text-sm font-semibold tabular-nums">{value}</span>
+          <span className="text-sm font-semibold leading-relaxed tabular-nums">{value}</span>
         </div>
       </TooltipTrigger>
-      <TooltipContent>{label}</TooltipContent>
+      <TooltipContent className="px-3 py-1.5 text-xs font-medium" sideOffset={8}>
+        {label}
+      </TooltipContent>
     </Tooltip>
   );
 }
@@ -273,10 +277,11 @@ export function AppointmentsPage({
                   size="icon"
                   onClick={refreshEvents}
                   disabled={isRefreshing}
-                  className="text-muted-foreground hover:text-foreground size-8"
+                  className="text-muted-foreground hover:text-foreground"
                 >
-                  <RefreshCw
-                    className={cn("size-4", isRefreshing && "animate-spin")}
+                  <Icon
+                    icon={RefreshCw}
+                    className={cn(isRefreshing && "animate-spin")}
                   />
                   <span className="sr-only">Làm mới</span>
                 </Button>
@@ -288,9 +293,9 @@ export function AppointmentsPage({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-muted-foreground hover:text-foreground size-8"
+                  className="text-muted-foreground hover:text-foreground"
                 >
-                  <Settings2 className="size-4" />
+                  <Icon icon={Settings2} />
                   <span className="sr-only">Cài đặt</span>
                 </Button>
               </TooltipTrigger>
@@ -299,11 +304,10 @@ export function AppointmentsPage({
           </div>
           <div className="pl-1">
             <Button
-              size="sm"
               onClick={handleCreateClick}
-              className="h-9 px-4 shadow-sm"
+              className="shadow-sm"
             >
-              <Plus className="size-4 sm:mr-2" />
+              <Icon icon={Plus} className="sm:mr-2" />
               <span className="hidden font-medium sm:inline">Đặt lịch</span>
             </Button>
           </div>
@@ -312,7 +316,7 @@ export function AppointmentsPage({
 
       <PageContent fullWidth className="flex flex-col gap-0 p-0">
         <div className="flex min-h-0 flex-1 flex-col p-4">
-          <SurfaceCard className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border">
+          <SurfaceCard className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border">
             <CalendarView
               view={view}
               date={date}

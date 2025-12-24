@@ -16,6 +16,7 @@ import {
   TooltipTrigger,
 } from "@/shared/ui/tooltip";
 import { Activity, AlertCircle, Loader2 } from "lucide-react";
+import { Icon } from "@/shared/ui/custom/icon";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { deleteCustomer } from "../../actions";
@@ -145,9 +146,7 @@ export function CustomerTable({
       header: "Trạng thái",
       accessorKey: "is_active",
       cell: (c) => (
-        <Badge variant={c.is_active ? "success" : "secondary"}>
-          {c.is_active ? "Hoạt động" : "Ngưng"}
-        </Badge>
+        <Badge preset={c.is_active ? "status-active" : "status-inactive"} />
       ),
     },
     {
@@ -158,7 +157,7 @@ export function CustomerTable({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  <AlertCircle className="text-destructive size-4" />
+                  <Icon icon={AlertCircle} className="text-destructive" />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="text-destructive font-semibold">Dị ứng:</p>
@@ -171,7 +170,7 @@ export function CustomerTable({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  <Activity className="text-info size-4" />
+                  <Icon icon={Activity} className="text-info" />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="text-info font-semibold">Ghi chú y tế:</p>
@@ -261,7 +260,7 @@ export function CustomerTable({
       )}
       {isPending && (
         <div className="bg-background/50 absolute inset-0 z-50 flex flex-col items-center justify-center backdrop-blur-[2px]">
-          <Loader2 className="text-primary mb-2 h-8 w-8 animate-spin" />
+          <Icon icon={Loader2} className="text-primary mb-2 animate-spin" size="xl" />
           <p className="text-muted-foreground animate-pulse text-sm font-medium">
             Đang xử lý...
           </p>

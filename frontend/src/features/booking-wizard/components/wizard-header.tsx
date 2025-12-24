@@ -34,7 +34,7 @@ export const WizardHeader = () => {
         </div>
 
         {/* Placeholder for right-side actions (e.g., Help, Home) */}
-        <div className="w-9" />
+        <div className="w-10" />
       </div>
     </header>
   );

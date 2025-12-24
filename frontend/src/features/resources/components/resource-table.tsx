@@ -10,6 +10,7 @@ import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import { showToast } from "@/shared/ui/sonner";
 import { Bed, Box, Loader2 } from "lucide-react";
+import { Icon } from "@/shared/ui/custom/icon";
 import { useState, useTransition } from "react";
 import { deleteResource } from "../actions";
 import { Resource, ResourceGroup } from "../model/types";
@@ -93,9 +94,9 @@ export function ResourceTable({
           preset={row.type === "ROOM" ? "resource-room" : "resource-equipment"}
         >
           {row.type === "ROOM" ? (
-            <Bed className="size-3.5" />
+            <Icon icon={Bed} />
           ) : (
-            <Box className="size-3.5" />
+            <Icon icon={Box} />
           )}
         </Badge>
       ),
@@ -103,21 +104,14 @@ export function ResourceTable({
     {
       header: "Trạng thái",
       cell: (row) => {
-        const statusMap = {
-          ACTIVE: { label: "Hoạt động", variant: "success" as const },
-          MAINTENANCE: { label: "Bảo trì", variant: "warning" as const },
-          INACTIVE: {
-            label: "Ngưng hoạt động",
-            variant: "destructive" as const,
-          },
+        const presetMap: Record<string, any> = {
+          ACTIVE: "resource-available",
+          MAINTENANCE: "resource-maintenance",
+          INACTIVE: "appointment-cancelled", // Hết hoạt động dùng cancelled
         };
-        const status = statusMap[row.status] || statusMap.INACTIVE;
+        const preset = presetMap[row.status] || "status-inactive";
 
-        return (
-          <Badge variant={status.variant} size="sm">
-            {status.label}
-          </Badge>
-        );
+        return <Badge preset={preset} size="sm" />;
       },
     },
     {
@@ -207,7 +201,7 @@ export function ResourceTable({
       {/* Loading Overlay */}
       {isPending && (
         <div className="bg-background/50 text-muted-foreground absolute inset-0 z-50 flex items-center justify-center gap-2 text-sm backdrop-blur-[1px]">
-          <Loader2 className="size-4 animate-spin" />
+          <Icon icon={Loader2} className="animate-spin" />
           <span>Đang xử lý...</span>
         </div>
       )}

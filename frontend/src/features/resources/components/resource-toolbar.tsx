@@ -35,7 +35,7 @@ export function ResourceToolbar() {
             </button>
           ) : null
         }
-        className="bg-background h-9"
+        className="bg-background"
       />
     </div>
   );

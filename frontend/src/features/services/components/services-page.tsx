@@ -9,11 +9,9 @@ import {
   SurfaceCard,
 } from "@/shared/components/layout/page-layout";
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
-import { Input } from "@/shared/ui/input";
+import { SearchInput } from "@/shared/ui/custom/search-input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
-
 import { ActionResponse } from "@/shared/lib/action-response";
-import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, use, useState, useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -72,6 +70,42 @@ function ServiceListWrapper({
       totalPages={totalPages}
       variant="flush"
       className="border-none"
+      hidePagination={true}
+    />
+  );
+}
+
+function ServicesFooterWrapper({
+  servicesPromise,
+  page,
+  pathname,
+  searchParams,
+}: {
+  servicesPromise: Promise<ActionResponse<PaginatedResponse<Service>>>;
+  page: number;
+  pathname: string;
+  searchParams: URLSearchParams;
+}) {
+  const router = useRouter();
+  const [, startTransition] = useTransition();
+  const response = use(servicesPromise);
+  const total =
+    response.status === "success" && response.data ? response.data.total : 0;
+  const totalPages = Math.ceil(total / 10);
+
+  const handlePageChange = (p: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", p.toString());
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`);
+    });
+  };
+
+  return (
+    <PageFooter
+      page={page}
+      totalPages={totalPages}
+      onPageChange={handlePageChange}
     />
   );
 }
@@ -87,10 +121,20 @@ export function ServicesPage({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [, startTransition] = useTransition();
-  const [activeTab, setActiveTab] = useState("list");
+
+  // Get active tab from URL or default to 'list'
+  const activeTab = searchParams.get("view") || "list";
 
   // Get initial search query from URL
   const initialSearch = searchParams.get("search")?.toString() || "";
+
+  const handleTabChange = (value: string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("view", value);
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`);
+    });
+  };
 
   // Debounced search handler - syncs with URL params
   const handleSearch = useDebouncedCallback((term: string) => {
@@ -113,12 +157,12 @@ export function ServicesPage({
   return (
     <PageShell>
       <Tabs
-        defaultValue="list"
+        value={activeTab}
         className="flex w-full flex-1 flex-col gap-0"
-        onValueChange={setActiveTab}
+        onValueChange={handleTabChange}
       >
         <PageHeader>
-          <TabsList variant="default" size="default">
+          <TabsList variant="default" size="default" aria-label="Quản lý dịch vụ">
             <TabsTrigger
               value="list"
               aria-label="Danh sách dịch vụ"
@@ -140,16 +184,12 @@ export function ServicesPage({
           <div className="flex w-full items-center gap-3 md:w-auto">
             <FilterBar
               startContent={
-                <Input
+                <SearchInput
                   placeholder={
                     isServiceTab ? "Tìm kiếm dịch vụ..." : "Tìm kiếm kỹ năng..."
                   }
                   defaultValue={initialSearch}
                   onChange={(e) => handleSearch(e.target.value)}
-                  startContent={
-                    <Search className="text-muted-foreground size-4" />
-                  }
-                  className="bg-background h-9 w-full md:w-[250px]"
                 />
               }
               endContent={
@@ -186,7 +226,14 @@ export function ServicesPage({
                   />
                 </Suspense>
               </SurfaceCard>
-              <PageFooter />
+              <Suspense fallback={<PageFooter />}>
+                <ServicesFooterWrapper
+                  servicesPromise={servicesPromise}
+                  page={page}
+                  pathname={pathname}
+                  searchParams={searchParams}
+                />
+              </Suspense>
             </PageContent>
           </TabsContent>
 

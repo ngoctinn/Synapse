@@ -1,4 +1,5 @@
 import { ArrowLeft } from "lucide-react";
+import { Icon } from "@/shared/ui/custom/icon";
 import { useEffect, useState } from "react";
 
 import {
@@ -184,7 +185,7 @@ export function AppointmentSheet({
                   className="size-8"
                   onClick={handleBackToView}
                 >
-                  <ArrowLeft className="size-4" />
+                  <Icon icon={ArrowLeft} />
                 </Button>
               )}
               <SheetTitle className="text-lg font-semibold">
