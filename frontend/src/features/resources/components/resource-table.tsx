@@ -2,6 +2,7 @@
 
 import { useTableSelection } from "@/shared/hooks/use-table-selection";
 import { cn } from "@/shared/lib/utils";
+import { Z_INDEX } from "@/shared/lib/design-tokens";
 import { Badge } from "@/shared/ui/badge";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
@@ -200,7 +201,7 @@ export function ResourceTable({
 
       {/* Loading Overlay */}
       {isPending && (
-        <div className="bg-background/50 text-muted-foreground absolute inset-0 z-50 flex items-center justify-center gap-2 text-sm backdrop-blur-[1px]">
+        <div className={cn(Z_INDEX.loadingOverlay, "bg-background/50 text-muted-foreground absolute inset-0 flex items-center justify-center gap-2 text-sm backdrop-blur-[1px]")}>
           <Icon icon={Loader2} className="animate-spin" />
           <span>Đang xử lý...</span>
         </div>

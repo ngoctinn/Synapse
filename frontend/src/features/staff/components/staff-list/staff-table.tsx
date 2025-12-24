@@ -20,6 +20,8 @@ import {
 } from "@/shared/ui/tooltip";
 import { Calendar } from "lucide-react";
 import { Icon } from "@/shared/ui/custom/icon";
+import { cn } from "@/shared/lib/utils";
+import { Z_INDEX } from "@/shared/lib/design-tokens";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { ROLE_CONFIG } from "../../model/constants";
@@ -302,7 +304,7 @@ export function StaffTable({
         }
       />
       {isPending && (
-        <div className="bg-background/50 absolute inset-0 z-50 flex flex-col items-center justify-center backdrop-blur-[2px]">
+        <div className={cn(Z_INDEX.loadingOverlay, "bg-background/50 absolute inset-0 flex flex-col items-center justify-center backdrop-blur-[2px]")}>
           <Spinner className="text-primary mb-2 h-8 w-8" />
           <p className="text-muted-foreground animate-pulse text-sm font-medium">
             Đang xử lý...

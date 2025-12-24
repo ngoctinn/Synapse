@@ -17,6 +17,9 @@ import {
 } from "@/shared/ui/tooltip";
 import { Activity, AlertCircle, Loader2 } from "lucide-react";
 import { Icon } from "@/shared/ui/custom/icon";
+import { TruncatedCell, getAccessibleAvatarColor } from "@/shared/lib/table-utils";
+import { Z_INDEX } from "@/shared/lib/design-tokens";
+import { cn } from "@/shared/lib/utils";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { deleteCustomer } from "../../actions";
@@ -154,27 +157,29 @@ export function CustomerTable({
       cell: (c) => (
         <div className="flex gap-1">
           {c.allergies && (
-            <TooltipProvider>
+            <TooltipProvider delayDuration={300}>
               <Tooltip>
                 <TooltipTrigger>
                   <Icon icon={AlertCircle} className="text-destructive" />
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent className="max-w-xs">
                   <p className="text-destructive font-semibold">Dị ứng:</p>
-                  <p>{c.allergies}</p>
+                  {/* Fix Issue #13: Use TruncatedCell for long text */}
+                  <TruncatedCell maxWidth={250}>{c.allergies}</TruncatedCell>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           )}
           {c.medical_notes && (
-            <TooltipProvider>
+            <TooltipProvider delayDuration={300}>
               <Tooltip>
                 <TooltipTrigger>
                   <Icon icon={Activity} className="text-info" />
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent className="max-w-xs">
                   <p className="text-info font-semibold">Ghi chú y tế:</p>
-                  <p>{c.medical_notes}</p>
+                  {/* Fix Issue #13: Use TruncatedCell for long text */}
+                  <TruncatedCell maxWidth={250}>{c.medical_notes}</TruncatedCell>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -259,10 +264,13 @@ export function CustomerTable({
         />
       )}
       {isPending && (
-        <div className="bg-background/50 absolute inset-0 z-50 flex flex-col items-center justify-center backdrop-blur-[2px]">
+        <div className={cn(Z_INDEX.loadingOverlay, "bg-background/50 absolute inset-0 flex flex-col items-center justify-center backdrop-blur-[2px]")}>
+          {/* Fix Issue #23: Use Z_INDEX tokens */}
           <Icon icon={Loader2} className="text-primary mb-2 animate-spin" size="xl" />
-          <p className="text-muted-foreground animate-pulse text-sm font-medium">
+          {/* Fix Issue #30: Optimize pulse animation */}
+          <p className="text-muted-foreground animate-pulse text-sm font-medium will-change-[opacity]">
             Đang xử lý...
+
           </p>
         </div>
       )}

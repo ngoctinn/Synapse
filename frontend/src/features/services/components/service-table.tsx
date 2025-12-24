@@ -7,6 +7,9 @@ import {
   useTableSelection,
 } from "@/shared/hooks";
 import { formatCurrency } from "@/shared/lib/utils";
+import { TruncatedCell } from "@/shared/lib/table-utils";
+import { Z_INDEX } from "@/shared/lib/design-tokens";
+import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
@@ -90,9 +93,10 @@ export function ServiceTable({
       header: "Tên dịch vụ",
       cell: (service) => (
         <div className="flex flex-col">
-          <span className="text-foreground group-hover:text-primary font-serif text-lg tracking-tight transition-colors">
+          {/* Fix Issue #13: Truncate long service names */}
+          <TruncatedCell maxWidth={200} className="text-foreground group-hover:text-primary font-serif text-lg tracking-tight transition-colors">
             {service.name}
-          </span>
+          </TruncatedCell>
         </div>
       ),
     },
@@ -152,7 +156,7 @@ export function ServiceTable({
     {
       header: "Trạng thái",
       cell: (service) => (
-        <TooltipProvider>
+        <TooltipProvider delayDuration={300}>
           <Tooltip>
             <TooltipTrigger asChild>
               <span>

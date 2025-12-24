@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/shared/lib/utils";
+import { Z_INDEX } from "@/shared/lib/design-tokens";
 import { Button } from "@/shared/ui/button";
 import { Download, Trash2, X } from "lucide-react";
 import { ReactNode } from "react";
@@ -22,6 +23,12 @@ interface TableActionBarProps {
   extraActions?: ReactNode;
   /** Đang loading */
   isLoading?: boolean;
+  /** Fix Issue #11: Progress feedback */
+  progress?: {
+    current: number;
+    total: number;
+    action: string; // "Đang xóa", "Đang xuất"
+  };
   /** Custom class */
   className?: string;
 }
@@ -47,6 +54,7 @@ export function TableActionBar({
   exportLabel = "Xuất",
   extraActions,
   isLoading = false,
+  progress, // Fix Issue #11
   className,
 }: TableActionBarProps) {
   // Không hiển thị nếu không có item nào được chọn
@@ -55,8 +63,10 @@ export function TableActionBar({
   return (
     <div
       className={cn(
+        // Fix Issue #7: Use Z_INDEX token instead of hardcoded z-50
+        Z_INDEX.actionBar,
         // Positioning
-        "fixed bottom-6 left-1/2 z-50 -translate-x-1/2",
+        "fixed bottom-6 left-1/2 -translate-x-1/2",
         // Appearance
         "bg-background/95 rounded-lg border shadow-lg backdrop-blur-sm",
         // Layout
@@ -66,11 +76,25 @@ export function TableActionBar({
         className
       )}
     >
-      {/* Selected count */}
-      <span className="whitespace-nowrap text-sm font-medium">
-        Đã chọn{" "}
-        <span className="text-primary font-semibold">{selectedCount}</span> mục
-      </span>
+      {/* Fix Issue #11: Progress indicator when bulk operations running */}
+      {progress ? (
+        <>
+          <span className="whitespace-nowrap text-sm font-medium">
+            {progress.action} {progress.current}/{progress.total}
+          </span>
+          <div className="bg-muted h-1.5 w-32 overflow-hidden rounded-full">
+            <div
+              className="bg-primary h-full transition-all duration-300"
+              style={{ width: `${(progress.current / progress.total) * 100}%` }}
+            />
+          </div>
+        </>
+      ) : (
+        <span className="whitespace-nowrap text-sm font-medium">
+          Đã chọn{" "}
+          <span className="text-primary font-semibold">{selectedCount}</span> mục
+        </span>
+      )}
 
       {/* Separator */}
       <div className="bg-border h-5 w-px" />

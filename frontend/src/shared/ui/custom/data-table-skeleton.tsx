@@ -1,5 +1,6 @@
 import { cn } from "@/shared/lib/utils";
 import { Skeleton } from "@/shared/ui/skeleton";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/ui/table";
 
 interface DataTableSkeletonProps {
   columnCount?: number;
@@ -49,25 +50,29 @@ export function DataTableSkeleton({
           </div>
         )}
 
-        {/* Table Header Skeleton */}
-        <div className="mb-4 flex items-center gap-4 border-b px-4 py-2">
-          {Array.from({ length: columnCount }).map((_, i) => (
-            <Skeleton key={i} className="h-4 w-24" />
-          ))}
-        </div>
-
-        {/* Table Body Skeleton */}
-        <div className="space-y-3">
-          {Array.from({ length: rowCount }).map((_, i) => (
-            <div key={i} className="flex items-center gap-4">
-              <Skeleton className="h-12 w-12 rounded-full" />
-              <div className="flex-1 space-y-2">
-                <Skeleton className="h-4 w-[30%]" />
-                <Skeleton className="h-4 w-[20%]" />
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* Fix Issue #14: Table structure matches DataTable */}
+        <Table>
+          <TableHeader className="bg-muted/50">
+            <TableRow>
+              {Array.from({ length: columnCount }).map((_, i) => (
+                <TableHead key={i} className={cn(i === 0 && "pl-6")}>
+                  <Skeleton className="h-4 w-24" />
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {Array.from({ length: rowCount }).map((_, rowIdx) => (
+              <TableRow key={rowIdx}>
+                {Array.from({ length: columnCount }).map((_, colIdx) => (
+                  <TableCell key={colIdx} className={cn(colIdx === 0 && "pl-6")}>
+                    <Skeleton className="h-4 w-full" />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

@@ -64,8 +64,9 @@ export function TableRowActions({
     <div
       className={cn(
         "flex items-center justify-end gap-1",
-        // Fade in khi hover row (group được set ở AnimatedTableRow)
-        "opacity-0 transition-opacity duration-150 group-hover:opacity-100",
+        // Fix Issue #4: Use visibility instead of opacity for better performance
+        // Only visible on hover, but always in DOM for consistent layout
+        "invisible group-hover:visible transition-[visibility] duration-150",
         className
       )}
     >
@@ -121,7 +122,7 @@ export function TableRowActions({
 
       {/* Fallback: Nếu không có quick actions, chỉ có more button */}
       {!hasQuickActions && !hasExtraActions && (
-        <span className="text-muted-foreground text-xs">-</span>
+        <span className="text-muted-foreground text-xs" aria-hidden="true">-</span>
       )}
     </div>
   );

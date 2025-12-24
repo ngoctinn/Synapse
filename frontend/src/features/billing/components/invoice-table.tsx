@@ -2,9 +2,9 @@
 
 import { Button } from "@/shared/ui/button";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
-import { cn, formatCurrency } from "@/shared/lib/utils";
+import { formatTableDate } from "@/shared/lib/table-utils";
+import { formatCurrency, getPaymentStatusColor } from "@/shared/lib/currency-utils";
+import { cn } from "@/shared/lib/utils";
 import { Eye } from "lucide-react";
 import { Invoice } from "../model/types";
 import { InvoiceStatusBadge } from "./invoice-status-badge";
@@ -13,9 +13,17 @@ interface InvoiceTableProps {
   data: Invoice[];
   onView: (invoice: Invoice) => void;
   isLoading?: boolean;
+  // Fix Issue #31: Add selection support
+  selection?: {
+    selectedIds: Set<string | number>;
+    onToggle: (id: string | number) => void;
+    onToggleAll: () => void;
+    isAllSelected: boolean;
+    isPartiallySelected: boolean;
+  };
 }
 
-export function InvoiceTable({ data, onView, isLoading }: InvoiceTableProps) {
+export function InvoiceTable({ data, onView, isLoading, selection }: InvoiceTableProps) {
   const columns: Column<Invoice>[] = [
     {
       id: "id",
@@ -71,7 +79,7 @@ export function InvoiceTable({ data, onView, isLoading }: InvoiceTableProps) {
       id: "issuedAt",
       accessorKey: "issuedAt",
       header: "Ngày tạo",
-      cell: (item) => format(item.issuedAt, "dd/MM/yyyy HH:mm", { locale: vi }),
+      cell: (item) => formatTableDate(item.issuedAt, "long"),
     },
     {
       id: "actions",

@@ -116,6 +116,43 @@ export const DECORATIVE_SIZES = {
   },
 } as const;
 
+// Z-Index Hierarchy (Fix Issue #7, #23)
+export const Z_INDEX = {
+  base: "z-0",
+  dropdown: "z-50",
+  sticky: "z-10",
+  overlay: "z-[60]",
+  actionBar: "z-[100]",
+  loadingOverlay: "z-[110]",
+  modal: "z-[200]",
+  toast: "z-[300]",
+} as const;
+
+// Table-Specific Tokens (Fix Issue #20, #46)
+export const TABLE_TOKENS = {
+  cellPadding: {
+    first: "pl-6",
+    last: "pr-6",
+    default: "px-4",
+    compact: "px-2",
+  },
+  cellHeight: {
+    default: "py-4",
+    compact: "py-2",
+  },
+  dropdownWidth: "min-w-[10rem]",
+  checkboxPadding: "w-12 pl-6",
+  actionColumnPadding: "pr-6",
+} as const;
+
+// Transition Durations
+export const TRANSITIONS = {
+  fast: "duration-150",
+  normal: "duration-200",
+  slow: "duration-300",
+  verySlow: "duration-500",
+} as const;
+
 // Consolidated export
 export const LAYOUT_SIZES = {
   popover: POPOVER_WIDTHS,
@@ -131,4 +168,7 @@ export const LAYOUT_SIZES = {
   header: HEADER_HEIGHTS,
   mobileNav: MOBILE_NAV,
   decorative: DECORATIVE_SIZES,
+  zIndex: Z_INDEX,
+  table: TABLE_TOKENS,
+  transition: TRANSITIONS,
 } as const;

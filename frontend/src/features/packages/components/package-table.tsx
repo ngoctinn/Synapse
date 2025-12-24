@@ -7,7 +7,8 @@ import { AnimatedGiftIcon } from "@/shared/ui/custom/animated-icon";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
-import { formatCurrency } from "@/shared/lib/utils";
+import { formatCurrency, cn } from "@/shared/lib/utils";
+import { Z_INDEX } from "@/shared/lib/design-tokens";
 import { Loader2, Package } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -210,7 +211,7 @@ export function PackageTable({
       )}
 
       {isPending && (
-        <div className="bg-background/50 absolute inset-0 z-50 flex flex-col items-center justify-center backdrop-blur-[2px]">
+        <div className={cn(Z_INDEX.loadingOverlay, "bg-background/50 absolute inset-0 flex flex-col items-center justify-center backdrop-blur-[2px]")}>
           <Loader2 className="text-primary mb-2 h-8 w-8 animate-spin" />
           <p className="text-muted-foreground animate-pulse text-sm font-medium">
             Đang xử lý...

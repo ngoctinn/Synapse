@@ -14,12 +14,15 @@ interface PaginationControlsProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  // Fix Issue #9: Loading state
+  isLoading?: boolean;
 }
 
 export function PaginationControls({
   currentPage,
   totalPages,
   onPageChange,
+  isLoading = false,
 }: PaginationControlsProps) {
   const getPageNumbers = () => {
     const pages = [];
@@ -63,10 +66,10 @@ export function PaginationControls({
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              if (currentPage > 1) onPageChange(currentPage - 1);
+              if (currentPage > 1 && !isLoading) onPageChange(currentPage - 1);
             }}
             className={
-              currentPage === 1
+              currentPage === 1 || isLoading
                 ? "pointer-events-none opacity-50"
                 : "cursor-pointer"
             }
@@ -85,8 +88,9 @@ export function PaginationControls({
                 isActive={page === currentPage}
                 onClick={(e) => {
                   e.preventDefault();
-                  onPageChange(page as number);
+                  if (!isLoading) onPageChange(page as number);
                 }}
+                className={isLoading ? "pointer-events-none opacity-50" : ""}
               >
                 {page}
               </PaginationLink>
@@ -99,10 +103,10 @@ export function PaginationControls({
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              if (currentPage < totalPages) onPageChange(currentPage + 1);
+              if (currentPage < totalPages && !isLoading) onPageChange(currentPage + 1);
             }}
             className={
-              currentPage === totalPages
+              currentPage === totalPages || isLoading
                 ? "pointer-events-none opacity-50"
                 : "cursor-pointer"
             }
