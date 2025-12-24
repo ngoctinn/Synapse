@@ -103,7 +103,7 @@ export function TimePicker({
                   variant={displayHour === h ? "default" : "ghost"}
                   size="sm"
                   className={cn(
-                    "h-8 w-full rounded-lg font-medium tabular-nums",
+                    "w-full font-medium tabular-nums",
                     displayHour === h
                       ? "bg-primary text-primary-foreground"
                       : "text-foreground/80 hover:bg-muted"
@@ -128,7 +128,7 @@ export function TimePicker({
                   variant={displayMinute === m ? "default" : "ghost"}
                   size="sm"
                   className={cn(
-                    "h-8 w-full rounded-lg font-medium tabular-nums",
+                    "w-full font-medium tabular-nums",
                     displayMinute === m
                       ? "bg-primary text-primary-foreground"
                       : "text-foreground/80 hover:bg-muted"

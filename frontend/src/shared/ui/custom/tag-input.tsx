@@ -92,7 +92,7 @@ export function TagInput({
             aria-expanded={open}
             aria-invalid={!!isError}
             className={cn(
-              "h-auto min-h-10 w-full justify-between px-3 py-2 text-left font-normal",
+              "h-auto w-full justify-between px-3 py-2 text-left font-normal",
               "bg-background hover:bg-background",
               "hover:border-input shadow-sm transition-all duration-200 hover:shadow-md", // Synced border & shadow
               "focus-premium",

@@ -163,7 +163,7 @@ export function StaffSheet({
             type="submit"
             form="staff-form"
             disabled={isPending}
-            className="min-w-[140px]"
+            className=""
             isLoading={isPending}
             startContent={
               mode === "create" ? (

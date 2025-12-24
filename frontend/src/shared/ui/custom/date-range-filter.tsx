@@ -168,7 +168,7 @@ export function DateRangeFilter({
         <Button
           variant="outline"
           className={cn(
-            "hover:border-primary/50 h-9 w-full justify-start text-left font-normal transition-colors",
+            "hover:border-primary/50 w-full justify-start text-left font-normal transition-colors",
             !dateRange && "text-muted-foreground",
             className
           )}
@@ -182,7 +182,8 @@ export function DateRangeFilter({
           <div className="flex min-w-[180px] flex-col gap-0.5 p-1">
             <Button
               variant="ghost"
-              className="data-[state=active]:bg-accent h-8 justify-start px-2 font-normal"
+              size="sm"
+              className="data-[state=active]:bg-accent justify-start px-2 font-normal"
               onClick={() => handlePresetChange("all")}
             >
               Toàn thời gian
@@ -190,49 +191,56 @@ export function DateRangeFilter({
             <div className="bg-border/50 mx-2 my-1 h-[1px]" />
             <Button
               variant="ghost"
-              className="h-8 justify-start px-2 font-normal"
+              size="sm"
+              className="justify-start px-2 font-normal"
               onClick={() => handlePresetChange("today")}
             >
               Hôm nay
             </Button>
             <Button
               variant="ghost"
-              className="h-8 justify-start px-2 font-normal"
+              size="sm"
+              className="justify-start px-2 font-normal"
               onClick={() => handlePresetChange("yesterday")}
             >
               Hôm qua
             </Button>
             <Button
               variant="ghost"
-              className="h-8 justify-start px-2 font-normal"
+              size="sm"
+              className="justify-start px-2 font-normal"
               onClick={() => handlePresetChange("this_week")}
             >
               Tuần này
             </Button>
             <Button
               variant="ghost"
-              className="h-8 justify-start px-2 font-normal"
+              size="sm"
+              className="justify-start px-2 font-normal"
               onClick={() => handlePresetChange("next_week")}
             >
               Tuần tới
             </Button>
             <Button
               variant="ghost"
-              className="h-8 justify-start px-2 font-normal"
+              size="sm"
+              className="justify-start px-2 font-normal"
               onClick={() => handlePresetChange("this_month")}
             >
               Tháng này
             </Button>
             <Button
               variant="ghost"
-              className="h-8 justify-start px-2 font-normal"
+              size="sm"
+              className="justify-start px-2 font-normal"
               onClick={() => handlePresetChange("next_month")}
             >
               Tháng sau
             </Button>
             <Button
               variant="ghost"
-              className="h-8 justify-start px-2 font-normal"
+              size="sm"
+              className="justify-start px-2 font-normal"
               onClick={() => handlePresetChange("this_year")}
             >
               Năm nay
@@ -252,7 +260,7 @@ export function DateRangeFilter({
             <div className="border-border/50 mb-2 flex items-center gap-1 border-b pb-2">
               <Button
                 variant="ghost"
-                size="icon"
+                size="icon-sm"
                 className="h-6 w-6"
                 onClick={() => setShowCalendar(false)}
               >

@@ -68,8 +68,8 @@ export function YearPicker({
         <div className="mb-4 flex items-center justify-between">
           <Button
             variant="ghost"
-            size="icon"
-            className="h-7 w-7"
+            size="icon-sm"
+            className=""
             onClick={() => navigate("prev")}
           >
             <ChevronLeft className="size-4" />
@@ -79,8 +79,8 @@ export function YearPicker({
           </div>
           <Button
             variant="ghost"
-            size="icon"
-            className="h-7 w-7"
+            size="icon-sm"
+            className=""
             onClick={() => navigate("next")}
           >
             <ChevronRight className="size-4" />
@@ -92,7 +92,7 @@ export function YearPicker({
               key={year}
               variant={year === selectedYear ? "default" : "ghost"}
               className={cn(
-                "h-9 w-16 text-sm",
+                "w-16 text-sm",
                 year === getYear(new Date()) &&
                   year !== selectedYear &&
                   "text-primary font-semibold"

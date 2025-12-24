@@ -81,7 +81,7 @@ export function SettingsHeader({
                   variant="ghost"
                   onClick={onReset}
                   disabled={!isDirty || isPending}
-                  className="hidden h-9 px-4 sm:flex"
+                  className="hidden px-4 sm:flex"
                 >
                   <RotateCcw className="h-4 w-4" />
                   Khôi phục
@@ -101,7 +101,7 @@ export function SettingsHeader({
                   onClick={onSave}
                   disabled={!isDirty || isPending}
                   className={cn(
-                    "h-9 px-6 transition-all duration-300",
+                    "px-6 transition-all duration-300",
                     isDirty && "animate-pulse-subtle"
                   )}
                 >

@@ -73,8 +73,8 @@ export function TableRowActions({
       {onEdit && (
         <Button
           variant="ghost"
-          size="icon"
-          className="hover:bg-primary/10 hover:text-primary h-8 w-8"
+          size="icon-sm"
+          className="hover:bg-primary/10 hover:text-primary"
           onClick={onEdit}
           disabled={disabled}
           title={editLabel}
@@ -88,8 +88,8 @@ export function TableRowActions({
       {onDelete && (
         <Button
           variant="ghost"
-          size="icon"
-          className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive h-8 w-8"
+          size="icon-sm"
+          className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
           onClick={onDelete}
           disabled={disabled}
           title={deleteLabel}
@@ -105,8 +105,8 @@ export function TableRowActions({
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
-              size="icon"
-              className="hover:bg-muted h-8 w-8"
+              size="icon-sm"
+              className="hover:bg-muted"
               disabled={disabled}
             >
               <span className="sr-only">Mở menu</span>

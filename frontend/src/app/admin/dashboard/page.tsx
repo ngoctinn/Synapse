@@ -24,10 +24,10 @@ export default function Page() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" className="rounded-lg shadow-sm">
+          <Button variant="outline" className="shadow-sm">
             Báo cáo nhanh
           </Button>
-          <Button asChild className="rounded-lg shadow-md">
+          <Button asChild className="shadow-md">
             <Link href="/booking">
               <Plus className="size-4" />
               Tạo lịch hẹn mới

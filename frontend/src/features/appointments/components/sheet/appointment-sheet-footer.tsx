@@ -58,7 +58,7 @@ export function ViewModeFooter({
         {canCheckIn && (
           <Button
             variant="outline-success"
-            className="h-9 flex-1"
+            className="flex-1"
             onClick={() => onCheckIn?.(appointmentId)}
             startContent={<CheckCircle2 className="size-4" />}
           >
@@ -68,7 +68,7 @@ export function ViewModeFooter({
         {canCancel && (
           <Button
             variant="outline-warning"
-            className="h-9 flex-1"
+            className="flex-1"
             onClick={() => onCancel?.(appointmentId)}
             startContent={<XCircle className="size-4" />}
           >
@@ -79,11 +79,11 @@ export function ViewModeFooter({
 
       {/* Đóng / Chỉnh sửa */}
       <div className="flex w-full items-center gap-2">
-        <Button variant="ghost" className="h-9 flex-1" onClick={onClose}>
+        <Button variant="ghost" className="flex-1" onClick={onClose}>
           Đóng
         </Button>
         <Button
-          className="h-9 flex-1"
+          className="flex-1"
           onClick={onEdit}
           startContent={<Edit className="size-4" />}
         >
@@ -108,13 +108,13 @@ export function PaymentModeFooter({
       <div className="flex w-full items-center gap-2">
         <Button
           variant="outline"
-          className="h-9 flex-1"
+          className="flex-1"
           onClick={onBackToView}
           startContent={<ArrowLeft className="size-4" />}
         >
           Quay lại
         </Button>
-        <Button variant="ghost" className="h-9 flex-1" onClick={onClose}>
+        <Button variant="ghost" className="flex-1" onClick={onClose}>
           Đóng
         </Button>
       </div>
@@ -140,11 +140,11 @@ export function FormModeFooter({
           type="button"
           variant="outline"
           onClick={isEditMode ? onCancelEdit : onClose}
-          className="h-9 flex-1"
+          className="flex-1"
         >
           Hủy bỏ
         </Button>
-        <Button type="submit" form="appointment-form" className="h-9 flex-1">
+        <Button type="submit" form="appointment-form" className="flex-1">
           {isEditMode ? "Lưu thay đổi" : "Tạo lịch hẹn"}
         </Button>
       </div>

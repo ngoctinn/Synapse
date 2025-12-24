@@ -84,7 +84,7 @@ export function TableActionBar({
             size="sm"
             onClick={onExport}
             disabled={isLoading}
-            className="h-8"
+            className=""
           >
             <Download className="mr-1.5 size-4" />
             {exportLabel}
@@ -98,7 +98,7 @@ export function TableActionBar({
             size="sm"
             onClick={onDelete}
             disabled={isLoading}
-            className="h-8"
+            className=""
           >
             <Trash2 className="mr-1.5 size-4" />
             {deleteLabel}
@@ -118,7 +118,7 @@ export function TableActionBar({
         size="sm"
         onClick={onDeselectAll}
         disabled={isLoading}
-        className="text-muted-foreground hover:text-foreground h-8"
+        className="text-muted-foreground hover:text-foreground"
       >
         <X className="size-4" />
         Bỏ chọn

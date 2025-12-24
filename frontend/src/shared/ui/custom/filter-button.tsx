@@ -40,7 +40,7 @@ export function FilterButton({
           size={label ? "default" : "icon"}
           className={cn(
             "relative shrink-0 transition-all duration-300",
-            !label && "h-10 w-10",
+            !label && "",
             className
           )}
         >
@@ -67,8 +67,8 @@ export function FilterButton({
             {count > 0 && onClear && (
               <Button
                 variant="ghost"
-                size="icon"
-                className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive h-6 w-6 rounded-full transition-colors"
+                size="icon-xs"
+                className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive rounded-full transition-colors"
                 onClick={onClear}
                 title="Xóa bộ lọc"
               >

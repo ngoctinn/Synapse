@@ -181,7 +181,7 @@ export function WaitlistTable({
         <div className="flex justify-end">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
+              <Button variant="ghost" size="icon-sm">
                 <span className="sr-only">Mở menu</span>
                 <Icon icon={MoreHorizontal} className="text-muted-foreground" />
               </Button>
