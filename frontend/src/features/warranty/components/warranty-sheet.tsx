@@ -19,6 +19,7 @@ import {
   SheetClose,
   Textarea,
 } from "@/shared/ui";
+import { NumberInput } from "@/shared/ui/custom/number-input";
 import { ActionSheet } from "@/shared/ui/custom";
 import { createWarranty, updateWarranty } from "../actions";
 import { warrantyCreateSchema, WarrantyFormValues } from "../model/schemas";
@@ -167,7 +168,7 @@ export function WarrantySheet({
                 <FormItem>
                   <FormLabel required>Thời hạn (tháng)</FormLabel>
                   <FormControl>
-                    <Input type="number" min="1" {...field} />
+                    <NumberInput min={1} {...field} suffix="tháng" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

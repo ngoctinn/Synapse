@@ -12,6 +12,7 @@ import {
   Switch,
   Textarea,
 } from "@/shared/ui";
+import { NumberInput } from "@/shared/ui/custom/number-input";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { Button } from "@/shared/ui";
 import { Plus, Trash2 } from "lucide-react";
@@ -92,7 +93,7 @@ export function PackageForm({ mode, className }: PackageFormProps) {
                 Giá (VNĐ) <RequiredMark />
               </FormLabel>
               <FormControl>
-                <Input type="number" min={0} placeholder="0" {...field} />
+                <NumberInput min={0} placeholder="0" {...field} suffix="VNĐ" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -108,7 +109,7 @@ export function PackageForm({ mode, className }: PackageFormProps) {
                 Hiệu lực (ngày) <RequiredMark />
               </FormLabel>
               <FormControl>
-                <Input type="number" min={1} placeholder="30" {...field} />
+                <NumberInput min={1} placeholder="30" {...field} suffix="ngày" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -159,7 +160,7 @@ export function PackageForm({ mode, className }: PackageFormProps) {
               render={({ field }) => (
                 <FormItem className="w-20">
                   <FormControl>
-                    <Input type="number" min={1} placeholder="Số lượng" {...field} />
+                    <NumberInput min={1} placeholder="SL" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

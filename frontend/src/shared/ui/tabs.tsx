@@ -44,9 +44,9 @@ const tabsListVariants = cva(
       },
       size: {
         /** Compact cho inline/popup (36px) */
-        sm: "h-8",
+        sm: "h-9",
         /** Default cho page headers (40px) */
-        default: "h-9",
+        default: "h-10",
         /** Large cho form sections (44px) */
         lg: "h-11",
       },
@@ -58,7 +58,7 @@ const tabsListVariants = cva(
     },
       defaultVariants: {
       variant: "default",
-      size: "sm",
+      size: "default",
       fullWidth: false,
     },
   }
@@ -228,7 +228,7 @@ export const FORM_TABS_TRIGGER_CLASS =
 
 /** @deprecated Sử dụng <TabsList variant="default" size="default" fullWidth gridCols={2}> thay thế */
 export const SHEET_TABS_LIST_CLASS =
-  "grid w-full mb-6 bg-muted/50 rounded-lg p-1 h-9";
+  "grid w-full mb-6 bg-muted/50 rounded-lg p-1 h-10";
 
 /** @deprecated Sử dụng <TabsTrigger variant="default"> thay thế */
 export const SHEET_TABS_TRIGGER_CLASS =

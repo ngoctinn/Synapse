@@ -23,6 +23,7 @@ import {
   TagInput,
   Textarea,
 } from "@/shared/ui";
+import { NumberInput } from "@/shared/ui/custom/number-input";
 import { Icon } from "@/shared/ui/custom/icon";
 
 import { ResourceGroup } from "../model/types";
@@ -201,7 +202,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
               <FormItem>
                 <FormLabel>Thời gian Setup (phút)</FormLabel>
                 <FormControl>
-                  <Input placeholder="0" {...field} />
+                  <NumberInput placeholder="0" {...field} suffix="phút" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -216,7 +217,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                 <FormItem>
                   <FormLabel>Sức chứa tối đa (người)</FormLabel>
                   <FormControl>
-                    <Input type="number" min={1} placeholder="1" {...field} />
+                    <NumberInput min={1} placeholder="1" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

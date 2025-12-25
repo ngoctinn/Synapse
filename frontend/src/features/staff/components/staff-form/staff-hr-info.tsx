@@ -11,6 +11,7 @@ import {
   Input,
   DatePicker,
 } from "@/shared/ui";
+import { NumberInput } from "@/shared/ui/custom/number-input";
 
 export function StaffHRInfo() {
   const form = useFormContext();
@@ -43,13 +44,13 @@ export function StaffHRInfo() {
           <FormItem>
             <FormLabel>Hoa hồng (%)</FormLabel>
             <FormControl>
-              <Input
-                type="number"
+              <NumberInput
                 min={0}
                 max={100}
                 placeholder="0"
                 {...field}
-                onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                onChange={field.onChange}
+                suffix="%"
                 className="bg-background"
               />
             </FormControl>

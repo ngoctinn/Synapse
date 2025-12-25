@@ -4,7 +4,8 @@ import { Skill } from "@/features/services";
 import { useFilterParams } from "@/shared/lib/hooks/use-filter-params";
 import { FilterButton } from "@/shared/ui/custom/filter-button";
 import { TagInput } from "@/shared/ui/custom/tag-input";
-import { Input } from "@/shared/ui/input";
+
+import { NumberInput } from "@/shared/ui/custom/number-input";
 import { Label } from "@/shared/ui/label";
 import {
   Select,
@@ -123,32 +124,26 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
               <span className="text-muted-foreground text-[10px] font-semibold uppercase tracking-wider">
                 Từ
               </span>
-              <Input
-                type="number"
+              <NumberInput
                 min={0}
                 value={minPrice}
-                onChange={(e) => handleMinPriceChange(Number(e.target.value))}
+                onChange={handleMinPriceChange}
                 placeholder="0"
-                endContent={
-                  <span className="text-muted-foreground text-xs">VNĐ</span>
-                }
-                className="bg-background pr-10"
+                suffix="VNĐ"
+                className="bg-background"
               />
             </div>
             <div className="flex-1 space-y-1.5">
               <span className="text-muted-foreground text-[10px] font-semibold uppercase tracking-wider">
                 Đến
               </span>
-              <Input
-                type="number"
+              <NumberInput
                 min={0}
-                value={maxPrice || undefined}
-                onChange={(e) => handleMaxPriceChange(Number(e.target.value))}
+                value={maxPrice}
+                onChange={handleMaxPriceChange}
                 placeholder="Tối đa"
-                endContent={
-                  <span className="text-muted-foreground text-xs">VNĐ</span>
-                }
-                className="bg-background pr-10"
+                suffix="VNĐ"
+                className="bg-background"
               />
             </div>
           </div>

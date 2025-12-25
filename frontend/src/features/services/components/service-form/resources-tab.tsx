@@ -14,6 +14,7 @@ import {
   SelectValue,
   Slider,
 } from "@/shared/ui";
+import { NumberInput } from "@/shared/ui/custom/number-input";
 import { cn } from "@/shared/lib/utils";
 import { Plus, Trash2 } from "lucide-react";
 import { useFieldArray, useFormContext } from "react-hook-form";
@@ -139,11 +140,10 @@ export function ResourcesTab({ availableResourceGroups, duration }: ResourcesTab
                     <FormItem>
                       <FormLabel>Số lượng</FormLabel>
                       <FormControl>
-                        <Input
-                           type="number"
+                        <NumberInput
                            min={1}
-                           {...field}
-                           onChange={e => field.onChange(Number(e.target.value))}
+                           value={field.value}
+                           onChange={field.onChange}
                         />
                       </FormControl>
                       <FormMessage />

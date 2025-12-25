@@ -17,6 +17,7 @@ import {
   showToast,
   Spinner,
 } from "@/shared/ui";
+import { NumberInput } from "@/shared/ui/custom/number-input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -97,7 +98,9 @@ export function PaymentForm({ invoice, onSuccess }: PaymentFormProps) {
             <FormItem>
               <FormLabel>Số tiền thanh toán</FormLabel>
               <FormControl>
-                <Input type="number" {...field} />
+              <FormControl>
+                <NumberInput {...field} suffix="VNĐ" />
+              </FormControl>
               </FormControl>
               <FormMessage />
             </FormItem>

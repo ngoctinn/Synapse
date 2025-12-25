@@ -9,17 +9,17 @@ const inputVariants = cva(
     variants: {
       variant: {
         default:
-          "border-input bg-background shadow-md hover:border-input hover:shadow-lg focus-premium dark:bg-input/30",
+          "border-input bg-background shadow-sm hover:border-input focus-premium dark:bg-input/30",
         glass:
           "bg-background/60 backdrop-blur-xl border-white/10 shadow-none focus-premium",
         flat: "bg-secondary/50 border-transparent shadow-none hover:bg-secondary/80 focus-premium focus-visible:bg-background",
       },
       size: {
-        sm: "h-8 px-3 py-1",
-        default: "h-9 px-3 py-2",
+        sm: "h-9 px-3 py-1",
+        default: "h-10 px-3 py-2",
         lg: "h-11 px-4",
         xl: "h-12 px-4 text-base",
-        icon: "h-9 w-9 p-0 text-center",
+        icon: "h-10 w-10 p-0 text-center",
       },
       isError: {
         true: "ring-destructive/20 border-destructive dark:ring-destructive/40 focus-visible:ring-destructive",

@@ -17,6 +17,7 @@ import { formatCurrency } from "@/shared/lib/utils";
 import { useFormContext } from "react-hook-form";
 import { ServiceFormValues } from "../../model/schemas";
 import { ServiceCategory } from "../../model/types";
+import { NumberInput } from "@/shared/ui/custom/number-input";
 
 interface BasicTabProps {
   categories: ServiceCategory[];
@@ -78,18 +79,13 @@ export function BasicTab({ categories }: BasicTabProps) {
             <FormItem>
               <FormLabel>Giá dịch vụ (VNĐ)</FormLabel>
               <FormControl>
-                <div className="relative">
-                  <Input
-                    type="number"
-                    placeholder="0"
-                    {...field}
-                    onChange={(e) => field.onChange(Number(e.target.value))}
-                    className="pr-12 font-mono"
-                  />
-                  <span className="text-muted-foreground absolute right-3 top-2.5 text-sm">
-                    đ
-                  </span>
-                </div>
+                <NumberInput
+                  placeholder="0"
+                  value={field.value}
+                  onChange={field.onChange}
+                  suffix="đ"
+                  className="pr-8" // spacing for suffix
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
