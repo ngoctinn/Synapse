@@ -64,7 +64,7 @@ export function UpdatePasswordForm() {
   }
 
   return (
-    <div className="animate-fade-in w-full">
+    <div className="w-full">
       <div className="mb-8 flex flex-col space-y-2 text-center">
         <h1 className="text-foreground text-2xl font-bold tracking-tight">
           Cập nhật mật khẩu

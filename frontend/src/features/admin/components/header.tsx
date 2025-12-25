@@ -2,7 +2,6 @@
 
 import { logoutAction } from "@/features/auth/actions";
 import { NotificationBell } from "@/features/notifications/components/notification-bell";
-import { NotificationPopover } from "@/features/notifications/components/notification-popover";
 import { useNotificationStore } from "@/features/notifications/hooks/use-notification-store";
 import { UserProfile } from "@/shared/components/layout/components/header/types";
 import { cn } from "@/shared/lib/utils";
@@ -30,8 +29,22 @@ import {
 import { LogOut, Settings, User } from "lucide-react";
 import { usePathname } from "next/navigation";
 import React, { useEffect } from "react";
-import { UserNav } from "./user-nav";
-import { CommandMenu } from "./command-menu";
+import dynamic from "next/dynamic";
+
+const CommandMenu = dynamic(
+  () => import("./command-menu").then((m) => m.CommandMenu),
+  { ssr: false }
+);
+const UserNav = dynamic(() => import("./user-nav").then((m) => m.UserNav), {
+  ssr: false,
+});
+const NotificationPopover = dynamic(
+  () =>
+    import("@/features/notifications/components/notification-popover").then(
+      (m) => m.NotificationPopover
+    ),
+  { ssr: false }
+);
 
 import { getBreadcrumbTitle } from "../constants";
 

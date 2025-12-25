@@ -1,3 +1,5 @@
+"use client";
+
 import { Loader2, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getAvailableStaff } from "../../actions";

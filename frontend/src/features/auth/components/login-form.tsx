@@ -78,8 +78,8 @@ export function LoginForm() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-md">
-      <div className="animate-in fade-in slide-in-from-bottom-4 mb-8 flex flex-col space-y-2 text-center duration-500">
+    <div className="w-full">
+      <div className="mb-8 flex flex-col space-y-2 text-center">
         <h1 className="text-foreground text-2xl font-bold tracking-tight">
           Chào mừng trở lại
         </h1>

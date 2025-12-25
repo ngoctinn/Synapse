@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState, useMemo } from "react";
 import { useBookingStore } from "../../hooks/use-booking-store";
 import { getServicesForBooking } from "../../actions";

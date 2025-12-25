@@ -73,7 +73,7 @@ export function RegisterForm() {
 
   if (state?.status === "success") {
     return (
-      <div className="animate-fade-in w-full space-y-6 py-8 text-center">
+      <div className="w-full space-y-6 py-4 text-center">
         <div className="flex flex-col items-center space-y-2">
           <div className="bg-success/10 text-success mb-2 flex size-12 items-center justify-center rounded-full">
             <Mail className="size-6" />
@@ -105,7 +105,7 @@ export function RegisterForm() {
   }
 
   return (
-    <div className="animate-fade-in w-full">
+    <div className="w-full">
       <div className="mb-8 flex flex-col space-y-2 text-center">
         <h1 className="text-foreground text-2xl font-bold tracking-tight">
           Tạo tài khoản mới

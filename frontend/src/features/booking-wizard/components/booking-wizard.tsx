@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { useBookingStore } from "../hooks/use-booking-store";
 import { customerInfoSchema } from "../schemas";

@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Spinner } from "@/shared/ui";
 
 interface WizardFooterProps {

@@ -41,7 +41,7 @@ export default function AuthLayout({
           textClassName="text-xl font-serif inline-block"
         />
 
-        <div className="animate-fade-in surface-card w-full max-w-[440px] space-y-6 p-8">
+        <div className="animate-slide-up surface-card w-full max-w-[448px] p-6 sm:p-10">
           {children}
         </div>
 

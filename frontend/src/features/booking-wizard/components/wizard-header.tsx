@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/shared/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useBookingStore } from "../hooks/use-booking-store";
