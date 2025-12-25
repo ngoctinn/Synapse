@@ -12,6 +12,7 @@ export { DashboardNav } from "./components/dashboard-nav";
 export { DashboardStats } from "./components/dashboard-stats";
 export { MobileNav } from "./components/mobile-nav";
 export { NavMain } from "./components/nav-main";
+export { PhonePromptDialog } from "./components/phone-prompt-dialog";
 export { ProfileForm } from "./components/profile-form";
 export { AppointmentTimeline } from "./components/appointment-timeline";
 export { TreatmentList } from "./components/treatment-list";

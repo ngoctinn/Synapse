@@ -8,7 +8,7 @@ import { z } from "zod";
 
 export const profileSchema = z.object({
   fullName: fullNameRequired,
-  phone: phoneVNOptional,
+  phone_number: phoneVNOptional,
   email: emailOptional,
   address: z.string().optional().or(z.literal("")),
   dateOfBirth: dateOfBirthOptionalNonNull,

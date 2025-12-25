@@ -139,3 +139,50 @@ class CustomerService:
         customer.deleted_at = datetime.now(timezone.utc)
         self.session.add(customer)
         await self.session.commit()
+
+    async def sync_or_create_from_user(
+        self,
+        user_id: uuid.UUID,
+        phone_number: str,
+        full_name: str | None = None,
+        email: str | None = None
+    ) -> Customer:
+        """
+        Đồng bộ hoặc tạo mới Customer profile từ App User.
+
+        Logic:
+        - Nếu SĐT đã tồn tại (khách vãng lai) → Link user_id vào customer đó
+        - Nếu SĐT mới → Tạo Customer mới với user_id
+
+        Args:
+            user_id: ID của User trong bảng users
+            phone_number: Số điện thoại để match/tạo Customer
+            full_name: Tên hiển thị (lấy từ User nếu có)
+            email: Email (lấy từ User nếu có)
+
+        Returns:
+            Customer: Record Customer đã được link hoặc tạo mới
+        """
+        existing = await self.get_by_phone(phone_number)
+
+        if existing:
+            # Khách vãng lai đã có trong CRM → Link account nếu chưa có user_id
+            if not existing.user_id:
+                existing.user_id = user_id
+                existing.updated_at = datetime.now(timezone.utc)
+                self.session.add(existing)
+                await self.session.commit()
+                await self.session.refresh(existing)
+            return existing
+
+        # Khách mới → Tạo Customer profile
+        customer = Customer(
+            phone_number=phone_number,
+            full_name=full_name or "Khách App",
+            email=email,
+            user_id=user_id
+        )
+        self.session.add(customer)
+        await self.session.commit()
+        await self.session.refresh(customer)
+        return customer

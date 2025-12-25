@@ -1,6 +1,7 @@
 import {
   AppointmentTimeline,
   DashboardStats,
+  PhonePromptDialog,
 } from "@/features/customer-dashboard";
 import {
   getCustomerAppointments,
@@ -43,6 +44,9 @@ export default async function DashboardPage() {
       <div className="flex-1 md:min-h-min">
         <AppointmentTimeline appointments={appointments} />
       </div>
+
+      {/* Prompt nhập SĐT nếu chưa có */}
+      <PhonePromptDialog user={profile} />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { logoutAction } from "@/features/auth/actions";
+import { PhonePromptDialog } from "@/features/customer-dashboard";
 import { HeaderLogo } from "@/shared/ui/branding/header-logo";
 import * as React from "react";
 import { HeaderAuthButtons } from "./auth-buttons";
@@ -46,41 +47,56 @@ export function Header({ userProfile }: HeaderProps) {
 
   const isLoggedIn = !!userProfile;
 
+  // Map Header UserProfile to customer-dashboard UserProfile for PhonePromptDialog
+  const customerProfile = userProfile
+    ? {
+        id: userProfile.id,
+        email: userProfile.email,
+        fullName: userProfile.full_name || "Người dùng",
+        phone_number: userProfile.phone_number,
+      }
+    : null;
+
   return (
-    <header className="pointer-events-none fixed left-0 right-0 top-4 z-50 flex justify-center px-4">
-      <div className="pointer-events-auto flex h-12 w-full max-w-4xl items-center justify-between rounded-full border border-white/20 bg-white/70 px-6 shadow-lg backdrop-blur-xl transition-all duration-300 hover:border-white/30 hover:shadow-xl supports-[backdrop-filter]:bg-white/60 dark:bg-black/70">
-        <div className="flex items-center gap-6">
-          <HeaderLogo />
-          <nav className="hidden items-center space-x-1 md:flex">
-            <HeaderNav />
-          </nav>
+    <>
+      <header className="pointer-events-none fixed left-0 right-0 top-4 z-50 flex justify-center px-4">
+        <div className="pointer-events-auto flex h-12 w-full max-w-4xl items-center justify-between rounded-full border border-white/20 bg-white/70 px-6 shadow-lg backdrop-blur-xl transition-all duration-300 hover:border-white/30 hover:shadow-xl supports-[backdrop-filter]:bg-white/60 dark:bg-black/70">
+          <div className="flex items-center gap-6">
+            <HeaderLogo />
+            <nav className="hidden items-center space-x-1 md:flex">
+              <HeaderNav />
+            </nav>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {isLoggedIn && user ? (
+              <>
+                <div className="hidden md:block">
+                  <HeaderUserDropdown user={user} onLogout={handleLogout} />
+                </div>
+                <MobileUserSheet onLogout={handleLogout} />
+              </>
+            ) : (
+              <HeaderAuthButtons />
+            )}
+
+            <MobileMenuTrigger
+              isOpen={isMobileMenuOpen}
+              onToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            />
+          </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          {isLoggedIn && user ? (
-            <>
-              <div className="hidden md:block">
-                <HeaderUserDropdown user={user} onLogout={handleLogout} />
-              </div>
-              <MobileUserSheet onLogout={handleLogout} />
-            </>
-          ) : (
-            <HeaderAuthButtons />
-          )}
+        <MobileMenuOverlay
+          isOpen={isMobileMenuOpen}
+          onClose={() => setIsMobileMenuOpen(false)}
+          isLoggedIn={isLoggedIn}
+          onLogout={handleLogout}
+        />
+      </header>
 
-          <MobileMenuTrigger
-            isOpen={isMobileMenuOpen}
-            onToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          />
-        </div>
-      </div>
-
-      <MobileMenuOverlay
-        isOpen={isMobileMenuOpen}
-        onClose={() => setIsMobileMenuOpen(false)}
-        isLoggedIn={isLoggedIn}
-        onLogout={handleLogout}
-      />
-    </header>
+      {/* Prompt nhập SĐT nếu đăng nhập nhưng chưa có SĐT */}
+      {customerProfile && <PhonePromptDialog user={customerProfile} />}
+    </>
   );
 }

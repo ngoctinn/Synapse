@@ -93,7 +93,7 @@ export function ProfileInfo({
 
           <FormField
             control={form.control}
-            name="phone"
+            name="phone_number"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{PROFILE_LABELS.PHONE}</FormLabel>
@@ -104,8 +104,9 @@ export function ProfileInfo({
                       <Phone className="text-muted-foreground h-4 w-4" />
                     }
                     placeholder={PROFILE_LABELS.PHONE_PLACEHOLDER}
-                    aria-invalid={!!form.formState.errors.phone}
+                    aria-invalid={!!form.formState.errors.phone_number}
                     {...field}
+                    value={field.value || ""}
                   />
                 </FormControl>
                 <FormMessage />

@@ -4,7 +4,7 @@ export const MOCK_USER: UserProfile = {
   id: "user-123",
   fullName: "Nguyễn Văn A",
   email: "nguyenvana@example.com",
-  phone: "0901234567",
+  phone_number: "0901234567",
   avatarUrl: "https://api.dicebear.com/9.x/avataaars/svg?seed=Felix",
   membershipTier: "GOLD",
   loyaltyPoints: 1250,

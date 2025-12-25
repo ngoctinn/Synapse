@@ -45,7 +45,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
     resolver: zodResolver(profileSchema),
     defaultValues: {
       fullName: user.fullName,
-      phone: user.phone || "",
+      phone_number: user.phone_number || "",
       email: user.email || "",
       address: user.address || "",
       dateOfBirth: user.dateOfBirth || "",
@@ -66,7 +66,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
   const onSubmit = (values: ProfileInput) => {
     const formData = new FormData();
     formData.append("fullName", values.fullName);
-    if (values.phone) formData.append("phone", values.phone);
+    if (values.phone_number) formData.append("phone_number", values.phone_number);
     if (values.email) formData.append("email", values.email);
     if (values.address) formData.append("address", values.address);
     if (values.dateOfBirth) formData.append("dateOfBirth", values.dateOfBirth);

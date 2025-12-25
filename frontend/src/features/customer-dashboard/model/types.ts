@@ -31,7 +31,7 @@ export interface UserProfile {
   id: string;
   fullName: string;
   email: string;
-  phone: string;
+  phone_number: string | null;
   avatarUrl?: string;
   address?: string;
   dateOfBirth?: string; // ISO String or YYYY-MM-DD
