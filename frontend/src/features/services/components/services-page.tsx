@@ -15,7 +15,6 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, use, useState, useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { PaginatedResponse, Service, Skill } from "../model/types";
-import { CreateServiceWizard } from "./create-service-wizard";
 import { CreateSkillDialog } from "./create-skill-dialog";
 import { ServiceFilter } from "./service-filter";
 import { ServiceTable, ServiceTableSkeleton } from "./service-table";
@@ -63,8 +62,6 @@ function ServiceListWrapper({
     <ServiceTable
       services={data}
       availableSkills={skills}
-      availableBedTypes={bedTypes}
-      availableEquipment={equipmentList}
       page={page}
       totalPages={totalPages}
       variant="flush"
@@ -136,14 +133,6 @@ export function ServicesPage({
             >
               Dịch vụ
             </TabsTrigger>
-            <TabsTrigger
-              value="skills"
-              aria-label="Danh sách kỹ năng"
-              variant="default"
-              stretch={false}
-            >
-              Kỹ năng
-            </TabsTrigger>
           </TabsList>
 
           <div className="flex w-full items-center gap-3 md:w-auto">
@@ -162,15 +151,7 @@ export function ServicesPage({
               }
             />
 
-            {isServiceTab ? (
-              <CreateServiceWizard
-                availableSkills={skills}
-                availableBedTypes={bedTypes}
-                availableEquipment={equipmentList}
-              />
-            ) : (
-              <CreateSkillDialog />
-            )}
+            {isServiceTab ? null : null}
           </div>
         </PageHeader>
 
@@ -189,19 +170,6 @@ export function ServicesPage({
                     equipmentList={equipmentList}
                     page={page}
                   />
-                </Suspense>
-              </SurfaceCard>
-            </PageContent>
-          </TabsContent>
-
-          <TabsContent
-            value="skills"
-            className="mt-0 flex flex-1 flex-col border-0 p-0 data-[state=inactive]:hidden"
-          >
-            <PageContent>
-              <SurfaceCard>
-                <Suspense fallback={<SkillTableSkeleton />}>
-                  <SkillTable skills={skills} className="border-none" />
                 </Suspense>
               </SurfaceCard>
             </PageContent>

@@ -25,19 +25,19 @@ export async function getServicesForBooking(): Promise<
     const groupedServices: Record<string, ServiceItem[]> = {};
 
     services.forEach((service) => {
-      const category = service.category || "Khác";
+      const categoryName = service.category?.name || "Khác";
 
-      if (!groupedServices[category]) {
-        groupedServices[category] = [];
+      if (!groupedServices[categoryName]) {
+        groupedServices[categoryName] = [];
       }
 
-      groupedServices[category].push({
+      groupedServices[categoryName].push({
         id: service.id,
         name: service.name,
         description: service.description,
         price: service.price,
         duration: service.duration,
-        category_id: service.category, // Using category name as ID for now since simple string
+        category_id: service.category?.id || service.category_id!,
         image_url: service.image_url,
       });
     });

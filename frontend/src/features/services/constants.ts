@@ -14,4 +14,5 @@ export const SERVICE_DEFAULT_VALUES = {
   buffer_time: 15,
   price: 0,
   color: "#3b82f6",
+  resource_requirements: [],
 };

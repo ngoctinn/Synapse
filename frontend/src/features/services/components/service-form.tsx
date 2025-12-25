@@ -1,58 +1,77 @@
 "use client";
 
-import { Resource, BedType } from "@/features/resources";
+import { ResourceGroup } from "@/features/resources";
 import { cn } from "@/shared/lib/utils";
-import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui";
+import { AlertCircle } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { ServiceCategory, Skill } from "../model/types";
-import { ServiceBasicInfo } from "./service-form/service-basic-info";
-import { ServiceTimePriceInfo } from "./service-form/service-time-price-info";
-import { ServiceResourcesInfo } from "./service-form/service-resources-info";
+import { BasicTab } from "./service-form/basic-tab";
+import { ResourcesTab } from "./service-form/resources-tab";
+
+import { SkillsTab } from "./service-form/skills-tab";
 
 interface ServiceFormProps {
   mode: "create" | "update";
   availableSkills: Skill[];
-  availableBedTypes: BedType[];
-  availableEquipment: Resource[];
   availableCategories: ServiceCategory[];
+  availableResourceGroups: ResourceGroup[];
   className?: string;
 }
 
 export function ServiceForm({
-  mode, // mode prop kept for potential future use or prop compatibility
+  mode,
   availableSkills,
-  availableBedTypes,
-  availableEquipment,
   availableCategories,
+  availableResourceGroups,
   className,
 }: ServiceFormProps) {
   const form = useFormContext();
-  const duration = form.watch("duration");
-  const bufferTime = form.watch("buffer_time");
 
-  // Local state for categories to support "Quick Add" updates
-  const [categories, setCategories] = useState(availableCategories);
-  const [skills, setSkills] = useState(availableSkills);
+  // Watch for validation errors to show indicators on tabs
+  const { errors } = form.formState;
+  const hasBasicErrors = !!errors.name || !!errors.price || !!errors.category_id;
+  const hasResourceErrors = !!errors.resource_requirements;
+  // const hasSkillErrors = !!errors.skill_ids; // Usually optional but if required
+
+  const duration = form.watch("duration") || 60;
 
   return (
-    <div className={cn("w-full space-y-6 pt-0", className)}>
-      {/* Basic Info */}
-      <ServiceBasicInfo
-        categories={categories}
-        onCategoriesChange={setCategories}
-      />
+    <div className={cn("w-full pt-2", className)}>
+      <Tabs defaultValue="basic" className="h-full w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="basic" className="relative">
+            Thông tin
+            {hasBasicErrors && (
+               <AlertCircle className="text-destructive absolute -right-1 -top-1 h-3 w-3" />
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="resources" className="relative">
+            Tài nguyên
+            {hasResourceErrors && (
+               <AlertCircle className="text-destructive absolute -right-1 -top-1 h-3 w-3" />
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="skills">Kỹ năng</TabsTrigger>
+        </TabsList>
 
-      {/* Time & Price */}
-      <ServiceTimePriceInfo duration={duration} bufferTime={bufferTime} />
+        <div className="mt-4 h-full">
+           <TabsContent value="basic" className="mt-0 space-y-4">
+              <BasicTab categories={availableCategories} />
+           </TabsContent>
 
-      {/* Resources */}
-      <ServiceResourcesInfo
-        availableBedTypes={availableBedTypes}
-        skills={skills}
-        onSkillsChange={setSkills}
-        availableEquipment={availableEquipment}
-        duration={duration}
-      />
+           <TabsContent value="resources" className="mt-0 space-y-4">
+              <ResourcesTab
+                 availableResourceGroups={availableResourceGroups}
+                 duration={duration}
+              />
+           </TabsContent>
+
+           <TabsContent value="skills" className="mt-0 space-y-4">
+              <SkillsTab availableSkills={availableSkills} />
+           </TabsContent>
+        </div>
+      </Tabs>
     </div>
   );
 }

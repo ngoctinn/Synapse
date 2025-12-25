@@ -11,25 +11,23 @@ export interface ServiceCategory {
   sort_order: number;
 }
 
-/** Cấu hình thời gian sử dụng thiết bị trong timeline dịch vụ */
-export interface EquipmentUsage {
-  equipment_id: string;
-  /** Thời điểm bắt đầu sử dụng (phút từ đầu dịch vụ) */
-  start_delay: number;
-  /** Thời lượng sử dụng (phút) */
-  usage_duration: number;
+export interface ResourceGroup {
+  id: string;
+  name: string;
+  description?: string | null;
+  /** "BED" | "EQUIPMENT" */
+  type: string;
 }
 
-export interface ResourceRequirements {
-  /** Loại giường yêu cầu cho dịch vụ (bắt buộc) */
-  bed_type_id: string;
-  /** Cấu hình timeline sử dụng giường (thường là bắt đầu 0 và hết duration) */
-  bed_usage?: {
-    start_delay: number;
-    usage_duration?: number;
-  };
-  /** Cấu hình timeline sử dụng thiết bị */
-  equipment_usage: EquipmentUsage[];
+export interface ServiceResourceRequirement {
+  group_id: string;
+  quantity: number;
+  /** Thời điểm bắt đầu sử dụng (phút từ đầu dịch vụ) */
+  start_delay: number;
+  /** Thời lượng sử dụng (phút). Nếu null -> dùng suốt thời gian dịch vụ */
+  usage_duration?: number | null;
+  /** Optional: Embedded group details for UI convenience */
+  group?: ResourceGroup;
 }
 
 export interface Service {
@@ -42,14 +40,14 @@ export interface Service {
   color: string;
   description?: string | null;
   category_id?: string | null;
-  // @deprecated use category_id
-  category?: string | null;
-  resource_requirements?: ResourceRequirements;
   is_active: boolean;
   is_popular?: boolean;
   skills: Skill[];
+  resource_requirements: ServiceResourceRequirement[];
   created_at: string;
   updated_at: string;
+  /** Optional: Embedded category details */
+  category?: ServiceCategory;
 }
 
 export interface ServiceCreateInput {
@@ -61,7 +59,7 @@ export interface ServiceCreateInput {
   color?: string;
   description?: string;
   category_id?: string;
-  resource_requirements?: ResourceRequirements;
+  resource_requirements?: ServiceResourceRequirement[];
   is_active?: boolean;
   skill_ids: string[];
   new_skills?: string[];
@@ -76,7 +74,7 @@ export interface ServiceUpdateInput {
   color?: string;
   description?: string;
   category_id?: string;
-  resource_requirements?: ResourceRequirements;
+  resource_requirements?: ServiceResourceRequirement[];
   is_active?: boolean;
   skill_ids?: string[];
   new_skills?: string[];

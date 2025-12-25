@@ -12,6 +12,17 @@ export const MOCK_SKILLS: Skill[] = [
   { id: "s9", name: "Triệt lông", code: "HAIR_REMOVAL" },
 ];
 
+import { ResourceGroup } from "../../resources";
+
+export const MOCK_RESOURCE_GROUPS: ResourceGroup[] = [
+  { id: "rg_bed", name: "Giường Spa tiêu chuẩn", type: "BED", description: "Giường êm, có lỗ úp mặt" },
+  { id: "rg_shampoo_bed", name: "Giường gội đầu", type: "BED" },
+  { id: "rg_chair", name: "Ghế massage chân", type: "BED" },
+  { id: "rg_sauna_room", name: "Phòng xông hơi", type: "BED" },
+  { id: "rg_machine_laser", name: "Máy Laser CO2", type: "EQUIPMENT" },
+  { id: "rg_machine_hifu", name: "Máy Hifu", type: "EQUIPMENT" },
+];
+
 export const MOCK_CATEGORIES: ServiceCategory[] = [
   { id: "cat_massage", name: "Massage", sort_order: 0 },
   { id: "cat_facial", name: "Facial", sort_order: 1 },
@@ -36,6 +47,9 @@ export const MOCK_SERVICES: Service[] = [
     is_active: true,
     is_popular: true,
     skills: [MOCK_SKILLS[1]],
+    resource_requirements: [
+       { group_id: "rg_bed", quantity: 1, start_delay: 0 }
+    ],
     created_at: "2023-01-01T00:00:00Z",
     updated_at: "2023-01-01T00:00:00Z",
   },
@@ -54,6 +68,10 @@ export const MOCK_SERVICES: Service[] = [
     is_active: true,
     is_popular: true,
     skills: [MOCK_SKILLS[0], MOCK_SKILLS[2]],
+    resource_requirements: [
+       { group_id: "rg_bed", quantity: 1, start_delay: 0 },
+       { group_id: "rg_machine_laser", quantity: 1, start_delay: 10, usage_duration: 30 }
+    ],
     created_at: "2023-01-01T00:00:00Z",
     updated_at: "2023-01-01T00:00:00Z",
   },
@@ -71,6 +89,9 @@ export const MOCK_SERVICES: Service[] = [
     color: "#10b981",
     is_active: true,
     skills: [MOCK_SKILLS[3], MOCK_SKILLS[4]],
+    resource_requirements: [
+        { group_id: "rg_shampoo_bed", quantity: 1, start_delay: 0 }
+    ],
     created_at: "2023-01-01T00:00:00Z",
     updated_at: "2023-01-01T00:00:00Z",
   },
@@ -88,6 +109,9 @@ export const MOCK_SERVICES: Service[] = [
     color: "#f59e0b",
     is_active: true,
     skills: [],
+    resource_requirements: [
+        { group_id: "rg_sauna_room", quantity: 1, start_delay: 0 }
+    ],
     created_at: "2023-01-01T00:00:00Z",
     updated_at: "2023-01-01T00:00:00Z",
   },
@@ -105,6 +129,9 @@ export const MOCK_SERVICES: Service[] = [
     color: "#8b5cf6",
     is_active: true,
     skills: [MOCK_SKILLS[1]],
+    resource_requirements: [
+        { group_id: "rg_chair", quantity: 1, start_delay: 0 }
+    ],
     created_at: "2023-01-01T00:00:00Z",
     updated_at: "2023-01-01T00:00:00Z",
   },
@@ -123,6 +150,9 @@ export const MOCK_SERVICES: Service[] = [
     is_active: true,
     is_popular: true,
     skills: [MOCK_SKILLS[0], MOCK_SKILLS[1]],
+    resource_requirements: [
+        { group_id: "rg_bed", quantity: 1, start_delay: 0 }
+    ],
     created_at: "2023-01-01T00:00:00Z",
     updated_at: "2023-01-01T00:00:00Z",
   },

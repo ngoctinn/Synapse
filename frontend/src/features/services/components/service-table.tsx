@@ -1,6 +1,6 @@
 "use client";
 
-import { Resource, BedType } from "@/features/resources";
+import { ResourceGroup } from "@/features/resources";
 import {
   useBulkAction,
   useTableParams,
@@ -8,7 +8,6 @@ import {
 } from "@/shared/hooks";
 import { formatCurrency } from "@/shared/lib/utils";
 import { TruncatedCell } from "@/shared/lib/table-utils";
-import { Z_INDEX } from "@/shared/lib/design-tokens";
 import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
@@ -16,26 +15,28 @@ import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
 import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
+import { Switch } from "@/shared/ui/switch";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/shared/ui/tooltip";
+import { Button } from "@/shared/ui/button";
+import { Icon } from "@/shared/ui/custom";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { deleteService } from "../actions";
-import { MOCK_CATEGORIES } from "../model/mocks";
+import { toast } from "sonner";
+import { deleteService, toggleServiceStatus } from "../actions";
+import { MOCK_CATEGORIES, MOCK_RESOURCE_GROUPS } from "../model/mocks";
 import { Service, Skill } from "../model/types";
-import { CreateServiceWizard } from "./create-service-wizard";
 import { ServiceActions } from "./service-actions";
 import { ServiceSheet } from "./service-sheet";
 
 interface ServiceTableProps {
   services: Service[];
   availableSkills: Skill[];
-  availableBedTypes: BedType[];
-  availableEquipment: Resource[];
+  // Removed legacy bed/equipment props
   page?: number;
   totalPages?: number;
   onPageChange?: (page: number) => void;
@@ -48,8 +49,6 @@ interface ServiceTableProps {
 export function ServiceTable({
   services,
   availableSkills,
-  availableBedTypes,
-  availableEquipment,
   page: pageProp,
   totalPages = 1,
   onPageChange: onPageChangeProp,
@@ -59,6 +58,7 @@ export function ServiceTable({
   hidePagination,
 }: ServiceTableProps) {
   const [editingService, setEditingService] = useState<Service | null>(null);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   // Use custom hook for URL state management
   const { page: urlPage, handlePageChange: urlPageChange } = useTableParams();
@@ -88,12 +88,24 @@ export function ServiceTable({
     executeBulkDelete(ids, selection.clearAll);
   };
 
+  const handleToggleStatus = async (service: Service, checked: boolean) => {
+    try {
+       await toggleServiceStatus(service.id, checked);
+       toast.success(checked ? `Đã kích hoạt "${service.name}"` : `Đã ẩn "${service.name}"`);
+    } catch (error) {
+       toast.error("Không thể thay đổi trạng thái");
+    }
+ };
+
+  const getResourceGroupName = (groupId: string) => {
+    return MOCK_RESOURCE_GROUPS.find(g => g.id === groupId)?.name || groupId;
+  };
+
   const columns: Column<Service>[] = [
     {
       header: "Tên dịch vụ",
       cell: (service) => (
         <div className="flex flex-col">
-          {/* Fix Issue #13: Truncate long service names */}
           <TruncatedCell maxWidth={200} className="text-foreground group-hover:text-primary font-serif text-lg tracking-tight transition-colors">
             {service.name}
           </TruncatedCell>
@@ -134,19 +146,21 @@ export function ServiceTable({
       },
     },
     {
-      header: "Loại giường",
+      header: "Tài nguyên",
       cell: (service) => {
-        const bedType = availableBedTypes.find(
-          (b) => b.id === service.resource_requirements?.bed_type_id
-        );
-        return bedType ? (
-          <Badge variant="outline" className="font-normal">
-            {bedType.name}
-          </Badge>
-        ) : (
-          <span className="text-destructive text-xs italic">
-            Chưa gán
-          </span>
+        const reqs = service.resource_requirements || [];
+        if (reqs.length === 0) {
+            return <span className="text-muted-foreground text-xs italic">Không yêu cầu</span>;
+        }
+
+        return (
+          <div className="flex flex-wrap gap-1">
+             {reqs.map((req, idx) => (
+                 <Badge key={idx} variant="outline" className="text-xs font-normal">
+                    {req.quantity}x {getResourceGroupName(req.group_id)}
+                 </Badge>
+             ))}
+          </div>
         );
       },
     },
@@ -156,48 +170,21 @@ export function ServiceTable({
       cell: (service) => formatCurrency(service.price),
     },
     {
-      header: "Kỹ năng yêu cầu",
-      cell: (service) => (
-        <div className="flex flex-wrap gap-2">
-          {service.skills.map((skill) => (
-            <Badge key={skill.id} variant="violet">
-              {skill.name}
-            </Badge>
-          ))}
-          {service.skills.length === 0 && (
-            <span className="text-muted-foreground pl-1 text-xs italic">
-              Không yêu cầu
-            </span>
-          )}
-        </div>
-      ),
-    },
-    {
-      header: "Trạng thái",
-      cell: (service) => (
-        <TooltipProvider delayDuration={300}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span>
-                <Badge
-                  variant={
-                    service.is_active ? "status-active" : "status-inactive"
-                  }
-                  withIndicator
-                  indicatorPulse={service.is_active}
-                >
-                  {service.is_active ? "Hoạt động" : "Ẩn"}
-                </Badge>
-              </span>
-            </TooltipTrigger>
-            <TooltipContent>
-              {service.is_active
-                ? "Dịch vụ đang hiển thị trên app khách hàng"
-                : "Dịch vụ đang ẩn, khách hàng không thể đặt"}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      ),
+       header: "Trạng thái",
+       cell: (service) => (
+          <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
+             <Switch
+                checked={service.is_active}
+                onCheckedChange={(checked) => handleToggleStatus(service, checked)}
+             />
+             <span className={cn(
+                "text-xs font-medium",
+                service.is_active ? "text-green-600" : "text-muted-foreground"
+             )}>
+                {service.is_active ? "Hiện" : "Ẩn"}
+             </span>
+          </div>
+       )
     },
     {
       header: "Hành động",
@@ -215,6 +202,12 @@ export function ServiceTable({
 
   return (
     <>
+       <div className="mb-4 flex items-center justify-end">
+          <Button onClick={() => setIsCreateOpen(true)} startContent={<Icon icon={Plus} />}>
+             Thêm dịch vụ
+          </Button>
+       </div>
+
       <DataTable
         data={services}
         columns={columns}
@@ -241,11 +234,9 @@ export function ServiceTable({
             title="Chưa có dịch vụ nào"
             description="Bắt đầu bằng cách tạo dịch vụ đầu tiên của bạn. Dịch vụ sẽ hiển thị trên trang đặt lịch."
             action={
-              <CreateServiceWizard
-                availableSkills={availableSkills}
-                availableBedTypes={availableBedTypes}
-                availableEquipment={availableEquipment}
-              />
+               <Button onClick={() => setIsCreateOpen(true)}>
+                  Tạo dịch vụ ngay
+               </Button>
             }
           />
         }
@@ -258,6 +249,7 @@ export function ServiceTable({
         isLoading={isPending}
       />
 
+      {/* Edit Sheet */}
       {editingService && (
         <ServiceSheet
           mode="update"
@@ -265,10 +257,18 @@ export function ServiceTable({
           open={!!editingService}
           onOpenChange={(open) => !open && setEditingService(null)}
           availableSkills={availableSkills}
-          availableBedTypes={availableBedTypes}
-          availableEquipment={availableEquipment}
+          availableResourceGroups={MOCK_RESOURCE_GROUPS}
         />
       )}
+
+      {/* Create Sheet */}
+      <ServiceSheet
+         mode="create"
+         open={isCreateOpen}
+         onOpenChange={setIsCreateOpen}
+         availableSkills={availableSkills}
+         availableResourceGroups={MOCK_RESOURCE_GROUPS}
+      />
 
       <DeleteConfirmDialog
         open={showBulkDeleteDialog}

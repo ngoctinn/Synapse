@@ -1,4 +1,5 @@
-import { Resource, BedType } from "@/features/resources";
+import { ResourceGroup } from "@/features/resources";
+import { useSheetForm } from "@/shared/hooks";
 import {
   Button,
   Form,
@@ -6,14 +7,13 @@ import {
 } from "@/shared/ui";
 import { ActionSheet, Icon } from "@/shared/ui/custom";
 import { Save, Send } from "lucide-react";
+import { useCallback } from "react";
 import { createService, updateService } from "../actions";
 import { SERVICE_DEFAULT_VALUES } from "../constants";
-import { MOCK_CATEGORIES } from "../model/mocks";
+import { MOCK_CATEGORIES, MOCK_RESOURCE_GROUPS } from "../model/mocks";
 import { ServiceFormValues, serviceSchema } from "../model/schemas";
 import { Service, Skill } from "../model/types";
 import { ServiceForm } from "./service-form";
-import { useSheetForm } from "@/shared/hooks";
-import { useCallback } from "react";
 
 interface ServiceSheetProps {
   mode: "create" | "update";
@@ -21,8 +21,7 @@ interface ServiceSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   availableSkills: Skill[];
-  availableBedTypes: BedType[];
-  availableEquipment: Resource[];
+  availableResourceGroups?: ResourceGroup[];
 }
 
 export function ServiceSheet({
@@ -31,39 +30,46 @@ export function ServiceSheet({
   open,
   onOpenChange,
   availableSkills,
-  availableBedTypes,
-  availableEquipment,
+  availableResourceGroups = MOCK_RESOURCE_GROUPS,
 }: ServiceSheetProps) {
   const isUpdateMode = mode === "update";
 
-  // Transform Service entity thành form values
+  // Transform Service entity to form values
   const transformData = useCallback(
     (service: Service): Partial<ServiceFormValues> => ({
       name: service.name || "",
       duration: service.duration || SERVICE_DEFAULT_VALUES.duration,
       buffer_time: service.buffer_time || SERVICE_DEFAULT_VALUES.buffer_time,
       price: service.price || SERVICE_DEFAULT_VALUES.price,
-      is_active: service.is_active ?? true,
+      is_active: service.is_active ?? false,
       image_url: service.image_url || "",
       color: service.color || SERVICE_DEFAULT_VALUES.color,
       description: service.description || "",
-      resource_requirements: {
-        bed_type_id: service.resource_requirements?.bed_type_id || "",
-        equipment_usage: service.resource_requirements?.equipment_usage || [],
-      },
+      // Cast the array to ensure type safety, though it should match if schemas are aligned
+      resource_requirements: service.resource_requirements || [],
       skill_ids: service.skills?.map((s) => s.id) || [],
       new_skills: [],
+      category_id: service.category_id || undefined,
     }),
     []
   );
 
-  // Action wrapper để phù hợp với useSheetForm API
+  // Action wrapper to adapt for useSheetForm API
   const handleAction = useCallback(
     async (data: ServiceFormValues) => {
+       // Clean up empty usage_duration
+       const cleanData = {
+          ...data,
+          resource_requirements: data.resource_requirements.map(req => ({
+             ...req,
+             usage_duration: req.usage_duration || undefined
+          }))
+       };
+
       if (isUpdateMode && initialData) {
-        return updateService(initialData.id, data);
+        return updateService(initialData.id, cleanData);
       }
-      return createService(data);
+      return createService(cleanData);
     },
     [isUpdateMode, initialData]
   );
@@ -75,14 +81,11 @@ export function ServiceSheet({
       duration: SERVICE_DEFAULT_VALUES.duration,
       buffer_time: SERVICE_DEFAULT_VALUES.buffer_time,
       price: SERVICE_DEFAULT_VALUES.price,
-      is_active: true,
+      is_active: false,
       image_url: "",
       color: SERVICE_DEFAULT_VALUES.color,
       description: "",
-      resource_requirements: {
-        bed_type_id: "",
-        equipment_usage: [],
-      },
+      resource_requirements: [],
       skill_ids: [],
       new_skills: [],
     },
@@ -113,6 +116,7 @@ export function ServiceSheet({
       }
       isPending={isPending}
       isDirty={isDirty}
+      className="sm:max-w-xl"
       footer={
         <>
           <SheetClose asChild>
@@ -145,9 +149,8 @@ export function ServiceSheet({
           <ServiceForm
             mode={mode}
             availableSkills={availableSkills}
-            availableBedTypes={availableBedTypes}
-            availableEquipment={availableEquipment}
             availableCategories={MOCK_CATEGORIES}
+            availableResourceGroups={availableResourceGroups}
             className="flex-1"
           />
         </form>

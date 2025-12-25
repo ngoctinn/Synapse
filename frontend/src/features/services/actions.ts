@@ -16,8 +16,9 @@ import {
   SkillUpdateInput,
 } from "./model/types";
 
-let services = [...MOCK_SERVICES];
-let skills = [...MOCK_SKILLS];
+// Initialize with a deeper clone to avoid reference issues if we mutate in memory
+let services: Service[] = JSON.parse(JSON.stringify(MOCK_SERVICES));
+let skills: Skill[] = JSON.parse(JSON.stringify(MOCK_SKILLS));
 
 export async function getServices(
   page = 1,
@@ -66,13 +67,15 @@ export async function createService(
     buffer_time: data.buffer_time || 15,
     price: data.price || 0,
     color: data.color || "#3b82f6",
-    is_active: data.is_active ?? true,
+    is_active: data.is_active ?? false, // Default to Draft (false)
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     skills: data.skill_ids
       ? skills.filter((s) => data.skill_ids?.includes(s.id))
       : [],
+    resource_requirements: data.resource_requirements || [],
     image_url:
+      data.image_url ||
       "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000",
     category_id: data.category_id,
     is_popular: false,
@@ -95,13 +98,14 @@ export async function cloneService(id: string): Promise<ActionResponse> {
       duration: service.duration,
       buffer_time: service.buffer_time,
       price: service.price,
-      is_active: false,
+      is_active: false, // Clone always draft
       skill_ids: service.skills.map((s) => s.id),
       new_skills: [],
       category_id: service.category_id || undefined,
       description: service.description || undefined,
-      // A3: Copy đầy đủ resource_requirements
       resource_requirements: service.resource_requirements,
+      color: service.color,
+      image_url: service.image_url || undefined,
     });
 
     if (createRes.status === "error")
@@ -127,21 +131,67 @@ export async function updateService(
   const index = services.findIndex((s) => s.id === id);
   if (index === -1) return error("Không tìm thấy dịch vụ");
 
-  const updatedService = {
-    ...services[index],
+  const currentService = services[index];
+
+  const updatedService: Service = {
+    ...currentService,
     ...data,
     updated_at: new Date().toISOString(),
     skills: data.skill_ids
       ? skills.filter((s) => data.skill_ids?.includes(s.id))
-      : services[index].skills,
+      : currentService.skills,
+    resource_requirements:
+      data.resource_requirements ?? currentService.resource_requirements,
   };
 
+  services[index] = updatedService;
+  revalidatePath("/admin/services");
   services[index] = updatedService;
   revalidatePath("/admin/services");
   return success(updatedService, "Cập nhật dịch vụ thành công");
 }
 
+export async function toggleServiceStatus(
+  id: string,
+  isActive: boolean
+): Promise<ActionResponse<Service>> {
+  if (isActive) {
+    const serviceRes = await getService(id);
+    if (serviceRes.status === "error" || !serviceRes.data) {
+      return error("Không tìm thấy dịch vụ");
+    }
+    const service = serviceRes.data;
+
+    if (!service.category_id) {
+       return error("Vui lòng chọn danh mục trước khi kích hoạt dịch vụ");
+    }
+    if (!service.resource_requirements || service.resource_requirements.length === 0) {
+       // Optional: Could facilitate a warning, but for now treating as warning-only or allow empty
+       // return error("Vui lòng thiết lập tài nguyên cho dịch vụ");
+    }
+  }
+
+  return updateService(id, { is_active: isActive });
+}
+
 export async function deleteService(id: string): Promise<ActionResponse> {
+  const serviceRes = await getService(id);
+  if (serviceRes.status === "error" || !serviceRes.data) {
+    return error("Không tìm thấy dịch vụ");
+  }
+
+  // Mock check for booking history
+  // In real app: const count = await countBookingsByService(id);
+  // For now, assume services with "Classic" in name have bookings
+  const hasBookings = serviceRes.data.name.includes("Classic");
+
+  if (hasBookings) {
+     // Soft delete (Archive)
+     await updateService(id, { is_active: false });
+     return success(undefined, "Dịch vụ đã được lưu trữ (do có lịch sử đặt chỗ)");
+  }
+
+  // Hard delete
   services = services.filter((s) => s.id !== id);
   revalidatePath("/admin/services");
   return success(undefined, "Đã xóa dịch vụ thành công");
