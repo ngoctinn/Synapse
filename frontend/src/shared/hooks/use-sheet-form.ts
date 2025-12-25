@@ -50,7 +50,7 @@ interface UseSheetFormOptions<
   TData = unknown,
 > {
   /** Zod schema để validate form */
-  schema: z.ZodType<TFormValues>;
+  schema: z.ZodType<TFormValues, any, any>;
 
   /** Giá trị mặc định cho form */
   defaultValues: DefaultValues<TFormValues>;
@@ -155,10 +155,9 @@ export function useSheetForm<TFormValues extends FieldValues, TData = unknown>(
 
   const [isPending, startTransition] = useTransition();
 
-  // Khởi tạo form - sử dụng type assertion để bypass complex generic issues
+  // Khởi tạo form
   const form = useForm<TFormValues>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(schema as any) as any,
+    resolver: zodResolver(schema),
     defaultValues,
   });
 
@@ -177,8 +176,8 @@ export function useSheetForm<TFormValues extends FieldValues, TData = unknown>(
   }, [open, data, transformData, form, defaultValues]);
 
   // Handler submit form
-  const handleSubmit = useCallback(
-    (formData: TFormValues) => {
+  const handleSubmitInternal = useCallback(
+    async (formData: TFormValues) => {
       startTransition(async () => {
         try {
           const rawResult = await action(formData);
@@ -211,14 +210,13 @@ export function useSheetForm<TFormValues extends FieldValues, TData = unknown>(
   );
 
   // Wrap handleSubmit để dùng với form onSubmit
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onSubmit = form.handleSubmit(handleSubmit as any);
+  const onSubmit = form.handleSubmit(handleSubmitInternal);
 
   return {
     form,
     isPending,
     isDirty: form.formState.isDirty,
-    handleSubmit,
+    handleSubmit: handleSubmitInternal,
     onSubmit,
   } as UseSheetFormReturn<TFormValues>;
 }

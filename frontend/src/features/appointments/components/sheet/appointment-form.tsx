@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { AlertTriangle } from "lucide-react";
 import React, { useCallback, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
@@ -15,17 +14,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
   Textarea,
+  showToast,
 } from "@/shared/ui";
-import { Icon } from "@/shared/ui/custom/icon";
-import { Combobox } from "@/shared/ui/custom/combobox";
-import { DatePicker } from "@/shared/ui/custom/date-picker";
-import { TimePicker } from "@/shared/ui/custom/time-picker";
 
 import { MockService } from "@/features/appointments/model/mocks";
 import {
@@ -40,6 +31,13 @@ import {
   useConflictCheck,
   useCustomerSearch,
 } from "@/features/appointments/hooks";
+
+import { CustomerPicker } from "./components/customer-picker";
+import { AppointmentDateTime } from "./components/appointment-date-time";
+import { StaffResourceSelect } from "./components/staff-resource-select";
+
+const DEFAULT_SERVICE_COLOR = "#8b5cf6";
+const MS_PER_MINUTE = 60000;
 
 // ============================================
 // TYPES
@@ -102,9 +100,8 @@ export function AppointmentForm({
     appointmentId: appointment?.id,
   });
 
-  const isDirty = form.formState.isDirty; // Track form dirty state
+  const isDirty = form.formState.isDirty;
 
-  // Correct implementation:
   const lastIsDirty = React.useRef(false);
   React.useEffect(() => {
     if (isDirty !== lastIsDirty.current) {
@@ -158,7 +155,7 @@ export function AppointmentForm({
           0
         );
         const finalEndTime = new Date(
-          startTime.getTime() + (currentTotalDuration || 60) * 60000
+          startTime.getTime() + (currentTotalDuration || 60) * MS_PER_MINUTE
         );
 
         const newAppointment: Appointment = {
@@ -172,8 +169,8 @@ export function AppointmentForm({
           serviceId: values.serviceIds[0] || "",
           serviceName: service?.name || appointment?.serviceName || "",
           serviceColor: service
-            ? "#8b5cf6"
-            : appointment?.serviceColor || "#8b5cf6",
+            ? DEFAULT_SERVICE_COLOR
+            : appointment?.serviceColor || DEFAULT_SERVICE_COLOR,
           staffId: values.staffId,
           staffName: staff?.name || appointment?.staffName || "",
           resourceId: values.resourceId || undefined,
@@ -203,10 +200,6 @@ export function AppointmentForm({
     ]
   );
 
-  // ============================================
-  // RENDER
-  // ============================================
-
   return (
     <Form {...form}>
       <form
@@ -214,35 +207,13 @@ export function AppointmentForm({
         onSubmit={form.handleSubmit(handleSubmit)}
         className="space-y-6"
       >
-        {/* Customer */}
-        <FormField
-          control={form.control}
-          name="customerId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel required>Khách hàng</FormLabel>
-              <FormControl>
-                <Combobox
-                  options={customerOptions.map((c) => ({
-                    value: c.id,
-                    label: c.name,
-                    description: c.phone,
-                  }))}
-                  value={field.value}
-                  onChange={field.onChange}
-                  onSearch={setCustomerSearch}
-                  placeholder={appointment?.customerName || "Tìm khách hàng..."}
-                  searchPlaceholder="Nhập tên hoặc SĐT..."
-                  emptyMessage="Nhập 2 ký tự để tìm..."
-                  isLoading={isSearching}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+        <CustomerPicker
+          placeholder={appointment?.customerName}
+          customerOptions={customerOptions}
+          isSearching={isSearching}
+          onSearch={setCustomerSearch}
         />
 
-        {/* Services */}
         <FormField
           control={form.control}
           name="serviceIds"
@@ -264,123 +235,16 @@ export function AppointmentForm({
           )}
         />
 
-        {/* Staff */}
-        <FormField
-          control={form.control}
-          name="staffId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel required>Kỹ thuật viên</FormLabel>
-              <Select value={field.value} onValueChange={field.onChange}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Chọn kỹ thuật viên" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {availableStaff.map((s) => (
-                    <SelectItem key={s.id} value={s.id}>
-                      <div className="flex items-center gap-2">
-                        <div
-                          className="h-3 w-3 rounded-full"
-                          style={{ backgroundColor: s.color || "#8b5cf6" }}
-                        />
-                        {s.name}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
+        <StaffResourceSelect
+          availableStaff={availableStaff}
+          availableResources={availableResources}
         />
 
-        {/* Date & Time */}
-        <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="date"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel required>Ngày</FormLabel>
-                <FormControl>
-                  <DatePicker
-                    value={field.value}
-                    onChange={field.onChange}
-                    placeholder="Chọn ngày"
-                    minDate={new Date()}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="startTime"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel required>Giờ bắt đầu</FormLabel>
-                <FormControl>
-                  <TimePicker value={field.value} onChange={field.onChange} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Warnings */}
-          {(timeWarning || conflicts.length > 0) && (
-            <div className="col-span-2 space-y-1 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm dark:border-amber-800 dark:bg-amber-950/20">
-              {timeWarning && (
-                <div className="flex items-center gap-2 font-medium text-amber-800 dark:text-amber-500">
-                  <Icon icon={AlertTriangle} /> {timeWarning}
-                </div>
-              )}
-              {conflicts.map((c) => (
-                <div
-                  key={c.eventId}
-                  className="text-destructive flex items-center gap-2 font-medium"
-                >
-                  <Icon icon={AlertTriangle} /> {c.message}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Resources */}
-        <FormField
-          control={form.control}
-          name="resourceId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phòng / Giường</FormLabel>
-              <Select
-                value={field.value || ""}
-                onValueChange={(value) => field.onChange(value || undefined)}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Chọn phòng (không bắt buộc)" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {availableResources.map((resource) => (
-                    <SelectItem key={resource.id} value={resource.id}>
-                      {resource.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
+        <AppointmentDateTime
+          timeWarning={timeWarning}
+          conflicts={conflicts}
         />
 
-        {/* Notes */}
         <FormField
           control={form.control}
           name="notes"

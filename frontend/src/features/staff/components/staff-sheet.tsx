@@ -13,9 +13,12 @@ import {
 } from "@/features/staff/model/schemas";
 import { Staff } from "@/features/staff/model/types";
 import { useSheetForm } from "@/shared/hooks/use-sheet-form";
-import { Button, Form } from "@/shared/ui";
+import { Badge, Button, Form, SheetClose } from "@/shared/ui";
 import { ActionSheet, Icon } from "@/shared/ui/custom";
 import { StaffForm } from "./staff-form";
+
+// Sử dụng SheetClose từ shared/ui
+const ActionSheetClose = SheetClose;
 
 interface StaffSheetProps {
   open: boolean;
@@ -124,5 +127,3 @@ export function StaffSheet({
   );
 }
 
-// Trick để dùng SheetClose (đã được export từ @/shared/ui nhưng muốn dùng alias trong context ActionSheet)
-import { SheetClose as ActionSheetClose } from "@/shared/ui/sheet";

@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import { cn } from "@/shared/lib/utils";
 import { Button, Input, Separator } from "@/shared/ui";
-import { ActionSheet } from "@/shared/ui/custom";
+import { ActionSheet, Icon } from "@/shared/ui/custom";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,74 +26,8 @@ interface ShiftManagerSheetProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const DEFAULT_COLORS = [
-  "#D97706", // Amber
-  "#2563EB", // Blue
-  "#7C3AED", // Violet
-  "#059669", // Emerald
-  "#DC2626", // Red
-  "#EA580C", // Orange
-  "#0891B2", // Cyan
-];
-
-/**
- * Shift item component - Style chữ đậm + nền nhạt
- */
-function ShiftItem({
-  shift,
-  isEditing,
-  onEdit,
-  onDelete,
-}: {
-  shift: Shift;
-  isEditing: boolean;
-  onEdit: () => void;
-  onDelete: () => void;
-}) {
-  return (
-    <div
-      className={cn(
-        "flex items-center gap-3 rounded-lg p-3 transition-all",
-        isEditing ? "ring-primary ring-2 ring-offset-2" : ""
-      )}
-      style={{ backgroundColor: `${shift.colorCode}12` }}
-    >
-      <div
-        className="h-9 w-1.5 shrink-0 rounded-full"
-        style={{ backgroundColor: shift.colorCode }}
-      />
-      <div className="min-w-0 flex-1">
-        <div
-          className="truncate font-semibold"
-          style={{ color: shift.colorCode }}
-        >
-          {shift.name}
-        </div>
-        <div className="text-xs opacity-70" style={{ color: shift.colorCode }}>
-          {shift.startTime} - {shift.endTime}
-        </div>
-      </div>
-      <div className="flex gap-1">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 hover:bg-white/50"
-          onClick={onEdit}
-        >
-          <Pencil className="size-4" style={{ color: shift.colorCode }} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-destructive hover:text-destructive h-8 w-8 hover:bg-white/50"
-          onClick={onDelete}
-        >
-          <Trash2 className="size-4" />
-        </Button>
-      </div>
-    </div>
-  );
-}
+import { ShiftItem } from "./components/shift-item";
+import { ShiftForm } from "./components/shift-form";
 
 /**
  * Sheet quản lý Master Data ca làm việc (CRUD)
@@ -112,13 +46,13 @@ export function ShiftManagerSheet({
   const [formName, setFormName] = useState("");
   const [formStartTime, setFormStartTime] = useState("08:00");
   const [formEndTime, setFormEndTime] = useState("12:00");
-  const [formColor, setFormColor] = useState(DEFAULT_COLORS[0]);
+  const [formColor, setFormColor] = useState("#D97706"); // Default to Amber
 
   const resetForm = () => {
     setFormName("");
     setFormStartTime("08:00");
     setFormEndTime("12:00");
-    setFormColor(DEFAULT_COLORS[0]);
+    setFormColor("#D97706"); // Reset to default Amber
     setIsAdding(false);
     setEditingId(null);
   };
@@ -188,7 +122,7 @@ export function ShiftManagerSheet({
       <ActionSheet
         open={open}
         onOpenChange={onOpenChange}
-      isDirty={isDirty}
+        isDirty={isDirty}
         title="Quản lý ca làm việc"
         description="Tạo và chỉnh sửa các ca làm việc (Master Data)"
         footer={
@@ -224,89 +158,20 @@ export function ShiftManagerSheet({
 
           {/* Add/Edit form */}
           {(isAdding || editingId) && (
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium">
-                {editingId ? "Chỉnh sửa ca" : "Thêm ca mới"}
-              </h3>
-
-              {/* Name */}
-              <div className="space-y-1.5">
-                <label className="text-muted-foreground text-sm">Tên ca</label>
-                <Input
-                  value={formName}
-                  onChange={(e) => setFormName(e.target.value)}
-                  placeholder="Ví dụ: Ca sáng, Ca tối..."
-                  className=""
-                />
-              </div>
-
-              {/* Time */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <label className="text-muted-foreground text-sm">
-                    Bắt đầu
-                  </label>
-                  <Input
-                    type="time"
-                    value={formStartTime}
-                    onChange={(e) => setFormStartTime(e.target.value)}
-                    startContent={<Clock className="size-4" />}
-                    className=""
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-muted-foreground text-sm">
-                    Kết thúc
-                  </label>
-                  <Input
-                    type="time"
-                    value={formEndTime}
-                    onChange={(e) => setFormEndTime(e.target.value)}
-                    startContent={<Clock className="size-4" />}
-                    className=""
-                  />
-                </div>
-              </div>
-
-              {/* Color */}
-              <div className="space-y-1.5">
-                <label className="text-muted-foreground text-sm">Màu sắc</label>
-                <div className="flex gap-2">
-                  {DEFAULT_COLORS.map((color) => (
-                    <button
-                      key={color}
-                      type="button"
-                      onClick={() => setFormColor(color)}
-                      className={cn(
-                        "h-8 w-8 rounded-full transition-all",
-                        formColor === color &&
-                          "ring-primary ring-2 ring-offset-2"
-                      )}
-                      style={{ backgroundColor: color }}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1"
-                  onClick={resetForm}
-                >
-                  Hủy
-                </Button>
-                <Button
-                  size="sm"
-                  className="flex-1"
-                  onClick={editingId ? handleUpdate : handleAdd}
-                >
-                  {editingId ? "Cập nhật" : "Thêm"}
-                </Button>
-              </div>
-            </div>
+            <ShiftForm
+              title={editingId ? "Chỉnh sửa ca" : "Thêm ca mới"}
+              name={formName}
+              onNameChange={setFormName}
+              startTime={formStartTime}
+              onStartTimeChange={setFormStartTime}
+              endTime={formEndTime}
+              onEndTimeChange={setFormEndTime}
+              color={formColor}
+              onColorChange={setFormColor}
+              onCancel={resetForm}
+              onSubmit={editingId ? handleUpdate : handleAdd}
+              submitLabel={editingId ? "Cập nhật" : "Thêm"}
+            />
           )}
 
           {/* Add button */}
@@ -316,7 +181,7 @@ export function ShiftManagerSheet({
               className="w-full"
               onClick={() => setIsAdding(true)}
             >
-              <Plus className="size-4" />
+              <Icon icon={Plus} className="size-4" />
               Thêm ca mới
             </Button>
           )}

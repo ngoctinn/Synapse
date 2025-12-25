@@ -14,6 +14,7 @@ import { formatCurrency } from "@/shared/lib/utils";
 import { Invoice, InvoiceStatus } from "../model/types";
 import { InvoiceTable } from "./invoice-table";
 import { InvoiceSheet } from "./sheet/invoice-sheet";
+import { Icon } from "@/shared/ui/custom";
 import { useBillingStore } from "../hooks/use-billing-store";
 
 export function BillingPage() {
@@ -71,7 +72,7 @@ export function BillingPage() {
               <CardTitle className="text-sm font-medium">
                 Tổng doanh thu
               </CardTitle>
-              <DollarSign className="text-muted-foreground size-4" />
+              <Icon icon={DollarSign} className="text-muted-foreground size-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
@@ -84,7 +85,7 @@ export function BillingPage() {
               <CardTitle className="text-sm font-medium">
                 Chờ thanh toán
               </CardTitle>
-              <AlertCircle className="text-muted-foreground size-4" />
+              <Icon icon={AlertCircle} className="text-muted-foreground size-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-orange-600">
@@ -97,7 +98,7 @@ export function BillingPage() {
               <CardTitle className="text-sm font-medium">
                 Đã thanh toán
               </CardTitle>
-              <CheckCircle className="text-muted-foreground size-4" />
+              <Icon icon={CheckCircle} className="text-muted-foreground size-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-600">
@@ -111,7 +112,7 @@ export function BillingPage() {
               <CardTitle className="text-sm font-medium">
                 Chưa thanh toán
               </CardTitle>
-              <FileText className="text-muted-foreground size-4" />
+              <Icon icon={FileText} className="text-muted-foreground size-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-orange-600">

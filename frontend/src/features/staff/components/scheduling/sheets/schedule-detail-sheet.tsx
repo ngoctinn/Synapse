@@ -4,7 +4,7 @@ import { Calendar, Send, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { Badge, Button, Separator } from "@/shared/ui";
-import { ActionSheet } from "@/shared/ui/custom";
+import { ActionSheet, Icon } from "@/shared/ui/custom";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -81,7 +81,7 @@ export function ScheduleDetailSheet({
                 className="w-full"
                 onClick={handlePublish}
               >
-                <Send className="size-4" />
+                <Icon icon={Send} className="size-4" />
                 Công bố lịch
               </Button>
             )}
@@ -93,7 +93,7 @@ export function ScheduleDetailSheet({
                 className="text-destructive hover:text-destructive hover:bg-destructive/10 flex-1"
                 onClick={() => setShowDeleteDialog(true)}
               >
-                <Trash2 className="size-4" />
+                <Icon icon={Trash2} className="size-4" />
                 Xóa
               </Button>
               <Button
@@ -121,7 +121,7 @@ export function ScheduleDetailSheet({
           {/* Date */}
           <div className="space-y-3">
             <h3 className="text-muted-foreground flex items-center gap-2 text-sm font-medium">
-              <Calendar className="size-4" />
+              <Icon icon={Calendar} className="size-4" />
               Ngày làm việc
             </h3>
             <div className="text-lg font-medium">{schedule.workDate}</div>
