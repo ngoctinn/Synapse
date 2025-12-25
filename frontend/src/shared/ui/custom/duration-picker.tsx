@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/shared/lib/utils";
+import { cn, formatDuration } from "@/shared/lib/utils";
 import {
   Select,
   SelectContent,
@@ -43,11 +43,7 @@ export function DurationPicker({
   }, [min, max, step]);
 
   const formatTime = (minutes: number) => {
-    if (minutes < 60) return `${minutes} phút`;
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    if (mins === 0) return `${minutes} phút (${hours} giờ)`;
-    return `${minutes} phút (${hours} giờ ${mins} phút)`;
+    return formatDuration(minutes);
   };
 
   return (

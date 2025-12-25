@@ -93,7 +93,7 @@ export function ActionSheet({
           side="right"
           size={size}
           preventClose={isPending}
-          className={cn("flex flex-col p-0 sm:max-w-none", className)}
+          className={cn("flex flex-col p-0", className)}
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
           <SheetHeader className={headerClassName}>

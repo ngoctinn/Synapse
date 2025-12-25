@@ -43,6 +43,8 @@ class ServiceResourceRequirement(SQLModel, table=True):
         ondelete="CASCADE"
     )
     quantity: int = Field(default=1, ge=1)
+    start_delay: int = Field(default=0, ge=0)
+    usage_duration: int | None = Field(default=None, ge=1)
 
     # Relationships
     service: "Service" = Relationship(back_populates="resource_requirements")

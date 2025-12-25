@@ -2,6 +2,7 @@
 
 import { Appointment, AppointmentStatus } from "@/features/appointments";
 import { useReducedMotion } from "@/shared/hooks";
+import { formatDuration } from "@/shared/lib/utils";
 import { Badge, BadgePreset } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
@@ -119,8 +120,7 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
                       })}
                     </span>
                     <span className="text-xs">
-                      {format(new Date(appt.startTime), "HH:mm")} (
-                      {appt.duration} phút)
+                      {format(new Date(appt.startTime), "HH:mm")} ({formatDuration(appt.duration)})
                     </span>
                   </div>
                 </div>

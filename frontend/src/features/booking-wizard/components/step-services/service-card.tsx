@@ -2,7 +2,7 @@ import { Card } from "@/shared/ui/card";
 import { Checkbox } from "@/shared/ui/checkbox";
 import { cn } from "@/shared/lib/utils";
 import { ServiceItem } from "../../types";
-import { formatCurrency } from "@/shared/lib/utils";
+import { formatCurrency, formatDuration } from "@/shared/lib/utils";
 import { Clock } from "lucide-react";
 import Image from "next/image";
 
@@ -62,8 +62,8 @@ export const ServiceCard = ({
 
           <div className="mt-2 flex items-center justify-between">
             <div className="text-muted-foreground flex items-center text-sm">
-              <Clock className="size-4" />
-              <span>{service.duration} phút</span>
+              <Clock className="mr-1 size-3.5" />
+              <span>{formatDuration(service.duration)}</span>
             </div>
             <span className="text-primary font-semibold">
               {formatCurrency(service.price)}

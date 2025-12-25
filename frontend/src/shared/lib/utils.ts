@@ -61,6 +61,22 @@ export function formatTime(date: Date | string | number): string {
   }).format(d);
 }
 
+/**
+ * Định dạng số phút sang chuỗi "X giờ Y phút" hoặc "X phút" gọn gàng.
+ * Ví dụ: 60 -> "1 giờ", 75 -> "1 giờ 15 phút", 45 -> "45 phút"
+ */
+export function formatDuration(minutes: number | string): string {
+  const minsNum = typeof minutes === "string" ? parseInt(minutes, 10) : minutes;
+  if (isNaN(minsNum) || minsNum === 0) return "0 phút";
+
+  const hours = Math.floor(minsNum / 60);
+  const remainingMins = minsNum % 60;
+
+  if (hours === 0) return `${remainingMins} phút`;
+  if (remainingMins === 0) return `${hours} giờ`;
+  return `${hours} giờ ${remainingMins} phút`;
+}
+
 export function toCamelCase(obj: unknown): unknown {
   const seen = new WeakSet();
 

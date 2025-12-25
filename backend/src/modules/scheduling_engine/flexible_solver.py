@@ -135,25 +135,41 @@ class FlexibleTimeSolver:
 
     def _find_available_resources_for_groups(
         self,
-        group_ids: list[uuid.UUID],
-        start_min: int,
-        end_min: int
+        required_resources: list["ResourceRequirementData"],
+        slot_start_min: int,
+        slot_end_min: int
     ) -> list["ResourceSuggestionInfo"] | None:
         """
-        Tìm resources khả dụng cho TẤT CẢ các groups.
+        Tìm resources khả dụng cho TẤT CẢ các requirements (có tính delay/duration).
         Trả về None nếu không tìm được đủ resources.
         """
-        if not group_ids:
+        if not required_resources:
             return []
 
         result: list[ResourceSuggestionInfo] = []
         used_resource_ids: set[uuid.UUID] = set()
 
-        for group_id in group_ids:
+        for req in required_resources:
+            # 1. Tính toán cửa sổ sử dụng thực tế (Occupancy Window)
+            # Start: slot bắt đầu + delay
+            res_usage_start = slot_start_min + req.start_delay
+
+            # End: start + duration (hoặc đến hết slot nếu None)
+            if req.usage_duration:
+                res_usage_end = res_usage_start + req.usage_duration
+            else:
+                res_usage_end = slot_end_min
+
+            # Đảm bảo không vượt quá thời gian slot (nếu cấu hình sai)
+            # Tuy nhiên logic cho phép máy chạy lố giờ dịch vụ?
+            # Giả định: Máy phải nằm trong hoặc xoay quanh slot.
+            # Với logic hiện tại cứ check theo cửa sổ đã tính.
+
             found = False
             for resource in self.problem.available_resources:
-                if resource.group_id == group_id and resource.id not in used_resource_ids:
-                    if not self._has_resource_conflict(resource.id, start_min, end_min):
+                if resource.group_id == req.group_id and resource.id not in used_resource_ids:
+                    # Check conflict với cửa sổ cụ thể này
+                    if not self._has_resource_conflict(resource.id, res_usage_start, res_usage_end):
                         result.append(ResourceSuggestionInfo(
                             id=resource.id,
                             name=resource.name,
@@ -162,8 +178,9 @@ class FlexibleTimeSolver:
                         used_resource_ids.add(resource.id)
                         found = True
                         break
+
             if not found:
-                return None  # Không tìm được resource cho group này
+                return None  # Không tìm được resource cho requirement này
 
         return result
 
@@ -171,7 +188,7 @@ class FlexibleTimeSolver:
         self,
         duration_minutes: int,
         required_skill_ids: list[uuid.UUID] = [],
-        required_resource_group_ids: list[uuid.UUID] = [],
+        required_resources: list["ResourceRequirementData"] = [],
         preferred_staff_id: uuid.UUID | None = None,
         search_start: time = time(8, 0),
         search_end: time = time(21, 0),
@@ -243,9 +260,9 @@ class FlexibleTimeSolver:
 
                 # Kiểm tra và tìm resources khả dụng cho TẤT CẢ các groups yêu cầu
                 assigned_resources: list[ResourceSuggestionInfo] = []
-                if required_resource_group_ids:
+                if required_resources:
                     found_resources = self._find_available_resources_for_groups(
-                        required_resource_group_ids, slot_min, slot_end_min
+                        required_resources, slot_min, slot_end_min
                     )
                     if found_resources is None:
                         continue  # Không tìm đủ resources → bỏ qua slot này

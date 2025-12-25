@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Calendar, Clock, MapPin, Phone, User } from "lucide-react";
+import { formatDuration } from "@/shared/lib/utils";
 
 import { Separator } from "@/shared/ui";
 
@@ -46,7 +47,7 @@ export function AppointmentViewContent({
           </div>
           <div className="text-muted-foreground mt-1 text-sm">
             <Clock className="inline h-3.5 w-3.5" />
-            {appointment.duration} phút
+            {formatDuration(appointment.duration)}
           </div>
         </div>
       </div>

@@ -130,7 +130,7 @@ class DataExtractor:
                 end_time=bi.end_time,
                 duration_minutes=duration,
                 required_skill_ids=required_skills,
-                required_resource_group_ids=required_resources,
+                required_resources=required_resources,
                 current_staff_id=bi.staff_id # Để tính C_perturb
             ))
 
@@ -149,14 +149,27 @@ class DataExtractor:
 
     async def _get_service_required_resources(
         self, service_id: uuid.UUID
-    ) -> list[uuid.UUID]:
-        """Lấy danh sách resource group IDs cần cho service."""
+    ) -> list["ResourceRequirementData"]:
+        """Lấy danh sách resource groups cần cho service (kèm delay/duration)."""
+        from .models import ResourceRequirementData
+
         query = text("""
-            SELECT group_id FROM service_resource_requirements
+            SELECT group_id, quantity, start_delay, usage_duration
+            FROM service_resource_requirements
             WHERE service_id = :service_id
         """)
         result = await self.session.execute(query, {"service_id": str(service_id)})
-        return [uuid.UUID(str(row[0])) for row in result.fetchall()]
+        rows = result.fetchall()
+
+        return [
+            ResourceRequirementData(
+                group_id=uuid.UUID(str(row[0])),
+                quantity=row[1],
+                start_delay=row[2],
+                usage_duration=row[3]
+            )
+            for row in rows
+        ]
 
     async def _get_staff_schedules(
         self, target_date: date

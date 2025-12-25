@@ -23,6 +23,16 @@ class SolveStatus(str, Enum):
 # DATA STRUCTURES FOR PROBLEM INSTANCE
 # ============================================================================
 
+class ResourceRequirementData(BaseModel):
+    """Yêu cầu tài nguyên chi tiết (có thời gian)."""
+    group_id: uuid.UUID
+    quantity: int = 1
+    start_delay: int = 0  # Phút từ lúc bắt đầu dịch vụ
+    usage_duration: int | None = None # Phút (None = dùng đến hết)
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class BookingItemData(BaseModel):
     """Dữ liệu booking item cần được gán."""
     id: uuid.UUID
@@ -33,7 +43,11 @@ class BookingItemData(BaseModel):
     end_time: datetime
     duration_minutes: int
     required_skill_ids: list[uuid.UUID] = []
-    required_resource_group_ids: list[uuid.UUID] = []
+
+    # OLD: required_resource_group_ids: list[uuid.UUID] = []
+    # NEW: Detailed resource requirements
+    required_resources: list["ResourceRequirementData"] = []
+
     # Sở thích (ràng buộc mềm)
     preferred_staff_id: uuid.UUID | None = None
 
