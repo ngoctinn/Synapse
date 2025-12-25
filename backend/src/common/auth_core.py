@@ -52,7 +52,15 @@ def _decode_token(token: str) -> dict[str, Any]:
 
 def check_is_manager(token_payload: dict[str, Any]) -> None:
     """Kiểm tra xem user có quyền Quản lý (Manager) không."""
-    if token_payload.get("role") != "manager":
+    # Ưu tiên lấy role từ top-level (nếu có custom claims)
+    role = token_payload.get("role")
+
+    # Nếu role là 'authenticated' (mặc định của Supabase), kiểm tra trong user_metadata
+    if role == "authenticated":
+        user_metadata = token_payload.get("user_metadata", {})
+        role = user_metadata.get("role")
+
+    if role != "manager":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Bạn không có quyền thực hiện hành động này",

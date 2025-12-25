@@ -8,6 +8,7 @@ import uuid
 from fastapi import APIRouter, Depends, Query, status, HTTPException
 from typing import Annotated
 
+from src.common.auth_core import get_token_payload, check_is_manager
 from .service import StaffService
 from .schemas import (
     StaffInvite,
@@ -24,6 +25,7 @@ router = APIRouter(prefix="/staff", tags=["Staff"])
 @router.post("/invite", status_code=status.HTTP_201_CREATED)
 async def invite_staff(
     data: StaffInvite,
+    token_payload: Annotated[dict, Depends(get_token_payload)],
     service: StaffService = Depends(StaffService)
 ) -> dict:
     """
@@ -46,10 +48,15 @@ async def invite_staff(
     ### Chú ý:
     - Sau khi mời thành công, nhân viên sẽ nhận được email để thiết lập mật khẩu.
 
+    ### Bảo mật:
+    - **Yêu cầu quyền**: Manager.
+
     ### Lỗi có thể xảy ra:
+    - `403 Forbidden`: Không có quyền thực hiện thao tác này.
     - `400 Bad Request`: Email đã được đăng ký làm nhân viên trước đó.
     - `500 Internal Server Error`: Lỗi kết nối với nhà cung cấp dịch vụ xác thực (Supabase).
     """
+    check_is_manager(token_payload)
     try:
         return await service.invite_staff(data)
     except StaffAlreadyExists as e:
@@ -119,6 +126,7 @@ async def get_staff_detail(
 @router.post("/", response_model=StaffRead, status_code=status.HTTP_201_CREATED)
 async def create_staff(
     data: StaffCreate,
+    token_payload: Annotated[dict, Depends(get_token_payload)],
     service: StaffService = Depends(StaffService)
 ) -> StaffRead:
     """
@@ -136,10 +144,15 @@ async def create_staff(
     - **user_id**: ID của User hiện tại.
     - **title**: Chức danh được bổ nhiệm.
 
+    ### Bảo mật:
+    - **Yêu cầu quyền**: Manager.
+
     ### Lỗi có thể xảy ra:
+    - `403 Forbidden`: Không có quyền thực hiện thao tác này.
     - `404 Not Found`: Không tìm thấy User ID.
     - `400 Bad Request`: User đã có profile staff hoặc tài khoản đang ở role Customer.
     """
+    check_is_manager(token_payload)
     try:
         return await service.create_staff(data)
     except StaffNotFound as e:
@@ -153,6 +166,7 @@ async def create_staff(
 async def update_staff(
     user_id: uuid.UUID,
     data: StaffUpdate,
+    token_payload: Annotated[dict, Depends(get_token_payload)],
     service: StaffService = Depends(StaffService)
 ) -> StaffRead:
     """
@@ -169,9 +183,14 @@ async def update_staff(
     - **user_id**: ID nhân viên cần chỉnh sửa.
     - **data**: Model chứa các trường cần thay đổi.
 
+    ### Bảo mật:
+    - **Yêu cầu quyền**: Manager.
+
     ### Lỗi có thể xảy ra:
+    - `403 Forbidden`: Không có quyền thực hiện thao tác này.
     - `404 Not Found`: Không tìm thấy nhân viên.
     """
+    check_is_manager(token_payload)
     try:
         return await service.update_staff(user_id, data)
     except StaffNotFound as e:
@@ -180,6 +199,7 @@ async def update_staff(
 @router.delete("/{user_id}", status_code=status.HTTP_200_OK)
 async def deactivate_staff(
     user_id: uuid.UUID,
+    token_payload: Annotated[dict, Depends(get_token_payload)],
     service: StaffService = Depends(StaffService)
 ) -> dict:
     """
@@ -195,9 +215,14 @@ async def deactivate_staff(
     ### Chú ý:
     - Tài khoản bị vô hiệu hóa sẽ không thể đăng nhập vào Dashboard.
 
+    ### Bảo mật:
+    - **Yêu cầu quyền**: Manager.
+
     ### Lỗi có thể xảy ra:
+    - `403 Forbidden`: Không có quyền thực hiện thao tác này.
     - `404 Not Found`: ID nhân viên không tồn tại.
     """
+    check_is_manager(token_payload)
     try:
         return await service.deactivate_staff(user_id)
     except StaffNotFound as e:
@@ -207,6 +232,7 @@ async def deactivate_staff(
 async def update_staff_skills(
     user_id: uuid.UUID,
     data: StaffSkillsUpdate,
+    token_payload: Annotated[dict, Depends(get_token_payload)],
     service: StaffService = Depends(StaffService)
 ) -> StaffRead:
     """
@@ -226,10 +252,15 @@ async def update_staff_skills(
     ### Tham số đầu vào:
     - **skill_ids**: Danh sách UUID của các kỹ năng trong danh mục.
 
+    ### Bảo mật:
+    - **Yêu cầu quyền**: Manager.
+
     ### Lỗi có thể xảy ra:
+    - `403 Forbidden`: Không có quyền thực hiện thao tác này.
     - `400 Bad Request`: Không phải là Kỹ thuật viên hoặc Skill ID không hợp lệ.
     - `404 Not Found`: Không tìm thấy nhân viên.
     """
+    check_is_manager(token_payload)
     try:
         return await service.update_staff_skills(user_id, data)
     except StaffNotFound as e:

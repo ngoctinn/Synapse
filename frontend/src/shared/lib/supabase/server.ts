@@ -27,3 +27,32 @@ export async function createClient() {
     }
   );
 }
+
+/** Role hợp lệ trong hệ thống */
+export type UserRole = "manager" | "receptionist" | "technician" | "customer";
+
+/**
+ * Lấy role của user hiện tại từ Supabase Auth.
+ * Dùng trong Server Components và Server Actions.
+ * @returns Role của user hoặc null nếu chưa đăng nhập
+ */
+export async function getCurrentUserRole(): Promise<UserRole | null> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return null;
+
+  return (user.user_metadata?.role as UserRole) || "customer";
+}
+
+/**
+ * Kiểm tra user hiện tại có phải Manager không.
+ * Dùng trong Server Actions để double-check quyền.
+ */
+export async function isCurrentUserManager(): Promise<boolean> {
+  const role = await getCurrentUserRole();
+  return role === "manager";
+}
+

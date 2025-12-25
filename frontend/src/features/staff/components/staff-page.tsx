@@ -28,6 +28,8 @@ interface StaffPageProps {
   staffListPromise: Promise<ActionResponse<StaffListResponse>>;
   initialPermissions: Record<string, Record<string, boolean>>;
   initialSchedules: Schedule[];
+  /** Cho phép hiển thị nút tạo/sửa/xóa nhân viên (chỉ Manager) */
+  canManageStaff?: boolean;
 }
 
 function StaffListWrapper({
@@ -95,6 +97,7 @@ export function StaffPage({
   staffListPromise,
   initialPermissions,
   initialSchedules,
+  canManageStaff = false,
 }: StaffPageProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -167,7 +170,9 @@ export function StaffPage({
                 endContent={<StaffFilter />}
               />
             )}
-            {activeTab === "list" && <InviteStaffTrigger skills={skills} />}
+            {activeTab === "list" && canManageStaff && (
+              <InviteStaffTrigger skills={skills} />
+            )}
           </div>
         </PageHeader>
 

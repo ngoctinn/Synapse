@@ -5,6 +5,7 @@ import {
   getSkills,
   getStaffList,
 } from "@/features/staff";
+import { getCurrentUserRole } from "@/shared/lib/supabase/server";
 import { endOfWeek, format, startOfWeek } from "date-fns";
 import { Suspense } from "react";
 
@@ -20,17 +21,24 @@ export default async function Page({
   const start = format(startOfWeek(today, { weekStartsOn: 1 }), "yyyy-MM-dd");
   const end = format(endOfWeek(today, { weekStartsOn: 1 }), "yyyy-MM-dd");
 
-  const [skillsRes, permissionsRes, schedulesRes] = await Promise.all([
-    getSkills(),
-    getPermissions(),
-    getSchedules(start, end),
-  ]);
+  // Lấy role để kiểm tra quyền hiển thị nút tạo nhân viên
+  const [skillsRes, permissionsRes, schedulesRes, userRole] = await Promise.all(
+    [
+      getSkills(),
+      getPermissions(),
+      getSchedules(start, end),
+      getCurrentUserRole(),
+    ]
+  );
 
   const skills = skillsRes.status === "success" ? skillsRes.data || [] : [];
   const permissions =
     permissionsRes.status === "success" ? permissionsRes.data || {} : {};
   const schedules =
     schedulesRes.status === "success" ? schedulesRes.data || [] : [];
+
+  // Chỉ Manager mới được tạo nhân viên
+  const canManageStaff = userRole === "manager";
 
   // Truyền Promise để Suspense hiển thị skeleton
   const staffListPromise = getStaffList(pageNumber);
@@ -43,7 +51,9 @@ export default async function Page({
         staffListPromise={staffListPromise}
         initialPermissions={permissions}
         initialSchedules={schedules}
+        canManageStaff={canManageStaff}
       />
     </Suspense>
   );
 }
+

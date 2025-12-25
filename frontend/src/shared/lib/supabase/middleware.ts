@@ -69,6 +69,29 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // Trường hợp 3: Kiểm tra quyền truy cập các route Admin
+  // Lấy role từ user_metadata (được set khi invite/register)
+  if (user && path.startsWith("/admin")) {
+    const userRole = user.user_metadata?.role || "customer";
+
+    // Customer không được truy cập bất kỳ trang admin nào
+    if (userRole === "customer") {
+      url.pathname = "/";
+      return NextResponse.redirect(url);
+    }
+
+    // Các route chỉ dành cho Manager
+    const managerOnlyRoutes = ["/admin/staff", "/admin/settings"];
+    const isManagerRoute = managerOnlyRoutes.some((route) =>
+      path.startsWith(route)
+    );
+
+    if (isManagerRoute && userRole !== "manager") {
+      url.pathname = "/admin"; // Redirect về dashboard admin chung
+      return NextResponse.redirect(url);
+    }
+  }
+
   // 5. Trả về response kèm theo cookies mới (nếu có refresh)
   return supabaseResponse;
 }
