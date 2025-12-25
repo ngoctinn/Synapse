@@ -143,3 +143,29 @@ export async function updatePasswordAction(
   revalidatePath("/", "layout");
   return success(undefined, "Cập nhật mật khẩu thành công!");
 }
+
+/**
+ * Đăng nhập bằng Google OAuth
+ * Trả về URL để redirect sang Google
+ */
+export async function signInWithGoogle(): Promise<ActionResponse<{ url: string }>> {
+  const supabase = await createClient();
+  const origin = (await headers()).get("origin");
+
+  const { data, error: authError } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${origin}/auth/callback`,
+      queryParams: {
+        access_type: "offline",
+        prompt: "consent",
+      },
+    },
+  });
+
+  if (authError || !data.url) {
+    return error("Không thể kết nối với Google. Vui lòng thử lại.");
+  }
+
+  return success({ url: data.url });
+}
