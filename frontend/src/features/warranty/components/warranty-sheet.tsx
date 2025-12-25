@@ -11,6 +11,7 @@ import {
   FormMessage,
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -70,6 +71,9 @@ export function WarrantySheet({
       <SheetContent className="flex h-full w-full flex-col sm:max-w-lg">
         <SheetHeader>
           <SheetTitle>Tạo phiếu bảo hành mới</SheetTitle>
+          <SheetDescription className="sr-only">
+            Tạo phiếu bảo hành cho liệu trình điều trị
+          </SheetDescription>
         </SheetHeader>
 
         <Form {...form}>
@@ -195,10 +199,11 @@ export function WarrantySheet({
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
+                className="min-w-[100px]"
               >
                 Hủy
               </Button>
-              <Button type="submit" disabled={isPending}>
+              <Button type="submit" disabled={isPending} isLoading={isPending} className="min-w-[140px]">
                 Tạo phiếu
               </Button>
             </SheetFooter>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/shared/ui";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/shared/ui";
 import { CustomerTreatment } from "../model/types";
 import { Badge } from "@/shared/ui/badge";
 import { Progress } from "@/shared/ui/progress";
@@ -71,6 +71,9 @@ export function TreatmentSheet({
           <SheetTitle className="text-foreground text-xl font-bold">
             {isEditing ? "Chỉnh sửa ghi chú" : "Chi tiết liệu trình"}
           </SheetTitle>
+          <SheetDescription className="sr-only">
+            Xem chi tiết và quản lý liệu trình của khách hàng
+          </SheetDescription>
         </SheetHeader>
 
         <div className="flex-1 space-y-8 overflow-y-auto p-6">

@@ -26,12 +26,14 @@ import {
   SelectValue,
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
   Switch,
   TimeRangeInput,
 } from "@/shared/ui";
+import { Icon } from "@/shared/ui/custom/icon";
 import { isSameDay } from "date-fns";
 import { AlertTriangle, Plus, Save } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -148,6 +150,9 @@ export function ExceptionSheet({
           <SheetTitle className="text-foreground text-lg font-semibold">
             {isEditMode ? "Sửa ngày ngoại lệ" : "Thêm ngày ngoại lệ"}
           </SheetTitle>
+          <SheetDescription className="sr-only">
+            {isEditMode ? "Chỉnh sửa thông tin ngày ngoại lệ" : "Thêm ngày ngoại lệ mới"}
+          </SheetDescription>
         </SheetHeader>
 
         <div className="sheet-scroll-area">
@@ -257,19 +262,20 @@ export function ExceptionSheet({
             variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={isSubmitting}
+            className="min-w-[100px]"
           >
-            Hủy bỏ
+            Hủy
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={!isValid || isSubmitting}
             isLoading={isSubmitting}
-            className="min-w-[120px]"
+            className="min-w-[140px]"
             startContent={
               isEditMode ? (
-                <Save className="size-4" />
+                <Icon icon={Save} />
               ) : (
-                <Plus className="size-4" />
+                <Icon icon={Plus} />
               )
             }
           >

@@ -2,6 +2,7 @@ import {
   Separator,
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/shared/ui";
@@ -31,6 +32,9 @@ export function InvoiceSheet({
           <SheetTitle className="text-lg font-semibold">
             Chi tiết hóa đơn {invoice.id}
           </SheetTitle>
+          <SheetDescription className="sr-only">
+            Xem chi tiết và thanh toán hóa đơn
+          </SheetDescription>
         </SheetHeader>
 
         <div className="sheet-scroll-area">

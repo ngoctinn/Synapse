@@ -11,6 +11,7 @@ import {
   FormMessage,
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -98,6 +99,9 @@ export function WaitlistSheet({
           <SheetTitle className="text-foreground text-lg font-semibold">
             {isCreate ? "Thêm vào danh sách chờ" : "Chi tiết yêu cầu"}
           </SheetTitle>
+          <SheetDescription className="sr-only">
+            {isCreate ? "Thêm khách hàng vào danh sách chờ" : "Xem và chỉnh sửa yêu cầu"}
+          </SheetDescription>
         </SheetHeader>
 
         <div className="sheet-scroll-area">
@@ -239,10 +243,11 @@ export function WaitlistSheet({
                 variant="outline"
                 onClick={() => onOpenChange(false)}
                 disabled={isPending}
+                className="min-w-[100px]"
               >
-                Hủy bỏ
+                Hủy
               </Button>
-              <Button type="submit" isLoading={isPending} disabled={isPending}>
+              <Button type="submit" isLoading={isPending} disabled={isPending} className="min-w-[140px]">
                 {isCreate ? "Gửi yêu cầu" : "Lưu thay đổi"}
               </Button>
             </SheetFooter>

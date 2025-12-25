@@ -7,6 +7,7 @@ import { Button } from "@/shared/ui";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -49,6 +50,9 @@ export function AddScheduleSheet({
           <SheetTitle className="text-lg font-semibold">
             Thêm ca làm việc
           </SheetTitle>
+          <SheetDescription className="sr-only">
+            Chọn ca làm việc cho nhân viên
+          </SheetDescription>
           {staffName && date && (
             <p className="text-muted-foreground mt-1 text-sm">
               Chọn ca cho{" "}

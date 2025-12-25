@@ -5,6 +5,7 @@ import {
   Form,
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -94,6 +95,9 @@ export function ResourceSheet({
           <SheetTitle className="text-foreground text-lg font-semibold">
             {mode === "update" ? "Chỉnh sửa tài nguyên" : "Thêm tài nguyên mới"}
           </SheetTitle>
+          <SheetDescription className="sr-only">
+            {mode === "update" ? "Chỉnh sửa thông tin tài nguyên" : "Thêm tài nguyên mới cho spa"}
+          </SheetDescription>
         </SheetHeader>
 
         <div className="sheet-scroll-area">
@@ -114,8 +118,9 @@ export function ResourceSheet({
             variant="outline"
             onClick={() => !isPending && onOpenChange?.(false)}
             disabled={isPending}
+            className="min-w-[100px]"
           >
-            Hủy bỏ
+            Hủy
           </Button>
           <Button
             type="submit"

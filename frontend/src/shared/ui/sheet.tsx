@@ -53,9 +53,10 @@ const sheetVariants = cva(
         top: "inset-x-0 top-0 border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
         bottom:
           "inset-x-0 bottom-0 border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
-        left: "inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left",
+        // Fix #2: Mobile full width
+        left: "inset-y-0 left-0 h-full w-full sm:w-3/4 border-r sm:max-w-sm data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left",
         right:
-          "inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right",
+          "inset-y-0 right-0 h-full w-full sm:w-3/4 border-l sm:max-w-sm data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right",
       },
     },
     defaultVariants: {
@@ -64,25 +65,45 @@ const sheetVariants = cva(
   }
 );
 
+interface SheetContentProps
+  extends React.ComponentProps<typeof SheetPrimitive.Content>,
+    VariantProps<typeof sheetVariants> {
+  /**
+   * Ngăn đóng sheet bằng Escape key hoặc click outside (#4, #14)
+   * Set true khi đang submit form để tránh mất dữ liệu
+   */
+  preventClose?: boolean;
+}
+
 function SheetContent({
   className,
   children,
   side = "right",
+  preventClose = false,
   ...props
-}: React.ComponentProps<typeof SheetPrimitive.Content> &
-  VariantProps<typeof sheetVariants>) {
+}: SheetContentProps) {
   return (
     <SheetPortal>
       <SheetOverlay />
       <SheetPrimitive.Content
         data-slot="sheet-content"
         className={cn(sheetVariants({ side }), className)}
+        onEscapeKeyDown={(e) => {
+          if (preventClose) e.preventDefault();
+        }}
+        onInteractOutside={(e) => {
+          if (preventClose) e.preventDefault();
+        }}
         {...props}
       >
         {children}
-        <SheetPrimitive.Close className="close-button-base data-[state=open]:bg-secondary">
+        {/* Fix #1: aria-label, #15: hover state */}
+        <SheetPrimitive.Close
+          className="close-button-base hover:bg-muted/80 transition-colors data-[state=open]:bg-secondary"
+          aria-label="Đóng"
+        >
           <XIcon className="size-4" />
-          <span className="sr-only">Close</span>
+          <span className="sr-only">Đóng</span>
         </SheetPrimitive.Close>
       </SheetPrimitive.Content>
     </SheetPortal>
@@ -93,7 +114,11 @@ function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="sheet-header"
-      className={cn("sheet-header flex flex-col gap-1.5", className)}
+      className={cn(
+        // Fix #17: Border opacity consistent
+        "sheet-header flex flex-col gap-1.5 border-b border-border/50 px-6 py-4",
+        className
+      )}
       {...props}
     />
   );
@@ -103,7 +128,12 @@ function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="sheet-footer"
-      className={cn("sheet-footer mt-auto flex flex-col gap-2", className)}
+      className={cn(
+        // Fix #11: Sticky footer với responsive layout
+        "sheet-footer sticky bottom-0 z-10 mt-auto border-t border-border/50 bg-background px-6 py-4",
+        "flex flex-col-reverse gap-2 sm:flex-row sm:justify-end",
+        className
+      )}
       {...props}
     />
   );

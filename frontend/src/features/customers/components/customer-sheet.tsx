@@ -27,6 +27,7 @@ import {
   Form,
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -167,6 +168,11 @@ export function CustomerSheet({
               )}
             </div>
           </div>
+          <SheetDescription className="sr-only">
+            {mode === "create"
+              ? "Thêm khách hàng mới vào hệ thống"
+              : "Xem và chỉnh sửa thông tin khách hàng"}
+          </SheetDescription>
         </SheetHeader>
 
         <div className="sheet-scroll-area" id="sheet-scroll-container">
@@ -217,8 +223,9 @@ export function CustomerSheet({
             type="button"
             variant="outline"
             onClick={() => onOpenChange(false)}
+            className="min-w-[100px]"
           >
-            Hủy bỏ
+            Hủy
           </Button>
           {/* Display save button only if not in History tab? Actually we can keep it, but it submits the form.
                 If user is in History tab, they might still want to save form changes.

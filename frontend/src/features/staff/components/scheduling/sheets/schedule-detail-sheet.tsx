@@ -17,6 +17,7 @@ import {
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -78,6 +79,9 @@ export function ScheduleDetailSheet({
                 {isDraft ? SCHEDULER_UI.DRAFT : SCHEDULER_UI.PUBLISHED}
               </Badge>
             </div>
+            <SheetDescription className="sr-only">
+              Xem chi tiết và quản lý lịch làm việc
+            </SheetDescription>
           </SheetHeader>
 
           {/* Content */}

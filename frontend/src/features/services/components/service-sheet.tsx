@@ -6,6 +6,7 @@ import {
   Form,
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -75,7 +76,7 @@ export function ServiceSheet({
     [isUpdateMode, initialData]
   );
 
-  const { form, isPending, onSubmit } = useSheetForm({
+  const { form, isPending, onSubmit, handleOpenChange } = useSheetForm({
     schema: serviceSchema,
     defaultValues: {
       name: "",
@@ -110,12 +111,18 @@ export function ServiceSheet({
   });
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-lg">
+    <Sheet open={open} onOpenChange={(val) => handleOpenChange(val, onOpenChange)}>
+      <SheetContent
+        preventClose={isPending}
+        className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-lg"
+      >
         <SheetHeader className="shrink-0 space-y-0 border-b px-6 py-4">
           <SheetTitle className="text-foreground text-lg font-semibold">
             {isUpdateMode ? "Chỉnh sửa dịch vụ" : "Tạo dịch vụ mới"}
           </SheetTitle>
+          <SheetDescription className="sr-only">
+            {isUpdateMode ? "Chỉnh sửa thông tin dịch vụ" : "Tạo dịch vụ mới cho spa"}
+          </SheetDescription>
         </SheetHeader>
 
         <div className="sheet-scroll-area">
@@ -141,10 +148,11 @@ export function ServiceSheet({
           <Button
             type="button"
             variant="outline"
-            onClick={() => onOpenChange(false)}
+            onClick={() => handleOpenChange(false, onOpenChange)}
             disabled={isPending}
+            className="min-w-[100px]"
           >
-            Hủy bỏ
+            Hủy
           </Button>
           <Button
             type="submit"

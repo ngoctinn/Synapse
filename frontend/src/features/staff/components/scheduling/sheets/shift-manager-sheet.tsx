@@ -19,6 +19,7 @@ import {
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -195,9 +196,9 @@ export function ShiftManagerSheet({
             <SheetTitle className="text-lg font-semibold">
               Quản lý ca làm việc
             </SheetTitle>
-            <p className="text-muted-foreground mt-1 text-sm">
+            <SheetDescription className="text-muted-foreground mt-1 text-sm">
               Tạo và chỉnh sửa các ca làm việc (Master Data)
-            </p>
+            </SheetDescription>
           </SheetHeader>
 
           {/* Content */}

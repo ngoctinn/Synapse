@@ -172,3 +172,43 @@ export const LAYOUT_SIZES = {
   table: TABLE_TOKENS,
   transition: TRANSITIONS,
 } as const;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Sheet Design Tokens (#7, #19, #25)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Sheet component design tokens
+ * Based on Shadcn official demo and UX best practices (8-point grid)
+ *
+ * Layout Structure:
+ * ┌────────────────────────────────────┐
+ * │ SheetHeader (border-b, px-6 py-4)  │
+ * ├────────────────────────────────────┤
+ * │ ScrollArea (px-6 py-6)             │
+ * │   └─ Form content (space-y-6)      │
+ * ├────────────────────────────────────┤
+ * │ SheetFooter (sticky, border-t)     │
+ * └────────────────────────────────────┘
+ */
+export const SHEET_TOKENS = {
+  /** Width variants cho SheetContent */
+  widths: {
+    sm: "sm:max-w-md",      // ~448px
+    default: "sm:max-w-lg", // ~512px
+    lg: "sm:max-w-xl",      // ~576px
+    xl: "sm:max-w-3xl",     // ~768px
+  },
+  /** Base content container - NO padding (children handle it) */
+  content: "bg-background flex w-full flex-col gap-0 border-l p-0 shadow-lg",
+  /** Header WITH padding - không cần thêm ở component */
+  header: "shrink-0 border-b border-border/50 px-6 py-4",
+  /** Title typography */
+  title: "text-foreground text-lg font-semibold",
+  /** Scroll area WITH horizontal padding - form content kế thừa */
+  scrollArea: "sheet-scroll-area flex-1 overflow-y-auto px-6",
+  /** Form wrapper inside scroll area - có vertical padding và gap */
+  form: "py-6 space-y-6",
+  /** Grid cho 2 cột fields */
+  formGrid: "grid grid-cols-1 sm:grid-cols-2 gap-4",
+} as const;

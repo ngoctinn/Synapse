@@ -21,6 +21,7 @@ import {
   Form,
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -136,6 +137,11 @@ export function StaffSheet({
           <SheetTitle className="text-foreground text-lg font-semibold">
             {mode === "create" ? "Mời nhân viên" : "Hồ sơ nhân viên"}
           </SheetTitle>
+          <SheetDescription className="sr-only">
+            {mode === "create"
+              ? "Mời nhân viên mới tham gia hệ thống"
+              : "Xem và chỉnh sửa thông tin nhân viên"}
+          </SheetDescription>
         </SheetHeader>
 
         <div className="sheet-scroll-area" id="sheet-scroll-container">
@@ -156,8 +162,9 @@ export function StaffSheet({
             variant="outline"
             onClick={() => !isPending && onOpenChange(false)}
             disabled={isPending}
+            className="min-w-[100px]"
           >
-            Hủy bỏ
+            Hủy
           </Button>
           <Button
             type="submit"

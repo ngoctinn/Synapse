@@ -5,12 +5,14 @@ import {
   Form,
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
 } from "@/shared/ui";
 import { useSheetForm } from "@/shared/hooks";
 import { Save, Send } from "lucide-react";
+import { Icon } from "@/shared/ui/custom/icon";
 import { useCallback } from "react";
 import { createPackage, updatePackage } from "../actions";
 import { packageSchema, PackageFormValues } from "../model/schemas";
@@ -66,7 +68,7 @@ export function PackageSheet({
     [isUpdateMode, initialData]
   );
 
-  const { form, isPending, onSubmit } = useSheetForm({
+  const { form, isPending, onSubmit, handleOpenChange } = useSheetForm({
     schema: packageSchema,
     defaultValues: DEFAULT_VALUES,
     open,
@@ -81,12 +83,20 @@ export function PackageSheet({
   });
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-lg">
+    <Sheet open={open} onOpenChange={(val) => handleOpenChange(val, onOpenChange)}>
+      {/* #4: preventClose blocks Escape/click-outside khi đang submit */}
+      <SheetContent
+        preventClose={isPending}
+        className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-lg"
+      >
         <SheetHeader className="shrink-0 space-y-0 border-b px-6 py-4">
           <SheetTitle className="text-foreground text-lg font-semibold">
             {isUpdateMode ? "Chỉnh sửa gói dịch vụ" : "Tạo gói dịch vụ mới"}
           </SheetTitle>
+          {/* #3: SheetDescription for a11y */}
+          <SheetDescription className="sr-only">
+            {isUpdateMode ? "Chỉnh sửa thông tin gói dịch vụ" : "Tạo gói dịch vụ mới"}
+          </SheetDescription>
         </SheetHeader>
 
         <div className="sheet-scroll-area">
@@ -105,10 +115,11 @@ export function PackageSheet({
           <Button
             type="button"
             variant="outline"
-            onClick={() => onOpenChange(false)}
+            onClick={() => handleOpenChange(false, onOpenChange)}
             disabled={isPending}
+            className="min-w-[100px]"
           >
-            Hủy bỏ
+            Hủy
           </Button>
           <Button
             type="submit"
@@ -117,9 +128,9 @@ export function PackageSheet({
             className="min-w-[140px]"
             startContent={
               isUpdateMode ? (
-                <Save className="size-4" />
+                <Icon icon={Save} />
               ) : (
-                <Send className="size-4" />
+                <Icon icon={Send} />
               )
             }
           >

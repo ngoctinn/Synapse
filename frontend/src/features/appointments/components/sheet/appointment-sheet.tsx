@@ -8,6 +8,7 @@ import {
   Separator,
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/shared/ui";
