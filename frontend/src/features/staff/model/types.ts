@@ -1,6 +1,6 @@
 import { Skill } from "@/features/services";
 
-export type Role = "admin" | "receptionist" | "technician" | "customer";
+export type Role = "manager" | "receptionist" | "technician" | "customer";
 
 export interface User {
   id: string;

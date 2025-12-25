@@ -7,7 +7,7 @@ import {
 import { z } from "zod";
 
 export const baseStaffSchema = z.object({
-  role: z.enum(["admin", "receptionist", "technician"]),
+  role: z.enum(["manager", "receptionist", "technician"]),
   title: z
     .string()
     .min(2, { message: "Chức danh phải có ít nhất 2 ký tự" })

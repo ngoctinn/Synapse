@@ -31,7 +31,7 @@ export type SidebarGroup = {
 };
 
 export const BREADCRUMB_MAP: Record<string, string> = {
-  admin: "Quản trị",
+  admin: "Quản lý",
   overview: "Tổng quan",
   dashboard: "Báo cáo",
   workspace: "Làm việc",

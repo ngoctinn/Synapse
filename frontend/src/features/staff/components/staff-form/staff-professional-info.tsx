@@ -66,7 +66,7 @@ export function StaffProfessionalInfo({ mode, skills }: StaffProfessionalInfoPro
                   <SelectValue placeholder="Chọn vai trò" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="admin">Quản trị viên</SelectItem>
+                  <SelectItem value="manager">Quản lý</SelectItem>
                   <SelectItem value="receptionist">Lễ tân</SelectItem>
                   <SelectItem value="technician">Kỹ thuật viên</SelectItem>
                 </SelectContent>

@@ -25,7 +25,7 @@ async def test_create_and_get_booking_flow(client: AsyncClient, mock_admin_auth,
     mock_service = Service(id=service_id, name="Test Service", price=Decimal("100000"))
     def mock_get(model, id):
         if model == Service: return mock_service
-        if model == User: return MagicMock(role=UserRole.ADMIN)
+        if model == User: return MagicMock(role=UserRole.MANAGER)
         return None
     mock_session.get.side_effect = mock_get
 
@@ -76,7 +76,7 @@ async def test_add_item_to_booking(client: AsyncClient, mock_admin_auth, mock_se
     mock_service = Service(id=s_id, name="Massage", price=Decimal("300000"))
     def mock_get(model, id):
         if model == Service: return mock_service
-        if model == User: return MagicMock(role=UserRole.ADMIN)
+        if model == User: return MagicMock(role=UserRole.MANAGER)
         return None
     mock_session.get.side_effect = mock_get
 

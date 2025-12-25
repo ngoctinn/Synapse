@@ -18,8 +18,8 @@ export const ROLE_CONFIG: Record<
     className?: string;
   }
 > = {
-  admin: {
-    label: "Quản trị viên",
+  manager: {
+    label: "Quản lý",
     variant: "secondary",
   },
   receptionist: {
@@ -47,7 +47,7 @@ export const MODULES = [
 ];
 
 export const ROLES = [
-  { id: "admin", name: "Quản trị viên", variant: "secondary" },
+  { id: "manager", name: "Quản lý", variant: "secondary" },
   { id: "receptionist", name: "Lễ tân", variant: "info" },
   { id: "technician", name: "Kỹ thuật viên", variant: "info" },
 ] as const;

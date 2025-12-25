@@ -91,7 +91,7 @@ async def get_users(
     ### Lỗi có thể xảy ra:
     - `403 Forbidden`: Người dùng không có quyền truy cập.
     """
-    if current_user.role not in [UserRole.ADMIN, UserRole.MANAGER]:
+    if current_user.role != UserRole.MANAGER:
          raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Bạn không có quyền thực hiện hành động này"
@@ -123,7 +123,7 @@ async def get_user_detail(
     - `404 Not Found`: Không tìm thấy ID người dùng.
     - `403 Forbidden`: Thiếu quyền hạn.
     """
-    if current_user.role not in [UserRole.ADMIN, UserRole.MANAGER]:
+    if current_user.role != UserRole.MANAGER:
          raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Bạn không có quyền thực hiện hành động này"
@@ -158,7 +158,7 @@ async def update_user(
     - `404 Not Found`: Không tìm thấy User.
     - `403 Forbidden`: Không có quyền Admin.
     """
-    if current_user.role not in [UserRole.ADMIN, UserRole.MANAGER]:
+    if current_user.role != UserRole.MANAGER:
          raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Bạn không có quyền thực hiện hành động này"
@@ -199,7 +199,7 @@ async def delete_user(
     - `500 Internal Server Error`: Lỗi kết nối Supabase API.
     - `404 Not Found`: User không còn tồn tại.
     """
-    if current_user.role != UserRole.ADMIN:
+    if current_user.role != UserRole.MANAGER:
          raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Bạn không có quyền thực hiện hành động này"

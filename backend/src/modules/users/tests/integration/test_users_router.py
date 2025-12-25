@@ -17,7 +17,7 @@ async def test_read_users_me_success(client, mock_admin_auth, mocker):
         id=user_id,
         email=mock_admin_auth["email"],
         full_name=mock_admin_auth["full_name"],
-        role=UserRole.ADMIN
+        role=UserRole.MANAGER
     )
 
     # Mock dependency get_current_user để trả về mock_user trực tiếp

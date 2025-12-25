@@ -3,7 +3,7 @@ Settings Module - API Endpoints
 """
 import uuid
 from fastapi import APIRouter, Depends, status, HTTPException
-from src.common.auth_core import get_token_payload, check_is_admin
+from src.common.auth_core import get_token_payload, check_is_manager
 from .service import SettingsService
 from .schemas import SettingRead, SettingCreate, SettingUpdate
 
@@ -19,7 +19,7 @@ async def list_settings(
     Lấy danh sách cấu hình.
     Yêu cầu: Staff/Admin.
     """
-    check_is_admin(token_payload) # Tạm thời chỉ cho Admin
+    check_is_manager(token_payload) # Tạm thời chỉ cho Admin
     return await service.get_all(group)
 
 @router.get("/public", response_model=list[SettingRead])
@@ -42,7 +42,7 @@ async def create_setting(
     token_payload: dict = Depends(get_token_payload)
 ) -> SettingRead:
     """Tạo cấu hình mới (Admin only)."""
-    check_is_admin(token_payload)
+    check_is_manager(token_payload)
     user_id = uuid.UUID(token_payload["sub"])
     return await service.create(data, updated_by=user_id)
 
@@ -54,6 +54,6 @@ async def update_setting(
     token_payload: dict = Depends(get_token_payload)
 ) -> SettingRead:
     """Cập nhật cấu hình (Admin only)."""
-    check_is_admin(token_payload)
+    check_is_manager(token_payload)
     user_id = uuid.UUID(token_payload["sub"])
     return await service.update(key, data, updated_by=user_id)
