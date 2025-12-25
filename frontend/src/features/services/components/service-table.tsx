@@ -119,17 +119,36 @@ export function ServiceTable({
     },
     {
       header: "Thời lượng",
-      cell: (service) => (
-        <div className="flex flex-col gap-1.5 text-xs">
-          <span className="text-foreground/80 flex items-center gap-2 font-medium">
-            <span className="bg-primary/60 h-1.5 w-1.5 rounded-full"></span>
-            Phục vụ: {service.duration}p
+      cell: (service) => {
+        const totalTime = service.duration + service.buffer_time;
+        return (
+          <div className="flex flex-col gap-1 text-xs">
+            <span className="text-foreground font-medium">
+              Tổng: {totalTime}p
+            </span>
+            <span className="text-muted-foreground">
+              ({service.duration}p + {service.buffer_time}p nghỉ)
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      header: "Loại giường",
+      cell: (service) => {
+        const bedType = availableBedTypes.find(
+          (b) => b.id === service.resource_requirements?.bed_type_id
+        );
+        return bedType ? (
+          <Badge variant="outline" className="font-normal">
+            {bedType.name}
+          </Badge>
+        ) : (
+          <span className="text-destructive text-xs italic">
+            Chưa gán
           </span>
-          <span className="text-muted-foreground flex items-center gap-2 pl-3.5">
-            Nghỉ: {service.buffer_time}p
-          </span>
-        </div>
-      ),
+        );
+      },
     },
     {
       header: "Giá",

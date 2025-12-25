@@ -9,6 +9,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  RequiredMark,
   Select,
   SelectContent,
   SelectItem,
@@ -50,16 +51,19 @@ export function ServiceResourcesInfo({
         onSkillsChange={onSkillsChange}
       />
 
+      {/* Bed Type Selection */}
       <FormField
         control={form.control}
         name="resource_requirements.bed_type_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Loại giường yêu cầu</FormLabel>
-            <FormControl>
+            <FormLabel className="flex items-center gap-2">
+              Loại giường <RequiredMark />
+            </FormLabel>
+            {availableBedTypes.length > 0 ? (
               <Select value={field.value} onValueChange={field.onChange}>
                 <FormControl>
-                  <SelectTrigger className="bg-background w-full">
+                  <SelectTrigger className="h-10 bg-background">
                     <SelectValue placeholder="-- Chọn loại giường --" />
                   </SelectTrigger>
                 </FormControl>
@@ -71,23 +75,29 @@ export function ServiceResourcesInfo({
                   ))}
                 </SelectContent>
               </Select>
-            </FormControl>
+            ) : (
+              <div className="text-xs text-destructive bg-destructive/5 p-3 rounded-lg border border-destructive/20 flex flex-col gap-1">
+                <span className="font-semibold">⚠️ Chưa có loại giường</span>
+                <span>Vui lòng thêm trong <strong>Quản lý Tài nguyên</strong> trước khi cấu hình dịch vụ.</span>
+              </div>
+            )}
             <FormMessage />
           </FormItem>
         )}
       />
 
-      <div className="flex flex-col gap-3">
+      {/* Skills Selection */}
+      <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <FormLabel className="text-sm font-medium">Kỹ năng yêu cầu</FormLabel>
+          <FormLabel>Kỹ năng yêu cầu</FormLabel>
           <Button
             type="button"
             variant="ghost"
             size="sm"
-            className="text-muted-foreground hover:text-primary h-6 gap-1 text-xs"
+            className="text-primary hover:text-primary/80 h-auto p-0 text-xs font-semibold underline-offset-4 hover:underline"
             onClick={() => setSkillManagerOpen(true)}
           >
-            <Settings2 className="h-3 w-3" /> Quản lý kỹ năng
+            Quản lý kỹ năng
           </Button>
         </div>
         <FormField
@@ -98,7 +108,7 @@ export function ServiceResourcesInfo({
               <FormControl>
                 <TagInput
                   options={skillOptions}
-                  selectedIds={field.value}
+                  selectedIds={field.value || []}
                   newTags={[]}
                   onSelectedChange={field.onChange}
                   onNewTagsChange={() =>
@@ -106,8 +116,8 @@ export function ServiceResourcesInfo({
                       "Vui lòng dùng nút 'Quản lý kỹ năng' để thêm mới"
                     )
                   }
-                  placeholder="Chọn kỹ năng..."
-                  className="bg-background text-sm"
+                  placeholder="Chọn kỹ năng mà kỹ thuật viên cần có..."
+                  className="bg-background"
                 />
               </FormControl>
               <FormMessage />
@@ -116,8 +126,8 @@ export function ServiceResourcesInfo({
         />
       </div>
 
-      <div className="space-y-3 border-t pt-2">
-        <FormLabel>Thiết bị & Timeline</FormLabel>
+      {/* Equipment Timeline Editor */}
+      <div className="pt-2">
         <FormField
           control={form.control}
           name="resource_requirements.equipment_usage"

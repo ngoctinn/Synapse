@@ -31,12 +31,12 @@ interface TagInputProps {
   isError?: boolean;
 }
 
-import { AnimatePresence, motion } from "framer-motion";
+
 
 export function TagInput({
   options,
-  selectedIds,
-  newTags,
+  selectedIds = [],
+  newTags = [],
   onSelectedChange,
   onNewTagsChange,
   placeholder = "Chọn thẻ...",
@@ -92,86 +92,64 @@ export function TagInput({
             aria-expanded={open}
             aria-invalid={!!isError}
             className={cn(
-              "h-auto w-full justify-between px-3 py-2 text-left font-normal",
-              "bg-background hover:bg-background",
-              "hover:border-input shadow-sm transition-all duration-200 hover:shadow-md", // Synced border & shadow
-              "focus-premium",
-
-              // Error Border
-              isError && "border-destructive/50",
-
-              // Open State Ring (Green if Valid, Red if Error)
-              open && !isError && "ring-primary/20 border-primary/50 ring-2",
-              open && isError && "ring-destructive/20 border-destructive ring-2"
+              "h-auto min-h-10 w-full justify-between items-center px-3 py-2 text-left font-normal",
+              "bg-background hover:bg-background border-input",
+              "focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none", // Standard focus
+              isError && "border-destructive/50 ring-destructive/20",
+              open && "border-primary/50 ring-1 ring-primary/20"
             )}
             onClick={() => setOpen(!open)}
           >
-            <div className="flex w-full flex-wrap gap-1.5">
+            <div className="flex w-full flex-wrap gap-1.5 items-center">
               {selectedOptions.length === 0 && newTags.length === 0 && (
-                <span className="text-muted-foreground">{placeholder}</span>
+                <span className="text-muted-foreground text-sm">{placeholder}</span>
               )}
-              <AnimatePresence mode="popLayout">
-                {selectedOptions.map((opt) => (
-                  <motion.div
-                    key={opt.id}
-                    layout
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.8, opacity: 0 }}
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              {selectedOptions.map((opt) => (
+                <Badge
+                  key={opt.id}
+                  variant="secondary"
+                  className="gap-1 pr-1 bg-primary/5 text-primary border-primary/20 animate-in fade-in zoom-in-95 duration-200"
+                >
+                  <span className="max-w-[120px] truncate">{opt.label}</span>
+                  <div
+                    className="cursor-pointer rounded-full p-0.5 transition-colors hover:bg-primary/10"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      removeSelectedId(opt.id);
+                    }}
                   >
-                    <Badge variant="info" size="sm" className="gap-1 pr-1">
-                      {opt.label}
-                      <div
-                        className="cursor-pointer rounded-full p-0.5 transition-colors hover:bg-black/10 dark:hover:bg-white/20"
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                        }}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          removeSelectedId(opt.id);
-                        }}
-                      >
-                        <X className="size-3 text-current" />
-                      </div>
-                    </Badge>
-                  </motion.div>
-                ))}
-                {newTags.map((tag) => (
-                  <motion.div
-                    key={tag}
-                    layout
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.8, opacity: 0 }}
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    <X className="size-3" />
+                  </div>
+                </Badge>
+              ))}
+              {newTags.map((tag) => (
+                <Badge
+                  key={tag}
+                  variant="secondary"
+                  className="gap-1 border-dashed bg-muted/50 text-muted-foreground animate-in fade-in zoom-in-95 duration-200"
+                >
+                  + {tag}
+                  <div
+                    className="cursor-pointer rounded-full p-0.5 transition-colors hover:bg-black/5"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      removeNewTag(tag);
+                    }}
                   >
-                    <Badge
-                      variant="info"
-                      size="sm"
-                      className="gap-1 border-dashed pr-1"
-                    >
-                      + {tag}
-                      <div
-                        className="cursor-pointer rounded-full p-0.5 transition-colors hover:bg-black/10 dark:hover:bg-white/20"
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                        }}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          removeNewTag(tag);
-                        }}
-                      >
-                        <X className="size-3 text-current" />
-                      </div>
-                    </Badge>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
+                    <X className="size-3" />
+                  </div>
+                </Badge>
+              ))}
             </div>
             <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
           </Button>

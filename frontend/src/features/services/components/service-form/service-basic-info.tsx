@@ -11,6 +11,11 @@ import {
   FormMessage,
   Input,
   RequiredMark,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
   Switch,
   Textarea,
   Button,
@@ -42,11 +47,11 @@ export function ServiceBasicInfo({
       />
 
       {/* Active Toggle */}
-      <div className="bg-muted/30 flex items-center justify-between rounded-lg border p-4">
+      <div className="flex items-center justify-between pb-2">
         <div>
-          <span className="text-sm font-medium">Trạng thái</span>
-          <p className="text-muted-foreground text-xs">
-            Ẩn/Hiện dịch vụ trên app khách hàng
+          <span className="text-sm font-medium">Trạng thái hoạt động</span>
+          <p className="text-muted-foreground text-[11px]">
+            Hiển thị dịch vụ này trên ứng dụng đặt lịch của khách hàng
           </p>
         </div>
         <FormField
@@ -58,23 +63,49 @@ export function ServiceBasicInfo({
                 <Switch
                   checked={field.value}
                   onCheckedChange={field.onChange}
-                  className="data-[state=checked]:bg-primary"
                 />
               </FormControl>
-              <FormLabel className="cursor-pointer text-sm font-normal">
-                {field.value ? "Hoạt động" : "Tạm ẩn"}
-              </FormLabel>
             </FormItem>
           )}
         />
       </div>
 
-      {/* Category Selection (Simplified for Sub-component) */}
-      <div className="flex flex-col gap-3">
-          {/* Logic Category Selection remains the same as in original file */}
-          {/* Internal simplified to keep context focused */}
-          {/* ... */}
-      </div>
+      {/* Category Selection */}
+      <FormField
+        control={form.control}
+        name="category_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Danh mục</FormLabel>
+            <div className="flex gap-2">
+              <FormControl>
+                <Select value={field.value || ""} onValueChange={field.onChange}>
+                  <SelectTrigger className="flex-1">
+                    <SelectValue placeholder="-- Chọn danh mục --" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => setCategoryManagerOpen(true)}
+                title="Quản lý danh mục"
+              >
+                <Settings2 className="h-4 w-4" />
+              </Button>
+            </div>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
       <div className="flex flex-col gap-6">
         <div className="flex justify-center">
@@ -88,7 +119,7 @@ export function ServiceBasicInfo({
                   <ImageUpload
                     value={field.value}
                     onChange={field.onChange}
-                    className="aspect-video h-[200px] w-full rounded-lg object-cover"
+                    className="aspect-video h-52 w-full rounded-lg object-cover"
                   />
                 </FormControl>
                 <p className="text-muted-foreground mt-1.5 text-[11px]">

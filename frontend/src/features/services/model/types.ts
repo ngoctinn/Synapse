@@ -15,17 +15,21 @@ export interface ServiceCategory {
 export interface EquipmentUsage {
   equipment_id: string;
   /** Thời điểm bắt đầu sử dụng (phút từ đầu dịch vụ) */
-  start_offset: number;
+  start_delay: number;
   /** Thời lượng sử dụng (phút) */
-  duration: number;
+  usage_duration: number;
 }
 
 export interface ResourceRequirements {
-  bed_type_id?: string;
-  /** Legacy: danh sách ID thiết bị (backward compatible) */
-  equipment_ids: string[];
-  /** New: cấu hình timeline sử dụng thiết bị */
-  equipment_usage?: EquipmentUsage[];
+  /** Loại giường yêu cầu cho dịch vụ (bắt buộc) */
+  bed_type_id: string;
+  /** Cấu hình timeline sử dụng giường (thường là bắt đầu 0 và hết duration) */
+  bed_usage?: {
+    start_delay: number;
+    usage_duration?: number;
+  };
+  /** Cấu hình timeline sử dụng thiết bị */
+  equipment_usage: EquipmentUsage[];
 }
 
 export interface Service {

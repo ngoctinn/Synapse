@@ -8,6 +8,7 @@ import {
   FormLabel,
   FormMessage,
   Input,
+  RequiredMark,
 } from "@/shared/ui";
 import { DurationPicker } from "@/shared/ui/custom/duration-picker";
 import { ServiceTimeVisualizer } from "../service-time-visualizer";
@@ -24,13 +25,13 @@ export function ServiceTimePriceInfo({
   const form = useFormContext();
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField
           control={form.control}
           name="duration"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Thời lượng</FormLabel>
+              <FormLabel>Thời lượng <RequiredMark /></FormLabel>
               <FormControl>
                 <DurationPicker
                   value={field.value}
@@ -78,7 +79,7 @@ export function ServiceTimePriceInfo({
         name="price"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Giá niêm yết</FormLabel>
+            <FormLabel>Giá niêm yết <RequiredMark /></FormLabel>
             <FormControl>
               <Input
                 type="number"

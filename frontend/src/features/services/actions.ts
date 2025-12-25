@@ -100,6 +100,8 @@ export async function cloneService(id: string): Promise<ActionResponse> {
       new_skills: [],
       category_id: service.category_id || undefined,
       description: service.description || undefined,
+      // A3: Copy đầy đủ resource_requirements
+      resource_requirements: service.resource_requirements,
     });
 
     if (createRes.status === "error")

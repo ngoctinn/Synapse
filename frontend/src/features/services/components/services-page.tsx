@@ -19,7 +19,7 @@ import { CreateServiceWizard } from "./create-service-wizard";
 import { CreateSkillDialog } from "./create-skill-dialog";
 import { ServiceFilter } from "./service-filter";
 import { ServiceTable, ServiceTableSkeleton } from "./service-table";
-import { SkillTable } from "./skill-table";
+import { SkillTable, SkillTableSkeleton } from "./skill-table";
 
 interface ServicesPageProps {
   page: number;
@@ -200,7 +200,9 @@ export function ServicesPage({
           >
             <PageContent>
               <SurfaceCard>
-                <SkillTable skills={skills} className="border-none" />
+                <Suspense fallback={<SkillTableSkeleton />}>
+                  <SkillTable skills={skills} className="border-none" />
+                </Suspense>
               </SurfaceCard>
             </PageContent>
           </TabsContent>

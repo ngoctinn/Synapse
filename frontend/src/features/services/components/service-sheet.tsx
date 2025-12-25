@@ -48,8 +48,7 @@ export function ServiceSheet({
       color: service.color || SERVICE_DEFAULT_VALUES.color,
       description: service.description || "",
       resource_requirements: {
-        bed_type_id: service.resource_requirements?.bed_type_id || undefined,
-        equipment_ids: service.resource_requirements?.equipment_ids || [],
+        bed_type_id: service.resource_requirements?.bed_type_id || "",
         equipment_usage: service.resource_requirements?.equipment_usage || [],
       },
       skill_ids: service.skills?.map((s) => s.id) || [],
@@ -81,8 +80,7 @@ export function ServiceSheet({
       color: SERVICE_DEFAULT_VALUES.color,
       description: "",
       resource_requirements: {
-        bed_type_id: undefined,
-        equipment_ids: [],
+        bed_type_id: "",
         equipment_usage: [],
       },
       skill_ids: [],
