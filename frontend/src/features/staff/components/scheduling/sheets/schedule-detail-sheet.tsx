@@ -4,6 +4,7 @@ import { Calendar, Send, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { Badge, Button, Separator } from "@/shared/ui";
+import { ActionSheet } from "@/shared/ui/custom";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,14 +15,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/shared/ui/sheet";
 
 import { SCHEDULER_UI } from "../../../model/constants";
 import { ScheduleWithShift } from "../../../model/types";
@@ -64,57 +57,28 @@ export function ScheduleDetailSheet({
 
   return (
     <>
-      <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-md">
-          {/* Header */}
-          <SheetHeader className="shrink-0 space-y-0 border-b px-6 py-4">
-            <div className="flex items-center justify-between">
-              <SheetTitle className="text-lg font-semibold">
-                Chi tiết lịch làm việc
-              </SheetTitle>
-              <Badge
-                variant={isDraft ? "warning" : "success"}
-                className="text-xs"
-              >
-                {isDraft ? SCHEDULER_UI.DRAFT : SCHEDULER_UI.PUBLISHED}
-              </Badge>
-            </div>
-            <SheetDescription className="sr-only">
-              Xem chi tiết và quản lý lịch làm việc
-            </SheetDescription>
-          </SheetHeader>
-
-          {/* Content */}
-          <div className="sheet-scroll-area">
-            <div className="space-y-6">
-              {/* Shift info card - Sử dụng style chữ đậm + nền nhạt */}
-              <div className="space-y-3">
-                <h3 className="text-muted-foreground text-sm font-medium">
-                  Ca làm việc
-                </h3>
-                <ShiftInfoCard shift={schedule.shift} />
-              </div>
-
-              <Separator />
-
-              {/* Date */}
-              <div className="space-y-3">
-                <h3 className="text-muted-foreground flex items-center gap-2 text-sm font-medium">
-                  <Calendar className="size-4" />
-                  Ngày làm việc
-                </h3>
-                <div className="text-lg font-medium">{schedule.workDate}</div>
-              </div>
-            </div>
+      <ActionSheet
+        open={open}
+        onOpenChange={onOpenChange}
+        title={
+          <div className="flex w-full items-center justify-between gap-4">
+            <span className="font-semibold">Chi tiết lịch làm việc</span>
+            <Badge
+              variant={isDraft ? "warning" : "success"}
+              className="text-xs"
+            >
+              {isDraft ? SCHEDULER_UI.DRAFT : SCHEDULER_UI.PUBLISHED}
+            </Badge>
           </div>
-
-          {/* Footer */}
-          <SheetFooter className="bg-background flex-col gap-2 border-t px-6 py-3">
+        }
+        description="Xem chi tiết và quản lý lịch làm việc"
+        footer={
+          <div className="flex w-full flex-col gap-2">
             {/* Publish button (only for DRAFT) */}
             {isDraft && (
               <Button
                 variant="default"
-                className="h-9 w-full"
+                className="w-full"
                 onClick={handlePublish}
               >
                 <Send className="size-4" />
@@ -126,7 +90,7 @@ export function ScheduleDetailSheet({
             <div className="flex w-full items-center gap-2">
               <Button
                 variant="outline"
-                className="text-destructive hover:text-destructive hover:bg-destructive/10 h-9 flex-1"
+                className="text-destructive hover:text-destructive hover:bg-destructive/10 flex-1"
                 onClick={() => setShowDeleteDialog(true)}
               >
                 <Trash2 className="size-4" />
@@ -134,15 +98,36 @@ export function ScheduleDetailSheet({
               </Button>
               <Button
                 variant="ghost"
-                className="h-9 flex-1"
+                className="flex-1"
                 onClick={() => onOpenChange(false)}
               >
                 Đóng
               </Button>
             </div>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
+          </div>
+        }
+      >
+        <div className="space-y-6">
+          {/* Shift info card - Sử dụng style chữ đậm + nền nhạt */}
+          <div className="space-y-3">
+            <h3 className="text-muted-foreground text-sm font-medium">
+              Ca làm việc
+            </h3>
+            <ShiftInfoCard shift={schedule.shift} />
+          </div>
+
+          <Separator />
+
+          {/* Date */}
+          <div className="space-y-3">
+            <h3 className="text-muted-foreground flex items-center gap-2 text-sm font-medium">
+              <Calendar className="size-4" />
+              Ngày làm việc
+            </h3>
+            <div className="text-lg font-medium">{schedule.workDate}</div>
+          </div>
+        </div>
+      </ActionSheet>
 
       {/* Delete confirmation dialog */}
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>

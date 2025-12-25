@@ -24,16 +24,10 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
   Switch,
   TimeRangeInput,
 } from "@/shared/ui";
-import { Icon } from "@/shared/ui/custom/icon";
+import { ActionSheet, Icon } from "@/shared/ui/custom";
 import { isSameDay } from "date-fns";
 import { AlertTriangle, Plus, Save } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -115,6 +109,22 @@ export function ExceptionSheet({
     return { isDuplicate: false };
   }, [date, existingExceptions, exception]);
 
+  // Kiểm tra form đã bị thay đổi chưa (Fix Phase 2)
+  const isDirty = useMemo(() => {
+    if (exception) {
+      // So sánh với data cũ khi edit
+      return (
+        (date && !isSameDay(date, exception.date)) ||
+        type !== exception.type ||
+        reason !== exception.reason ||
+        isClosed !== exception.isClosed ||
+        (!isClosed && (openTime !== exception.openTime || closeTime !== exception.closeTime))
+      );
+    }
+    // So sánh với default khi create
+    return date !== undefined || reason !== "" || type !== "HOLIDAY" || !isClosed;
+  }, [date, type, reason, isClosed, openTime, closeTime, exception]);
+
   // Handle submit
   const handleSubmit = async () => {
     if (!date || !reason.trim() || duplicateCheck.isDuplicate) return;
@@ -144,119 +154,19 @@ export function ExceptionSheet({
     date && reason.trim().length > 0 && !duplicateCheck.isDuplicate;
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-lg">
-        <SheetHeader className="shrink-0 space-y-0 border-b px-6 py-4">
-          <SheetTitle className="text-foreground text-lg font-semibold">
-            {isEditMode ? "Sửa ngày ngoại lệ" : "Thêm ngày ngoại lệ"}
-          </SheetTitle>
-          <SheetDescription className="sr-only">
-            {isEditMode ? "Chỉnh sửa thông tin ngày ngoại lệ" : "Thêm ngày ngoại lệ mới"}
-          </SheetDescription>
-        </SheetHeader>
-
-        <div className="sheet-scroll-area">
-          <div className="space-y-6 p-6">
-            {/* Date Picker (Fix E2: Show duplicate warning) */}
-            <Field data-invalid={duplicateCheck.isDuplicate}>
-              <FieldLabel>
-                Ngày <span className="text-destructive">*</span>
-              </FieldLabel>
-              <DatePicker
-                value={date}
-                onChange={setDate}
-                placeholder="Chọn ngày"
-                disabled={isSubmitting}
-              />
-              {duplicateCheck.isDuplicate && (
-                <FieldError>
-                  <div className="flex items-start gap-2">
-                    <AlertTriangle className="mt-0.5 size-3.5 shrink-0" />
-                    <span>{duplicateCheck.message}</span>
-                  </div>
-                </FieldError>
-              )}
-            </Field>
-
-            {/* Exception Type */}
-            <Field>
-              <FieldLabel>
-                Loại ngoại lệ <span className="text-destructive">*</span>
-              </FieldLabel>
-              <Select
-                value={type}
-                onValueChange={(v) => setType(v as ExceptionType)}
-                disabled={isSubmitting}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Chọn loại" />
-                </SelectTrigger>
-                <SelectContent>
-                  {(Object.keys(EXCEPTION_TYPE_LABELS) as ExceptionType[]).map(
-                    (t) => (
-                      <SelectItem key={t} value={t}>
-                        {EXCEPTION_TYPE_LABELS[t]}
-                      </SelectItem>
-                    )
-                  )}
-                </SelectContent>
-              </Select>
-            </Field>
-
-            {/* Reason */}
-            <Field>
-              <FieldLabel>
-                Lý do / Ghi chú <span className="text-destructive">*</span>
-              </FieldLabel>
-              <Input
-                placeholder="VD: Tết Nguyên Đán, Bảo trì hệ thống..."
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                disabled={isSubmitting}
-              />
-              <FieldDescription>
-                Mô tả ngắn gọn lý do cho ngày ngoại lệ này
-              </FieldDescription>
-            </Field>
-
-            {/* Is Closed Toggle */}
-            <Field>
-              <FieldLabel>Trạng thái hoạt động</FieldLabel>
-              <div className="flex items-center justify-between rounded-lg border p-4">
-                <div className="space-y-0.5">
-                  <p className="text-sm font-medium">
-                    {isClosed ? "Đóng cửa cả ngày" : "Hoạt động giờ đặc biệt"}
-                  </p>
-                  <p className="text-muted-foreground text-xs">
-                    {isClosed
-                      ? "Spa sẽ không nhận khách trong ngày này"
-                      : "Spa mở cửa với giờ khác thường lệ"}
-                  </p>
-                </div>
-                <Switch
-                  checked={!isClosed}
-                  onCheckedChange={(checked) => setIsClosed(!checked)}
-                  disabled={isSubmitting}
-                />
-              </div>
-            </Field>
-
-            {/* Custom Hours (only if not closed) */}
-            {!isClosed && (
-              <Field>
-                <FieldLabel>Giờ hoạt động</FieldLabel>
-                <TimeRangeInput
-                  startTime={openTime}
-                  endTime={closeTime}
-                  onStartTimeChange={setOpenTime}
-                  onEndTimeChange={setCloseTime}
-                />
-              </Field>
-            )}
-          </div>
-        </div>
-
-        <SheetFooter>
+    <ActionSheet
+      open={open}
+      onOpenChange={onOpenChange}
+      isDirty={isDirty}
+      title={isEditMode ? "Sửa ngày ngoại lệ" : "Thêm ngày ngoại lệ"}
+      description={
+        isEditMode
+          ? "Chỉnh sửa thông tin ngày ngoại lệ"
+          : "Thêm ngày ngoại lệ mới"
+      }
+      isPending={isSubmitting}
+      footer={
+        <>
           <Button
             type="button"
             variant="outline"
@@ -272,17 +182,112 @@ export function ExceptionSheet({
             isLoading={isSubmitting}
             className="min-w-[140px]"
             startContent={
-              isEditMode ? (
-                <Icon icon={Save} />
-              ) : (
-                <Icon icon={Plus} />
-              )
+              isEditMode ? <Icon icon={Save} /> : <Icon icon={Plus} />
             }
           >
             {isEditMode ? "Cập nhật" : "Thêm ngày"}
           </Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+        </>
+      }
+    >
+      <div className="space-y-6">
+        {/* Date Picker (Fix E2: Show duplicate warning) */}
+        <Field data-invalid={duplicateCheck.isDuplicate}>
+          <FieldLabel>
+            Ngày <span className="text-destructive">*</span>
+          </FieldLabel>
+          <DatePicker
+            value={date}
+            onChange={setDate}
+            placeholder="Chọn ngày"
+            disabled={isSubmitting}
+          />
+          {duplicateCheck.isDuplicate && (
+            <FieldError>
+              <div className="flex items-start gap-2">
+                <AlertTriangle className="mt-0.5 size-3.5 shrink-0" />
+                <span>{duplicateCheck.message}</span>
+              </div>
+            </FieldError>
+          )}
+        </Field>
+
+        {/* Exception Type */}
+        <Field>
+          <FieldLabel>
+            Loại ngoại lệ <span className="text-destructive">*</span>
+          </FieldLabel>
+          <Select
+            value={type}
+            onValueChange={(v) => setType(v as ExceptionType)}
+            disabled={isSubmitting}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Chọn loại" />
+            </SelectTrigger>
+            <SelectContent>
+              {(Object.keys(EXCEPTION_TYPE_LABELS) as ExceptionType[]).map(
+                (t) => (
+                  <SelectItem key={t} value={t}>
+                    {EXCEPTION_TYPE_LABELS[t]}
+                  </SelectItem>
+                )
+              )}
+            </SelectContent>
+          </Select>
+        </Field>
+
+        {/* Reason */}
+        <Field>
+          <FieldLabel>
+            Lý do / Ghi chú <span className="text-destructive">*</span>
+          </FieldLabel>
+          <Input
+            placeholder="VD: Tết Nguyên Đán, Bảo trì hệ thống..."
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            disabled={isSubmitting}
+          />
+          <FieldDescription>
+            Mô tả ngắn gọn lý do cho ngày ngoại lệ này
+          </FieldDescription>
+        </Field>
+
+        {/* Is Closed Toggle */}
+        <Field>
+          <FieldLabel>Trạng thái hoạt động</FieldLabel>
+          <div className="flex items-center justify-between rounded-lg border p-4">
+            <div className="space-y-0.5">
+              <p className="text-sm font-medium">
+                {isClosed ? "Đóng cửa cả ngày" : "Hoạt động giờ đặc biệt"}
+              </p>
+              <p className="text-muted-foreground text-xs">
+                {isClosed
+                  ? "Spa sẽ không nhận khách trong ngày này"
+                  : "Spa mở cửa với giờ khác thường lệ"}
+              </p>
+            </div>
+            <Switch
+              checked={!isClosed}
+              onCheckedChange={(checked) => setIsClosed(!checked)}
+              disabled={isSubmitting}
+            />
+          </div>
+        </Field>
+
+        {/* Custom Hours (only if not closed) */}
+        {!isClosed && (
+          <Field>
+            <FieldLabel>Giờ hoạt động</FieldLabel>
+            <TimeRangeInput
+              startTime={openTime}
+              endTime={closeTime}
+              onStartTimeChange={setOpenTime}
+              onEndTimeChange={setCloseTime}
+            />
+          </Field>
+        )}
+      </div>
+    </ActionSheet>
   );
 }

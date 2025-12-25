@@ -104,12 +104,6 @@ interface UseSheetFormReturn<TFormValues extends FieldValues> {
 
   /** Handler để wrap trong form onSubmit */
   onSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>;
-
-  /**
-   * Handler để đóng sheet an toàn - kiểm tra dirty state
-   * Sử dụng thay vì onOpenChange trực tiếp
-   */
-  handleOpenChange: (open: boolean, onOpenChange: (open: boolean) => void) => void;
 }
 
 /**
@@ -220,30 +214,11 @@ export function useSheetForm<TFormValues extends FieldValues, TData = unknown>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = form.handleSubmit(handleSubmit as any);
 
-  // Handler đóng sheet an toàn với dirty check (#6, #13)
-  const handleOpenChange = useCallback(
-    (newOpen: boolean, onOpenChange: (open: boolean) => void) => {
-      // Nếu đang mở hoặc form không dirty -> thực hiện bình thường
-      if (newOpen || !form.formState.isDirty || !warnOnUnsavedChanges) {
-        onOpenChange(newOpen);
-        return;
-      }
-
-      // Nếu đang đóng và form dirty -> xác nhận
-      // Sử dụng browser confirm để đơn giản, có thể upgrade sang AlertDialog sau
-      if (window.confirm(unsavedWarningMessage)) {
-        onOpenChange(newOpen);
-      }
-    },
-    [form.formState.isDirty, warnOnUnsavedChanges, unsavedWarningMessage]
-  );
-
   return {
     form,
     isPending,
     isDirty: form.formState.isDirty,
     handleSubmit,
     onSubmit,
-    handleOpenChange,
   } as UseSheetFormReturn<TFormValues>;
 }

@@ -1,19 +1,11 @@
 "use client";
 
-import {
-  Button,
-  Form,
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/shared/ui";
-import { useSheetForm } from "@/shared/hooks";
 import { Save, Send } from "lucide-react";
-import { Icon } from "@/shared/ui/custom/icon";
-import { useCallback } from "react";
+import * as React from "react";
+
+import { useSheetForm } from "@/shared/hooks";
+import { Button, Form, SheetClose } from "@/shared/ui";
+import { ActionSheet, Icon } from "@/shared/ui/custom";
 import { createPackage, updatePackage } from "../actions";
 import { packageSchema, PackageFormValues } from "../model/schemas";
 import { ServicePackage } from "../model/types";
@@ -43,7 +35,7 @@ export function PackageSheet({
 }: PackageSheetProps) {
   const isUpdateMode = mode === "update";
 
-  const transformData = useCallback(
+  const transformData = React.useCallback(
     (pkg: ServicePackage): Partial<PackageFormValues> => ({
       name: pkg.name,
       description: pkg.description || "",
@@ -58,7 +50,7 @@ export function PackageSheet({
     []
   );
 
-  const handleAction = useCallback(
+  const handleAction = React.useCallback(
     async (data: PackageFormValues) => {
       if (isUpdateMode && initialData) {
         return updatePackage({ id: initialData.id, ...data });
@@ -68,7 +60,7 @@ export function PackageSheet({
     [isUpdateMode, initialData]
   );
 
-  const { form, isPending, onSubmit, handleOpenChange } = useSheetForm({
+  const { form, isPending, onSubmit, isDirty } = useSheetForm({
     schema: packageSchema,
     defaultValues: DEFAULT_VALUES,
     open,
@@ -83,61 +75,49 @@ export function PackageSheet({
   });
 
   return (
-    <Sheet open={open} onOpenChange={(val) => handleOpenChange(val, onOpenChange)}>
-      {/* #4: preventClose blocks Escape/click-outside khi đang submit */}
-      <SheetContent
-        preventClose={isPending}
-        className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-lg"
-      >
-        <SheetHeader className="shrink-0 space-y-0 border-b px-6 py-4">
-          <SheetTitle className="text-foreground text-lg font-semibold">
-            {isUpdateMode ? "Chỉnh sửa gói dịch vụ" : "Tạo gói dịch vụ mới"}
-          </SheetTitle>
-          {/* #3: SheetDescription for a11y */}
-          <SheetDescription className="sr-only">
-            {isUpdateMode ? "Chỉnh sửa thông tin gói dịch vụ" : "Tạo gói dịch vụ mới"}
-          </SheetDescription>
-        </SheetHeader>
-
-        <div className="sheet-scroll-area">
-          <Form {...form}>
-            <form
-              id="package-form"
-              onSubmit={onSubmit}
-              className="flex h-full flex-col"
+    <ActionSheet
+      open={open}
+      onOpenChange={onOpenChange}
+      title={isUpdateMode ? "Chỉnh sửa gói dịch vụ" : "Tạo gói dịch vụ mới"}
+      description={
+        isUpdateMode
+          ? "Chỉnh sửa thông tin gói dịch vụ"
+          : "Tạo gói dịch vụ mới"
+      }
+      isPending={isPending}
+      isDirty={isDirty}
+      footer={
+        <>
+          <SheetClose asChild>
+            <Button
+              variant="outline"
+              disabled={isPending}
+              className="min-w-[100px]"
             >
-              <PackageForm mode={mode} className="flex-1" />
-            </form>
-          </Form>
-        </div>
-
-        <SheetFooter>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => handleOpenChange(false, onOpenChange)}
-            disabled={isPending}
-            className="min-w-[100px]"
-          >
-            Hủy
-          </Button>
+              Hủy
+            </Button>
+          </SheetClose>
           <Button
             type="submit"
             form="package-form"
             isLoading={isPending}
             className="min-w-[140px]"
-            startContent={
-              isUpdateMode ? (
-                <Icon icon={Save} />
-              ) : (
-                <Icon icon={Send} />
-              )
-            }
+            startContent={<Icon icon={isUpdateMode ? Save : Send} />}
           >
             {isUpdateMode ? "Lưu thay đổi" : "Tạo gói"}
           </Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+        </>
+      }
+    >
+      <Form {...form}>
+        <form
+          id="package-form"
+          onSubmit={onSubmit}
+          className="flex h-full flex-col"
+        >
+          <PackageForm mode={mode} className="flex-1" />
+        </form>
+      </Form>
+    </ActionSheet>
   );
 }

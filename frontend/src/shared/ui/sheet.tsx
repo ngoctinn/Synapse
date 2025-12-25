@@ -46,21 +46,31 @@ function SheetOverlay({
 }
 
 const sheetVariants = cva(
-  "fixed z-50 flex flex-col gap-4 bg-background shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-300",
+  "fixed z-50 flex flex-col gap-0 bg-background shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-300",
   {
     variants: {
       side: {
         top: "inset-x-0 top-0 border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
         bottom:
           "inset-x-0 bottom-0 border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
-        // Fix #2: Mobile full width
-        left: "inset-y-0 left-0 h-full w-full sm:w-3/4 border-r sm:max-w-sm data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left",
+        left: "inset-y-0 left-0 h-full w-full border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left",
         right:
-          "inset-y-0 right-0 h-full w-full sm:w-3/4 border-l sm:max-w-sm data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right",
+          "inset-y-0 right-0 h-full w-full border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right",
+      },
+      size: {
+        default: "sm:max-w-lg",
+        sm: "sm:max-w-sm",
+        md: "sm:max-w-md",
+        lg: "sm:max-w-lg",
+        xl: "sm:max-w-xl",
+        "2xl": "sm:max-w-2xl",
+        "3xl": "sm:max-w-3xl",
+        full: "sm:max-w-full",
       },
     },
     defaultVariants: {
       side: "right",
+      size: "default",
     },
   }
 );
@@ -79,6 +89,7 @@ function SheetContent({
   className,
   children,
   side = "right",
+  size = "default",
   preventClose = false,
   ...props
 }: SheetContentProps) {
@@ -87,19 +98,18 @@ function SheetContent({
       <SheetOverlay />
       <SheetPrimitive.Content
         data-slot="sheet-content"
-        className={cn(sheetVariants({ side }), className)}
+        className={cn(sheetVariants({ side, size }), className)}
         onEscapeKeyDown={(e) => {
           if (preventClose) e.preventDefault();
         }}
-        onInteractOutside={(e) => {
+        onPointerDownOutside={(e) => {
           if (preventClose) e.preventDefault();
         }}
         {...props}
       >
         {children}
-        {/* Fix #1: aria-label, #15: hover state */}
         <SheetPrimitive.Close
-          className="close-button-base hover:bg-muted/80 transition-colors data-[state=open]:bg-secondary"
+          className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary"
           aria-label="Đóng"
         >
           <XIcon className="size-4" />
@@ -115,10 +125,19 @@ function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="sheet-header"
       className={cn(
-        // Fix #17: Border opacity consistent
-        "sheet-header flex flex-col gap-1.5 border-b border-border/50 px-6 py-4",
+        "flex flex-col gap-1.5 border-b border-border/50 px-6 py-4",
         className
       )}
+      {...props}
+    />
+  );
+}
+
+function SheetBody({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="sheet-body"
+      className={cn("flex-1 overflow-y-auto p-6 scrollbar-hide", className)}
       {...props}
     />
   );
@@ -129,8 +148,7 @@ function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="sheet-footer"
       className={cn(
-        // Fix #11: Sticky footer với responsive layout
-        "sheet-footer sticky bottom-0 z-10 mt-auto border-t border-border/50 bg-background px-6 py-4",
+        "sticky bottom-0 z-10 mt-auto border-t border-border/50 bg-background px-6 py-4",
         "flex flex-col-reverse gap-2 sm:flex-row sm:justify-end",
         className
       )}
@@ -146,7 +164,7 @@ function SheetTitle({
   return (
     <SheetPrimitive.Title
       data-slot="sheet-title"
-      className={cn("text-foreground font-semibold", className)}
+      className={cn("text-lg font-semibold text-foreground", className)}
       {...props}
     />
   );
@@ -159,7 +177,7 @@ function SheetDescription({
   return (
     <SheetPrimitive.Description
       data-slot="sheet-description"
-      className={cn("text-muted-foreground text-sm", className)}
+      className={cn("text-sm text-muted-foreground", className)}
       {...props}
     />
   );
@@ -172,6 +190,7 @@ export {
   SheetDescription,
   SheetFooter,
   SheetHeader,
+  SheetBody,
   SheetTitle,
   SheetTrigger,
 };

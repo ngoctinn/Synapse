@@ -1,11 +1,5 @@
-import {
-  Separator,
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/shared/ui";
+import { Separator } from "@/shared/ui";
+import { ActionSheet } from "@/shared/ui/custom";
 import { Invoice } from "../../model/types";
 import { InvoiceDetails } from "./invoice-details";
 import { PaymentForm } from "./payment-form";
@@ -26,25 +20,17 @@ export function InvoiceSheet({
   if (!invoice) return null;
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-lg">
-        <SheetHeader className="shrink-0 space-y-0 border-b px-6 py-4">
-          <SheetTitle className="text-lg font-semibold">
-            Chi tiết hóa đơn {invoice.id}
-          </SheetTitle>
-          <SheetDescription className="sr-only">
-            Xem chi tiết và thanh toán hóa đơn
-          </SheetDescription>
-        </SheetHeader>
-
-        <div className="sheet-scroll-area">
-          <div className="space-y-6">
-            <InvoiceDetails invoice={invoice} />
-            <Separator />
-            <PaymentForm invoice={invoice} onSuccess={onUpdate} />
-          </div>
-        </div>
-      </SheetContent>
-    </Sheet>
+    <ActionSheet
+      open={open}
+      onOpenChange={onOpenChange}
+      title={`Chi tiết hóa đơn ${invoice.id}`}
+      description="Xem chi tiết và thanh toán hóa đơn"
+    >
+      <div className="space-y-6">
+        <InvoiceDetails invoice={invoice} />
+        <Separator />
+        <PaymentForm invoice={invoice} onSuccess={onUpdate} />
+      </div>
+    </ActionSheet>
   );
 }

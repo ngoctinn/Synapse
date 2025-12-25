@@ -1,18 +1,11 @@
-"use client";
-
 import { Resource, RoomType } from "@/features/resources";
 import {
   Button,
   Form,
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
+  SheetClose,
 } from "@/shared/ui";
+import { ActionSheet, Icon } from "@/shared/ui/custom";
 import { Save, Send } from "lucide-react";
-import { Icon } from "@/shared/ui/custom/icon";
 import { createService, updateService } from "../actions";
 import { SERVICE_DEFAULT_VALUES } from "../constants";
 import { MOCK_CATEGORIES } from "../model/mocks";
@@ -76,7 +69,7 @@ export function ServiceSheet({
     [isUpdateMode, initialData]
   );
 
-  const { form, isPending, onSubmit, handleOpenChange } = useSheetForm({
+  const { form, isPending, onSubmit, isDirty } = useSheetForm({
     schema: serviceSchema,
     defaultValues: {
       name: "",
@@ -111,66 +104,56 @@ export function ServiceSheet({
   });
 
   return (
-    <Sheet open={open} onOpenChange={(val) => handleOpenChange(val, onOpenChange)}>
-      <SheetContent
-        preventClose={isPending}
-        className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-lg"
-      >
-        <SheetHeader className="shrink-0 space-y-0 border-b px-6 py-4">
-          <SheetTitle className="text-foreground text-lg font-semibold">
-            {isUpdateMode ? "Chỉnh sửa dịch vụ" : "Tạo dịch vụ mới"}
-          </SheetTitle>
-          <SheetDescription className="sr-only">
-            {isUpdateMode ? "Chỉnh sửa thông tin dịch vụ" : "Tạo dịch vụ mới cho spa"}
-          </SheetDescription>
-        </SheetHeader>
-
-        <div className="sheet-scroll-area">
-          <Form {...form}>
-            <form
-              id="service-form"
-              onSubmit={onSubmit}
-              className="flex h-full flex-col"
+    <ActionSheet
+      open={open}
+      onOpenChange={onOpenChange}
+      title={isUpdateMode ? "Chỉnh sửa dịch vụ" : "Tạo dịch vụ mới"}
+      description={
+        isUpdateMode
+          ? "Chỉnh sửa thông tin dịch vụ"
+          : "Tạo dịch vụ mới cho spa"
+      }
+      isPending={isPending}
+      isDirty={isDirty}
+      footer={
+        <>
+          <SheetClose asChild>
+            <Button
+              variant="outline"
+              disabled={isPending}
+              className="min-w-[100px]"
             >
-              <ServiceForm
-                mode={mode}
-                availableSkills={availableSkills}
-                availableRoomTypes={availableRoomTypes}
-                availableEquipment={availableEquipment}
-                availableCategories={MOCK_CATEGORIES}
-                className="flex-1"
-              />
-            </form>
-          </Form>
-        </div>
-
-        <SheetFooter>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => handleOpenChange(false, onOpenChange)}
-            disabled={isPending}
-            className="min-w-[100px]"
-          >
-            Hủy
-          </Button>
+              Hủy
+            </Button>
+          </SheetClose>
           <Button
             type="submit"
             form="service-form"
             isLoading={isPending}
             className="px-8"
-            startContent={
-              isUpdateMode ? (
-                <Icon icon={Save} />
-              ) : (
-                <Icon icon={Send} />
-              )
-            }
+            startContent={<Icon icon={isUpdateMode ? Save : Send} />}
           >
             {isUpdateMode ? "Lưu thay đổi" : "Tạo dịch vụ"}
           </Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+        </>
+      }
+    >
+      <Form {...form}>
+        <form
+          id="service-form"
+          onSubmit={onSubmit}
+          className="flex h-full flex-col"
+        >
+          <ServiceForm
+            mode={mode}
+            availableSkills={availableSkills}
+            availableRoomTypes={availableRoomTypes}
+            availableEquipment={availableEquipment}
+            availableCategories={MOCK_CATEGORIES}
+            className="flex-1"
+          />
+        </form>
+      </Form>
+    </ActionSheet>
   );
 }

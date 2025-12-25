@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { AlertTriangle } from "lucide-react";
-import { useCallback, useTransition } from "react";
+import React, { useCallback, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
 import { MultiServiceSelector } from "@/features/appointments/components/selection/multi-service-selector";
@@ -57,6 +57,7 @@ interface AppointmentFormProps {
   availableStaff: TimelineResource[];
   availableResources: TimelineResource[];
   availableServices: MockService[];
+  onDirtyChange?: (isDirty: boolean) => void;
 }
 
 // ============================================
@@ -71,6 +72,7 @@ export function AppointmentForm({
   availableStaff,
   availableResources,
   availableServices,
+  onDirtyChange,
 }: AppointmentFormProps) {
   const [isPending, startTransition] = useTransition();
 
@@ -99,6 +101,17 @@ export function AppointmentForm({
     availableServices,
     appointmentId: appointment?.id,
   });
+
+  const isDirty = form.formState.isDirty; // Track form dirty state
+
+  // Correct implementation:
+  const lastIsDirty = React.useRef(false);
+  React.useEffect(() => {
+    if (isDirty !== lastIsDirty.current) {
+      onDirtyChange?.(isDirty);
+      lastIsDirty.current = isDirty;
+    }
+  }, [isDirty, onDirtyChange]);
 
   // ============================================
   // HANDLERS

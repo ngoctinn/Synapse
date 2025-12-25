@@ -1,37 +1,31 @@
 "use client";
 
+import { MOCK_TREATMENTS } from "@/features/treatments/model/mocks";
 import { useSheetForm } from "@/shared/hooks/use-sheet-form";
-import { Button } from "@/shared/ui/button";
 import {
+  Button,
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/shared/ui";
-import { Input } from "@/shared/ui/input";
-import { Textarea } from "@/shared/ui/textarea";
-import { createWarranty, updateWarranty } from "../actions";
-import { warrantyCreateSchema, WarrantyFormValues } from "../model/schemas";
-import { WarrantyTicket } from "../model/types";
-import {
+  Input,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/shared/ui/select";
-import { MOCK_TREATMENTS } from "@/features/treatments/model/mocks";
+  SheetClose,
+  Textarea,
+} from "@/shared/ui";
+import { ActionSheet } from "@/shared/ui/custom";
+import { createWarranty, updateWarranty } from "../actions";
+import { warrantyCreateSchema, WarrantyFormValues } from "../model/schemas";
+import { WarrantyTicket } from "../model/types";
 
 interface WarrantySheetProps {
-  mode: "create"; // Only create implemented for now
+  mode: "create";
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -41,7 +35,7 @@ export function WarrantySheet({
   open,
   onOpenChange,
 }: WarrantySheetProps) {
-  const { form, isPending, onSubmit } = useSheetForm<
+  const { form, isPending, onSubmit, isDirty } = useSheetForm<
     WarrantyFormValues,
     WarrantyTicket
   >({
@@ -62,154 +56,144 @@ export function WarrantySheet({
     },
   });
 
-  // Removed useEffect reset logic as hook handles it
-
-  // Removed manual onSubmit and handleSubmit usage since we use the hook's onSubmit directly
-
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="flex h-full w-full flex-col sm:max-w-lg">
-        <SheetHeader>
-          <SheetTitle>Tạo phiếu bảo hành mới</SheetTitle>
-          <SheetDescription className="sr-only">
-            Tạo phiếu bảo hành cho liệu trình điều trị
-          </SheetDescription>
-        </SheetHeader>
-
-        <Form {...form}>
-          <form
-            onSubmit={onSubmit}
-            className="mt-6 flex flex-1 flex-col gap-6 overflow-y-auto px-1"
+    <ActionSheet
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Tạo phiếu bảo hành mới"
+      description="Tạo phiếu bảo hành cho liệu trình điều trị"
+      isPending={isPending}
+      isDirty={isDirty}
+      footer={
+        <>
+          <SheetClose asChild>
+            <Button
+              variant="outline"
+              disabled={isPending}
+              className="min-w-[100px]"
+            >
+              Hủy
+            </Button>
+          </SheetClose>
+          <Button
+            type="submit"
+            form="warranty-form"
+            isLoading={isPending}
+            className="min-w-[140px]"
           >
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
-                name="customer_id"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Khách hàng <span className="text-destructive">*</span>
-                    </FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Chọn khách hàng" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {/* Mock unique customers from treatments */}
-                        {Array.from(
-                          new Set(
-                            MOCK_TREATMENTS.map((t) =>
-                              JSON.stringify({
-                                id: t.customer_id,
-                                name: t.customer_name,
-                              })
-                            )
+            Tạo phiếu
+          </Button>
+        </>
+      }
+    >
+      <Form {...form}>
+        <form
+          id="warranty-form"
+          onSubmit={onSubmit}
+          className="flex flex-col gap-6"
+        >
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="customer_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>Khách hàng</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Chọn khách hàng" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Array.from(
+                        new Set(
+                          MOCK_TREATMENTS.map((t) =>
+                            JSON.stringify({
+                              id: t.customer_id,
+                              name: t.customer_name,
+                            })
                           )
                         )
-                          .map((s) => JSON.parse(s))
-                          .map((c: { id: string; name: string }) => (
-                            <SelectItem key={c.id} value={c.id}>
-                              {c.name}
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="treatment_id"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Liệu trình áp dụng{" "}
-                      <span className="text-destructive">*</span>
-                    </FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Chọn liệu trình" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {MOCK_TREATMENTS.map((t) => (
-                          <SelectItem key={t.id} value={t.id}>
-                            {t.package_name} - {t.customer_name}
+                      )
+                        .map((s) => JSON.parse(s))
+                        .map((c: { id: string; name: string }) => (
+                          <SelectItem key={c.id} value={c.id}>
+                            {c.name}
                           </SelectItem>
                         ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="duration_months"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Thời hạn (tháng){" "}
-                      <span className="text-destructive">*</span>
-                    </FormLabel>
+            <FormField
+              control={form.control}
+              name="treatment_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>Liệu trình áp dụng</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
-                      <Input type="number" min="1" {...field} />
+                      <SelectTrigger>
+                        <SelectValue placeholder="Chọn liệu trình" />
+                      </SelectTrigger>
                     </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                    <SelectContent>
+                      {MOCK_TREATMENTS.map((t) => (
+                        <SelectItem key={t.id} value={t.id}>
+                          {t.package_name} - {t.customer_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="terms"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Điều khoản bảo hành{" "}
-                      <span className="text-destructive">*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Nhập điều khoản chi tiết..."
-                        className="min-h-[150px]"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FormField
+              control={form.control}
+              name="duration_months"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>Thời hạn (tháng)</FormLabel>
+                  <FormControl>
+                    <Input type="number" min="1" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-            <SheetFooter className="mt-auto pt-6">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                className="min-w-[100px]"
-              >
-                Hủy
-              </Button>
-              <Button type="submit" disabled={isPending} isLoading={isPending} className="min-w-[140px]">
-                Tạo phiếu
-              </Button>
-            </SheetFooter>
-          </form>
-        </Form>
-      </SheetContent>
-    </Sheet>
+            <FormField
+              control={form.control}
+              name="terms"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>Điều khoản bảo hành</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Nhập điều khoản chi tiết..."
+                      className="min-h-[150px]"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </form>
+      </Form>
+    </ActionSheet>
   );
 }

@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import { cn } from "@/shared/lib/utils";
 import { Button, Input, Separator } from "@/shared/ui";
+import { ActionSheet } from "@/shared/ui/custom";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,14 +17,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/shared/ui/sheet";
 
 import { MOCK_SHIFTS } from "../../../model/shifts";
 import type { Shift } from "../../../model/types";
@@ -130,6 +123,9 @@ export function ShiftManagerSheet({
     setEditingId(null);
   };
 
+  // Kiểm tra xem form có đang dở dang không (Fix Phase 2)
+  const isDirty = isAdding || !!editingId || formName !== "";
+
   const handleAdd = () => {
     if (!formName.trim()) {
       toast.error("Vui lòng nhập tên ca");
@@ -189,158 +185,143 @@ export function ShiftManagerSheet({
 
   return (
     <>
-      <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-lg">
-          {/* Header */}
-          <SheetHeader className="shrink-0 space-y-0 border-b px-6 py-4">
-            <SheetTitle className="text-lg font-semibold">
-              Quản lý ca làm việc
-            </SheetTitle>
-            <SheetDescription className="text-muted-foreground mt-1 text-sm">
-              Tạo và chỉnh sửa các ca làm việc (Master Data)
-            </SheetDescription>
-          </SheetHeader>
+      <ActionSheet
+        open={open}
+        onOpenChange={onOpenChange}
+      isDirty={isDirty}
+        title="Quản lý ca làm việc"
+        description="Tạo và chỉnh sửa các ca làm việc (Master Data)"
+        footer={
+          <Button
+            variant="default"
+            className="w-full"
+            onClick={() => onOpenChange(false)}
+          >
+            Xong
+          </Button>
+        }
+      >
+        <div className="space-y-4">
+          {/* Shift list */}
+          <div className="space-y-3">
+            <h3 className="text-muted-foreground text-sm font-medium">
+              Danh sách ca
+            </h3>
+            <div className="space-y-2">
+              {shifts.map((shift) => (
+                <ShiftItem
+                  key={shift.id}
+                  shift={shift}
+                  isEditing={editingId === shift.id}
+                  onEdit={() => handleEdit(shift)}
+                  onDelete={() => setDeleteId(shift.id)}
+                />
+              ))}
+            </div>
+          </div>
 
-          {/* Content */}
-          <div className="sheet-scroll-area">
+          <Separator />
+
+          {/* Add/Edit form */}
+          {(isAdding || editingId) && (
             <div className="space-y-4">
-              {/* Shift list */}
-              <div className="space-y-3">
-                <h3 className="text-muted-foreground text-sm font-medium">
-                  Danh sách ca
-                </h3>
-                <div className="space-y-2">
-                  {shifts.map((shift) => (
-                    <ShiftItem
-                      key={shift.id}
-                      shift={shift}
-                      isEditing={editingId === shift.id}
-                      onEdit={() => handleEdit(shift)}
-                      onDelete={() => setDeleteId(shift.id)}
+              <h3 className="text-sm font-medium">
+                {editingId ? "Chỉnh sửa ca" : "Thêm ca mới"}
+              </h3>
+
+              {/* Name */}
+              <div className="space-y-1.5">
+                <label className="text-muted-foreground text-sm">Tên ca</label>
+                <Input
+                  value={formName}
+                  onChange={(e) => setFormName(e.target.value)}
+                  placeholder="Ví dụ: Ca sáng, Ca tối..."
+                  className=""
+                />
+              </div>
+
+              {/* Time */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="text-muted-foreground text-sm">
+                    Bắt đầu
+                  </label>
+                  <Input
+                    type="time"
+                    value={formStartTime}
+                    onChange={(e) => setFormStartTime(e.target.value)}
+                    startContent={<Clock className="size-4" />}
+                    className=""
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-muted-foreground text-sm">
+                    Kết thúc
+                  </label>
+                  <Input
+                    type="time"
+                    value={formEndTime}
+                    onChange={(e) => setFormEndTime(e.target.value)}
+                    startContent={<Clock className="size-4" />}
+                    className=""
+                  />
+                </div>
+              </div>
+
+              {/* Color */}
+              <div className="space-y-1.5">
+                <label className="text-muted-foreground text-sm">Màu sắc</label>
+                <div className="flex gap-2">
+                  {DEFAULT_COLORS.map((color) => (
+                    <button
+                      key={color}
+                      type="button"
+                      onClick={() => setFormColor(color)}
+                      className={cn(
+                        "h-8 w-8 rounded-full transition-all",
+                        formColor === color &&
+                          "ring-primary ring-2 ring-offset-2"
+                      )}
+                      style={{ backgroundColor: color }}
                     />
                   ))}
                 </div>
               </div>
 
-              <Separator />
-
-              {/* Add/Edit form */}
-              {(isAdding || editingId) && (
-                <div className="space-y-4">
-                  <h3 className="text-sm font-medium">
-                    {editingId ? "Chỉnh sửa ca" : "Thêm ca mới"}
-                  </h3>
-
-                  {/* Name */}
-                  <div className="space-y-1.5">
-                    <label className="text-muted-foreground text-sm">
-                      Tên ca
-                    </label>
-                    <Input
-                      value={formName}
-                      onChange={(e) => setFormName(e.target.value)}
-                      placeholder="Ví dụ: Ca sáng, Ca tối..."
-                      className=""
-                    />
-                  </div>
-
-                  {/* Time */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1.5">
-                      <label className="text-muted-foreground text-sm">
-                        Bắt đầu
-                      </label>
-                      <Input
-                        type="time"
-                        value={formStartTime}
-                        onChange={(e) => setFormStartTime(e.target.value)}
-                        startContent={<Clock className="size-4" />}
-                        className=""
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="text-muted-foreground text-sm">
-                        Kết thúc
-                      </label>
-                      <Input
-                        type="time"
-                        value={formEndTime}
-                        onChange={(e) => setFormEndTime(e.target.value)}
-                        startContent={<Clock className="size-4" />}
-                        className=""
-                      />
-                    </div>
-                  </div>
-
-                  {/* Color */}
-                  <div className="space-y-1.5">
-                    <label className="text-muted-foreground text-sm">
-                      Màu sắc
-                    </label>
-                    <div className="flex gap-2">
-                      {DEFAULT_COLORS.map((color) => (
-                        <button
-                          key={color}
-                          type="button"
-                          onClick={() => setFormColor(color)}
-                          className={cn(
-                            "h-8 w-8 rounded-full transition-all",
-                            formColor === color &&
-                              "ring-primary ring-2 ring-offset-2"
-                          )}
-                          style={{ backgroundColor: color }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1"
-                      onClick={resetForm}
-                    >
-                      Hủy
-                    </Button>
-                    <Button
-                      size="sm"
-                      className="flex-1"
-                      onClick={editingId ? handleUpdate : handleAdd}
-                    >
-                      {editingId ? "Cập nhật" : "Thêm"}
-                    </Button>
-                  </div>
-                </div>
-              )}
-
-              {/* Add button */}
-              {!isAdding && !editingId && (
+              {/* Actions */}
+              <div className="flex gap-2">
                 <Button
                   variant="outline"
-                  className="w-full"
-                  onClick={() => setIsAdding(true)}
+                  size="sm"
+                  className="flex-1"
+                  onClick={resetForm}
                 >
-                  <Plus className="size-4" />
-                  Thêm ca mới
+                  Hủy
                 </Button>
-              )}
+                <Button
+                  size="sm"
+                  className="flex-1"
+                  onClick={editingId ? handleUpdate : handleAdd}
+                >
+                  {editingId ? "Cập nhật" : "Thêm"}
+                </Button>
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Footer */}
-          <SheetFooter className="bg-background border-t px-6 py-3">
+          {/* Add button */}
+          {!isAdding && !editingId && (
             <Button
-              variant="default"
+              variant="outline"
               className="w-full"
-              onClick={() => onOpenChange(false)}
+              onClick={() => setIsAdding(true)}
             >
-              Xong
+              <Plus className="size-4" />
+              Thêm ca mới
             </Button>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
+          )}
+        </div>
+      </ActionSheet>
 
       {/* Delete confirmation */}
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>

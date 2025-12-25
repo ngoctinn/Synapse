@@ -1,17 +1,12 @@
 import { ArrowLeft } from "lucide-react";
-import { Icon } from "@/shared/ui/custom/icon";
 import { useEffect, useState } from "react";
 
 import {
   Badge,
   Button,
   Separator,
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
 } from "@/shared/ui";
+import { ActionSheet, Icon } from "@/shared/ui/custom";
 
 // Billing components
 import { InvoiceDetails } from "@/features/billing/components/sheet/invoice-details";
@@ -87,6 +82,7 @@ export function AppointmentSheet({
   const [reviewPromptOpen, setReviewPromptOpen] = useState(false);
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [isCreatingInvoice, setIsCreatingInvoice] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
 
   const appointment = event?.appointment;
 
@@ -106,8 +102,14 @@ export function AppointmentSheet({
   // HANDLERS
   // ============================================
 
-  const handleClose = () => {
+  const handleClose = (newOpen?: boolean | unknown) => {
+    // Nếu được gọi từ ActionSheet onOpenChange(false), newOpen sẽ là false
+    if (newOpen === true) return;
+
     onOpenChange(false);
+    // Reset dirty state
+    setIsDirty(false);
+
     setTimeout(() => {
       setMode(initialMode);
       setReviewPromptOpen(false);
@@ -173,27 +175,27 @@ export function AppointmentSheet({
   // ============================================
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-lg">
-        {/* HEADER */}
-        <SheetHeader className="sheet-header shrink-0 space-y-0">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              {isPaymentMode && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="size-8"
-                  onClick={handleBackToView}
-                >
-                  <Icon icon={ArrowLeft} />
-                </Button>
-              )}
-              <SheetTitle className="text-lg font-semibold">
-                {sheetTitle}
-              </SheetTitle>
-            </div>
+    <ActionSheet
+      open={open}
+      onOpenChange={handleClose}
+      isDirty={isDirty}
+      title={
+        <div className="flex w-full items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            {isPaymentMode && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8"
+                onClick={handleBackToView}
+              >
+                <Icon icon={ArrowLeft} />
+              </Button>
+            )}
+            <span>{sheetTitle}</span>
+          </div>
 
+          <div className="flex shrink-0 items-center">
             {isViewMode && appointment && (
               <Badge preset={STATUS_TO_BADGE_PRESET[appointment.status]} />
             )}
@@ -205,61 +207,64 @@ export function AppointmentSheet({
               </Badge>
             )}
           </div>
-        </SheetHeader>
-
-        {/* CONTENT */}
-        <div className="sheet-scroll-area">
-          {isCreateMode || isEditMode ? (
-            <div className="space-y-6">
-              <AppointmentForm
-                appointment={appointment}
-                defaultValues={defaultValues}
-                onSubmit={handleSave}
-                availableStaff={availableStaff}
-                availableResources={availableResources}
-                availableServices={availableServices}
-              />
-            </div>
-          ) : isPaymentMode && invoice ? (
-            <div className="space-y-6">
-              <InvoiceDetails invoice={invoice} />
-              <Separator />
-              <PaymentForm invoice={invoice} onSuccess={handlePaymentSuccess} />
-            </div>
-          ) : event && appointment ? (
-            <AppointmentViewContent event={event} appointment={appointment} />
-          ) : null}
         </div>
+      }
+      description="Xem chi tiết và quản lý lịch hẹn"
+      footer={
+        <div className="flex w-full items-center justify-end gap-2">
+          {isPaymentMode ? (
+            <PaymentModeFooter
+              onBackToView={handleBackToView}
+              onClose={handleClose}
+            />
+          ) : isViewMode && appointment ? (
+            <ViewModeFooter
+              canCheckIn={canCheckIn}
+              canCancel={canCancel}
+              canCreateInvoice={canCreateInvoice}
+              isCreatingInvoice={isCreatingInvoice}
+              appointmentId={appointment.id}
+              onCheckIn={onCheckIn}
+              onCancel={onCancel}
+              onCreateInvoiceAndPay={handleCreateInvoiceAndPay}
+              onEdit={handleEdit}
+              onClose={handleClose}
+            />
+          ) : (
+            <FormModeFooter
+              isEditMode={isEditMode}
+              onCancelEdit={handleCancelEdit}
+              onClose={handleClose}
+            />
+          )}
+        </div>
+      }
+    >
+      <div className="space-y-6">
+        {isCreateMode || isEditMode ? (
+          <div className="space-y-6">
+            <AppointmentForm
+              appointment={appointment}
+              defaultValues={defaultValues}
+              onSubmit={handleSave}
+              availableStaff={availableStaff}
+              availableResources={availableResources}
+              availableServices={availableServices}
+              onDirtyChange={setIsDirty}
+            />
+          </div>
+        ) : isPaymentMode && invoice ? (
+          <div className="space-y-6">
+            <InvoiceDetails invoice={invoice} />
+            <Separator />
+            <PaymentForm invoice={invoice} onSuccess={handlePaymentSuccess} />
+          </div>
+        ) : event && appointment ? (
+          <AppointmentViewContent event={event} appointment={appointment} />
+        ) : null}
+      </div>
 
-        {/* FOOTER */}
-        {isPaymentMode ? (
-          <PaymentModeFooter
-            onBackToView={handleBackToView}
-            onClose={handleClose}
-          />
-        ) : isViewMode && appointment ? (
-          <ViewModeFooter
-            canCheckIn={canCheckIn}
-            canCancel={canCancel}
-            canCreateInvoice={canCreateInvoice}
-            isCreatingInvoice={isCreatingInvoice}
-            appointmentId={appointment.id}
-            onCheckIn={onCheckIn}
-            onCancel={onCancel}
-            onCreateInvoiceAndPay={handleCreateInvoiceAndPay}
-            onEdit={handleEdit}
-            onClose={handleClose}
-          />
-        ) : (
-          <FormModeFooter
-            isEditMode={isEditMode}
-            onCancelEdit={handleCancelEdit}
-            onClose={handleClose}
-          />
-        )}
-      </SheetContent>
-
-      {/* Review Prompt */}
+      {/* Review Prompt stays as is, separate component */}
       {appointment && (
         <ReviewPrompt
           bookingId={appointment.id}
@@ -270,6 +275,6 @@ export function AppointmentSheet({
           serviceName={appointment.serviceName || ""}
         />
       )}
-    </Sheet>
+    </ActionSheet>
   );
 }

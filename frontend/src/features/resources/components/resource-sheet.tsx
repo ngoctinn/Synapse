@@ -1,23 +1,14 @@
 "use client";
 
-import {
-  Button,
-  Form,
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  showToast,
-} from "@/shared/ui";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Save } from "lucide-react";
 import * as React from "react";
-import { useForm } from "react-hook-form";
+
+import { useSheetForm } from "@/shared/hooks/use-sheet-form";
+import { Button, Form, SheetClose } from "@/shared/ui";
+import { ActionSheet, Icon } from "@/shared/ui/custom";
 import { manageResource } from "../actions";
-import { ResourceFormValues, resourceSchema } from "../schemas";
 import { Resource, ResourceGroup } from "../model/types";
+import { ResourceFormValues, resourceSchema } from "../schemas";
 import { ResourceForm } from "./resource-form";
 
 interface ResourceSheetProps {
@@ -35,131 +26,93 @@ export function ResourceSheet({
   resource,
   groups,
 }: ResourceSheetProps) {
-  const [state, dispatch, isPending] = React.useActionState(
-    manageResource,
-    undefined
-  );
+  const { form, isPending, onSubmit, isDirty } = useSheetForm<
+    ResourceFormValues,
+    Resource
+  >({
+    schema: resourceSchema,
+    open,
+    data: resource,
+    defaultValues: {
+      name: "",
+      code: "",
+      groupId: "",
+      type: "ROOM",
+      status: "ACTIVE",
+      capacity: 1,
+      setupTime: 0,
+      description: "",
+      tags: [],
+    },
+    transformData: (data) => ({
+      ...data,
+      groupId: data.groupId,
+      setupTime: data.setupTime ?? 0,
+      capacity: data.capacity ?? 1,
+      tags: data.tags ?? [],
+    }),
+    action: async (values) => {
+      const formData = new FormData();
+      if (mode === "update" && resource?.id) {
+        formData.append("id", resource.id);
+      }
 
-  const form = useForm<ResourceFormValues>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(resourceSchema) as any,
-    disabled: isPending,
-    defaultValues: getDefaultResourceValues("create"),
+      Object.entries(values).forEach(([key, value]) => {
+        if (key === "tags") {
+          formData.append(key, JSON.stringify(value));
+        } else if (value !== undefined && value !== null) {
+          formData.append(key, value.toString());
+        }
+      });
+
+      return manageResource(undefined, formData);
+    },
+    onSuccess: () => onOpenChange(false),
+    toastMessages: {
+      success: mode === "update" ? "Cập nhật thành công" : "Tạo mới thành công",
+    },
   });
 
-  React.useEffect(() => {
-    if (open) {
-      if (mode === "create") {
-        form.reset(getDefaultResourceValues("create"));
-      } else if (resource) {
-        form.reset(getDefaultResourceValues("update", resource));
-      }
-    }
-  }, [open, mode, resource, form]);
-
-  React.useEffect(() => {
-    if (state?.status === "success" && state.message) {
-      showToast.success(
-        mode === "update" ? "Cập nhật thành công" : "Tạo mới thành công",
-        state.message
-      );
-      onOpenChange(false);
-    } else if (state?.status === "error") {
-      showToast.error("Thất bại", state.message);
-    }
-  }, [state, mode, onOpenChange]);
-
-  const onSubmit = (data: ResourceFormValues) => {
-    const formData = new FormData();
-    if (mode === "update" && resource?.id) {
-      formData.append("id", resource.id);
-    }
-
-    Object.entries(data).forEach(([key, value]) => {
-      if (key === "tags") {
-        formData.append(key, JSON.stringify(value));
-      } else if (value !== undefined && value !== null) {
-        formData.append(key, value.toString());
-      }
-    });
-
-    React.startTransition(() => {
-      dispatch(formData);
-    });
-  };
-
   return (
-    <Sheet open={open} onOpenChange={(val) => !isPending && onOpenChange(val)}>
-      <SheetContent className="bg-background flex w-full flex-col gap-0 border-l p-0 shadow-2xl sm:max-w-lg">
-        <SheetHeader className="shrink-0 space-y-0 border-b px-6 py-4">
-          <SheetTitle className="text-foreground text-lg font-semibold">
-            {mode === "update" ? "Chỉnh sửa tài nguyên" : "Thêm tài nguyên mới"}
-          </SheetTitle>
-          <SheetDescription className="sr-only">
-            {mode === "update" ? "Chỉnh sửa thông tin tài nguyên" : "Thêm tài nguyên mới cho spa"}
-          </SheetDescription>
-        </SheetHeader>
-
-        <div className="sheet-scroll-area">
-          <Form {...form}>
-            <form
-              id="resource-form"
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-6"
+    <ActionSheet
+      open={open}
+      onOpenChange={onOpenChange}
+      title={mode === "update" ? "Chỉnh sửa tài nguyên" : "Thêm tài nguyên mới"}
+      description={
+        mode === "update"
+          ? "Chỉnh sửa thông tin tài nguyên"
+          : "Thêm tài nguyên mới cho spa"
+      }
+      isPending={isPending}
+      isDirty={isDirty}
+      footer={
+        <>
+          <SheetClose asChild>
+            <Button
+              variant="outline"
+              disabled={isPending}
+              className="min-w-[100px]"
             >
-              <ResourceForm mode={mode} groups={groups} />
-            </form>
-          </Form>
-        </div>
-
-        <SheetFooter>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => !isPending && onOpenChange?.(false)}
-            disabled={isPending}
-            className="min-w-[100px]"
-          >
-            Hủy
-          </Button>
+              Hủy
+            </Button>
+          </SheetClose>
           <Button
             type="submit"
             form="resource-form"
             isLoading={isPending}
             className="min-w-[140px]"
-            startContent={<Save className="size-4" />}
+            startContent={<Icon icon={Save} />}
           >
-            {resource ? "Lưu thay đổi" : "Tạo mới"}
+            {mode === "update" ? "Lưu thay đổi" : "Tạo mới"}
           </Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+        </>
+      }
+    >
+      <Form {...form}>
+        <form id="resource-form" onSubmit={onSubmit} className="space-y-6">
+          <ResourceForm mode={mode} groups={groups} />
+        </form>
+      </Form>
+    </ActionSheet>
   );
-}
-
-function getDefaultResourceValues(
-  mode: "create" | "update",
-  resource?: Resource
-): ResourceFormValues {
-  if (mode === "update" && resource) {
-    return {
-      ...resource,
-      groupId: resource.groupId,
-      setupTime: resource.setupTime ?? 0,
-      capacity: resource.capacity ?? 1,
-      tags: resource.tags ?? [],
-    };
-  }
-
-  return {
-    name: "",
-    code: "",
-    groupId: "",
-    type: "ROOM",
-    status: "ACTIVE",
-    capacity: 1,
-    setupTime: 0,
-    description: "",
-    tags: [],
-  };
 }
