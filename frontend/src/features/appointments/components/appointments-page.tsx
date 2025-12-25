@@ -90,7 +90,7 @@ export function AppointmentsPage({
   const [filters, setFilters] = useState<Partial<AppointmentFilters>>({});
 
   const staffList = staffRes.status === "success" ? staffRes.data || [] : [];
-  const roomList = resourceRes.status === "success" ? resourceRes.data || [] : [];
+  const bedList = resourceRes.status === "success" ? resourceRes.data || [] : [];
   const serviceList = serviceRes.status === "success" ? serviceRes.data || [] : [];
 
   const { metrics, refreshMetrics, isPending: isMetricsPending } = useAppointmentMetrics(date);
@@ -287,7 +287,7 @@ export function AppointmentsPage({
               events={events}
               densityMode={densityMode}
               staffList={staffList}
-              roomList={roomList}
+              bedList={bedList}
               onEventClick={handleEventClick}
               onSlotClick={handleSlotClick}
               isLoading={isEventsPending && events.length === 0}
@@ -312,7 +312,7 @@ export function AppointmentsPage({
         onPaymentSuccess={handlePaymentSuccess}
         onReviewNeeded={handleReviewNeeded}
         availableStaff={staffList}
-        availableResources={roomList}
+        availableResources={bedList}
         availableServices={serviceList}
       />
 

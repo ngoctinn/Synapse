@@ -18,7 +18,7 @@ import {
 } from "./timeline-header";
 
 interface TimelineRowProps {
-  /** Resource (nhân viên/phòng) */
+  /** Resource (nhân viên/giường) */
   resource: TimelineResource;
   /** Events của resource này */
   events: CalendarEvent[];
@@ -110,7 +110,7 @@ export function TimelineRow({
             )}
           </div>
           <span className="text-muted-foreground text-xs">
-            {resource.type === "staff" ? "Kỹ thuật viên" : "Phòng"}
+            {resource.type === "staff" ? "Kỹ thuật viên" : "Giường"}
           </span>
         </div>
       </div>

@@ -18,13 +18,13 @@ import {
   TagInput,
   showToast,
 } from "@/shared/ui";
-import { Resource, RoomType } from "@/features/resources";
+import { Resource, BedType } from "@/features/resources";
 import { Skill } from "../../model/types";
 import { SkillManagerDialog } from "../skill-manager/skill-manager-dialog";
 import { EquipmentTimelineEditor } from "../equipment-timeline-editor";
 
 interface ServiceResourcesInfoProps {
-  availableRoomTypes: RoomType[];
+  availableBedTypes: BedType[];
   skills: Skill[];
   onSkillsChange: (skills: Skill[]) => void;
   availableEquipment: Resource[];
@@ -32,7 +32,7 @@ interface ServiceResourcesInfoProps {
 }
 
 export function ServiceResourcesInfo({
-  availableRoomTypes,
+  availableBedTypes,
   skills,
   onSkillsChange,
   availableEquipment,
@@ -52,19 +52,19 @@ export function ServiceResourcesInfo({
 
       <FormField
         control={form.control}
-        name="resource_requirements.room_type_id"
+        name="resource_requirements.bed_type_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Loại phòng yêu cầu</FormLabel>
+            <FormLabel>Loại giường yêu cầu</FormLabel>
             <FormControl>
               <Select value={field.value} onValueChange={field.onChange}>
                 <FormControl>
                   <SelectTrigger className="bg-background w-full">
-                    <SelectValue placeholder="-- Chọn loại phòng --" />
+                    <SelectValue placeholder="-- Chọn loại giường --" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {availableRoomTypes.map((t) => (
+                  {availableBedTypes.map((t) => (
                     <SelectItem key={t.id} value={t.id}>
                       {t.name}
                     </SelectItem>

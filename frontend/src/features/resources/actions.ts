@@ -77,7 +77,7 @@ export async function createResource(
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     ...data,
-    capacity: data.type === "ROOM" ? data.capacity : undefined,
+    capacity: data.type === "BED" ? data.capacity : undefined,
   } as Resource;
 
   resources = [newResource, ...resources];
@@ -96,7 +96,7 @@ export async function updateResource(
     ...resources[index],
     ...data,
     updatedAt: new Date().toISOString(),
-    capacity: data.type === "ROOM" ? data.capacity : undefined,
+    capacity: data.type === "BED" ? data.capacity : undefined,
   } as Resource;
 
   resources[index] = updatedResource;
@@ -110,12 +110,12 @@ export async function deleteResource(id: string): Promise<ActionResponse> {
   return success(undefined, "Đã xóa tài nguyên thành công");
 }
 
-export async function getRoomTypes(): Promise<ActionResponse<Resource[]>> {
+export async function getBedTypes(): Promise<ActionResponse<Resource[]>> {
   const res = await getResources();
   if (res.status === "success" && res.data) {
-    return success(res.data.filter((r) => r.type === "ROOM"));
+    return success(res.data.filter((r) => r.type === "BED"));
   }
-  return error(res.message || "Không thể tải loại phòng");
+  return error(res.message || "Không thể tải loại giường");
 }
 
 export async function getEquipmentList(): Promise<ActionResponse<Resource[]>> {

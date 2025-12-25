@@ -21,7 +21,7 @@ export interface EquipmentUsage {
 }
 
 export interface ResourceRequirements {
-  room_type_id?: string;
+  bed_type_id?: string;
   /** Legacy: danh sách ID thiết bị (backward compatible) */
   equipment_ids: string[];
   /** New: cấu hình timeline sử dụng thiết bị */

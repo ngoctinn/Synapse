@@ -78,7 +78,7 @@ export const MOCK_SERVICES: Service[] = [
     id: "svc_04",
     name: "Xông hơi Đá muối Himalaya",
     description:
-      "Thanh lọc cơ thể, đào thải độc tố và tăng cường hệ miễn dịch với phòng xông đá muối nhập khẩu.",
+      "Thanh lọc cơ thể, đào thải độc tố và tăng cường hệ miễn dịch với khu vực xông đá muối nhập khẩu.",
     duration: 30,
     buffer_time: 15,
     price: 150000,

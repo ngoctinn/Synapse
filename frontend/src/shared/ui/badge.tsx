@@ -94,7 +94,7 @@ export type BadgePreset =
   | "resource-in-use"
   | "resource-maintenance"
   // Resource Types
-  | "resource-room"
+  | "resource-bed"
   | "resource-equipment"
   // Invoice Status
   | "invoice-unpaid"
@@ -160,7 +160,7 @@ const BADGE_PRESETS: Record<BadgePreset, PresetConfig> = {
   "resource-maintenance": { variant: "destructive", label: "Bảo trì" },
 
   // === RESOURCE TYPE ===
-  "resource-room": { variant: "info", size: "sm", label: "Phòng" },
+  "resource-bed": { variant: "info", size: "sm", label: "Giường" },
   "resource-equipment": { variant: "secondary", size: "sm", label: "Thiết bị" },
 
   // === INVOICE ===

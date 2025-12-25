@@ -7,10 +7,10 @@ import { Hotel, Users, Zap } from "lucide-react";
 
 export function OperationalStatus() {
   const resources = [
-    { name: "Phòng VIP 1", status: "Occupied", usage: 100 },
-    { name: "Phòng Standard 2", status: "Cleaning", usage: 0 },
+    { name: "Giường VIP 1", status: "Occupied", usage: 100 },
+    { name: "Giường Standard 2", status: "Cleaning", usage: 0 },
     { name: "Khu vực Massage Chân", status: "Available", usage: 20 },
-    { name: "Phòng Xông hơi Nam", status: "Occupied", usage: 80 },
+    { name: "Giường Xông hơi Nam", status: "Occupied", usage: 80 },
   ];
 
   return (

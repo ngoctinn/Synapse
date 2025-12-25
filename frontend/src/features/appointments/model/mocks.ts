@@ -67,37 +67,37 @@ export const MOCK_STAFF: TimelineResource[] = [
 
 export const MOCK_RESOURCES: TimelineResource[] = [
   {
-    id: "room-vip-1",
-    type: "room",
-    name: "Phòng VIP 1",
+    id: "bed-vip-1",
+    type: "bed",
+    name: "Giường VIP 1",
     color: "#FFD700",
     isActive: true,
   },
   {
-    id: "room-vip-2",
-    type: "room",
-    name: "Phòng VIP 2",
+    id: "bed-vip-2",
+    type: "bed",
+    name: "Giường VIP 2",
     color: "#FFD700",
     isActive: true,
   },
   {
-    id: "room-std-1",
-    type: "room",
-    name: "Phòng Thường 1",
+    id: "bed-std-1",
+    type: "bed",
+    name: "Giường Thường 1",
     color: "#C0C0C0",
     isActive: true,
   },
   {
-    id: "room-std-2",
-    type: "room",
-    name: "Phòng Thường 2",
+    id: "bed-std-2",
+    type: "bed",
+    name: "Giường Thường 2",
     color: "#C0C0C0",
     isActive: true,
   },
   {
-    id: "room-sauna",
-    type: "room",
-    name: "Phòng Xông hơi",
+    id: "bed-sauna",
+    type: "bed",
+    name: "Khu vực Xông hơi",
     color: "#8B4513",
     isActive: true,
   },
@@ -325,7 +325,7 @@ export function generateMockAppointments(
       9,
       0,
       "CONFIRMED",
-      "room-vip-1"
+      "bed-vip-1"
     ),
     createApt(
       2,
@@ -336,7 +336,7 @@ export function generateMockAppointments(
       9,
       30,
       "CONFIRMED",
-      "room-std-1"
+      "bed-std-1"
     ),
     createApt(
       3,
@@ -347,7 +347,7 @@ export function generateMockAppointments(
       11,
       0,
       "PENDING",
-      "room-vip-1"
+      "bed-vip-1"
     ),
     createApt(
       4,
@@ -358,7 +358,7 @@ export function generateMockAppointments(
       14,
       0,
       "CONFIRMED",
-      "room-vip-2"
+      "bed-vip-2"
     ),
 
     createApt(5, "cust-5", "staff-2", "svc-nail-gel", 1, 10, 0, "COMPLETED"),
@@ -371,7 +371,7 @@ export function generateMockAppointments(
       10,
       0,
       "IN_PROGRESS",
-      "room-std-2"
+      "bed-std-2"
     ),
     createApt(
       7,
@@ -382,7 +382,7 @@ export function generateMockAppointments(
       13,
       30,
       "CONFIRMED",
-      "room-std-1"
+      "bed-std-1"
     ),
     createApt(
       8,
@@ -393,7 +393,7 @@ export function generateMockAppointments(
       15,
       0,
       "PENDING",
-      "room-vip-1"
+      "bed-vip-1"
     ),
 
     createApt(
@@ -405,7 +405,7 @@ export function generateMockAppointments(
       8,
       0,
       "CONFIRMED",
-      "room-sauna"
+      "bed-sauna"
     ),
     createApt(
       10,
@@ -416,7 +416,7 @@ export function generateMockAppointments(
       9,
       0,
       "CONFIRMED",
-      "room-vip-2"
+      "bed-vip-2"
     ),
     createApt(
       11,
@@ -427,7 +427,7 @@ export function generateMockAppointments(
       11,
       0,
       "CONFIRMED",
-      "room-std-1"
+      "bed-std-1"
     ),
     createApt(12, "cust-4", "staff-2", "svc-nail-gel", 2, 11, 30, "PENDING"),
 
@@ -441,7 +441,7 @@ export function generateMockAppointments(
       10,
       0,
       "CONFIRMED",
-      "room-vip-1"
+      "bed-vip-1"
     ),
     createApt(
       15,
@@ -452,7 +452,7 @@ export function generateMockAppointments(
       14,
       0,
       "NO_SHOW",
-      "room-std-2"
+      "bed-std-2"
     ),
 
     createApt(
@@ -464,7 +464,7 @@ export function generateMockAppointments(
       9,
       30,
       "CONFIRMED",
-      "room-std-1"
+      "bed-std-1"
     ),
     createApt(
       17,
@@ -475,7 +475,7 @@ export function generateMockAppointments(
       11,
       0,
       "CONFIRMED",
-      "room-vip-2"
+      "bed-vip-2"
     ),
     createApt(
       18,
@@ -486,7 +486,7 @@ export function generateMockAppointments(
       15,
       0,
       "PENDING",
-      "room-std-2"
+      "bed-std-2"
     ),
     createApt(
       19,
@@ -497,7 +497,7 @@ export function generateMockAppointments(
       16,
       0,
       "CONFIRMED",
-      "room-vip-1"
+      "bed-vip-1"
     ),
 
     createApt(
@@ -509,7 +509,7 @@ export function generateMockAppointments(
       9,
       0,
       "CONFIRMED",
-      "room-vip-1"
+      "bed-vip-1"
     ),
     createApt(
       21,
@@ -520,7 +520,7 @@ export function generateMockAppointments(
       10,
       0,
       "CONFIRMED",
-      "room-sauna"
+      "bed-sauna"
     ),
     createApt(
       22,
@@ -531,7 +531,7 @@ export function generateMockAppointments(
       10,
       30,
       "PENDING",
-      "room-std-1"
+      "bed-std-1"
     ),
 
     createApt(
@@ -543,7 +543,7 @@ export function generateMockAppointments(
       10,
       0,
       "CONFIRMED",
-      "room-vip-2"
+      "bed-vip-2"
     ),
   ];
 }

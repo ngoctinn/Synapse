@@ -211,7 +211,7 @@ export function MaintenanceTimeline({
                       />
                     ) : (
                       <>
-                        {res.type === "ROOM" ? (
+                        {res.type === "BED" ? (
                           <Bed className="text-muted-foreground/50 h-5 w-5" />
                         ) : (
                           <Box className="text-muted-foreground/50 h-5 w-5" />
@@ -225,7 +225,7 @@ export function MaintenanceTimeline({
                     </div>
                     <div className="mt-0.5 flex items-center gap-1.5">
                       <Badge variant="outline" size="xs">
-                        {res.type === "ROOM" ? "Phòng" : "Thiết bị"}
+                        {res.type === "BED" ? "Giường" : "Thiết bị"}
                       </Badge>
                       <span className="text-muted-foreground truncate font-mono text-[10px]">
                         #{res.code}

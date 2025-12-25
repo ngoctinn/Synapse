@@ -17,7 +17,7 @@ export const MOCK_APPOINTMENTS: Appointment[] = [
     startTime: new Date(Date.now() + 86400000).toISOString(), // Tomorrow
     durationMinutes: 60,
     status: "CONFIRMED",
-    location: "Phòng 201 - Chi nhánh Quận 1",
+    location: "Giường 201 - Chi nhánh Quận 1",
     technicianName: "Trần Thị B",
   },
   {
@@ -26,7 +26,7 @@ export const MOCK_APPOINTMENTS: Appointment[] = [
     startTime: new Date(Date.now() - 86400000 * 2).toISOString(), // 2 days ago
     durationMinutes: 90,
     status: "COMPLETED",
-    location: "Phòng 102 - Chi nhánh Quận 1",
+    location: "Giường 102 - Chi nhánh Quận 1",
     technicianName: "Lê Văn C",
   },
   {
@@ -35,7 +35,7 @@ export const MOCK_APPOINTMENTS: Appointment[] = [
     startTime: new Date(Date.now() + 86400000 * 5).toISOString(), // 5 days later
     durationMinutes: 45,
     status: "PENDING",
-    location: "Phòng 301 - Chi nhánh Quận 1",
+    location: "Giường 301 - Chi nhánh Quận 1",
   },
 ];
 

@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * ResourceTimeline - Timeline view theo nhân viên hoặc phòng
+ * ResourceTimeline - Timeline view theo nhân viên hoặc giường
  *
  * Hiển thị các events theo trục ngang, mỗi hàng là một resource.
  * Hỗ trợ horizontal scroll và zoom.
@@ -40,8 +40,8 @@ interface ResourceTimelineProps {
   events: CalendarEvent[];
   /** Danh sách nhân viên */
   staffList: TimelineResource[];
-  /** Danh sách phòng */
-  roomList: TimelineResource[];
+  /** Danh sách giường */
+  bedList: TimelineResource[];
   /** Callback khi click event */
   onEventClick?: (event: CalendarEvent) => void;
   className?: string;
@@ -53,7 +53,7 @@ export function ResourceTimeline({
   date,
   events,
   staffList,
-  roomList,
+  bedList,
   onEventClick,
   className,
 }: ResourceTimelineProps) {
@@ -67,9 +67,9 @@ export function ResourceTimeline({
 
   // Get active resources based on type
   const resources = useMemo(() => {
-    const list = resourceType === "staff" ? staffList : roomList;
+    const list = resourceType === "staff" ? staffList : bedList;
     return list.filter((r) => r.isActive);
-  }, [resourceType, staffList, roomList]);
+  }, [resourceType, staffList, bedList]);
 
   // Filter events for today and group by resource
   const eventsByResource = useMemo(() => {
@@ -136,12 +136,12 @@ export function ResourceTimeline({
             <span className="hidden sm:inline">Nhân viên</span>
           </ToggleGroupItem>
           <ToggleGroupItem
-            value="room"
+            value="bed"
             size="sm"
             className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground gap-1.5 px-3"
           >
             <DoorOpen className="size-4" />
-            <span className="hidden sm:inline">Phòng</span>
+            <span className="hidden sm:inline">Giường</span>
           </ToggleGroupItem>
         </ToggleGroup>
 
@@ -208,7 +208,7 @@ export function ResourceTimeline({
                 <p className="text-muted-foreground text-sm">
                   {resourceType === "staff"
                     ? "Không có nhân viên nào đang làm việc"
-                    : "Không có phòng nào khả dụng"}
+                    : "Không có giường nào khả dụng"}
                 </p>
               </div>
             </div>

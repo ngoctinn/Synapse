@@ -1,6 +1,6 @@
 "use client";
 
-import { Resource, RoomType } from "@/features/resources";
+import { Resource, BedType } from "@/features/resources";
 import { Service, Skill } from "../model/types";
 import { ServiceSheet } from "./service-sheet";
 
@@ -9,7 +9,7 @@ interface EditServiceDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   availableSkills: Skill[];
-  availableRoomTypes: RoomType[];
+  availableBedTypes: BedType[];
   availableEquipment: Resource[];
 }
 
@@ -18,7 +18,7 @@ export function EditServiceDialog({
   open,
   onOpenChange,
   availableSkills,
-  availableRoomTypes,
+  availableBedTypes,
   availableEquipment,
 }: EditServiceDialogProps) {
   return (
@@ -28,7 +28,7 @@ export function EditServiceDialog({
       open={open}
       onOpenChange={onOpenChange}
       availableSkills={availableSkills}
-      availableRoomTypes={availableRoomTypes}
+      availableBedTypes={availableBedTypes}
       availableEquipment={availableEquipment}
     />
   );

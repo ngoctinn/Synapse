@@ -46,10 +46,10 @@ export function ResourceFilter() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tất cả loại</SelectItem>
-              <SelectItem value="ROOM">
+              <SelectItem value="BED">
                 <div className="flex items-center gap-2">
                   <Bed className="text-muted-foreground size-4" />
-                  <span>Phòng</span>
+                  <span>Giường</span>
                 </div>
               </SelectItem>
               <SelectItem value="EQUIPMENT">

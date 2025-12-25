@@ -37,7 +37,7 @@ export function ResourceSheet({
       name: "",
       code: "",
       groupId: "",
-      type: "ROOM",
+      type: "BED",
       status: "ACTIVE",
       capacity: 1,
       setupTime: 0,

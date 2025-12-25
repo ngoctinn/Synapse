@@ -12,7 +12,7 @@ export type AppointmentStatus =
   | "NO_SHOW";
 
 export type CalendarViewType = "day" | "week" | "month" | "agenda" | "timeline";
-export type ResourceType = "staff" | "room";
+export type ResourceType = "staff" | "bed";
 export type ZoomLevel = 15 | 30 | 60 | 240;
 export type DensityMode = "comfortable" | "compact";
 export type RecurrenceFrequency = "daily" | "weekly" | "monthly" | "yearly";

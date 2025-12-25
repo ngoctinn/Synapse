@@ -116,7 +116,7 @@ export const CALENDAR_VIEW_CONFIG: Record<
   timeline: {
     label: "Timeline",
     icon: "GanttChart",
-    description: "Xem theo nhân viên/phòng",
+    description: "Xem theo nhân viên/giường",
   },
 };
 

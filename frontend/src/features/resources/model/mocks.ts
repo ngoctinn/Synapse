@@ -3,15 +3,15 @@ import { MaintenanceTask, Resource, ResourceGroup } from "./types";
 export const mockResourceGroups: ResourceGroup[] = [
   {
     id: "g1",
-    name: "Phòng VIP",
-    type: "ROOM",
-    description: "Các phòng tiêu chuẩn cao cấp",
+    name: "Giường VIP",
+    type: "BED",
+    description: "Các giường tiêu chuẩn cao cấp",
   },
   {
     id: "g2",
-    name: "Phòng Thường",
-    type: "ROOM",
-    description: "Phòng dịch vụ tiêu chuẩn",
+    name: "Giường Thường",
+    type: "BED",
+    description: "Giường dịch vụ tiêu chuẩn",
   },
   {
     id: "g3",
@@ -22,8 +22,8 @@ export const mockResourceGroups: ResourceGroup[] = [
   {
     id: "g4",
     name: "Giường Spa",
-    type: "ROOM",
-    description: "Giường đơn lẻ trong phòng chung",
+    type: "BED",
+    description: "Giường đơn lẻ trong khu vực chung",
   },
 ];
 
@@ -31,13 +31,13 @@ export const mockResources: Resource[] = [
   {
     id: "r1",
     groupId: "g1",
-    name: "Phòng VIP 1",
+    name: "Giường VIP 1",
     code: "VIP-01",
-    type: "ROOM",
+    type: "BED",
     status: "ACTIVE",
     capacity: 2,
     setupTime: 15,
-    description: "Phòng điều trị VIP với trang thiết bị hiện đại",
+    description: "Giường điều trị VIP với trang thiết bị hiện đại",
     createdAt: "2023-01-01T00:00:00Z",
     updatedAt: "2023-06-15T00:00:00Z",
   },
@@ -58,7 +58,7 @@ export const mockResources: Resource[] = [
     groupId: "g4",
     name: "Giường Massage 05",
     code: "BED-05",
-    type: "ROOM", // Sometime beds are treated as room/slots
+    type: "BED", // Sometime beds are treated as room/slots
     status: "MAINTENANCE",
     capacity: 1,
     setupTime: 5,

@@ -7,6 +7,7 @@ import {
   User,
   ClipboardList,
   ChevronRight,
+  Bed,
 } from "lucide-react";
 
 export default function WorkspacePage() {
@@ -17,7 +18,7 @@ export default function WorkspacePage() {
       customer: "Nguyễn Văn A",
       service: "Massage Trị Liệu",
       time: "14:00 - 15:30",
-      room: "Phòng VIP 2",
+      room: "Giường VIP 2",
       status: "ongoing",
     },
     {
@@ -25,7 +26,7 @@ export default function WorkspacePage() {
       customer: "Trần Thị B",
       service: "Chăm Sóc Da",
       time: "16:00 - 17:00",
-      room: "Standard 1",
+      room: "Giường Standard 1",
       status: "pending",
     },
   ];
@@ -112,7 +113,7 @@ export default function WorkspacePage() {
                             {task.time}
                           </div>
                           <div className="flex items-center gap-1">
-                            <Hotel className="text-muted-foreground size-3" />
+                            <Bed className="text-muted-foreground size-3" />
                             {task.room}
                           </div>
                         </div>
@@ -130,26 +131,4 @@ export default function WorkspacePage() {
   );
 }
 
-function Hotel({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M3 21h18" />
-      <path d="M5 21V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v14" />
-      <path d="M9 11h2" />
-      <path d="M9 15h2" />
-      <path d="M13 11h2" />
-      <path d="M13 15h2" />
-    </svg>
-  );
-}
+

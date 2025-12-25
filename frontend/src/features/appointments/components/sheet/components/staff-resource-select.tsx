@@ -67,14 +67,14 @@ export function StaffResourceSelect({
         name="resourceId"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Phòng / Giường</FormLabel>
+            <FormLabel>Giường</FormLabel>
             <Select
               value={field.value || ""}
               onValueChange={(value) => field.onChange(value || undefined)}
             >
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="Chọn phòng (không bắt buộc)" />
+                  <SelectValue placeholder="Chọn giường (không bắt buộc)" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>

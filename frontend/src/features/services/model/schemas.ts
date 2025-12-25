@@ -36,7 +36,7 @@ export const serviceSchema = z.object({
   category: z.string().optional(), // @deprecated
   resource_requirements: z
     .object({
-      room_type_id: z.string().optional(),
+      bed_type_id: z.string().optional(),
       equipment_ids: z.array(z.string()).default([]), // Legacy: backward compatible
       equipment_usage: z.array(equipmentUsageSchema).default([]), // New: timeline-based
     })

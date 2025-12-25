@@ -21,7 +21,7 @@ export const MOCK_REVIEWS: Review[] = [
     customerName: "Nguyễn Văn An",
     serviceName: "Massage toàn thân 60'",
     rating: 4,
-    comment: "Massage thư giãn, nhưng phòng hơi lạnh một chút.",
+    comment: "Massage thư giãn, nhưng khu vực nằm hơi lạnh một chút.",
     createdAt: subDays(new Date(), 5),
     updatedAt: subDays(new Date(), 5),
   },

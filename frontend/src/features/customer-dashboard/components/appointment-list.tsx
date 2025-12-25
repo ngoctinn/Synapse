@@ -130,7 +130,7 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
                     <div className="bg-muted text-muted-foreground flex h-8 w-8 items-center justify-center rounded-full">
                       <MapPin className="size-4" aria-hidden="true" />
                     </div>
-                    <span>{appt.resourceName || "Chưa xếp phòng"}</span>
+                    <span>{appt.resourceName || "Chưa xếp giường"}</span>
                   </div>
                 )}
 

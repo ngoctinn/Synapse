@@ -86,7 +86,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
               <FormItem>
                 <FormLabel required>Tên tài nguyên</FormLabel>
                 <FormControl>
-                  <Input placeholder="Ví dụ: Phòng VIP 1" {...field} />
+                  <Input placeholder="Ví dụ: Giường VIP 1" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -101,7 +101,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
                 <FormItem>
                   <FormLabel required>Mã định danh</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ví dụ: R-VIP-01" {...field} />
+                    <Input placeholder="Ví dụ: B-VIP-01" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -208,7 +208,7 @@ export function ResourceForm({ mode, groups, className }: ResourceFormProps) {
             )}
           />
 
-          {resourceType === "ROOM" && (
+          {resourceType === "BED" && (
             <FormField
               control={form.control}
               name="capacity"

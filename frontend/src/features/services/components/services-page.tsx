@@ -1,6 +1,6 @@
 "use client";
 
-import { Resource, RoomType } from "@/features/resources";
+import { Resource, BedType } from "@/features/resources";
 import {
   PageContent,
   PageHeader,
@@ -24,7 +24,7 @@ import { SkillTable } from "./skill-table";
 interface ServicesPageProps {
   page: number;
   skills: Skill[];
-  roomTypes: RoomType[];
+  bedTypes: BedType[];
   equipmentList: Resource[];
   servicesPromise: Promise<ActionResponse<PaginatedResponse<Service>>>;
 }
@@ -32,13 +32,13 @@ interface ServicesPageProps {
 function ServiceListWrapper({
   servicesPromise,
   skills,
-  roomTypes,
+  bedTypes,
   equipmentList,
   page,
 }: {
   servicesPromise: Promise<ActionResponse<PaginatedResponse<Service>>>;
   skills: Skill[];
-  roomTypes: RoomType[];
+  bedTypes: BedType[];
   equipmentList: Resource[];
   page: number;
 }) {
@@ -63,7 +63,7 @@ function ServiceListWrapper({
     <ServiceTable
       services={data}
       availableSkills={skills}
-      availableRoomTypes={roomTypes}
+      availableBedTypes={bedTypes}
       availableEquipment={equipmentList}
       page={page}
       totalPages={totalPages}
@@ -78,7 +78,7 @@ function ServiceListWrapper({
 export function ServicesPage({
   page,
   skills,
-  roomTypes,
+  bedTypes,
   equipmentList,
   servicesPromise,
 }: ServicesPageProps) {
@@ -165,7 +165,7 @@ export function ServicesPage({
             {isServiceTab ? (
               <CreateServiceWizard
                 availableSkills={skills}
-                availableRoomTypes={roomTypes}
+                availableBedTypes={bedTypes}
                 availableEquipment={equipmentList}
               />
             ) : (
@@ -185,7 +185,7 @@ export function ServicesPage({
                   <ServiceListWrapper
                     servicesPromise={servicesPromise}
                     skills={skills}
-                    roomTypes={roomTypes}
+                    bedTypes={bedTypes}
                     equipmentList={equipmentList}
                     page={page}
                   />

@@ -92,9 +92,9 @@ export function ResourceTable({
       header: "Loại",
       cell: (row) => (
         <Badge
-          preset={row.type === "ROOM" ? "resource-room" : "resource-equipment"}
+          preset={row.type === "BED" ? "resource-bed" : "resource-equipment"}
         >
-          {row.type === "ROOM" ? (
+          {row.type === "BED" ? (
             <Icon icon={Bed} />
           ) : (
             <Icon icon={Box} />
@@ -118,7 +118,7 @@ export function ResourceTable({
     {
       header: "Chi tiết",
       cell: (row) => {
-        if (row.type === "ROOM") {
+        if (row.type === "BED") {
           return (
             <div className="text-sm">
               <span className="text-muted-foreground">

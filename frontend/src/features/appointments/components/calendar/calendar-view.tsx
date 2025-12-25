@@ -22,7 +22,7 @@ interface CalendarViewProps {
   events: CalendarEvent[];
   densityMode?: DensityMode;
   staffList?: TimelineResource[];
-  roomList?: TimelineResource[];
+  bedList?: TimelineResource[];
   onEventClick?: (event: CalendarEvent) => void;
   onSlotClick?: (date: Date, hour: number, minute: number) => void;
   onDayClick?: (date: Date) => void;
@@ -42,7 +42,7 @@ export function CalendarView({
   events,
   densityMode = "comfortable",
   staffList = [],
-  roomList = [],
+  bedList = [],
   onEventClick,
   onSlotClick,
   onDayClick,
@@ -130,7 +130,7 @@ export function CalendarView({
           date={date}
           events={events}
           staffList={staffList}
-          roomList={roomList}
+          bedList={bedList}
           onEventClick={onEventClick}
           className={className}
         />

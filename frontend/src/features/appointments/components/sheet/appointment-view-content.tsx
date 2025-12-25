@@ -23,7 +23,7 @@ interface AppointmentViewContentProps {
 
 /**
  * Nội dung chi tiết lịch hẹn trong View Mode
- * Bao gồm: Thời gian, Khách hàng, KTV, Phòng, Ghi chú
+ * Bao gồm: Thời gian, Khách hàng, KTV, Giường, Ghi chú
  */
 export function AppointmentViewContent({
   event,
@@ -103,7 +103,7 @@ export function AppointmentViewContent({
           <div className="space-y-3">
             <h3 className="text-muted-foreground flex items-center gap-2 text-sm font-medium">
               <MapPin className="size-4" />
-              Phòng / Giường
+              Giường
             </h3>
             <div className="font-medium">{appointment.resourceName}</div>
           </div>

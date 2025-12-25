@@ -1,6 +1,6 @@
 "use client";
 
-import { Resource, RoomType } from "@/features/resources";
+import { Resource, BedType } from "@/features/resources";
 import {
   useBulkAction,
   useTableParams,
@@ -34,7 +34,7 @@ import { ServiceSheet } from "./service-sheet";
 interface ServiceTableProps {
   services: Service[];
   availableSkills: Skill[];
-  availableRoomTypes: RoomType[];
+  availableBedTypes: BedType[];
   availableEquipment: Resource[];
   page?: number;
   totalPages?: number;
@@ -48,7 +48,7 @@ interface ServiceTableProps {
 export function ServiceTable({
   services,
   availableSkills,
-  availableRoomTypes,
+  availableBedTypes,
   availableEquipment,
   page: pageProp,
   totalPages = 1,
@@ -224,7 +224,7 @@ export function ServiceTable({
             action={
               <CreateServiceWizard
                 availableSkills={availableSkills}
-                availableRoomTypes={availableRoomTypes}
+                availableBedTypes={availableBedTypes}
                 availableEquipment={availableEquipment}
               />
             }
@@ -246,7 +246,7 @@ export function ServiceTable({
           open={!!editingService}
           onOpenChange={(open) => !open && setEditingService(null)}
           availableSkills={availableSkills}
-          availableRoomTypes={availableRoomTypes}
+          availableBedTypes={availableBedTypes}
           availableEquipment={availableEquipment}
         />
       )}

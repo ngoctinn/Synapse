@@ -1,6 +1,6 @@
 "use client";
 
-import { Resource, RoomType } from "@/features/resources";
+import { Resource, BedType } from "@/features/resources";
 import { cn } from "@/shared/lib/utils";
 import { FormTabs, FormTabsContent } from "@/shared/ui/custom/form-tabs";
 import { useState } from "react";
@@ -13,7 +13,7 @@ import { ServiceResourcesInfo } from "./service-form/service-resources-info";
 interface ServiceFormProps {
   mode: "create" | "update";
   availableSkills: Skill[];
-  availableRoomTypes: RoomType[];
+  availableBedTypes: BedType[];
   availableEquipment: Resource[];
   availableCategories: ServiceCategory[];
   className?: string;
@@ -28,7 +28,7 @@ const SERVICE_FORM_TABS = [
 export function ServiceForm({
   mode,
   availableSkills,
-  availableRoomTypes,
+  availableBedTypes,
   availableEquipment,
   availableCategories,
   className,
@@ -67,7 +67,7 @@ export function ServiceForm({
             <h3 className="text-base font-semibold">Tài nguyên yêu cầu</h3>
           </div>
           <ServiceResourcesInfo
-            availableRoomTypes={availableRoomTypes}
+            availableBedTypes={availableBedTypes}
             skills={skills}
             onSkillsChange={setSkills}
             availableEquipment={availableEquipment}
@@ -94,7 +94,7 @@ export function ServiceForm({
           </FormTabsContent>
           <FormTabsContent value="resources" className="mt-0">
             <ServiceResourcesInfo
-              availableRoomTypes={availableRoomTypes}
+              availableBedTypes={availableBedTypes}
               skills={skills}
               onSkillsChange={setSkills}
               availableEquipment={availableEquipment}

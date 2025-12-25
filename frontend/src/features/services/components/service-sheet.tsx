@@ -1,4 +1,4 @@
-import { Resource, RoomType } from "@/features/resources";
+import { Resource, BedType } from "@/features/resources";
 import {
   Button,
   Form,
@@ -21,7 +21,7 @@ interface ServiceSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   availableSkills: Skill[];
-  availableRoomTypes: RoomType[];
+  availableBedTypes: BedType[];
   availableEquipment: Resource[];
 }
 
@@ -31,7 +31,7 @@ export function ServiceSheet({
   open,
   onOpenChange,
   availableSkills,
-  availableRoomTypes,
+  availableBedTypes,
   availableEquipment,
 }: ServiceSheetProps) {
   const isUpdateMode = mode === "update";
@@ -48,7 +48,7 @@ export function ServiceSheet({
       color: service.color || SERVICE_DEFAULT_VALUES.color,
       description: service.description || "",
       resource_requirements: {
-        room_type_id: service.resource_requirements?.room_type_id || undefined,
+        bed_type_id: service.resource_requirements?.bed_type_id || undefined,
         equipment_ids: service.resource_requirements?.equipment_ids || [],
         equipment_usage: service.resource_requirements?.equipment_usage || [],
       },
@@ -81,7 +81,7 @@ export function ServiceSheet({
       color: SERVICE_DEFAULT_VALUES.color,
       description: "",
       resource_requirements: {
-        room_type_id: undefined,
+        bed_type_id: undefined,
         equipment_ids: [],
         equipment_usage: [],
       },
@@ -147,7 +147,7 @@ export function ServiceSheet({
           <ServiceForm
             mode={mode}
             availableSkills={availableSkills}
-            availableRoomTypes={availableRoomTypes}
+            availableBedTypes={availableBedTypes}
             availableEquipment={availableEquipment}
             availableCategories={MOCK_CATEGORIES}
             className="flex-1"

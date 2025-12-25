@@ -1,6 +1,6 @@
 "use client";
 
-import { Resource, RoomType } from "@/features/resources";
+import { Resource, BedType } from "@/features/resources";
 import { Button } from "@/shared/ui/button";
 import { Plus } from "lucide-react";
 import { useState } from "react";
@@ -9,13 +9,13 @@ import { ServiceSheet } from "./service-sheet";
 
 interface CreateServiceWizardProps {
   availableSkills: Skill[];
-  availableRoomTypes: RoomType[];
+  availableBedTypes: BedType[];
   availableEquipment: Resource[];
 }
 
 export function CreateServiceWizard({
   availableSkills,
-  availableRoomTypes,
+  availableBedTypes,
   availableEquipment,
 }: CreateServiceWizardProps) {
   const [open, setOpen] = useState(false);
@@ -36,7 +36,7 @@ export function CreateServiceWizard({
         open={open}
         onOpenChange={setOpen}
         availableSkills={availableSkills}
-        availableRoomTypes={availableRoomTypes}
+        availableBedTypes={availableBedTypes}
         availableEquipment={availableEquipment}
       />
     </>

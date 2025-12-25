@@ -1,4 +1,4 @@
-export type ResourceType = "ROOM" | "EQUIPMENT";
+export type ResourceType = "BED" | "EQUIPMENT";
 export type ResourceStatus = "ACTIVE" | "MAINTENANCE" | "INACTIVE";
 
 export interface ResourceGroup {
@@ -24,7 +24,7 @@ export interface Resource {
   setupTime?: number;
 }
 
-export type RoomType = Resource;
+export type BedType = Resource;
 
 export type MaintenanceStatus =
   | "scheduled"

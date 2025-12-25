@@ -77,7 +77,7 @@ export function TimelineHeader({
       {/* Resource column header (sticky left) */}
       <div className="bg-background border-border/50 sticky left-0 z-30 w-48 flex-shrink-0 border-r p-2">
         <span className="text-muted-foreground text-xs font-medium">
-          Nhân viên / Phòng
+          Nhân viên / Giường
         </span>
       </div>
 
