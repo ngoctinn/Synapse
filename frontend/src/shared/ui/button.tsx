@@ -15,9 +15,9 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground hover:bg-primary/90",
+          "bg-primary/90 text-primary-foreground border border-primary shadow hover:bg-primary",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          "bg-destructive/90 text-destructive-foreground border border-destructive shadow-sm hover:bg-destructive",
         outline:
           "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         secondary:
@@ -28,13 +28,13 @@ const buttonVariants = cva(
         "ghost-destructive":
           "text-destructive hover:bg-destructive/10 hover:text-destructive",
         success:
-          "bg-alert-success text-alert-success-foreground border-alert-success-border hover:bg-alert-success/90",
+          "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 hover:bg-emerald-500/20 dark:bg-emerald-500/20 dark:border-emerald-500/30 dark:text-emerald-500 dark:hover:bg-emerald-500/30",
         warning:
-          "bg-alert-warning text-alert-warning-foreground border-alert-warning-border hover:bg-alert-warning/90",
+          "bg-amber-500/10 text-amber-600 border border-amber-500/20 hover:bg-amber-500/20 dark:bg-amber-500/20 dark:border-amber-500/30 dark:text-amber-500 dark:hover:bg-amber-500/30",
         "outline-success":
-          "border-alert-success-border text-alert-success-foreground bg-transparent hover:bg-alert-success/10",
+          "border border-emerald-500/50 text-emerald-600 bg-transparent hover:bg-emerald-500/10 dark:text-emerald-500 dark:border-emerald-500/30",
         "outline-warning":
-          "border-alert-warning-border text-alert-warning-foreground bg-transparent hover:bg-alert-warning/10",
+          "border border-amber-500/50 text-amber-600 bg-transparent hover:bg-amber-500/10 dark:text-amber-500 dark:border-amber-500/30",
       },
       size: {
         default: "h-10 px-4 py-2",

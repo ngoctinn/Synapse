@@ -41,6 +41,8 @@ const tabsListVariants = cva(
         underline: "bg-transparent border-b rounded-none p-0 gap-1",
         /** Ghost - không có nền, chỉ cho inline navigation */
         ghost: "bg-transparent p-0 gap-1",
+        /** Segmented Control - style có viền, divider và active primary */
+        segment: "bg-background border rounded-md p-0 divide-x overflow-hidden inline-flex items-center justify-center text-muted-foreground",
       },
       size: {
         /** Compact cho inline/popup (36px) */
@@ -56,7 +58,7 @@ const tabsListVariants = cva(
         false: "w-fit",
       },
     },
-      defaultVariants: {
+    defaultVariants: {
       variant: "default",
       size: "default",
       fullWidth: false,
@@ -141,6 +143,12 @@ const tabsTriggerVariants = cva(
           "rounded-lg px-3 py-1.5",
           "hover:text-foreground hover:bg-accent",
           "data-[state=active]:text-foreground data-[state=active]:font-semibold",
+        ],
+        /** Segmented - active primary tint */
+        segment: [
+          "rounded-none h-full px-4 py-1.5",
+          "hover:bg-primary/5 hover:text-foreground",
+          "data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:font-semibold",
         ],
       },
       size: {
