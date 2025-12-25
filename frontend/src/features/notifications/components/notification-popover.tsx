@@ -5,7 +5,7 @@ import { Button } from "@/shared/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { CheckCheck, Settings } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNotificationStore } from "../hooks/use-notification-store";
 import { NotificationList } from "./notification-list";
 
@@ -18,7 +18,14 @@ export function NotificationPopover({ children }: NotificationPopoverProps) {
   const unreadCount = useNotificationStore((state) => state.unreadCount);
   const markAllAsRead = useNotificationStore((state) => state.markAllAsRead);
   const markAsRead = useNotificationStore((state) => state.markAsRead);
+  const fetchNotifications = useNotificationStore(
+    (state) => state.fetchNotifications
+  );
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
 
   const handleMarkAllRead = () => {
     markAllAsRead();

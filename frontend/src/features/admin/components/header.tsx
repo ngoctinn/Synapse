@@ -28,7 +28,7 @@ import {
 } from "@/shared/ui";
 import { LogOut, Settings, User } from "lucide-react";
 import { usePathname } from "next/navigation";
-import React, { useEffect } from "react";
+import React from "react";
 import dynamic from "next/dynamic";
 
 const CommandMenu = dynamic(
@@ -61,15 +61,8 @@ export function AdminHeader({
 }: AdminHeaderProps) {
   const pathname = usePathname();
   const unreadCount = useNotificationStore((state) => state.unreadCount);
-  const fetchNotifications = useNotificationStore(
-    (state) => state.fetchNotifications
-  );
 
   const pathSegments = pathname.split("/").filter(Boolean);
-
-  useEffect(() => {
-    fetchNotifications();
-  }, [fetchNotifications]);
 
 
   return (

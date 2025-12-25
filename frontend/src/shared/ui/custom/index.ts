@@ -17,7 +17,6 @@ export * from "./filter-select";
 export * from "./form-tabs";
 export * from "./icon";
 export * from "./masked-date-input";
-export * from "./optional-mark";
 export * from "./pagination-controls";
 export * from "./password-input";
 export * from "./required-mark";

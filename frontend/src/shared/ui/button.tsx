@@ -6,7 +6,6 @@ import * as React from "react";
 import {
   type ButtonVariant,
   type ComponentSize,
-  warnDeprecated,
 } from "@/shared/lib/design-system.types";
 import { cn } from "@/shared/lib/utils";
 
@@ -98,17 +97,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
-    // Deprecation warnings
-    if (loading) {
-      warnDeprecated("Button", "loading", "isLoading");
-    }
-    if (leftIcon) {
-      warnDeprecated("Button", "leftIcon", "startContent");
-    }
-    if (rightIcon) {
-      warnDeprecated("Button", "rightIcon", "endContent");
-    }
-
     const Comp = asChild ? Slot : "button";
     const isRunning = isLoading || loading;
 

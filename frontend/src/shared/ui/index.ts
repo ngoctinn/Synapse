@@ -28,7 +28,7 @@ export { DeleteConfirmDialog } from "./custom/delete-confirm-dialog";
 export { DurationPicker } from "./custom/duration-picker";
 export { FilterButton } from "./custom/filter-button";
 export { MaskedDateInput } from "./custom/masked-date-input";
-export { OptionalMark } from "./custom/optional-mark";
+export { OptionalMark } from "./form";
 export { PaginationControls } from "./custom/pagination-controls";
 export { RequiredMark } from "./custom/required-mark";
 export { SettingsHeader } from "./custom/settings-header";
@@ -211,7 +211,8 @@ export { Skeleton } from "./skeleton";
 export { Spinner } from "./spinner";
 
 // Badge - Export both for flexibility
-export { BADGE_PRESETS, Badge, badgeVariants } from "./badge";
+export { Badge, badgeVariants } from "./badge";
+export { BADGE_PRESETS } from "./badge-presets";
 export type { BadgePreset, BadgeVariant } from "./badge";
 
 // ==========================================

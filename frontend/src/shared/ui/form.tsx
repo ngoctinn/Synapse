@@ -173,4 +173,17 @@ export {
   FormLabel,
   FormMessage,
   useFormField,
+  OptionalMark,
 };
+
+function OptionalMark() {
+  return (
+    <span
+      className="text-muted-foreground ml-1 text-xs font-normal"
+      aria-hidden="true"
+    >
+      (Tùy chọn)
+    </span>
+  );
+}
+

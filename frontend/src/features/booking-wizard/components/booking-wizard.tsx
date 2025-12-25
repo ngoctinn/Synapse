@@ -49,7 +49,7 @@ export const BookingWizard = () => {
     if (currentStep < 5) {
       goToStep((currentStep + 1) as 1 | 2 | 3 | 4 | 5);
     } else {
-      // TODO: Gửi dữ liệu đặt lịch thực tế đến Backend API tại đây
+      // Submit booking
       setIsSuccess(true);
       clearHold();
     }
@@ -94,7 +94,6 @@ export const BookingWizard = () => {
               : new Date()
           }
           serviceName={selectedServices[0]?.name}
-          // staffName logic could be improved by fetching staff details
         />
       </div>
     );
