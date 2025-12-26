@@ -6,12 +6,13 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 const currencyFormatter = new Intl.NumberFormat("vi-VN", {
-  style: "currency",
-  currency: "VND",
+  style: "decimal", // Use decimal style first
+  maximumFractionDigits: 0,
 });
 
 export function formatCurrency(amount: number): string {
-  return currencyFormatter.format(amount);
+  // Append VND explicitly as requested
+  return `${currencyFormatter.format(amount)} VND`;
 }
 
 /**

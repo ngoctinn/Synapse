@@ -68,7 +68,7 @@ export function SkillTable({
     {
       header: "Tên kỹ năng",
       cell: (skill) => (
-        <span className="text-foreground group-hover:text-primary font-serif text-lg tracking-tight transition-colors">
+        <span className="text-foreground group-hover:text-primary font-medium transition-colors">
           {skill.name}
         </span>
       ),

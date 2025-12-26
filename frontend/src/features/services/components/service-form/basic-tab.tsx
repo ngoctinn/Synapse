@@ -12,6 +12,7 @@ import {
   SelectValue,
   Slider,
   Textarea,
+  Switch,
 } from "@/shared/ui";
 import { useFormContext } from "react-hook-form";
 import { ServiceFormValues } from "../../model/schemas";
@@ -83,8 +84,8 @@ export function BasicTab({ categories }: BasicTabProps) {
                   placeholder="0"
                   value={field.value}
                   onChange={field.onChange}
-                  suffix="đ"
-                  className="pr-8" // spacing for suffix
+                  suffix="VND"
+                  step={1000}
                 />
               </FormControl>
               <FormMessage />
@@ -164,6 +165,30 @@ export function BasicTab({ categories }: BasicTabProps) {
               />
             </FormControl>
             <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {/* Active Status */}
+      <FormField
+        control={form.control}
+        name="is_active"
+        render={({ field }) => (
+          <FormItem>
+              <div className="flex items-center justify-between rounded-lg border p-4 shadow-sm">
+                <div className="space-y-0.5">
+                  <FormLabel className="text-base">Trạng thái hoạt động</FormLabel>
+                   <p className="text-muted-foreground text-sm">
+                    Dịch vụ sẽ hiển thị trên trang đặt lịch của khách hàng khi bật.
+                  </p>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+              </div>
           </FormItem>
         )}
       />

@@ -6,6 +6,7 @@
     SheetClose,
   } from "@/shared/ui";
   import { ActionSheet, Icon } from "@/shared/ui/custom";
+  import { Group, Stack } from "@/shared/ui/layout";
   import { Save, Send } from "lucide-react";
   import { useCallback } from "react";
   import { createService, updateService } from "../actions";
@@ -117,12 +118,11 @@
         isPending={isPending}
         isDirty={isDirty}
         footer={
-          <>
+          <Group justify="end" gap={2} className="w-full">
             <SheetClose asChild>
               <Button
                 variant="outline"
                 disabled={isPending}
-                className="min-w-[100px]"
               >
                 Hủy
               </Button>
@@ -131,28 +131,32 @@
               type="submit"
               form="service-form"
               isLoading={isPending}
-              className="px-8"
               startContent={<Icon icon={isUpdateMode ? Save : Send} />}
             >
               {isUpdateMode ? "Lưu thay đổi" : "Tạo dịch vụ"}
             </Button>
-          </>
+          </Group>
         }
       >
         <Form {...form}>
-          <form
-            id="service-form"
-            onSubmit={onSubmit}
-            className="flex h-full flex-col"
+          <Stack
+            gap={0}
+            asChild
+            className="h-full"
           >
-            <ServiceForm
-              mode={mode}
-              availableSkills={availableSkills}
-              availableCategories={MOCK_CATEGORIES}
-              availableResourceGroups={availableResourceGroups}
-              className="flex-1"
-            />
-          </form>
+             <form
+              id="service-form"
+              onSubmit={onSubmit}
+            >
+              <ServiceForm
+                mode={mode}
+                availableSkills={availableSkills}
+                availableCategories={MOCK_CATEGORIES}
+                availableResourceGroups={availableResourceGroups}
+                className="flex-1"
+              />
+            </form>
+          </Stack>
         </Form>
       </ActionSheet>
     );

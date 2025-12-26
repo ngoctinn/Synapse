@@ -21,8 +21,7 @@ export function CreateSkillDialog() {
       <DialogTrigger asChild>
         <Button
           size="sm"
-          className="text-xs shadow-sm transition-all hover:scale-[1.02]"
-          startContent={<Plus className="size-3.5" />}
+          startContent={<Plus className="size-4" />}
         >
           Thêm kỹ năng
         </Button>

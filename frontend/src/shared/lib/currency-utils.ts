@@ -54,6 +54,17 @@ export function formatCurrency(
   }
 
   // Standard format
+  // Standard format
+  // Fix: User requested "VND" instead of default "₫" symbol
+  if (currency === "VND" && showSymbol) {
+    const formatter = new Intl.NumberFormat(locale, {
+      style: "decimal",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+    return `${formatter.format(amount)} VND`;
+  }
+
   const formatter = new Intl.NumberFormat(locale, {
     style: showSymbol ? "currency" : "decimal",
     currency: showSymbol ? currency : undefined,
