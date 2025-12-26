@@ -11,6 +11,8 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/shared/ui/alert";
+import { format, addDays } from "date-fns";
+import { vi } from "date-fns/locale";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -236,6 +238,9 @@ import { Kbd } from "@/shared/ui/kbd";
 import { Spinner } from "@/shared/ui/spinner";
 import { Toggle, toggleVariants } from "@/shared/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/shared/ui/toggle-group";
+import { ConfirmDialog } from "@/shared/ui/custom/confirm-dialog";
+import { TimePicker } from "@/shared/ui/custom/time-picker";
+import { cn } from "@/shared/lib/utils";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -245,6 +250,7 @@ import Link from "next/link";
 import {
   Calculator,
   CalendarDays,
+  Clock,
   CreditCard,
   Moon,
   Settings,
@@ -271,6 +277,11 @@ type ShowcaseFormValues = z.infer<typeof showcaseSchema>;
 export default function DesignSystemPage() {
     const { setTheme, theme } = useTheme();
     const [date, setDate] = useState<Date | undefined>(new Date());
+    const [range, setRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
+      from: new Date(),
+      to: addDays(new Date(), 7),
+    });
+    const [time, setTimeValue] = useState<string>("09:00");
 
     const form = useForm<ShowcaseFormValues>({
       resolver: zodResolver(showcaseSchema),
@@ -483,26 +494,82 @@ export default function DesignSystemPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Lịch dự kiến</Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={"outline"}
-                            className="w-full h-14 justify-start text-left font-normal border-input hover:bg-muted/50 transition-colors"
-                          >
-                            <CalendarDays className="mr-2 size-4 text-primary" />
-                            {date ? date.toLocaleDateString("vi-VN") : <span>Chọn ngày hẹn</span>}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0 border-none shadow-premium-lg" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={date}
-                            onSelect={setDate}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
+                      <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Lịch dự kiến (Single & Range)</Label>
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant={"outline"}
+                              className="group w-full h-14 justify-start text-left font-normal border-input hover:bg-accent/50 transition-all focus-premium data-[state=open]:border-primary/80 data-[state=open]:ring-[1.5px] data-[state=open]:ring-primary/20"
+                            >
+                              <CalendarDays className="mr-2 size-4 text-muted-foreground/60 transition-colors group-data-[state=open]:text-primary" />
+                              <span className={cn("text-sm transition-colors", !date && "text-muted-foreground/60", date && "text-foreground")}>
+                                {date ? format(date, "dd/MM/yyyy", { locale: vi }) : "Chọn ngày hẹn"}
+                              </span>
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0 border-none shadow-premium-lg" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={date}
+                              onSelect={setDate}
+                              initialFocus
+                              locale={vi}
+                            />
+                          </PopoverContent>
+                        </Popover>
+
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant={"outline"}
+                              className="group w-full h-14 justify-start text-left font-normal border-input hover:bg-accent/50 transition-all focus-premium data-[state=open]:border-primary/80 data-[state=open]:ring-[1.5px] data-[state=open]:ring-primary/20"
+                            >
+                              <CalendarDays className="mr-2 size-4 text-muted-foreground/60 transition-colors group-data-[state=open]:text-primary" />
+                              <span className={cn("text-sm transition-colors", !range?.from && "text-muted-foreground/60", range?.from && "text-foreground")}>
+                                {range?.from ? (
+                                  range.to ? (
+                                    <>
+                                      {format(range.from, "dd/MM")} - {format(range.to, "dd/MM")}
+                                    </>
+                                  ) : (
+                                    format(range.from, "dd/MM/yyyy")
+                                  )
+                                ) : (
+                                  "Chọn khoảng thời gian"
+                                )}
+                              </span>
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0 border-none shadow-premium-lg" align="start">
+                            <Calendar
+                              mode="range"
+                              selected={range}
+                              onSelect={(val) => setRange(val as any)}
+                              initialFocus
+                              locale={vi}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 pt-2">
+                       <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Chọn giờ (Time Picker - 24h Premium)</Label>
+                       <div className="space-y-3">
+                         <div className="space-y-1.5">
+                            <Label className="text-[11px] text-muted-foreground">Giờ hẹn chuẩn</Label>
+                            <TimePicker value={time} onChange={setTimeValue} />
+                         </div>
+                         <div className="space-y-1.5">
+                            <Label className="text-[11px] text-muted-foreground">Vô hiệu hóa (Disabled)</Label>
+                            <TimePicker disabled value="09:00" />
+                         </div>
+                         <div className="space-y-1.5">
+                            <Label className="text-[11px] text-muted-foreground">Cảnh báo lỗi (Error)</Label>
+                            <TimePicker hasError value="00:00" />
+                         </div>
+                       </div>
                     </div>
 
                     <FormField
@@ -583,15 +650,21 @@ export default function DesignSystemPage() {
                 <Separator className="opacity-50" />
 
                 <div className="space-y-4">
-                  <h4 className="text-xs font-semibold text-muted-foreground uppercase">Badges & Indicators</h4>
+                  <h4 className="text-xs font-semibold text-muted-foreground uppercase">Premium Soft Chips (Badge)</h4>
                   <div className="flex flex-wrap gap-2">
-                    <Badge variant="default">Default</Badge>
-                    <Badge variant="emerald">Active</Badge>
-                    <Badge variant="destructive">Critical</Badge>
-                    <Badge variant="warning">Pending</Badge>
-                    <Badge variant="secondary">Draft</Badge>
+                    <Badge variant="default">Mặc định</Badge>
+                    <Badge variant="success">Hoàn thành</Badge>
+                    <Badge variant="destructive">Đã hủy</Badge>
+                    <Badge variant="warning">Chờ xử lý</Badge>
+                    <Badge variant="info">Đang đến</Badge>
+                    <Badge variant="orange">Mới</Badge>
+                    <Badge variant="violet">Khách VIP</Badge>
+                    <Badge variant="emerald">Emerald</Badge>
+                    <Badge variant="indigo">Indigo</Badge>
+                    <Badge variant="amber">Amber</Badge>
+                    <Badge variant="secondary">Secondary</Badge>
                     <Badge variant="outline">Outline</Badge>
-                    <Badge variant="violet" className="animate-pulse">Live</Badge>
+                    <Badge variant="glass" className="bg-slate-900/80">Glass Style</Badge>
                   </div>
                 </div>
 
@@ -619,12 +692,12 @@ export default function DesignSystemPage() {
               </CardHeader>
               <CardContent className="space-y-8">
                 <div className="space-y-4">
-                  <h4 className="text-xs font-semibold text-muted-foreground uppercase">Segmented Control (New)</h4>
+                  <h4 className="text-xs font-semibold text-muted-foreground uppercase">Premium Soft Tabs (Bordered)</h4>
                   <Tabs defaultValue="active" className="w-full">
-                    <TabsList variant="segment" fullWidth className="h-11">
-                      <TabsTrigger variant="segment" value="active" stretch>Hoạt động</TabsTrigger>
-                      <TabsTrigger variant="segment" value="pending" stretch>Chờ duyệt</TabsTrigger>
-                      <TabsTrigger variant="segment" value="history" stretch>Lịch sử</TabsTrigger>
+                    <TabsList variant="soft" fullWidth className="h-11">
+                      <TabsTrigger variant="soft" value="active" stretch>Hoạt động</TabsTrigger>
+                      <TabsTrigger variant="soft" value="pending" stretch>Chờ duyệt</TabsTrigger>
+                      <TabsTrigger variant="soft" value="history" stretch>Lịch sử</TabsTrigger>
                     </TabsList>
                   </Tabs>
                 </div>
@@ -709,7 +782,7 @@ export default function DesignSystemPage() {
 
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="destructive" className="opacity-90 hover:opacity-100">Xóa bản ghi</Button>
+                    <Button variant="destructive" className="opacity-90 hover:opacity-100">Xác nhận nguy hiểm</Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent className="border-none shadow-premium-lg">
                     <AlertDialogHeader>
@@ -717,25 +790,28 @@ export default function DesignSystemPage() {
                       <AlertDialogDescription>Dữ liệu khách hàng sẽ bị xóa vĩnh viễn khỏi hệ thống quản lý Spa.</AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel className="rounded-lg">Hủy bỏ</AlertDialogCancel>
-                      <AlertDialogAction className="bg-destructive hover:bg-destructive/90 rounded-lg">Đồng ý xóa</AlertDialogAction>
+                      <AlertDialogCancel>Hủy bỏ</AlertDialogCancel>
+                      <AlertDialogAction variant="destructive">Đồng ý xóa</AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
 
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="icon" className="rounded-full"><MoreVertical className="size-4" /></Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56 border-none shadow-premium-md" align="end">
-                    <DropdownMenuLabel>Tùy chọn nhanh</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="gap-2 cursor-pointer"><User className="size-4 text-muted-foreground" /> Xem hồ sơ</DropdownMenuItem>
-                    <DropdownMenuItem className="gap-2 cursor-pointer"><Calculator className="size-4 text-muted-foreground" /> Thanh toán</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-destructive gap-2 cursor-pointer"><OctagonXIcon className="size-4" /> Hủy lịch</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+
+
+                <div className="flex flex-wrap gap-4 w-full pt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      // Demo state logic would go here, manually triggering for check
+                      showToast.info("Mở Confirm Dialog...");
+                    }}
+                  >
+                    Xem ConfirmDialog (Logic mượn)
+                  </Button>
+                  <p className="text-xs text-muted-foreground w-full">
+                    * ConfirmDialog đã được chuẩn hóa để dùng chung các variant thành phần Button gốc.
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>

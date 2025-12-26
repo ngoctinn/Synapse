@@ -9,32 +9,32 @@ import {
 } from "@/shared/lib/design-system.types";
 import { cn } from "@/shared/lib/utils";
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-lg text-sm font-medium leading-none transition-all duration-200 focus-premium disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 active:scale-95 cursor-pointer",
-  {
-    variants: {
-      variant: {
-        default:
-          "bg-primary/90 text-primary-foreground border border-primary/90 shadow hover:bg-primary/80 active:bg-primary",
-        destructive:
-          "bg-destructive/90 text-destructive-foreground border border-destructive/90 shadow-sm hover:bg-destructive/80 active:bg-destructive",
-        outline:
-          "border border-primary/50 text-primary bg-background hover:bg-primary/8",
-        secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-        soft: "bg-primary/10 text-primary hover:bg-primary/20",
-        "ghost-destructive":
-          "text-destructive hover:bg-destructive/10 hover:text-destructive",
-        success:
-          "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 hover:bg-emerald-500/20 dark:bg-emerald-500/20 dark:border-emerald-500/30 dark:text-emerald-500 dark:hover:bg-emerald-500/30",
-        warning:
-          "bg-amber-500/10 text-amber-600 border border-amber-500/20 hover:bg-amber-500/20 dark:bg-amber-500/20 dark:border-amber-500/30 dark:text-amber-500 dark:hover:bg-amber-500/30",
-        "outline-success":
-          "border border-emerald-500/50 text-emerald-600 bg-transparent hover:bg-emerald-500/10 dark:text-emerald-500 dark:border-emerald-500/30",
-        "outline-warning":
-          "border border-amber-500/50 text-amber-600 bg-transparent hover:bg-amber-500/10 dark:text-amber-500 dark:border-amber-500/30",
+  const buttonVariants = cva(
+    "inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-lg text-sm font-medium leading-none transition-all duration-200 focus-premium disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 active:scale-95 cursor-pointer",
+    {
+      variants: {
+        variant: {
+          default:
+            "bg-primary/80 text-primary-foreground border border-primary/80 shadow hover:bg-primary/90 active:bg-primary",
+          destructive:
+            "bg-destructive/80 text-destructive-foreground border border-destructive/80 shadow-sm hover:bg-destructive/90 active:bg-destructive",
+          outline:
+            "border border-primary/50 text-primary bg-background hover:bg-primary/8",
+          secondary:
+            "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          ghost: "hover:bg-accent hover:text-accent-foreground",
+          link: "text-primary underline-offset-4 hover:underline",
+          soft: "bg-primary/10 text-primary border border-primary/20 shadow-sm hover:bg-primary/20 hover:border-primary/30",
+          "ghost-destructive":
+            "text-destructive hover:bg-destructive/10 hover:text-destructive",
+          success:
+            "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 hover:bg-emerald-500/20 dark:bg-emerald-500/20 dark:border-emerald-500/30 dark:text-emerald-500 dark:hover:bg-emerald-500/30",
+          warning:
+            "bg-amber-500/10 text-amber-600 border border-amber-500/20 hover:bg-amber-500/20 dark:bg-amber-500/20 dark:border-amber-500/30 dark:text-amber-500 dark:hover:bg-amber-500/30",
+          "outline-success":
+            "border border-emerald-500/50 text-emerald-600 bg-transparent hover:bg-emerald-500/10 dark:text-emerald-500 dark:border-emerald-500/30",
+          "outline-warning":
+            "border border-amber-500/50 text-amber-600 bg-transparent hover:bg-amber-500/10 dark:text-amber-500 dark:border-amber-500/30",
       },
       size: {
         default: "h-10 px-4 py-2",

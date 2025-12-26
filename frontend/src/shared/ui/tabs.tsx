@@ -43,6 +43,8 @@ const tabsListVariants = cva(
         ghost: "bg-transparent p-0 gap-1",
         /** Segmented Control - style có viền, divider và active primary */
         segment: "bg-background border rounded-md p-0 divide-x overflow-hidden inline-flex items-center justify-center text-muted-foreground",
+        /** Soft - style với nền nhẹ và active primary border */
+        soft: "bg-muted/10 border border-border/40 p-1 gap-1 inline-flex items-center justify-center rounded-lg text-muted-foreground",
       },
       size: {
         /** Compact cho inline/popup (36px) */
@@ -149,6 +151,12 @@ const tabsTriggerVariants = cva(
           "rounded-none h-full px-4 py-1.5",
           "hover:bg-primary/5 hover:text-foreground",
           "data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:font-semibold",
+        ],
+        /** Soft - active giống Button soft variant */
+        soft: [
+          "rounded-md px-3 py-1.5",
+          "hover:text-foreground hover:bg-muted/50",
+          "data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:border data-[state=active]:border-primary/20 data-[state=active]:shadow-sm data-[state=active]:font-semibold",
         ],
       },
       size: {

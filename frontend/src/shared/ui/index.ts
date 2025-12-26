@@ -37,7 +37,6 @@ export { Dialog } from "./dialog";
 export { TableActionBar } from "./custom/table-action-bar";
 export { TableRowActions } from "./custom/table-row-actions";
 export { TagInput } from "./custom/tag-input";
-export { TimeInput } from "./custom/time-input";
 export { TimePicker } from "./custom/time-picker";
 export { TimeRangeInput } from "./custom/time-range-input";
 export { YearPicker } from "./custom/year-picker";

@@ -70,37 +70,27 @@ export function ConfirmDialog({
     }
   };
 
-  // Màu sắc cho nút xác nhận
-  const getConfirmButtonStyles = () => {
-    switch (variant) {
-      case "destructive":
-        return "bg-destructive text-destructive-foreground hover:bg-destructive/90";
-      case "info":
-        return "bg-primary text-primary-foreground hover:bg-primary/90";
-      default:
-        return "bg-warning text-warning-foreground hover:bg-warning/90";
-    }
-  };
+
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="sm:max-w-[425px]">
+      <AlertDialogContent>
         <AlertDialogHeader>
           <div className="mb-2 flex items-center gap-3">
             <div className={cn(
               "flex size-10 items-center justify-center rounded-full",
               variant === "destructive" ? "bg-destructive/10" :
-              variant === "info" ? "bg-blue-50" : "bg-warning/10"
+              variant === "info" ? "bg-primary/10" : "bg-warning/10"
             )}>
               {getIcon()}
             </div>
-            <AlertDialogTitle className="text-xl">{title}</AlertDialogTitle>
+            <AlertDialogTitle>{title}</AlertDialogTitle>
           </div>
-          <AlertDialogDescription className="text-sm leading-relaxed">
+          <AlertDialogDescription>
             {description}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="mt-6 flex gap-2">
+        <AlertDialogFooter className="mt-6">
           <AlertDialogCancel
             disabled={isLoading}
             onClick={onCancel}
@@ -114,7 +104,8 @@ export function ConfirmDialog({
               onConfirm();
             }}
             disabled={isLoading}
-            className={cn("flex-1", getConfirmButtonStyles())}
+            variant={variant === "destructive" ? "destructive" : variant === "warning" ? "warning" : "default"}
+            className="flex-1"
           >
             {isLoading ? "Đang xử lý..." : confirmText}
           </AlertDialogAction>

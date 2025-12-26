@@ -25,7 +25,7 @@ export * from "./settings-header";
 export * from "./table-action-bar";
 export * from "./table-row-actions";
 export * from "./tag-input";
-export * from "./time-input";
+
 export * from "./time-picker";
 export * from "./time-range-input";
 export * from "./year-picker";
