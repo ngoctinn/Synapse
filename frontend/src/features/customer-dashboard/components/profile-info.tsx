@@ -69,21 +69,12 @@ export function ProfileInfo({
                 <FormLabel>{PROFILE_LABELS.DATE_OF_BIRTH}</FormLabel>
                 <FormControl>
                   <DatePicker
-                    mode="input"
-                    value={field.value ? new Date(field.value) : undefined}
+                    value={field.value && !isNaN(Date.parse(field.value)) ? new Date(field.value) : undefined}
                     onChange={(date) => {
-                      // Handle date selection: valid date -> format string, invalid -> error code, null -> empty
-                      const newValue = date
-                        ? isNaN(date.getTime())
-                          ? "INVALID_DATE"
-                          : format(date, "yyyy-MM-dd")
-                        : "";
-                      field.onChange(newValue);
+                      field.onChange(date ? format(date, "yyyy-MM-dd") : "");
                     }}
-                    icon={Cake}
                     minDate={minDate}
                     maxDate={maxDate}
-                    error={!!form.formState.errors.dateOfBirth}
                   />
                 </FormControl>
                 <FormMessage />

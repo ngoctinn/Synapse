@@ -3,6 +3,7 @@
 import {
   type SelectionConfig,
   type SortConfig,
+  type FilterConfig,
 } from "@/shared/lib/design-system.types";
 import { getNestedValue } from "@/shared/lib/object-utils";
 import { cn } from "@/shared/lib/utils";
@@ -31,6 +32,9 @@ export interface Column<T> {
   className?: string;
   headerClassName?: string;
   sortable?: boolean;
+  /** Cấu hình cho Filter Inline */
+  filterable?: boolean;
+  filterControl?: (value: any, onChange: (value: any) => void) => ReactNode;
 }
 
 // Fix Issue #12: Error State
@@ -68,6 +72,8 @@ interface DataTableProps<T> {
   // ─────────────────────────────────────────────────────────────────────────
   /** Grouped sort config */
   sort?: SortConfig;
+  /** Grouped filter config */
+  filter?: FilterConfig;
 
   onRowClick?: (item: T) => void;
   hidePagination?: boolean;
@@ -92,6 +98,7 @@ export function DataTable<T>({
   // Grouped configs
   selection,
   sort,
+  filter,
 
   onRowClick,
 }: DataTableProps<T>) {
@@ -118,9 +125,9 @@ export function DataTable<T>({
   // ─────────────────────────────────────────────────────────────────────────
   // Fix Issue #10: Sticky header - remove overflow-hidden from container
   const containerClasses = cn(
-    "relative w-full",
+    "relative w-full overflow-hidden",
     disabled && "pointer-events-none opacity-60 grayscale",
-    variant === "default" && "border rounded-lg shadow-sm bg-background",
+    variant === "default" && "border rounded-lg bg-background shadow-sm hover:shadow-md transition-shadow duration-300",
     className
   );
 
@@ -170,11 +177,11 @@ export function DataTable<T>({
     <div className="flex flex-col gap-4">
       <div className={containerClasses}>
         {/* Fix Issue #10: Overflow-x-auto moved here for sticky header to work */}
-        <div className="w-full overflow-x-auto overflow-y-visible">
+        <div className="scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent w-full overflow-x-auto overflow-y-visible">
           <Table>
             {/* Fix Issue #10: Sticky header with proper z-index */}
-            <TableHeader className="bg-background sticky top-0 z-20 shadow-sm">
-              <TableRow className="border-border/50 border-b hover:bg-transparent">
+            <TableHeader className="bg-muted/30 sticky top-0 z-20 border-b">
+              <TableRow className="border-border/50 hover:bg-transparent">
                 {selection && (
                   <TableHead className="w-12 pl-6">
                     <div className="flex items-center gap-2">
@@ -208,15 +215,8 @@ export function DataTable<T>({
                     <TableHead
                       key={index}
                       className={cn(
-                        "text-muted-foreground hover:text-foreground transition-colors duration-200 h-12 font-medium",
-                        index === 0 && !selection
-                          ? "table-first-cell-padding"
-                          : "",
-                        index === columns.length - 1
-                          ? "table-last-cell-padding"
-                          : "",
+                        "group transition-colors duration-200",
                         col.sortable ? "cursor-pointer select-none" : "",
-                        // Fix Issue #36: Highlight sorted column
                         isSorted && "text-foreground font-semibold",
                         col.headerClassName
                       )}
@@ -232,18 +232,17 @@ export function DataTable<T>({
                           index === columns.length - 1 && "justify-end"
                         )}
                       >
-                        {col.header}
+                        <span className="truncate">{col.header}</span>
                         {col.sortable && (
-                          <span className="flex h-4 w-4 items-center justify-center">
-                            {/* Fix Issue #8: Smooth sort icon transitions */}
+                          <span className="flex h-4 w-4 shrink-0 items-center justify-center">
                             {isSorted ? (
                               sort?.direction === "asc" ? (
-                                <ArrowUp className="text-primary h-3.5 w-3.5 transition-all duration-200" />
+                                <ArrowUp className="text-primary h-3.5 w-3.5 transition-all duration-300" />
                               ) : (
-                                <ArrowDown className="text-primary h-3.5 w-3.5 transition-all duration-200" />
+                                <ArrowDown className="text-primary h-3.5 w-3.5 transition-all duration-300" />
                               )
                             ) : (
-                              <ArrowUpDown className="text-muted-foreground/40 h-3 w-3 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+                              <ArrowUpDown className="text-muted-foreground/40 h-3.5 w-3.5 opacity-0 transition-all duration-300 group-hover:opacity-100" />
                             )}
                           </span>
                         )}
@@ -252,6 +251,25 @@ export function DataTable<T>({
                   );
                 })}
               </TableRow>
+
+              {/* Fix Issue: Inline Filter Row */}
+              {filter && (
+                <TableRow className="bg-muted/10 h-14 border-b hover:bg-transparent">
+                  {selection && <TableHead className="w-12 pl-6" />}
+                  {columns.map((col, index) => (
+                    <TableHead key={`filter-${index}`} className={col.headerClassName}>
+                      {col.filterable && col.filterControl && col.accessorKey ? (
+                        <div className="flex items-center gap-1.5 px-0.5">
+                          {col.filterControl(
+                            filter.values[col.accessorKey.toString()],
+                            (val) => filter.onFilterChange(col.accessorKey!.toString(), val)
+                          )}
+                        </div>
+                      ) : null}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              )}
             </TableHeader>
             <TableBody>
               {data.map((item, index) => {
@@ -265,9 +283,8 @@ export function DataTable<T>({
                     index={index}
                     className={cn(
                       "border-border/30 group border-b transition-all duration-200 last:border-0",
-                      isClickable && "hover:bg-muted/40 cursor-pointer",
-                      // Fix Issue #18: Increase selected row contrast
-                      selected && "bg-primary/8 hover:bg-primary/12"
+                      isClickable && "hover:bg-muted/30 cursor-pointer",
+                      selected && "bg-primary/8"
                     )}
                     onClick={() => {
                       if (onRowClick) onRowClick(item);

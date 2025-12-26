@@ -5,8 +5,10 @@ import { Button } from "@/shared/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu";
+import { Separator } from "@/shared/ui/separator";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Icon } from "./icon";
 import { ReactNode } from "react";
@@ -70,55 +72,43 @@ export function TableRowActions({
         className
       )}
     >
-      {/* Quick Edit Button */}
-      {onEdit && (
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          className="hover:bg-primary/10 hover:text-primary"
-          onClick={onEdit}
-          disabled={disabled}
-          title={editLabel}
-        >
-          <span className="sr-only">{editLabel}</span>
-          <Icon icon={Pencil} />
-        </Button>
-      )}
-
-      {/* Quick Delete Button */}
-      {onDelete && (
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-          onClick={onDelete}
-          disabled={disabled}
-          title={deleteLabel}
-        >
-          <span className="sr-only">{deleteLabel}</span>
-          <Icon icon={Trash2} />
-        </Button>
-      )}
-
-      {/* Dropdown Menu cho Extra Actions */}
-      {hasExtraActions && (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="hover:bg-muted"
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            className="h-8 w-8 hover:bg-muted"
+            disabled={disabled}
+          >
+            <span className="sr-only">Mở menu</span>
+            <Icon icon={MoreHorizontal} className="size-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="min-w-[160px]">
+          {onEdit && (
+            <DropdownMenuItem onClick={onEdit} disabled={disabled}>
+              <Icon icon={Pencil} className="mr-2 size-4" />
+              <span>{editLabel}</span>
+            </DropdownMenuItem>
+          )}
+          {onDelete && (
+            <DropdownMenuItem
+              onClick={onDelete}
               disabled={disabled}
+              className="text-destructive focus:bg-destructive/10 focus:text-destructive"
             >
-              <span className="sr-only">Mở menu</span>
-              <Icon icon={MoreHorizontal} />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="min-w-[160px]">
-            {extraActions}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )}
+              <Icon icon={Trash2} className="mr-2 size-4" />
+              <span>{deleteLabel}</span>
+            </DropdownMenuItem>
+          )}
+          {extraActions && (
+            <>
+              {hasQuickActions && <Separator className="my-1" />}
+              {extraActions}
+            </>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       {/* Fallback: Nếu không có quick actions, chỉ có more button */}
       {!hasQuickActions && !hasExtraActions && (

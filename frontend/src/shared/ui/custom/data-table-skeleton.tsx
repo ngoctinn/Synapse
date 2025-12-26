@@ -52,7 +52,7 @@ export function DataTableSkeleton({
 
         {/* Fix Issue #14: Table structure matches DataTable */}
         <Table>
-          <TableHeader className="bg-muted/50">
+          <TableHeader className="bg-muted/30">
             <TableRow>
               {Array.from({ length: columnCount }).map((_, i) => (
                 <TableHead key={i} className={cn(i === 0 && "pl-6")}>
@@ -60,6 +60,15 @@ export function DataTableSkeleton({
                 </TableHead>
               ))}
             </TableRow>
+            {filterable && (
+              <TableRow className="bg-muted/10 h-14 border-b hover:bg-transparent">
+                {Array.from({ length: columnCount }).map((_, i) => (
+                  <TableHead key={`filter-${i}`} className={cn(i === 0 && "pl-6")}>
+                    <Skeleton className="h-9 w-full rounded-lg" />
+                  </TableHead>
+                ))}
+              </TableRow>
+            )}
           </TableHeader>
           <TableBody>
             {Array.from({ length: rowCount }).map((_, rowIdx) => (

@@ -65,6 +65,7 @@ const sheetVariants = cva(
         xl: "sm:max-w-xl",
         "2xl": "sm:max-w-2xl",
         "3xl": "sm:max-w-3xl",
+        premium: "sm:max-w-[40%]",
         full: "sm:max-w-full",
       },
     },

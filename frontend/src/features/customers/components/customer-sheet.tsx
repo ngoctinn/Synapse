@@ -103,7 +103,6 @@ export function CustomerSheet({
           ? "Thêm khách hàng mới vào hệ thống"
           : "Xem và chỉnh sửa thông tin khách hàng"
       }
-      size={mode === "update" ? "3xl" : "lg"}
       isPending={isPending}
       isDirty={isDirty}
       footer={

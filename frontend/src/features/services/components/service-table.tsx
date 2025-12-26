@@ -106,9 +106,9 @@ export function ServiceTable({
       header: "Tên dịch vụ",
       cell: (service) => (
         <div className="flex flex-col">
-          <TruncatedCell maxWidth={200} className="text-foreground group-hover:text-primary font-serif text-lg tracking-tight transition-colors">
+          <span className="text-foreground group-hover:text-primary text-sm font-medium transition-colors">
             {service.name}
-          </TruncatedCell>
+          </span>
         </div>
       ),
     },
@@ -166,7 +166,7 @@ export function ServiceTable({
     },
     {
       header: "Giá",
-      className: "font-medium text-foreground text-base",
+      className: "font-medium text-foreground text-sm",
       cell: (service) => formatCurrency(service.price),
     },
     {
@@ -287,7 +287,7 @@ export function ServiceTableSkeleton() {
       columnCount={7}
       rowCount={5}
       searchable={false}
-      filterable={false}
+      filterable={true}
       showAction={false}
       variant="flush"
     />

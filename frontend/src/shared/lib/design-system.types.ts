@@ -13,7 +13,7 @@
  * Kích thước component chuẩn hóa
  * Sử dụng cho Button, Input, Select, và các form elements khác
  */
-export type ComponentSize = "sm" | "default" | "lg" | "xl" | "icon";
+export type ComponentSize = "sm" | "md" | "default" | "lg" | "xl" | "icon";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Button Variants
@@ -73,6 +73,16 @@ export interface SortConfig {
   direction: "asc" | "desc";
   /** Handler khi click header để sort */
   onSort: (column: string) => void;
+}
+
+/**
+ * Config cho filtering trong DataTable (Inline Filter Row)
+ */
+export interface FilterConfig {
+  /** Các giá trị filter hiện tại mapping theo column key */
+  values: Record<string, any>;
+  /** Handler khi thay đổi filter của một column */
+  onFilterChange: (column: string, value: any) => void;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -25,7 +25,7 @@ interface ActionSheetProps {
   isDirty?: boolean;
   /** Bật/tắt tính năng cảnh báo thay đổi (Mặc định: true) */
   showUnsavedChangesWarning?: boolean;
-  size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full";
+  size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "premium" | "full";
   className?: string;
   headerClassName?: string;
   bodyClassName?: string;
@@ -51,7 +51,7 @@ export function ActionSheet({
   isPending = false,
   isDirty = false,
   showUnsavedChangesWarning = true,
-  size = "md",
+  size = "premium",
   className,
   headerClassName,
   bodyClassName,

@@ -1,6 +1,6 @@
 "use client";
 
-import { format, isValid, parse } from "date-fns";
+import { format, isValid } from "date-fns";
 import { vi } from "date-fns/locale";
 import {
   Calendar as CalendarIcon,
@@ -12,7 +12,6 @@ import * as React from "react";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { Calendar } from "@/shared/ui/calendar";
-import { Input } from "@/shared/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import { MaskedDateInput } from "./masked-date-input";
 
@@ -24,11 +23,11 @@ interface DatePickerProps {
   disabled?: boolean;
   /**
    * Mode hiển thị:
-   * - `calendar`: Input readonly + Popover Calendar (Mặc định)
+   * - `calendar`: Trigger Button + Popover Calendar (Mặc định)
    * - `input`: Masked Input cho phép nhập tay (DD/MM/YYYY)
    */
   mode?: "calendar" | "input";
-  /** Icon tùy chỉnh (chỉ dùng cho mode input hoặc trigger button) */
+  /** Icon tùy chỉnh */
   icon?: LucideIcon;
   iconProps?: LucideProps;
   /** Trạng thái lỗi (chỉ dùng cho mode input) */
@@ -42,7 +41,7 @@ interface DatePickerProps {
 export function DatePicker({
   value,
   onChange,
-  placeholder = "DD/MM/YYYY",
+  placeholder = "Chọn ngày",
   className,
   disabled,
   mode = "calendar",
@@ -54,17 +53,6 @@ export function DatePicker({
   maxDate,
 }: DatePickerProps) {
   const [open, setOpen] = React.useState(false);
-  const [inputValue, setInputValue] = React.useState("");
-
-  // Sync input value when date prop changes - valid for both modes effectively,
-  // though mostly useful for calendar mode logic.
-  React.useEffect(() => {
-    if (value && isValid(value)) {
-      setInputValue(format(value, "dd/MM/yyyy", { locale: vi }));
-    } else {
-      setInputValue("");
-    }
-  }, [value]);
 
   // --- MODE: INPUT (Masked) ---
   if (mode === "input") {
@@ -87,73 +75,47 @@ export function DatePicker({
   }
 
   // --- MODE: CALENDAR (Popover) ---
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    setInputValue(newValue);
-
-    // Allow clearing
-    if (newValue === "") {
-      onChange?.(undefined);
-      return;
-    }
-
-    const parsedDate = parse(newValue, "dd/MM/yyyy", new Date(), {
-      locale: vi,
-    });
-
-    if (isValid(parsedDate) && newValue.length === 10) {
-      onChange?.(parsedDate);
-    }
-  };
-
-  const handleSelect = (selectedDate: Date | undefined) => {
-    if (onChange) {
-      onChange(selectedDate);
-    }
-    setOpen(false); // Close popover after selection
-  };
-
   return (
-    <div className={cn("relative w-full", className)}>
-      <Input
-        type="text"
-        value={inputValue}
-        onChange={handleInputChange}
-        placeholder={placeholder}
-        disabled={disabled}
-        className={cn("cursor-pointer pr-10", className)} // Add padding for icon
-        onClick={() => !disabled && setOpen(true)} // Open on click inputs
-        readOnly // Make it readonly to force picker usage preference in 'calendar' mode
-      />
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="text-muted-foreground hover:text-foreground absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-            disabled={disabled}
-          >
-            <Icon className="size-4" {...iconProps} />
-            <span className="sr-only">Open calendar</span>
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="end">
-          <Calendar
-            mode="single"
-            selected={value}
-            onSelect={handleSelect}
-            locale={vi}
-            initialFocus
-            captionLayout="dropdown"
-            fromYear={1900}
-            toYear={new Date().getFullYear() + 5}
-            classNames={{
-              caption_dropdowns: "flex gap-2",
-            }}
-          />
-        </PopoverContent>
-      </Popover>
-    </div>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          type="button"
+          variant="outline"
+          disabled={disabled}
+          className={cn(
+            "h-10 w-full justify-between px-3 text-left font-normal border-input",
+            !value && "text-muted-foreground",
+            className
+          )}
+        >
+          <div className="flex items-center gap-2 overflow-hidden">
+            <Icon className="text-muted-foreground size-4 shrink-0" {...iconProps} />
+            <span className="truncate">
+              {value && isValid(value)
+                ? format(value, "dd/MM/yyyy", { locale: vi })
+                : placeholder}
+            </span>
+          </div>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <Calendar
+          mode="single"
+          selected={value}
+          onSelect={(date) => {
+            onChange?.(date);
+            setOpen(false);
+          }}
+          locale={vi}
+          initialFocus
+          captionLayout="dropdown"
+          fromYear={1900}
+          toYear={new Date().getFullYear() + 10}
+          classNames={{
+            caption_dropdowns: "flex gap-2",
+          }}
+        />
+      </PopoverContent>
+    </Popover>
   );
 }

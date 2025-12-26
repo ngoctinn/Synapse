@@ -42,39 +42,7 @@ interface StaffTableProps {
   hidePagination?: boolean;
 }
 
-const GroupActionButtons = ({ staff: _staff }: { staff: Staff }) => {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  const handleViewSchedule = () => {
-    const params = new URLSearchParams(searchParams);
-    params.set("view", "scheduling");
-    // Optionally pass staff_id to focus in scheduler (if supported)
-    // params.set("staff_id", staff.user_id)
-    router.push(`${pathname}?${params.toString()}`);
-  };
-
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-muted-foreground hover:text-primary h-8 w-8"
-            onClick={handleViewSchedule}
-          >
-            <Icon icon={Calendar} />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>Xem lịch làm việc</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
-};
+// Hợp nhất vào StaffActions
 
 export function StaffTable({
   data,
@@ -176,7 +144,7 @@ export function StaffTable({
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <span className="text-foreground group-hover:text-primary font-serif text-lg tracking-tight transition-colors">
+            <span className="text-foreground group-hover:text-primary text-sm font-medium transition-colors">
               {staff.user.full_name || "Chưa cập nhật tên"}
             </span>
             <span className="text-muted-foreground text-xs">
@@ -257,9 +225,8 @@ export function StaffTable({
       cell: (staff) => (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="flex items-center justify-end gap-2"
+          className="flex items-center justify-end"
         >
-          <GroupActionButtons staff={staff} />
           <StaffActions staff={staff} onEdit={() => setEditingStaff(staff)} />
         </div>
       ),
@@ -346,7 +313,7 @@ export function StaffTableSkeleton() {
       columnCount={6}
       rowCount={5}
       searchable={false}
-      filterable={false}
+      filterable={true}
       showAction={false}
       variant="flush"
     />

@@ -121,6 +121,7 @@ export function CustomersPage({
                 startContent={
                   <Input
                     placeholder="Tìm kiếm khách hàng..."
+                    size="md"
                     defaultValue={initialSearch}
                     onChange={(e) => handleSearch(e.target.value)}
                     startContent={
