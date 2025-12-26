@@ -14,6 +14,7 @@ import {
   Slider,
 } from "@/shared/ui";
 import { NumberInput } from "@/shared/ui/custom/number-input";
+import { ResourceTimeline } from "@/shared/ui/custom/resource-timeline";
 import { Plus, Trash2 } from "lucide-react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { ServiceFormValues } from "../../model/schemas";
@@ -38,45 +39,26 @@ export function ResourcesTab({ availableResourceGroups, duration }: ResourcesTab
     return availableResourceGroups.find((g) => g.id === groupId)?.name || "Unknown";
   };
 
+  const timelineItems = watchRequirements?.map((req, index) => {
+      if (!req.group_id) return null;
+      const startPct = (req.start_delay / duration) * 100;
+      const usage = req.usage_duration || (duration - req.start_delay);
+      const widthPct = (usage / duration) * 100;
+      const finalWidth = Math.min(widthPct, 100 - startPct);
+
+      return {
+        startPercentage: startPct,
+        widthPercentage: finalWidth,
+        color: getItemColor(index),
+        label: (index + 1).toString(),
+        tooltip: `${getGroupName(req.group_id)}: ${req.start_delay}p - ${req.start_delay + usage}p`
+      };
+  }).filter((x): x is NonNullable<typeof x> => x !== null) || [];
+
   return (
-    <Stack gap={6} className="py-4">
+    <Stack gap={6}>
       {/* Visual Timeline Preview */}
-      <div className="rounded-xl border bg-card p-4 shadow-sm">
-        <h4 className="mb-4 text-sm font-medium text-muted-foreground">Mô phỏng quy trình</h4>
-        <div className="relative h-12 w-full rounded-lg bg-muted/30">
-           {/* Time markers */}
-           <div className="absolute -bottom-6 left-0 text-xs text-muted-foreground">0p</div>
-           <div className="absolute -bottom-6 right-0 text-xs text-muted-foreground">{duration}p</div>
-
-           {/* Timeline Bars */}
-           {watchRequirements?.map((req, index) => {
-              if (!req.group_id) return null;
-
-              const startPct = (req.start_delay / duration) * 100;
-              const usage = req.usage_duration || (duration - req.start_delay);
-              const widthPct = (usage / duration) * 100;
-
-              // Cap at 100%
-              const finalWidth = Math.min(widthPct, 100 - startPct);
-
-              return (
-                 <div
-                    key={index}
-                    className="absolute top-1/2 -translate-y-1/2 flex h-8 items-center justify-center rounded-md text-[10px] font-medium text-white shadow-sm transition-all hover:z-10"
-                    style={{
-                       left: `${startPct}%`,
-                       width: `${finalWidth}%`,
-                       backgroundColor: getItemColor(index),
-                    }}
-                    title={`${getGroupName(req.group_id)}: ${req.start_delay}p - ${req.start_delay + usage}p`}
-                 >
-                    <span className="truncate px-1">{index + 1}</span>
-                 </div>
-              )
-           })}
-        </div>
-        <div className="mt-8"></div>
-      </div>
+      <ResourceTimeline duration={duration} items={timelineItems} />
 
       {/* Dynamic List */}
       <Stack gap={4}>

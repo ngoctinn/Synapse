@@ -18,6 +18,8 @@ import { useFormContext } from "react-hook-form";
 import { ServiceFormValues } from "../../model/schemas";
 import { ServiceCategory } from "../../model/types";
 import { NumberInput } from "@/shared/ui/custom/number-input";
+import { RequiredMark } from "@/shared/ui/custom";
+import { Card, CardContent } from "@/shared/ui/card";
 import { Stack, Group, Grid } from "@/shared/ui/layout";
 
 interface BasicTabProps {
@@ -28,15 +30,15 @@ export function BasicTab({ categories }: BasicTabProps) {
   const form = useFormContext<ServiceFormValues>();
 
   return (
-    <Stack gap={6} className="py-4">
+    <Stack gap={6}>
       {/* Name & Category */}
-      <Grid gap={4} className="grid-cols-2">
+      <Grid gap={4} cols={2}>
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tên dịch vụ <span className="text-destructive">*</span></FormLabel>
+              <FormLabel>Tên dịch vụ <RequiredMark /></FormLabel>
               <FormControl>
                 <Input placeholder="Ví dụ: Cắt tóc nam basic" {...field} />
               </FormControl>
@@ -72,7 +74,7 @@ export function BasicTab({ categories }: BasicTabProps) {
       </Grid>
 
       {/* Price & Duration */}
-      <Grid gap={4} className="grid-cols-2">
+      <Grid gap={4} cols={2}>
          <FormField
           control={form.control}
           name="price"
@@ -175,7 +177,8 @@ export function BasicTab({ categories }: BasicTabProps) {
         name="is_active"
         render={({ field }) => (
           <FormItem>
-              <div className="flex items-center justify-between rounded-lg border p-4 shadow-sm">
+            <Card>
+              <CardContent className="flex items-center justify-between p-4">
                 <div className="space-y-0.5">
                   <FormLabel className="text-base">Trạng thái hoạt động</FormLabel>
                    <p className="text-muted-foreground text-sm">
@@ -188,7 +191,8 @@ export function BasicTab({ categories }: BasicTabProps) {
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
-              </div>
+              </CardContent>
+            </Card>
           </FormItem>
         )}
       />

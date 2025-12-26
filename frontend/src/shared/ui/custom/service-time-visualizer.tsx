@@ -20,33 +20,33 @@ export function ServiceTimeVisualizer({
     totalTime > 0 ? (Number(bufferTime) / totalTime) * 100 : 0;
 
   return (
-    <div className={cn("bg-card rounded-lg border p-5 shadow-sm", className)}>
-      <h4 className="text-foreground mb-3 text-sm font-medium">
+    <div className={cn("rounded-lg border bg-card p-5 shadow-sm", className)}>
+      <h4 className="mb-3 text-sm font-medium text-foreground">
         Trực quan hóa thời gian
       </h4>
 
-      <div className="text-muted-foreground mb-3 flex items-center gap-4 text-xs">
+      <div className="mb-3 flex items-center gap-4 text-xs text-muted-foreground">
         <div className="flex items-center gap-1.5">
-          <span className="bg-primary h-2.5 w-2.5 rounded-full shadow-sm"></span>
+          <span className="h-2.5 w-2.5 rounded-full bg-primary shadow-sm"></span>
           <span>Phục vụ ({duration}p)</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="bg-muted h-2.5 w-2.5 rounded-full border shadow-sm"></span>
+          <span className="h-2.5 w-2.5 rounded-full border bg-muted shadow-sm"></span>
           <span>Nghỉ ({bufferTime}p)</span>
         </div>
       </div>
 
-      <div className="bg-muted/20 ring-border/50 flex h-8 w-full overflow-hidden rounded-lg ring-[1.5px]">
+      <div className="flex h-8 w-full overflow-hidden rounded-lg bg-muted/20 ring-[1.5px] ring-border/50">
         <div
-          className="bg-primary text-primary-foreground group relative flex h-full items-center justify-center text-[11px] font-medium transition-all duration-300"
+          className="relative flex h-full items-center justify-center bg-primary text-[11px] font-medium text-primary-foreground transition-all duration-300 group"
           style={{ width: `${durationPercent}%` }}
         >
           {duration > 0 && <span>{duration}p</span>}
 
-          <div className="group-hover:animate-shimmer absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+          <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:animate-shimmer" />
         </div>
         <div
-          className="bg-muted text-muted-foreground relative flex h-full items-center justify-center text-[11px] font-medium transition-all duration-300"
+          className="relative flex h-full items-center justify-center bg-muted text-[11px] font-medium text-muted-foreground transition-all duration-300"
           style={{
             width: `${bufferPercent}%`,
             backgroundImage:
@@ -58,9 +58,9 @@ export function ServiceTimeVisualizer({
         </div>
       </div>
 
-      <p className="text-muted-foreground mt-2 text-right text-xs">
+      <p className="mt-2 text-right text-xs text-muted-foreground">
         Tổng thời gian khóa lịch:{" "}
-        <span className="text-foreground font-medium">{totalTime} phút</span>
+        <span className="font-medium text-foreground">{totalTime} phút</span>
       </p>
     </div>
   );

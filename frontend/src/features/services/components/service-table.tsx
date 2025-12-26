@@ -120,7 +120,7 @@ export function ServiceTable({
           (c) => c.id === service.category_id
         );
         return category ? (
-          <Badge variant="secondary" className="font-normal">
+          <Badge variant="secondary">
             {category.name}
           </Badge>
         ) : (
@@ -178,12 +178,9 @@ export function ServiceTable({
                 checked={service.is_active}
                 onCheckedChange={(checked) => handleToggleStatus(service, checked)}
              />
-             <span className={cn(
-                "text-xs font-medium",
-                service.is_active ? "text-green-600" : "text-muted-foreground"
-             )}>
+             <Badge variant={service.is_active ? "status-active" : "status-inactive"} className="px-2 py-0.5 text-[10px]">
                 {service.is_active ? "Hiện" : "Ẩn"}
-             </span>
+             </Badge>
           </Group>
        )
     },

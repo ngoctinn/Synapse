@@ -12,6 +12,7 @@ import { Input } from "@/shared/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { ActionResponse } from "@/shared/lib/action-response";
 import { Search } from "lucide-react";
+import { Icon } from "@/shared/ui/custom";
 import { Stack, Group } from "@/shared/ui/layout";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, use, useState, useTransition } from "react";
@@ -139,16 +140,15 @@ export function ServicesPage({
           <Group gap={3} className="w-full md:w-auto">
             <FilterBar
               startContent={
-                <div className="w-full md:w-[250px]">
-                  <Input
-                    placeholder={
-                      isServiceTab ? "Tìm kiếm dịch vụ..." : "Tìm kiếm kỹ năng..."
-                    }
-                    defaultValue={initialSearch}
-                    onChange={(e) => handleSearch(e.target.value)}
-                    startContent={<Search className="text-muted-foreground" size={16} />}
-                  />
-                </div>
+                <Input
+                  placeholder={
+                    isServiceTab ? "Tìm kiếm dịch vụ..." : "Tìm kiếm kỹ năng..."
+                  }
+                  defaultValue={initialSearch}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  startContent={<Icon icon={Search} className="text-muted-foreground" size={16} />}
+                  className="w-full md:w-64"
+                />
               }
               endContent={
                 isServiceTab && <ServiceFilter availableSkills={skills} />
@@ -157,10 +157,10 @@ export function ServicesPage({
           </Group>
         </PageHeader>
 
-        <Stack gap={0} className="page-entry-animation overflow-hidden">
+        <Stack gap={0} className="overflow-hidden">
           <TabsContent
             value="list"
-            className="mt-0 data-[state=inactive]:hidden"
+            className="mt-0"
           >
             <PageContent>
               <SurfaceCard>
