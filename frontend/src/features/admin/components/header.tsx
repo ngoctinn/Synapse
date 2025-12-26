@@ -31,10 +31,7 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import dynamic from "next/dynamic";
 
-const CommandMenu = dynamic(
-  () => import("./command-menu").then((m) => m.CommandMenu),
-  { ssr: false }
-);
+
 const UserNav = dynamic(() => import("./user-nav").then((m) => m.UserNav), {
   ssr: false,
 });
@@ -111,7 +108,7 @@ export function AdminHeader({
 
       <div className="ml-auto flex items-center gap-3 px-4">
         {/* Command Menu */}
-        <CommandMenu />
+
 
         {/* Notification Button */}
         <NotificationPopover>

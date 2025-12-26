@@ -1,11 +1,11 @@
-"use client";
+  "use client";
 
-import { Check, Filter, Users, X } from "lucide-react";
+  import { Check, Filter, Users, X } from "lucide-react";
 
-import { cn } from "@/shared/lib/utils";
-import {
-  Badge,
-  Button,
+  import { cn } from "@/shared/lib/utils";
+  import {
+    Badge,
+    Button,
   Command,
   CommandEmpty,
   CommandGroup,
@@ -18,70 +18,70 @@ import {
   PopoverTrigger,
 } from "@/shared/ui";
 
-import { ROLE_CONFIG, ROLES } from "../../../model/constants";
-import { Role, Staff } from "../../../model/types";
+  import { ROLE_CONFIG, ROLES } from "../../../model/constants";
+  import { Role, Staff } from "../../../model/types";
 
-interface StaffFilterProps {
-  staffList: Staff[];
-  selectedStaffIds: string[];
-  selectedRoles: Role[];
-  onStaffChange: (staffIds: string[]) => void;
-  onRoleChange: (roles: Role[]) => void;
-  onClear: () => void;
-  className?: string;
-}
+  interface StaffFilterProps {
+    staffList: Staff[];
+    selectedStaffIds: string[];
+    selectedRoles: Role[];
+    onStaffChange: (staffIds: string[]) => void;
+    onRoleChange: (roles: Role[]) => void;
+    onClear: () => void;
+    className?: string;
+  }
 
-/**
- * Bộ lọc nhân viên và vai trò
- */
-export function StaffFilter({
-  staffList,
-  selectedStaffIds,
-  selectedRoles,
-  onStaffChange,
-  onRoleChange,
-  onClear,
-  className,
-}: StaffFilterProps) {
-  const hasFilters = selectedStaffIds.length > 0 || selectedRoles.length > 0;
+  /**
+   * Bộ lọc nhân viên và vai trò
+   */
+  export function StaffFilter({
+    staffList,
+    selectedStaffIds,
+    selectedRoles,
+    onStaffChange,
+    onRoleChange,
+    onClear,
+    className,
+  }: StaffFilterProps) {
+    const hasFilters = selectedStaffIds.length > 0 || selectedRoles.length > 0;
 
-  const toggleStaff = (staffId: string) => {
-    if (selectedStaffIds.includes(staffId)) {
-      onStaffChange(selectedStaffIds.filter((id) => id !== staffId));
-    } else {
-      onStaffChange([...selectedStaffIds, staffId]);
-    }
-  };
+    const toggleStaff = (staffId: string) => {
+      if (selectedStaffIds.includes(staffId)) {
+        onStaffChange(selectedStaffIds.filter((id) => id !== staffId));
+      } else {
+        onStaffChange([...selectedStaffIds, staffId]);
+      }
+    };
 
-  const toggleRole = (role: Role) => {
-    if (selectedRoles.includes(role)) {
-      onRoleChange(selectedRoles.filter((r) => r !== role));
-    } else {
-      onRoleChange([...selectedRoles, role]);
-    }
-  };
+    const toggleRole = (role: Role) => {
+      if (selectedRoles.includes(role)) {
+        onRoleChange(selectedRoles.filter((r) => r !== role));
+      } else {
+        onRoleChange([...selectedRoles, role]);
+      }
+    };
 
-  const filterLabel = hasFilters
-    ? `${selectedStaffIds.length + selectedRoles.length} bộ lọc`
-    : "Lọc";
+    const filterLabel = hasFilters
+      ? `${selectedStaffIds.length + selectedRoles.length} bộ lọc`
+      : "Lọc";
 
-  return (
-    <div className={cn("flex items-center gap-2", className)}>
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className={cn(
-              "h-8 gap-2 px-3",
-              hasFilters && "border-primary/50 bg-primary/5 text-primary"
-            )}
-          >
-            <Filter className="size-4" />
-            <span className="hidden sm:inline">{filterLabel}</span>
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-72 p-0" align="start">
+    return (
+      <div className={cn("flex items-center gap-2", className)}>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className={cn(
+                "h-8 gap-2 px-3",
+                hasFilters && "border-primary/50 bg-primary/5 text-primary"
+              )}
+            >
+              <Filter className="size-4" />
+              <span className="hidden sm:inline">{filterLabel}</span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-72 p-0" align="start">
           <Command>
             <CommandInput placeholder="Tìm kiếm..." />
             <CommandList>
@@ -165,44 +165,44 @@ export function StaffFilter({
               )}
             </CommandList>
           </Command>
-        </PopoverContent>
-      </Popover>
+          </PopoverContent>
+        </Popover>
 
-      {/* Active filter badges */}
-      {hasFilters && (
-        <div className="hidden items-center gap-1 sm:flex">
-          {selectedRoles.map((role) => (
-            <Badge
-              key={role}
-              variant={ROLE_CONFIG[role].variant}
-              className="cursor-pointer text-xs hover:opacity-80"
-              onClick={() => toggleRole(role)}
-            >
-              {ROLE_CONFIG[role].label}
-              <X className="ml-1 size-3" />
-            </Badge>
-          ))}
-          {selectedStaffIds.slice(0, 2).map((id) => {
-            const staff = staffList.find((s) => s.user_id === id);
-            return (
+        {/* Active filter badges */}
+        {hasFilters && (
+          <div className="hidden items-center gap-1 sm:flex">
+            {selectedRoles.map((role) => (
               <Badge
-                key={id}
-                variant="outline"
+                key={role}
+                variant={ROLE_CONFIG[role].variant}
                 className="cursor-pointer text-xs hover:opacity-80"
-                onClick={() => toggleStaff(id)}
+                onClick={() => toggleRole(role)}
               >
-                {staff?.user.full_name?.split(" ").pop()}
+                {ROLE_CONFIG[role].label}
                 <X className="ml-1 size-3" />
               </Badge>
-            );
-          })}
-          {selectedStaffIds.length > 2 && (
-            <Badge variant="outline" className="text-xs">
-              +{selectedStaffIds.length - 2}
-            </Badge>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
+            ))}
+            {selectedStaffIds.slice(0, 2).map((id) => {
+              const staff = staffList.find((s) => s.user_id === id);
+              return (
+                <Badge
+                  key={id}
+                  variant="outline"
+                  className="cursor-pointer text-xs hover:opacity-80"
+                  onClick={() => toggleStaff(id)}
+                >
+                  {staff?.user.full_name?.split(" ").pop()}
+                  <X className="ml-1 size-3" />
+                </Badge>
+              );
+            })}
+            {selectedStaffIds.length > 2 && (
+              <Badge variant="outline" className="text-xs">
+                +{selectedStaffIds.length - 2}
+              </Badge>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
