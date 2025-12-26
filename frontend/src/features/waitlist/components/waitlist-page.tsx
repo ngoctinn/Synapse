@@ -7,7 +7,8 @@ import {
   SurfaceCard,
 } from "@/shared/components/layout/page-layout";
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
-import { SearchInput } from "@/shared/ui/custom/search-input";
+import { Input } from "@/shared/ui/input";
+import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -51,10 +52,13 @@ export function WaitlistPage({ data, page, totalPages }: WaitlistPageProps) {
         <div className="flex items-center gap-3">
           <FilterBar
             startContent={
-              <SearchInput
+              <Input
                 placeholder="Tìm khách hàng..."
                 defaultValue={initialSearch}
                 onChange={(e) => handleSearch(e.target.value)}
+                startContent={<Search className="size-4 text-muted-foreground" />}
+                size="md"
+                className="bg-background w-full md:w-[250px]"
               />
             }
           />

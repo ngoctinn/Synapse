@@ -22,7 +22,8 @@ export { DataTable } from "./custom/data-table";
 export { DataTableEmptyState } from "./custom/data-table-empty-state";
 export { DataTableSkeleton } from "./custom/data-table-skeleton";
 
-export { DateRangeFilter } from "./custom/date-range-filter";
+export * from "./custom/date-range-filter";
+export * from "./custom/date-range-navigator";
 export { DeleteConfirmDialog } from "./custom/delete-confirm-dialog";
 // Dialog primitive
 

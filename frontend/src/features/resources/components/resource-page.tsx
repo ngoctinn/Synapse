@@ -106,11 +106,11 @@ export function ResourcePage({
         onValueChange={handleTabChange}
       >
         <PageHeader>
-          <TabsList variant="default" size="default" aria-label="Quản lý tài nguyên">
-            <TabsTrigger value="list" variant="default" stretch={false}>
+          <TabsList size="default" aria-label="Quản lý tài nguyên">
+            <TabsTrigger value="list" stretch={false}>
               Danh sách
             </TabsTrigger>
-            <TabsTrigger value="maintenance" variant="default" stretch={false}>
+            <TabsTrigger value="maintenance" stretch={false}>
               Lịch bảo trì
             </TabsTrigger>
           </TabsList>

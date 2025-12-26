@@ -44,10 +44,10 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
         </div>
       ) : (
         <Tabs defaultValue="general" className="w-full">
-          <TabsList variant="form" size="lg" fullWidth gridCols={3}>
-            <TabsTrigger value="general" variant="form"> Thông tin chung </TabsTrigger>
-            <TabsTrigger value="professional" variant="form"> Nghiệp vụ </TabsTrigger>
-            <TabsTrigger value="hr" variant="form"> Nhân sự </TabsTrigger>
+          <TabsList size="lg" fullWidth gridCols={3}>
+            <TabsTrigger value="general"> Thông tin chung </TabsTrigger>
+            <TabsTrigger value="professional"> Nghiệp vụ </TabsTrigger>
+            <TabsTrigger value="hr"> Nhân sự </TabsTrigger>
           </TabsList>
 
           <TabsContent value="general" className="bg-card space-y-4 rounded-lg border p-6">

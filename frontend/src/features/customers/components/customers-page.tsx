@@ -106,11 +106,11 @@ export function CustomersPage({
         onValueChange={handleTabChange}
       >
         <PageHeader>
-          <TabsList variant="default" size="default">
-            <TabsTrigger value="list" variant="default" stretch={false}>
+          <TabsList size="default">
+            <TabsTrigger value="list" stretch={false}>
               Danh sách
             </TabsTrigger>
-            <TabsTrigger value="insights" variant="default" stretch={false}>
+            <TabsTrigger value="insights" stretch={false}>
               Thông tin
             </TabsTrigger>
           </TabsList>
@@ -121,12 +121,10 @@ export function CustomersPage({
                 startContent={
                   <Input
                     placeholder="Tìm kiếm khách hàng..."
-                    size="md"
                     defaultValue={initialSearch}
                     onChange={(e) => handleSearch(e.target.value)}
-                    startContent={
-                      <Search className="text-muted-foreground size-4" />
-                    }
+                    startContent={<Search className="size-4 text-muted-foreground" />}
+                    size="md"
                     className="bg-background w-full md:w-[250px]"
                   />
                 }

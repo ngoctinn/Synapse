@@ -33,16 +33,8 @@ const tabsListVariants = cva(
   {
     variants: {
       variant: {
-        /** Mặc định - nền solid cho header pages */
-        default: "bg-muted/50",
-        /** Form tabs - nền đậm hơn cho forms */
-        form: "bg-muted/60",
-        /** Underline style - không có nền, dùng border-bottom */
-        underline: "bg-transparent border-b rounded-none p-0 gap-1",
         /** Ghost - không có nền, chỉ cho inline navigation */
         ghost: "bg-transparent p-0 gap-1",
-        /** Segmented Control - style có viền, divider và active primary */
-        segment: "bg-background border rounded-md p-0 divide-x overflow-hidden inline-flex items-center justify-center text-muted-foreground",
         /** Soft - style với nền nhẹ và active primary border */
         soft: "bg-muted/10 border border-border/40 p-1 gap-1 inline-flex items-center justify-center rounded-lg text-muted-foreground",
       },
@@ -61,7 +53,7 @@ const tabsListVariants = cva(
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: "soft",
       size: "default",
       fullWidth: false,
     },
@@ -120,41 +112,15 @@ const tabsTriggerVariants = cva(
   {
     variants: {
       variant: {
-        /** Default - active có background */
-        default: [
-          "rounded-lg border border-transparent px-3 py-1.5",
-          // Hover state
-          "hover:text-foreground hover:bg-background/50",
-          // Active state - nổi bật với shadow
-          "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm data-[state=active]:border-border/50",
-        ],
-        /** Form - active có background, padding nhỏ hơn */
-        form: [
-          "rounded-lg px-3 py-1.5",
-          "hover:text-foreground",
-          "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm",
-        ],
-        /** Underline - active có border-bottom */
-        underline: [
-          "rounded-none border-b-2 border-transparent px-4 py-2.5",
-          "hover:text-foreground hover:border-border",
-          "data-[state=active]:border-primary data-[state=active]:text-foreground",
-        ],
         /** Ghost - minimal styling */
         ghost: [
           "rounded-lg px-3 py-1.5",
           "hover:text-foreground hover:bg-accent",
           "data-[state=active]:text-foreground data-[state=active]:font-semibold",
         ],
-        /** Segmented - active primary tint */
-        segment: [
-          "rounded-none h-full px-4 py-1.5",
-          "hover:bg-primary/5 hover:text-foreground",
-          "data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:font-semibold",
-        ],
         /** Soft - active giống Button soft variant */
         soft: [
-          "rounded-md px-3 py-1.5",
+          "rounded-lg px-3 py-1.5",
           "hover:text-foreground hover:bg-muted/50",
           "data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:border data-[state=active]:border-primary/20 data-[state=active]:shadow-sm data-[state=active]:font-semibold",
         ],
@@ -171,7 +137,7 @@ const tabsTriggerVariants = cva(
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: "soft",
       size: "default",
       stretch: false,
     },
@@ -221,45 +187,7 @@ function TabsContent({
   );
 }
 
-// =============================================================================
-// PRESET CLASSES (Backward compatibility với tabs-styles.ts)
-// Sẽ deprecated trong tương lai - sử dụng variant props thay thế
-// =============================================================================
 
-/** @deprecated Sử dụng <TabsList variant="default" size="sm"> thay thế */
-export const PAGE_TABS_LIST_CLASS =
-  "h-9 bg-muted/50 p-1 w-full md:w-auto justify-start";
-
-/** @deprecated Sử dụng <TabsTrigger variant="default" size="sm" stretch> thay thế */
-export const PAGE_TABS_TRIGGER_CLASS =
-  "data-[state=active]:bg-background data-[state=active]:shadow-md text-sm font-medium px-4 min-w-[100px] transition-all duration-200 flex-1 md:flex-none";
-
-/** @deprecated Sử dụng <TabsList variant="form" size="lg" fullWidth gridCols={3}> thay thế */
-export const FORM_TABS_LIST_CLASS =
-  "grid w-full bg-muted/60 rounded-xl p-1 mb-6 h-11";
-
-/** @deprecated Sử dụng <TabsTrigger variant="form"> thay thế */
-export const FORM_TABS_TRIGGER_CLASS =
-  "data-[state=active]:bg-background data-[state=active]:shadow-sm";
-
-/** @deprecated Sử dụng <TabsList variant="default" size="default" fullWidth gridCols={2}> thay thế */
-export const SHEET_TABS_LIST_CLASS =
-  "grid w-full mb-6 bg-muted/50 rounded-lg p-1 h-10";
-
-/** @deprecated Sử dụng <TabsTrigger variant="default"> thay thế */
-export const SHEET_TABS_TRIGGER_CLASS =
-  "data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium transition-all duration-200";
-
-/** @deprecated Sử dụng gridCols prop trên TabsList thay thế */
-export function getFormTabsGridCols(count: 2 | 3 | 4 | 5): string {
-  const gridMap: Record<number, string> = {
-    2: "grid-cols-2",
-    3: "grid-cols-3",
-    4: "grid-cols-4",
-    5: "grid-cols-5",
-  };
-  return gridMap[count] || "grid-cols-2";
-}
 
 // =============================================================================
 // EXPORTS

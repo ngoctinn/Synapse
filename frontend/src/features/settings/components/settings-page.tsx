@@ -160,16 +160,15 @@ function SettingsForm({
         onValueChange={handleTabChange}
       >
         <PageHeader>
-          <TabsList variant="default" size="default">
-            <TabsTrigger value="schedule" variant="default" stretch={false}>
+          <TabsList size="default">
+            <TabsTrigger value="schedule" stretch={false}>
               Lịch làm việc
             </TabsTrigger>
-            <TabsTrigger value="exceptions" variant="default" stretch={false}>
+            <TabsTrigger value="exceptions" stretch={false}>
               Ngày ngoại lệ
             </TabsTrigger>
             <TabsTrigger
               value="notifications"
-              variant="default"
               stretch={false}
             >
               Thông báo

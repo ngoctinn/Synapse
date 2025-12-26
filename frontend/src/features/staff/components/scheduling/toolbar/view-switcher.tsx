@@ -41,7 +41,6 @@ export function ViewSwitcher({
               value={view}
               className={cn(
                 "h-7 gap-1.5 px-3 text-xs",
-                "data-[state=active]:bg-background data-[state=active]:shadow-sm",
                 "transition-all duration-200"
               )}
               title={SCHEDULE_VIEW_CONFIG[view].description}

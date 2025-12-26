@@ -9,8 +9,9 @@ import {
 } from "@/shared/components/layout/page-layout";
 import { ActionResponse } from "@/shared/lib/action-response";
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
-import { SearchInput } from "@/shared/ui/custom/search-input";
+import { Input } from "@/shared/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
+import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, use, useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -145,14 +146,14 @@ export function StaffPage({
         onValueChange={handleTabChange}
       >
         <PageHeader>
-          <TabsList variant="default" size="default" className="shadow-premium-sm" aria-label="Quản lý nhân viên">
-            <TabsTrigger value="list" variant="default" stretch={false}>
+          <TabsList size="default" className="shadow-premium-sm" aria-label="Quản lý nhân viên">
+            <TabsTrigger value="list" stretch={false}>
               Danh sách
             </TabsTrigger>
-            <TabsTrigger value="permissions" variant="default" stretch={false}>
+            <TabsTrigger value="permissions" stretch={false}>
               Phân quyền
             </TabsTrigger>
-            <TabsTrigger value="scheduling" variant="default" stretch={false}>
+            <TabsTrigger value="scheduling" stretch={false}>
               Lịch làm việc
             </TabsTrigger>
           </TabsList>
@@ -161,10 +162,13 @@ export function StaffPage({
             {activeTab === "list" && (
               <FilterBar
                 startContent={
-                  <SearchInput
+                  <Input
                     placeholder="Tìm kiếm nhân viên..."
                     defaultValue={initialSearch}
                     onChange={(e) => handleSearch(e.target.value)}
+                    startContent={<Search className="size-4 text-muted-foreground" />}
+                    size="md"
+                    className="bg-background w-full md:w-[250px]"
                   />
                 }
                 endContent={<StaffFilter />}

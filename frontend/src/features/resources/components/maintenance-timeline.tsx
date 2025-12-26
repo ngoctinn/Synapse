@@ -2,7 +2,6 @@
 
 import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
-import { Button } from "@/shared/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -11,7 +10,8 @@ import {
 } from "@/shared/ui/tooltip";
 import { addDays, format, isSameDay, startOfWeek } from "date-fns";
 import { vi } from "date-fns/locale";
-import { Bed, Box, ChevronLeft, ChevronRight } from "lucide-react";
+import { Bed, Box } from "lucide-react";
+import { DateRangeNavigator } from "@/shared/ui";
 import Image from "next/image";
 import * as React from "react";
 import { MaintenanceTask, Resource } from "../model/types";
@@ -35,8 +35,7 @@ export function MaintenanceTimeline({
     [startDate]
   );
 
-  const handlePrevWeek = () => setCurrentDate(addDays(currentDate, -7));
-  const handleNextWeek = () => setCurrentDate(addDays(currentDate, 7));
+
 
   // Optimize: Create a fast lookup map for tasks
   // Key: `${resourceId}-${dateString}` -> Value: MaintenanceTask[]
@@ -101,29 +100,11 @@ export function MaintenanceTimeline({
       <div className="bg-muted/20 flex flex-col items-start justify-between gap-4 border-b p-4 sm:flex-row sm:items-center">
         <div className="flex items-center gap-4">
           <h3 className="font-serif text-lg font-semibold">Lịch Bảo Trì</h3>
-          <div className="bg-background flex items-center rounded-lg border shadow-sm">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="hover:bg-muted h-8 w-8 rounded-r-none"
-              onClick={handlePrevWeek}
-              aria-label="Tuần trước"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <span className="min-w-[140px] px-3 text-center text-sm font-medium tabular-nums">
-              {format(startDate, "'Tuần' w, yyyy", { locale: vi })}
-            </span>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="hover:bg-muted h-8 w-8 rounded-l-none"
-              onClick={handleNextWeek}
-              aria-label="Tuần sau"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
+          <DateRangeNavigator
+            value={currentDate}
+            mode="week"
+            onChange={(val) => val instanceof Date && setCurrentDate(val)}
+          />
         </div>
 
         {/* Legend */}

@@ -44,7 +44,6 @@ export function CustomerFilter() {
     <FilterButton
       count={activeCount}
       onClear={clearFilters}
-      className="size-10"
     >
       <div className="grid min-w-[220px] gap-5 p-1">
         {/* Filter: Trạng thái */}

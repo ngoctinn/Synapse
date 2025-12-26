@@ -65,7 +65,7 @@ export function ViewSwitcher({
             key={view}
             value={view}
             className={cn(
-              "data-[state=active]:bg-background h-7 w-9 min-w-9 px-0 data-[state=active]:shadow-sm",
+              "h-7 w-9 min-w-9 px-0",
               "transition-all duration-200"
             )}
             title={CALENDAR_VIEW_CONFIG[view].description}

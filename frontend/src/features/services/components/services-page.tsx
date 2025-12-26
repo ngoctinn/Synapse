@@ -8,9 +8,10 @@ import {
   SurfaceCard,
 } from "@/shared/components/layout/page-layout";
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
-import { SearchInput } from "@/shared/ui/custom/search-input";
+import { Input } from "@/shared/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { ActionResponse } from "@/shared/lib/action-response";
+import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, use, useState, useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -124,11 +125,10 @@ export function ServicesPage({
         onValueChange={handleTabChange}
       >
         <PageHeader>
-          <TabsList variant="default" size="default" aria-label="Quản lý dịch vụ">
+          <TabsList size="default" aria-label="Quản lý dịch vụ">
             <TabsTrigger
               value="list"
               aria-label="Danh sách dịch vụ"
-              variant="default"
               stretch={false}
             >
               Dịch vụ
@@ -138,12 +138,15 @@ export function ServicesPage({
           <div className="flex w-full items-center gap-3 md:w-auto">
             <FilterBar
               startContent={
-                <SearchInput
+                <Input
                   placeholder={
                     isServiceTab ? "Tìm kiếm dịch vụ..." : "Tìm kiếm kỹ năng..."
                   }
                   defaultValue={initialSearch}
                   onChange={(e) => handleSearch(e.target.value)}
+                  startContent={<Search className="size-4 text-muted-foreground" />}
+                  size="md"
+                  className="bg-background w-full md:w-[250px]"
                 />
               }
               endContent={

@@ -16,8 +16,8 @@ import {
   type TechnicianOption,
 } from "@/features/staff/actions";
 import { useSheetForm } from "@/shared/hooks/use-sheet-form";
-import { Badge, Button, Form, SheetClose } from "@/shared/ui";
-import { ActionSheet, FormTabs, FormTabsContent, Icon } from "@/shared/ui/custom";
+import { Badge, Button, Form, SheetClose, Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui";
+import { ActionSheet, Icon } from "@/shared/ui/custom";
 import { CustomerForm } from "./customer-form";
 import { CustomerHistory } from "./customer-history";
 
@@ -133,24 +133,22 @@ export function CustomerSheet({
               technicians={technicians}
             />
           ) : (
-            <FormTabs
-              tabs={[
-                { value: "info", label: "Thông tin" },
-                { value: "history", label: "Lịch sử & Thống kê" },
-              ]}
-              defaultValue="info"
-            >
-              <FormTabsContent value="info" className="form-tab-enter mt-0 space-y-6">
+            <Tabs defaultValue="info" className="flex h-full w-full flex-col">
+              <TabsList className="mb-4 w-full grid grid-cols-2">
+                <TabsTrigger value="info">Thông tin</TabsTrigger>
+                <TabsTrigger value="history">Lịch sử & Thống kê</TabsTrigger>
+              </TabsList>
+              <TabsContent value="info" className="form-tab-enter mt-0 space-y-6">
                 <CustomerForm
                   mode={mode}
                   disabled={isPending}
                   technicians={technicians}
                 />
-              </FormTabsContent>
-              <FormTabsContent value="history" className="form-tab-enter mt-0">
+              </TabsContent>
+              <TabsContent value="history" className="form-tab-enter mt-0">
                 <CustomerHistory />
-              </FormTabsContent>
-            </FormTabs>
+              </TabsContent>
+            </Tabs>
           )}
         </form>
       </Form>

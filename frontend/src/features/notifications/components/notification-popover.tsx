@@ -66,17 +66,11 @@ export function NotificationPopover({ children }: NotificationPopoverProps) {
         </div>
 
         <Tabs defaultValue="all" className="w-full">
-          <TabsList className="h-9 w-full justify-start rounded-none border-b bg-transparent p-0">
-            <TabsTrigger
-              value="all"
-              className="data-[state=active]:border-primary relative h-9 rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:bg-transparent"
-            >
+          <TabsList className="w-full">
+            <TabsTrigger value="all" className="flex-1">
               Tất cả
             </TabsTrigger>
-            <TabsTrigger
-              value="unread"
-              className="data-[state=active]:border-primary h-9 rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:bg-transparent"
-            >
+            <TabsTrigger value="unread" className="flex-1">
               Chưa đọc
             </TabsTrigger>
           </TabsList>

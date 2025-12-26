@@ -694,10 +694,10 @@ export default function DesignSystemPage() {
                 <div className="space-y-4">
                   <h4 className="text-xs font-semibold text-muted-foreground uppercase">Premium Soft Tabs (Bordered)</h4>
                   <Tabs defaultValue="active" className="w-full">
-                    <TabsList variant="soft" fullWidth className="h-11">
-                      <TabsTrigger variant="soft" value="active" stretch>Hoạt động</TabsTrigger>
-                      <TabsTrigger variant="soft" value="pending" stretch>Chờ duyệt</TabsTrigger>
-                      <TabsTrigger variant="soft" value="history" stretch>Lịch sử</TabsTrigger>
+                    <TabsList fullWidth className="h-11">
+                      <TabsTrigger value="active" stretch>Hoạt động</TabsTrigger>
+                      <TabsTrigger value="pending" stretch>Chờ duyệt</TabsTrigger>
+                      <TabsTrigger value="history" stretch>Lịch sử</TabsTrigger>
                     </TabsList>
                   </Tabs>
                 </div>

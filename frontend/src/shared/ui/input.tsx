@@ -16,12 +16,12 @@ const inputVariants = cva(
         flat: "bg-secondary/50 border-transparent shadow-none hover:bg-secondary/80 focus-visible:ring-[1.5px] focus-visible:ring-ring/40 focus-visible:bg-background",
       },
       size: {
-        sm: "h-9 px-3",
-        md: "h-10 px-4",
+        sm: "h-10 px-3",
+        md: "h-12 px-4",
         default: "h-14 px-4",
         lg: "h-16 px-6 text-lg",
         xl: "h-20 px-8 text-xl",
-        icon: "h-10 w-10 p-0 text-center",
+        icon: "h-12 w-12 p-0 text-center",
       },
       isError: {
         true: "border-destructive/80 ring-destructive/10 dark:ring-destructive/20 focus-visible:ring-destructive/50 focus-visible:border-destructive hover:border-destructive",
