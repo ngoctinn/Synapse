@@ -174,7 +174,7 @@ export function ExceptionSheet({
             variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={isSubmitting}
-            className="min-w-[100px]"
+            className=""
           >
             Hủy
           </Button>
@@ -182,7 +182,7 @@ export function ExceptionSheet({
             onClick={handleSubmit}
             disabled={!isValid || isSubmitting}
             isLoading={isSubmitting}
-            className="min-w-[140px]"
+            className=""
             startContent={
               isEditMode ? <Icon icon={Save} /> : <Icon icon={Plus} />
             }
@@ -226,7 +226,7 @@ export function ExceptionSheet({
             onValueChange={(v) => setType(v as ExceptionType)}
             disabled={isSubmitting}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger>
               <SelectValue placeholder="Chọn loại" />
             </SelectTrigger>
             <SelectContent>

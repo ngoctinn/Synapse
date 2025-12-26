@@ -35,33 +35,33 @@ export function AdminSidebar({
       className="z-40"
       {...props}
     >
-      <SidebarHeader className="pt-[30px] px-6 pb-3 group-data-[collapsible=icon]:px-0">
+      <SidebarHeader className="group-data-[collapsible=icon]:px-0">
         <SidebarMenu className="p-0">
           <SidebarMenuItem>
             <SidebarMenuButton
               onClick={() => toggleSidebar()}
               tooltip="Thu gọn / Mở rộng"
-              className="h-12 transition-colors px-2 hover:bg-transparent"
+              className="h-12 transition-colors px-2"
             >
-                <span className="font-bold text-primary text-[28px] tracking-tighter leading-none group-data-[collapsible=icon]:hidden whitespace-nowrap">
+                <span className="font-bold text-primary text-3xl tracking-tighter leading-none group-data-[collapsible=icon]:hidden whitespace-nowrap">
                   Synapse
                 </span>
-                <span className="font-bold text-primary text-[26px] leading-none hidden group-data-[collapsible=icon]:block">
+                <span className="font-bold text-primary text-3xl leading-none hidden group-data-[collapsible=icon]:block">
                   S
                 </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-        <div className="h-px bg-muted-foreground/10 w-full mt-[30px]" />
+        <div className="h-px bg-muted-foreground/10 w-full mt-8" />
       </SidebarHeader>
 
       <SidebarContent className="scrollbar-none gap-2 overflow-y-auto pt-4">
         {SIDEBAR_GROUPS.map((group) => (
           <SidebarGroup
             key={group.group}
-            className="px-6 py-2 group-data-[collapsible=icon]:px-0"
+            className="group-data-[collapsible=icon]:px-0"
           >
-            <div className="text-muted-foreground/50 mb-3 px-0 text-[11px] font-bold uppercase tracking-[0.15em] whitespace-nowrap group-data-[collapsible=icon]:hidden">
+            <div className="text-muted-foreground/50 mb-3 px-0 text-xs font-bold uppercase tracking-widest whitespace-nowrap group-data-[collapsible=icon]:hidden">
               {group.group}
             </div>
             <SidebarGroupContent className="w-full">

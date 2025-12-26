@@ -16,6 +16,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
   Button,
+  Card,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -65,60 +66,64 @@ export function AdminHeader({
   return (
     <header
       className={cn(
-        "bg-background sticky top-2 z-30 ml-2 mr-2 flex h-14 shrink-0 items-center gap-2 rounded-lg shadow-sm transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12",
+        "sticky top-2 z-30 ml-2 mr-2 h-14 shrink-0 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12",
         className
       )}
     >
-      <div className="flex items-center gap-2 px-4">
-        <SidebarTrigger className="-ml-1" />
-        <nav aria-label="Breadcrumb">
-          <Breadcrumb>
-            <BreadcrumbList>
-              {pathSegments.map((segment, index) => {
-                const isLast = index === pathSegments.length - 1;
-                const href = `/${pathSegments.slice(0, index + 1).join("/")}`;
-                const title = getBreadcrumbTitle(segment);
+      <Card className="h-full">
+        <div className="flex h-full items-center gap-2">
+          <div className="flex items-center gap-2 px-4">
+            <SidebarTrigger className="-ml-1" />
+            <nav aria-label="Breadcrumb">
+              <Breadcrumb>
+                <BreadcrumbList>
+                  {pathSegments.map((segment, index) => {
+                    const isLast = index === pathSegments.length - 1;
+                    const href = `/${pathSegments.slice(0, index + 1).join("/")}`;
+                    const title = getBreadcrumbTitle(segment);
 
-                return (
-                  <React.Fragment key={href}>
-                    <BreadcrumbItem className="hidden md:block">
-                      {isLast ? (
-                        <BreadcrumbPage className="text-foreground font-semibold">
-                          {title}
-                        </BreadcrumbPage>
-                      ) : (
-                        <BreadcrumbLink
-                          href={href}
-                          className="text-muted-foreground hover:text-primary transition-colors"
-                        >
-                          {title}
-                        </BreadcrumbLink>
-                      )}
-                    </BreadcrumbItem>
-                    {!isLast && (
-                      <BreadcrumbSeparator className="hidden md:block" />
-                    )}
-                  </React.Fragment>
-                );
-              })}
-            </BreadcrumbList>
-          </Breadcrumb>
-        </nav>
-      </div>
+                    return (
+                      <React.Fragment key={href}>
+                        <BreadcrumbItem className="hidden md:block">
+                          {isLast ? (
+                            <BreadcrumbPage>
+                              {title}
+                            </BreadcrumbPage>
+                          ) : (
+                            <BreadcrumbLink
+                              href={href}
+                              className="transition-colors"
+                            >
+                              {title}
+                            </BreadcrumbLink>
+                          )}
+                        </BreadcrumbItem>
+                        {!isLast && (
+                          <BreadcrumbSeparator className="hidden md:block" />
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
+                </BreadcrumbList>
+              </Breadcrumb>
+            </nav>
+          </div>
 
-      <div className="ml-auto flex items-center gap-3 px-4">
-        {/* Command Menu */}
+          <div className="ml-auto flex items-center gap-3 px-4">
+            {/* Command Menu */}
 
 
-        {/* Notification Button */}
-        <NotificationPopover>
-          <NotificationBell unreadCount={unreadCount} />
-        </NotificationPopover>
+            {/* Notification Button */}
+            <NotificationPopover>
+              <NotificationBell unreadCount={unreadCount} />
+            </NotificationPopover>
 
-        {/* User Profile */}
-        <Separator orientation="vertical" className="h-4 mx-1" />
-        <UserNav user={user} loading={loading} />
-      </div>
+            {/* User Profile */}
+            <Separator orientation="vertical" className="h-4 mx-1" />
+            <UserNav user={user} loading={loading} />
+          </div>
+        </div>
+      </Card>
     </header>
   );
 }

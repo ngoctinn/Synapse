@@ -13,7 +13,7 @@ export function Hero() {
     >
       <div className="container relative z-10 mx-auto px-4">
         <div className="animate-fade-in mx-auto mb-16 flex max-w-[64rem] flex-col items-center gap-6 text-center">
-          <Badge variant="soft" className="shadow-sm">
+          <Badge variant="soft">
             🚀 Phiên bản Beta đã sẵn sàng
           </Badge>
 
@@ -30,12 +30,12 @@ export function Hero() {
 
           <div className="mt-4 flex flex-col gap-4 sm:flex-row">
             <Link href="/register">
-              <Button size="lg" className="btn-hero shadow-premium-primary">
+              <Button size="lg" className="btn-hero">
                 Bắt đầu miễn phí
               </Button>
             </Link>
             <Link href="/contact">
-              <Button variant="outline" size="lg" className="btn-hero border-2">
+              <Button variant="outline" size="lg" className="btn-hero">
                 Liên hệ tư vấn
               </Button>
             </Link>

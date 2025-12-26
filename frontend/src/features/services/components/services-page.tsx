@@ -66,7 +66,7 @@ function ServiceListWrapper({
       page={page}
       totalPages={totalPages}
       variant="flush"
-      className="border-none"
+
       hidePagination={false}
     />
   );
@@ -146,7 +146,7 @@ export function ServicesPage({
                   onChange={(e) => handleSearch(e.target.value)}
                   startContent={<Search className="size-4 text-muted-foreground" />}
                   size="md"
-                  className="bg-background w-full md:w-[250px]"
+                  className="w-full md:w-[250px]"
                 />
               }
               endContent={
@@ -161,7 +161,7 @@ export function ServicesPage({
         <div className="page-entry-animation flex flex-1 flex-col overflow-hidden">
           <TabsContent
             value="list"
-            className="mt-0 flex flex-1 flex-col border-0 p-0 data-[state=inactive]:hidden"
+            className="flex flex-1 flex-col data-[state=inactive]:hidden"
           >
             <PageContent>
               <SurfaceCard>

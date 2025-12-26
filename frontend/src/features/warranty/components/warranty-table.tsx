@@ -87,7 +87,7 @@ export function WarrantyTable({
       header: "Dịch vụ/Liệu trình",
       accessorKey: "service_name",
       cell: (w) => (
-        <div className="max-w-[200px] truncate text-sm">{w.service_name}</div>
+        <div className="max-w-48 truncate text-sm">{w.service_name}</div>
       ),
     },
     {

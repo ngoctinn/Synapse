@@ -102,7 +102,7 @@ export function StaffSheet({
             <Button
               variant="outline"
               disabled={isPending}
-              className="min-w-[100px]"
+              className=""
             >
               Hủy
             </Button>

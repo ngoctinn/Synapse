@@ -240,7 +240,6 @@ export function AppointmentsPage({
                   size="icon"
                   onClick={refreshEvents}
                   disabled={isRefreshing}
-                  className="text-muted-foreground hover:text-foreground"
                 >
                   <Icon
                     icon={RefreshCw}
@@ -256,7 +255,6 @@ export function AppointmentsPage({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-muted-foreground hover:text-foreground"
                 >
                   <Icon icon={Settings2} />
                   <span className="sr-only">Cài đặt</span>
@@ -268,7 +266,6 @@ export function AppointmentsPage({
           <div className="pl-1">
             <Button
               onClick={handleCreateClick}
-              className="shadow-sm"
             >
               <Icon icon={Plus} className="sm:mr-2" />
               <span className="hidden font-medium sm:inline">Đặt lịch</span>
@@ -279,7 +276,7 @@ export function AppointmentsPage({
 
       <PageContent fullWidth className="flex flex-col gap-0 p-0">
         <div className="flex min-h-0 flex-1 flex-col p-0">
-          <SurfaceCard className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border">
+          <SurfaceCard className="flex min-h-0 flex-1 flex-col overflow-hidden">
             <CalendarView
               view={view}
               date={date}

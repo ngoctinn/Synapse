@@ -66,7 +66,7 @@ function StaffListWrapper({
       page={page}
       totalPages={totalPages}
       variant="flush"
-      className="border-none"
+
       hidePagination={false}
     />
   );
@@ -146,7 +146,7 @@ export function StaffPage({
         onValueChange={handleTabChange}
       >
         <PageHeader>
-          <TabsList size="default" className="shadow-premium-sm" aria-label="Quản lý nhân viên">
+          <TabsList size="default" aria-label="Quản lý nhân viên">
             <TabsTrigger value="list" stretch={false}>
               Danh sách
             </TabsTrigger>
@@ -168,7 +168,7 @@ export function StaffPage({
                     onChange={(e) => handleSearch(e.target.value)}
                     startContent={<Search className="size-4 text-muted-foreground" />}
                     size="md"
-                    className="bg-background w-full md:w-[250px]"
+                    className="w-full md:w-[250px]"
                   />
                 }
                 endContent={<StaffFilter />}
@@ -183,7 +183,7 @@ export function StaffPage({
         <div className="page-entry-animation flex min-h-0 flex-1 flex-col overflow-hidden">
           <TabsContent
             value="list"
-            className="mt-0 flex flex-1 flex-col border-0 p-0 data-[state=inactive]:hidden"
+            className="flex flex-1 flex-col data-[state=inactive]:hidden"
           >
             <PageContent>
               <SurfaceCard>
@@ -200,13 +200,13 @@ export function StaffPage({
 
           <TabsContent
             value="permissions"
-            className="mt-0 flex flex-1 flex-col border-0 p-0 data-[state=inactive]:hidden"
+            className="flex flex-1 flex-col data-[state=inactive]:hidden"
           >
             <PageContent>
               <SurfaceCard>
                 <PermissionMatrix
                   initialPermissions={initialPermissions}
-                  className="border-none"
+
                 />
               </SurfaceCard>
             </PageContent>
@@ -214,7 +214,7 @@ export function StaffPage({
 
           <TabsContent
             value="scheduling"
-            className="mt-0 flex min-h-0 flex-1 flex-col overflow-hidden border-0 p-0 data-[state=inactive]:hidden"
+            className="flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
           >
             <Suspense
               fallback={
