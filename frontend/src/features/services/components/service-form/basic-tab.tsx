@@ -13,11 +13,11 @@ import {
   Slider,
   Textarea,
 } from "@/shared/ui";
-import { formatCurrency } from "@/shared/lib/utils";
 import { useFormContext } from "react-hook-form";
 import { ServiceFormValues } from "../../model/schemas";
 import { ServiceCategory } from "../../model/types";
 import { NumberInput } from "@/shared/ui/custom/number-input";
+import { Stack, Group, Grid } from "@/shared/ui/layout";
 
 interface BasicTabProps {
   categories: ServiceCategory[];
@@ -27,9 +27,9 @@ export function BasicTab({ categories }: BasicTabProps) {
   const form = useFormContext<ServiceFormValues>();
 
   return (
-    <div className="space-y-6 py-4">
+    <Stack gap={6} className="py-4">
       {/* Name & Category */}
-      <div className="grid grid-cols-2 gap-4">
+      <Grid gap={4} className="grid-cols-2">
         <FormField
           control={form.control}
           name="name"
@@ -68,10 +68,10 @@ export function BasicTab({ categories }: BasicTabProps) {
             </FormItem>
           )}
         />
-      </div>
+      </Grid>
 
       {/* Price & Duration */}
-      <div className="grid grid-cols-2 gap-4">
+      <Grid gap={4} className="grid-cols-2">
          <FormField
           control={form.control}
           name="price"
@@ -119,7 +119,7 @@ export function BasicTab({ categories }: BasicTabProps) {
             </FormItem>
           )}
         />
-      </div>
+      </Grid>
 
       {/* Buffer Time */}
       <FormField
@@ -127,10 +127,10 @@ export function BasicTab({ categories }: BasicTabProps) {
           name="buffer_time"
           render={({ field }) => (
             <FormItem>
-              <div className="mb-2 flex items-center justify-between">
+              <Group align="center" justify="between" className="mb-2">
                  <FormLabel>Thời gian nghỉ (Buffer Time)</FormLabel>
                  <span className="text-muted-foreground font-mono text-sm">{field.value} phút</span>
-              </div>
+              </Group>
               <FormControl>
                 <Slider
                    min={0}
@@ -167,6 +167,6 @@ export function BasicTab({ categories }: BasicTabProps) {
           </FormItem>
         )}
       />
-    </div>
+    </Stack>
   );
 }

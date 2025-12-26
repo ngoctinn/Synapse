@@ -19,6 +19,7 @@ import { cn } from "@/shared/lib/utils";
 import { AlertTriangle, CalendarIcon } from "lucide-react";
 import { Icon } from "@/shared/ui/custom/icon";
 import type { QuickAppointmentFormValues } from "@/features/appointments/model/schemas";
+import { Stack, Grid } from "@/shared/ui/layout";
 
 interface AppointmentDateTimeProps {
   timeWarning?: string | null;
@@ -32,7 +33,7 @@ export function AppointmentDateTime({
   const { control } = useFormContext<QuickAppointmentFormValues>();
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <Grid gap={4} className="grid-cols-2">
       <FormField
         control={control}
         name="date"
@@ -68,7 +69,7 @@ export function AppointmentDateTime({
 
       {/* Warnings */}
       {(timeWarning || conflicts.length > 0) && (
-        <div className="col-span-2 space-y-1 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm dark:border-amber-800 dark:bg-amber-950/20">
+        <Stack gap={1} className="col-span-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm dark:border-amber-800 dark:bg-amber-950/20">
           {timeWarning && (
             <div className="flex items-center gap-2 font-medium text-amber-800 dark:text-amber-500">
               <Icon icon={AlertTriangle} /> {timeWarning}
@@ -82,8 +83,8 @@ export function AppointmentDateTime({
               <Icon icon={AlertTriangle} /> {c.message}
             </div>
           ))}
-        </div>
+        </Stack>
       )}
-    </div>
+    </Grid>
   );
 }

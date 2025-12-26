@@ -11,6 +11,7 @@ import {
 import { StaffGeneralInfo } from "./staff-form/staff-general-info";
 import { StaffProfessionalInfo } from "./staff-form/staff-professional-info";
 import { StaffHRInfo } from "./staff-form/staff-hr-info";
+import { Stack } from "@/shared/ui/layout";
 
 interface StaffFormProps {
   mode: "create" | "update";
@@ -22,7 +23,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
   return (
     <div className={cn("w-full", className)}>
       {mode === "create" ? (
-        <div className="space-y-6">
+        <Stack gap={6}>
           <section>
             <h3 className="mb-4 text-lg font-semibold">Thông tin chung</h3>
             <StaffGeneralInfo mode={mode} />
@@ -41,7 +42,7 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
             <h3 className="mb-4 text-lg font-semibold">Nhân sự</h3>
             <StaffHRInfo />
           </section>
-        </div>
+        </Stack>
       ) : (
         <Tabs defaultValue="general" className="w-full">
           <TabsList size="lg" fullWidth gridCols={3}>
@@ -50,16 +51,22 @@ export function StaffForm({ mode, skills, className }: StaffFormProps) {
             <TabsTrigger value="hr"> Nhân sự </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="general" className="bg-card space-y-4 rounded-lg border p-6">
-            <StaffGeneralInfo mode={mode} />
+          <TabsContent value="general" asChild>
+            <Stack gap={4} className="bg-card rounded-lg border p-6">
+              <StaffGeneralInfo mode={mode} />
+            </Stack>
           </TabsContent>
 
-          <TabsContent value="professional" className="bg-card space-y-4 rounded-lg border p-6">
-            <StaffProfessionalInfo mode={mode} skills={skills} />
+          <TabsContent value="professional" asChild>
+            <Stack gap={4} className="bg-card rounded-lg border p-6">
+              <StaffProfessionalInfo mode={mode} skills={skills} />
+            </Stack>
           </TabsContent>
 
-          <TabsContent value="hr" className="bg-card space-y-4 rounded-lg border p-6">
-            <StaffHRInfo />
+          <TabsContent value="hr" asChild>
+            <Stack gap={4} className="bg-card rounded-lg border p-6">
+              <StaffHRInfo />
+            </Stack>
           </TabsContent>
         </Tabs>
       )}

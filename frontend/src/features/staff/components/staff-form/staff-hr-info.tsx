@@ -14,13 +14,14 @@ import {
 } from "@/shared/ui";
 import { cn } from "@/shared/lib/utils";
 import { NumberInput } from "@/shared/ui/custom/number-input";
+import { Stack } from "@/shared/ui/layout";
 
 export function StaffHRInfo() {
   const form = useFormContext();
   const control = form.control;
 
   return (
-    <div className="space-y-4">
+    <Stack gap={4}>
       <FormField
         control={control}
         name="hired_at"
@@ -59,6 +60,6 @@ export function StaffHRInfo() {
           </FormItem>
         )}
       />
-    </div>
+    </Stack>
   );
 }

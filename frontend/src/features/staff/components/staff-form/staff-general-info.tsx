@@ -12,6 +12,7 @@ import {
   Textarea,
 } from "@/shared/ui";
 import { Icon } from "@/shared/ui/custom/icon";
+import { Stack, Group, Grid } from "@/shared/ui/layout";
 
 interface StaffGeneralInfoProps {
   mode: "create" | "update";
@@ -22,21 +23,21 @@ export function StaffGeneralInfo({ mode }: StaffGeneralInfoProps) {
   const control = form.control;
 
   return (
-    <div className="space-y-4">
+    <Stack gap={4}>
       {/* Avatar Placeholder */}
-      <div className="bg-muted/20 flex items-center gap-4 rounded-lg border p-4">
+      <Group align="center" gap={4} className="bg-muted/20 rounded-lg border p-4">
         <div className="bg-background border-muted-foreground/30 flex size-12 items-center justify-center rounded-full border border-dashed text-muted-foreground/50">
           <Icon icon={User} size="xl" strokeWidth={1.5} />
         </div>
-        <div className="flex-1">
+        <Stack gap={0} className="flex-1">
           <p className="text-foreground text-sm font-medium">Ảnh đại diện</p>
           <p className="text-muted-foreground text-xs">
             Tính năng đang được phát triển.
           </p>
-        </div>
-      </div>
+        </Stack>
+      </Group>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <Grid gap={4} className="grid-cols-1 md:grid-cols-2">
         <FormField
           control={control}
           name="full_name"
@@ -100,7 +101,7 @@ export function StaffGeneralInfo({ mode }: StaffGeneralInfoProps) {
             )}
           />
         )}
-      </div>
+      </Grid>
 
       <FormField
         control={control}
@@ -119,6 +120,6 @@ export function StaffGeneralInfo({ mode }: StaffGeneralInfoProps) {
           </FormItem>
         )}
       />
-    </div>
+    </Stack>
   );
 }

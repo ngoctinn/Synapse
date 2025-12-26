@@ -35,6 +35,7 @@ import {
 import { CustomerPicker } from "./components/customer-picker";
 import { AppointmentDateTime } from "./components/appointment-date-time";
 import { StaffResourceSelect } from "./components/staff-resource-select";
+import { Stack } from "@/shared/ui/layout";
 
 const DEFAULT_SERVICE_COLOR = "#8b5cf6";
 const MS_PER_MINUTE = 60000;
@@ -202,11 +203,13 @@ export function AppointmentForm({
 
   return (
     <Form {...form}>
-      <form
+      <Stack
+        gap={6}
+        asChild
         id={id}
-        onSubmit={form.handleSubmit(handleSubmit)}
-        className="space-y-6"
+        className="form" // Dummy class to keep the id and other props if needed, but Stack asChild will pass them to the form
       >
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
         <CustomerPicker
           placeholder={appointment?.customerName}
           customerOptions={customerOptions}
@@ -264,6 +267,7 @@ export function AppointmentForm({
           )}
         />
       </form>
-    </Form>
+    </Stack>
+  </Form>
   );
 }

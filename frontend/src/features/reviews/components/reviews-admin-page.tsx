@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/shared/ui/select";
 import { Loader2, XCircle } from "lucide-react";
+import { Stack, Group } from "@/shared/ui/layout";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { useDebounce } from "use-debounce";
 import { getReviews } from "../actions";
@@ -52,7 +53,7 @@ export function ReviewsAdminPage() {
   const handleRatingChange = (value: string) => {
     setFilters((prev) => ({
       ...prev,
-      rating: value ? [parseInt(value) as ReviewRating] : [],
+      rating: value !== "all" ? [parseInt(value) as ReviewRating] : [],
     }));
   };
 
@@ -62,14 +63,11 @@ export function ReviewsAdminPage() {
 
   return (
     <PageShell>
-      <PageHeader>
-        <h1 className="mr-4 shrink-0 text-2xl font-bold tracking-tight">
-          Quản lý đánh giá
-        </h1>
+      <PageHeader title="Quản lý đánh giá">
         <FilterBar
           className="w-full justify-between"
           startContent={
-            <div className="flex w-full flex-1 items-center gap-2 md:w-auto md:min-w-[300px]">
+            <div className="w-full flex-1 md:w-auto md:min-w-[300px]">
               <Input
                 id="search"
                 placeholder="Tìm kiếm đánh giá..."
@@ -81,16 +79,16 @@ export function ReviewsAdminPage() {
             </div>
           }
           endContent={
-            <div className="flex items-center gap-2">
+            <Group>
               <Select
-                value={filters.rating?.[0]?.toString() || ""}
+                value={filters.rating?.[0]?.toString() || "all"}
                 onValueChange={handleRatingChange}
               >
                 <SelectTrigger size="sm" className="w-[150px]">
                   <SelectValue placeholder="Tất cả sao" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Tất cả sao</SelectItem>
+                  <SelectItem value="all">Tất cả sao</SelectItem>
                   {[5, 4, 3, 2, 1].map((rating) => (
                     <SelectItem key={rating} value={rating.toString()}>
                       {rating} sao (
@@ -110,7 +108,7 @@ export function ReviewsAdminPage() {
                   Xóa
                 </Button>
               )}
-            </div>
+            </Group>
           }
         />
       </PageHeader>

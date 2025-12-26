@@ -19,6 +19,7 @@ import {
   SheetClose,
   Textarea,
 } from "@/shared/ui";
+import { Stack } from "@/shared/ui/layout";
 import { NumberInput } from "@/shared/ui/custom/number-input";
 import { ActionSheet } from "@/shared/ui/custom";
 import { createWarranty, updateWarranty } from "../actions";
@@ -68,32 +69,20 @@ export function WarrantySheet({
       footer={
         <>
           <SheetClose asChild>
-            <Button
-              variant="outline"
-              disabled={isPending}
-              className="min-w-[100px]"
-            >
-              Hủy
-            </Button>
+              <Button variant="outline" disabled={isPending}>
+                Hủy
+              </Button>
           </SheetClose>
-          <Button
-            type="submit"
-            form="warranty-form"
-            isLoading={isPending}
-            className="min-w-[140px]"
-          >
+          <Button type="submit" form="warranty-form" isLoading={isPending}>
             Tạo phiếu
           </Button>
         </>
       }
     >
       <Form {...form}>
-        <form
-          id="warranty-form"
-          onSubmit={onSubmit}
-          className="flex flex-col gap-6"
-        >
-          <div className="space-y-4">
+        <Stack id="warranty-form" onSubmit={onSubmit} gap={6} asChild>
+          <form>
+            <Stack gap={4}>
             <FormField
               control={form.control}
               name="customer_id"
@@ -184,7 +173,7 @@ export function WarrantySheet({
                   <FormControl>
                     <Textarea
                       placeholder="Nhập điều khoản chi tiết..."
-                      className="min-h-[150px]"
+                      rows={6}
                       {...field}
                     />
                   </FormControl>
@@ -192,8 +181,9 @@ export function WarrantySheet({
                 </FormItem>
               )}
             />
-          </div>
-        </form>
+            </Stack>
+          </form>
+        </Stack>
       </Form>
     </ActionSheet>
   );

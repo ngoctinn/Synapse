@@ -9,6 +9,7 @@ import {
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
 import { Input } from "@/shared/ui/input";
 import { Search } from "lucide-react";
+import { Group } from "@/shared/ui/layout";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -49,21 +50,22 @@ export function WaitlistPage({ data, page, totalPages }: WaitlistPageProps) {
         title="Danh sách chờ"
         subtitle="Quản lý yêu cầu đặt lịch của khách hàng"
       >
-        <div className="flex items-center gap-3">
+        <Group gap={3}>
           <FilterBar
             startContent={
-              <Input
+          <div className="w-full md:w-[250px]">
+             <Input
                 placeholder="Tìm khách hàng..."
                 defaultValue={initialSearch}
                 onChange={(e) => handleSearch(e.target.value)}
                 startContent={<Search className="size-4 text-muted-foreground" />}
                 size="md"
-                className="bg-background w-full md:w-[250px]"
               />
+          </div>
             }
           />
           <CreateWaitlistTrigger />
-        </div>
+        </Group>
       </PageHeader>
 
       <PageContent>

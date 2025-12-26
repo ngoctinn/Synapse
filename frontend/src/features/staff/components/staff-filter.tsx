@@ -11,7 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/select";
+import { ActionResponse } from "@/shared/lib/action-response";
 import { CheckCircle2, UserCog, XCircle } from "lucide-react";
+import { Stack, Group, Grid } from "@/shared/ui/layout";
 
 export function StaffFilter() {
   const { searchParams, activeCount, updateParam, clearFilters } =
@@ -34,10 +36,9 @@ export function StaffFilter() {
     <FilterButton
       count={activeCount}
       onClear={clearFilters}
-      className="size-10"
     >
-      <div className="grid gap-6 p-1">
-        <div className="space-y-3">
+      <Grid gap={6} className="p-1">
+        <Stack gap={3}>
           <Label htmlFor="role" className="text-sm font-medium">
             Vai trò
           </Label>
@@ -49,19 +50,19 @@ export function StaffFilter() {
               <SelectItem value="all">Tất cả vai trò</SelectItem>
               {ROLES.map((role) => (
                 <SelectItem key={role.id} value={role.id}>
-                  <div className="flex items-center gap-2">
-                    <UserCog className="text-muted-foreground size-4" />
+                  <Group align="center" gap={2}>
+                    <UserCog className="text-muted-foreground" size={16} />
                     <span>{role.name}</span>
-                  </div>
+                  </Group>
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
-        </div>
+        </Stack>
 
         <div className="bg-border/50 h-px" />
 
-        <div className="space-y-3">
+        <Stack gap={3}>
           <Label htmlFor="status" className="text-sm font-medium">
             Trạng thái
           </Label>
@@ -72,21 +73,21 @@ export function StaffFilter() {
             <SelectContent>
               <SelectItem value="all">Tất cả trạng thái</SelectItem>
               <SelectItem value="true">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="text-success size-4" />
+                <Group align="center" gap={2}>
+                  <CheckCircle2 className="text-success" size={16} />
                   <span>Hoạt động</span>
-                </div>
+                </Group>
               </SelectItem>
               <SelectItem value="false">
-                <div className="flex items-center gap-2">
-                  <XCircle className="text-muted-foreground size-4" />
+                <Group align="center" gap={2}>
+                  <XCircle className="text-muted-foreground" size={16} />
                   <span>Ngừng hoạt động</span>
-                </div>
+                </Group>
               </SelectItem>
             </SelectContent>
           </Select>
-        </div>
-      </div>
+        </Stack>
+      </Grid>
     </FilterButton>
   );
 }

@@ -20,6 +20,7 @@ import {
 } from "@/shared/ui/tooltip";
 import { Calendar } from "lucide-react";
 import { Icon } from "@/shared/ui/custom/icon";
+import { Stack, Group } from "@/shared/ui/layout";
 import { cn } from "@/shared/lib/utils";
 import { Z_INDEX } from "@/shared/lib/design-tokens";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -126,7 +127,7 @@ export function StaffTable({
       id: "user.full_name",
       sortable: true,
       cell: (staff) => (
-        <div className="flex items-center gap-4">
+        <Group align="center" gap={4}>
           <Avatar className="h-10 w-10 border">
             <AvatarImage
               src={staff.user.avatar_url || undefined}
@@ -143,15 +144,15 @@ export function StaffTable({
                 .toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <div className="flex flex-col">
+          <Stack gap={0}>
             <span className="text-foreground group-hover:text-primary text-sm font-medium transition-colors">
               {staff.user.full_name || "Chưa cập nhật tên"}
             </span>
             <span className="text-muted-foreground text-xs">
               {staff.user.email}
             </span>
-          </div>
-        </div>
+          </Stack>
+        </Group>
       ),
     },
     {
@@ -171,7 +172,7 @@ export function StaffTable({
     {
       header: "Kỹ năng",
       cell: (staff) => (
-        <div className="flex flex-wrap gap-2">
+        <Group wrap gap={2}>
           {staff.skills.length > 0 ? (
             <>
               {staff.skills.slice(0, 2).map((skill) => (
@@ -188,11 +189,11 @@ export function StaffTable({
                       </Badge>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <div className="flex flex-col gap-1">
+                      <Stack gap={1}>
                         {staff.skills.slice(2).map((skill) => (
                           <span key={skill.id}>{skill.name}</span>
                         ))}
-                      </div>
+                      </Stack>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -203,7 +204,7 @@ export function StaffTable({
               --
             </span>
           )}
-        </div>
+        </Group>
       ),
     },
     {
@@ -223,12 +224,12 @@ export function StaffTable({
       header: "Hành động",
       className: "pr-6 text-right",
       cell: (staff) => (
-        <div
+        <Group
           onClick={(e) => e.stopPropagation()}
-          className="flex items-center justify-end"
+          justify="end"
         >
           <StaffActions staff={staff} onEdit={() => setEditingStaff(staff)} />
-        </div>
+        </Group>
       ),
     },
   ];
@@ -271,12 +272,12 @@ export function StaffTable({
         }
       />
       {isPending && (
-        <div className={cn(Z_INDEX.loadingOverlay, "bg-background/50 absolute inset-0 flex flex-col items-center justify-center backdrop-blur-[2px]")}>
+        <Stack align="center" justify="center" className={cn(Z_INDEX.loadingOverlay, "bg-background/50 absolute inset-0 backdrop-blur-[2px]")}>
           <Spinner className="text-primary mb-2 h-8 w-8" />
           <p className="text-muted-foreground animate-pulse text-sm font-medium">
             Đang xử lý...
           </p>
-        </div>
+        </Stack>
       )}
 
       <TableActionBar

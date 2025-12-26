@@ -105,7 +105,7 @@ export function NotificationsSettings({
     });
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const handleSaveTemplate = (
     eventId: string,
     channelId: string,

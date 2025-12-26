@@ -25,6 +25,7 @@ import { format, parse } from "date-fns";
 import { vi } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import { useFormContext } from "react-hook-form";
+import { Stack, Grid } from "@/shared/ui/layout";
 
 // Type cho danh sách KTV được truyền từ parent
 export type TechnicianOption = {
@@ -50,8 +51,8 @@ export function CustomerForm({
 
   // --- Sub-render functions (Extracted for readability) ---
   const renderProfile = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+    <Stack gap={6}>
+      <Grid gap={4} className="grid-cols-1 md:grid-cols-2">
         <FormField
           control={form.control}
           name="phone_number"
@@ -90,9 +91,9 @@ export function CustomerForm({
             </FormItem>
           )}
         />
-      </div>
+      </Grid>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <Grid gap={4} className="grid-cols-1 md:grid-cols-2">
         <FormField
           control={form.control}
           name="gender"
@@ -147,7 +148,7 @@ export function CustomerForm({
             </FormItem>
           )}
         />
-      </div>
+      </Grid>
 
       <FormField
         control={form.control}
@@ -218,11 +219,11 @@ export function CustomerForm({
           </FormItem>
         )}
       />
-    </div>
+    </Stack>
   );
 
   const renderHealth = () => (
-    <div className="space-y-6">
+    <Stack gap={6}>
       <FormField
         control={form.control}
         name="allergies"
@@ -260,12 +261,12 @@ export function CustomerForm({
           </FormItem>
         )}
       />
-    </div>
+    </Stack>
   );
 
   // --- Main Render ---
   return (
-    <div className={cn("space-y-4", className)}>
+    <Stack gap={4} className={className}>
       {mode === "update" && (
         <FormField
           control={form.control}
@@ -275,19 +276,19 @@ export function CustomerForm({
       )}
 
       {mode === "create" ? (
-        <div className="space-y-6 pt-2">
-          <div className="space-y-4">
+        <Stack gap={6} className="pt-2">
+          <Stack gap={4}>
             <h3 className="text-base font-semibold">Hồ sơ cá nhân</h3>
             {renderProfile()}
-          </div>
+          </Stack>
 
-          <div className="space-y-4">
+          <Stack gap={4}>
             <div className="border-t pt-4">
               <h3 className="text-base font-semibold">Thông tin sức khỏe</h3>
             </div>
             {renderHealth()}
-          </div>
-        </div>
+          </Stack>
+        </Stack>
       ) : (
         <Tabs defaultValue="general" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
@@ -304,6 +305,6 @@ export function CustomerForm({
           </TabsContent>
         </Tabs>
       )}
-    </div>
+    </Stack>
   );
 }

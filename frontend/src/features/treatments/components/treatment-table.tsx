@@ -13,6 +13,7 @@ import { checkInSession } from "../actions";
 import { CustomerTreatment } from "../model/types";
 import { TreatmentSheet } from "./treatment-sheet";
 import { showToast } from "@/shared/ui";
+import { Stack, Group } from "@/shared/ui/layout";
 
 interface TreatmentTableProps {
   data: CustomerTreatment[];
@@ -68,35 +69,35 @@ export function TreatmentTable({
       accessorKey: "customer_name",
       sortable: true,
       cell: (t) => (
-        <div className="flex flex-col">
-          <span className="text-sm font-semibold">{t.customer_name}</span>
+        <Stack gap={0}>
+          <span className="font-semibold">{t.customer_name}</span>
           <span className="text-muted-foreground text-xs">
             ID: {t.customer_id}
           </span>
-        </div>
+        </Stack>
       ),
     },
     {
       header: "Gói dịch vụ",
       accessorKey: "package_name",
-      cell: (t) => <div className="text-sm font-medium">{t.package_name}</div>,
+      cell: (t) => <div className="font-medium">{t.package_name}</div>,
     },
     {
       header: "Tiến độ",
       accessorKey: "progress",
       sortable: true,
       cell: (t) => (
-        <div className="flex w-36 flex-col gap-1.5">
-          <div className="flex justify-between text-xs">
+        <Stack gap={1.5} className="w-36">
+          <Group justify="between" className="text-xs">
             <span>
               {t.sessions_completed}/{t.total_sessions} buổi
             </span>
             <span className="text-muted-foreground">
               {Math.round(t.progress)}%
             </span>
-          </div>
-          <Progress value={t.progress} className="h-2" />
-        </div>
+          </Group>
+          <Progress value={t.progress} />
+        </Stack>
       ),
     },
     {
@@ -105,7 +106,7 @@ export function TreatmentTable({
       sortable: true,
       cell: (t) => {
         const date = new Date(t.start_date).toLocaleDateString("vi-VN");
-        return <div className="text-muted-foreground text-sm">{date}</div>;
+        return <div className="text-muted-foreground">{date}</div>;
       },
     },
     {
@@ -138,23 +139,22 @@ export function TreatmentTable({
       header: "Thao tác",
       className: "text-right",
       cell: (t) => (
-        <div className="flex justify-end gap-2">
+        <Group justify="end" gap={2}>
           {t.status === "active" && (
             <Button
               size="sm"
               variant="outline"
-              className="h-8"
               onClick={(e) => {
                 e.stopPropagation();
                 handleCheckIn(t.id);
               }}
               disabled={isPending}
             >
-              <CheckCircle2 className="size-3.5" />
+              <CheckCircle2 />
               Check-in
             </Button>
           )}
-        </div>
+        </Group>
       ),
     },
   ];

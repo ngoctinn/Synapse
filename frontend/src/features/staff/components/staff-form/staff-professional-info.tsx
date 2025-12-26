@@ -22,6 +22,7 @@ import {
 import { cn } from "@/shared/lib/utils";
 import { Skill } from "@/features/services";
 import { SkillManagerDialog } from "@/features/services/components/skill-manager/skill-manager-dialog";
+import { Stack, Group, Grid } from "@/shared/ui/layout";
 import { useState } from "react";
 
 interface StaffProfessionalInfoProps {
@@ -43,14 +44,14 @@ export function StaffProfessionalInfo({ mode, skills }: StaffProfessionalInfoPro
   const [isSkillManagerOpen, setSkillManagerOpen] = useState(false);
 
   return (
-    <div className="space-y-4">
+    <Stack gap={4}>
       <SkillManagerDialog
         open={isSkillManagerOpen}
         onOpenChange={setSkillManagerOpen}
         onSkillsChange={setAvailableSkills}
       />
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <Grid gap={4} className="grid-cols-1 md:grid-cols-2">
         <FormField
           control={control}
           name="role"
@@ -94,7 +95,7 @@ export function StaffProfessionalInfo({ mode, skills }: StaffProfessionalInfoPro
             </FormItem>
           )}
         />
-      </div>
+      </Grid>
 
       <FormField
         control={control}
@@ -102,7 +103,7 @@ export function StaffProfessionalInfo({ mode, skills }: StaffProfessionalInfoPro
         render={({ field }) => (
           <FormItem>
             <FormLabel>Màu hiển thị (Lịch)</FormLabel>
-            <div className="bg-background/50 flex flex-wrap gap-3 rounded-lg border p-3">
+            <Group wrap gap={3} className="bg-background/50 rounded-lg border p-3">
               {COLOR_PRESETS.map((color) => (
                 <button
                   key={color}
@@ -121,7 +122,7 @@ export function StaffProfessionalInfo({ mode, skills }: StaffProfessionalInfoPro
                   )}
                 </button>
               ))}
-            </div>
+            </Group>
             <FormDescription>Được dùng để định danh trên lịch hẹn</FormDescription>
             <FormMessage />
           </FormItem>
@@ -129,8 +130,8 @@ export function StaffProfessionalInfo({ mode, skills }: StaffProfessionalInfoPro
       />
 
       {role === "technician" && (
-        <div className="animate-in-top space-y-3 pt-2">
-          <div className="flex items-center justify-between px-1">
+        <Stack gap={3} className="animate-in-top pt-2">
+          <Group align="center" justify="between" className="px-1">
             <FormLabel className="text-sm font-medium">Kỹ năng chuyên môn</FormLabel>
             <Button
               type="button"
@@ -141,7 +142,7 @@ export function StaffProfessionalInfo({ mode, skills }: StaffProfessionalInfoPro
             >
               <Settings2 className="h-3 w-3" /> Quản lý kỹ năng
             </Button>
-          </div>
+          </Group>
           <FormField
             control={control}
             name="skill_ids"
@@ -163,8 +164,8 @@ export function StaffProfessionalInfo({ mode, skills }: StaffProfessionalInfoPro
               </FormItem>
             )}
           />
-        </div>
+        </Stack>
       )}
-    </div>
+    </Stack>
   );
 }

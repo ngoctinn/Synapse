@@ -3,6 +3,7 @@
 import { Frown } from "lucide-react";
 import { Review } from "../model/types";
 import { ReviewCard } from "./review-card";
+import { Stack, Grid } from "@/shared/ui/layout";
 
 interface ReviewListProps {
   reviews: Review[];
@@ -17,21 +18,21 @@ export function ReviewList({
 }: ReviewListProps) {
   if (reviews.length === 0) {
     return (
-      <div className="text-muted-foreground flex flex-col items-center justify-center py-8 text-center">
-        <Frown className="h-12 w-12" />
-        <p className="mt-3 text-sm">{emptyMessage}</p>
-      </div>
+      <Stack align="center" justify="center" className="text-muted-foreground py-8 text-center">
+        <Frown size={48} />
+        <p className="text-sm">{emptyMessage}</p>
+      </Stack>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <Stack gap={6}>
       {title && <h2 className="text-xl font-bold">{title}</h2>}
-      <div className="grid gap-4">
+      <Grid gap={4}>
         {reviews.map((review) => (
           <ReviewCard key={review.id} review={review} />
         ))}
-      </div>
-    </div>
+      </Grid>
+    </Stack>
   );
 }

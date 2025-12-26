@@ -7,6 +7,7 @@ import { TagInput } from "@/shared/ui/custom/tag-input";
 
 import { NumberInput } from "@/shared/ui/custom/number-input";
 import { Label } from "@/shared/ui/label";
+import { Stack, Group, Grid } from "@/shared/ui/layout";
 import {
   Select,
   SelectContent,
@@ -97,16 +98,15 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
       isActive={activeCount > 0}
       count={activeCount}
       onClear={clearFilters}
-      className="size-9"
     >
-      <div className="grid gap-6 p-1">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
+      <Grid gap={6} className="p-1">
+        <Stack gap={4}>
+          <Group align="center" justify="between">
             <Label className="text-sm font-medium">Khoảng giá</Label>
             <span className="text-muted-foreground bg-muted rounded px-2 py-0.5 text-xs font-medium">
               VND
             </span>
-          </div>
+          </Group>
           <div className="px-1 pb-6 pt-2">
             <Slider
               defaultValue={[0, 10000000]}
@@ -119,8 +119,8 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
               className="focus-visible:ring-ring py-2 focus-visible:ring-[1.5px]"
             />
           </div>
-          <div className="flex items-center gap-3">
-            <div className="flex-1 space-y-1.5">
+          <Group align="center" gap={3}>
+            <Stack gap={1.5} className="flex-1">
               <span className="text-muted-foreground text-[10px] font-semibold uppercase tracking-wider">
                 Từ
               </span>
@@ -132,8 +132,8 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
                 suffix="VNĐ"
                 className="bg-background"
               />
-            </div>
-            <div className="flex-1 space-y-1.5">
+            </Stack>
+            <Stack gap={1.5} className="flex-1">
               <span className="text-muted-foreground text-[10px] font-semibold uppercase tracking-wider">
                 Đến
               </span>
@@ -145,13 +145,13 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
                 suffix="VNĐ"
                 className="bg-background"
               />
-            </div>
-          </div>
-        </div>
+            </Stack>
+          </Group>
+        </Stack>
 
         <div className="bg-border/50 h-px" />
 
-        <div className="space-y-3">
+        <Stack gap={3}>
           <Label className="text-sm font-medium">Danh mục</Label>
           <Select
             value={categoryId || "all"}
@@ -169,11 +169,11 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
               ))}
             </SelectContent>
           </Select>
-        </div>
+        </Stack>
 
         <div className="bg-border/50 h-px" />
 
-        <div className="space-y-3">
+        <Stack gap={3}>
           <Label className="text-sm font-medium">Thời lượng</Label>
           <Select
             value={duration || "all"}
@@ -191,11 +191,11 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
               <SelectItem value="120">120 phút</SelectItem>
             </SelectContent>
           </Select>
-        </div>
+        </Stack>
 
         <div className="bg-border/50 h-px" />
 
-        <div className="space-y-3">
+        <Stack gap={3}>
           <Label className="text-sm font-medium">Kỹ năng yêu cầu</Label>
           <TagInput
             options={skillOptions}
@@ -206,8 +206,8 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
             placeholder="Chọn kỹ năng..."
             className="bg-background w-full"
           />
-        </div>
-      </div>
+        </Stack>
+      </Grid>
     </FilterButton>
   );
 }

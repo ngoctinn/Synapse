@@ -6,7 +6,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  Input,
   Select,
   SelectContent,
   SelectItem,
@@ -15,10 +14,10 @@ import {
   Slider,
 } from "@/shared/ui";
 import { NumberInput } from "@/shared/ui/custom/number-input";
-import { cn } from "@/shared/lib/utils";
 import { Plus, Trash2 } from "lucide-react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { ServiceFormValues } from "../../model/schemas";
+import { Stack, Group, Grid } from "@/shared/ui/layout";
 
 interface ResourcesTabProps {
   availableResourceGroups: ResourceGroup[];
@@ -40,7 +39,7 @@ export function ResourcesTab({ availableResourceGroups, duration }: ResourcesTab
   };
 
   return (
-    <div className="space-y-6 py-4">
+    <Stack gap={6} className="py-4">
       {/* Visual Timeline Preview */}
       <div className="rounded-xl border bg-card p-4 shadow-sm">
         <h4 className="mb-4 text-sm font-medium text-muted-foreground">Mô phỏng quy trình</h4>
@@ -80,7 +79,7 @@ export function ResourcesTab({ availableResourceGroups, duration }: ResourcesTab
       </div>
 
       {/* Dynamic List */}
-      <div className="space-y-4">
+      <Stack gap={4}>
         {fields.map((field, index) => {
            // Watch values for this specific field to validate timeline
            const currentReq = watchRequirements?.[index];
@@ -100,12 +99,12 @@ export function ResourcesTab({ availableResourceGroups, duration }: ResourcesTab
               </div>
 
               {/* Header with Color Indicator */}
-              <div className="mb-4 flex items-center gap-2">
+              <Group align="center" gap={2} className="mb-4">
                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: getItemColor(index) }} />
                  <span className="text-sm font-medium">Tài nguyên #{index + 1}</span>
-              </div>
+              </Group>
 
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <Grid gap={4} className="grid-cols-1 md:grid-cols-2">
                 {/* Resource Group */}
                 <FormField
                   control={form.control}
@@ -157,10 +156,10 @@ export function ResourcesTab({ availableResourceGroups, duration }: ResourcesTab
                   name={`resource_requirements.${index}.start_delay`}
                   render={({ field }) => (
                     <FormItem>
-                      <div className="mb-2 flex justify-between">
+                      <Group justify="between" className="mb-2">
                          <FormLabel>Bắt đầu từ phút thứ</FormLabel>
                          <span className="text-xs font-mono">{field.value}p</span>
-                      </div>
+                      </Group>
                       <FormControl>
                          <Slider
                             min={0}
@@ -181,15 +180,15 @@ export function ResourcesTab({ availableResourceGroups, duration }: ResourcesTab
                   name={`resource_requirements.${index}.usage_duration`}
                   render={({ field }) => (
                     <FormItem>
-                       <div className="mb-2 flex justify-between">
+                       <Group justify="between" className="mb-2">
                          <FormLabel>Thời lượng sử dụng</FormLabel>
                          <span className="text-xs font-mono">
                             {field.value ? `${field.value}p` : "Suốt dịch vụ"}
                          </span>
-                      </div>
+                      </Group>
                       <Select
                          onValueChange={(val) => field.onChange(val === "full" ? null : Number(val))}
-                         defaultValue={field.value ? String(field.value) : "full"}
+                         value={field.value ? String(field.value) : "full"}
                       >
                          <FormControl>
                             <SelectTrigger>
@@ -201,7 +200,7 @@ export function ResourcesTab({ availableResourceGroups, duration }: ResourcesTab
                             {[5, 10, 15, 20, 30, 45, 60].map(min => (
                                <SelectItem key={min} value={String(min)} disabled={min > maxDuration}>
                                   {min} phút
-                               </SelectItem>
+                                </SelectItem>
                             ))}
                          </SelectContent>
                       </Select>
@@ -209,7 +208,7 @@ export function ResourcesTab({ availableResourceGroups, duration }: ResourcesTab
                     </FormItem>
                   )}
                 />
-              </div>
+              </Grid>
             </div>
            )
         })}
@@ -223,8 +222,8 @@ export function ResourcesTab({ availableResourceGroups, duration }: ResourcesTab
           <Plus className="mr-2 h-4 w-4" />
           Thêm tài nguyên
         </Button>
-      </div>
-    </div>
+      </Stack>
+    </Stack>
   );
 }
 

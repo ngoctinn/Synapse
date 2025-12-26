@@ -26,6 +26,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu";
+import { Stack, Group } from "@/shared/ui/layout";
 
 interface WarrantyTableProps {
   data: WarrantyTicket[];
@@ -45,7 +46,7 @@ export function WarrantyTable({
   isLoading,
 }: WarrantyTableProps) {
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
 
   const {
     page: urlPage,
@@ -77,7 +78,7 @@ export function WarrantyTable({
     {
       header: "Mã bảo hành",
       accessorKey: "code",
-      cell: (w) => <span className="font-mono font-medium">{w.code}</span>,
+      cell: (w) => <span>{w.code}</span>,
     },
     {
       header: "Khách hàng",
@@ -87,7 +88,7 @@ export function WarrantyTable({
       header: "Dịch vụ/Liệu trình",
       accessorKey: "service_name",
       cell: (w) => (
-        <div className="max-w-48 truncate text-sm">{w.service_name}</div>
+        <div className="max-w-48 truncate">{w.service_name}</div>
       ),
     },
     {
@@ -103,14 +104,14 @@ export function WarrantyTable({
         const isExpired = daysLeft < 0;
 
         return (
-          <div className="flex flex-col text-sm">
+          <Stack gap={0}>
             <span>{format(end, "dd/MM/yyyy", { locale: vi })}</span>
             <span
               className={`text-xs ${isExpired ? "text-destructive" : "text-success"}`}
             >
               {isExpired ? "Đã hết hạn" : `Còn ${daysLeft} ngày`}
             </span>
-          </div>
+          </Stack>
         );
       },
     },
@@ -149,12 +150,11 @@ export function WarrantyTable({
       header: "",
       id: "actions",
       cell: (w) => (
-        <div className="flex justify-end">
+        <Group justify="end">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon-sm">
-                <span className="sr-only">Mở menu</span>
-                <MoreHorizontal className="h-4 w-4" />
+              <Button variant="ghost" size="icon-sm" aria-label="Mở menu">
+                <MoreHorizontal />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -162,18 +162,18 @@ export function WarrantyTable({
               <DropdownMenuItem
                 onClick={() => handleStatusUpdate(w.id, "claimed")}
               >
-                <AlertTriangle className="h-4 w-4" /> Yêu cầu bảo hành
+                <AlertTriangle /> Yêu cầu bảo hành
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => handleStatusUpdate(w.id, "voided")}
                 className="text-destructive"
               >
-                <XCircle className="h-4 w-4" /> Hủy hiệu lực
+                <XCircle /> Hủy hiệu lực
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
+        </Group>
       ),
     },
   ];

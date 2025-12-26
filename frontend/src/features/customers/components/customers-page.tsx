@@ -12,6 +12,7 @@ import { Input } from "@/shared/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 
 import { Search } from "lucide-react";
+import { Stack, Group } from "@/shared/ui/layout";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, use, useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -100,11 +101,11 @@ export function CustomersPage({
 
   return (
     <PageShell>
-      <Tabs
-        value={activeTab}
-        className="flex w-full flex-1 flex-col gap-0"
-        onValueChange={handleTabChange}
-      >
+      <Stack gap={0} asChild>
+        <Tabs
+          value={activeTab}
+          onValueChange={handleTabChange}
+        >
         <PageHeader>
           <TabsList size="default">
             <TabsTrigger value="list" stretch={false}>
@@ -115,30 +116,30 @@ export function CustomersPage({
             </TabsTrigger>
           </TabsList>
 
-          <div className="flex w-full items-center gap-3 md:w-auto">
+          <Group gap={3} className="w-full md:w-auto">
             {activeTab === "list" && (
               <FilterBar
                 startContent={
-                  <Input
-                    placeholder="Tìm kiếm khách hàng..."
-                    defaultValue={initialSearch}
-                    onChange={(e) => handleSearch(e.target.value)}
-                    startContent={<Search className="size-4 text-muted-foreground" />}
-                    size="md"
-                    className="bg-background w-full md:w-[250px]"
-                  />
+                  <div className="w-full md:w-[250px]">
+                    <Input
+                      placeholder="Tìm kiếm khách hàng..."
+                      defaultValue={initialSearch}
+                      onChange={(e) => handleSearch(e.target.value)}
+                      startContent={<Search className="text-muted-foreground" size={16} />}
+                    />
+                  </div>
                 }
                 endContent={<CustomerFilter />}
               />
             )}
             <CreateCustomerTrigger />
-          </div>
+          </Group>
         </PageHeader>
 
-        <div className="page-entry-animation flex flex-1 flex-col overflow-hidden">
+        <Stack gap={0} className="page-entry-animation overflow-hidden">
           <TabsContent
             value="list"
-            className="mt-0 flex flex-1 flex-col border-0 p-0 data-[state=inactive]:hidden"
+            className="mt-0 data-[state=inactive]:hidden"
           >
             <PageContent>
               <SurfaceCard>
@@ -154,7 +155,7 @@ export function CustomersPage({
 
           <TabsContent
             value="insights"
-            className="mt-0 flex flex-1 flex-col border-0 p-0 data-[state=inactive]:hidden"
+            className="mt-0 data-[state=inactive]:hidden"
           >
             <PageContent>
               <SurfaceCard className="text-muted-foreground items-center justify-center p-8">
@@ -165,8 +166,9 @@ export function CustomersPage({
               </SurfaceCard>
             </PageContent>
           </TabsContent>
-        </div>
+        </Stack>
       </Tabs>
-    </PageShell>
+    </Stack>
+  </PageShell>
   );
 }

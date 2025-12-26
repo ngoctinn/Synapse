@@ -12,6 +12,7 @@ import { FilterBar } from "@/shared/ui/custom/filter-bar";
 import { Input } from "@/shared/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Search } from "lucide-react";
+import { Stack, Group } from "@/shared/ui/layout";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, use, useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -140,11 +141,11 @@ export function StaffPage({
         activeTab === "scheduling" ? "h-screen overflow-hidden" : undefined
       }
     >
-      <Tabs
-        value={activeTab}
-        className="flex w-full flex-1 flex-col gap-0"
-        onValueChange={handleTabChange}
-      >
+      <Stack gap={0} asChild>
+        <Tabs
+          value={activeTab}
+          onValueChange={handleTabChange}
+        >
         <PageHeader>
           <TabsList size="default" aria-label="Quản lý nhân viên">
             <TabsTrigger value="list" stretch={false}>
@@ -158,18 +159,18 @@ export function StaffPage({
             </TabsTrigger>
           </TabsList>
 
-          <div className="flex w-full items-center gap-3 md:w-auto">
+          <Group gap={3} className="w-full md:w-auto">
             {activeTab === "list" && (
               <FilterBar
                 startContent={
-                  <Input
-                    placeholder="Tìm kiếm nhân viên..."
-                    defaultValue={initialSearch}
-                    onChange={(e) => handleSearch(e.target.value)}
-                    startContent={<Search className="size-4 text-muted-foreground" />}
-                    size="md"
-                    className="w-full md:w-[250px]"
-                  />
+                  <div className="w-full md:w-[250px]">
+                    <Input
+                      placeholder="Tìm kiếm nhân viên..."
+                      defaultValue={initialSearch}
+                      onChange={(e) => handleSearch(e.target.value)}
+                      startContent={<Search className="text-muted-foreground" size={16} />}
+                    />
+                  </div>
                 }
                 endContent={<StaffFilter />}
               />
@@ -177,13 +178,13 @@ export function StaffPage({
             {activeTab === "list" && canManageStaff && (
               <InviteStaffTrigger skills={skills} />
             )}
-          </div>
+          </Group>
         </PageHeader>
 
-        <div className="page-entry-animation flex min-h-0 flex-1 flex-col overflow-hidden">
+        <Stack gap={0} className="page-entry-animation min-h-0 overflow-hidden">
           <TabsContent
             value="list"
-            className="flex flex-1 flex-col data-[state=inactive]:hidden"
+            className="mt-0 data-[state=inactive]:hidden"
           >
             <PageContent>
               <SurfaceCard>
@@ -200,7 +201,7 @@ export function StaffPage({
 
           <TabsContent
             value="permissions"
-            className="flex flex-1 flex-col data-[state=inactive]:hidden"
+            className="mt-0 data-[state=inactive]:hidden"
           >
             <PageContent>
               <SurfaceCard>
@@ -236,8 +237,9 @@ export function StaffPage({
               />
             </Suspense>
           </TabsContent>
-        </div>
+        </Stack>
       </Tabs>
-    </PageShell>
+    </Stack>
+  </PageShell>
   );
 }

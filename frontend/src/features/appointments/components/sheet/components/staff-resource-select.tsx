@@ -15,6 +15,7 @@ import {
 } from "@/shared/ui";
 import type { TimelineResource } from "@/features/appointments/model/types";
 import type { QuickAppointmentFormValues } from "@/features/appointments/model/schemas";
+import { Stack } from "@/shared/ui/layout";
 
 interface StaffResourceSelectProps {
   availableStaff: TimelineResource[];
@@ -28,7 +29,7 @@ export function StaffResourceSelect({
   const { control } = useFormContext<QuickAppointmentFormValues>();
 
   return (
-    <div className="space-y-6">
+    <Stack gap={6}>
       {/* Staff */}
       <FormField
         control={control}
@@ -89,6 +90,6 @@ export function StaffResourceSelect({
           </FormItem>
         )}
       />
-    </div>
+    </Stack>
   );
 }

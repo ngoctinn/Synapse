@@ -10,6 +10,7 @@ import { BasicTab } from "./service-form/basic-tab";
 import { ResourcesTab } from "./service-form/resources-tab";
 
 import { SkillsTab } from "./service-form/skills-tab";
+import { Stack, Group } from "@/shared/ui/layout";
 
 interface ServiceFormProps {
   mode: "create" | "update";
@@ -37,9 +38,9 @@ export function ServiceForm({
   const duration = form.watch("duration") || 60;
 
   return (
-    <div className={cn("w-full pt-2", className)}>
+    <Stack gap={2} className={cn("pt-2", className)}>
       <Tabs defaultValue="basic" className="h-full w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList gridCols={3} fullWidth>
           <TabsTrigger value="basic" className="relative">
             Thông tin
             {hasBasicErrors && (
@@ -55,23 +56,29 @@ export function ServiceForm({
           <TabsTrigger value="skills">Kỹ năng</TabsTrigger>
         </TabsList>
 
-        <div className="mt-4 h-full">
-           <TabsContent value="basic" className="mt-0 space-y-4">
-              <BasicTab categories={availableCategories} />
+        <Stack gap={0} className="mt-4">
+           <TabsContent value="basic" asChild>
+              <Stack gap={4} className="mt-0">
+                <BasicTab categories={availableCategories} />
+              </Stack>
            </TabsContent>
 
-           <TabsContent value="resources" className="mt-0 space-y-4">
-              <ResourcesTab
-                 availableResourceGroups={availableResourceGroups}
-                 duration={duration}
-              />
+           <TabsContent value="resources" asChild>
+              <Stack gap={4} className="mt-0">
+                <ResourcesTab
+                   availableResourceGroups={availableResourceGroups}
+                   duration={duration}
+                />
+              </Stack>
            </TabsContent>
 
-           <TabsContent value="skills" className="mt-0 space-y-4">
-              <SkillsTab availableSkills={availableSkills} />
+           <TabsContent value="skills" asChild>
+              <Stack gap={4} className="mt-0">
+                <SkillsTab availableSkills={availableSkills} />
+              </Stack>
            </TabsContent>
-        </div>
+        </Stack>
       </Tabs>
-    </div>
+    </Stack>
   );
 }

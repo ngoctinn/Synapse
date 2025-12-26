@@ -24,6 +24,7 @@ import {
 } from "@/shared/ui/tooltip";
 import { Button } from "@/shared/ui/button";
 import { Icon } from "@/shared/ui/custom";
+import { Stack, Group } from "@/shared/ui/layout";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -105,11 +106,11 @@ export function ServiceTable({
     {
       header: "Tên dịch vụ",
       cell: (service) => (
-        <div className="flex flex-col">
+        <Stack gap={0}>
           <span className="text-foreground group-hover:text-primary text-sm font-medium transition-colors">
             {service.name}
           </span>
-        </div>
+        </Stack>
       ),
     },
     {
@@ -134,14 +135,14 @@ export function ServiceTable({
       cell: (service) => {
         const totalTime = service.duration + service.buffer_time;
         return (
-          <div className="flex flex-col gap-1 text-xs">
+          <Stack gap={1} className="text-xs">
             <span className="text-foreground font-medium">
               Tổng: {totalTime}p
             </span>
             <span className="text-muted-foreground">
               ({service.duration}p + {service.buffer_time}p nghỉ)
             </span>
-          </div>
+          </Stack>
         );
       },
     },
@@ -154,13 +155,13 @@ export function ServiceTable({
         }
 
         return (
-          <div className="flex flex-wrap gap-1">
+          <Group wrap gap={1}>
              {reqs.map((req, idx) => (
                  <Badge key={idx} variant="outline" className="text-xs font-normal">
                     {req.quantity}x {getResourceGroupName(req.group_id)}
                  </Badge>
              ))}
-          </div>
+          </Group>
         );
       },
     },
@@ -172,7 +173,7 @@ export function ServiceTable({
     {
        header: "Trạng thái",
        cell: (service) => (
-          <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
+          <Group align="center" gap={2} onClick={e => e.stopPropagation()}>
              <Switch
                 checked={service.is_active}
                 onCheckedChange={(checked) => handleToggleStatus(service, checked)}
@@ -183,30 +184,30 @@ export function ServiceTable({
              )}>
                 {service.is_active ? "Hiện" : "Ẩn"}
              </span>
-          </div>
+          </Group>
        )
     },
-    {
+     {
       header: "Hành động",
       className: "pr-6 text-right",
       cell: (service) => (
-        <div onClick={(e) => e.stopPropagation()}>
+        <Group justify="end" onClick={(e) => e.stopPropagation()}>
           <ServiceActions
             service={service}
             onEdit={() => setEditingService(service)}
           />
-        </div>
+        </Group>
       ),
     },
   ];
 
   return (
     <>
-       <div className="mb-4 flex items-center justify-end">
-          <Button onClick={() => setIsCreateOpen(true)} startContent={<Icon icon={Plus} />}>
-             Thêm dịch vụ
-          </Button>
-       </div>
+        <Group justify="end" className="mb-4">
+           <Button onClick={() => setIsCreateOpen(true)} startContent={<Icon icon={Plus} />}>
+              Thêm dịch vụ
+           </Button>
+        </Group>
 
       <DataTable
         data={services}

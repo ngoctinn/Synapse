@@ -30,6 +30,7 @@
   import { format, parse } from "date-fns";
   import { vi } from "date-fns/locale";
   import { ActionSheet } from "@/shared/ui/custom";
+  import { Stack, Grid } from "@/shared/ui/layout";
 
   interface WaitlistSheetProps {
     mode: "create" | "edit";
@@ -92,11 +93,7 @@
         footer={
           <>
             <SheetClose asChild>
-              <Button
-                variant="outline"
-                disabled={isPending}
-                className="min-w-[100px]"
-              >
+              <Button variant="outline" disabled={isPending}>
                 Hủy
               </Button>
             </SheetClose>
@@ -104,7 +101,6 @@
               type="submit"
               form="waitlist-form"
               isLoading={isPending}
-              className="min-w-[140px]"
             >
               {isCreate ? "Gửi yêu cầu" : "Lưu thay đổi"}
             </Button>
@@ -112,12 +108,9 @@
         }
       >
         <Form {...form}>
-          <form
-            id="waitlist-form"
-            onSubmit={onSubmit}
-            className="flex flex-col gap-6"
-          >
-            <div className="space-y-4">
+          <Stack id="waitlist-form" onSubmit={onSubmit} gap={6} asChild>
+            <form>
+              <Stack gap={4}>
               <FormField
                 control={form.control}
                 name="customer_name"
@@ -174,7 +167,7 @@
                 )}
               />
 
-              <div className="grid grid-cols-2 gap-4">
+              <Grid cols={2} gap={4}>
                 <FormField
                   control={form.control}
                   name="preferred_date"
@@ -226,7 +219,7 @@
                     </FormItem>
                   )}
                 />
-              </div>
+              </Grid>
 
               <FormField
                 control={form.control}
@@ -237,7 +230,7 @@
                     <FormControl>
                       <Textarea
                         placeholder="Ghi chú thêm..."
-                        className="min-h-[100px]"
+                        rows={4}
                         {...field}
                         value={field.value || ""}
                       />
@@ -246,8 +239,9 @@
                   </FormItem>
                 )}
               />
-            </div>
-          </form>
+              </Stack>
+            </form>
+          </Stack>
         </Form>
       </ActionSheet>
     );

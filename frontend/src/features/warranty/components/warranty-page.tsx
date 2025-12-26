@@ -9,6 +9,7 @@ import {
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
 import { Input } from "@/shared/ui/input";
 import { Search } from "lucide-react";
+import { Stack, Group } from "@/shared/ui/layout";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -45,32 +46,26 @@ export function WarrantyPage({ data, page, totalPages }: WarrantyPageProps) {
 
   return (
     <PageShell>
-      <PageHeader>
-        <div className="flex flex-col gap-0.5">
-          <h1 className="text-lg font-medium tracking-tight md:text-xl">
-            Bảo hành
-          </h1>
-          <p className="text-muted-foreground hidden text-sm md:block">
-            Quản lý phiếu bảo hành và cam kết chất lượng
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
+      <PageHeader
+        title="Bảo hành"
+        subtitle="Quản lý phiếu bảo hành và cam kết chất lượng"
+      >
+        <Group gap={3}>
           <FilterBar
             startContent={
-              <div className="relative w-full md:w-[250px]">
-                <Search className="text-muted-foreground/70 absolute left-2.5 top-2.5 h-4 w-4" />
-                <Input
-                  type="search"
-                  placeholder="Tìm mã phiếu hoặc khách hàng..."
-                  defaultValue={initialSearch}
-                  onChange={(e) => handleSearch(e.target.value)}
-                  className="bg-background border-muted-foreground/20 focus-premium w-full pl-9"
-                />
-              </div>
+          <div className="w-full md:w-[250px]">
+            <Input
+              type="search"
+              placeholder="Tìm mã phiếu hoặc khách hàng..."
+              defaultValue={initialSearch}
+              onChange={(e) => handleSearch(e.target.value)}
+              startContent={<Search size={16} className="text-muted-foreground/70" />}
+            />
+          </div>
             }
           />
           <CreateWarrantyTrigger />
-        </div>
+        </Group>
       </PageHeader>
 
       <PageContent>

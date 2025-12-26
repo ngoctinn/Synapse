@@ -28,6 +28,7 @@ import {
   RefreshCw,
   Settings2,
 } from "lucide-react";
+import { Stack, Group } from "@/shared/ui/layout";
 import { use, useState } from "react";
 import {
   useCalendarState,
@@ -195,7 +196,7 @@ export function AppointmentsPage({
   return (
     <PageShell className="h-screen overflow-hidden">
       <PageHeader>
-        <div className="flex items-center gap-4">
+        <Group align="center" gap={4}>
           <DateNavigator
             date={date}
             formattedDateRange={formattedDateRange}
@@ -205,7 +206,7 @@ export function AppointmentsPage({
             onToday={goToday}
             onDateSelect={goToDate}
           />
-          <div className="hidden items-center gap-2 xl:flex">
+          <Group className="hidden xl:flex" gap={2}>
             <StatBadge
               icon={CalendarCheck}
               value={metrics?.todayTotal ?? 0}
@@ -223,11 +224,11 @@ export function AppointmentsPage({
               value={`${metrics?.occupancyRate ?? 0}%`}
               label="Công suất phục vụ"
             />
-          </div>
-        </div>
-        <div className="flex items-center gap-1.5">
+          </Group>
+        </Group>
+        <Group align="center" gap={1.5}>
           <ViewSwitcher value={view} onChange={setView} />
-          <div className="hidden items-center gap-1 pl-1 sm:flex">
+          <Group gap={1} className="hidden pl-1 sm:flex">
             <AppointmentsFilter
               staffList={staffList}
               filters={filters}
@@ -262,7 +263,7 @@ export function AppointmentsPage({
               </TooltipTrigger>
               <TooltipContent>Cài đặt hiển thị</TooltipContent>
             </Tooltip>
-          </div>
+          </Group>
           <div className="pl-1">
             <Button
               onClick={handleCreateClick}
@@ -271,12 +272,13 @@ export function AppointmentsPage({
               <span className="hidden font-medium sm:inline">Đặt lịch</span>
             </Button>
           </div>
-        </div>
+        </Group>
       </PageHeader>
 
-      <PageContent fullWidth className="flex flex-col gap-0 p-0">
-        <div className="flex min-h-0 flex-1 flex-col p-0">
-          <SurfaceCard className="flex min-h-0 flex-1 flex-col overflow-hidden">
+      <PageContent fullWidth className="p-0">
+        <Stack gap={0} className="min-h-0 min-w-0 flex-1">
+          <Stack gap={0} className="min-h-0 min-w-0" asChild>
+            <SurfaceCard className="overflow-hidden">
             <CalendarView
               view={view}
               date={date}
@@ -296,8 +298,9 @@ export function AppointmentsPage({
               onEdit={handleEditRequest}
             />
           </SurfaceCard>
-        </div>
-      </PageContent>
+        </Stack>
+      </Stack>
+    </PageContent>
 
       <AppointmentSheet
         open={isSheetOpen}
