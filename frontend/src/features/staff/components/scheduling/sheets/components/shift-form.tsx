@@ -2,7 +2,7 @@
 
 import { Clock } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
-import { Button, Input } from "@/shared/ui";
+import { Button, Input, TimePicker } from "@/shared/ui";
 import { Icon } from "@/shared/ui/custom";
 
 const DEFAULT_COLORS = [
@@ -62,20 +62,18 @@ export function ShiftForm({
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
           <label className="text-muted-foreground text-sm">Bắt đầu</label>
-          <Input
-            type="time"
+          <TimePicker
             value={startTime}
-            onChange={(e) => onStartTimeChange(e.target.value)}
-            startContent={<Icon icon={Clock} className="size-4" />}
+            onChange={onStartTimeChange}
+            className="w-full"
           />
         </div>
         <div className="space-y-1.5">
           <label className="text-muted-foreground text-sm">Kết thúc</label>
-          <Input
-            type="time"
+          <TimePicker
             value={endTime}
-            onChange={(e) => onEndTimeChange(e.target.value)}
-            startContent={<Icon icon={Clock} className="size-4" />}
+            onChange={onEndTimeChange}
+            className="w-full"
           />
         </div>
       </div>

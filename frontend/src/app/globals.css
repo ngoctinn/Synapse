@@ -145,7 +145,7 @@
   --font-serif: var(--font-serif);
   --border-width: 1.5px;
   --ring-width: 1.5px;
-  --spacing-px: 1.5px;
+  --spacing-px: 1px;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);

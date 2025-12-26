@@ -13,7 +13,6 @@
 
 import {
   Button,
-  DatePicker,
   Field,
   FieldDescription,
   FieldError,
@@ -25,11 +24,17 @@ import {
   SelectTrigger,
   SelectValue,
   Switch,
-  TimeRangeInput,
+  Calendar,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  TimePicker,
 } from "@/shared/ui";
+import { cn } from "@/shared/lib/utils";
 import { ActionSheet, Icon } from "@/shared/ui/custom";
-import { isSameDay } from "date-fns";
-import { AlertTriangle, Plus, Save } from "lucide-react";
+import { format, isSameDay } from "date-fns";
+import { vi } from "date-fns/locale";
+import { AlertTriangle, CalendarIcon, Plus, Save } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
   DEFAULT_EXCEPTION_CLOSE,
@@ -196,12 +201,31 @@ export function ExceptionSheet({
           <FieldLabel>
             Ngày <span className="text-destructive">*</span>
           </FieldLabel>
-          <DatePicker
-            value={date}
-            onChange={setDate}
-            placeholder="Chọn ngày"
-            disabled={isSubmitting}
-          />
+            {/* Date Picker Replacement */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !date && "text-muted-foreground"
+                  )}
+                  disabled={isSubmitting}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date ? format(date, "dd/MM/yyyy") : <span>Chọn ngày</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  initialFocus
+                  locale={vi}
+                />
+              </PopoverContent>
+            </Popover>
           {duplicateCheck.isDuplicate && (
             <FieldError>
               <div className="flex items-start gap-2">
@@ -279,12 +303,19 @@ export function ExceptionSheet({
         {!isClosed && (
           <Field>
             <FieldLabel>Giờ hoạt động</FieldLabel>
-            <TimeRangeInput
-              startTime={openTime}
-              endTime={closeTime}
-              onStartTimeChange={setOpenTime}
-              onEndTimeChange={setCloseTime}
-            />
+            <div className="flex items-center gap-2">
+              <TimePicker
+                value={openTime}
+                onChange={setOpenTime}
+                className="w-full flex-1"
+              />
+              <span>-</span>
+              <TimePicker
+                value={closeTime}
+                onChange={setCloseTime}
+                className="w-full flex-1"
+              />
+            </div>
           </Field>
         )}
       </div>

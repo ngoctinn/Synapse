@@ -7,8 +7,9 @@
 
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
-import { TimeRangeInput } from "@/shared/ui/custom/time-range-input";
+import { Input } from "@/shared/ui/input";
 import { Switch } from "@/shared/ui/switch";
+import { TimePicker } from "@/shared/ui/time-picker";
 import {
   Tooltip,
   TooltipContent,
@@ -129,16 +130,29 @@ export function DayRow({
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-2">
                 {day.timeSlots.map((slot, index) => (
-                  <TimeRangeInput
-                    key={index}
-                    startTime={slot.start}
-                    endTime={slot.end}
-                    onStartTimeChange={(val) => updateSlot(index, "start", val)}
-                    onEndTimeChange={(val) => updateSlot(index, "end", val)}
-                    onRemove={() => removeSlot(index)}
-                    showRemoveButton={day.timeSlots.length > 1}
-                    hasOverlap={isSlotOverlapping(index)}
-                  />
+                  <div key={index} className="flex items-center gap-2">
+                    <TimePicker
+                      value={slot.start}
+                      onChange={(val) => updateSlot(index, "start", val)}
+                      className="h-8 w-28"
+                    />
+                    <span className="text-muted-foreground">-</span>
+                    <TimePicker
+                      value={slot.end}
+                      onChange={(val) => updateSlot(index, "end", val)}
+                      className="h-8 w-28"
+                    />
+                    {day.timeSlots.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                        onClick={() => removeSlot(index)}
+                      >
+                        <X className="size-4" />
+                      </Button>
+                    )}
+                  </div>
                 ))}
 
                 <Tooltip>

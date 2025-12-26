@@ -1,17 +1,26 @@
 "use client";
 
 import { useFormContext } from "react-hook-form";
-import { AlertTriangle } from "lucide-react";
+
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
+  Input,
+  Button,
+  Calendar,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  TimePicker,
 } from "@/shared/ui";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
+import { cn } from "@/shared/lib/utils";
+import { AlertTriangle, CalendarIcon } from "lucide-react";
 import { Icon } from "@/shared/ui/custom/icon";
-import { DatePicker } from "@/shared/ui/custom/date-picker";
-import { TimePicker } from "@/shared/ui/custom/time-picker";
 import type { QuickAppointmentFormValues } from "@/features/appointments/model/schemas";
 
 interface AppointmentDateTimeProps {
@@ -34,12 +43,30 @@ export function AppointmentDateTime({
           <FormItem>
             <FormLabel required>Ngày</FormLabel>
             <FormControl>
-              <DatePicker
-                value={field.value}
-                onChange={field.onChange}
-                placeholder="Chọn ngày"
-                minDate={new Date()}
-              />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full justify-start text-left font-normal pl-3",
+                      !field.value && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
+                    {field.value ? format(field.value, "dd/MM/yyyy") : <span>Chọn ngày</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                    initialFocus
+                    locale={vi}
+                  />
+                </PopoverContent>
+              </Popover>
             </FormControl>
             <FormMessage />
           </FormItem>

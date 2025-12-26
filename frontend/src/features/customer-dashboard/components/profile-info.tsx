@@ -3,7 +3,10 @@
 import { PROFILE_LABELS } from "@/features/customer-dashboard/constants";
 import { ProfileInput } from "@/features/customer-dashboard";
 import { Button } from "@/shared/ui/button";
-import { DatePicker } from "@/shared/ui/custom/date-picker";
+import { Calendar } from "@/shared/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
+import { cn } from "@/shared/lib/utils";
+import { vi } from "date-fns/locale";
 import {
   FormControl,
   FormField,
@@ -18,9 +21,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/shared/ui/tooltip";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import { motion } from "framer-motion";
-import { Cake, Lock, MapPin, Phone, User } from "lucide-react";
+import { Cake, Calendar as CalendarIcon, Lock, MapPin, Phone, User } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 
 interface ProfileInfoProps {
@@ -68,14 +71,35 @@ export function ProfileInfo({
               <FormItem>
                 <FormLabel>{PROFILE_LABELS.DATE_OF_BIRTH}</FormLabel>
                 <FormControl>
-                  <DatePicker
-                    value={field.value && !isNaN(Date.parse(field.value)) ? new Date(field.value) : undefined}
-                    onChange={(date) => {
-                      field.onChange(date ? format(date, "yyyy-MM-dd") : "");
-                    }}
-                    minDate={minDate}
-                    maxDate={maxDate}
-                  />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full justify-start text-left font-normal border-input",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
+                        {field.value ? format(parse(field.value, "yyyy-MM-dd", new Date()), "dd/MM/yyyy") : <span>{PROFILE_LABELS.DATE_OF_BIRTH}</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value ? parse(field.value, "yyyy-MM-dd", new Date()) : undefined}
+                        onSelect={(date) => {
+                          field.onChange(date ? format(date, "yyyy-MM-dd") : "");
+                        }}
+                        disabled={(date) => date > maxDate || date < minDate}
+                        initialFocus
+                        locale={vi}
+                        captionLayout="dropdown"
+                        fromYear={minDate.getFullYear()}
+                        toYear={maxDate.getFullYear()}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </FormControl>
                 <FormMessage />
               </FormItem>

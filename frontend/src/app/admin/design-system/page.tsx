@@ -239,7 +239,7 @@ import { Spinner } from "@/shared/ui/spinner";
 import { Toggle, toggleVariants } from "@/shared/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/shared/ui/toggle-group";
 import { ConfirmDialog } from "@/shared/ui/custom/confirm-dialog";
-import { TimePicker } from "@/shared/ui/custom/time-picker";
+import { TimePicker } from "@/shared/ui/time-picker";
 import { cn } from "@/shared/lib/utils";
 
 import { zodResolver } from "@hookform/resolvers/zod";
