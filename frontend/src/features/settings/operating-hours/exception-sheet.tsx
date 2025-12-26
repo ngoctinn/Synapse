@@ -24,10 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
   Switch,
-  Calendar,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+  DatePicker,
   TimePicker,
 } from "@/shared/ui";
 import { cn } from "@/shared/lib/utils";
@@ -202,30 +199,13 @@ export function ExceptionSheet({
             Ngày <span className="text-destructive">*</span>
           </FieldLabel>
             {/* Date Picker Replacement */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !date && "text-muted-foreground"
-                  )}
-                  disabled={isSubmitting}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "dd/MM/yyyy") : <span>Chọn ngày</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
-                  initialFocus
-                  locale={vi}
-                />
-              </PopoverContent>
-            </Popover>
+            <DatePicker
+              value={date}
+              onChange={setDate}
+              disabled={isSubmitting}
+              placeholder="Chọn ngày"
+              modal={true}
+            />
           {duplicateCheck.isDuplicate && (
             <FieldError>
               <div className="flex items-start gap-2">

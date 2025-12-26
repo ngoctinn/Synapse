@@ -134,13 +134,15 @@ export function DayRow({
                     <TimePicker
                       value={slot.start}
                       onChange={(val) => updateSlot(index, "start", val)}
-                      className="h-8 w-28"
+                      size="sm"
+                      className="w-28"
                     />
                     <span className="text-muted-foreground">-</span>
                     <TimePicker
                       value={slot.end}
                       onChange={(val) => updateSlot(index, "end", val)}
-                      className="h-8 w-28"
+                      size="sm"
+                      className="w-28"
                     />
                     {day.timeSlots.length > 1 && (
                       <Button

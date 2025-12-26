@@ -10,6 +10,7 @@
   import { useSheetForm } from "@/shared/hooks/use-sheet-form";
   import {
     Button,
+    DatePicker,
     Form,
     FormControl,
     FormField,
@@ -25,6 +26,9 @@
     SheetClose,
     Textarea,
   } from "@/shared/ui";
+  import { cn } from "@/shared/lib/utils";
+  import { format, parse } from "date-fns";
+  import { vi } from "date-fns/locale";
   import { ActionSheet } from "@/shared/ui/custom";
 
   interface WaitlistSheetProps {
@@ -178,7 +182,12 @@
                     <FormItem>
                       <FormLabel>Ngày mong muốn</FormLabel>
                       <FormControl>
-                        <Input type="date" {...field} />
+                        <DatePicker
+                          value={field.value ? parse(field.value, "yyyy-MM-dd", new Date()) : undefined}
+                          onChange={(date) => field.onChange(date ? format(date, "yyyy-MM-dd") : "")}
+                          placeholder="Chọn ngày"
+                          modal={true}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

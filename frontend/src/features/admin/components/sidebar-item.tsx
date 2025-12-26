@@ -54,7 +54,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
                 tooltip={item.title}
                 isActive={isActive}
                 className={cn(
-                  "h-10 transition-colors px-2",
+                  "h-12 transition-colors px-2",
                   "group-data-[collapsible=icon]:hover:bg-muted/70 group-data-[collapsible=icon]:data-[active=true]:bg-primary/15",
                   isActive ? "bg-primary/10 text-primary" : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
                 )}
@@ -91,7 +91,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
           tooltip={item.title}
           isActive={isActive}
           className={cn(
-            "h-10 transition-colors px-2",
+            "h-12 transition-colors px-2",
             "group-data-[collapsible=icon]:hover:bg-muted/70 group-data-[collapsible=icon]:data-[active=true]:bg-primary/15",
             isActive ? "bg-primary/10 text-primary" : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
           )}
@@ -114,7 +114,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
               tooltip={item.title}
               isActive={isActive}
               className={cn(
-                "h-10 px-2 transition-colors",
+                "h-12 px-2 transition-colors",
                 "group-data-[collapsible=icon]:hover:bg-muted/70 group-data-[collapsible=icon]:data-[active=true]:bg-primary/15",
                 isActive ? "bg-primary/5 text-primary font-medium" : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
               )}
@@ -135,7 +135,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
                     asChild
                     isActive={isSubItemActive(subItem.href)}
                     className={cn(
-                      "h-10 px-3 transition-colors",
+                      "h-12 px-3 transition-colors",
                       isSubItemActive(subItem.href) ? "text-primary font-bold bg-primary/5" : "text-muted-foreground/60 hover:text-foreground/80 hover:bg-transparent"
                     )}
                   >
@@ -160,7 +160,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
         isActive={isActive}
         tooltip={item.title}
         className={cn(
-          "h-10 px-2 transition-colors",
+          "h-12 px-2 transition-colors",
           "group-data-[collapsible=icon]:hover:bg-muted/70 group-data-[collapsible=icon]:data-[active=true]:bg-primary/15",
           isActive ? "bg-primary/5 text-primary font-medium" : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
         )}

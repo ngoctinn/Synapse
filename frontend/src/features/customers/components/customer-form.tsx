@@ -19,10 +19,7 @@ import {
   TabsTrigger,
   Textarea,
   Button,
-  Calendar,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
+  DatePicker,
 } from "@/shared/ui";
 import { format, parse } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -128,50 +125,23 @@ export function CustomerForm({
             <FormItem>
               <FormLabel>Ngày sinh</FormLabel>
               <FormControl>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full justify-start text-left font-normal pl-3",
-                        !field.value && "text-muted-foreground"
-                      )}
-                      disabled={disabled}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
-                      {field.value && !isNaN(Date.parse(field.value)) ? (
-                        format(parse(field.value, "yyyy-MM-dd", new Date()), "dd/MM/yyyy")
-                      ) : (
-                        <span>DD/MM/YYYY</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={
-                        field.value && !isNaN(Date.parse(field.value))
-                          ? parse(field.value, "yyyy-MM-dd", new Date())
-                          : undefined
-                      }
-                      onSelect={(date) => {
-                        if (date) {
-                          const year = date.getFullYear();
-                          const month = String(date.getMonth() + 1).padStart(2, "0");
-                          const day = String(date.getDate()).padStart(2, "0");
-                          field.onChange(`${year}-${month}-${day}`);
-                        } else {
-                          field.onChange("");
-                        }
-                      }}
-                      initialFocus
-                      locale={vi}
-                      captionLayout="dropdown"
-                      fromYear={1900}
-                      toYear={new Date().getFullYear()}
-                    />
-                  </PopoverContent>
-                </Popover>
+                <DatePicker
+                  value={field.value && !isNaN(Date.parse(field.value)) ? parse(field.value, "yyyy-MM-dd", new Date()) : undefined}
+                  onChange={(date) => {
+                    if (date) {
+                      const year = date.getFullYear();
+                      const month = String(date.getMonth() + 1).padStart(2, "0");
+                      const day = String(date.getDate()).padStart(2, "0");
+                      field.onChange(`${year}-${month}-${day}`);
+                    } else {
+                      field.onChange("");
+                    }
+                  }}
+                  disabled={disabled}
+                  placeholder="DD/MM/YYYY"
+                  minDate={new Date(1900, 0, 1)}
+                  maxDate={new Date()}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

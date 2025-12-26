@@ -10,14 +10,9 @@ import {
   FormMessage,
   Input,
   Button,
-  Calendar,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
+  DatePicker,
 } from "@/shared/ui";
 import { cn } from "@/shared/lib/utils";
-import { vi } from "date-fns/locale";
-import { CalendarIcon } from "lucide-react";
 import { NumberInput } from "@/shared/ui/custom/number-input";
 
 export function StaffHRInfo() {
@@ -33,39 +28,11 @@ export function StaffHRInfo() {
           <FormItem>
             <FormLabel>Ngày tuyển dụng</FormLabel>
             <FormControl>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={"outline"}
-                    className={cn(
-                      "w-full justify-start text-left font-normal bg-background",
-                      !field.value && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {field.value ? (
-                      format(parse(field.value, "yyyy-MM-dd", new Date()), "dd/MM/yyyy")
-                    ) : (
-                      <span>Chọn ngày</span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={
-                      field.value
-                        ? parse(field.value, "yyyy-MM-dd", new Date())
-                        : undefined
-                    }
-                    onSelect={(date) =>
-                      field.onChange(date ? format(date, "yyyy-MM-dd") : "")
-                    }
-                    initialFocus
-                    locale={vi}
-                  />
-                </PopoverContent>
-              </Popover>
+              <DatePicker
+                value={field.value ? parse(field.value, "yyyy-MM-dd", new Date()) : undefined}
+                onChange={(date) => field.onChange(date ? format(date, "yyyy-MM-dd") : "")}
+                placeholder="Chọn ngày"
+              />
             </FormControl>
             <FormMessage />
           </FormItem>

@@ -1,11 +1,15 @@
 "use client";
 
-import { ChevronDownIcon } from "lucide-react";
-import { cn } from "@/shared/lib/utils";
-import { Button } from "@/shared/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
-import { ScrollArea } from "@/shared/ui/scroll-area";
 import * as React from "react";
+import { Clock } from "lucide-react";
+import { cn } from "@/shared/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/ui/select";
 
 export interface TimePickerProps {
   value?: string;
@@ -13,11 +17,16 @@ export interface TimePickerProps {
   className?: string;
   disabled?: boolean;
   hasError?: boolean;
+  placeholder?: string;
+  /** Giờ tối thiểu (VD: "09:00") */
+  min?: string;
+  /** Giờ tối đa (VD: "17:00") */
+  max?: string;
+  /** Khoảng cách phút (Mặc định 15p theo chuẩn UX/UI, hoặc 5p nếu cần) */
+  step?: number;
+  /** Kích thước của input */
+  size?: "default" | "sm" | "lg" | "icon";
 }
-
-// Generate lists outside component to avoid re-calculation
-const hoursList = Array.from({ length: 24 }, (_, i) => i);
-const minutesList = Array.from({ length: 12 }, (_, i) => i * 5); // Step 5 minutes
 
 export function TimePicker({
   value,
@@ -25,102 +34,63 @@ export function TimePicker({
   className,
   disabled,
   hasError,
+  placeholder = "Chọn giờ",
+  min,
+  max,
+  step = 5,
+  size = "default",
 }: TimePickerProps) {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [internalValue, setInternalValue] = React.useState(value || "09:00");
+  // Generate time slots based on step/min/max
+  const timeSlots = React.useMemo(() => {
+    const slots = [];
+    const totalMinutes = 24 * 60;
 
-  // Sync internal state with prop value
-  React.useEffect(() => {
-    if (value) {
-      setInternalValue(value);
+    for (let i = 0; i < totalMinutes; i += step) {
+      const hours = Math.floor(i / 60);
+      const minutes = i % 60;
+      const time = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+
+      // Filter logic
+      if (min && time < min) continue;
+      if (max && time > max) continue;
+
+      slots.push(time);
     }
-  }, [value]);
-
-  // Parse HH:mm logic from internal state for instant feedback
-  const [h, m] = internalValue.split(":").map(Number);
-  const currentHour = isNaN(h) ? 9 : h;
-  const currentMinute = isNaN(m) ? 0 : m;
-
-  const handleTimeChange = (type: "hour" | "minute", val: number) => {
-    const newHour = type === "hour" ? val : currentHour;
-    const newMinute = type === "minute" ? val : currentMinute;
-    const formatted = `${newHour.toString().padStart(2, "0")}:${newMinute.toString().padStart(2, "0")}`;
-
-    setInternalValue(formatted); // Optimistic update
-    onChange?.(formatted);
-  };
+    return slots;
+  }, [step, min, max]);
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen} modal={true}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          disabled={disabled}
-          className={cn(
-            "group w-full h-14 justify-between px-4 text-left font-normal border-input hover:bg-accent/50 transition-all focus-premium",
-            "bg-background shadow-xs text-sm",
-            "data-[state=open]:border-primary/80 data-[state=open]:ring-[1.5px] data-[state=open]:ring-primary/20",
-            hasError && "border-destructive text-destructive focus-visible:ring-destructive/20",
-            className
-          )}
-        >
-          <span className={cn(
-            "flex-1 text-left tabular-nums truncate",
-            !value && "text-muted-foreground/60 font-normal",
-            value && "text-foreground font-normal"
-          )}>
-            {value || "Chọn giờ (24h)"}
-          </span>
-          <ChevronDownIcon className="size-5 opacity-50 shrink-0 text-muted-foreground group-hover:text-foreground transition-colors" />
-        </Button>
-      </PopoverTrigger>
-      {!disabled && (
-        <PopoverContent className="w-auto p-0 border-none shadow-premium-lg bg-card/95 backdrop-blur-md" align="start">
-          <div className="flex h-[280px] divide-x divide-border/20">
-            {/* Hours Column */}
-            <ScrollArea className="h-full w-[64px]">
-              <div className="flex flex-col gap-0.5 p-1">
-                {hoursList.map((hr) => (
-                  <Button
-                    key={hr}
-                    variant="ghost"
-                    className={cn(
-                      "w-full h-8 rounded-md py-0 font-normal tabular-nums transition-all",
-                      currentHour === hr
-                        ? "bg-primary text-primary-foreground shadow-premium-sm hover:bg-primary hover:text-primary-foreground"
-                        : "text-foreground/70 hover:bg-primary/5 hover:text-primary"
-                    )}
-                    onClick={() => handleTimeChange("hour", hr)}
-                  >
-                    {hr.toString().padStart(2, "0")}
-                  </Button>
-                ))}
-              </div>
-            </ScrollArea>
-
-            {/* Minutes Column */}
-            <ScrollArea className="h-full w-[64px]">
-              <div className="flex flex-col gap-0.5 p-1">
-                {minutesList.map((min) => (
-                  <Button
-                    key={min}
-                    variant="ghost"
-                    className={cn(
-                      "w-full h-8 rounded-md py-0 font-normal tabular-nums transition-all",
-                      currentMinute === min
-                        ? "bg-primary text-primary-foreground shadow-premium-sm hover:bg-primary hover:text-primary-foreground"
-                        : "text-foreground/70 hover:bg-primary/5 hover:text-primary"
-                    )}
-                    onClick={() => handleTimeChange("minute", min)}
-                  >
-                    {min.toString().padStart(2, "0")}
-                  </Button>
-                ))}
-              </div>
-            </ScrollArea>
+    <Select
+      value={value}
+      onValueChange={onChange}
+      disabled={disabled}
+    >
+      <SelectTrigger
+        size={size}
+        className={cn(
+          "font-normal",
+          hasError && "border-destructive text-destructive focus-visible:ring-destructive/20",
+          className
+        )}
+        aria-invalid={hasError}
+      >
+        <div className="flex items-center gap-2">
+          <Clock className={cn("size-4 shrink-0", hasError ? "text-destructive" : "text-muted-foreground/50")} />
+          <SelectValue placeholder={placeholder} />
+        </div>
+      </SelectTrigger>
+      <SelectContent className="max-h-[200px]">
+        {timeSlots.map((time) => (
+          <SelectItem key={time} value={time}>
+            {time}
+          </SelectItem>
+        ))}
+        {timeSlots.length === 0 && (
+          <div className="p-2 text-sm text-muted-foreground text-center">
+            Không có giờ phù hợp
           </div>
-        </PopoverContent>
-      )}
-    </Popover>
+        )}
+      </SelectContent>
+    </Select>
   );
 }

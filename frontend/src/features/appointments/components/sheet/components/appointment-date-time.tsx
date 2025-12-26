@@ -10,10 +10,7 @@ import {
   FormMessage,
   Input,
   Button,
-  Calendar,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
+  DatePicker,
   TimePicker,
 } from "@/shared/ui";
 import { format } from "date-fns";
@@ -43,30 +40,12 @@ export function AppointmentDateTime({
           <FormItem>
             <FormLabel required>Ngày</FormLabel>
             <FormControl>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={"outline"}
-                    className={cn(
-                      "w-full justify-start text-left font-normal pl-3",
-                      !field.value && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
-                    {field.value ? format(field.value, "dd/MM/yyyy") : <span>Chọn ngày</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-                    initialFocus
-                    locale={vi}
-                  />
-                </PopoverContent>
-              </Popover>
+              <DatePicker
+                value={field.value}
+                onChange={field.onChange}
+                minDate={new Date(new Date().setHours(0, 0, 0, 0))}
+                modal={true}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
