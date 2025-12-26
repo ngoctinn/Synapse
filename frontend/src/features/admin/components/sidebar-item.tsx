@@ -47,21 +47,22 @@ export function SidebarItem({ item }: SidebarItemProps) {
   if (isCollapsed) {
     if (item.items) {
       return (
-        <SidebarMenuItem className="px-3">
+        <SidebarMenuItem>
           <DropdownMenuRoot>
             <DropdownMenuRootTrigger asChild>
               <SidebarMenuButton
                 tooltip={item.title}
                 isActive={isActive}
                 className={cn(
-                  "h-9 w-full justify-start rounded-lg transition-colors px-2.5",
-                  isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+                  "h-10 transition-colors px-2",
+                  "group-data-[collapsible=icon]:hover:bg-muted/70 group-data-[collapsible=icon]:data-[active=true]:bg-primary/15",
+                  isActive ? "bg-primary/10 text-primary" : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
                 )}
               >
-                <Icon className="size-6 shrink-0" strokeWidth={isActive ? 2.5 : 2} />
+                <Icon className="size-5 shrink-0" strokeWidth={2} />
               </SidebarMenuButton>
             </DropdownMenuRootTrigger>
-            <DropdownMenuContentRoot side="right" align="start" className="min-w-[190px] rounded-lg ml-4 shadow-md">
+            <DropdownMenuContentRoot side="right" align="start" className="min-w-[220px] ml-4 shadow-premium-md">
               <div className="px-3 py-2 text-xs font-bold text-muted-foreground border-b uppercase mb-1">{item.title}</div>
               <div className="p-1">
                 {item.items.map((subItem) => (
@@ -69,7 +70,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
                     key={subItem.title}
                     asChild
                     className={cn(
-                      "my-0.5 cursor-pointer rounded-lg focus:bg-primary/10 focus:text-primary px-3 py-2 text-sm",
+                      "my-0.5 cursor-pointer focus:bg-primary/10 focus:text-primary px-3 py-2 text-sm",
                       isSubItemActive(subItem.href) && "bg-primary/10 text-primary font-medium"
                     )}
                   >
@@ -84,18 +85,19 @@ export function SidebarItem({ item }: SidebarItemProps) {
     }
 
     return (
-      <SidebarMenuItem className="px-3">
+      <SidebarMenuItem>
         <SidebarMenuButton
           asChild
           tooltip={item.title}
           isActive={isActive}
           className={cn(
-            "h-9 w-full justify-start rounded-lg transition-colors px-2.5",
-            isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+            "h-10 transition-colors px-2",
+            "group-data-[collapsible=icon]:hover:bg-muted/70 group-data-[collapsible=icon]:data-[active=true]:bg-primary/15",
+            isActive ? "bg-primary/10 text-primary" : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
           )}
         >
           <Link href={item.href}>
-            <Icon className="size-6 shrink-0" strokeWidth={isActive ? 2.5 : 2} />
+            <Icon className="size-5 shrink-0" strokeWidth={2} />
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -106,20 +108,21 @@ export function SidebarItem({ item }: SidebarItemProps) {
   if (item.items) {
     return (
       <CollapsibleRoot asChild defaultOpen={isActive} className="group/collapsible">
-        <SidebarMenuItem className="px-3">
+        <SidebarMenuItem>
           <CollapsibleTriggerRoot asChild>
             <SidebarMenuButton
               tooltip={item.title}
               isActive={isActive}
               className={cn(
-                "h-9 rounded-lg px-2.5 transition-colors justify-start",
-                isActive ? "bg-primary/10 text-primary font-semibold" : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+                "h-10 px-2 transition-colors",
+                "group-data-[collapsible=icon]:hover:bg-muted/70 group-data-[collapsible=icon]:data-[active=true]:bg-primary/15",
+                isActive ? "bg-primary/5 text-primary font-medium" : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
               )}
             >
-              <Icon className="size-6 shrink-0" strokeWidth={isActive ? 2.5 : 2} />
-              <span className="truncate ml-3">{item.title}</span>
+              <Icon className="size-5 shrink-0" strokeWidth={2} />
+              <span className="truncate text-sm">{item.title}</span>
               <ChevronRight
-                className="text-muted-foreground/50 ml-auto size-4 transition-transform group-data-[state=open]/collapsible:rotate-90"
+                className="text-muted-foreground/40 ml-auto size-4 transition-transform group-data-[state=open]/collapsible:rotate-90"
                 aria-hidden="true"
               />
             </SidebarMenuButton>
@@ -132,13 +135,13 @@ export function SidebarItem({ item }: SidebarItemProps) {
                     asChild
                     isActive={isSubItemActive(subItem.href)}
                     className={cn(
-                      "h-9 px-3 rounded-lg transition-colors",
-                      isSubItemActive(subItem.href) ? "text-primary font-medium bg-primary/5" : "text-muted-foreground hover:text-foreground"
+                      "h-10 px-3 transition-colors",
+                      isSubItemActive(subItem.href) ? "text-primary font-bold bg-primary/5" : "text-muted-foreground/60 hover:text-foreground/80 hover:bg-transparent"
                     )}
                   >
-                    <Link href={subItem.href} className="flex items-center gap-3">
-                      <div className={cn("h-1 w-1 shrink-0 rounded-full", isSubItemActive(subItem.href) ? "bg-primary" : "bg-muted-foreground/30")} />
-                      <span className="text-xs">{subItem.title}</span>
+                    <Link href={subItem.href} className="flex items-center gap-2">
+                      <div className={cn("h-1 w-1 shrink-0 rounded-full", isSubItemActive(subItem.href) ? "bg-primary" : "bg-muted-foreground/20")} />
+                      <span className="text-[13px]">{subItem.title}</span>
                     </Link>
                   </SidebarMenuSubButton>
                 </SidebarMenuSubItem>
@@ -151,19 +154,20 @@ export function SidebarItem({ item }: SidebarItemProps) {
   }
 
   return (
-    <SidebarMenuItem className="px-3">
+    <SidebarMenuItem>
       <SidebarMenuButton
         asChild
         isActive={isActive}
         tooltip={item.title}
         className={cn(
-          "h-9 rounded-lg px-2.5 transition-colors justify-start",
-          isActive ? "bg-primary/10 text-primary font-semibold" : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+          "h-10 px-2 transition-colors",
+          "group-data-[collapsible=icon]:hover:bg-muted/70 group-data-[collapsible=icon]:data-[active=true]:bg-primary/15",
+          isActive ? "bg-primary/5 text-primary font-medium" : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
         )}
       >
-        <Link href={item.href} className="flex items-center">
-          <Icon className="size-6 shrink-0" strokeWidth={isActive ? 2.5 : 2} />
-          <span className="truncate ml-3">{item.title}</span>
+        <Link href={item.href} className="flex items-center gap-2">
+          <Icon className="size-5 shrink-0" strokeWidth={2} />
+          <span className="truncate text-sm">{item.title}</span>
         </Link>
       </SidebarMenuButton>
     </SidebarMenuItem>

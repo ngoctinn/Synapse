@@ -67,7 +67,7 @@ export function TimePicker({
           <span className={cn(
             "flex-1 text-left tabular-nums truncate",
             !value && "text-muted-foreground/60 font-normal",
-            value && "text-foreground font-medium"
+            value && "text-foreground font-normal"
           )}>
             {value || "Chọn giờ (24h)"}
           </span>
@@ -85,7 +85,7 @@ export function TimePicker({
                     key={hr}
                     variant="ghost"
                     className={cn(
-                      "w-full h-8 rounded-md py-0 font-medium tabular-nums transition-all",
+                      "w-full h-8 rounded-md py-0 font-normal tabular-nums transition-all",
                       currentHour === hr
                         ? "bg-primary text-primary-foreground shadow-premium-sm hover:bg-primary hover:text-primary-foreground"
                         : "text-foreground/70 hover:bg-primary/5 hover:text-primary"
@@ -106,7 +106,7 @@ export function TimePicker({
                     key={min}
                     variant="ghost"
                     className={cn(
-                      "w-full h-8 rounded-md py-0 font-medium tabular-nums transition-all",
+                      "w-full h-8 rounded-md py-0 font-normal tabular-nums transition-all",
                       currentMinute === min
                         ? "bg-primary text-primary-foreground shadow-premium-sm hover:bg-primary hover:text-primary-foreground"
                         : "text-foreground/70 hover:bg-primary/5 hover:text-primary"

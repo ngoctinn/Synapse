@@ -7,13 +7,14 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
+  SidebarInput,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
   useSidebar,
 } from "@/shared/ui/sidebar";
-import { CircleHelp } from "lucide-react";
+import { CircleHelp, Zap } from "lucide-react";
 import { SIDEBAR_GROUPS } from "../constants";
 import { SidebarItem } from "./sidebar-item";
 import { UserProfile } from "@/shared/components/layout/components/header/types";
@@ -34,32 +35,33 @@ export function AdminSidebar({
       className="z-40"
       {...props}
     >
-      <SidebarHeader className="h-14 flex items-center px-3">
-        <SidebarMenu className="w-full">
+      <SidebarHeader className="pt-[30px] px-6 pb-3 group-data-[collapsible=icon]:px-0">
+        <SidebarMenu className="p-0">
           <SidebarMenuItem>
             <SidebarMenuButton
               onClick={() => toggleSidebar()}
               tooltip="Thu gọn / Mở rộng"
-              className="h-9 w-full justify-start rounded-lg transition-colors px-2.5 hover:bg-muted/80"
+              className="h-12 transition-colors px-2 hover:bg-transparent"
             >
-              <span className="font-bold text-primary text-base tracking-tight uppercase group-data-[collapsible=icon]:hidden truncate">
-                Synapse
-              </span>
-              <span className="font-bold text-primary text-xl hidden group-data-[collapsible=icon]:block">
-                S
-              </span>
+                <span className="font-bold text-primary text-[28px] tracking-tighter leading-none group-data-[collapsible=icon]:hidden whitespace-nowrap">
+                  Synapse
+                </span>
+                <span className="font-bold text-primary text-[26px] leading-none hidden group-data-[collapsible=icon]:block">
+                  S
+                </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+        <div className="h-px bg-muted-foreground/10 w-full mt-[30px]" />
       </SidebarHeader>
 
-      <SidebarContent className="scrollbar-none gap-2 overflow-y-auto py-4">
+      <SidebarContent className="scrollbar-none gap-2 overflow-y-auto pt-4">
         {SIDEBAR_GROUPS.map((group) => (
           <SidebarGroup
             key={group.group}
-            className="p-0"
+            className="px-6 py-2 group-data-[collapsible=icon]:px-0"
           >
-            <div className="text-muted-foreground/40 mb-2 px-6 text-[10px] font-bold uppercase tracking-[0.1em] group-data-[collapsible=icon]:hidden">
+            <div className="text-muted-foreground/50 mb-3 px-0 text-[11px] font-bold uppercase tracking-[0.15em] whitespace-nowrap group-data-[collapsible=icon]:hidden">
               {group.group}
             </div>
             <SidebarGroupContent className="w-full">
@@ -76,16 +78,17 @@ export function AdminSidebar({
         ))}
       </SidebarContent>
 
-      <SidebarFooter className="p-3 gap-3">
+      <SidebarFooter className="px-6 pb-6 pt-2 group-data-[collapsible=icon]:px-0">
+        <div className="h-px bg-muted-foreground/10 w-full mb-4" />
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               tooltip="Hỗ trợ"
               aria-label="Hỗ trợ"
-              className="text-muted-foreground hover:text-foreground hover:bg-muted/50 h-9 rounded-lg font-medium transition-all duration-200 justify-start px-2.5"
+              className="text-foreground/80 hover:text-foreground hover:bg-muted/50 h-10 font-medium transition-all duration-200 px-2"
             >
               <CircleHelp className="size-6 shrink-0" strokeWidth={2} />
-              <span className="group-data-[collapsible=icon]:hidden ml-3">
+              <span className="group-data-[collapsible=icon]:hidden ml-2 text-sm">
                 Hỗ trợ
               </span>
             </SidebarMenuButton>
