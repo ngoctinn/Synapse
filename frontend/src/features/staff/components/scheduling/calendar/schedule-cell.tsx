@@ -49,7 +49,7 @@ export function ScheduleCell({
         isToday ? "bg-primary/[0.03]" : "bg-background",
         !hasSchedules && !selectionMode && "hover:bg-muted/30",
         selectionMode && "hover:bg-primary/10 cursor-pointer",
-        isSelected && "bg-primary/10 ring-primary/50 ring-2 ring-inset",
+        isSelected && "bg-primary/10 ring-primary/50 ring-[1.5px] ring-inset",
         className
       )}
     >
@@ -75,7 +75,7 @@ export function ScheduleCell({
           className={cn(
             "bg-muted/50 hover:bg-primary/10 hover:text-primary size-7 rounded-full",
             "flex cursor-pointer items-center justify-center transition-all",
-            "focus:ring-primary/50 focus:outline-none focus:ring-2",
+            "focus:ring-primary/50 focus:outline-none focus:ring-[1.5px]",
             hasSchedules
               ? "absolute bottom-1 right-1 opacity-0 group-hover/cell:opacity-100"
               : "mx-auto my-auto"

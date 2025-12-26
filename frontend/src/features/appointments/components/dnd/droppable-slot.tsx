@@ -68,7 +68,7 @@ export function DroppableSlot({
         // Highlight khi đang kéo
         isActive && !disabled && "bg-primary/5",
         // Highlight khi hover
-        isHovered && "bg-primary/20 ring-primary/50 ring-2 ring-inset",
+        isHovered && "bg-primary/20 ring-primary/50 ring-[1.5px] ring-inset",
         className
       )}
       style={{ minHeight: height }}

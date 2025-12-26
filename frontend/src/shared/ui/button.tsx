@@ -10,16 +10,16 @@ import {
 import { cn } from "@/shared/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-md text-sm font-medium leading-none transition-all duration-200 focus-premium disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 active:scale-95 cursor-pointer",
+  "inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-lg text-sm font-medium leading-none transition-all duration-200 focus-premium disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 active:scale-95 cursor-pointer",
   {
     variants: {
       variant: {
         default:
-          "bg-primary/90 text-primary-foreground border border-primary shadow hover:bg-primary",
+          "bg-primary/90 text-primary-foreground border border-primary/90 shadow hover:bg-primary/80 active:bg-primary",
         destructive:
-          "bg-destructive/90 text-destructive-foreground border border-destructive shadow-sm hover:bg-destructive",
+          "bg-destructive/90 text-destructive-foreground border border-destructive/90 shadow-sm hover:bg-destructive/80 active:bg-destructive",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+          "border border-primary/50 text-primary bg-background hover:bg-primary/8",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
@@ -38,8 +38,8 @@ const buttonVariants = cva(
       },
       size: {
         default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
+        sm: "h-9 rounded-lg px-3",
+        lg: "h-12 rounded-lg px-8",
         xl: "h-12 rounded-lg px-8 text-base",
         icon: "h-10 w-10",
         "icon-sm": "h-9 w-9",

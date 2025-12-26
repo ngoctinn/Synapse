@@ -111,7 +111,7 @@ export function StaffGeneralInfo({ mode }: StaffGeneralInfoProps) {
             <FormControl>
               <Textarea
                 placeholder="Mô tả kinh nghiệm, thế mạnh chuyên môn..."
-                className="bg-background min-h-24 resize-none focus:ring-1"
+                className="bg-background min-h-24 resize-none focus:ring-[1.5px]"
                 {...field}
               />
             </FormControl>

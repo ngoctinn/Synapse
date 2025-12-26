@@ -23,7 +23,7 @@ export function ShiftItem({
     <div
       className={cn(
         "flex items-center gap-3 rounded-lg p-3 transition-all",
-        isEditing ? "ring-primary ring-2 ring-offset-2" : ""
+        isEditing ? "ring-primary ring-[1.5px] ring-offset-2" : ""
       )}
       style={{ backgroundColor: `${shift.colorCode}12` }}
     >

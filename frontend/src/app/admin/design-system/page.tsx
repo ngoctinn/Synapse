@@ -218,6 +218,15 @@ import {
   TooltipTrigger,
 } from "@/shared/ui/tooltip";
 
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/shared/ui/form";
 import { NumberInput } from "@/shared/ui/custom/number-input";
 import { showToast } from "@/shared/ui/sonner";
 import { AspectRatio } from "@/shared/ui/aspect-ratio";
@@ -228,6 +237,9 @@ import { Spinner } from "@/shared/ui/spinner";
 import { Toggle, toggleVariants } from "@/shared/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/shared/ui/toggle-group";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import {
@@ -239,655 +251,572 @@ import {
   Smile,
   Sun,
   User,
-  MoreVertical
+  MoreVertical,
+  Info,
+  OctagonXIcon
 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+
+const showcaseSchema = z.object({
+  fullName: z.string().min(2, "Họ tên phải có ít nhất 2 ký tự"),
+  email: z.string().email("Địa chỉ email không đúng định dạng"),
+  service: z.string().min(1, "Vui lòng chọn một dịch vụ"),
+  price: z.number().min(1000, "Giá tối thiểu là 1,000 VNĐ"),
+  notes: z.string().optional(),
+});
+
+type ShowcaseFormValues = z.infer<typeof showcaseSchema>;
 
 export default function DesignSystemPage() {
     const { setTheme, theme } = useTheme();
     const [date, setDate] = useState<Date | undefined>(new Date());
 
+    const form = useForm<ShowcaseFormValues>({
+      resolver: zodResolver(showcaseSchema),
+      defaultValues: {
+        fullName: "",
+        email: "user@invalid",
+        service: "",
+        price: 0,
+        notes: "",
+      },
+    });
+
+    function onSubmit(data: ShowcaseFormValues) {
+      showToast.success("Form submitted", JSON.stringify(data, null, 2));
+    }
+
     return (
-      <div className="container mx-auto py-10 space-y-16">
+      <div className="container mx-auto py-10 space-y-10">
         {/* HEADER */}
-        <div className="flex items-center justify-between sticky top-0 z-50 bg-background/95 backdrop-blur-sm py-4 border-b">
+        <div className="flex items-center justify-between sticky top-0 z-50 bg-background py-6 border-b -mx-4 px-4 sm:-mx-6 sm:px-6">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Design System</h1>
-            <p className="text-muted-foreground mt-1">
-              Comprehensive showcase of shared UI components.
+            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">Design System</h1>
+            <p className="text-muted-foreground mt-1 text-sm">
+              Hệ thống thành phần UI chuẩn Synapse - Premium Vietnamese Design.
             </p>
           </div>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          >
-            <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span className="sr-only">Toggle theme</span>
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            >
+              <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <span className="sr-only">Toggle theme</span>
+            </Button>
+            <Badge variant="emerald" className="hidden sm:flex">v2.1 Stable</Badge>
+          </div>
         </div>
 
-        {/* ======================= FUNDAMENTALS ======================= */}
-        <section className="space-y-6">
-          <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-semibold">1. Buttons & Controls</h2>
-            <Badge variant="outline">Fundamentals</Badge>
-          </div>
-          <Separator />
-
-          <div className="grid gap-8">
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Buttons</h3>
-              <div className="flex flex-wrap gap-4 items-center">
-                <Button variant="default">Default</Button>
-                <Button variant="secondary">Secondary</Button>
-                <Button variant="destructive">Destructive</Button>
-                <Button variant="outline">Outline</Button>
-                <Button variant="ghost">Ghost</Button>
-                <Button variant="link">Link</Button>
-                <Button variant="soft">Soft</Button>
-                <Button variant="success">Success</Button>
-                <Button variant="warning">Warning</Button>
+        <div className="grid gap-10">
+          {/* ======================= FUNDAMENTALS ======================= */}
+          <Card className="shadow-premium-md">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-xl">1. Buttons & Controls</CardTitle>
+                <Badge variant="outline" className="font-normal">Cơ bản</Badge>
               </div>
-              <div className="flex flex-wrap gap-4 items-center">
-                <Button size="sm">Small</Button>
-                <Button size="default">Default</Button>
-                <Button size="lg">Large</Button>
-                <Button size="icon"><Settings className="w-4 h-4" /></Button>
+              <CardDescription>Các thành phần tương tác chính, hỗ trợ đa dạng variant và trạng thái.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-10">
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground/70">Variants</h3>
+                <div className="flex flex-wrap gap-4 items-center">
+                  <Button variant="default">Default</Button>
+                  <Button variant="secondary">Secondary</Button>
+                  <Button variant="destructive">Destructive</Button>
+                  <Button variant="outline">Outline</Button>
+                  <Button variant="ghost">Ghost</Button>
+                  <Button variant="link">Link</Button>
+                  <Button variant="soft">Soft Tint</Button>
+                  <Button variant="success">Success</Button>
+                  <Button variant="warning">Warning</Button>
+                </div>
               </div>
-               <div className="flex flex-wrap gap-4 items-center">
-                <Button isLoading>Loading</Button>
-                <Button disabled>Disabled</Button>
-              </div>
-            </div>
 
-            <div className="space-y-4">
-                <h3 className="text-lg font-medium">Button Group</h3>
-                <ButtonGroup>
-                    <Button variant="outline">Year</Button>
-                    <Button variant="outline">Month</Button>
-                    <Button variant="outline">Day</Button>
-                </ButtonGroup>
-            </div>
-
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Toggles & Switches</h3>
-              <div className="flex flex-wrap gap-8 items-center">
-                <div className="flex items-center space-x-2">
-                  <Switch id="airplane-mode" />
-                  <Label htmlFor="airplane-mode">Airplane Mode</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="terms" />
-                  <Label htmlFor="terms">Accept terms</Label>
-                </div>
-                 <Toggle aria-label="Toggle italic" variant="outline">
-                   <span className="italic">Bold</span>
-                </Toggle>
-                 <ToggleGroup type="multiple">
-                    <ToggleGroupItem value="a">A</ToggleGroupItem>
-                    <ToggleGroupItem value="b">B</ToggleGroupItem>
-                    <ToggleGroupItem value="c">C</ToggleGroupItem>
-                </ToggleGroup>
-              </div>
-            </div>
-
-             <div className="space-y-4">
-              <h3 className="text-lg font-medium">Radio Group</h3>
-                <RadioGroup defaultValue="option-one" className="flex gap-4">
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="option-one" id="r1" />
-                    <Label htmlFor="r1">Option One</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="option-two" id="r2" />
-                    <Label htmlFor="r2">Option Two</Label>
-                  </div>
-                </RadioGroup>
-            </div>
-
-            <div className="space-y-4">
-                 <h3 className="text-lg font-medium">Slider</h3>
-                <div className="w-[300px]">
-                    <Slider defaultValue={[50]} max={100} step={1} />
-                </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ======================= INPUTS ======================= */}
-        <section className="space-y-6">
-          <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-semibold">2. Inputs & Forms</h2>
-             <Badge variant="outline">Data Entry</Badge>
-          </div>
-           <Separator />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="space-y-2">
-              <Label>Default Input</Label>
-              <Input placeholder="Type something..." />
-            </div>
-             <div className="space-y-2">
-              <Label>Input with Icons</Label>
-               <Input
-                 placeholder="Search..."
-                 startContent={<User className="w-4 h-4" />}
-               />
-            </div>
-            <div className="space-y-2">
-              <Label>Number Input</Label>
-              <NumberInput placeholder="0" />
-            </div>
-            <div className="space-y-2">
-              <Label>Number Input (Suffix)</Label>
-              <NumberInput placeholder="0" suffix="VNĐ" />
-            </div>
-            <div className="space-y-2">
-              <Label>Input with Error</Label>
-              <Input placeholder="Invalid input" isError />
-            </div>
-             <div className="space-y-2">
-               <Label>Input OTP</Label>
-                <InputOTP maxLength={6}>
-                  <InputOTPGroup>
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
-                  </InputOTPGroup>
-                  <InputOTPSeparator />
-                  <InputOTPGroup>
-                    <InputOTPSlot index={3} />
-                    <InputOTPSlot index={4} />
-                    <InputOTPSlot index={5} />
-                  </InputOTPGroup>
-                </InputOTP>
-            </div>
-            <div className="space-y-2 col-span-full md:col-span-1">
-              <Label>Textarea</Label>
-              <Textarea placeholder="Type your message here." />
-            </div>
-            <div className="space-y-2">
-              <Label>Select</Label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a fruit" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Fruits</SelectLabel>
-                    <SelectItem value="apple">Apple</SelectItem>
-                    <SelectItem value="banana">Banana</SelectItem>
-                    <SelectItem value="blueberry">Blueberry</SelectItem>
-                    <SelectItem value="grapes">Grapes</SelectItem>
-                    <SelectItem value="pineapple">Pineapple</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-             <div className="space-y-2">
-                 <Label>Calendar</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                        <Button
-                        variant={"outline"}
-                        className="w-full justify-start text-left font-normal"
-                        >
-                        <CalendarDays className="mr-2 h-4 w-4" />
-                        {date ? date.toDateString() : <span>Pick a date</span>}
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                        <Calendar
-                        mode="single"
-                        selected={date}
-                        onSelect={setDate}
-                        initialFocus
-                        />
-                    </PopoverContent>
-                </Popover>
-             </div>
-          </div>
-        </section>
-
-        {/* ======================= DISPLAY ======================= */}
-        <section className="space-y-6">
-           <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-semibold">3. Display & Feedback</h2>
-             <Badge variant="outline">Visuals</Badge>
-          </div>
-           <Separator />
-
-          <div className="grid gap-8">
-             <div className="space-y-4">
-                 <h3 className="text-lg font-medium">Badges</h3>
-                 <div className="flex flex-wrap gap-4">
-                    <Badge variant="default">Default</Badge>
-                    <Badge variant="secondary">Secondary</Badge>
-                    <Badge variant="destructive">Destructive</Badge>
-                    <Badge variant="outline">Outline</Badge>
-                    <Badge variant="success">Success</Badge>
-                    <Badge variant="warning">Warning</Badge>
-                    <Badge variant="info">Info</Badge>
-                    <Badge variant="violet">Violet</Badge>
-                    <Badge variant="indigo">Indigo</Badge>
-                    <Badge variant="emerald">Emerald</Badge>
-                    <Badge variant="status-active">Active</Badge>
-                 </div>
-            </div>
-
-            <div className="space-y-4">
-                <h3 className="text-lg font-medium">Toasts (Sonner)</h3>
-                <div className="flex flex-wrap gap-4">
-                    <Button
-                        variant="outline"
-                        onClick={() => showToast.success("Operation Successful", "Your changes have been saved successfully.")}
-                    >
-                        Success Toast
-                    </Button>
-                    <Button
-                        variant="outline"
-                        onClick={() => showToast.info("New Notification", "You have a new message from the system.")}
-                    >
-                        Info Toast
-                    </Button>
-                    <Button
-                        variant="outline"
-                        onClick={() => showToast.warning("Warning Issued", "Please check your input before proceeding.")}
-                    >
-                        Warning Toast
-                    </Button>
-                    <Button
-                        variant="outline"
-                        onClick={() => showToast.error("Error Occurred", "Failed to process request. Please try again.")}
-                    >
-                        Error Toast
-                    </Button>
-                </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid sm:grid-cols-2 gap-8">
                 <div className="space-y-4">
-                     <h3 className="text-lg font-medium">Alerts</h3>
-                    <Alert>
-                        <AlertTitle>Heads up!</AlertTitle>
-                        <AlertDescription>
-                            You can add components to your app using the cli.
-                        </AlertDescription>
-                    </Alert>
-                    <Alert variant="destructive">
-                        <AlertTitle>Error</AlertTitle>
-                        <AlertDescription>
-                            Your session has expired. Please log in again.
-                        </AlertDescription>
-                    </Alert>
+                  <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground/70">Sizes & States</h3>
+                  <div className="flex flex-wrap gap-4 items-end">
+                    <Button size="sm">Small</Button>
+                    <Button size="default">Default</Button>
+                    <Button size="lg">Large</Button>
+                    <Button size="icon" className="rounded-full"><Settings className="w-4 h-4" /></Button>
+                  </div>
+                  <div className="flex flex-wrap gap-4 items-center pt-2">
+                    <Button isLoading>Loading State</Button>
+                    <Button disabled variant="outline">Disabled State</Button>
+                  </div>
                 </div>
-                 <div className="space-y-4">
-                     <h3 className="text-lg font-medium">Loading States</h3>
-                     <div className="flex items-center gap-4">
-                        <Spinner className="size-4" />
-                        <Spinner className="size-8" />
-                     </div>
-                     <div className="space-y-2">
-                         <Skeleton className="h-4 w-[250px]" />
-                         <Skeleton className="h-4 w-[200px]" />
-                     </div>
-                      <div className="flex items-center space-x-4">
-                        <Skeleton className="h-12 w-12 rounded-full" />
-                        <div className="space-y-2">
-                            <Skeleton className="h-4 w-[250px]" />
-                            <Skeleton className="h-4 w-[200px]" />
-                        </div>
-                     </div>
-                 </div>
-            </div>
 
-            <div className="space-y-4">
-                 <h3 className="text-lg font-medium">Avatar</h3>
-                 <div className="flex gap-4">
-                     <Avatar>
-                        <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-                        <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                     <Avatar>
-                        <AvatarFallback>JD</AvatarFallback>
-                    </Avatar>
-                 </div>
-            </div>
-
-            <div className="space-y-4">
-               <h3 className="text-lg font-medium">Progress</h3>
-               <Progress value={60} className="w-[60%]" />
-            </div>
-
-             <div className="space-y-4">
-               <h3 className="text-lg font-medium">Tooltip</h3>
-                <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                    <Button variant="outline">Hover me</Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                    <p>Add to library</p>
-                    </TooltipContent>
-                </Tooltip>
-                </TooltipProvider>
-            </div>
-          </div>
-        </section>
-
-        {/* ======================= NAVIGATION ======================= */}
-       <section className="space-y-6">
-           <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-semibold">4. Navigation & Layout</h2>
-             <Badge variant="outline">Structure</Badge>
-          </div>
-           <Separator />
-
-           <div className="grid gap-8">
-              <div className="space-y-4">
-                 <h3 className="text-lg font-medium">Breadcrumb</h3>
-                 <Breadcrumb>
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                        <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                        <BreadcrumbLink href="/components">Components</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                        <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                 </Breadcrumb>
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground/70">Selection Controls</h3>
+                  <div className="flex flex-wrap gap-6 items-center">
+                    <div className="flex items-center space-x-2">
+                      <Switch id="airplane-mode" />
+                      <Label htmlFor="airplane-mode" className="text-sm">Airplane Mode</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="terms" />
+                      <Label htmlFor="terms" className="text-sm">Accept terms</Label>
+                    </div>
+                    <RadioGroup defaultValue="option-one" className="flex gap-4">
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="option-one" id="r1" />
+                        <Label htmlFor="r1" className="text-sm">Option A</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="option-two" id="r2" />
+                        <Label htmlFor="r2" className="text-sm">Option B</Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+                  <div className="pt-4">
+                    <Slider defaultValue={[75]} max={100} step={1} className="w-full max-w-[300px]" />
+                    <p className="text-[10px] text-muted-foreground mt-2">Slider with premium smooth tracking.</p>
+                  </div>
+                </div>
               </div>
+            </CardContent>
+          </Card>
 
-               <div className="space-y-4">
-                 <h3 className="text-lg font-medium">Tabs</h3>
-                  <Tabs defaultValue="account" className="w-[400px]">
-                    <TabsList>
-                        <TabsTrigger value="account">Account</TabsTrigger>
-                        <TabsTrigger value="password">Password</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="password" className="p-4 border rounded-md mt-2">Change your password here.</TabsContent>
-                    </Tabs>
+          {/* ======================= INPUTS & FORMS ======================= */}
+          <Card className="shadow-premium-md">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-xl">2. Inputs & Forms (Premium Logic)</CardTitle>
+                <Badge variant="emerald" className="font-normal">Real Form</Badge>
               </div>
+              <CardDescription>Trình diễn cách sử dụng FormField, Validation thực tế với bo góc rounded-lg.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+                    <FormField
+                      control={form.control}
+                      name="fullName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel required>Họ và tên</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Ngô Tấn Tín" {...field} />
+                          </FormControl>
+                          <FormDescription>Tên đầy đủ hiển thị trên hồ sơ khách hàng.</FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-               <div className="space-y-4">
-                 <h3 className="text-lg font-medium">Tabs (Segmented)</h3>
-                  <Tabs defaultValue="active" className="w-[400px]">
-                    <TabsList variant="segment" fullWidth>
-                        <TabsTrigger variant="segment" value="active" stretch>Active</TabsTrigger>
-                        <TabsTrigger variant="segment" value="available" stretch>Available</TabsTrigger>
-                        <TabsTrigger variant="segment" value="archived" stretch>Archived</TabsTrigger>
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel required>Địa chỉ Email</FormLabel>
+                          <FormControl>
+                            <Input placeholder="example@gmail.com" type="email" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="service"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel required>Dịch vụ chuyên biệt</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="h-14">
+                                <SelectValue placeholder="Chọn gói dịch vụ" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="massage">Massage Body Premium</SelectItem>
+                              <SelectItem value="facial">Skincare Pro-Max</SelectItem>
+                              <SelectItem value="nail">Artistic Nails</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="price"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel required>Giá liệu trình</FormLabel>
+                          <FormControl>
+                            <NumberInput
+                              placeholder="100,000"
+                              suffix="VNĐ"
+                              value={field.value}
+                              onChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="space-y-2">
+                      <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">OTP Verification</Label>
+                      <InputOTP maxLength={6}>
+                        <InputOTPGroup>
+                          {[0, 1, 2].map(i => <InputOTPSlot key={i} index={i} className="h-14 w-12" />)}
+                        </InputOTPGroup>
+                        <InputOTPSeparator />
+                        <InputOTPGroup>
+                          {[3, 4, 5].map(i => <InputOTPSlot key={i} index={i} className="h-14 w-12" />)}
+                        </InputOTPGroup>
+                      </InputOTP>
+                      <p className="text-[10px] text-muted-foreground">Ví dụ linh kiện InputOTP tích hợp.</p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Lịch dự kiến</Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={"outline"}
+                            className="w-full h-14 justify-start text-left font-normal border-input hover:bg-muted/50 transition-colors"
+                          >
+                            <CalendarDays className="mr-2 size-4 text-primary" />
+                            {date ? date.toLocaleDateString("vi-VN") : <span>Chọn ngày hẹn</span>}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0 border-none shadow-premium-lg" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={date}
+                            onSelect={setDate}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name="notes"
+                      render={({ field }) => (
+                        <FormItem className="col-span-full">
+                          <FormLabel>Ghi chú chi tiết</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Trình bày chi tiết tình trạng da hoặc yêu cầu đặc biệt..."
+                              className="min-h-[120px]"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-4 pt-4 border-t border-border/50">
+                    <Button type="submit" size="lg" className="px-10">Lưu thông tin</Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="lg"
+                      onClick={() => form.trigger()}
+                    >
+                      Kiểm tra Validation
+                    </Button>
+                    <p className="text-xs text-muted-foreground ml-auto max-w-[200px] text-right">
+                      Nhấn 'Kiểm tra Validation' để xem demo các thông báo lỗi chuẩn xác.
+                    </p>
+                  </div>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+
+          {/* ======================= FEEDBACK ======================= */}
+          <div className="grid md:grid-cols-2 gap-10">
+            <Card className="shadow-premium-md">
+              <CardHeader>
+                <CardTitle className="text-xl">3. Notifications & States</CardTitle>
+                <CardDescription>Hệ thống thông báo và trạng thái phản hồi người dùng.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex flex-wrap gap-3">
+                  <Button variant="outline" size="sm" onClick={() => showToast.success("Đã lưu thành công", "Hồ sơ khách hàng đã được cập nhật.")}>Success Toast</Button>
+                  <Button variant="outline" size="sm" onClick={() => showToast.error("Lỗi hệ thống", "Không thể kết nối đến máy chủ.")}>Error Toast</Button>
+                </div>
+
+                <div className="space-y-3">
+                  <Alert className="bg-primary/5 border-primary/20">
+                    <Info className="size-4 text-primary" />
+                    <AlertTitle>Thông tin</AlertTitle>
+                    <AlertDescription className="text-xs opacity-80">Lịch hẹn của khách hàng sẽ được nhắc nhở tự động qua SMS.</AlertDescription>
+                  </Alert>
+                  <Alert variant="destructive" className="bg-destructive/5">
+                    <OctagonXIcon className="size-4" />
+                    <AlertTitle>Cảnh báo</AlertTitle>
+                    <AlertDescription className="text-xs opacity-80">Nhân viên này đang trong thời gian nghỉ phép.</AlertDescription>
+                  </Alert>
+                </div>
+
+                <div className="flex items-center gap-6 pt-2">
+                  <div className="flex items-center gap-2">
+                    <Spinner className="size-5 text-primary" />
+                    <span className="text-xs text-muted-foreground">Sun-burst Loader</span>
+                  </div>
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-3 w-full" />
+                    <Skeleton className="h-3 w-[60%]" />
+                  </div>
+                </div>
+
+                <Separator className="opacity-50" />
+
+                <div className="space-y-4">
+                  <h4 className="text-xs font-semibold text-muted-foreground uppercase">Badges & Indicators</h4>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="default">Default</Badge>
+                    <Badge variant="emerald">Active</Badge>
+                    <Badge variant="destructive">Critical</Badge>
+                    <Badge variant="warning">Pending</Badge>
+                    <Badge variant="secondary">Draft</Badge>
+                    <Badge variant="outline">Outline</Badge>
+                    <Badge variant="violet" className="animate-pulse">Live</Badge>
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-8 gap-2 text-xs">
+                          <Info className="size-3" /> Hover for info
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent className="border-none shadow-premium-md bg-card/95 backdrop-blur-md">
+                        <p className="text-[10px]">Gợi ý thông tin bổ sung cho người dùng.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-premium-md">
+              <CardHeader>
+                <CardTitle className="text-xl">4. Navigation & Layout</CardTitle>
+                <CardDescription>Các thành phần điều hướng nội dung.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                <div className="space-y-4">
+                  <h4 className="text-xs font-semibold text-muted-foreground uppercase">Segmented Control (New)</h4>
+                  <Tabs defaultValue="active" className="w-full">
+                    <TabsList variant="segment" fullWidth className="h-11">
+                      <TabsTrigger variant="segment" value="active" stretch>Hoạt động</TabsTrigger>
+                      <TabsTrigger variant="segment" value="pending" stretch>Chờ duyệt</TabsTrigger>
+                      <TabsTrigger variant="segment" value="history" stretch>Lịch sử</TabsTrigger>
                     </TabsList>
-                    <TabsContent value="active" className="p-4 border rounded-md mt-2">Active items content.</TabsContent>
-                    <TabsContent value="available" className="p-4 border rounded-md mt-2">Available items content.</TabsContent>
-                    <TabsContent value="archived" className="p-4 border rounded-md mt-2">Archived items content.</TabsContent>
                   </Tabs>
-              </div>
+                </div>
 
-              <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Accordion</h3>
-                   <Accordion type="single" collapsible className="w-full max-w-[400px]">
-                    <AccordionItem value="item-1">
-                        <AccordionTrigger>Is it accessible?</AccordionTrigger>
-                        <AccordionContent>
-                        Yes. It adheres to the WAI-ARIA design pattern.
-                        </AccordionContent>
+                <div className="space-y-4">
+                  <h4 className="text-xs font-semibold text-muted-foreground uppercase">Accordion</h4>
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="item-1" className="border-b-0 bg-muted/30 rounded-lg px-4 mb-2">
+                      <AccordionTrigger className="hover:no-underline py-3">Quy trình đặt lịch?</AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground text-xs pb-4">
+                        Khách hàng chọn dịch vụ, kỹ thuật viên và thời gian mong muốn.
+                      </AccordionContent>
                     </AccordionItem>
-                    <AccordionItem value="item-2">
-                        <AccordionTrigger>Is it styled?</AccordionTrigger>
-                        <AccordionContent>
-                        Yes. It comes with default styles that matches the other
-                        components&apos; aesthetic.
-                        </AccordionContent>
+                    <AccordionItem value="item-2" className="border-b-0 bg-muted/30 rounded-lg px-4">
+                      <AccordionTrigger className="hover:no-underline py-3">Chính sách hoàn tiền?</AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground text-xs pb-4">
+                        Áp dụng cho các liệu trình chưa sử dụng trong vòng 7 ngày.
+                      </AccordionContent>
                     </AccordionItem>
-                 </Accordion>
-              </div>
-
-               <div className="space-y-4">
-                   <h3 className="text-lg font-medium">Pagination</h3>
-                    <Pagination>
-                        <PaginationContent>
-                            <PaginationItem>
-                            <PaginationPrevious href="#" />
-                            </PaginationItem>
-                            <PaginationItem>
-                            <PaginationLink href="#">1</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                            <PaginationLink href="#" isActive>
-                                2
-                            </PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                            <PaginationLink href="#">3</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                            <PaginationEllipsis />
-                            </PaginationItem>
-                            <PaginationItem>
-                            <PaginationNext href="#" />
-                            </PaginationItem>
-                        </PaginationContent>
-                    </Pagination>
-               </div>
-           </div>
-       </section>
-
-        {/* ======================= OVERLAYS ======================= */}
-       <section className="space-y-6">
-           <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-semibold">5. Overlays & Popups</h2>
-             <Badge variant="outline">Interactive</Badge>
+                  </Accordion>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-           <Separator />
 
-           <div className="flex flex-wrap gap-4">
-               {/* Dialog */}
-               <Dialog>
-                <DialogTrigger asChild>
-                    <Button variant="outline">Open Dialog</Button>
-                </DialogTrigger>
-                <DialogContent>
+          {/* ======================= OVERLAYS ======================= */}
+          <Card className="shadow-premium-md">
+            <CardHeader>
+              <CardTitle className="text-xl">5. Overlays & Dialogs</CardTitle>
+              <CardDescription>Các thành phần lớp phủ tương tác như Popup, Modal, Sidebar.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-4">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="border-primary/20 hover:bg-primary/5">Mở Dialog Modal</Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px] border-none shadow-premium-lg">
                     <DialogHeader>
-                    <DialogTitle>Are you sure?</DialogTitle>
-                    <DialogDescription>
-                        This action cannot be undone. This will permanently delete your account.
-                    </DialogDescription>
+                      <DialogTitle>Xác nhận lịch hẹn</DialogTitle>
+                      <DialogDescription>Kiểm tra kỹ thông tin khách hàng và dịch vụ trước khi xác nhận.</DialogDescription>
                     </DialogHeader>
-                     <DialogFooter>
-                         <Button type="submit">Confirm</Button>
-                     </DialogFooter>
-                </DialogContent>
+                    <div className="py-6 space-y-4">
+                       <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 border border-border/50">
+                          <Avatar className="size-10 border-2 border-background">
+                            <AvatarImage src="https://github.com/shadcn.png" />
+                            <AvatarFallback>NT</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="text-sm font-semibold">Ngô Tấn Tín</p>
+                            <p className="text-[10px] text-muted-foreground">Khách hàng thành viên</p>
+                          </div>
+                       </div>
+                    </div>
+                    <DialogFooter>
+                      <Button type="submit" className="w-full sm:w-auto">Xác nhận đặt lịch</Button>
+                    </DialogFooter>
+                  </DialogContent>
                 </Dialog>
 
-                {/* Sheet */}
                 <Sheet>
-                <SheetTrigger asChild>
-                    <Button variant="outline">Open Sheet</Button>
-                </SheetTrigger>
-                <SheetContent>
-                    <SheetHeader>
-                    <SheetTitle>Edit profile</SheetTitle>
-                    <SheetDescription>
-                        Make changes to your profile here. Click save when you&apos;re done.
-                    </SheetDescription>
+                  <SheetTrigger asChild>
+                    <Button variant="outline" className="border-primary/20 hover:bg-primary/5">Mở Side Sheet</Button>
+                  </SheetTrigger>
+                  <SheetContent className="border-none shadow-premium-lg">
+                    <SheetHeader className="pb-6">
+                      <SheetTitle>Chi tiết liệu trình</SheetTitle>
+                      <SheetDescription>Thông tin chi tiết về các buổi điều trị của khách hàng.</SheetDescription>
                     </SheetHeader>
-                </SheetContent>
+                    <Separator className="mb-6 opacity-50" />
+                    <div className="space-y-6">
+                        <div className="space-y-2">
+                           <Label className="text-[10px] text-muted-foreground uppercase font-bold">Tiến độ</Label>
+                           <Progress value={75} className="h-2" />
+                        </div>
+                        <div className="grid gap-2 text-sm italic text-muted-foreground border-l-2 border-primary/30 pl-4">
+                           "Khách hàng phản hồi rất tốt sau buổi điều trị đầu tiên."
+                        </div>
+                    </div>
+                  </SheetContent>
                 </Sheet>
 
-                {/* Drawer */}
-                 <Drawer>
-                <DrawerTrigger asChild>
-                    <Button variant="outline">Open Drawer</Button>
-                </DrawerTrigger>
-                <DrawerContent>
-                    <DrawerHeader>
-                    <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-                    <DrawerDescription>This action cannot be undone.</DrawerDescription>
-                    </DrawerHeader>
-                    <DrawerFooter>
-                    <Button>Submit</Button>
-                    <DrawerClose asChild>
-                        <Button variant="outline">Cancel</Button>
-                    </DrawerClose>
-                    </DrawerFooter>
-                </DrawerContent>
-                </Drawer>
-
-                {/* Alert Dialog */}
                 <AlertDialog>
-                <AlertDialogTrigger asChild>
-                    <Button variant="outline">Alert Dialog</Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" className="opacity-90 hover:opacity-100">Xóa bản ghi</Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent className="border-none shadow-premium-lg">
                     <AlertDialogHeader>
-                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        This action cannot be undone.
-                    </AlertDialogDescription>
+                      <AlertDialogTitle>Hành động không thể hoàn tác?</AlertDialogTitle>
+                      <AlertDialogDescription>Dữ liệu khách hàng sẽ bị xóa vĩnh viễn khỏi hệ thống quản lý Spa.</AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction>Continue</AlertDialogAction>
+                      <AlertDialogCancel className="rounded-lg">Hủy bỏ</AlertDialogCancel>
+                      <AlertDialogAction className="bg-destructive hover:bg-destructive/90 rounded-lg">Đồng ý xóa</AlertDialogAction>
                     </AlertDialogFooter>
-                </AlertDialogContent>
+                  </AlertDialogContent>
                 </AlertDialog>
 
-                {/* Dropdown Menu */}
                 <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="outline">Open Dropdown</Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="icon" className="rounded-full"><MoreVertical className="size-4" /></Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56 border-none shadow-premium-md" align="end">
+                    <DropdownMenuLabel>Tùy chọn nhanh</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>Profile</DropdownMenuItem>
-                    <DropdownMenuItem>Billing</DropdownMenuItem>
-                    <DropdownMenuItem>Team</DropdownMenuItem>
-                    <DropdownMenuItem>Subscription</DropdownMenuItem>
-                </DropdownMenuContent>
+                    <DropdownMenuItem className="gap-2 cursor-pointer"><User className="size-4 text-muted-foreground" /> Xem hồ sơ</DropdownMenuItem>
+                    <DropdownMenuItem className="gap-2 cursor-pointer"><Calculator className="size-4 text-muted-foreground" /> Thanh toán</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-destructive gap-2 cursor-pointer"><OctagonXIcon className="size-4" /> Hủy lịch</DropdownMenuItem>
+                  </DropdownMenuContent>
                 </DropdownMenu>
-
-                {/* Context Menu (Area) */}
-                <ContextMenu>
-                <ContextMenuTrigger className="flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed text-sm">
-                    Right click here
-                </ContextMenuTrigger>
-                <ContextMenuContent className="w-64">
-                    <ContextMenuItem inset>
-                    Back
-                    <ContextMenuShortcut>⌘[</ContextMenuShortcut>
-                    </ContextMenuItem>
-                    <ContextMenuItem inset disabled>
-                    Forward
-                    <ContextMenuShortcut>⌘]</ContextMenuShortcut>
-                    </ContextMenuItem>
-                    <ContextMenuItem inset>
-                    Reload
-                    <ContextMenuShortcut>⌘R</ContextMenuShortcut>
-                    </ContextMenuItem>
-                </ContextMenuContent>
-                </ContextMenu>
-           </div>
-       </section>
-
-       {/* ======================= OTHERS ======================= */}
-       <section className="space-y-6">
-           <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-semibold">6. Miscellaneous</h2>
-             <Badge variant="outline">Others</Badge>
-          </div>
-           <Separator />
-
-           <div className="grid gap-8">
-               <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Collapsible</h3>
-                   <Collapsible>
+              </div>
+            </CardContent>
+          </Card>
+          {/* ======================= MISCELLANEOUS ======================= */}
+          <Card className="shadow-premium-md">
+            <CardHeader>
+              <CardTitle className="text-xl">6. Miscellaneous</CardTitle>
+              <CardDescription>Các thành phần tiện ích và hiển thị bổ trợ.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-10">
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <h4 className="text-xs font-semibold text-muted-foreground uppercase">Collapsible</h4>
+                  <Collapsible>
                     <CollapsibleTrigger asChild>
-                        <Button variant="outline" size="sm">
-                           Toggle Collapsible
-                        </Button>
+                      <Button variant="outline" size="sm" className="gap-2">
+                        <Settings className="size-4" /> Toggle Settings
+                      </Button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-2 bg-muted/50 p-4 rounded-md">
-                        @radix-ui/colors
+                    <CollapsibleContent className="mt-4 p-4 rounded-xl bg-muted/30 border border-border/50 animate-in fade-in slide-in-from-top-2">
+                      <p className="text-xs text-muted-foreground">Cấu hình nâng cao cho các tham số hệ thống.</p>
                     </CollapsibleContent>
-                    </Collapsible>
-               </div>
-
-               <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Hover Card</h3>
-                   <HoverCard>
-                    <HoverCardTrigger asChild>
-                        <Button variant="link">@nextjs</Button>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="w-80">
-                        <div className="flex justify-between space-x-4">
-                        <Avatar>
-                            <AvatarImage src="https://github.com/vercel.png" />
-                            <AvatarFallback>VC</AvatarFallback>
-                        </Avatar>
-                        <div className="space-y-1">
-                            <h4 className="text-sm font-semibold">@nextjs</h4>
-                            <p className="text-sm">
-                            The React Framework – created and maintained by @vercel.
-                            </p>
-                            <div className="flex items-center pt-2">
-                            <CalendarDays className="mr-2 h-4 w-4 opacity-70" />{" "}
-                            <span className="text-xs text-muted-foreground">
-                                Joined December 2021
-                            </span>
-                            </div>
-                        </div>
-                        </div>
-                    </HoverCardContent>
-                    </HoverCard>
-               </div>
+                  </Collapsible>
+                </div>
 
                 <div className="space-y-4">
-                   <h3 className="text-lg font-medium">Aspect Ratio</h3>
-                    <div className="w-[300px]">
-                      <AspectRatio ratio={16 / 9} className="bg-muted rounded-md flex items-center justify-center">
-                         Image 16:9
-                      </AspectRatio>
-                    </div>
-               </div>
+                  <h4 className="text-xs font-semibold text-muted-foreground uppercase">Hover Card</h4>
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <Button variant="link" className="p-0 h-auto text-primary">@synapse_dev</Button>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80 border-none shadow-premium-lg">
+                      <div className="flex justify-between space-x-4">
+                        <Avatar className="ring-[1.5px] ring-primary/10">
+                          <AvatarImage src="https://github.com/vercel.png" />
+                          <AvatarFallback>SY</AvatarFallback>
+                        </Avatar>
+                        <div className="space-y-1">
+                          <h4 className="text-sm font-semibold">Synapse Ecosystem</h4>
+                          <p className="text-xs text-muted-foreground">
+                            Nền tảng quản lý Spa thông minh nhất Việt Nam.
+                          </p>
+                          <div className="flex items-center pt-2">
+                            <CalendarDays className="mr-2 h-3 w-3 opacity-70" />{" "}
+                            <span className="text-[10px] text-muted-foreground">
+                              Hoạt động từ 2024
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
+                </div>
 
-               <div className="space-y-4">
-                   <h3 className="text-lg font-medium">Cards</h3>
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <Card>
-                            <CardHeader>
-                            <CardTitle>Card Title</CardTitle>
-                            <CardDescription>Card Description</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                            <p>Card Content</p>
-                            </CardContent>
-                            <CardFooter>
-                            <p>Card Footer</p>
-                            </CardFooter>
-                        </Card>
-                        <Card className="glass-card">
-                            <CardHeader>
-                            <CardTitle>Glass Card</CardTitle>
-                            <CardDescription>Custom variant</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                            <p>This uses the .glass-card utility class.</p>
-                            </CardContent>
-                        </Card>
-                   </div>
-               </div>
-           </div>
-       </section>
+                <div className="space-y-4">
+                  <h4 className="text-xs font-semibold text-muted-foreground uppercase">Aspect Ratio 16:9</h4>
+                  <div className="overflow-hidden rounded-xl border-4 border-background shadow-premium-sm">
+                    <AspectRatio ratio={16 / 9} className="bg-muted flex items-center justify-center">
+                      <div className="flex flex-col items-center gap-2 opacity-40">
+                         <User className="size-10" />
+                         <span className="text-[10px] font-bold">PREVIEW IMAGE</span>
+                      </div>
+                    </AspectRatio>
+                  </div>
+                </div>
 
+                <div className="space-y-4">
+                  <h4 className="text-xs font-semibold text-muted-foreground uppercase">Normal Card Variant</h4>
+                  <Card className="border-border/50 shadow-premium-sm">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm">Standard Card</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-xs opacity-70">Thành phần này sử dụng phong cách Card tiêu chuẩn.</p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
-  }
+}

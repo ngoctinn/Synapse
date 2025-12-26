@@ -32,10 +32,9 @@ export function BulkSaveBar({
             </span>
             <div className="flex items-center gap-2">
               <Button
-                variant="ghost"
+                variant="secondary"
                 size="sm"
                 onClick={onReset}
-                className="text-background hover:text-background/80 hover:bg-white/10"
                 startContent={<RotateCcw className="size-4" />}
               >
                 Hoàn tác
@@ -43,7 +42,6 @@ export function BulkSaveBar({
               <Button
                 size="sm"
                 onClick={onSave}
-                className="bg-primary text-primary-foreground hover:bg-primary/90"
                 startContent={<Save className="size-4" />}
               >
                 Lưu thay đổi

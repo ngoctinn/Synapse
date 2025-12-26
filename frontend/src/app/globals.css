@@ -20,8 +20,8 @@
   --accent-foreground: oklch(45% 0.12 200deg);
   --destructive: oklch(60% 0.18 25deg);
   --destructive-foreground: oklch(100% 0 0deg);
-  --border: oklch(92% 0.01 260deg);
-  --input: oklch(92% 0.01 260deg);
+  --synapse-border: oklch(92% 0.01 260deg);
+  --synapse-input: oklch(92% 0.01 260deg);
   --ring: oklch(48% 0.14 200deg);
   --chart-1: oklch(48% 0.14 200deg);
   --chart-2: oklch(65% 0.15 160deg);
@@ -71,8 +71,8 @@
   --accent-foreground: oklch(95% 0.05 200deg);
   --destructive: oklch(55% 0.22 25deg);
   --destructive-foreground: oklch(100% 0 0deg);
-  --border: oklch(25% 0.02 260deg);
-  --input: oklch(25% 0.02 260deg);
+  --synapse-border: oklch(25% 0.02 260deg);
+  --synapse-input: oklch(25% 0.02 260deg);
   --ring: oklch(68% 0.15 200deg);
   --chart-1: oklch(68% 0.15 200deg);
   --chart-2: oklch(65% 0.15 160deg);
@@ -115,8 +115,8 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
+  --color-border: var(--synapse-border);
+  --color-input: var(--synapse-input);
   --color-ring: var(--ring);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
@@ -143,6 +143,9 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
+  --border-width: 1.5px;
+  --ring-width: 1.5px;
+  --spacing-px: 1.5px;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -153,8 +156,12 @@
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--synapse-border);
   }
 
   html,
@@ -187,11 +194,11 @@
   }
 
   .focus-premium:not([aria-invalid="true"]) {
-    @apply focus-visible:ring-primary/20 focus-visible:border-primary/50 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2;
+    @apply focus-visible:ring-primary/20 focus-visible:border-primary/50 transition-all duration-200 focus-visible:outline-none focus-visible:ring-[1.5px];
   }
 
   .focus-premium[aria-invalid="true"] {
-    @apply focus-visible:ring-destructive/20 focus-visible:border-destructive transition-all duration-200 focus-visible:outline-none focus-visible:ring-2;
+    @apply focus-visible:ring-destructive/20 focus-visible:border-destructive transition-all duration-200 focus-visible:outline-none focus-visible:ring-[1.5px];
   }
 
   .glass-card {

@@ -116,7 +116,7 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
               minStepsBetweenThumbs={1}
               onValueChange={handlePriceRangeChange}
               onValueCommit={handlePriceRangeCommit}
-              className="focus-visible:ring-ring py-2 focus-visible:ring-2"
+              className="focus-visible:ring-ring py-2 focus-visible:ring-[1.5px]"
             />
           </div>
           <div className="flex items-center gap-3">

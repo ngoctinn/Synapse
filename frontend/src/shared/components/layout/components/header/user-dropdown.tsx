@@ -41,7 +41,7 @@ export function HeaderUserDropdown({
         <Button
           variant="ghost"
           size="icon"
-          className="ring-offset-background hover:ring-primary/20 focus-visible:ring-primary/30 relative rounded-full transition-all hover:ring-2 focus-visible:ring-2"
+          className="ring-offset-background hover:ring-primary/20 focus-visible:ring-primary/30 relative rounded-full transition-all hover:ring-[1.5px] focus-visible:ring-[1.5px]"
         >
           <Avatar className="h-9 w-9 transition-transform hover:scale-105">
             <AvatarImage src={user.avatar} alt={user.name} />

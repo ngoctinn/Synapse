@@ -28,7 +28,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
   };
 
   return (
-    <div className="surface-card text-card-foreground hover:ring-primary/50 group relative flex flex-col overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:ring-1">
+    <div className="surface-card text-card-foreground hover:ring-primary/50 group relative flex flex-col overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:ring-[1.5px]">
       {/* Image Container */}
       <div className="relative aspect-[4/3] w-full overflow-hidden">
         <Image

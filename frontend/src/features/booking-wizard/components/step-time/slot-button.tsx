@@ -30,7 +30,7 @@ export const SlotButton: React.FC<SlotButtonProps> = ({
         !isAvailable && "cursor-not-allowed line-through opacity-50",
         isDisabled && "cursor-not-allowed opacity-30",
         isSelected &&
-          "bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary focus:ring-2 focus:ring-offset-2",
+          "bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary focus:ring-[1.5px] focus:ring-offset-2",
         !isSelected &&
           isAvailable &&
           "hover:bg-accent hover:text-accent-foreground"

@@ -36,7 +36,7 @@ const TimeInput = React.forwardRef<HTMLInputElement, TimeInputProps>(
           "shadow-sm transition-all duration-200",
           "hover:border-input hover:shadow-md",
           // Focus states - Softer, more elegant
-          "focus-visible:ring-primary/20 focus-visible:border-primary/50 focus-visible:shadow-md focus-visible:ring-2",
+          "focus-visible:ring-primary/20 focus-visible:border-primary/50 focus-visible:shadow-md focus-visible:ring-[1.5px]",
           className
         )}
         ref={ref}

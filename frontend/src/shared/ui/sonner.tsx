@@ -34,7 +34,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
         {
           "--normal-bg": "var(--popover)",
           "--normal-text": "var(--popover-foreground)",
-          "--normal-border": "var(--border)",
+          "--normal-border": "var(--synapse-border)",
           "--border-radius": "var(--radius)",
         } as React.CSSProperties
       }
@@ -157,7 +157,7 @@ function CustomToast({ variant, title, description, t }: CustomToastProps) {
             "-mr-2 -mt-2 h-8 w-8",
             "text-muted-foreground/60 rounded-full",
             "hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10",
-            "focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-2",
+            "focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-[1.5px]",
             "transition-colors"
           )}
           aria-label="Đóng thông báo"

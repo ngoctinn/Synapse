@@ -76,8 +76,8 @@ export function AvatarSelector({
               className={cn(
                 "relative cursor-pointer rounded-full p-1 transition-all hover:scale-105",
                 selectedAvatar === avatar
-                  ? "ring-primary ring-2 ring-offset-2"
-                  : "hover:ring-muted-foreground/20 hover:ring-2"
+                  ? "ring-primary ring-[1.5px] ring-offset-2"
+                  : "hover:ring-muted-foreground/20 hover:ring-[1.5px]"
               )}
               onClick={() => setSelectedAvatar(avatar)}
             >

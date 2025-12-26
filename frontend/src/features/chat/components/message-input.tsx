@@ -31,7 +31,7 @@ export function MessageInput({ onSendMessage }: MessageInputProps) {
 
   return (
     <div className="border-border dark:bg-card/50 rounded-b-lg border-t bg-white/50 p-4 backdrop-blur-sm">
-      <div className="focus-within:ring-primary/20 focus-within:bg-background/80 group flex items-end gap-2 rounded-lg p-1 transition-all duration-200 focus-within:ring-2">
+      <div className="focus-within:ring-primary/20 focus-within:bg-background/80 group flex items-end gap-2 rounded-lg p-1 transition-all duration-200 focus-within:ring-[1.5px]">
         <Button variant="ghost" size="icon" aria-label="Đính kèm file">
           <Paperclip className="h-5 w-5" />
         </Button>

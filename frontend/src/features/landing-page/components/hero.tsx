@@ -43,7 +43,7 @@ export function Hero() {
         </div>
 
         {/* Dashboard Mockup Visualization */}
-        <div className="glass-card animate-slide-up relative mx-auto max-w-5xl p-2 shadow-2xl ring-1 ring-white/10 lg:rounded-2xl lg:p-4">
+        <div className="glass-card animate-slide-up relative mx-auto max-w-5xl p-2 shadow-2xl ring-[1.5px] ring-white/10 lg:rounded-2xl lg:p-4">
           <div className="bg-background relative aspect-[16/9] overflow-hidden rounded-lg border shadow-inner">
             {/* Mock Header */}
             <div className="bg-muted/30 flex h-12 items-center gap-2 border-b px-4">

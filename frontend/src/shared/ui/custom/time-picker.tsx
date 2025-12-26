@@ -78,7 +78,7 @@ export function TimePicker({
             readOnly
             className={cn(
               "cursor-pointer font-medium transition-all duration-200",
-              "hover:border-primary/50 focus:border-primary focus:ring-primary/20 focus:ring-1",
+              "hover:border-primary/50 focus:border-primary focus:ring-primary/20 focus:ring-[1.5px]",
               hasError &&
                 "border-destructive/50 hover:border-destructive text-destructive focus:border-destructive focus:ring-destructive/20",
               className

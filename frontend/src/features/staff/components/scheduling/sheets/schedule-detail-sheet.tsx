@@ -89,12 +89,12 @@ export function ScheduleDetailSheet({
             {/* Actions row */}
             <div className="flex w-full items-center gap-2">
               <Button
-                variant="outline"
-                className="text-destructive hover:text-destructive hover:bg-destructive/10 flex-1"
+                variant="ghost"
+                className="flex-1"
                 onClick={() => setShowDeleteDialog(true)}
               >
-                <Icon icon={Trash2} className="size-4" />
-                Xóa
+                <Icon icon={Trash2} className="size-4 text-destructive" />
+                <span className="text-destructive">Xóa</span>
               </Button>
               <Button
                 variant="ghost"
@@ -143,7 +143,7 @@ export function ScheduleDetailSheet({
             <AlertDialogCancel>Hủy</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              variant="destructive"
             >
               Xóa
             </AlertDialogAction>

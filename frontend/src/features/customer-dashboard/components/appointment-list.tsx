@@ -94,7 +94,7 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
       >
         {appointments.map((appt) => (
           <MotionItem key={appt.id} {...itemProps}>
-            <Card className="hover:border-primary/50 focus-within:ring-primary group h-full overflow-hidden transition-all duration-200 focus-within:ring-2 hover:shadow-md">
+            <Card className="hover:border-primary/50 focus-within:ring-primary group h-full overflow-hidden transition-all duration-200 focus-within:ring-[1.5px] hover:shadow-md">
               <CardHeader className="bg-muted/30 pb-3">
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">

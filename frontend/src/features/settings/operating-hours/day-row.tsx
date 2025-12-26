@@ -99,7 +99,7 @@ export function DayRow({
         className={cn(
           "flex flex-col items-start gap-4 rounded-lg border p-4 transition-all sm:flex-row sm:items-center",
           isCopySource
-            ? "bg-primary/5 border-primary ring-primary ring-1"
+            ? "bg-primary/5 border-primary ring-primary ring-[1.5px]"
             : "bg-card hover:border-sidebar-accent",
           !day.isOpen && !isCopySource && "bg-muted/20 opacity-80"
         )}

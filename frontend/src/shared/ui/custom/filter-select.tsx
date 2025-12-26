@@ -160,7 +160,7 @@ export function FilterSelect({
           </SelectContent>
         </Select>
       </div>
-      {withSeparator && <div className="bg-border/50 mt-6 h-[1px]" />}
+      {withSeparator && <div className="bg-border/50 mt-6 h-px" />}
     </div>
   );
 }

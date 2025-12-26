@@ -62,7 +62,7 @@ const GroupActionButtons = ({ staff: _staff }: { staff: Staff }) => {
           <Button
             variant="ghost"
             size="icon"
-            className="text-muted-foreground hover:text-primary hover:bg-primary/10 h-8 w-8"
+            className="text-muted-foreground hover:text-primary h-8 w-8"
             onClick={handleViewSchedule}
           >
             <Icon icon={Calendar} />

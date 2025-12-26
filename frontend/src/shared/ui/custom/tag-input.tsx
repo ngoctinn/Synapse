@@ -92,11 +92,11 @@ export function TagInput({
             aria-expanded={open}
             aria-invalid={!!isError}
             className={cn(
-              "h-auto min-h-10 w-full justify-between items-center px-3 py-2 text-left font-normal",
+              "h-auto min-h-14 w-full justify-between items-center px-4 py-3 text-left font-normal rounded-lg",
               "bg-background hover:bg-background border-input",
-              "focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none", // Standard focus
-              isError && "border-destructive/50 ring-destructive/20",
-              open && "border-primary/50 ring-1 ring-primary/20"
+              "focus-visible:ring-[1.5px] focus-visible:ring-ring/40 focus-visible:outline-none",
+              isError && "border-destructive/80 ring-destructive/10 hover:border-destructive",
+              open && "border-primary/50 ring-[1.5px] ring-primary/20"
             )}
             onClick={() => setOpen(!open)}
           >

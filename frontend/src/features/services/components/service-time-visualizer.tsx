@@ -36,7 +36,7 @@ export function ServiceTimeVisualizer({
         </div>
       </div>
 
-      <div className="bg-muted/20 ring-border/50 flex h-8 w-full overflow-hidden rounded-lg ring-1">
+      <div className="bg-muted/20 ring-border/50 flex h-8 w-full overflow-hidden rounded-lg ring-[1.5px]">
         <div
           className="bg-primary text-primary-foreground group relative flex h-full items-center justify-center text-[11px] font-medium transition-all duration-300"
           style={{ width: `${durationPercent}%` }}

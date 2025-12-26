@@ -69,7 +69,7 @@ export const NumberInput = React.forwardRef<HTMLDivElement, NumberInputProps>(
         className={cn("w-full", className)}
         {...props}
       >
-        <Group className="focus-within:ring-primary/20 focus-within:border-primary/50 border-input bg-background dark:bg-input/30 hover:border-input relative inline-flex h-10 w-full items-center overflow-hidden rounded-md border text-sm shadow-sm transition-all duration-200 focus-within:outline-none focus-within:ring-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <Group className="group-data-[invalid=true]:border-destructive/80 group-data-[invalid=true]:ring-destructive/10 group-data-[invalid=true]:focus-within:ring-destructive/50 group-data-[invalid=true]:focus-within:border-destructive focus-within:ring-ring/40 focus-within:border-primary/50 border-input bg-background dark:bg-input/30 hover:border-primary/30 relative inline-flex h-14 w-full items-center overflow-hidden rounded-lg border text-sm shadow-xs transition-with-all duration-200 focus-within:outline-none focus-within:ring-[1.5px] disabled:cursor-not-allowed disabled:opacity-50">
           <Input
             className="flex-1 bg-transparent px-3 py-2 outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed tabular-nums"
             placeholder={placeholder}

@@ -142,7 +142,7 @@ export function SkillManagerDialog({
                     className={cn(
                       "flex cursor-pointer items-start justify-between rounded-lg border p-3 transition-all hover:shadow-sm",
                       editingId === skill.id
-                        ? "bg-primary/5 border-primary ring-primary/20 ring-1"
+                        ? "bg-primary/5 border-primary ring-primary/20 ring-[1.5px]"
                         : "bg-card hover:bg-accent/50 hover:border-accent-foreground/20"
                     )}
                     onClick={() => handleEdit(skill)}

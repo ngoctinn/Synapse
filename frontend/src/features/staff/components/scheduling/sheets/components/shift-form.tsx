@@ -91,7 +91,7 @@ export function ShiftForm({
               onClick={() => onColorChange(c)}
               className={cn(
                 "h-8 w-8 rounded-full transition-all",
-                color === c && "ring-primary ring-2 ring-offset-2"
+                color === c && "ring-primary ring-[1.5px] ring-offset-2"
               )}
               style={{ backgroundColor: c }}
             />

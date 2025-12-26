@@ -76,7 +76,7 @@ export const TimeSlots: React.FC<TimeSlotsProps> = ({
         }
         return (
           <div key={group.label}>
-            <div className="bg-background/95 sticky top-[-1px] z-10 -mx-4 mb-4 border-b border-transparent px-4 py-2 backdrop-blur-sm transition-colors group-has-[[data-sticky=true]]:border-border">
+            <div className="bg-background/95 sticky top-[-1.5px] z-10 -mx-4 mb-4 border-b border-transparent px-4 py-2 backdrop-blur-sm transition-colors group-has-[[data-sticky=true]]:border-border">
               <h3 className="text-base font-bold tracking-tight text-foreground/90">
                 {group.label}
               </h3>

@@ -13,6 +13,7 @@ import {
   type FieldValues,
 } from "react-hook-form";
 
+import { AlertCircleIcon } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { Label } from "@/shared/ui/label";
 
@@ -80,7 +81,7 @@ function FormItem({ className, ...props }: React.ComponentProps<"div">) {
     <FormItemContext.Provider value={{ id }}>
       <div
         data-slot="form-item"
-        className={cn("grid gap-2", className)}
+        className={cn("relative grid gap-1", className)}
         {...props}
       />
     </FormItemContext.Provider>
@@ -100,14 +101,14 @@ function FormLabel({ className, required, children, ...props }: FormLabelProps) 
       data-slot="form-label"
       data-error={!!error}
       className={cn(
-        "text-foreground/80 data-[error=true]:text-destructive font-normal",
+        "text-foreground/80 data-[error=true]:text-destructive/90 font-medium text-sm mb-0.5",
         className
       )}
       htmlFor={formItemId}
       {...props}
     >
       {children}
-      {required && <span className="text-destructive ml-1">*</span>}
+      {required && <span className="text-destructive ml-0.5">*</span>}
     </Label>
   );
 }
@@ -132,13 +133,20 @@ function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
 }
 
 function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
-  const { formDescriptionId } = useFormField();
+  const { error, formDescriptionId } = useFormField();
+
+  if (error) {
+    return null;
+  }
 
   return (
     <p
       data-slot="form-description"
       id={formDescriptionId}
-      className={cn("text-muted-foreground text-sm", className)}
+      className={cn(
+        "text-muted-foreground absolute left-0 top-full mt-1.5 w-full text-xs leading-tight",
+        className
+      )}
       {...props}
     />
   );
@@ -153,14 +161,22 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
   }
 
   return (
-    <p
-      data-slot="form-message"
-      id={formMessageId}
-      className={cn("text-destructive text-sm", className)}
-      {...props}
+    <div
+      data-slot="form-message-container"
+      className="absolute left-0 top-full z-10 mt-1.5 flex w-full animate-in fade-in slide-in-from-top-1 duration-200"
     >
-      {body}
-    </p>
+      <div
+        id={formMessageId}
+        className={cn(
+          "bg-destructive/10 text-destructive flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium leading-tight",
+          className
+        )}
+        {...props}
+      >
+        <AlertCircleIcon className="size-3.5 shrink-0" />
+        {body}
+      </div>
+    </div>
   );
 }
 

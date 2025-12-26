@@ -39,10 +39,10 @@ export function ShiftChip({
       className={cn(
         "relative w-full rounded-lg px-2.5 py-1.5 text-left",
         "cursor-pointer transition-all",
-        "focus:ring-primary/50 focus:outline-none focus:ring-2",
+        "focus:ring-primary/50 focus:outline-none focus:ring-[1.5px]",
         "hover:shadow-sm",
         isDraft && "border-2 border-dashed",
-        isSelected && "ring-primary ring-2 ring-offset-1",
+        isSelected && "ring-primary ring-[1.5px] ring-offset-1",
         className
       )}
       style={{
@@ -133,7 +133,7 @@ export function ShiftChipLarge({ shift, onClick, className }: ShiftChipProps) {
       className={cn(
         "flex w-full items-center gap-3 rounded-lg p-4",
         "cursor-pointer text-left transition-colors",
-        "focus:ring-primary/50 focus:outline-none focus:ring-2",
+        "focus:ring-primary/50 focus:outline-none focus:ring-[1.5px]",
         "hover:opacity-90",
         className
       )}

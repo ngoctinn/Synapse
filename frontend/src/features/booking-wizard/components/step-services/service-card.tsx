@@ -22,7 +22,7 @@ export const ServiceCard = ({
       className={cn(
         "group relative cursor-pointer overflow-hidden border-2 transition-all duration-300 active:scale-[0.99]",
         isSelected
-          ? "border-primary bg-primary/5 ring-primary/20 shadow-lg ring-2 ring-offset-2"
+          ? "border-primary bg-primary/5 ring-primary/20 shadow-lg ring-[1.5px] ring-offset-2"
           : "hover:border-muted-foreground/20 bg-card border-transparent hover:shadow-md"
       )}
       onClick={() => onToggle(service)}

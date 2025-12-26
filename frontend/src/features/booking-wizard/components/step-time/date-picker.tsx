@@ -70,7 +70,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
                 "flex min-w-[4.5rem] flex-col items-center justify-center rounded-lg p-2",
                 "text-sm font-medium transition-colors duration-150",
                 "hover:bg-accent hover:text-accent-foreground",
-                "focus:ring-primary focus:outline-none focus:ring-2 focus:ring-offset-2",
+                "focus:ring-primary focus:outline-none focus:ring-[1.5px] focus:ring-offset-2",
                 today && "border-primary border",
                 !isDateAvailable && "cursor-not-allowed opacity-50",
                 isSelected &&

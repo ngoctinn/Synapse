@@ -50,7 +50,7 @@ export function FilterButton({
           {count > 0 && (
             <span
               className={cn(
-                "animate-in zoom-in bg-primary text-primary-foreground ring-background absolute flex size-4 items-center justify-center rounded-full text-[10px] font-medium shadow-sm ring-2 duration-300",
+                "animate-in zoom-in bg-primary text-primary-foreground ring-background absolute flex size-4 items-center justify-center rounded-full text-[10px] font-medium shadow-sm ring-[1.5px] duration-300",
                 label ? "-right-1 -top-1" : "-right-1 -top-1"
               )}
             >

@@ -69,7 +69,8 @@ export function Combobox({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "bg-background w-full justify-between font-normal",
+            "bg-background w-full justify-between items-center font-normal h-14 px-4 rounded-lg text-base hover:border-primary/30 focus-visible:ring-[1.5px] focus-visible:ring-ring/40 focus-visible:outline-none",
+            "aria-invalid:hover:border-destructive aria-invalid:border-destructive/80",
             className
           )}
           disabled={disabled}
@@ -79,7 +80,7 @@ export function Combobox({
           ) : (
             <span className="text-muted-foreground">{placeholder}</span>
           )}
-          <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
+          <ChevronsUpDown className="ml-2 size-5 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent

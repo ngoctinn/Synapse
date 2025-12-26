@@ -202,7 +202,7 @@ export function ShiftManagerSheet({
             <AlertDialogCancel>Hủy</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              variant="destructive"
             >
               Xóa
             </AlertDialogAction>

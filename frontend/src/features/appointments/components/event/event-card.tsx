@@ -84,8 +84,8 @@ export function EventCard({
           "flex w-full items-center gap-1.5 truncate rounded px-1.5 py-0.5 text-xs transition-all",
           "active:bg-muted/50 hover:brightness-95",
           isDragging && "opacity-50",
-          isOverlay && "ring-primary shadow-lg ring-2",
-          hasConflict && "ring-2 ring-red-500",
+          isOverlay && "ring-primary shadow-lg ring-[1.5px]",
+          hasConflict && "ring-[1.5px] ring-red-500",
           className
         )}
         style={getEventStyles(event.color, "20")}
@@ -111,8 +111,8 @@ export function EventCard({
           "border-l-3 cursor-pointer",
           "transition-all duration-150 hover:brightness-95",
           isDragging && "scale-95 opacity-40",
-          isOverlay && "ring-primary scale-105 shadow-xl ring-2 ring-offset-2",
-          hasConflict && "ring-2 ring-red-500 ring-offset-1",
+          isOverlay && "ring-primary scale-105 shadow-xl ring-[1.5px] ring-offset-2",
+          hasConflict && "ring-[1.5px] ring-red-500 ring-offset-1",
           className
         )}
         style={{
@@ -159,8 +159,8 @@ export function EventCard({
         "transition-all duration-200 hover:shadow-md",
         "bg-card",
         isDragging && "scale-95 opacity-40",
-        isOverlay && "ring-primary scale-105 shadow-2xl ring-2 ring-offset-2",
-        hasConflict && "ring-2 ring-red-500",
+        isOverlay && "ring-primary scale-105 shadow-2xl ring-[1.5px] ring-offset-2",
+        hasConflict && "ring-[1.5px] ring-red-500",
         className
       )}
       style={{ borderLeftColor: event.color.startsWith("#") ? event.color : `#${event.color}` }}

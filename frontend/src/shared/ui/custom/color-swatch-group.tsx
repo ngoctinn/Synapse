@@ -56,10 +56,10 @@ export function ColorSwatchGroup({
               sizeClasses[size],
               "flex-shrink-0 cursor-pointer rounded-full border-2 transition-all duration-200",
               // Focus styles
-              "focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+              "focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-[1.5px] focus-visible:ring-offset-2",
               // Selection states
               isSelected
-                ? "border-foreground ring-primary scale-110 ring-2 ring-offset-1"
+                ? "border-foreground ring-primary scale-110 ring-[1.5px] ring-offset-1"
                 : "border-transparent opacity-70 hover:scale-110 hover:opacity-100 hover:shadow-sm"
             )}
             style={{ backgroundColor: color }}

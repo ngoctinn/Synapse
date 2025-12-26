@@ -111,7 +111,7 @@ export function StaffProfessionalInfo({ mode, skills }: StaffProfessionalInfoPro
                   className={cn(
                     "focus-premium relative flex size-8 items-center justify-center rounded-full transition-all",
                     field.value === color
-                      ? "ring-primary scale-110 shadow-sm ring-2 ring-offset-2"
+                      ? "ring-primary scale-110 shadow-sm ring-[1.5px] ring-offset-2"
                       : "opacity-80 hover:scale-110 hover:opacity-100 hover:shadow-sm"
                   )}
                   style={{ backgroundColor: color }}

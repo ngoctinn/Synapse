@@ -188,7 +188,7 @@ export function DateRangeFilter({
             >
               Toàn thời gian
             </Button>
-            <div className="bg-border/50 mx-2 my-1 h-[1px]" />
+            <div className="bg-border/50 mx-2 my-1 h-px" />
             <Button
               variant="ghost"
               size="sm"
@@ -245,7 +245,7 @@ export function DateRangeFilter({
             >
               Năm nay
             </Button>
-            <div className="bg-border/50 mx-2 my-1 h-[1px]" />
+            <div className="bg-border/50 mx-2 my-1 h-px" />
             <Button
               variant="ghost"
               className="text-primary hover:text-primary group h-8 justify-between px-2 font-normal transition-colors"
