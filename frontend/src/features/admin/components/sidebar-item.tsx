@@ -2,24 +2,24 @@
 
 import { cn } from "@/shared/lib/utils";
 import {
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-  useSidebar,
-} from "@/shared/ui/sidebar";
-import {
-  Collapsible as CollapsibleRoot,
-  CollapsibleContent as CollapsibleContentRoot,
-  CollapsibleTrigger as CollapsibleTriggerRoot,
+    CollapsibleContent as CollapsibleContentRoot,
+    Collapsible as CollapsibleRoot,
+    CollapsibleTrigger as CollapsibleTriggerRoot,
 } from "@/shared/ui/collapsible";
 import {
-  DropdownMenu as DropdownMenuRoot,
-  DropdownMenuContent as DropdownMenuContentRoot,
-  DropdownMenuItem as DropdownMenuRootItem,
-  DropdownMenuTrigger as DropdownMenuRootTrigger,
+    DropdownMenuContent as DropdownMenuContentRoot,
+    DropdownMenu as DropdownMenuRoot,
+    DropdownMenuItem as DropdownMenuRootItem,
+    DropdownMenuTrigger as DropdownMenuRootTrigger,
 } from "@/shared/ui/dropdown-menu";
+import {
+    SidebarMenuButton,
+    SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubButton,
+    SidebarMenuSubItem,
+    useSidebar,
+} from "@/shared/ui/sidebar";
 
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
@@ -62,7 +62,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
                 <Icon className="size-5 shrink-0" strokeWidth={2} />
               </SidebarMenuButton>
             </DropdownMenuRootTrigger>
-            <DropdownMenuContentRoot side="right" align="start" className="min-w-[220px] ml-4 shadow-premium-md">
+            <DropdownMenuContentRoot side="right" align="start" className="min-w-56 ml-4 shadow-premium-md">
               <div className="px-3 py-2 text-xs font-bold text-muted-foreground border-b uppercase mb-1">{item.title}</div>
               <div className="p-1">
                 {item.items.map((subItem) => (

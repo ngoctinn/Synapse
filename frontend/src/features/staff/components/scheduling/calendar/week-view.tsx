@@ -4,12 +4,14 @@ import { format, isSameDay } from "date-fns";
 import { vi } from "date-fns/locale";
 
 import { cn } from "@/shared/lib/utils";
+import { Grid } from "@/shared/ui/layout/grid";
+import { VStack } from "@/shared/ui/layout/stack";
 import { getSchedulesByStaffAndDate } from "../../../model/schedules";
 import {
-  Schedule,
-  ScheduleWithShift,
-  SelectedSlot,
-  Staff,
+    Schedule,
+    ScheduleWithShift,
+    SelectedSlot,
+    Staff,
 } from "../../../model/types";
 import { ScheduleCell } from "./schedule-cell";
 
@@ -62,7 +64,7 @@ export function WeekView({
     selectedSlots.some((s) => s.staffId === staffId && s.dateStr === dateStr);
 
   return (
-    <div className={cn("flex select-none flex-col", className)}>
+    <VStack className={cn("select-none", className)}>
       <div className="relative overflow-hidden">
         {/* Scroll indicators */}
         <div className="from-background pointer-events-none absolute bottom-0 left-[180px] top-0 z-40 w-4 bg-gradient-to-r to-transparent lg:hidden" />
@@ -70,7 +72,11 @@ export function WeekView({
 
         <div className="min-w-[800px] overflow-x-auto">
           {/* Header row - Days of week */}
-          <div className="bg-background sticky top-0 z-30 grid grid-cols-[180px_repeat(7,1fr)] border-b">
+          <Grid
+            cols="180px repeat(7,1fr)"
+            gap={0}
+            className="bg-background sticky top-0 z-30 border-b"
+          >
             <div className="text-muted-foreground bg-background sticky left-0 z-40 flex items-center border-r p-2 text-sm font-medium">
               Nhân viên
             </div>
@@ -105,14 +111,16 @@ export function WeekView({
                 </div>
               );
             })}
-          </div>
+          </Grid>
 
           {/* Staff rows */}
           <div className="divide-y">
             {staffList.map((staff) => (
-              <div
+              <Grid
                 key={staff.user_id}
-                className="hover:bg-muted/5 group grid grid-cols-[180px_repeat(7,1fr)] transition-colors"
+                cols="180px repeat(7,1fr)"
+                gap={0}
+                className="hover:bg-muted/5 group transition-colors"
               >
                 {/* Staff info column */}
                 <div className="bg-background group-hover:bg-muted/5 sticky left-0 z-20 flex items-center gap-2 border-r p-2 transition-colors">
@@ -158,11 +166,11 @@ export function WeekView({
                     />
                   );
                 })}
-              </div>
+              </Grid>
             ))}
           </div>
         </div>
       </div>
-    </div>
+    </VStack>
   );
 }

@@ -6,24 +6,25 @@ import { toast } from "sonner";
 
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui";
+import { VStack } from "@/shared/ui/layout/stack";
 
 import { useScheduleFilters } from "../../hooks/use-schedule-filters";
 import { useScheduleNavigation } from "../../hooks/use-schedule-navigation";
 import { useSchedules } from "../../hooks/use-schedules";
 import type {
-  Schedule,
-  ScheduleWithShift,
-  Shift,
-  Staff,
+    Schedule,
+    ScheduleWithShift,
+    Shift,
+    Staff,
 } from "../../model/types";
 
 import { MonthView, WeekView } from "./calendar";
 import { ShiftLegend } from "./legend";
 import { SelectionToolbar, useSelection } from "./selection";
 import {
-  AddScheduleSheet,
-  ScheduleDetailSheet,
-  ShiftManagerSheet,
+    AddScheduleSheet,
+    ScheduleDetailSheet,
+    ShiftManagerSheet,
 } from "./sheets";
 import { ActionBar, DateNavigator, StaffFilter, ViewSwitcher } from "./toolbar";
 
@@ -185,7 +186,7 @@ export function StaffSchedulingPage({
     : undefined;
 
   return (
-    <div className={cn("flex h-full min-h-0 flex-col", className)}>
+    <VStack className={cn("h-full min-h-0", className)}>
       {/* Toolbar */}
       <div className="sticky-header-blur flex flex-col justify-between gap-3 px-0 py-4 sm:flex-row sm:items-center">
         <div className="flex flex-wrap items-center gap-2">
@@ -294,6 +295,6 @@ export function StaffSchedulingPage({
         open={shiftManagerOpen}
         onOpenChange={setShiftManagerOpen}
       />
-    </div>
+    </VStack>
   );
 }

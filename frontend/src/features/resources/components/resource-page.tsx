@@ -1,10 +1,10 @@
 "use client";
 
 import {
-  PageContent,
-  PageHeader,
-  PageShell,
-  SurfaceCard,
+    PageContent,
+    PageHeader,
+    PageShell,
+    SurfaceCard,
 } from "@/shared/components/layout/page-layout";
 import { ActionResponse } from "@/shared/lib/action-response";
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
@@ -124,7 +124,7 @@ export function ResourcePage({
             )}
             <Suspense
               fallback={
-                <div className="bg-muted h-10 w-[130px] animate-pulse rounded-lg" />
+                <div className="bg-muted h-10 w-32 animate-pulse rounded-lg" />
               }
             >
               <AddResourceWrapper groupsPromise={groupsPromise} />

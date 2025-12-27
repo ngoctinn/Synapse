@@ -3,6 +3,7 @@
 import { Badge } from "@/shared/ui/badge";
 import { Checkbox } from "@/shared/ui/checkbox";
 import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row";
+import { VStack } from "@/shared/ui/layout/stack";
 import {
     TableBody,
     TableCell,
@@ -66,14 +67,14 @@ export function PermissionMatrix({
   };
 
   return (
-    <div className={`relative flex flex-col ${className}`}>
+    <VStack className={`relative ${className}`}>
       <div className="">
         <div className="relative w-full">
           <table className="w-full caption-bottom text-sm">
             {/* Sticky Header fixed top-0 because it's inside a relative container or we trust the container scroll */}
             <TableHeader className="bg-background sticky top-0 z-30 shadow-sm">
               <TableRow className="border-b-0 hover:bg-transparent">
-                <TableHead className="bg-background w-[250px] pl-8 font-semibold">
+                <TableHead className="bg-background w-64 pl-8 font-semibold">
                   Chức năng (Module)
                 </TableHead>
                 {ROLES.map((role) => (
@@ -133,6 +134,6 @@ export function PermissionMatrix({
         onSave={handleSave}
         onReset={handleReset}
       />
-    </div>
+    </VStack>
   );
 }

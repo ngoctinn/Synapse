@@ -9,9 +9,8 @@ import {
 import { ActionResponse } from "@/shared/lib/action-response";
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
 import { Input } from "@/shared/ui/input";
+import { HStack, VStack } from "@/shared/ui/layout/stack";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
-
-import { Group, Stack } from "@/shared/ui/layout";
 import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, use, useTransition } from "react";
@@ -101,7 +100,7 @@ export function CustomersPage({
 
   return (
     <PageShell>
-      <Stack gap={0} asChild>
+      <VStack gap={0} asChild>
         <Tabs
           value={activeTab}
           onValueChange={handleTabChange}
@@ -116,11 +115,11 @@ export function CustomersPage({
             </TabsTrigger>
           </TabsList>
 
-          <Group gap={3} className="w-full md:w-auto">
+          <HStack gap={3} className="w-full md:w-auto">
             {activeTab === "list" && (
               <FilterBar
                 startContent={
-                  <div className="w-full md:w-[250px]">
+                  <div className="w-full md:w-64">
                     <Input
                       placeholder="Tìm kiếm khách hàng..."
                       defaultValue={initialSearch}
@@ -134,10 +133,10 @@ export function CustomersPage({
               />
             )}
             <CreateCustomerTrigger />
-          </Group>
+          </HStack>
         </PageHeader>
 
-        <Stack gap={0} className="page-entry-animation overflow-hidden">
+        <VStack gap={0} className="page-entry-animation overflow-hidden">
           <TabsContent
             value="list"
             className="mt-0 data-[state=inactive]:hidden"
@@ -167,9 +166,9 @@ export function CustomersPage({
               </SurfaceCard>
             </PageContent>
           </TabsContent>
-        </Stack>
+        </VStack>
       </Tabs>
-    </Stack>
+    </VStack>
   </PageShell>
   );
 }

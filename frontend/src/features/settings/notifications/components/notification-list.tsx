@@ -2,12 +2,12 @@
 
 import { Badge } from "@/shared/ui/badge";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/shared/ui/table";
 import { NotificationEvent } from "../model/types";
 import { ChannelControl } from "./channel-control";
@@ -97,10 +97,12 @@ export function NotificationList({
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/50">
-                  <TableHead className="w-[40%]">Sự kiện</TableHead>
-                  <TableHead className="w-[20%] text-center">Zalo</TableHead>
-                  <TableHead className="w-[20%] text-center">SMS</TableHead>
-                  <TableHead className="w-[20%] text-center">Email</TableHead>
+                <TableRow className="bg-muted/50">
+                  <TableHead className="w-2/5">Sự kiện</TableHead>
+                  <TableHead className="w-1/5 text-center">Zalo</TableHead>
+                  <TableHead className="w-1/5 text-center">SMS</TableHead>
+                  <TableHead className="w-1/5 text-center">Email</TableHead>
+                </TableRow>
                 </TableRow>
               </TableHeader>
               <TableBody>

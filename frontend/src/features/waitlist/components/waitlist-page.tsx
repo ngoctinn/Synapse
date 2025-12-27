@@ -8,7 +8,7 @@ import {
 } from "@/shared/components/layout/page-layout";
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
 import { Input } from "@/shared/ui/input";
-import { Group } from "@/shared/ui/layout";
+import { HStack } from "@/shared/ui/layout/stack";
 import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
@@ -50,10 +50,10 @@ export function WaitlistPage({ data, page, totalPages }: WaitlistPageProps) {
         title="Danh sách chờ"
         subtitle="Quản lý yêu cầu đặt lịch của khách hàng"
       >
-        <Group gap={3}>
+        <HStack gap={3}>
           <FilterBar
             startContent={
-          <div className="w-full md:w-[250px]">
+          <div className="w-full md:w-64">
              <Input
                 placeholder="Tìm khách hàng..."
                 defaultValue={initialSearch}
@@ -65,7 +65,7 @@ export function WaitlistPage({ data, page, totalPages }: WaitlistPageProps) {
             }
           />
           <CreateWaitlistTrigger />
-        </Group>
+        </HStack>
       </PageHeader>
 
       <PageContent>

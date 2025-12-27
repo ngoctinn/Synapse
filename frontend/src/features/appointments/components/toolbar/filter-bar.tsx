@@ -11,18 +11,18 @@ import { useState } from "react";
 
 import { cn } from "@/shared/lib/utils";
 import {
-    Badge,
-    Button,
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-    Input,
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
+  Badge,
+  Button,
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  Input,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/shared/ui";
 
 import { APPOINTMENT_STATUS_CONFIG } from "../../constants";
@@ -137,7 +137,7 @@ export function FilterBar({
       {/* Filter Controls */}
       <div className="flex flex-wrap items-center gap-2">
         {/* Search Input */}
-        <div className="relative min-w-[200px] max-w-[300px] flex-1">
+        <div className="relative min-w-48 max-w-72 flex-1">
           <Input
             placeholder="Tìm khách hàng, dịch vụ..."
             value={filters.searchQuery}
@@ -212,7 +212,7 @@ export function FilterBar({
               <ChevronsUpDown className="size-4 opacity-50" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0" align="start">
+          <PopoverContent className="w-52 p-0" align="start">
             <Command>
               <CommandInput placeholder="Tìm dịch vụ..." />
               <CommandList>
@@ -258,7 +258,7 @@ export function FilterBar({
               <ChevronsUpDown className="size-4 opacity-50" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0" align="start">
+          <PopoverContent className="w-52 p-0" align="start">
             <Command>
               <CommandList>
                 <CommandGroup>

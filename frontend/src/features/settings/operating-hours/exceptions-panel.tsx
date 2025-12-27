@@ -24,6 +24,7 @@ import {
     Calendar,
     ScrollArea,
 } from "@/shared/ui";
+import { HStack, VStack } from "@/shared/ui/layout/stack";
 import { format, isSameDay } from "date-fns";
 import { vi } from "date-fns/locale";
 import { CalendarDays, Pencil, Plus, Trash2 } from "lucide-react";
@@ -107,9 +108,9 @@ export function ExceptionsPanel({
   };
 
   return (
-    <div className="flex h-full flex-col gap-6">
+    <VStack className="h-full" gap={6}>
       {/* Header Row */}
-      <div className="flex shrink-0 items-center justify-between">
+      <HStack className="shrink-0" justify="between">
         <div className="space-y-1">
           <h3 className="text-lg font-medium leading-none tracking-tight">
             Danh sách ngoại lệ
@@ -122,12 +123,12 @@ export function ExceptionsPanel({
           <Plus className="h-4 w-4" />
           Thêm ngày
         </Button>
-      </div>
+      </HStack>
 
       <div className="min-h-0 flex-1">
         <div className="flex h-full flex-col gap-6 xl:flex-row">
           {/* Left: Exceptions List */}
-          <div className="flex flex-1 flex-col overflow-hidden">
+          <VStack className="overflow-hidden flex-1">
             <div className="min-h-0 flex-1">
               {sortedExceptions.length === 0 ? (
                 <div className="bg-muted/10 flex h-full flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 text-center">
@@ -230,11 +231,11 @@ export function ExceptionsPanel({
                 </ScrollArea>
               )}
             </div>
-          </div>
+          </VStack>
 
           {/* Right: Mini Calendar (Desktop only) */}
           <div className="hidden shrink-0 xl:block">
-            <div className="bg-card text-card-foreground sticky top-0 w-[320px] rounded-lg border p-4 shadow-sm">
+            <div className="bg-card text-card-foreground sticky top-0 w-80 rounded-lg border p-4 shadow-sm">
               <Calendar
                 mode="single"
                 selected={undefined}
@@ -296,6 +297,6 @@ export function ExceptionsPanel({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </VStack>
   );
 }

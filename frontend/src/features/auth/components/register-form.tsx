@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Lock, Mail, User } from "lucide-react";
+import { Mail, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { startTransition, useActionState, useEffect } from "react";
@@ -11,15 +11,15 @@ import { registerAction } from "../actions";
 import { registerSchema, type RegisterInput } from "../model/schemas";
 
 import {
-  Button,
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  Input,
-  showToast,
+    Button,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+    Input,
+    showToast,
 } from "@/shared/ui";
 import { PasswordInput } from "@/shared/ui/custom/password-input";
 
@@ -81,7 +81,7 @@ export function RegisterForm() {
           <h1 className="text-2xl font-bold tracking-tight">
             Kiểm tra email của bạn
           </h1>
-          <p className="text-muted-foreground mx-auto max-w-[300px] text-sm">
+          <p className="text-muted-foreground mx-auto max-w-xs text-sm">
             Chúng tôi đã gửi một liên kết xác thực đến{" "}
             <strong>{form.getValues("email")}</strong>.
           </p>

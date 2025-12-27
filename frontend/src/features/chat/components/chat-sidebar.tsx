@@ -111,7 +111,7 @@ export function ChatSidebar({
                 </div>
 
                 {conv.unreadCount > 0 && (
-                  <div className="bg-primary text-primary-foreground animate-scale-in absolute right-3 top-1/2 flex h-5 min-w-[20px] -translate-y-1/2 items-center justify-center rounded-full px-1.5 text-[10px] font-bold shadow-sm">
+                  <div className="bg-primary text-primary-foreground animate-scale-in absolute right-3 top-1/2 flex h-5 min-w-5 -translate-y-1/2 items-center justify-center rounded-full px-1.5 text-[10px] font-bold shadow-sm">
                     {conv.unreadCount}
                   </div>
                 )}

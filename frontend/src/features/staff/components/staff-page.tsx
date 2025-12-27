@@ -10,8 +10,8 @@ import {
 import { ActionResponse } from "@/shared/lib/action-response";
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
 import { Input } from "@/shared/ui/input";
-import { Group, Stack } from "@/shared/ui/layout";
 import { Box } from "@/shared/ui/layout/box";
+import { HStack, VStack } from "@/shared/ui/layout/stack";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Text as UIText } from "@/shared/ui/typography";
@@ -146,7 +146,7 @@ export function StaffPage({
         activeTab === "scheduling" ? "h-screen overflow-hidden" : undefined
       }
     >
-      <Stack gap={0} asChild>
+      <VStack gap={0} asChild>
         <Tabs
           value={activeTab}
           onValueChange={handleTabChange}
@@ -164,11 +164,11 @@ export function StaffPage({
             </TabsTrigger>
           </TabsList>
 
-          <Group gap={3} className="w-full md:w-auto">
+          <HStack gap={3} className="w-full md:w-auto">
             {activeTab === "list" && (
               <FilterBar
                 startContent={
-                  <div className="w-full md:w-[250px]">
+                  <div className="w-full md:w-64">
                     <Input
                       placeholder="Tìm kiếm nhân viên..."
                       defaultValue={initialSearch}
@@ -184,10 +184,10 @@ export function StaffPage({
             {activeTab === "list" && canManageStaff && (
               <InviteStaffTrigger skills={skills} />
             )}
-          </Group>
+          </HStack>
         </PageHeader>
 
-        <Stack gap={0} className="page-entry-animation min-h-0 overflow-hidden">
+        <VStack gap={0} className="page-entry-animation min-h-0 overflow-hidden">
           <TabsContent
             value="list"
             className="mt-0 data-[state=inactive]:hidden"
@@ -225,7 +225,7 @@ export function StaffPage({
           >
             <Suspense
               fallback={
-                <Stack gap={4} className="p-0 flex-1">
+                <VStack gap={4} className="p-0 flex-1">
                   <div className="flex items-center justify-between">
                     <Skeleton className="h-9 w-48" />
                     <div className="flex gap-2">
@@ -234,7 +234,7 @@ export function StaffPage({
                     </div>
                   </div>
                   <Skeleton className="min-h-[300px] w-full flex-1 border border-dashed rounded-lg" />
-                </Stack>
+                </VStack>
               }
             >
               <StaffSchedulerWrapper
@@ -243,9 +243,9 @@ export function StaffPage({
               />
             </Suspense>
           </TabsContent>
-        </Stack>
+        </VStack>
       </Tabs>
-    </Stack>
+    </VStack>
   </PageShell>
   );
 }

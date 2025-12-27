@@ -4,6 +4,15 @@ import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import { Column } from "@/shared/ui/custom/data-table";
 import { Icon } from "@/shared/ui/custom/icon";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/shared/ui/dropdown-menu";
+import { HStack, VStack } from "@/shared/ui/layout/stack";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import {
@@ -13,14 +22,6 @@ import {
   Phone,
   XCircle,
 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/shared/ui/dropdown-menu";
 import { WaitlistEntry } from "../model/types";
 
 interface GetColumnsProps {
@@ -38,12 +39,12 @@ export const getWaitlistColumns = ({
     header: "Khách hàng",
     accessorKey: "customer_name",
     cell: (w) => (
-      <div className="flex flex-col">
+      <VStack gap={0}>
         <span className="font-medium text-foreground">{w.customer_name}</span>
-        <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
+        <HStack className="text-muted-foreground text-xs" gap={1.5}>
           <Icon icon={Phone} size="xs" /> {w.phone_number}
-        </div>
-      </div>
+        </HStack>
+      </VStack>
     ),
   },
   {
@@ -56,14 +57,14 @@ export const getWaitlistColumns = ({
     accessorKey: "preferred_date",
     sortable: true,
     cell: (w) => (
-      <div className="flex flex-col text-sm">
+      <VStack className="text-sm" gap={0}>
         <span>
           {format(new Date(w.preferred_date), "dd/MM/yyyy", { locale: vi })}
         </span>
         <span className="text-muted-foreground text-xs">
           {w.preferred_time_slot}
         </span>
-      </div>
+      </VStack>
     ),
   },
   {

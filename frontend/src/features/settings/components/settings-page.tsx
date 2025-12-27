@@ -7,6 +7,7 @@ import {
 } from "@/shared/components/layout/page-layout";
 import { ActionResponse } from "@/shared/lib/action-response";
 import { Button } from "@/shared/ui/button";
+import { HStack, VStack } from "@/shared/ui/layout/stack";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Loader2, RotateCcw, Save } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -156,9 +157,10 @@ function SettingsForm({
     <PageShell>
       <Tabs
         value={activeTab}
-        className="flex w-full flex-1 flex-col gap-0"
+        asChild
         onValueChange={handleTabChange}
       >
+        <VStack className="flex-1" gap={0}>
         <PageHeader>
           <TabsList size="default">
             <TabsTrigger value="schedule" stretch={false}>
@@ -175,7 +177,7 @@ function SettingsForm({
             </TabsTrigger>
           </TabsList>
 
-          <div className="flex items-center gap-2">
+          <HStack gap={2}>
             {/* Action Buttons based on Tab */}
             {activeTab === "schedule" && (
               <>
@@ -217,11 +219,11 @@ function SettingsForm({
                 it was handled inside or via auto-save.
                 Since we are reverting, we revert to no header buttons for exceptions.
             */}
-          </div>
+          </HStack>
         </PageHeader>
 
         {/* Tab Contents */}
-        <div className="flex flex-1 flex-col overflow-hidden">
+        <VStack asChild className="flex-1 overflow-hidden">
           <TabsContent
             value="schedule"
             className="mt-0 flex flex-1 flex-col border-0 p-0 data-[state=inactive]:hidden"
@@ -258,7 +260,8 @@ function SettingsForm({
               />
             </PageContent>
           </TabsContent>
-        </div>
+        </VStack>
+        </VStack>
       </Tabs>
     </PageShell>
   );

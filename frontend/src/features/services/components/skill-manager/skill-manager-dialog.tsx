@@ -4,14 +4,15 @@ import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
 } from "@/shared/ui/dialog";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
+import { HStack, VStack } from "@/shared/ui/layout/stack";
 import { Loader2, Pencil, Plus, Save, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -114,14 +115,14 @@ export function SkillManagerDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex h-[480px] flex-col gap-0 p-0 sm:max-w-3xl">
+      <DialogContent className="flex h-[30rem] flex-col gap-0 p-0 sm:max-w-3xl">
         <DialogHeader className="shrink-0 space-y-0 border-b px-6 py-4">
           <DialogTitle className="text-lg">Quản lý Kỹ năng</DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-1 overflow-hidden">
           {/* Left Column: List - 45% width */}
-          <div className="bg-muted/10 flex w-[45%] min-w-[260px] flex-col border-r">
+          <VStack className="bg-muted/10 w-[45%] min-w-64 border-r">
             <div className="bg-background/50 border-b p-3 backdrop-blur">
               <div className="relative">
                 <Input
@@ -178,12 +179,12 @@ export function SkillManagerDialog({
             <div className="bg-background/50 text-muted-foreground border-t p-3 text-center text-xs">
               {skills.length} kỹ năng trong hệ thống
             </div>
-          </div>
+          </VStack>
 
           {/* Right Column: Add/Edit Form */}
-          <div className="bg-background flex flex-1 flex-col">
+          <VStack className="bg-background flex-1">
             <div className="flex-1 overflow-y-auto p-6">
-              <div className="mb-6 flex items-center justify-between">
+              <HStack className="mb-6" justify="between">
                 <h3 className="flex items-center gap-2 text-base font-semibold">
                   {editingId ? (
                     <Pencil className="text-primary h-4 w-4" />
@@ -202,7 +203,7 @@ export function SkillManagerDialog({
                     <Plus className="h-4 w-4" /> Tạo mới
                   </Button>
                 )}
-              </div>
+              </HStack>
 
               <div className="space-y-4">
                 <div className="grid gap-4">
@@ -259,7 +260,7 @@ export function SkillManagerDialog({
                 </div>
               </div>
             </div>
-          </div>
+          </VStack>
         </div>
 
         <DialogFooter className="bg-background shrink-0 border-t p-4">

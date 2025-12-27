@@ -95,7 +95,7 @@ export function AuditTable({
       accessorKey: "details",
       cell: (row) => (
         <div
-          className="text-muted-foreground max-w-[300px] truncate text-xs"
+          className="text-muted-foreground max-w-72 truncate text-xs"
           title={JSON.stringify(row.details, null, 2)}
         >
           {row.entity_name && (

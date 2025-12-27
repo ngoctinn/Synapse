@@ -3,7 +3,7 @@ import { Slot } from "@radix-ui/react-slot";
 import { HTMLAttributes, forwardRef } from "react";
 
 export interface GridProps extends HTMLAttributes<HTMLDivElement> {
-  cols?: number;
+  cols?: number | string;
   gap?: number | string;
   asChild?: boolean;
 }
@@ -13,7 +13,14 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(
     const Comp = asChild ? Slot : "div";
     const gridStyle = {
       ...style,
-      ...(cols ? { gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` } : {}),
+      ...(cols
+        ? {
+            gridTemplateColumns:
+              typeof cols === "number"
+                ? `repeat(${cols}, minmax(0, 1fr))`
+                : cols,
+          }
+        : {}),
       ...(gap ? { gap: typeof gap === "number" ? `${gap * 0.25}rem` : gap } : {}),
     } as React.CSSProperties;
 
@@ -30,3 +37,4 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(
 Grid.displayName = "Grid";
 
 export { Grid };
+

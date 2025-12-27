@@ -8,7 +8,7 @@ import {
 } from "@/shared/components/layout/page-layout";
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
 import { Input } from "@/shared/ui/input";
-import { Group } from "@/shared/ui/layout";
+import { HStack } from "@/shared/ui/layout/stack";
 import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
@@ -54,10 +54,10 @@ export function TreatmentsPage({
         title="Liệu trình"
         subtitle="Theo dõi tiến độ điều trị của khách hàng"
       >
-        <Group gap={3}>
+        <HStack gap={3}>
           <FilterBar
             startContent={
-          <div className="w-full md:w-[250px]">
+          <div className="w-full md:w-64">
             <Input
               type="search"
               placeholder="Tìm theo tên khách hoặc mã..."
@@ -69,7 +69,7 @@ export function TreatmentsPage({
           </div>
             }
           />
-        </Group>
+        </HStack>
       </PageHeader>
 
       <PageContent>
