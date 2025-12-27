@@ -5,6 +5,9 @@ class ServiceError(Exception):
 class ServiceNotFoundError(ServiceError):
     pass
 
+class ServiceCategoryNotFoundError(ServiceError):
+    pass
+
 class SkillNotFoundError(ServiceError):
     pass
 

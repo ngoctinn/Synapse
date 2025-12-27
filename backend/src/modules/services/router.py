@@ -9,11 +9,13 @@ import uuid
 from fastapi import APIRouter, Depends, status, HTTPException, Query
 from src.modules.services.schemas import (
     ServiceRead, ServiceCreate, ServiceUpdate, ServicePaginationResponse,
-    SkillRead, SkillCreate, SkillUpdate
+    SkillRead, SkillCreate, SkillUpdate,
+    ServiceCategoryRead, ServiceCategoryCreate, ServiceCategoryUpdate
 )
 from src.modules.services.service import ServiceManagementService
 from src.modules.services.skill_service import SkillService
-from src.modules.services.exceptions import ServiceNotFoundError, SkillNotFoundError, SkillAlreadyExistsError
+from src.modules.services.category_service import CategoryService
+from src.modules.services.exceptions import ServiceNotFoundError, SkillNotFoundError, SkillAlreadyExistsError, ServiceCategoryNotFoundError
 from src.modules.users import get_current_user, User, UserRole
 
 router = APIRouter(prefix="/services", tags=["Services"])
@@ -122,6 +124,54 @@ async def delete_skill(
     try:
         return await service.delete_skill(skill_id)
     except SkillNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+# --- CATEGORIES ---
+@router.get("/categories", response_model=list[ServiceCategoryRead])
+async def list_categories(
+    service: Annotated[CategoryService, Depends(CategoryService)]
+):
+    """Lấy danh sách danh mục dịch vụ."""
+    return await service.get_categories()
+
+@router.post("/categories", response_model=ServiceCategoryRead, status_code=status.HTTP_201_CREATED)
+async def create_category(
+    category_in: ServiceCategoryCreate,
+    service: Annotated[CategoryService, Depends(CategoryService)],
+    current_user: Annotated[User, Depends(get_current_user)]
+):
+    """Tạo danh mục mới (Yêu cầu MANAGER)."""
+    if current_user.role != UserRole.MANAGER:
+        raise HTTPException(status_code=403, detail="Bạn không có quyền truy cập")
+    return await service.create_category(category_in)
+
+@router.put("/categories/{category_id}", response_model=ServiceCategoryRead)
+async def update_category(
+    category_id: uuid.UUID,
+    category_in: ServiceCategoryUpdate,
+    service: Annotated[CategoryService, Depends(CategoryService)],
+    current_user: Annotated[User, Depends(get_current_user)]
+):
+    """Cập nhật danh mục (Yêu cầu MANAGER)."""
+    if current_user.role != UserRole.MANAGER:
+        raise HTTPException(status_code=403, detail="Bạn không có quyền truy cập")
+    try:
+        return await service.update_category(category_id, category_in)
+    except ServiceCategoryNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+@router.delete("/categories/{category_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_category(
+    category_id: uuid.UUID,
+    service: Annotated[CategoryService, Depends(CategoryService)],
+    current_user: Annotated[User, Depends(get_current_user)]
+):
+    """Xóa danh mục (Yêu cầu MANAGER)."""
+    if current_user.role != UserRole.MANAGER:
+        raise HTTPException(status_code=403, detail="Bạn không có quyền truy cập")
+    try:
+        await service.delete_category(category_id)
+    except ServiceCategoryNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
 # --- SERVICES ---

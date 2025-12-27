@@ -1,42 +1,34 @@
 "use client";
 
-import { ResourceGroup } from "@/features/resources";
 import {
-  useBulkAction,
-  useTableParams,
-  useTableSelection,
+    useBulkAction,
+    useTableParams,
+    useTableSelection,
 } from "@/shared/hooks";
 import { formatCurrency } from "@/shared/lib/utils";
-import { TruncatedCell } from "@/shared/lib/table-utils";
-import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
+import { Button } from "@/shared/ui/button";
+import { Icon } from "@/shared/ui/custom";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
 import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
+import { Group, Stack } from "@/shared/ui/layout";
 import { Switch } from "@/shared/ui/switch";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/shared/ui/tooltip";
-import { Button } from "@/shared/ui/button";
-import { Icon } from "@/shared/ui/custom";
-import { Stack, Group } from "@/shared/ui/layout";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { deleteService, toggleServiceStatus } from "../actions";
-import { MOCK_CATEGORIES, MOCK_RESOURCE_GROUPS } from "../model/mocks";
-import { Service, Skill } from "../model/types";
+import { MOCK_RESOURCE_GROUPS } from "../model/mocks";
+import { Service, ServiceCategory, Skill } from "../model/types";
 import { ServiceActions } from "./service-actions";
 import { ServiceSheet } from "./service-sheet";
 
 interface ServiceTableProps {
   services: Service[];
   availableSkills: Skill[];
+  availableCategories: ServiceCategory[];
   // Removed legacy bed/equipment props
   page?: number;
   totalPages?: number;
@@ -50,6 +42,7 @@ interface ServiceTableProps {
 export function ServiceTable({
   services,
   availableSkills,
+  availableCategories,
   page: pageProp,
   totalPages = 1,
   onPageChange: onPageChangeProp,
@@ -116,7 +109,7 @@ export function ServiceTable({
     {
       header: "Danh mục",
       cell: (service) => {
-        const category = MOCK_CATEGORIES.find(
+        const category = availableCategories.find(
           (c) => c.id === service.category_id
         );
         return category ? (
@@ -255,6 +248,7 @@ export function ServiceTable({
           open={!!editingService}
           onOpenChange={(open) => !open && setEditingService(null)}
           availableSkills={availableSkills}
+          availableCategories={availableCategories}
           availableResourceGroups={MOCK_RESOURCE_GROUPS}
         />
       )}
@@ -265,6 +259,7 @@ export function ServiceTable({
          open={isCreateOpen}
          onOpenChange={setIsCreateOpen}
          availableSkills={availableSkills}
+         availableCategories={availableCategories}
          availableResourceGroups={MOCK_RESOURCE_GROUPS}
       />
 

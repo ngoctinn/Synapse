@@ -17,13 +17,14 @@ import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, use, useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
-import { PaginatedResponse, Service, Skill } from "../model/types";
+import { PaginatedResponse, Service, ServiceCategory, Skill } from "../model/types";
 import { ServiceFilter } from "./service-filter";
 import { ServiceTable, ServiceTableSkeleton } from "./service-table";
 
 interface ServicesPageProps {
   page: number;
   skills: Skill[];
+  categories: ServiceCategory[];
   bedTypes: BedType[];
   equipmentList: Resource[];
   servicesPromise: Promise<ActionResponse<PaginatedResponse<Service>>>;
@@ -32,12 +33,14 @@ interface ServicesPageProps {
 function ServiceListWrapper({
   servicesPromise,
   skills,
+  categories,
   bedTypes,
   equipmentList,
   page,
 }: {
   servicesPromise: Promise<ActionResponse<PaginatedResponse<Service>>>;
   skills: Skill[];
+  categories: ServiceCategory[];
   bedTypes: BedType[];
   equipmentList: Resource[];
   page: number;
@@ -63,10 +66,10 @@ function ServiceListWrapper({
     <ServiceTable
       services={data}
       availableSkills={skills}
+      availableCategories={categories}
       page={page}
       totalPages={totalPages}
       variant="flush"
-
       hidePagination={false}
     />
   );
@@ -76,6 +79,7 @@ function ServiceListWrapper({
 export function ServicesPage({
   page,
   skills,
+  categories,
   bedTypes,
   equipmentList,
   servicesPromise,
@@ -150,7 +154,7 @@ export function ServicesPage({
                 />
               }
               endContent={
-                isServiceTab && <ServiceFilter availableSkills={skills} />
+                isServiceTab && <ServiceFilter availableSkills={skills} availableCategories={categories} />
               }
             />
           </Group>
@@ -167,6 +171,7 @@ export function ServicesPage({
                   <ServiceListWrapper
                     servicesPromise={servicesPromise}
                     skills={skills}
+                    categories={categories}
                     bedTypes={bedTypes}
                     equipmentList={equipmentList}
                     page={page}

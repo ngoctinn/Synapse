@@ -1,20 +1,20 @@
   import { ResourceGroup } from "@/features/resources";
-  import { useSheetForm } from "@/shared/hooks";
-  import {
-    Button,
-    Form,
-    SheetClose,
-  } from "@/shared/ui";
-  import { ActionSheet, Icon } from "@/shared/ui/custom";
-  import { Group, Stack } from "@/shared/ui/layout";
-  import { Save, Send } from "lucide-react";
-  import { useCallback } from "react";
-  import { createService, updateService } from "../actions";
-  import { SERVICE_DEFAULT_VALUES } from "../constants";
-  import { MOCK_CATEGORIES, MOCK_RESOURCE_GROUPS } from "../model/mocks";
-  import { ServiceFormValues, serviceSchema } from "../model/schemas";
-  import { Service, Skill } from "../model/types";
-  import { ServiceForm } from "./service-form";
+import { useSheetForm } from "@/shared/hooks";
+import {
+  Button,
+  Form,
+  SheetClose,
+} from "@/shared/ui";
+import { ActionSheet, Icon } from "@/shared/ui/custom";
+import { Group, Stack } from "@/shared/ui/layout";
+import { Save, Send } from "lucide-react";
+import { useCallback } from "react";
+import { createService, updateService } from "../actions";
+import { SERVICE_DEFAULT_VALUES } from "../constants";
+import { MOCK_RESOURCE_GROUPS } from "../model/mocks";
+import { ServiceFormValues, serviceSchema } from "../model/schemas";
+import { Service, ServiceCategory, Skill } from "../model/types";
+import { ServiceForm } from "./service-form";
 
   interface ServiceSheetProps {
     mode: "create" | "update";
@@ -22,6 +22,7 @@
     open: boolean;
     onOpenChange: (open: boolean) => void;
     availableSkills: Skill[];
+    availableCategories: ServiceCategory[];
     availableResourceGroups?: ResourceGroup[];
   }
 
@@ -31,6 +32,7 @@
     open,
     onOpenChange,
     availableSkills,
+    availableCategories,
     availableResourceGroups = MOCK_RESOURCE_GROUPS,
   }: ServiceSheetProps) {
     const isUpdateMode = mode === "update";
@@ -151,7 +153,7 @@
               <ServiceForm
                 mode={mode}
                 availableSkills={availableSkills}
-                availableCategories={MOCK_CATEGORIES}
+                availableCategories={availableCategories}
                 availableResourceGroups={availableResourceGroups}
                 className="flex-1"
               />

@@ -1,14 +1,16 @@
 "use server";
 
 import { ActionResponse, error, success } from "@/shared/lib/action-response";
+import { fetchWithAuth } from "@/shared/lib/api";
 import { format } from "date-fns";
 import { getServices } from "../services/actions";
+import { Service } from "../services/model/types";
 import { getStaffList } from "../staff/actions";
 import { ServiceItem, StaffItem, TimeSlot } from "./types";
-import { fetchWithAuth } from "@/shared/lib/api";
 
-// ... (getServicesForBooking and getAvailableStaff remain unchanged)
-
+/**
+ * Lấy danh sách dịch vụ cho Booking Wizard (nhóm theo danh mục)
+ */
 export async function getServicesForBooking(): Promise<
   ActionResponse<Record<string, ServiceItem[]>>
 > {
@@ -24,7 +26,7 @@ export async function getServicesForBooking(): Promise<
     const services = response.data.data;
     const groupedServices: Record<string, ServiceItem[]> = {};
 
-    services.forEach((service) => {
+    services.forEach((service: Service) => {
       const categoryName = service.category?.name || "Khác";
 
       if (!groupedServices[categoryName]) {
@@ -35,7 +37,7 @@ export async function getServicesForBooking(): Promise<
         id: service.id,
         name: service.name,
         description: service.description,
-        price: service.price,
+        price: Number(service.price), // Convert Decimal to number
         duration: service.duration,
         category_id: service.category?.id || service.category_id!,
         image_url: service.image_url,

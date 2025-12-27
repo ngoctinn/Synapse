@@ -255,5 +255,6 @@ class ServiceManagementService:
 
         # Soft delete
         service.is_active = False
+        service.deleted_at = datetime.now(timezone.utc)
         self.session.add(service)
         await self.session.commit()

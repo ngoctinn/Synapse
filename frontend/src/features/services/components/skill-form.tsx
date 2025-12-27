@@ -1,17 +1,17 @@
 "use client";
 
 import {
-  Button,
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  Input,
-  showToast,
-  Textarea,
+    Button,
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+    Input,
+    showToast,
+    Textarea,
 } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Code, Tag } from "lucide-react";
@@ -43,8 +43,15 @@ export function SkillForm({ skill, onSuccess }: SkillFormProps) {
     startTransition(async () => {
       try {
         const result = skill
-          ? await updateSkill(skill.id, values)
-          : await createSkill(values);
+          ? await updateSkill(skill.id, {
+              ...values,
+              description: values.description || undefined,
+            })
+          : await createSkill(
+              values.name,
+              values.code,
+              values.description || undefined
+            );
 
         if (result.status === "success") {
           showToast.success(

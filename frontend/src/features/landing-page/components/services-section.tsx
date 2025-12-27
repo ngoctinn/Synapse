@@ -1,6 +1,6 @@
 "use client";
 
-import { MOCK_SERVICES } from "@/features/services/model/mocks";
+import { MOCK_CATEGORIES, MOCK_SERVICES } from "@/features/services/model/mocks";
 import { Badge } from "@/shared/ui/badge";
 import { SearchX } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -12,11 +12,7 @@ export function ServicesSection() {
   const [category, setCategory] = useState("All");
 
   const categories = useMemo(() => {
-    return Array.from(
-      new Set(
-        MOCK_SERVICES.map((s) => s.category).filter((c): c is string => !!c)
-      )
-    );
+    return MOCK_CATEGORIES.map((c) => c.name);
   }, []);
 
   const filteredServices = useMemo(() => {
@@ -26,8 +22,11 @@ export function ServicesSection() {
         (service.description || "")
           .toLowerCase()
           .includes(searchQuery.toLowerCase());
+
+      // Map category_id to name for comparison
+      const serviceCategoryName = MOCK_CATEGORIES.find(c => c.id === service.category_id)?.name;
       const matchesCategory =
-        category === "All" || service.category === category;
+        category === "All" || serviceCategoryName === category;
 
       return matchesSearch && matchesCategory;
     });

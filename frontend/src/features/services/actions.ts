@@ -1,56 +1,70 @@
 "use server";
 
-import "server-only";
-
 import { ActionResponse, error, success } from "@/shared/lib/action-response";
+import { fetchWithAuth } from "@/shared/lib/api";
 import { revalidatePath } from "next/cache";
-import { MOCK_SERVICES, MOCK_SKILLS } from "./model/mocks";
-import { serviceSchema, skillSchema } from "./model/schemas";
+import { serviceSchema } from "./model/schemas";
 import {
-  PaginatedResponse,
   Service,
+  ServiceCategory,
   ServiceCreateInput,
-  ServiceUpdateInput,
+  ServicePagination,
   Skill,
-  SkillCreateInput,
-  SkillUpdateInput,
 } from "./model/types";
 
-// Initialize with a deeper clone to avoid reference issues if we mutate in memory
-let services: Service[] = JSON.parse(JSON.stringify(MOCK_SERVICES));
-let skills: Skill[] = JSON.parse(JSON.stringify(MOCK_SKILLS));
+// ============================================================================
+// SERVICES
+// ============================================================================
 
+/**
+ * Lấy danh sách dịch vụ (phân trang, tìm kiếm)
+ */
 export async function getServices(
   page = 1,
   limit = 10,
   search?: string,
   activeOnly = false
-): Promise<ActionResponse<PaginatedResponse<Service>>> {
-  let filtered = services;
-  if (activeOnly) filtered = filtered.filter((s) => s.is_active);
-  if (search) {
-    const lower = search.toLowerCase();
-    filtered = filtered.filter(
-      (s) =>
-        s.name.toLowerCase().includes(lower) ||
-        (s.description || "").toLowerCase().includes(lower)
-    );
+): Promise<ActionResponse<ServicePagination>> {
+  try {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      active: activeOnly.toString(),
+    });
+    if (search) params.append("search", search);
+
+    const response = await fetchWithAuth(`/services?${params.toString()}`);
+    if (!response.ok) return error("Không thể tải danh sách dịch vụ");
+
+    const result = await response.json();
+    return success(result);
+  } catch (err) {
+    console.error("getServices error:", err);
+    return error("Lỗi kết nối máy chủ");
   }
-
-  const start = (page - 1) * limit;
-  return success({
-    data: filtered.slice(start, start + limit),
-    total: filtered.length,
-    page,
-    limit,
-  });
 }
 
+/**
+ * Lấy chi tiết dịch vụ
+ */
 export async function getService(id: string): Promise<ActionResponse<Service>> {
-  const service = services.find((s) => s.id === id);
-  return service ? success(service) : error("Không tìm thấy dịch vụ");
+  try {
+    const response = await fetchWithAuth(`/services/${id}`);
+    if (!response.ok) {
+      if (response.status === 404) return error("Dịch vụ không tồn tại");
+      return error("Không thể tải thông tin dịch vụ");
+    }
+
+    const result = await response.json();
+    return success(result);
+  } catch (err) {
+    return error("Lỗi kết nối máy chủ");
+  }
 }
 
+/**
+ * Tạo dịch vụ mới
+ */
 export async function createService(
   data: ServiceCreateInput
 ): Promise<ActionResponse<Service>> {
@@ -61,194 +75,254 @@ export async function createService(
       validation.error.flatten().fieldErrors
     );
 
-  const newService: Service = {
-    id: `svc_new_${Date.now()}`,
-    ...data,
-    buffer_time: data.buffer_time || 15,
-    price: data.price || 0,
-    color: data.color || "#3b82f6",
-    is_active: data.is_active ?? false, // Default to Draft (false)
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    skills: data.skill_ids
-      ? skills.filter((s) => data.skill_ids?.includes(s.id))
-      : [],
-    resource_requirements: data.resource_requirements || [],
-    image_url:
-      data.image_url ||
-      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000",
-    category_id: data.category_id,
-    is_popular: false,
-  };
-
-  services = [newService, ...services];
-  revalidatePath("/admin/services");
-  return success(newService, "Tạo dịch vụ thành công");
-}
-
-export async function cloneService(id: string): Promise<ActionResponse> {
   try {
-    const serviceRes = await getService(id);
-    if (serviceRes.status === "error" || !serviceRes.data)
-      return error(serviceRes.message || "Không thể tải dịch vụ");
-
-    const service = serviceRes.data;
-    const createRes = await createService({
-      name: `${service.name} (Sao chép)`,
-      duration: service.duration,
-      buffer_time: service.buffer_time,
-      price: service.price,
-      is_active: false, // Clone always draft
-      skill_ids: service.skills.map((s) => s.id),
-      new_skills: [],
-      category_id: service.category_id || undefined,
-      description: service.description || undefined,
-      resource_requirements: service.resource_requirements,
-      color: service.color,
-      image_url: service.image_url || undefined,
+    const response = await fetchWithAuth("/services", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
     });
 
-    if (createRes.status === "error")
-      return error(createRes.message || "Lỗi khi tạo dịch vụ nhân bản");
-    return success(undefined, "Nhân bản dịch vụ thành công");
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      return error(errData.detail || "Không thể tạo dịch vụ");
+    }
+
+    const result = await response.json();
+    revalidatePath("/admin/services");
+    return success(result, "Tạo dịch vụ thành công");
   } catch (err) {
-    console.error("Lỗi nhân bản dịch vụ:", err);
-    return error("Không thể nhân bản dịch vụ");
+    return error("Lỗi kết nối máy chủ");
   }
 }
 
+/**
+ * Cập nhật dịch vụ
+ */
 export async function updateService(
   id: string,
-  data: ServiceUpdateInput
+  data: Partial<ServiceCreateInput>
 ): Promise<ActionResponse<Service>> {
-  const validation = serviceSchema.partial().safeParse(data);
-  if (!validation.success)
-    return error(
-      "Dữ liệu không hợp lệ",
-      validation.error.flatten().fieldErrors
-    );
+  try {
+    const response = await fetchWithAuth(`/services/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
 
-  const index = services.findIndex((s) => s.id === id);
-  if (index === -1) return error("Không tìm thấy dịch vụ");
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      return error(errData.detail || "Không thể cập nhật dịch vụ");
+    }
 
-  const currentService = services[index];
-
-  const updatedService: Service = {
-    ...currentService,
-    ...data,
-    updated_at: new Date().toISOString(),
-    skills: data.skill_ids
-      ? skills.filter((s) => data.skill_ids?.includes(s.id))
-      : currentService.skills,
-    resource_requirements:
-      data.resource_requirements ?? currentService.resource_requirements,
-  };
-
-  services[index] = updatedService;
-  revalidatePath("/admin/services");
-  services[index] = updatedService;
-  revalidatePath("/admin/services");
-  return success(updatedService, "Cập nhật dịch vụ thành công");
+    const result = await response.json();
+    revalidatePath("/admin/services");
+    return success(result, "Cập nhật dịch vụ thành công");
+  } catch (err) {
+    return error("Lỗi kết nối máy chủ");
+  }
 }
 
+/**
+ * Xóa dịch vụ (Soft delete)
+ */
+export async function deleteService(id: string): Promise<ActionResponse<void>> {
+  try {
+    const response = await fetchWithAuth(`/services/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) return error("Không thể xóa dịch vụ");
+
+    revalidatePath("/admin/services");
+    return success(undefined, "Đã xóa dịch vụ");
+  } catch (err) {
+    return error("Lỗi kết nối máy chủ");
+  }
+}
+
+
+/**
+ * Bật/Tắt trạng thái hoạt động
+ */
 export async function toggleServiceStatus(
   id: string,
   isActive: boolean
 ): Promise<ActionResponse<Service>> {
-  if (isActive) {
-    const serviceRes = await getService(id);
-    if (serviceRes.status === "error" || !serviceRes.data) {
-      return error("Không tìm thấy dịch vụ");
-    }
-    const service = serviceRes.data;
-
-    if (!service.category_id) {
-       return error("Vui lòng chọn danh mục trước khi kích hoạt dịch vụ");
-    }
-    if (!service.resource_requirements || service.resource_requirements.length === 0) {
-       // Optional: Could facilitate a warning, but for now treating as warning-only or allow empty
-       // return error("Vui lòng thiết lập tài nguyên cho dịch vụ");
-    }
-  }
-
   return updateService(id, { is_active: isActive });
 }
 
-export async function deleteService(id: string): Promise<ActionResponse> {
-  const serviceRes = await getService(id);
-  if (serviceRes.status === "error" || !serviceRes.data) {
-    return error("Không tìm thấy dịch vụ");
+// ============================================================================
+// CATEGORIES
+// ============================================================================
+
+/**
+ * Lấy danh sách danh mục
+ */
+export async function getServiceCategories(): Promise<
+  ActionResponse<ServiceCategory[]>
+> {
+  try {
+    const response = await fetchWithAuth("/services/categories");
+    if (!response.ok) return error("Không thể tải danh sách danh mục");
+
+    const result = await response.json();
+    return success(result);
+  } catch (err) {
+    return error("Lỗi kết nối máy chủ");
   }
-
-  // Mock check for booking history
-  // In real app: const count = await countBookingsByService(id);
-  // For now, assume services with "Classic" in name have bookings
-  const hasBookings = serviceRes.data.name.includes("Classic");
-
-  if (hasBookings) {
-     // Soft delete (Archive)
-     await updateService(id, { is_active: false });
-     return success(undefined, "Dịch vụ đã được lưu trữ (do có lịch sử đặt chỗ)");
-  }
-
-  // Hard delete
-  services = services.filter((s) => s.id !== id);
-  revalidatePath("/admin/services");
-  return success(undefined, "Đã xóa dịch vụ thành công");
 }
 
-export async function getSkills(
-  page = 1,
-  limit = 10
-): Promise<ActionResponse<PaginatedResponse<Skill>>> {
-  const start = (page - 1) * limit;
-  return success({
-    data: skills.slice(start, start + limit),
-    total: skills.length,
-    page,
-    limit,
-  });
+/**
+ * Tạo danh mục mới
+ */
+export async function createServiceCategory(
+  name: string,
+  sortOrder = 0
+): Promise<ActionResponse<ServiceCategory>> {
+  try {
+    const response = await fetchWithAuth("/services/categories", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, sort_order: sortOrder }),
+    });
+
+    if (!response.ok) return error("Không thể tạo danh mục");
+
+    const result = await response.json();
+    revalidatePath("/admin/services");
+    return success(result, "Đã tạo danh mục");
+  } catch (err) {
+    return error("Lỗi kết nối máy chủ");
+  }
 }
 
+/**
+ * Cập nhật danh mục
+ */
+export async function updateServiceCategory(
+  id: string,
+  name: string,
+  sortOrder: number
+): Promise<ActionResponse<ServiceCategory>> {
+  try {
+    const response = await fetchWithAuth(`/services/categories/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, sort_order: sortOrder }),
+    });
+
+    if (!response.ok) return error("Không thể cập nhật danh mục");
+
+    const result = await response.json();
+    revalidatePath("/admin/services");
+    return success(result, "Đã cập nhật danh mục");
+  } catch (err) {
+    return error("Lỗi kết nối máy chủ");
+  }
+}
+
+/**
+ * Xóa danh mục
+ */
+export async function deleteServiceCategory(
+  id: string
+): Promise<ActionResponse<void>> {
+  try {
+    const response = await fetchWithAuth(`/services/categories/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) return error("Không thể xóa danh mục");
+
+    revalidatePath("/admin/services");
+    return success(undefined, "Đã xóa danh mục");
+  } catch (err) {
+    return error("Lỗi kết nối máy chủ");
+  }
+}
+
+// ============================================================================
+// SKILLS
+// ============================================================================
+
+/**
+ * Lấy danh sách kỹ năng
+ */
+export async function getSkills(): Promise<ActionResponse<Skill[]>> {
+  try {
+    const response = await fetchWithAuth("/services/skills");
+    if (!response.ok) return error("Không thể tải danh sách kỹ năng");
+
+    const result = await response.json();
+    return success(result);
+  } catch (err) {
+    return error("Lỗi kết nối máy chủ");
+  }
+}
+
+/**
+ * Tạo kỹ năng mới
+ */
 export async function createSkill(
-  data: SkillCreateInput
+  name: string,
+  code: string,
+  description?: string
 ): Promise<ActionResponse<Skill>> {
-  const validation = skillSchema.safeParse(data);
-  if (!validation.success)
-    return error(
-      "Dữ liệu không hợp lệ",
-      validation.error.flatten().fieldErrors
-    );
+  try {
+    const response = await fetchWithAuth("/services/skills", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, code, description }),
+    });
 
-  const newSkill: Skill = { id: `s${Date.now()}`, ...data };
-  skills = [...skills, newSkill];
-  revalidatePath("/admin/services");
-  return success(newSkill, "Đã tạo kỹ năng thành công");
+    if (!response.ok) return error("Không thể tạo kỹ năng");
+
+    const result = await response.json();
+    revalidatePath("/admin/services");
+    return success(result, "Đã tạo kỹ năng");
+  } catch (err) {
+    return error("Lỗi kết nối máy chủ");
+  }
 }
 
+/**
+ * Cập nhật kỹ năng
+ */
 export async function updateSkill(
   id: string,
-  data: SkillUpdateInput
+  data: { name?: string; code?: string; description?: string }
 ): Promise<ActionResponse<Skill>> {
-  const validation = skillSchema.partial().safeParse(data);
-  if (!validation.success)
-    return error(
-      "Dữ liệu không hợp lệ",
-      validation.error.flatten().fieldErrors
-    );
+  try {
+    const response = await fetchWithAuth(`/services/skills/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
 
-  const index = skills.findIndex((s) => s.id === id);
-  if (index === -1) return error("Không tìm thấy kỹ năng");
+    if (!response.ok) return error("Không thể cập nhật kỹ năng");
 
-  const updatedSkill = { ...skills[index], ...data };
-  skills[index] = updatedSkill;
-
-  revalidatePath("/admin/services");
-  return success(updatedSkill, "Đã cập nhật kỹ năng thành công");
+    const result = await response.json();
+    revalidatePath("/admin/services");
+    return success(result, "Đã cập nhật kỹ năng");
+  } catch (err) {
+    return error("Lỗi kết nối máy chủ");
+  }
 }
 
-export async function deleteSkill(id: string): Promise<ActionResponse> {
-  skills = skills.filter((s) => s.id !== id);
-  revalidatePath("/admin/services");
-  return success(undefined, "Đã xóa kỹ năng thành công");
+/**
+ * Xóa kỹ năng
+ */
+export async function deleteSkill(id: string): Promise<ActionResponse<void>> {
+  try {
+    const response = await fetchWithAuth(`/services/skills/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) return error("Không thể xóa kỹ năng");
+
+    revalidatePath("/admin/services");
+    return success(undefined, "Đã xóa kỹ năng");
+  } catch (err) {
+    return error("Lỗi kết nối máy chủ");
+  }
 }

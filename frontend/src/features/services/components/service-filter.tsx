@@ -7,23 +7,27 @@ import { TagInput } from "@/shared/ui/custom/tag-input";
 
 import { NumberInput } from "@/shared/ui/custom/number-input";
 import { Label } from "@/shared/ui/label";
-import { Stack, Group, Grid } from "@/shared/ui/layout";
+import { Grid, Group, Stack } from "@/shared/ui/layout";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select";
 import { Slider } from "@/shared/ui/slider";
 import { useEffect, useState } from "react";
-import { MOCK_CATEGORIES } from "../model/mocks";
+import { ServiceCategory } from "../model/types";
 
 interface ServiceFilterProps {
   availableSkills: Skill[];
+  availableCategories: ServiceCategory[];
 }
 
-export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
+export function ServiceFilter({
+  availableSkills,
+  availableCategories,
+}: ServiceFilterProps) {
   const { searchParams, activeCount, updateParam, updateParams, clearFilters } =
     useFilterParams({
       filterKeys: [
@@ -162,7 +166,7 @@ export function ServiceFilter({ availableSkills }: ServiceFilterProps) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tất cả danh mục</SelectItem>
-              {MOCK_CATEGORIES.map((cat) => (
+              {availableCategories.map((cat) => (
                 <SelectItem key={cat.id} value={cat.id}>
                   {cat.name}
                 </SelectItem>

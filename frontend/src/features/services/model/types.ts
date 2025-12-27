@@ -98,3 +98,4 @@ export interface SkillUpdateInput {
   code?: string;
   description?: string | null;
 }
+export type ServicePagination = PaginatedResponse<Service>;

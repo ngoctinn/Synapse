@@ -7,6 +7,7 @@ File này đóng vai trò là Gatekeeper theo Backend Rules.
 from .models import Skill, Service, ServiceSkill, ServiceCategory
 from .service import ServiceManagementService
 from .skill_service import SkillService
+from .category_service import CategoryService
 from .router import router
 from .schemas import (
     SkillCreate,
@@ -30,6 +31,7 @@ __all__ = [
     # Services
     "ServiceManagementService",
     "SkillService",
+    "CategoryService",
     # Router
     "router",
     # Schemas

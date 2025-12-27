@@ -1,17 +1,9 @@
 "use client";
 
-import { useDeleteAction } from "@/shared/hooks";
-import {
-  DeleteConfirmDialog,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  TableRowActions,
-} from "@/shared/ui";
-import { Copy } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { TableRowActions } from "@/shared/ui";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { cloneService, deleteService } from "../actions";
+import { deleteService } from "../actions";
 import { Service } from "../model/types";
 
 interface ServiceActionsProps {
@@ -20,58 +12,23 @@ interface ServiceActionsProps {
 }
 
 export function ServiceActions({ service, onEdit }: ServiceActionsProps) {
-  const router = useRouter();
-  const [clonePending, startCloneTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();
 
-  // Sử dụng useDeleteAction hook
-  const {
-    handleDelete,
-    dialogProps,
-    openDeleteDialog,
-    isPending: deletePending,
-  } = useDeleteAction({
-    deleteAction: deleteService,
-    entityName: "dịch vụ",
-    refreshOnSuccess: true,
-  });
-
-  const handleClone = async () => {
-    startCloneTransition(async () => {
-      const result = await cloneService(service.id);
+  const handleDelete = () => {
+    startTransition(async () => {
+      const result = await deleteService(service.id);
       if (result.status === "success") {
-        toast.success(result.message);
-        router.refresh();
+        toast.success("Đã xóa dịch vụ");
       } else {
-        toast.error(result.message);
+        toast.error("Thất bại", { description: result.message });
       }
     });
   };
 
-  const isPending = deletePending || clonePending;
-
   return (
-    <>
-      <TableRowActions
-        onEdit={onEdit}
-        onDelete={openDeleteDialog}
-        disabled={isPending}
-        extraActions={
-          <>
-            <DropdownMenuLabel>Thao tác khác</DropdownMenuLabel>
-            <DropdownMenuItem onClick={handleClone} disabled={isPending}>
-              <Copy className="size-4" />
-              <span>Nhân bản</span>
-            </DropdownMenuItem>
-          </>
-        }
-      />
-
-      <DeleteConfirmDialog
-        {...dialogProps}
-        onConfirm={() => handleDelete(service.id)}
-        entityName="dịch vụ"
-        entityLabel={service.name}
-      />
-    </>
+    <TableRowActions
+      onEdit={onEdit}
+      onDelete={handleDelete}
+    />
   );
 }
