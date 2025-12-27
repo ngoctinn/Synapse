@@ -4,7 +4,7 @@ Scheduling Module - Solution Evaluator
 Đánh giá chất lượng lịch hiện tại (Manual) và so sánh với lịch tối ưu.
 """
 
-from datetime import datetime, date, time, timezone
+from datetime import datetime, date, time, timezone, timedelta
 from sqlalchemy import text
 from sqlmodel.ext.asyncio.session import AsyncSession
 

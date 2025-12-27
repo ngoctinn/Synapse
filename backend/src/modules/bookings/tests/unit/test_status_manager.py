@@ -4,7 +4,6 @@ Unit Tests for BookingStatusManager
 
 import pytest
 import uuid
-from datetime import datetime, timezone
 from unittest.mock import AsyncMock, MagicMock
 from fastapi import HTTPException
 from src.modules.bookings.status_manager import BookingStatusManager

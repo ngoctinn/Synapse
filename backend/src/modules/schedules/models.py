@@ -9,8 +9,8 @@ Schedules Module - Database Models
 import uuid
 from datetime import datetime, time, date, timezone
 from enum import Enum
-from sqlalchemy import DateTime, Time, Date, Enum as SAEnum
-from sqlmodel import SQLModel, Field, Relationship
+from sqlalchemy import Time, Date, Enum as SAEnum
+from sqlmodel import SQLModel, Field, Relationship, DateTime
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

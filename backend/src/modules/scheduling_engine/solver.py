@@ -194,7 +194,6 @@ class SpaSolver:
 
                     # Tạo interval variable (optional)
                     start_minutes = self._time_to_minutes(item.start_time)
-                    duration = item.duration_minutes
 
                     # Đảm bảo interval có tính transition time
                     # Trong model CP-SAT, chúng ta tạo interval từ (start, duration + transition)

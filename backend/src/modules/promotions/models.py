@@ -8,7 +8,7 @@ import uuid
 from datetime import date, datetime, timezone
 from enum import Enum
 from decimal import Decimal
-from sqlmodel import SQLModel, Field, Column, DECIMAL, DateTime
+from sqlmodel import SQLModel, Field, DateTime
 
 
 class DiscountType(str, Enum):
@@ -29,9 +29,9 @@ class Promotion(SQLModel, table=True):
     description: str | None = Field(default=None)
 
     discount_type: DiscountType = Field(sa_column_kwargs={"nullable": False})
-    discount_value: Decimal = Field(default=0, sa_column=Column(DECIMAL(12, 2), nullable=False))
+    discount_value: Decimal = Field(default=0, max_digits=12, decimal_places=2)
 
-    min_order_value: Decimal = Field(default=0, sa_column=Column(DECIMAL(12, 2), default=0))
+    min_order_value: Decimal = Field(default=0, max_digits=12, decimal_places=2)
     max_uses: int | None = Field(default=None, description="NULL = Unlimited")
     current_uses: int = Field(default=0)
 

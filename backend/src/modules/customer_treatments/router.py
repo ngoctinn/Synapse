@@ -7,7 +7,7 @@ from .schemas import (
     CustomerTreatmentUpdate,
 )
 from .service import CustomerTreatmentService
-from .exceptions import TreatmentNotFound, TreatmentException
+from .exceptions import TreatmentNotFound
 
 from src.common.auth_core import get_token_payload
 

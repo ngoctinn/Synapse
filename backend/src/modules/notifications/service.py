@@ -78,6 +78,6 @@ class NotificationService:
         logger.info(f"======== SENDING EMAIL TO {req.to_email} ========")
         logger.info(f"Subject: {subject}")
         logger.info(f"Body: {body}")
-        logger.info(f"=================================================")
+        logger.info("=================================================")
 
         return EmailSendResponse(success=True, message="Email sent (Mocked - check logs)")

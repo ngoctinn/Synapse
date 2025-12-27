@@ -5,7 +5,6 @@ Integration Tests for Services Module
 import pytest
 import uuid
 from datetime import datetime
-from decimal import Decimal
 from httpx import AsyncClient
 from unittest.mock import MagicMock
 from src.modules.services.models import Skill, Service

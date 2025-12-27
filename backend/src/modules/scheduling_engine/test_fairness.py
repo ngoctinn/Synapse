@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime, date, time, timedelta
 from src.modules.scheduling_engine.models import (
-    SchedulingProblem, BookingItemData, StaffData, StaffScheduleData, SolveStatus
+    SchedulingProblem, BookingItemData, StaffData, StaffScheduleData
 )
 from src.modules.scheduling_engine.solver import SpaSolver
 from src.modules.scheduling_engine.evaluator import ScheduleEvaluator
@@ -107,14 +107,14 @@ def run_experiment():
     j1, d1, w1 = get_stats(solution_no_fair)
     j2, d2, w2 = get_stats(solution_with_fair)
 
-    print(f"\n[KỊCH BẢN 1: KHÔNG TỐI ƯU CÔNG BẰNG]")
-    print(f"- Giải thích: Workload là tổng số phút phục vụ của mỗi KTV.")
+    print("\n[KỊCH BẢN 1: KHÔNG TỐI ƯU CÔNG BẰNG]")
+    print("- Giải thích: Workload là tổng số phút phục vụ của mỗi KTV.")
     print(f"- Danh sách Workload (phút): {w1}")
     print(f"- Độ lệch Max-Min: {d1} phút")
     print(f"- Jain's Fairness Index: {j1}")
     print(f"- Thời gian giải: {round(time_no_fair, 3)} giây")
 
-    print(f"\n[KỊCH BẢN 2: CÓ TỐI ƯU CÔNG BẰNG (MIN-MAX)]")
+    print("\n[KỊCH BẢN 2: CÓ TỐI ƯU CÔNG BẰNG (MIN-MAX)]")
     print(f"- Danh sách Workload (phút): {w2}")
     print(f"- Độ lệch Max-Min: {d2} phút")
     print(f"- Jain's Fairness Index: {j2}")

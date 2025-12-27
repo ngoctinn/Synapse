@@ -7,7 +7,6 @@ import uuid
 from unittest.mock import AsyncMock, MagicMock
 from sqlalchemy.exc import IntegrityError
 from src.modules.services.skill_service import SkillService
-from src.modules.services.models import Skill
 from src.modules.services.exceptions import SkillNotFoundError, SkillAlreadyExistsError
 from src.modules.services.schemas import SkillCreate
 

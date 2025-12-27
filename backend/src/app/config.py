@@ -5,6 +5,7 @@ from pydantic import AnyHttpUrl
 class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     PROJECT_NAME: str = "Synapse CRM"
+    DEBUG: bool = True  # Bật MCP OpenAPI trong môi trường dev
 
     # CORS
     BACKEND_CORS_ORIGINS: list[AnyHttpUrl] = []

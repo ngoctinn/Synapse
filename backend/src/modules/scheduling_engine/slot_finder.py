@@ -11,7 +11,7 @@ CHIẾN LƯỢC: Incremental Optimization
 Đây là Online Approximation của bài toán tối ưu đa biến.
 """
 import uuid
-from datetime import datetime, date, time, timedelta, timezone
+from datetime import datetime, time, timedelta, timezone
 from typing import TYPE_CHECKING
 
 from .models import SlotOption, StaffSuggestionInfo, ResourceSuggestionInfo

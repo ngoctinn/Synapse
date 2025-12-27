@@ -4,11 +4,10 @@ Integration Tests for Bookings Router
 
 import pytest
 import uuid
-from datetime import date, datetime, timezone, timedelta
+from datetime import datetime, timezone, timedelta
 from decimal import Decimal
 from httpx import AsyncClient
-from src.modules.bookings.models import BookingItem, BookingStatus
-from src.modules.bookings.schemas import BookingRead, BookingItemRead
+from src.modules.bookings.models import BookingStatus
 from src.modules.services.models import Service
 from src.modules.users.models import User
 from src.modules.users.constants import UserRole

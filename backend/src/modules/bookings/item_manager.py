@@ -1,8 +1,6 @@
 """
 Booking Item Manager - Business Logic for Items
 """
-import uuid
-import json
 from datetime import datetime, timezone
 from decimal import Decimal
 from fastapi import HTTPException, status

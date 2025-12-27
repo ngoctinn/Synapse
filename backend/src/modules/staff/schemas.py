@@ -7,6 +7,7 @@ Request/Response giữa Client và Server.
 
 import uuid
 from datetime import date, datetime
+from decimal import Decimal
 from pydantic import BaseModel, EmailStr, Field, ConfigDict, field_validator
 from src.modules.users.constants import UserRole
 
@@ -27,7 +28,6 @@ class UserRead(BaseModel):
     email: str
     full_name: str | None = None
     avatar_url: str | None = None
-    phone_number: str | None = None
     role: str
     is_active: bool
 
@@ -41,7 +41,7 @@ class StaffBase(BaseModel):
     bio: str | None = None
     title: str
     color_code: str = "#3B82F6"
-    commission_rate: float = Field(default=0.0, ge=0, le=100)
+    commission_rate: Decimal = Field(default=Decimal("0"), ge=0, le=100)
 
     @field_validator("color_code")
     @classmethod
@@ -99,7 +99,7 @@ class StaffUpdate(BaseModel):
     bio: str | None = None
     title: str | None = None
     color_code: str | None = None
-    commission_rate: float | None = Field(default=None, ge=0, le=100)
+    commission_rate: Decimal | None = Field(default=None, ge=0, le=100)
 
     @field_validator("color_code")
     @classmethod

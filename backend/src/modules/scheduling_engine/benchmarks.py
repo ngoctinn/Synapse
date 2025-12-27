@@ -238,7 +238,7 @@ def run_realistic_benchmark():
     print(f"{delta_pref:>+14.1f}%")
 
     # Workload distribution
-    print(f"\n[Workload Distribution]")
+    print("\n[Workload Distribution]")
     print(f"  FCFS:     {fcfs.workload_distribution}")
     print(f"  OR-Tools: {ortools.workload_distribution}")
 

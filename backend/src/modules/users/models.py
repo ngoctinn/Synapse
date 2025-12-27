@@ -4,7 +4,7 @@ Users Module - Database Models
 Định nghĩa cấu trúc bảng người dùng trong hệ thống.
 """
 
-from datetime import date, datetime, timezone
+from datetime import datetime, timezone
 import uuid
 from sqlmodel import SQLModel, Field, Relationship, DateTime
 from typing import TYPE_CHECKING, Optional
@@ -22,9 +22,7 @@ class User(SQLModel, table=True):
     email: str = Field(index=True, unique=True)
     full_name: str | None = None
     avatar_url: str | None = None
-    phone_number: str | None = None
-    address: str | None = None
-    date_of_birth: date | None = None
+    # Các cột phone_number, address, date_of_birth đã được chuyển sang bảng customers/staff
     role: UserRole = Field(
         default=UserRole.CUSTOMER,
         sa_type=SAEnum(UserRole, name="user_role", values_callable=lambda obj: [e.value for e in obj])

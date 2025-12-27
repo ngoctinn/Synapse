@@ -2,7 +2,7 @@
 Settings Module - API Endpoints
 """
 import uuid
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends, status
 from src.common.auth_core import get_token_payload, check_is_manager
 from .service import SettingsService
 from .schemas import SettingRead, SettingCreate, SettingUpdate

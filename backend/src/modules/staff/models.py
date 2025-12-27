@@ -8,6 +8,7 @@ Staff Module - Database Models
 
 import uuid
 from datetime import date, datetime, timezone
+from decimal import Decimal
 from sqlmodel import SQLModel, Field, Relationship, DateTime
 from typing import TYPE_CHECKING
 
@@ -60,7 +61,9 @@ class Staff(SQLModel, table=True):
     bio: str | None = None  # Giới thiệu (hiển thị khi đặt lịch)
     title: str  # Chức danh: "Kỹ thuật viên cao cấp", "Chuyên viên Skincare"
     color_code: str = "#3B82F6"  # Màu hiển thị trên Calendar
-    commission_rate: float = 0.0  # Tỷ lệ hoa hồng (%) - Chỉ cho TECHNICIAN
+    commission_rate: Decimal = Field(
+        default=0, max_digits=5, decimal_places=2
+    )  # Tỷ lệ hoa hồng (%) - Chỉ cho TECHNICIAN
 
     # Metadata
     created_at: datetime = Field(

@@ -2,10 +2,12 @@
 Users Module - Pydantic Schemas (DTOs)
 
 Các Data Transfer Objects để validate request/response.
+Theo thiết kế v2.2, bảng users chỉ quản lý Auth - các thông tin cá nhân
+như phone, address, dob được lưu trong bảng customers hoặc staff.
 """
 
 import uuid
-from datetime import date, datetime
+from datetime import datetime
 from sqlmodel import SQLModel
 
 from pydantic import ConfigDict
@@ -15,13 +17,11 @@ class UserBase(SQLModel):
     email: str
     full_name: str | None = None
     avatar_url: str | None = None
-    phone_number: str | None = None
-    address: str | None = None
-    date_of_birth: date | None = None
     role: UserRole = UserRole.CUSTOMER
 
 class UserRead(UserBase):
     id: uuid.UUID
+    is_active: bool
     created_at: datetime
     updated_at: datetime
 
@@ -30,9 +30,6 @@ class UserRead(UserBase):
 class UserUpdate(SQLModel):
     full_name: str | None = None
     avatar_url: str | None = None
-    phone_number: str | None = None
-    address: str | None = None
-    date_of_birth: date | None = None
 
 
 class UserFilter(SQLModel):

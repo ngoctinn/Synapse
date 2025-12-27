@@ -4,12 +4,11 @@ Unit Tests for SchedulingService
 
 import pytest
 import uuid
-from datetime import date, datetime, timezone, time, timedelta
+from datetime import date, datetime, time, timedelta
 from unittest.mock import AsyncMock, MagicMock, patch
 from src.modules.scheduling_engine.service import SchedulingService
 from src.modules.scheduling_engine.models import (
-    SolveRequest, SolveStatus, SchedulingSolution,
-    SlotSearchRequest, SlotSuggestionResponse, SlotOption, StaffSuggestionInfo
+    SolveRequest, SolveStatus, SlotSearchRequest, SlotOption, StaffSuggestionInfo
 )
 
 @pytest.fixture

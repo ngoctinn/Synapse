@@ -4,7 +4,7 @@ Integration Tests for Scheduling Engine Module
 
 import pytest
 import uuid
-from datetime import date, datetime, time, timezone
+from datetime import date
 from httpx import AsyncClient
 from unittest.mock import MagicMock, patch, AsyncMock
 from src.modules.scheduling_engine.models import SolveStatus

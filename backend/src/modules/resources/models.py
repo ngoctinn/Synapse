@@ -5,8 +5,8 @@ Resources Module - Database Models
 import uuid
 from datetime import datetime, timezone
 from enum import Enum
-from sqlalchemy import DateTime, Enum as SAEnum
-from sqlmodel import SQLModel, Field, Relationship
+from sqlalchemy import Enum as SAEnum
+from sqlmodel import SQLModel, Field, Relationship, DateTime
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

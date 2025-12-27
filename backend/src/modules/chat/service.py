@@ -3,14 +3,13 @@ Chat Module - Service
 """
 
 import uuid
-from datetime import datetime
-from sqlmodel import select, desc
+from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
-from fastapi import Depends, HTTPException
+from fastapi import Depends
 
 from src.common.database import get_db_session
 from .models import ChatSession, ChatMessage, ChatSessionStatus
-from .schemas import ChatMessageCreate, ChatMessageRead, ChatSessionRead, ChatHistoryResponse
+from .schemas import ChatMessageRead, ChatSessionRead, ChatHistoryResponse
 
 class ChatService:
     def __init__(self, session: AsyncSession = Depends(get_db_session)):

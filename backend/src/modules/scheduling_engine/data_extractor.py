@@ -12,6 +12,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from src.modules.users.models import User
 from src.modules.staff.models import Staff
+from typing import TYPE_CHECKING
 from .models import (
     SchedulingProblem,
     BookingItemData,
@@ -20,6 +21,9 @@ from .models import (
     ResourceData,
     ExistingAssignment,
 )
+
+if TYPE_CHECKING:
+    from .models import ResourceRequirementData
 
 
 class DataExtractor:
@@ -78,7 +82,6 @@ class DataExtractor:
         """Lấy các booking items chưa được gán staff."""
         # Lazy imports
         from src.modules.bookings.models import BookingItem, Booking, BookingStatus
-        from src.modules.services.models import Service
         from sqlalchemy.orm import selectinload
         from sqlmodel import col
 

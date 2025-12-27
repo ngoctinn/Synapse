@@ -1,30 +1,81 @@
-# Nhật ký Thay đổi: Nâng cấp Hiệu ứng Thị giác Hệ điều hướng Admin
+# Backend Database Refactor - Change Log
 
-## Thông tin Chung
-- **Ngày cập nhật**: 2025-12-24
-- **Tác giả**: Antigravity AI
-- **Mục tiêu**: Nâng cấp Sidebar và Header để có hiệu ứng "nổi" (elevation) đồng nhất với các card trang quản trị.
+**Ngày thực hiện:** 27/12/2025
+**Thực hiện bởi:** Agent (Antigravity Workflow)
 
-## Các Thay đổi Chi tiết
+---
 
-### 1. AdminHeader (`frontend/src/features/admin/components/header.tsx`)
-- Thêm class `shadow-premium-sm`.
-- Giữ nguyên `backdrop-blur-md` và `bg-background/80` để tạo hiệu ứng Glassmorphism.
-- Kết quả: Header trông như đang nổi phía trên nội dung khi người dùng cuộn trang.
+## Phiên bản 2.2.1 - Database Schema Alignment
 
-### 2. AdminSidebar (`frontend/src/features/admin/components/sidebar.tsx`)
-- Thay thế `shadow-none` bằng `shadow-premium-md`.
-- Thay thế `border-r-0` bằng `border-r` để tạo đường phân cách sắc nét hơn với nội dung.
-- Kết quả: Sidebar có chiều sâu vật lý rõ rệt, đổ bóng lên vùng nội dung chính.
+### Tổng quan
+Đồng bộ hóa Backend Models với Database thực tế và chuẩn hóa kiểu dữ liệu tài chính.
 
-### 3. Layout Admin (`frontend/src/app/admin/layout.tsx`)
-- Xác nhận nền nội dung `bg-muted/50` cung cấp đủ độ tương phản cho các thành phần điều hướng màu trắng nổi bật.
+---
 
-## Đánh giá Kỹ thuật
-- **Hiệu năng**: Các hiệu ứng shadow và blur được tối ưu hóa qua Tailwind CSS, không gây ảnh hưởng đến FPS của trang.
-- **Tính tương thích**: Làm việc tốt trên cả Dark Mode và Light Mode nhờ vào hệ màu `oklch`.
-- **Bảo mật**: Không có thay đổi về logic dữ liệu hay quyền truy cập.
+## Các thay đổi chi tiết
 
-## Trạng thái Kiểm tra
-- [x] Lint OK.
-- [x] Build Test (Sẽ thực hiện ở bước tiếp theo).
+### 1. Fix Kiểu Dữ Liệu Tài Chính (Phase 2)
+
+**Best Practice:** Sử dụng SQLModel native `max_digits`/`decimal_places` thay vì import `DECIMAL` từ SQLAlchemy.
+
+| File | Thay đổi |
+|:---|:---|
+| `services/models.py` | `price: Decimal = Field(default=0, max_digits=12, decimal_places=2)` |
+| `services/schemas.py` | `price: Decimal` (ServiceBase, ServiceUpdate) |
+| `staff/models.py` | `commission_rate: Decimal = Field(default=0, max_digits=5, decimal_places=2)` |
+| `staff/schemas.py` | `commission_rate: Decimal` (StaffBase, StaffUpdate) |
+
+**Lý do:** SQLModel đã hỗ trợ native Decimal với `max_digits` và `decimal_places` - không cần import từ SQLAlchemy.
+
+---
+
+### 2. Xóa Cột Dư Thừa trong `users` (Phase 3)
+
+| File | Cột đã xóa |
+|:---|:---|
+| `users/models.py` | `phone_number`, `address`, `date_of_birth` |
+| `users/schemas.py` | `phone_number`, `address`, `date_of_birth` (UserBase, UserUpdate) |
+| `users/service.py` | Logic sync phone_number với CustomerService |
+| `staff/schemas.py` | `phone_number` trong `UserRead` nested schema |
+
+**Lý do:** Theo thiết kế v2.2, bảng `users` chỉ quản lý Auth. Thông tin cá nhân được lưu trong bảng `customers` hoặc `staff`.
+
+---
+
+### 3. Cập Nhật Tài Liệu Thiết Kế (Phase 1)
+
+| File | Thay đổi |
+|:---|:---|
+| `database_design.md` | `staff_profiles` → `staff` |
+| `database_design.md` | `service_required_skills` → `service_skills` |
+| `database_design.md` | Xóa `phone_number` khỏi bảng `staff` trong ER Diagram |
+
+**Lý do:** Đồng bộ tài liệu với thực tế triển khai (Code & Database đã khớp).
+
+---
+
+## Kiểm tra đã thực hiện
+
+- [x] Python syntax check (`py_compile`) - PASS
+- [ ] Alembic migration (Cần tạo riêng)
+- [ ] Backend integration test
+
+---
+
+## Ghi chú quan trọng
+
+> [!WARNING]
+> **Database Migration Pending:** Các thay đổi này chỉ ảnh hưởng Backend code. Cần tạo Alembic migration để:
+> 1. ALTER COLUMN `services.price` → `DECIMAL(12,2)`
+> 2. ALTER COLUMN `staff.commission_rate` → `DECIMAL(5,2)`
+> 3. DROP COLUMN `users.phone_number`, `users.address`, `users.date_of_birth`
+> 4. DROP COLUMN `booking_items.resource_id` (legacy)
+
+---
+
+## Rollback Instructions
+
+Nếu cần rollback, revert các commit liên quan và chạy:
+```bash
+git checkout HEAD~1 -- backend/src/modules/
+```

@@ -11,7 +11,6 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import Depends, HTTPException, status
 
 from src.common.database import get_db_session
-from src.modules.services import Service
 from .models import Booking, BookingItem, BookingStatus
 from src.modules.customer_treatments import CustomerTreatmentService
 from src.modules.billing import BillingService
@@ -240,7 +239,6 @@ class BookingService:
     # --- Helpers & Notes ---
     async def add_note(self, booking_id: uuid.UUID, staff_id: uuid.UUID, content: str, note_type: str = "PROFESSIONAL"):
         from .models import TreatmentNote, NoteType
-        from src.modules.users import User
         from .schemas import TreatmentNoteRead
 
         booking = await self.get_by_id(booking_id)
@@ -259,7 +257,6 @@ class BookingService:
 
     async def get_notes(self, booking_id: uuid.UUID):
         from .models import TreatmentNote
-        from src.modules.users import User
         from .schemas import TreatmentNoteRead
 
         query = (

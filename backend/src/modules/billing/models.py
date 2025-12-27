@@ -28,9 +28,9 @@ class Invoice(SQLModel, table=True):
     booking_id: uuid.UUID | None = Field(default=None, foreign_key="bookings.id")
     customer_id: uuid.UUID = Field(foreign_key="customers.id")
 
-    total_amount: Decimal = Field(default=Decimal("0"), decimal_places=2)
-    discount_amount: Decimal = Field(default=Decimal("0"), decimal_places=2)
-    final_amount: Decimal = Field(default=Decimal("0"), decimal_places=2)
+    total_amount: Decimal = Field(default=0, max_digits=12, decimal_places=2)
+    discount_amount: Decimal = Field(default=0, max_digits=12, decimal_places=2)
+    final_amount: Decimal = Field(default=0, max_digits=12, decimal_places=2)
 
     status: InvoiceStatus = Field(default=InvoiceStatus.UNPAID)
     notes: str | None = None
@@ -56,7 +56,7 @@ class Payment(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     invoice_id: uuid.UUID = Field(foreign_key="invoices.id")
 
-    amount: Decimal = Field(decimal_places=2)
+    amount: Decimal = Field(max_digits=12, decimal_places=2)
     payment_method: PaymentMethod = Field(default=PaymentMethod.CASH)
     transaction_reference: str | None = None # Mã giao dịch ngân hàng/ví
 

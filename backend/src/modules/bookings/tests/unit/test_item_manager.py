@@ -8,7 +8,7 @@ from datetime import datetime, timezone, timedelta
 from unittest.mock import AsyncMock, MagicMock
 from fastapi import HTTPException
 from src.modules.bookings.item_manager import BookingItemManager
-from src.modules.bookings.models import Booking, BookingStatus, BookingItem
+from src.modules.bookings.models import Booking, BookingStatus
 from src.modules.services.models import Service
 from src.modules.bookings.schemas import BookingItemCreate
 

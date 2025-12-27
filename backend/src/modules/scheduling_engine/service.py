@@ -10,11 +10,10 @@ Service Layer xử lý logic nghiệp vụ cho:
 6. Tìm kiếm khung giờ thông minh (Smart Slot Finding)
 """
 
-from fastapi import Depends, HTTPException, status
-from sqlalchemy import text
+from fastapi import Depends, HTTPException
 from sqlalchemy.orm import selectinload
 from sqlmodel import select
-from datetime import time, timedelta, datetime, date
+from datetime import date
 from sqlmodel.ext.asyncio.session import AsyncSession
 import uuid
 
@@ -30,10 +29,7 @@ from .models import (
     RescheduleRequest,
     RescheduleResult,
     SlotSearchRequest,
-    SlotSuggestionResponse,
-    SlotOption,
-    StaffSuggestionInfo,
-    ResourceSuggestionInfo
+    SlotSuggestionResponse
 )
 from .data_extractor import DataExtractor
 from .solver import SpaSolver
@@ -88,7 +84,7 @@ class SchedulingService:
 
         query = select(BookingItem.id, BookingItem.start_time).where(
             BookingItem.booking_id == booking_id,
-            BookingItem.staff_id == None
+            BookingItem.staff_id is None
         )
         result = await self.session.exec(query)
         rows = result.all()
@@ -134,7 +130,7 @@ class SchedulingService:
         # Import lazy
         from src.modules.bookings.models import BookingItem, BookingStatus
         from src.modules.services.models import Service
-        from sqlmodel import col, func, and_
+        from sqlmodel import col, func
 
         if not start_date:
             start_date = date.today()

@@ -5,7 +5,7 @@ Settings Module - Business Logic Service
 import uuid
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException
 from src.common.database import get_db_session
 from .models import SystemSetting
 from .schemas import SettingCreate, SettingUpdate

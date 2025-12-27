@@ -45,11 +45,9 @@ class UserService:
         """
         Cập nhật hồ sơ người dùng.
 
-        Bao gồm logic sync với Customer CRM khi cập nhật SĐT.
+        Lưu ý: Từ v2.2, bảng users chỉ chứa thông tin Auth (email, role).
+        Thông tin cá nhân (phone, address...) được quản lý ở bảng customers hoặc staff.
         """
-        # Lưu SĐT cũ để kiểm tra có thay đổi không
-        old_phone = user.phone_number
-
         # Update user fields
         user_data = user_update.model_dump(exclude_unset=True)
         for key, value in user_data.items():
@@ -58,19 +56,6 @@ class UserService:
         self.session.add(user)
         await self.session.commit()
         await self.session.refresh(user)
-
-        # SYNC LOGIC: Nếu SĐT mới được cập nhật (và user là customer)
-        new_phone = user_update.phone_number
-        if new_phone and new_phone != old_phone:
-            # Lazy import để tránh circular dependency
-            from src.modules.customers.service import CustomerService
-            customer_service = CustomerService(self.session)
-            await customer_service.sync_or_create_from_user(
-                user_id=user.id,
-                phone_number=new_phone,
-                full_name=user.full_name,
-                email=user.email
-            )
 
         return user
 
@@ -86,8 +71,7 @@ class UserService:
             query = query.where(
                 or_(
                     col(User.full_name).ilike(search_term),
-                    col(User.email).ilike(search_term),
-                    col(User.phone_number).ilike(search_term)
+                    col(User.email).ilike(search_term)
                 )
             )
 

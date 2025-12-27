@@ -8,7 +8,7 @@ from decimal import Decimal
 from datetime import datetime, timezone
 from httpx import AsyncClient
 from unittest.mock import MagicMock
-from src.modules.billing.models import Invoice, InvoiceStatus, Payment, PaymentMethod
+from src.modules.billing.models import Invoice, InvoiceStatus
 
 @pytest.mark.asyncio
 async def test_create_invoice_manual(client: AsyncClient, mock_admin_auth, mock_session):

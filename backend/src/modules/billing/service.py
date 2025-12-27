@@ -4,16 +4,16 @@ Billing Module - Service Layer
 import uuid
 from datetime import datetime, timezone
 from decimal import Decimal
-from sqlmodel import select, col, func
+from sqlmodel import select, func
 from sqlmodel.ext.asyncio.session import AsyncSession
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException
 from sqlalchemy.orm import selectinload
 
 from src.common.database import get_db_session
 from .models import Invoice, Payment, InvoiceStatus
 from .schemas import (
     InvoiceCreate, InvoiceUpdate,
-    PaymentCreate, InvoiceListResponse
+    PaymentCreate
 )
 
 class BillingService:

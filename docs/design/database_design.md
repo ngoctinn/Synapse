@@ -19,17 +19,16 @@ erDiagram
         timestamp updated_at
     }
 
-    staff_profiles {
+    staff {
         uuid user_id PK,FK
         string title
         string bio
-        string phone_number
         string color_code
         decimal commission_rate "0-100%"
         date hired_at
     }
 
-    users ||--o| staff_profiles : "has"
+    users ||--o| staff : "has"
 
     %% === CUSTOMERS (CORE ENTITY) ===
     customers {
@@ -54,7 +53,7 @@ erDiagram
     }
 
     users ||--o| customers : "linked_to"
-    staff_profiles ||--o{ customers : "preferred_by"
+    staff ||--o{ customers : "preferred_by"
 
     %% === SKILLS ===
     skills {
@@ -69,7 +68,7 @@ erDiagram
         uuid skill_id PK,FK
     }
 
-    staff_profiles ||--|{ staff_skills : "possesses"
+    staff ||--|{ staff_skills : "possesses"
     skills ||--|{ staff_skills : "assigned_to"
 
     %% === SERVICES ===
@@ -97,13 +96,13 @@ erDiagram
 
     service_categories ||--|{ services : "contains"
 
-    service_required_skills {
+    service_skills {
         uuid service_id PK,FK
         uuid skill_id PK,FK
     }
 
-    services ||--|{ service_required_skills : "requires"
-    skills ||--|{ service_required_skills : "needed_by"
+    services ||--|{ service_skills : "requires"
+    skills ||--|{ service_skills : "needed_by"
 
     %% === RESOURCES ===
     resource_groups {

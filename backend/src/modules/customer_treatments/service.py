@@ -10,16 +10,15 @@ Handles logic for:
 
 import uuid
 from datetime import date, datetime, timezone
-from sqlmodel import select, col
+from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException
 
 from src.common.database import get_db_session
 from .models import CustomerTreatment, TreatmentStatus
 from .schemas import (
     CustomerTreatmentCreate,
-    CustomerTreatmentUpdate,
-    CustomerTreatmentListResponse
+    CustomerTreatmentUpdate
 )
 from .exceptions import TreatmentNotFound, TreatmentExpired, TreatmentOutOfSessions
 

@@ -11,7 +11,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import Depends
 
 from src.common.database import get_db_session
-from .models import RegularOperatingHours, ExceptionDate, ExceptionDateType
+from .models import RegularOperatingHours, ExceptionDate
 from .schemas import (
     DayOperatingHours,
     OperatingHourPeriod,

@@ -11,8 +11,9 @@ Sử dụng: Khi khách hàng tìm slot đặt lịch.
 """
 
 import uuid
-from datetime import datetime, date, time, timedelta, timezone
+from datetime import datetime, time, timedelta, timezone
 from ortools.sat.python import cp_model
+from typing import TYPE_CHECKING
 
 from .models import (
     SchedulingProblem,
@@ -21,6 +22,9 @@ from .models import (
     ResourceSuggestionInfo,
     StaffData,
 )
+
+if TYPE_CHECKING:
+    from .models import ResourceRequirementData
 
 
 class FlexibleTimeSolver:
@@ -121,7 +125,6 @@ class FlexibleTimeSolver:
         end_min: int
     ) -> "ResourceSuggestionInfo | None":
         """Tìm resource khả dụng trong một group."""
-        from .models import ResourceData
 
         for resource in self.problem.available_resources:
             if resource.group_id == resource_group_id:
@@ -332,7 +335,7 @@ class FlexibleTimeSolver:
             return []
 
         # Lấy nghiệm tốt nhất
-        best_obj = solver.ObjectiveValue()
+        solver.ObjectiveValue()
 
         for (slot_idx, staff_idx), var in assignment_vars.items():
             if solver.Value(var) == 1:

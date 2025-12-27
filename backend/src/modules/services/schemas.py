@@ -6,6 +6,7 @@ Tuân thủ Pydantic V2 với model_config = ConfigDict(...).
 
 import uuid
 from datetime import datetime
+from decimal import Decimal
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -84,7 +85,7 @@ class ServiceBase(BaseModel):
     name: str
     duration: int = Field(..., gt=0, description="Thời lượng (phút)")
     buffer_time: int = Field(default=15, ge=0, description="Thời gian nghỉ (phút)")
-    price: float = Field(default=0.0, ge=0)
+    price: Decimal = Field(default=Decimal("0"), ge=0)
     description: str | None = None
     image_url: str | None = None
     is_active: bool = True
@@ -103,7 +104,7 @@ class ServiceUpdate(BaseModel):
     category_id: uuid.UUID | None = None
     duration: int | None = Field(None, gt=0)
     buffer_time: int | None = Field(None, ge=0)
-    price: float | None = Field(None, ge=0)
+    price: Decimal | None = Field(None, ge=0)
     description: str | None = None
     image_url: str | None = None
     is_active: bool | None = None

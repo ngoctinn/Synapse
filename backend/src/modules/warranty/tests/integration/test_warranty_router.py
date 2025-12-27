@@ -13,7 +13,7 @@ from src.modules.warranty.models import WarrantyTicket, WarrantyStatus
 async def test_create_warranty_ticket(client: AsyncClient, mock_admin_auth, mock_session):
     """Test tạo yêu cầu bảo hành."""
     customer_id = uuid.uuid4()
-    mock_ticket = WarrantyTicket(
+    WarrantyTicket(
         id=uuid.uuid4(),
         customer_id=customer_id,
         description="Lỗi da sau điều trị",

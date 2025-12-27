@@ -13,11 +13,11 @@ Categories:
 """
 
 import uuid
-from datetime import datetime, date, time, timedelta, timezone
+from datetime import datetime, date, time, timezone
 
 from src.modules.scheduling_engine.models import (
     SchedulingProblem, StaffData, StaffScheduleData,
-    ResourceData, ExistingAssignment
+    ResourceData, ExistingAssignment, ResourceRequirementData
 )
 from src.modules.scheduling_engine.flexible_solver import FlexibleTimeSolver
 
@@ -94,7 +94,7 @@ def test_h01_assignment_completeness():
     solver = FlexibleTimeSolver(problem)
     slots = solver.find_optimal_slots(
         duration_minutes=60,
-        required_resource_group_ids=[bed_group],
+        required_resources=[ResourceRequirementData(group_id=bed_group)],
         top_k=5
     )
 
@@ -148,7 +148,7 @@ def test_h03_resource_no_overlap():
     solver = FlexibleTimeSolver(problem)
     slots = solver.find_optimal_slots(
         duration_minutes=60,
-        required_resource_group_ids=[bed_group],
+        required_resources=[ResourceRequirementData(group_id=bed_group)],
         search_start=time(10, 0), search_end=time(12, 0),
         top_k=5
     )
@@ -208,7 +208,7 @@ def test_h05_resource_group_matching():
     solver = FlexibleTimeSolver(problem)
     slots = solver.find_optimal_slots(
         duration_minutes=60,
-        required_resource_group_ids=[bed_group],
+        required_resources=[ResourceRequirementData(group_id=bed_group)],
         top_k=5
     )
 
@@ -426,7 +426,10 @@ def test_multi_resource_two_groups():
     solver = FlexibleTimeSolver(problem)
     slots = solver.find_optimal_slots(
         duration_minutes=60,
-        required_resource_group_ids=[bed_group, equip_group],
+        required_resources=[
+            ResourceRequirementData(group_id=bed_group),
+            ResourceRequirementData(group_id=equip_group)
+        ],
         top_k=5
     )
 
@@ -456,7 +459,7 @@ def test_multi_resource_one_busy():
     solver = FlexibleTimeSolver(problem)
     slots = solver.find_optimal_slots(
         duration_minutes=60,
-        required_resource_group_ids=[bed_group],
+        required_resources=[ResourceRequirementData(group_id=bed_group)],
         search_start=time(10, 0), search_end=time(12, 0),
         top_k=5
     )
@@ -487,7 +490,7 @@ def test_multi_resource_all_busy():
     solver = FlexibleTimeSolver(problem)
     slots = solver.find_optimal_slots(
         duration_minutes=60,
-        required_resource_group_ids=[bed_group],
+        required_resources=[ResourceRequirementData(group_id=bed_group)],
         search_start=time(10, 0), search_end=time(12, 0),
         top_k=5
     )
@@ -580,7 +583,7 @@ def test_edge_empty_resources():
     solver = FlexibleTimeSolver(problem)
     slots = solver.find_optimal_slots(
         duration_minutes=60,
-        required_resource_group_ids=[],  # Không cần resource
+        required_resources=[],  # Không cần resource
         top_k=5
     )
 

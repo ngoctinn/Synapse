@@ -3,7 +3,7 @@ Test FlexibleTimeSolver - Kiểm tra bộ giải OR-Tools cho tìm slot.
 """
 
 import uuid
-from datetime import date, time, datetime, timedelta, timezone
+from datetime import date, time, datetime, timezone
 
 from src.modules.scheduling_engine.models import (
     SchedulingProblem,
@@ -113,7 +113,7 @@ def test_flexible_solver():
 
     # Tìm slot với KTV yêu thích (KTV_1 - đang bận nhất)
     preferred_id = problem.available_staff[0].id
-    print(f"\n[TÌM SLOT TỐI ƯU] Dịch vụ 60 phút, KTV yêu thích: KTV_1")
+    print("\n[TÌM SLOT TỐI ƯU] Dịch vụ 60 phút, KTV yêu thích: KTV_1")
     slots_with_pref = solver.find_optimal_slots(
         duration_minutes=60,
         preferred_staff_id=preferred_id,

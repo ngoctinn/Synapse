@@ -6,8 +6,8 @@ import uuid
 from datetime import datetime, timezone
 from decimal import Decimal
 from enum import Enum
-from sqlalchemy import DateTime, DECIMAL, Enum as SAEnum
-from sqlmodel import SQLModel, Field, Relationship
+from sqlalchemy import Enum as SAEnum
+from sqlmodel import SQLModel, Field, Relationship, DateTime
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -86,8 +86,8 @@ class BookingItem(SQLModel, table=True):
     start_time: datetime = Field(sa_type=DateTime(timezone=True))
     end_time: datetime = Field(sa_type=DateTime(timezone=True))
     original_price: Decimal = Field(
-        default=Decimal("0"),
-        sa_type=DECIMAL(12, 2)
+        default=0,
+        max_digits=12, decimal_places=2
     )
     created_at: datetime = Field(
         sa_type=DateTime(timezone=True),
@@ -152,8 +152,8 @@ class Booking(SQLModel, table=True):
         sa_type=DateTime(timezone=True)
     )
     total_price: Decimal = Field(
-        default=Decimal("0"),
-        sa_type=DECIMAL(12, 2)
+        default=0,
+        max_digits=12, decimal_places=2
     )
     created_at: datetime = Field(
         sa_type=DateTime(timezone=True),

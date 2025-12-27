@@ -6,7 +6,7 @@ import pytest
 import uuid
 from unittest.mock import AsyncMock, MagicMock
 from src.modules.services.service import ServiceManagementService, simple_slugify
-from src.modules.services.models import Service, Skill, ServiceSkill
+from src.modules.services.models import Service
 from src.modules.services.exceptions import ServiceNotFoundError
 from src.modules.services.schemas import ServiceCreate
 

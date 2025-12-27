@@ -10,8 +10,8 @@ Services Module - Database Models
 
 import uuid
 from datetime import datetime, timezone
-from sqlalchemy import ForeignKey, DateTime
-from sqlmodel import SQLModel, Field, Relationship
+from decimal import Decimal
+from sqlmodel import SQLModel, Field, Relationship, DateTime
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -49,11 +49,13 @@ class ServiceSkill(SQLModel, table=True):
 
     service_id: uuid.UUID = Field(
         primary_key=True,
-        sa_column_args=[ForeignKey("services.id", ondelete="CASCADE")]
+        foreign_key="services.id",
+        ondelete="CASCADE"
     )
     skill_id: uuid.UUID = Field(
         primary_key=True,
-        sa_column_args=[ForeignKey("skills.id", ondelete="CASCADE")]
+        foreign_key="skills.id",
+        ondelete="CASCADE"
     )
 
     service: "Service" = Relationship(back_populates="skill_links")
@@ -98,7 +100,7 @@ class Service(SQLModel, table=True):
     name: str = Field(index=True)
     duration: int  # Phút (VD: 60)
     buffer_time: int = Field(default=15)  # Phút nghỉ giữa các ca
-    price: float = Field(default=0.0)
+    price: Decimal = Field(default=0, max_digits=12, decimal_places=2)
     description: str | None = None
     image_url: str | None = None
     is_active: bool = Field(default=True)

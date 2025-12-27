@@ -7,8 +7,7 @@ Quản lý các gói liệu trình khách hàng đã mua.
 import uuid
 from datetime import date, datetime, timezone
 from enum import Enum
-from sqlmodel import SQLModel, Field, Relationship
-from sqlalchemy import DateTime
+from sqlmodel import SQLModel, Field, DateTime
 
 class TreatmentStatus(str, Enum):
     ACTIVE = "ACTIVE"

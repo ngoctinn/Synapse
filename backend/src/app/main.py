@@ -82,3 +82,20 @@ for module in _MODULES_WITH_ROUTERS:
 @app.get("/")
 async def root():
     return {"message": "Chào mừng đến với Synapse API"}
+
+
+# =============================================================================
+# MCP OpenAPI Integration (Dev Only)
+# Cho phép AI agent đọc và hiểu API schema
+# =============================================================================
+if settings.DEBUG:
+    from fastapi_mcp_openapi import FastAPIMCPOpenAPI
+
+    mcp = FastAPIMCPOpenAPI(
+        app=app,
+        mount_path="/mcp",
+        server_name="synapse-api-mcp",
+        server_version="0.1.0",
+        list_endpoints_tool_name="listApiEndpoints",
+        get_endpoint_docs_tool_name="getApiEndpointDocs"
+    )

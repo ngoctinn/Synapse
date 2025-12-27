@@ -2,11 +2,11 @@
 Billing Module - API Endpoints
 """
 import uuid
-from fastapi import APIRouter, Depends, status, Query
+from fastapi import APIRouter, Depends, status
 from .service import BillingService
 from .schemas import (
     InvoiceRead, InvoiceCreate, InvoiceUpdate,
-    PaymentRead, PaymentCreate, InvoiceListResponse
+    PaymentRead, PaymentCreate
 )
 
 from src.common.auth_core import get_token_payload

@@ -6,7 +6,7 @@ Chạy: python -m src.modules.scheduling_engine.demo
 """
 
 import uuid
-from datetime import datetime, date, time, timedelta, timezone
+from datetime import datetime, date, time, timezone
 
 from src.modules.scheduling_engine.models import (
     SchedulingProblem, StaffData, StaffScheduleData,
@@ -55,7 +55,7 @@ def run_demo():
         for s in staff_list
     ]
 
-    print(f"\nStaff (3 người):")
+    print("\nStaff (3 người):")
     for s in staff_list:
         skills_name = []
         if skill_massage in s.skill_ids:
@@ -74,7 +74,7 @@ def run_demo():
         ResourceData(id=uuid.uuid4(), name="Máy Laser", group_id=equip_group, group_name="Thiết bị"),
     ]
 
-    print(f"\nResources (3):")
+    print("\nResources (3):")
     for r in resources:
         print(f"  • {r.name} ({r.group_name})")
 
@@ -100,7 +100,7 @@ def run_demo():
         ),
     ]
 
-    print(f"\nLịch hiện có (3 booking):")
+    print("\nLịch hiện có (3 booking):")
     for e in existing:
         staff_name = next(s.name for s in staff_list if s.id == e.staff_id)
         resource_name = next((r.name for r in resources if r.id == e.resource_id), "N/A")
@@ -117,7 +117,7 @@ def run_demo():
     preferred_staff = staff_list[0]  # Muốn Lan
 
     print(f"Dịch vụ: Massage ({duration} phút)")
-    print(f"Yêu cầu: Skill Massage + 1 Giường")
+    print("Yêu cầu: Skill Massage + 1 Giường")
     print(f"KTV yêu thích: {preferred_staff.name}")
 
     # =====================================================

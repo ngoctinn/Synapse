@@ -1,7 +1,6 @@
 """
 Booking Status Manager - Business Logic for Transitions
 """
-import uuid
 from datetime import datetime, timezone
 from fastapi import HTTPException, status
 from sqlmodel.ext.asyncio.session import AsyncSession

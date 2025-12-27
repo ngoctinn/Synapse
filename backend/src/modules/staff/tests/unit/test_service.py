@@ -6,11 +6,10 @@ import pytest
 import uuid
 from unittest.mock import AsyncMock, MagicMock
 from src.modules.staff.service import StaffService
-from src.modules.staff.models import Staff, StaffSkill
+from src.modules.staff.models import Staff
 from src.modules.staff.exceptions import StaffNotFound, StaffOperationError
 from src.modules.users.models import User
 from src.modules.users.constants import UserRole
-from src.modules.services.models import Skill
 
 @pytest.fixture
 def mock_session():
