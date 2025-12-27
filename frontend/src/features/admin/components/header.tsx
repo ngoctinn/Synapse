@@ -1,36 +1,23 @@
 "use client";
 
-import { logoutAction } from "@/features/auth/actions";
 import { NotificationBell } from "@/features/notifications/components/notification-bell";
 import { useNotificationStore } from "@/features/notifications/hooks/use-notification-store";
 import { UserProfile } from "@/shared/components/layout/components/header/types";
 import { cn } from "@/shared/lib/utils";
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-  Button,
-  Card,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-  Separator,
-  SidebarTrigger,
-  Skeleton, // Thêm Skeleton
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+    Card,
+    Separator,
+    SidebarTrigger
 } from "@/shared/ui";
-import { LogOut, Settings, User } from "lucide-react";
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import React from "react";
-import dynamic from "next/dynamic";
 
 
 const UserNav = dynamic(() => import("./user-nav").then((m) => m.UserNav), {
@@ -66,7 +53,7 @@ export function AdminHeader({
   return (
     <header
       className={cn(
-        "sticky top-2 z-30 ml-2 mr-2 h-14 shrink-0 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12",
+        "sticky top-2 z-30 ml-2 mr-2 h-16 shrink-0 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12",
         className
       )}
     >

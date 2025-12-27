@@ -4,13 +4,12 @@ import { Badge } from "@/shared/ui/badge";
 import { Checkbox } from "@/shared/ui/checkbox";
 import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row";
 import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/shared/ui/table";
-import { Lock } from "lucide-react";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { updatePermissions } from "../../actions";
@@ -100,42 +99,23 @@ export function PermissionMatrix({
                     {module.name}
                   </TableCell>
                   {ROLES.map((role) => {
-                    const isDisabled = role.id === "admin";
                     return (
                       <TableCell
                         key={role.id}
                         className="hover:bg-muted/10 cursor-pointer p-0 text-center transition-colors"
-                        onClick={() => {
-                          if (isDisabled) {
-                            toast.info(
-                              "Quyền Quản trị viên (Admin) được mặc định cấp toàn quyền."
-                            );
-                          } else {
-                            handleToggle(module.id, role.id);
-                          }
-                        }}
+                        onClick={() => handleToggle(module.id, role.id)}
                       >
                         <div className="flex h-full w-full items-center justify-center py-2">
-                          {isDisabled ? (
-                            <div
-                              className="permission-locked-icon"
-                              title="Chức năng bị khóa cho quyền Admin"
-                              aria-label="Locked"
-                            >
-                              <Lock className="size-4" />
-                            </div>
-                          ) : (
-                            <Checkbox
-                              checked={
-                                permissions[module.id]?.[role.id] || false
-                              }
-                              onCheckedChange={() =>
-                                handleToggle(module.id, role.id)
-                              }
-                              className="permission-checkbox"
-                              aria-label={`Toggle ${module.name} for ${role.name}`}
-                            />
-                          )}
+                          <Checkbox
+                            checked={
+                              permissions[module.id]?.[role.id] || false
+                            }
+                            onCheckedChange={() =>
+                              handleToggle(module.id, role.id)
+                            }
+                            className="permission-checkbox"
+                            aria-label={`Toggle ${module.name} for ${role.name}`}
+                          />
                         </div>
                       </TableCell>
                     );

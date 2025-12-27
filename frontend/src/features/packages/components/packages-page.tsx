@@ -1,17 +1,17 @@
 "use client";
 
 import {
-  PageContent,
-  PageHeader,
-  PageShell,
-  SurfaceCard,
+    PageContent,
+    PageHeader,
+    PageShell,
+    SurfaceCard,
 } from "@/shared/components/layout/page-layout";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { useTransition } from "react";
 import { cn } from "@/shared/lib/utils";
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
 import { Input } from "@/shared/ui/input";
 import { Search } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { ServicePackage } from "../model/types";
 import { CreatePackageTrigger, PackageTable } from "./index";
@@ -59,13 +59,14 @@ export function PackagesPage({ data, page, totalPages }: PackagesPageProps) {
           <FilterBar
             startContent={
               <div className="relative w-full md:w-[250px]">
-                <Search className="text-muted-foreground/70 absolute left-2.5 top-2.5 h-4 w-4" />
                 <Input
                   type="search"
                   placeholder="Tìm gói dịch vụ..."
                   defaultValue={initialSearch}
                   onChange={(e) => handleSearch(e.target.value)}
-                  className="bg-background border-muted-foreground/20 focus-premium w-full pl-9"
+                  className="bg-background w-full"
+                  startContent={<Search className="text-muted-foreground size-4" />}
+                  isSearch
                 />
               </div>
             }

@@ -8,8 +8,8 @@ import {
 } from "@/shared/components/layout/page-layout";
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
 import { Input } from "@/shared/ui/input";
-import { Search } from "lucide-react";
 import { Group } from "@/shared/ui/layout";
+import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -59,7 +59,7 @@ export function WaitlistPage({ data, page, totalPages }: WaitlistPageProps) {
                 defaultValue={initialSearch}
                 onChange={(e) => handleSearch(e.target.value)}
                 startContent={<Search className="size-4 text-muted-foreground" />}
-                size="md"
+                isSearch
               />
           </div>
             }

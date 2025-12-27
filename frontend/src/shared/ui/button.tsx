@@ -4,8 +4,8 @@ import { Loader2 } from "lucide-react";
 import * as React from "react";
 
 import {
-  type ButtonVariant,
-  type ComponentSize,
+    type ButtonVariant,
+    type ComponentSize,
 } from "@/shared/lib/design-system.types";
 import { cn } from "@/shared/lib/utils";
 
@@ -37,13 +37,13 @@ import { cn } from "@/shared/lib/utils";
             "border border-amber-500/50 text-amber-600 bg-transparent hover:bg-amber-500/10 dark:text-amber-500 dark:border-amber-500/30",
       },
       size: {
-        default: "h-12 px-8 py-2",
-        sm: "h-10 rounded-lg px-4",
-        lg: "h-14 rounded-lg px-8",
-        xl: "h-16 rounded-lg px-10 text-lg",
-        icon: "h-12 w-12",
-        "icon-sm": "h-10 w-10",
-        "icon-xs": "h-9 w-9",
+        default: "h-10 px-4 py-2",     // 40px (Regular)
+        sm: "h-8 rounded-md px-3",     // 32px (Small) - radius 6px
+        lg: "h-12 rounded-lg px-8",    // 48px (Large)
+        xl: "h-14 rounded-lg px-10 text-lg",
+        icon: "h-10 w-10",             // 40px
+        "icon-sm": "h-8 w-8",          // 32px
+        "icon-xs": "h-6 w-6",
       },
     },
     defaultVariants: {
@@ -141,3 +141,4 @@ Button.displayName = "Button";
 
 export { Button, buttonVariants };
 export type { ButtonVariant, ComponentSize };
+

@@ -11,18 +11,18 @@ import { useState } from "react";
 
 import { cn } from "@/shared/lib/utils";
 import {
-  Badge,
-  Button,
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  Input,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+    Badge,
+    Button,
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+    Input,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
 } from "@/shared/ui";
 
 import { APPOINTMENT_STATUS_CONFIG } from "../../constants";
@@ -138,12 +138,12 @@ export function FilterBar({
       <div className="flex flex-wrap items-center gap-2">
         {/* Search Input */}
         <div className="relative min-w-[200px] max-w-[300px] flex-1">
-          <Search className="text-muted-foreground absolute left-3 top-1/2 size-4 -translate-y-1/2" />
           <Input
             placeholder="Tìm khách hàng, dịch vụ..."
             value={filters.searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="pl-9"
+            startContent={<Search className="text-muted-foreground size-4" />}
+            isSearch
           />
         </div>
 

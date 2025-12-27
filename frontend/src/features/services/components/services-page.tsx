@@ -2,17 +2,19 @@
 
 import { BedType, Resource } from "@/features/resources";
 import {
-    PageContent,
-    PageHeader,
-    PageShell,
-    SurfaceCard,
+  PageContent,
+  PageHeader,
+  PageShell,
+  SurfaceCard,
 } from "@/shared/components/layout/page-layout";
 import { ActionResponse } from "@/shared/lib/action-response";
 import { Icon } from "@/shared/ui/custom";
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
 import { Input } from "@/shared/ui/input";
 import { Group, Stack } from "@/shared/ui/layout";
+import { Box } from "@/shared/ui/layout/box";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
+import { Text as UIText } from "@/shared/ui/typography";
 import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, use, useTransition } from "react";
@@ -56,9 +58,11 @@ function ServiceListWrapper({
 
   if (servicesRes.status === "error") {
     return (
-      <div className="text-destructive p-4">
-        Lỗi tải dịch vụ: {servicesRes.message}
-      </div>
+      <Box className="p-4">
+        <UIText variant="error">
+          Lỗi tải dịch vụ: {servicesRes.message}
+        </UIText>
+      </Box>
     );
   }
 
@@ -143,15 +147,16 @@ export function ServicesPage({
           <Group gap={3} className="w-full md:w-auto">
             <FilterBar
               startContent={
-                <Input
-                  placeholder={
-                    isServiceTab ? "Tìm kiếm dịch vụ..." : "Tìm kiếm kỹ năng..."
-                  }
-                  defaultValue={initialSearch}
-                  onChange={(e) => handleSearch(e.target.value)}
-                  startContent={<Icon icon={Search} className="text-muted-foreground" size={16} />}
-                  className="w-full md:w-64"
-                />
+                  <Input
+                    placeholder={
+                      isServiceTab ? "Tìm kiếm dịch vụ..." : "Tìm kiếm kỹ năng..."
+                    }
+                    defaultValue={initialSearch}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    startContent={<Icon icon={Search} className="text-muted-foreground" size={16} />}
+                    className="w-full md:w-64"
+                    isSearch
+                  />
               }
               endContent={
                 isServiceTab && <ServiceFilter availableSkills={skills} availableCategories={categories} />

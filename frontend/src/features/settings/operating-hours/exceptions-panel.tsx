@@ -11,18 +11,18 @@
 
 import { cn } from "@/shared/lib/utils";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  Badge,
-  Button,
-  Calendar,
-  ScrollArea,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    Badge,
+    Button,
+    Calendar,
+    ScrollArea,
 } from "@/shared/ui";
 import { format, isSameDay } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -151,7 +151,7 @@ export function ExceptionsPanel({
                           {/* Date Box */}
                           <div
                             className={cn(
-                              "bg-background flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-lg border",
+                              "bg-background flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-lg border",
                               exception.isClosed
                                 ? "border-destructive/20 text-destructive"
                                 : "border-primary/20 text-primary"

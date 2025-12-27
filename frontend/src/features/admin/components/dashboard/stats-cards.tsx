@@ -1,14 +1,13 @@
-"use client";
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { StatCard } from "@/shared/ui/data-display/stat-card";
+import { Grid } from "@/shared/ui/layout/grid";
 import {
-  Users,
-  CalendarCheck,
-  CreditCard,
-  Clock,
-  Hotel,
-  ArrowUpRight,
-  ArrowDownRight,
+    ArrowDownRight,
+    ArrowUpRight,
+    CalendarCheck,
+    Clock,
+    CreditCard,
+    Hotel,
+    Users,
 } from "lucide-react";
 
 export function StatsCards() {
@@ -18,59 +17,47 @@ export function StatsCards() {
       value: "24",
       description: "+2 so với hôm qua",
       icon: CalendarCheck,
-      trend: "up",
-      color: "text-blue-500",
-      bg: "bg-blue-500/10",
+      trend: "up" as const,
+      variant: "info" as const,
     },
     {
       title: "Khách hàng mới",
       value: "12",
       description: "+15% tuần này",
       icon: Users,
-      trend: "up",
-      color: "text-purple-500",
-      bg: "bg-purple-500/10",
+      trend: "up" as const,
+      variant: "purple" as const,
     },
     {
       title: "Doanh thu ngày",
       value: "15.4M",
       description: "-5% so với mục tiêu",
       icon: CreditCard,
-      trend: "down",
-      color: "text-emerald-500",
-      bg: "bg-emerald-500/10",
+      trend: "down" as const,
+      variant: "success" as const, // Original was emerald/success
     },
     {
       title: "Giường trống",
       value: "4/15",
       description: "Đang được sử dụng 73%",
       icon: Hotel,
-      trend: "neutral",
-      color: "text-amber-500",
-      bg: "bg-amber-500/10",
+      trend: "neutral" as const,
+      variant: "warning" as const,
     },
   ];
 
   return (
-    <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+    <Grid cols={1} className="md:grid-cols-2 lg:grid-cols-4" gap={3}>
       {stats.map((stat) => (
-        <Card
+        <StatCard
           key={stat.title}
-          className="group overflow-hidden border-none shadow-sm transition-all duration-300 hover:shadow-md"
-        >
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-muted-foreground text-sm font-medium">
-              {stat.title}
-            </CardTitle>
-            <div
-              className={`rounded-lg p-2 ${stat.bg} ${stat.color} transition-transform group-hover:scale-110`}
-            >
-              <stat.icon className="size-4" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stat.value}</div>
-            <p className="text-muted-foreground mt-1 flex items-center text-xs">
+          title={stat.title}
+          value={stat.value}
+          icon={stat.icon}
+          variant={stat.variant}
+          trend={stat.trend}
+          description={
+            <>
               {stat.trend === "up" ? (
                 <ArrowUpRight className="size-3 text-emerald-500" />
               ) : stat.trend === "down" ? (
@@ -78,11 +65,11 @@ export function StatsCards() {
               ) : (
                 <Clock className="size-3 text-amber-500" />
               )}
-              {stat.description}
-            </p>
-          </CardContent>
-        </Card>
+              <span>{stat.description}</span>
+            </>
+          }
+        />
       ))}
-    </div>
+    </Grid>
   );
 }

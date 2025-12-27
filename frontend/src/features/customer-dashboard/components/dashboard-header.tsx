@@ -1,8 +1,8 @@
 "use client";
 
 import {
-  HeaderLogo,
-  HeaderUserDropdown,
+    HeaderLogo,
+    HeaderUserDropdown,
 } from "@/shared/components/layout/components/header";
 import { UserProfile } from "../model/types";
 
@@ -13,7 +13,7 @@ interface DashboardHeaderProps {
 export function DashboardHeader({ user }: DashboardHeaderProps) {
   return (
     <header className="header-sticky glass">
-      <div className="container mx-auto flex h-14 items-center px-4">
+      <div className="container mx-auto flex h-16 items-center px-4">
         <div className="mr-4 hidden md:flex">
           <HeaderLogo />
         </div>

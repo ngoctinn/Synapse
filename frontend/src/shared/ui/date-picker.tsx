@@ -1,17 +1,16 @@
 "use client";
 
-import * as React from "react";
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
-import { CalendarIcon } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { Calendar } from "@/shared/ui/calendar";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
 } from "@/shared/ui/popover";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
+import { CalendarIcon } from "lucide-react";
 
 interface DatePickerProps {
   value?: Date;
@@ -53,8 +52,8 @@ export function DatePicker({
           className={cn(
             "group w-full justify-start text-left font-normal border-input hover:bg-accent/50 transition-all focus-premium",
             "bg-background shadow-xs text-sm px-3 text-foreground",
-            size === "default" && "h-14",
-            size === "sm" && "h-9",
+            size === "default" && "h-10",
+            size === "sm" && "h-8",
             "data-[state=open]:border-primary/80 data-[state=open]:ring-[1.5px] data-[state=open]:ring-primary/20",
             !value && "text-muted-foreground",
             hasError && "border-destructive text-destructive focus-visible:ring-destructive/20",

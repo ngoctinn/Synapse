@@ -15,7 +15,7 @@ export function PageShell({
   return (
     <div
       className={cn(
-        "bg-muted/40 flex min-h-screen w-full flex-col",
+        "flex w-full flex-col gap-4", // Removed min-h-screen, bg-muted/40 (handled by AppShell)
         animate && "page-entry-animation",
         className
       )}
@@ -80,16 +80,16 @@ export function PageContent({
   ...props
 }: PageContentProps) {
   return (
-    <main
+    <div // Changed from main to div
       className={cn(
-        "flex flex-1 flex-col overflow-hidden",
-        !fullWidth && "gap-4 px-0 py-3",
+        "flex flex-1 flex-col", // Removed overflow-hidden to let AppShell scroll
+        !fullWidth && "gap-4", // Removed fixed px/py as AppShell handles padding
         className
       )}
       {...props}
     >
       {children}
-    </main>
+    </div>
   );
 }
 

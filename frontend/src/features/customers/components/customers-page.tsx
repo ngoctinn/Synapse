@@ -1,18 +1,18 @@
 "use client";
 
 import {
-  PageContent,
-  PageHeader,
-  PageShell,
-  SurfaceCard,
+    PageContent,
+    PageHeader,
+    PageShell,
+    SurfaceCard,
 } from "@/shared/components/layout/page-layout";
 import { ActionResponse } from "@/shared/lib/action-response";
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
 import { Input } from "@/shared/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 
+import { Group, Stack } from "@/shared/ui/layout";
 import { Search } from "lucide-react";
-import { Stack, Group } from "@/shared/ui/layout";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, use, useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -20,8 +20,8 @@ import { CustomerListResponse } from "../actions";
 import { CreateCustomerTrigger } from "./create-customer-trigger";
 import { CustomerFilter } from "./customer-filter";
 import {
-  CustomerTable,
-  CustomerTableSkeleton,
+    CustomerTable,
+    CustomerTableSkeleton,
 } from "./customer-list/customer-table";
 
 interface CustomersPageProps {
@@ -126,6 +126,7 @@ export function CustomersPage({
                       defaultValue={initialSearch}
                       onChange={(e) => handleSearch(e.target.value)}
                       startContent={<Search className="text-muted-foreground" size={16} />}
+                      isSearch
                     />
                   </div>
                 }

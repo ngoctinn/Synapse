@@ -35,6 +35,7 @@ export function ChatSidebar({
         <Input
           startContent={<Search className="text-muted-foreground h-4 w-4" />}
           placeholder="Tìm kiếm khách hàng..."
+          isSearch
         />
       </div>
 

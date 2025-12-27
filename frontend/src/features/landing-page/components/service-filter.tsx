@@ -22,11 +22,12 @@ export function ServiceFilter({
     <div className="mb-12 space-y-6">
       {/* Search Bar */}
       <div className="group relative mx-auto max-w-lg">
-        <Search className="text-muted-foreground group-focus-within:text-primary absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 transition-colors duration-300" />
         <Input
           placeholder="Tìm kiếm liệu trình..."
-          className="bg-background border-border hover:border-primary/50 focus:border-primary h-12 rounded-full pl-12 text-base shadow-sm transition-all"
+          className="bg-background border-border hover:border-primary/50 focus:border-primary h-12 text-base shadow-sm transition-all"
           onChange={(e) => onSearch(e.target.value)}
+          startContent={<Search className="text-muted-foreground group-focus-within:text-primary h-5 w-5 transition-colors duration-300" />}
+          isSearch
         />
       </div>
 

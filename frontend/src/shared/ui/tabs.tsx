@@ -39,12 +39,12 @@ const tabsListVariants = cva(
         soft: "bg-muted/10 border border-border/40 p-1 gap-1 inline-flex items-center justify-center rounded-lg text-muted-foreground",
       },
       size: {
-        /** Compact cho inline/popup (36px) */
-        sm: "h-9",
-        /** Default cho page headers (40px) */
+        /** Compact cho inline/popup (32px - matches Button sm) */
+        sm: "h-8",
+        /** Default cho page headers (40px - matches Button default) */
         default: "h-10",
-        /** Large cho form sections (44px) */
-        lg: "h-11",
+        /** Large cho form sections (48px - matches Button lg) */
+        lg: "h-12",
       },
       /** Chế độ responsive: auto-width hoặc full-width */
       fullWidth: {
@@ -128,7 +128,7 @@ const tabsTriggerVariants = cva(
       size: {
         sm: "text-xs min-w-[80px]",
         default: "text-sm min-w-[100px]",
-        lg: "text-sm min-w-[120px]",
+        lg: "text-base min-w-[120px]",
       },
       /** Flex behavior trong container */
       stretch: {
@@ -199,6 +199,7 @@ export {
   TabsList,
   tabsListVariants,
   TabsTrigger,
-  tabsTriggerVariants,
+  tabsTriggerVariants
 };
 export type { TabsListProps, TabsTriggerProps };
+

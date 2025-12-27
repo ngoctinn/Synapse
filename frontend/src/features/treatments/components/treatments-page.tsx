@@ -8,8 +8,8 @@ import {
 } from "@/shared/components/layout/page-layout";
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
 import { Input } from "@/shared/ui/input";
-import { Search } from "lucide-react";
 import { Group } from "@/shared/ui/layout";
+import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -63,7 +63,8 @@ export function TreatmentsPage({
               placeholder="Tìm theo tên khách hoặc mã..."
               defaultValue={initialSearch}
               onChange={(e) => handleSearch(e.target.value)}
-              startContent={<Search size={16} className="text-muted-foreground/70" />}
+              startContent={<Search size={16} className="text-muted-foreground" />}
+              isSearch
             />
           </div>
             }

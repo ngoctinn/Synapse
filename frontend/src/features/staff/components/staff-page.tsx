@@ -10,9 +10,12 @@ import {
 import { ActionResponse } from "@/shared/lib/action-response";
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
 import { Input } from "@/shared/ui/input";
+import { Group, Stack } from "@/shared/ui/layout";
+import { Box } from "@/shared/ui/layout/box";
+import { Skeleton } from "@/shared/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
+import { Text as UIText } from "@/shared/ui/typography";
 import { Search } from "lucide-react";
-import { Stack, Group } from "@/shared/ui/layout";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, use, useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -54,9 +57,11 @@ function StaffListWrapper({
 
   if (response.status === "error") {
     return (
-      <div className="text-destructive p-4">
-        Lỗi tải danh sách nhân viên: {response.message}
-      </div>
+      <Box className="p-4">
+        <UIText variant="error">
+          Lỗi tải danh sách nhân viên: {response.message}
+        </UIText>
+      </Box>
     );
   }
 
@@ -169,6 +174,7 @@ export function StaffPage({
                       defaultValue={initialSearch}
                       onChange={(e) => handleSearch(e.target.value)}
                       startContent={<Search className="text-muted-foreground" size={16} />}
+                      isSearch
                     />
                   </div>
                 }
@@ -219,16 +225,16 @@ export function StaffPage({
           >
             <Suspense
               fallback={
-                <div className="flex flex-1 flex-col space-y-4 p-0">
+                <Stack gap={4} className="p-0 flex-1">
                   <div className="flex items-center justify-between">
-                    <div className="bg-muted h-9 w-48 animate-pulse rounded-lg" />
+                    <Skeleton className="h-9 w-48" />
                     <div className="flex gap-2">
-                      <div className="bg-muted h-9 w-24 animate-pulse rounded-lg" />
-                      <div className="bg-muted h-9 w-24 animate-pulse rounded-lg" />
+                       <Skeleton className="h-9 w-24" />
+                       <Skeleton className="h-9 w-24" />
                     </div>
                   </div>
-                  <div className="bg-muted/20 border-muted min-h-[300px] w-full flex-1 animate-pulse rounded-lg border border-dashed" />
-                </div>
+                  <Skeleton className="min-h-[300px] w-full flex-1 border border-dashed rounded-lg" />
+                </Stack>
               }
             >
               <StaffSchedulerWrapper

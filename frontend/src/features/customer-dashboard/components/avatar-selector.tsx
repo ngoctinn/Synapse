@@ -4,13 +4,13 @@ import { cn } from "@/shared/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { Button } from "@/shared/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from "@/shared/ui/dialog";
 import { Check, RefreshCw } from "lucide-react";
 import * as React from "react";
@@ -81,7 +81,7 @@ export function AvatarSelector({
               )}
               onClick={() => setSelectedAvatar(avatar)}
             >
-              <Avatar className="h-16 w-16">
+              <Avatar className="h-12 w-12">
                 <AvatarImage src={avatar} alt={`Avatar option ${index + 1}`} />
                 <AvatarFallback>AV</AvatarFallback>
               </Avatar>

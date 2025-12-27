@@ -3,27 +3,25 @@
 import { Skill } from "@/features/services";
 import { deleteStaff } from "@/features/staff/actions";
 import { useTableParams, useTableSelection } from "@/shared/hooks";
+import { Z_INDEX } from "@/shared/lib/design-tokens";
+import { cn } from "@/shared/lib/utils";
 import { DeleteConfirmDialog, showToast, Spinner } from "@/shared/ui";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { Badge } from "@/shared/ui/badge";
-import { Button } from "@/shared/ui/button";
 import { AnimatedUsersIcon } from "@/shared/ui/custom/animated-icon";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
+import { Group, Stack } from "@/shared/ui/layout";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
 } from "@/shared/ui/tooltip";
-import { Calendar } from "lucide-react";
-import { Icon } from "@/shared/ui/custom/icon";
-import { Stack, Group } from "@/shared/ui/layout";
-import { cn } from "@/shared/lib/utils";
-import { Z_INDEX } from "@/shared/lib/design-tokens";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Text as UIText } from "@/shared/ui/typography";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { ROLE_CONFIG } from "../../model/constants";
 import { Staff } from "../../model/types";
@@ -145,12 +143,12 @@ export function StaffTable({
             </AvatarFallback>
           </Avatar>
           <Stack gap={0}>
-            <span className="text-foreground group-hover:text-primary text-sm font-medium transition-colors">
+            <UIText size="sm" weight="medium" className="group-hover:text-primary transition-colors">
               {staff.user.full_name || "Chưa cập nhật tên"}
-            </span>
-            <span className="text-muted-foreground text-xs">
+            </UIText>
+            <UIText size="xs" variant="muted">
               {staff.user.email}
-            </span>
+            </UIText>
           </Stack>
         </Group>
       ),
@@ -200,9 +198,9 @@ export function StaffTable({
               )}
             </>
           ) : (
-            <span className="text-muted-foreground pl-1 text-xs italic">
+            <UIText size="xs" variant="muted" className="pl-1 italic">
               --
-            </span>
+            </UIText>
           )}
         </Group>
       ),

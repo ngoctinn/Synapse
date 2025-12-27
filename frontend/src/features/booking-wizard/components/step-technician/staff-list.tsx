@@ -34,7 +34,7 @@ export const StaffList = ({
             onClick={() => member.is_available && onSelect(member)}
           >
             <div className="flex items-center gap-4 p-4">
-              <Avatar className="border-background h-14 w-14 border-2">
+              <Avatar className="border-background h-12 w-12 border-2">
                 <AvatarImage src={member.avatar_url} alt={member.name} />
                 <AvatarFallback className="bg-muted text-muted-foreground font-semibold">
                   {member.name.charAt(0)}

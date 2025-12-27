@@ -1,9 +1,9 @@
 "use client";
 
 import {
-    useBulkAction,
-    useTableParams,
-    useTableSelection,
+  useBulkAction,
+  useTableParams,
+  useTableSelection,
 } from "@/shared/hooks";
 import { formatCurrency } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
@@ -16,6 +16,7 @@ import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import { Group, Stack } from "@/shared/ui/layout";
 import { Switch } from "@/shared/ui/switch";
+import { Text as UIText } from "@/shared/ui/typography";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -100,9 +101,9 @@ export function ServiceTable({
       header: "Tên dịch vụ",
       cell: (service) => (
         <Stack gap={0}>
-          <span className="text-foreground group-hover:text-primary text-sm font-medium transition-colors">
+          <UIText size="sm" weight="medium" className="group-hover:text-primary transition-colors">
             {service.name}
-          </span>
+          </UIText>
         </Stack>
       ),
     },
@@ -117,9 +118,9 @@ export function ServiceTable({
             {category.name}
           </Badge>
         ) : (
-          <span className="text-muted-foreground text-xs italic">
+          <UIText variant="muted" size="xs" className="italic">
             Chưa phân loại
-          </span>
+          </UIText>
         );
       },
     },
@@ -128,13 +129,13 @@ export function ServiceTable({
       cell: (service) => {
         const totalTime = service.duration + service.buffer_time;
         return (
-          <Stack gap={1} className="text-xs">
-            <span className="text-foreground font-medium">
+          <Stack gap={1}>
+            <UIText size="xs" weight="medium">
               Tổng: {totalTime}p
-            </span>
-            <span className="text-muted-foreground">
+            </UIText>
+            <UIText size="xs" variant="muted">
               ({service.duration}p + {service.buffer_time}p nghỉ)
-            </span>
+            </UIText>
           </Stack>
         );
       },
@@ -144,7 +145,7 @@ export function ServiceTable({
       cell: (service) => {
         const reqs = service.resource_requirements || [];
         if (reqs.length === 0) {
-            return <span className="text-muted-foreground text-xs italic">Không yêu cầu</span>;
+            return <UIText variant="muted" size="xs" className="italic">Không yêu cầu</UIText>;
         }
 
         return (

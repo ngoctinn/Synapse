@@ -16,7 +16,7 @@ export const MOCK_STAFF: Staff[] = [
       full_name: "Nguyễn Văn Quản Lý",
       avatar_url: "https://api.dicebear.com/9.x/avataaars/svg?seed=admin",
       phone_number: "0901234567",
-      role: "admin",
+      role: "manager",
       is_active: true,
     },
     skills: [],

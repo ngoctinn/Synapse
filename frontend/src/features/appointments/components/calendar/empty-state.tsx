@@ -40,26 +40,26 @@ const EMPTY_STATE_CONTENT: Record<
   }
 > = {
   "no-appointments": {
-    icon: <Calendar className="text-muted-foreground/50 h-16 w-16" />,
+    icon: <Calendar className="text-muted-foreground/50 h-12 w-12" />,
     title: "Chưa có lịch hẹn",
     description: "Bắt đầu bằng cách tạo lịch hẹn đầu tiên cho ngày này.",
     actionLabel: "Tạo lịch hẹn",
   },
   "no-results": {
-    icon: <Search className="text-muted-foreground/50 h-16 w-16" />,
+    icon: <Search className="text-muted-foreground/50 h-12 w-12" />,
     title: "Không tìm thấy kết quả",
     description: "Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc.",
     actionLabel: "Xóa bộ lọc",
   },
   "no-filters": {
-    icon: <Filter className="text-muted-foreground/50 h-16 w-16" />,
+    icon: <Filter className="text-muted-foreground/50 h-12 w-12" />,
     title: "Không có kết quả phù hợp",
     description: "Không có lịch hẹn nào khớp với bộ lọc hiện tại.",
     actionLabel: "Xóa bộ lọc",
   },
   error: {
     icon: (
-      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
         <span className="text-3xl">⚠️</span>
       </div>
     ),

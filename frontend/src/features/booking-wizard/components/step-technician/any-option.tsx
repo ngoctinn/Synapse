@@ -1,6 +1,6 @@
+import { cn } from "@/shared/lib/utils";
 import { Card } from "@/shared/ui/card";
 import { Check, Users } from "lucide-react";
-import { cn } from "@/shared/lib/utils";
 
 interface AnyOptionProps {
   isSelected: boolean;
@@ -17,7 +17,7 @@ export const AnyOption = ({ isSelected, onSelect }: AnyOptionProps) => {
       onClick={onSelect}
     >
       <div className="flex items-center gap-4 p-4">
-        <div className="bg-primary/10 text-primary flex h-14 w-14 items-center justify-center rounded-full">
+        <div className="bg-primary/10 text-primary flex h-12 w-12 items-center justify-center rounded-full">
           <Users className="h-6 w-6" />
         </div>
 

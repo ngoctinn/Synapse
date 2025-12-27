@@ -1,23 +1,23 @@
 "use client";
 
 import {
-  PageContent,
-  PageHeader,
-  PageShell,
-  SurfaceCard,
+    PageContent,
+    PageHeader,
+    PageShell,
+    SurfaceCard,
 } from "@/shared/components/layout/page-layout";
 import { Button } from "@/shared/ui/button";
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
 import { Input } from "@/shared/ui/input";
+import { Group } from "@/shared/ui/layout";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select";
-import { Loader2, XCircle } from "lucide-react";
-import { Stack, Group } from "@/shared/ui/layout";
+import { Loader2, Search, XCircle } from "lucide-react";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { useDebounce } from "use-debounce";
 import { getReviews } from "../actions";
@@ -75,6 +75,8 @@ export function ReviewsAdminPage() {
                   setFilters((prev) => ({ ...prev, search: e.target.value }))
                 }
                 className="w-full"
+                startContent={<Search size={16} className="text-muted-foreground" />}
+                isSearch
               />
             </div>
           }
