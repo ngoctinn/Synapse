@@ -1,15 +1,16 @@
 "use client";
 
+import { StickyHeader } from "@/shared/components/layout/page-layout";
 import { useState } from "react";
 import { useBookingStore } from "../hooks/use-booking-store";
-import { customerInfoSchema } from "../schemas";
+import { useBookingValidation } from "../hooks/use-booking-validation";
 import { BookingSuccess } from "./booking-success";
 import { CustomerInfoStep } from "./step-payment/customer-info-step";
 import { ServicesStep } from "./step-services/services-step";
+import { SummaryStep } from "./step-summary/summary-step";
 import { TechnicianStep } from "./step-technician/technician-step";
 import { HoldTimer } from "./step-time/hold-timer";
 import { TimeStep } from "./step-time/time-step";
-import { SummaryStep } from "./step-summary/summary-step";
 import { WizardFooter } from "./wizard-footer";
 import { WizardHeader } from "./wizard-header";
 
@@ -26,6 +27,7 @@ export const BookingWizard = () => {
     customerInfo,
     reset,
   } = useBookingStore();
+  const { canProceed } = useBookingValidation();
   const [isSuccess, setIsSuccess] = useState(false);
 
   const renderStep = () => {
@@ -61,24 +63,7 @@ export const BookingWizard = () => {
   // Step 2-5 use Main Footer.
   const showMainFooter = currentStep !== 1 && !isSuccess;
 
-  // Validation for enabling Next button
-  const canProceed = () => {
-    switch (currentStep) {
-      case 1:
-        return selectedServices.length > 0;
-      case 2:
-        return !!selectedDate && !!selectedSlot;
-      case 3:
-        return !!staffId;
-      case 4:
-        if (!customerInfo) return false;
-        return customerInfoSchema.safeParse(customerInfo).success;
-      case 5:
-        return true;
-      default:
-        return true;
-    }
-  };
+
 
   if (isSuccess) {
     return (
@@ -101,7 +86,7 @@ export const BookingWizard = () => {
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <div className="bg-background/80 sticky top-0 z-50 border-b backdrop-blur-md">
+      <StickyHeader>
         <WizardHeader />
         {holdExpiresAt && (
           <div className="container mx-auto flex max-w-2xl justify-center px-4 py-2">
@@ -114,7 +99,7 @@ export const BookingWizard = () => {
             />
           </div>
         )}
-      </div>
+      </StickyHeader>
 
       <main className="animate-in fade-in container mx-auto max-w-2xl flex-1 px-4 py-6 pb-20 duration-500 md:pb-24">
         {renderStep()}

@@ -8,35 +8,33 @@ import {
   SurfaceCard,
 } from "@/shared/components/layout/page-layout";
 import { ActionResponse } from "@/shared/lib/action-response";
-import { StatBadge } from "./stat-badge";
 import { cn } from "@/shared/lib/utils";
 import {
   Button,
   DeleteConfirmDialog,
-  showToast,
   Tooltip,
   TooltipContent,
-  TooltipTrigger,
+  TooltipTrigger
 } from "@/shared/ui";
 import { Icon } from "@/shared/ui/custom/icon";
+import { Group, Stack } from "@/shared/ui/layout";
 import {
   Activity,
   CalendarCheck,
   Clock,
-  LucideIcon,
   Plus,
   RefreshCw,
-  Settings2,
+  Settings2
 } from "lucide-react";
-import { Stack, Group } from "@/shared/ui/layout";
 import { use, useState } from "react";
 import {
-  useCalendarState,
-  useAppointmentMetrics,
-  useAppointmentEvents,
-  useAppointmentDialogs,
   useAppointmentActions,
+  useAppointmentDialogs,
+  useAppointmentEvents,
+  useAppointmentMetrics,
+  useCalendarState,
 } from "../hooks";
+import { createDraftAppointment } from "../model/factory";
 import { MockService } from "../model/mocks";
 import type {
   AppointmentFilters,
@@ -46,6 +44,7 @@ import type {
 import { CalendarView } from "./calendar";
 import { AppointmentSheet } from "./sheet";
 import { CancelDialog } from "./sheet/cancel-dialog";
+import { StatBadge } from "./stat-badge";
 import { DateNavigator, ViewSwitcher } from "./toolbar";
 import { AppointmentsFilter } from "./toolbar/appointments-filter";
 
@@ -147,43 +146,9 @@ export function AppointmentsPage({
   const handleSlotClick = (clickedDate: Date, hour: number, minute: number) => {
     const startTime = new Date(clickedDate);
     startTime.setHours(hour, minute, 0, 0);
-    const ONE_HOUR_MS = 3600000;
-    const endTime = new Date(startTime.getTime() + ONE_HOUR_MS);
     const staffId = filters.staffIds?.[0] || staffList[0]?.id || "";
 
-    setSelectedEvent({
-      id: "new",
-      start: startTime,
-      end: endTime,
-      title: "Lịch hẹn mới",
-      staffId,
-      staffName: "",
-      color: "gray",
-      status: "PENDING",
-      isRecurring: false,
-      appointment: {
-        id: "new",
-        customerId: "",
-        customerName: "",
-        customerPhone: "",
-        items: [],
-        totalPrice: 0,
-        totalDuration: 60,
-        staffId,
-        staffName: "",
-        serviceId: "",
-        serviceName: "",
-        serviceColor: "#gray",
-        startTime,
-        endTime,
-        duration: 60,
-        status: "PENDING",
-        isRecurring: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        createdBy: "",
-      },
-    });
+    setSelectedEvent(createDraftAppointment(startTime, staffId));
     setSheetMode("create");
     setIsSheetOpen(true);
   };

@@ -4,14 +4,8 @@ import { ActionResponse, error, success } from "@/shared/lib/action-response";
 import { revalidatePath } from "next/cache";
 import { MOCK_CUSTOMERS } from "./model/mocks";
 import { customerSchema, customerUpdateSchema } from "./model/schemas";
-import { Customer } from "./model/types";
 
-export type CustomerListResponse = {
-  data: Customer[];
-  total: number;
-  page: number;
-  limit: number;
-};
+import { CustomerListResponse } from "./model/types";
 
 export async function getCustomers(
   page: number = 1,

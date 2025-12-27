@@ -1,37 +1,29 @@
 "use client";
 
-import { cn } from "@/shared/lib/utils";
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  Input,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-  Textarea,
-  Button,
-  DatePicker,
+    DatePicker,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+    Input,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+    Textarea
 } from "@/shared/ui";
-import { format, parse } from "date-fns";
-import { vi } from "date-fns/locale";
-import { CalendarIcon } from "lucide-react";
+import { Grid, Stack } from "@/shared/ui/layout";
+import { parse } from "date-fns";
 import { useFormContext } from "react-hook-form";
-import { Stack, Grid } from "@/shared/ui/layout";
 
-// Type cho danh sách KTV được truyền từ parent
-export type TechnicianOption = {
-  id: string;
-  name: string;
-};
+import { TechnicianOption } from "../model/types";
 
 interface CustomerFormProps {
   mode: "create" | "update";

@@ -68,6 +68,29 @@ export function PageHeader({
   );
 }
 
+// --- Sticky Header ---
+interface StickyHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+  children?: React.ReactNode;
+}
+
+export function StickyHeader({
+  className,
+  children,
+  ...props
+}: StickyHeaderProps) {
+  return (
+    <div
+      className={cn(
+        "bg-background/80 sticky top-0 z-50 border-b backdrop-blur-md",
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+
 // --- Page Content ---
 interface PageContentProps extends React.HTMLAttributes<HTMLDivElement> {
   fullWidth?: boolean;

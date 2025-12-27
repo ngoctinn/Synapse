@@ -15,7 +15,7 @@ import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, use, useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
-import { CustomerListResponse } from "../actions";
+import { CustomerListResponse } from "../model/types";
 import { CreateCustomerTrigger } from "./create-customer-trigger";
 import { CustomerFilter } from "./customer-filter";
 import {

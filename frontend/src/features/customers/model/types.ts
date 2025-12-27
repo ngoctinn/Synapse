@@ -27,3 +27,15 @@ export interface Customer {
   created_at: string;
   updated_at: string;
 }
+
+export type TechnicianOption = {
+  id: string;
+  name: string;
+};
+
+export type CustomerListResponse = {
+  data: Customer[];
+  total: number;
+  page: number;
+  limit: number;
+};

@@ -227,13 +227,13 @@ export function StaffPage({
               fallback={
                 <VStack gap={4} className="p-0 flex-1">
                   <div className="flex items-center justify-between">
-                    <Skeleton className="h-9 w-48" />
+                    <Skeleton className="h-10 w-48" />
                     <div className="flex gap-2">
-                       <Skeleton className="h-9 w-24" />
-                       <Skeleton className="h-9 w-24" />
+                       <Skeleton className="h-10 w-24" />
+                       <Skeleton className="h-10 w-24" />
                     </div>
                   </div>
-                  <Skeleton className="min-h-[300px] w-full flex-1 border border-dashed rounded-lg" />
+                  <Skeleton className="min-h-80 w-full flex-1 border border-dashed rounded-lg" />
                 </VStack>
               }
             >

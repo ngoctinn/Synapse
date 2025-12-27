@@ -2,9 +2,9 @@
 
 import { Button } from "@/shared/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useBookingStore } from "../hooks/use-booking-store";
 import { StepIndicator } from "./shared/step-indicator";
-import { useRouter } from "next/navigation";
 
 export const WizardHeader = () => {
   const { currentStep, goToStep } = useBookingStore();
@@ -19,7 +19,7 @@ export const WizardHeader = () => {
   };
 
   return (
-    <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
+    <header className="w-full">
       <div className="container mx-auto flex h-16 max-w-2xl items-center px-4">
         <Button
           variant="ghost"
