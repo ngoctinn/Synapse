@@ -228,8 +228,8 @@ Danh sách dịch vụ Spa.
 | id | UUID | Không | auto | Khóa chính |
 | category_id | UUID | Có | NULL | FK service_categories |
 | name | VARCHAR(255) | Không | - | Tên dịch vụ |
-| duration_minutes | INTEGER | Không | - | Thời lượng (phút) |
-| buffer_time_minutes | INTEGER | Có | 0 | Thời gian nghỉ (phút) |
+| duration | INTEGER | Không | - | Thời lượng (phút) |
+| buffer_time | INTEGER | Có | 0 | Thời gian nghỉ (phút) |
 | price | DECIMAL(12,2) | Không | - | Giá niêm yết |
 | description | TEXT | Có | NULL | Mô tả |
 | image_url | TEXT | Có | NULL | Hình ảnh |
@@ -302,6 +302,8 @@ Yêu cầu nhóm tài nguyên cho dịch vụ.
 | service_id | UUID | Không | - | FK services |
 | group_id | UUID | Không | - | FK resource_groups |
 | quantity | INTEGER | Có | 1 | Số lượng |
+| start_delay | INTEGER | Không | 0 | Thời điểm bắt đầu (phút từ đầu dịch vụ) |
+| usage_duration | INTEGER | Có | NULL | Thời lượng sử dụng (phút) |
 
 Khóa chính: (service_id, group_id)
 
@@ -568,7 +570,7 @@ Nhật ký thay đổi.
 |:---|:---|:---|
 | staff_profiles | commission_rate | 0 <= x <= 100 |
 | customers | loyalty_points | x >= 0 |
-| services | duration_minutes | x > 0 |
+| services | duration | x > 0 |
 | services | price | x >= 0 |
 | shifts | end_time | end_time > start_time |
 | bookings | end_time | end_time > start_time |

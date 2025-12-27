@@ -84,8 +84,8 @@ erDiagram
         uuid id PK
         uuid category_id FK
         string name
-        int duration_minutes
-        int buffer_time_minutes
+        int duration
+        int buffer_time
         decimal price
         text description
         string image_url
@@ -130,6 +130,8 @@ erDiagram
         uuid service_id PK,FK
         uuid group_id PK,FK
         int quantity
+        int start_delay "Phút bắt đầu (từ 0)"
+        int usage_duration "Thời lượng (null = full)"
     }
 
     resource_groups ||--|{ resources : "categorizes"
@@ -600,8 +602,8 @@ CREATE TABLE services (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     category_id UUID REFERENCES service_categories(id) ON DELETE SET NULL,
     name VARCHAR(255) NOT NULL,
-    duration_minutes INTEGER NOT NULL,
-    buffer_time_minutes INTEGER DEFAULT 0,
+    duration INTEGER NOT NULL,
+    buffer_time INTEGER DEFAULT 0,
     price DECIMAL(12, 2) NOT NULL,
     description TEXT,
     image_url TEXT,
@@ -610,8 +612,8 @@ CREATE TABLE services (
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
 
-    CONSTRAINT chk_duration CHECK (duration_minutes > 0),
-    CONSTRAINT chk_buffer CHECK (buffer_time_minutes >= 0),
+    CONSTRAINT chk_duration CHECK (duration > 0),
+    CONSTRAINT chk_buffer CHECK (buffer_time >= 0),
     CONSTRAINT chk_price CHECK (price >= 0)
 );
 
@@ -652,6 +654,8 @@ CREATE TABLE service_resource_requirements (
     service_id UUID REFERENCES services(id) ON DELETE CASCADE,
     group_id UUID REFERENCES resource_groups(id) ON DELETE CASCADE,
     quantity INTEGER DEFAULT 1,
+    start_delay INTEGER DEFAULT 0 NOT NULL,
+    usage_duration INTEGER, -- NULL means full duration
     PRIMARY KEY (service_id, group_id),
 
     CONSTRAINT chk_quantity CHECK (quantity > 0)
