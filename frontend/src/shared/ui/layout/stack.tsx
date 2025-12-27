@@ -1,6 +1,7 @@
-import * as React from "react";
 import { cn } from "@/shared/lib/utils";
+import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
+import * as React from "react";
 
 const stackVariants = cva("flex flex-col", {
   variants: {
@@ -47,9 +48,10 @@ export interface StackProps
 }
 
 export const Stack = React.forwardRef<HTMLDivElement, StackProps>(
-  ({ className, gap, align, justify, ...props }, ref) => {
+  ({ className, gap, align, justify, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "div";
     return (
-      <div
+      <Comp
         ref={ref}
         className={cn(stackVariants({ gap, align, justify, className }))}
         {...props}

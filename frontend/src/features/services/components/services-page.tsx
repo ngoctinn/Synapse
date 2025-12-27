@@ -1,27 +1,25 @@
 "use client";
 
-import { Resource, BedType } from "@/features/resources";
+import { BedType, Resource } from "@/features/resources";
 import {
-  PageContent,
-  PageHeader,
-  PageShell,
-  SurfaceCard,
+    PageContent,
+    PageHeader,
+    PageShell,
+    SurfaceCard,
 } from "@/shared/components/layout/page-layout";
+import { ActionResponse } from "@/shared/lib/action-response";
+import { Icon } from "@/shared/ui/custom";
 import { FilterBar } from "@/shared/ui/custom/filter-bar";
 import { Input } from "@/shared/ui/input";
+import { Group, Stack } from "@/shared/ui/layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
-import { ActionResponse } from "@/shared/lib/action-response";
 import { Search } from "lucide-react";
-import { Icon } from "@/shared/ui/custom";
-import { Stack, Group } from "@/shared/ui/layout";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Suspense, use, useState, useTransition } from "react";
+import { Suspense, use, useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { PaginatedResponse, Service, Skill } from "../model/types";
-import { CreateSkillDialog } from "./create-skill-dialog";
 import { ServiceFilter } from "./service-filter";
 import { ServiceTable, ServiceTableSkeleton } from "./service-table";
-import { SkillTable, SkillTableSkeleton } from "./skill-table";
 
 interface ServicesPageProps {
   page: number;
@@ -123,6 +121,7 @@ export function ServicesPage({
     <PageShell>
       <Stack gap={0} asChild>
         <Tabs
+          id="services-tabs"
           value={activeTab}
           onValueChange={handleTabChange}
         >
