@@ -40,9 +40,9 @@ import { Stack } from "@/shared/ui/layout";
 const DEFAULT_SERVICE_COLOR = "#8b5cf6";
 const MS_PER_MINUTE = 60000;
 
-// ============================================
+
 // TYPES
-// ============================================
+
 
 interface AppointmentFormProps {
   id?: string;
@@ -59,9 +59,9 @@ interface AppointmentFormProps {
   onDirtyChange?: (isDirty: boolean) => void;
 }
 
-// ============================================
+
 // COMPONENT
-// ============================================
+
 
 export function AppointmentForm({
   id = "appointment-form",
@@ -111,9 +111,9 @@ export function AppointmentForm({
     }
   }, [isDirty, onDirtyChange]);
 
-  // ============================================
+  
   // HANDLERS
-  // ============================================
+  
 
   const handleSubmit = useCallback(
     (values: QuickAppointmentFormValues) => {

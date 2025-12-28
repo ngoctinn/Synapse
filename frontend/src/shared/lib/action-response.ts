@@ -68,9 +68,9 @@ export function isError<T>(
   return response.status === "error";
 }
 
-// ============================================
+
 // BACKWARD COMPATIBILITY (Deprecated)
-// ============================================
+
 /**
  * @deprecated Sử dụng `ActionResponse` thay thế.
  * Type này được giữ lại để tương thích ngược với code cũ.

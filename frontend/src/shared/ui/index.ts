@@ -12,15 +12,17 @@
  * import { Dialog } from "@/shared/ui/dialog"
  */
 
-// ==========================================
-// CUSTOM COMPONENTS (PREFERRED - Ưu tiên sử dụng)
-// ==========================================
 
-// ==========================================
+// CUSTOM COMPONENTS (PREFERRED - Ưu tiên sử dụng)
+
+
+
 // CUSTOM COMPONENTS (MOVED TO @/shared/components)
-// ==========================================
+
 
 export { DatePicker } from "./date-picker";
+export { DateRangeNavigator } from "./date-range-navigator";
+export { DeleteConfirmDialog } from "./delete-confirm-dialog";
 export {
     Dialog, DialogClose,
     DialogContent,
@@ -33,14 +35,17 @@ export {
     DialogTrigger
 } from "./dialog";
 export { OptionalMark } from "./form";
+export { RequiredMark } from "./required-mark";
+export { TableRowActions } from "./table-row-actions";
+export { TagInput } from "./tag-input";
 export { TimePicker } from "./time-picker";
 
 // Sonner Toast
 export { Toaster, showToast } from "./sonner";
 
-// ==========================================
+
 // CORE COMPONENTS (Đã được chuẩn hóa)
-// ==========================================
+
 
 export { Button, buttonVariants, type ButtonProps } from "./button";
 
@@ -96,9 +101,9 @@ export {
     InputGroupTextarea
 } from "./input-group";
 
-// ==========================================
+
 // LAYOUT & STRUCTURE
-// ==========================================
+
 
 export {
     Accordion,
@@ -128,9 +133,9 @@ export { ScrollArea, ScrollBar } from "./scroll-area";
 export { Separator } from "./separator";
 export { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
 
-// ==========================================
+
 // OVERLAY COMPONENTS
-// ==========================================
+
 
 export {
     Drawer,
@@ -182,9 +187,9 @@ export {
     AlertDialogTrigger
 } from "./alert-dialog";
 
-// ==========================================
+
 // FEEDBACK COMPONENTS
-// ==========================================
+
 
 export { Alert, AlertDescription, AlertTitle } from "./alert";
 export { Empty } from "./empty";
@@ -197,9 +202,9 @@ export { Badge, badgeVariants } from "./badge";
 export type { BadgePreset, BadgeVariant } from "./badge";
 export { BADGE_PRESETS } from "./badge-presets";
 
-// ==========================================
+
 // NAVIGATION & MENU
-// ==========================================
+
 
 export {
     Breadcrumb,
@@ -294,9 +299,9 @@ export {
 
 
 
-// ==========================================
+
 // TABLE & DATA DISPLAY
-// ==========================================
+
 
 export {
     Pagination,
@@ -318,9 +323,9 @@ export {
     TableRow
 } from "./table";
 
-// ==========================================
+
 // SPECIALIZED COMPONENTS
-// ==========================================
+
 
 export { AspectRatio } from "./aspect-ratio";
 export { Avatar, AvatarFallback, AvatarImage } from "./avatar";

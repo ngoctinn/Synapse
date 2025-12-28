@@ -7,14 +7,14 @@ import { DayButton, DayPicker, getDefaultClassNames } from "react-day-picker";
 import { cn } from "@/shared/lib/utils";
 import { Button, buttonVariants } from "@/shared/ui/button";
 
-// ============================================================================
+
 // CONSTANTS - Kích thước ô lịch cố định
-// ============================================================================
+
 const CELL_SIZE = "2rem"; // 32px - kích thước chuẩn cho mỗi ô ngày
 
-// ============================================================================
+
 // CALENDAR COMPONENT - Lịch chọn ngày với hỗ trợ single/range selection
-// ============================================================================
+
 function Calendar({
   className,
   classNames,
@@ -200,9 +200,9 @@ function Calendar({
   );
 }
 
-// ============================================================================
+
 // DAY BUTTON - Nút chọn ngày với các trạng thái selection
-// ============================================================================
+
 function CalendarDayButton({
   className,
   day,

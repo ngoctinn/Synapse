@@ -300,7 +300,7 @@ export async function updateUser(
   return success(undefined);
 }
 
-// ===== MOCK / NOT IMPLEMENTED YET =====
+ MOCK / NOT IMPLEMENTED YET =====
 
 export async function getPermissions(): Promise<
   ActionResponse<Record<string, Record<string, boolean>>>

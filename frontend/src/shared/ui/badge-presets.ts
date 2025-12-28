@@ -1,9 +1,9 @@
 import { type VariantProps } from "class-variance-authority";
 import { badgeVariants } from "./badge";
 
-// ============================================
+
 // PRESET SYSTEM - Domain Specific Configurations
-// ============================================
+
 
 export type BadgePreset =
   // Appointment Status

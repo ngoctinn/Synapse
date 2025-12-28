@@ -5,9 +5,9 @@ import * as React from "react";
 import { cn } from "@/shared/lib/utils";
 import { BADGE_PRESETS, type BadgePreset } from "./badge-presets";
 
-// ============================================
+
 // BADGE VARIANTS - Visual Clarity Design System
-// ============================================
+
 
 const badgeVariants = cva(
   "inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-semibold w-fit whitespace-nowrap shrink-0 [&>svg]:size-3.5 gap-1.5 [&>svg]:pointer-events-none transition-colors overflow-hidden",
