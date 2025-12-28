@@ -12,21 +12,24 @@ import { AnimatedUsersIcon } from "@/shared/ui/custom/animated-icon";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
+import { DataTableToolbar } from "@/shared/ui/custom/data-table-toolbar";
 import { Icon } from "@/shared/ui/custom/icon";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
+import { Input } from "@/shared/ui/input";
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/shared/ui/tooltip";
-import { Activity, AlertCircle, Loader2 } from "lucide-react";
+import { Activity, AlertCircle, Loader2, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { deleteCustomer } from "../../actions";
 import { Customer } from "../../model/types";
 import { CreateCustomerTrigger } from "../create-customer-trigger";
 import { CustomerActions } from "../customer-actions";
+import { CustomerFilter } from "../customer-filter";
 import { CustomerSheet } from "../customer-sheet";
 
 interface CustomerTableProps {
@@ -37,6 +40,10 @@ interface CustomerTableProps {
   className?: string;
   isLoading?: boolean;
   variant?: "default" | "flush";
+  searchProps?: {
+    initialValue: string;
+    onSearch: (term: string) => void;
+  };
 }
 
 export function CustomerTable({
@@ -47,25 +54,21 @@ export function CustomerTable({
   className,
   isLoading,
   variant = "default",
+  searchProps,
 }: CustomerTableProps) {
   const router = useRouter();
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  // Use custom hook for URL state management
   const {
     page: urlPage,
-    sortBy,
-    order,
     handlePageChange: urlPageChange,
-    handleSort,
   } = useTableParams({
     defaultSortBy: "created_at",
     defaultOrder: "desc",
   });
 
-  // Support both controlled and uncontrolled modes
   const page = pageProp ?? urlPage;
   const handlePageChange = onPageChangeProp ?? urlPageChange;
 
@@ -235,6 +238,23 @@ export function CustomerTable({
         isLoading={isLoading}
         skeletonCount={5}
         variant={variant}
+        toolbar={
+          <DataTableToolbar
+            searchField={
+              searchProps && (
+                  <Input
+                    placeholder="Tìm kiếm khách hàng..."
+                    defaultValue={searchProps.initialValue}
+                    onChange={(e) => searchProps.onSearch(e.target.value)}
+                    startContent={<Search className="text-muted-foreground" size={16} />}
+                    className="w-full"
+                  />
+              )
+            }
+            filters={<CustomerFilter />}
+            actions={<CreateCustomerTrigger />}
+          />
+        }
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection as any}
         getRowId={(row) => row.id.toString()}
@@ -274,12 +294,9 @@ export function CustomerTable({
       )}
       {isPending && (
         <div className={cn(Z_INDEX.loadingOverlay, "bg-background/50 absolute inset-0 flex flex-col items-center justify-center backdrop-blur-[2px]")}>
-          {/* Fix Issue #23: Use Z_INDEX tokens */}
           <Icon icon={Loader2} className="text-primary mb-2 animate-spin" size="xl" />
-          {/* Fix Issue #30: Optimize pulse animation */}
           <p className="text-muted-foreground animate-pulse text-sm font-medium will-change-[opacity]">
             Đang xử lý...
-
           </p>
         </div>
       )}

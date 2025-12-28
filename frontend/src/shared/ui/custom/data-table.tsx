@@ -48,6 +48,7 @@ interface DataTableProps<TData, TValue> {
   className?: string;
   variant?: "default" | "flush";
   skeletonCount?: number;
+  toolbar?: React.ReactNode;
 }
 
 export function DataTable<TData, TValue>({
@@ -66,6 +67,7 @@ export function DataTable<TData, TValue>({
   className,
   variant = "default",
   skeletonCount = 5,
+  toolbar,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [internalRowSelection, setInternalRowSelection] = useState({});
@@ -131,6 +133,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="flex flex-col gap-4">
       <div className={containerClasses}>
+        {toolbar}
         <div className="scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent w-full overflow-x-auto overflow-y-visible">
           <Table>
             <TableHeader className="bg-muted/30 sticky top-0 z-20 border-b">

@@ -208,7 +208,7 @@ export const SHEET_TOKENS = {
   /** Scroll area WITH horizontal padding - form content kế thừa */
   scrollArea: "sheet-scroll-area flex-1 overflow-y-auto px-6",
   /** Form wrapper inside scroll area - có vertical padding và gap */
-  form: "py-6 space-y-6",
+  form: "py-6 space-y-4",
   /** Grid cho 2 cột fields */
   formGrid: "grid grid-cols-1 sm:grid-cols-2 gap-4",
 } as const;

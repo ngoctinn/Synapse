@@ -58,15 +58,15 @@ const sheetVariants = cva(
           "inset-y-0 right-0 h-full w-full border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right",
       },
       size: {
-        default: "sm:max-w-lg",
-        sm: "sm:max-w-sm",
-        md: "sm:max-w-md",
-        lg: "sm:max-w-lg",
-        xl: "sm:max-w-xl",
-        "2xl": "sm:max-w-2xl",
-        "3xl": "sm:max-w-3xl",
-        wide: "sm:max-w-[40%]",
-        full: "sm:max-w-full",
+        default: "w-full sm:max-w-lg",
+        sm: "w-full sm:max-w-sm",
+        md: "w-full sm:max-w-md",
+        lg: "w-full sm:max-w-lg",
+        xl: "w-full sm:max-w-xl",
+        "2xl": "w-full sm:max-w-2xl",
+        "3xl": "w-full sm:max-w-3xl",
+        wide: "w-full sm:max-w-[40%]",
+        full: "w-full sm:max-w-full",
       },
     },
     defaultVariants: {
@@ -185,11 +185,11 @@ function SheetDescription({
 }
 
 export {
-    Sheet, SheetBody, SheetClose,
-    SheetContent,
-    SheetDescription,
-    SheetFooter,
-    SheetHeader, SheetTitle,
-    SheetTrigger
+  Sheet, SheetBody, SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader, SheetTitle,
+  SheetTrigger
 };
 

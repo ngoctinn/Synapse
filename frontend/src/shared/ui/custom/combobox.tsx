@@ -4,7 +4,7 @@ import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "@/shared/lib/utils";
-import { Button } from "@/shared/ui/button";
+import { Button, type ButtonProps } from "@/shared/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -22,7 +22,7 @@ export interface ComboboxOption {
   disabled?: boolean;
 }
 
-interface ComboboxProps {
+interface ComboboxProps extends Omit<ButtonProps, "onChange" | "value"> {
   options: ComboboxOption[];
   value?: string;
   onChange: (value: string) => void;
@@ -48,6 +48,7 @@ export function Combobox({
   isLoading = false,
   className,
   modal = false,
+  ...props
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -60,6 +61,7 @@ export function Combobox({
   }, [searchQuery, open, onSearch]);
 
   const selectedOption = options.find((option) => option.value === value);
+  const isInvalid = props["aria-invalid"] === true || props["aria-invalid"] === "true";
 
   return (
     <Popover open={open} onOpenChange={setOpen} modal={modal}>
@@ -69,11 +71,14 @@ export function Combobox({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "bg-background w-full justify-between items-center font-normal h-10 px-4 rounded-lg text-base md:text-sm hover:border-primary/30 focus-visible:ring-[1.5px] focus-visible:ring-ring/40 focus-visible:outline-none",
-            "aria-invalid:hover:border-destructive aria-invalid:border-destructive/80",
+            "bg-background w-full justify-between items-center font-normal h-10 px-4 rounded-lg text-base md:text-sm",
+            "data-[state=open]:border-primary/80 data-[state=open]:ring-[1.5px] data-[state=open]:ring-primary/20",
+            !value && "text-muted-foreground",
+            isInvalid && "border-destructive/80 text-destructive focus-visible:ring-destructive/20 hover:border-destructive",
             className
           )}
           disabled={disabled}
+          {...props}
         >
           {selectedOption ? (
             <span className="truncate">{selectedOption.label}</span>

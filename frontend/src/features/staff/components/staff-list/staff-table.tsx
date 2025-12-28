@@ -3,8 +3,8 @@
 import { Skill } from "@/features/services";
 import { deleteStaff, updateStaff } from "@/features/staff/actions";
 import {
-    useBulkAction,
-    useTableParams,
+  useBulkAction,
+  useTableParams,
 } from "@/shared/hooks";
 import { Z_INDEX } from "@/shared/lib/design-tokens";
 import { cn, getInitials } from "@/shared/lib/utils";
@@ -16,23 +16,26 @@ import { Icon } from "@/shared/ui/custom";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
+import { DataTableToolbar } from "@/shared/ui/custom/data-table-toolbar";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
+import { Input } from "@/shared/ui/input";
 import { Group, Stack } from "@/shared/ui/layout";
 import { Switch } from "@/shared/ui/switch";
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/shared/ui/tooltip";
 import { Text as UIText } from "@/shared/ui/typography";
-import { Phone, Users } from "lucide-react";
+import { Phone, Search, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ROLE_CONFIG } from "../../model/constants";
 import { Staff } from "../../model/types";
 import { InviteStaffTrigger } from "../invite-staff-trigger";
+import { StaffFilter } from "../staff-filter";
 import { StaffSheet } from "../staff-sheet";
 import { StaffActions } from "./staff-actions";
 
@@ -46,9 +49,12 @@ interface StaffTableProps {
   variant?: "default" | "flush";
   isLoading?: boolean;
   hidePagination?: boolean;
+  searchProps?: {
+    initialValue: string;
+    onSearch: (term: string) => void;
+  };
+  canManageStaff?: boolean;
 }
-
-// Hợp nhất vào StaffActions
 
 export function StaffTable({
   data,
@@ -60,28 +66,24 @@ export function StaffTable({
   variant = "default",
   isLoading,
   hidePagination,
+  searchProps,
+  canManageStaff = false,
 }: StaffTableProps) {
   const router = useRouter();
   const [editingStaff, setEditingStaff] = useState<Staff | null>(null);
   const [rowSelection, setRowSelection] = useState({});
 
-  // Use custom hook for URL state management
   const {
     page: urlPage,
-    sortBy,
-    order,
     handlePageChange: urlPageChange,
-    handleSort,
   } = useTableParams({
     defaultSortBy: "created_at",
     defaultOrder: "desc",
   });
 
-  // Support both controlled and uncontrolled modes
   const page = pageProp ?? urlPage;
   const handlePageChange = onPageChangeProp ?? urlPageChange;
 
-  // Use custom hook for bulk delete
   const {
     execute: executeBulkDelete,
     isPending,
@@ -101,7 +103,7 @@ export function StaffTable({
     try {
       await updateStaff(staff.user_id, { is_active: checked });
       toast.success(checked ? "Đã kích hoạt nhân viên" : "Đã vô hiệu hóa nhân viên");
-      router.refresh(); // Refresh data after status change
+      router.refresh();
     } catch (error) {
       toast.error("Không thể thay đổi trạng thái");
     }
@@ -138,7 +140,7 @@ export function StaffTable({
     },
     {
       header: "Nhân viên",
-      accessorKey: "user.full_name", // Keep accessorKey for sorting if needed
+      accessorKey: "user.full_name",
       id: "user.full_name",
       enableSorting: true,
       cell: ({ row }) => (
@@ -170,9 +172,7 @@ export function StaffTable({
     },
     {
       header: "Vai trò & Chức vụ",
-      accessorKey: "user.role", // Keep accessorKey for sorting if needed
       id: "user.role",
-      enableSorting: true,
       cell: ({ row }) => (
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
@@ -236,9 +236,7 @@ export function StaffTable({
     },
     {
       header: "Trạng thái",
-      accessorKey: "user.is_active", // Keep accessorKey for sorting if needed
       id: "user.is_active",
-      enableSorting: true,
       cell: ({ row }) => (
         <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
            <Switch
@@ -278,9 +276,27 @@ export function StaffTable({
         isLoading={isLoading}
         skeletonCount={5}
         hidePagination={hidePagination}
+        toolbar={
+          <DataTableToolbar
+            searchField={
+              searchProps && (
+                  <Input
+                    placeholder="Tìm kiếm nhân viên..."
+                    defaultValue={searchProps.initialValue}
+                    onChange={(e) => searchProps.onSearch(e.target.value)}
+                    startContent={<Search className="text-muted-foreground" size={16} />}
+                    className="w-full"
+                  />
+              )
+            }
+            filters={<StaffFilter />}
+            actions={canManageStaff && <InviteStaffTrigger skills={skills} />}
+          />
+        }
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection as any}
         getRowId={(row) => row.user_id}
+        onRowClick={(staff) => setEditingStaff(staff)}
         emptyState={
           <DataTableEmptyState
             icon={Users}

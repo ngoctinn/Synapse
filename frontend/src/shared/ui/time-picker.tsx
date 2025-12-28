@@ -1,17 +1,17 @@
 "use client";
 
-import * as React from "react";
-import { Clock } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select";
+import { Clock } from "lucide-react";
+import * as React from "react";
 
-export interface TimePickerProps {
+export interface TimePickerProps extends Omit<React.ComponentProps<typeof SelectTrigger>, "onChange" | "value"> {
   value?: string;
   onChange?: (value: string) => void;
   className?: string;
@@ -39,6 +39,7 @@ export function TimePicker({
   max,
   step = 5,
   size = "default",
+  ...props
 }: TimePickerProps) {
   // Generate time slots based on step/min/max
   const timeSlots = React.useMemo(() => {
@@ -69,10 +70,11 @@ export function TimePicker({
         size={size}
         className={cn(
           "font-normal",
-          hasError && "border-destructive text-destructive focus-visible:ring-destructive/20",
+          (hasError || props["aria-invalid"]) && "border-destructive text-destructive focus-visible:ring-destructive/20",
           className
         )}
-        aria-invalid={hasError}
+        aria-invalid={!!(hasError || props["aria-invalid"])}
+        {...props}
       >
         <div className="flex items-center gap-2">
           <Clock className={cn("size-4 shrink-0", hasError ? "text-destructive" : "text-muted-foreground/50")} />

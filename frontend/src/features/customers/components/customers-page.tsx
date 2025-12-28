@@ -1,26 +1,21 @@
 "use client";
 
 import {
-    PageContent,
-    PageHeader,
-    PageShell,
-    SurfaceCard,
+  PageContent,
+  PageHeader,
+  PageShell,
+  SurfaceCard,
 } from "@/shared/components/layout/page-layout";
 import { ActionResponse } from "@/shared/lib/action-response";
-import { FilterBar } from "@/shared/ui/custom/filter-bar";
-import { Input } from "@/shared/ui/input";
-import { HStack, VStack } from "@/shared/ui/layout/stack";
+import { VStack } from "@/shared/ui/layout/stack";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
-import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, use, useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { CustomerListResponse } from "../model/types";
-import { CreateCustomerTrigger } from "./create-customer-trigger";
-import { CustomerFilter } from "./customer-filter";
 import {
-    CustomerTable,
-    CustomerTableSkeleton,
+  CustomerTable,
+  CustomerTableSkeleton,
 } from "./customer-list/customer-table";
 
 interface CustomersPageProps {
@@ -31,9 +26,14 @@ interface CustomersPageProps {
 function CustomerListWrapper({
   customerListPromise,
   page,
+  searchProps,
 }: {
   customerListPromise: Promise<ActionResponse<CustomerListResponse>>;
   page: number;
+  searchProps: {
+    initialValue: string;
+    onSearch: (term: string) => void;
+  };
 }) {
   const response = use(customerListPromise);
 
@@ -55,6 +55,7 @@ function CustomerListWrapper({
       totalPages={totalPages}
       variant="flush"
       className="border-none"
+      searchProps={searchProps}
     />
   );
 }
@@ -105,34 +106,18 @@ export function CustomersPage({
         onValueChange={handleTabChange}
         className="flex flex-col gap-0"
       >
-        <PageHeader>
-          <TabsList size="default">
+        <PageHeader
+           title="Khách hàng"
+           subtitle="Quản lý hồ sơ, lịch sử dịch vụ và thông tin liên hệ của khách hàng."
+        >
+          <TabsList size="sm">
             <TabsTrigger value="list" stretch={false}>
               Danh sách
             </TabsTrigger>
             <TabsTrigger value="insights" stretch={false}>
-              Thông tin
+              Thông tin chi tiết
             </TabsTrigger>
           </TabsList>
-
-          <HStack gap={3} className="w-full md:w-auto">
-            {activeTab === "list" && (
-              <FilterBar
-                startContent={
-                  <div className="w-full md:w-64">
-                    <Input
-                      placeholder="Tìm kiếm khách hàng..."
-                      defaultValue={initialSearch}
-                      onChange={(e) => handleSearch(e.target.value)}
-                      startContent={<Search className="text-muted-foreground" size={16} />}
-                    />
-                  </div>
-                }
-                endContent={<CustomerFilter />}
-              />
-            )}
-            <CreateCustomerTrigger />
-          </HStack>
         </PageHeader>
 
         <VStack gap={0} className="page-entry-animation overflow-hidden">
@@ -146,6 +131,10 @@ export function CustomersPage({
                   <CustomerListWrapper
                     customerListPromise={customerListPromise}
                     page={page}
+                    searchProps={{
+                      initialValue: initialSearch,
+                      onSearch: handleSearch,
+                    }}
                   />
                 </Suspense>
               </SurfaceCard>
@@ -157,11 +146,8 @@ export function CustomersPage({
             className="mt-0 data-[state=inactive]:hidden"
           >
             <PageContent>
-              <SurfaceCard className="text-muted-foreground items-center justify-center p-8">
-                <p>
-                  Tính năng báo cáo và thông tin chi tiết khách hàng đang được
-                  phát triển.
-                </p>
+              <SurfaceCard className="text-muted-foreground flex items-center justify-center p-8">
+                Tính năng báo cáo và thông tin chi tiết khách hàng đang được phát triển.
               </SurfaceCard>
             </PageContent>
           </TabsContent>

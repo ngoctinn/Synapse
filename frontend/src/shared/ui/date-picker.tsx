@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/shared/lib/utils";
-import { Button } from "@/shared/ui/button";
+import { Button, type ButtonProps } from "@/shared/ui/button";
 import { Calendar } from "@/shared/ui/calendar";
 import {
   Popover,
@@ -12,19 +12,13 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 
-interface DatePickerProps {
+interface DatePickerProps extends Omit<ButtonProps, "onChange" | "value"> {
   value?: Date;
   onChange?: (date: Date | undefined) => void;
   placeholder?: string;
   className?: string;
   disabled?: boolean;
-  /**
-   * Minimum date allowed
-   */
   minDate?: Date;
-  /**
-   * Maximum date allowed
-   */
   maxDate?: Date;
   hasError?: boolean;
   modal?: boolean;
@@ -42,7 +36,10 @@ export function DatePicker({
   hasError,
   modal = false,
   size = "default",
+  ...props
 }: DatePickerProps) {
+  const isInvalid = !!(hasError || props["aria-invalid"] === true || props["aria-invalid"] === "true");
+
   return (
     <Popover modal={modal}>
       <PopoverTrigger asChild>
@@ -56,11 +53,12 @@ export function DatePicker({
             size === "sm" && "h-8",
             "data-[state=open]:border-primary/80 data-[state=open]:ring-[1.5px] data-[state=open]:ring-primary/20",
             !value && "text-muted-foreground",
-            hasError && "border-destructive text-destructive focus-visible:ring-destructive/20",
+            isInvalid && "border-destructive/80 text-destructive focus-visible:ring-destructive/20 hover:border-destructive",
             className
           )}
+          {...props}
         >
-          <CalendarIcon className={cn("mr-2 h-4 w-4 opacity-50 transition-colors group-data-[state=open]:text-primary group-hover:text-foreground", hasError && "text-destructive")} />
+          <CalendarIcon className={cn("mr-2 h-4 w-4 opacity-50 transition-colors group-data-[state=open]:text-primary group-hover:text-foreground", isInvalid && "text-destructive")} />
           {value ? format(value, "dd/MM/yyyy", { locale: vi }) : <span>{placeholder}</span>}
         </Button>
       </PopoverTrigger>

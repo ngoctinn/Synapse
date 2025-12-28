@@ -1,17 +1,26 @@
 "use client";
 
+import { cn } from "@/shared/lib/utils";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/shared/ui/alert-dialog";
 import {
   Sheet,
+  SheetBody,
   SheetContent,
+  SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetDescription,
-  SheetBody,
-  SheetFooter,
 } from "@/shared/ui/sheet";
-import { cn } from "@/shared/lib/utils";
 import * as React from "react";
-import { ConfirmDialog } from "./confirm-dialog";
 
 interface ActionSheetProps {
   open: boolean;
@@ -25,7 +34,7 @@ interface ActionSheetProps {
   isDirty?: boolean;
   /** Bật/tắt tính năng cảnh báo thay đổi (Mặc định: true) */
   showUnsavedChangesWarning?: boolean;
-  size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "premium" | "full";
+  size?: "default" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full";
   className?: string;
   headerClassName?: string;
   bodyClassName?: string;
@@ -51,7 +60,7 @@ export function ActionSheet({
   isPending = false,
   isDirty = false,
   showUnsavedChangesWarning = true,
-  size = "premium",
+  size = "default",
   className,
   headerClassName,
   bodyClassName,
@@ -114,16 +123,22 @@ export function ActionSheet({
       </Sheet>
 
       {/* Dialog xác nhận khi có thay đổi chưa lưu */}
-      <ConfirmDialog
-        open={showConfirm}
-        onOpenChange={setShowConfirm}
-        onConfirm={handleConfirmClose}
-        title="Thay đổi chưa được lưu"
-        description="Bạn có các thay đổi chưa được lưu. Bạn có chắc chắn muốn đóng và hủy bỏ các thay đổi này không?"
-        confirmText="Đóng và hủy bỏ"
-        cancelText="Tiếp tục chỉnh sửa"
-        variant="warning"
-      />
+      <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Thay đổi chưa được lưu</AlertDialogTitle>
+            <AlertDialogDescription>
+              Bạn có các thay đổi chưa được lưu. Bạn có chắc chắn muốn đóng và hủy bỏ các thay đổi này không?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Tiếp tục chỉnh sửa</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmClose} variant="destructive">
+              Đóng và hủy bỏ
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

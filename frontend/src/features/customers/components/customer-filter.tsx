@@ -1,8 +1,7 @@
 "use client";
 
 import { useFilterParams } from "@/shared/lib/hooks/use-filter-params";
-import { FilterButton } from "@/shared/ui/custom/filter-button";
-import { Label } from "@/shared/ui/label";
+import { HStack } from "@/shared/ui/layout/stack";
 import {
   Select,
   SelectContent,
@@ -10,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/select";
-import { Activity, User } from "lucide-react";
 
 const STATUS_OPTIONS = [
   { id: "active", name: "Đang hoạt động" },
@@ -24,10 +22,9 @@ const GENDER_OPTIONS = [
 ] as const;
 
 export function CustomerFilter() {
-  const { searchParams, activeCount, updateParam, clearFilters } =
-    useFilterParams({
-      filterKeys: ["status", "gender"],
-    });
+  const { searchParams, updateParam } = useFilterParams({
+    filterKeys: ["status", "gender"],
+  });
 
   const status = searchParams.get("status");
   const gender = searchParams.get("gender");
@@ -41,57 +38,36 @@ export function CustomerFilter() {
   };
 
   return (
-    <FilterButton
-      count={activeCount}
-      onClear={clearFilters}
-    >
-      <div className="grid min-w-[220px] gap-5 p-1">
-        {/* Filter: Trạng thái */}
-        <div className="space-y-2">
-          <Label
-            htmlFor="status"
-            className="flex items-center gap-2 text-sm font-medium"
-          >
-            <Activity className="size-3.5" /> Trạng thái
-          </Label>
-          <Select value={status || "all"} onValueChange={handleStatusChange}>
-            <SelectTrigger id="status" className="bg-background w-full">
-              <SelectValue placeholder="Tất cả" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Tất cả</SelectItem>
-              {STATUS_OPTIONS.map((s) => (
-                <SelectItem key={s.id} value={s.id}>
-                  {s.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+    <HStack gap={2} className="items-center">
+      {/* Lọc Trạng thái */}
+      <Select value={status || "all"} onValueChange={handleStatusChange}>
+        <SelectTrigger id="status" className="h-10 w-[180px] bg-background text-sm">
+           <SelectValue placeholder="Trạng thái" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all" className="text-xs">Tất cả trạng thái</SelectItem>
+          {STATUS_OPTIONS.map((s) => (
+            <SelectItem key={s.id} value={s.id} className="text-xs">
+              {s.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
-        {/* Filter: Giới tính */}
-        <div className="space-y-2">
-          <Label
-            htmlFor="gender"
-            className="flex items-center gap-2 text-sm font-medium"
-          >
-            <User className="size-3.5" /> Giới tính
-          </Label>
-          <Select value={gender || "all"} onValueChange={handleGenderChange}>
-            <SelectTrigger id="gender" className="bg-background w-full">
-              <SelectValue placeholder="Tất cả" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Tất cả</SelectItem>
-              {GENDER_OPTIONS.map((g) => (
-                <SelectItem key={g.id} value={g.id}>
-                  {g.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-    </FilterButton>
+      {/* Lọc Giới tính */}
+      <Select value={gender || "all"} onValueChange={handleGenderChange}>
+        <SelectTrigger id="gender" className="h-10 w-[160px] bg-background text-sm">
+           <SelectValue placeholder="Giới tính" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all" className="text-xs">Tất cả giới tính</SelectItem>
+          {GENDER_OPTIONS.map((g) => (
+            <SelectItem key={g.id} value={g.id} className="text-xs">
+              {g.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </HStack>
   );
 }

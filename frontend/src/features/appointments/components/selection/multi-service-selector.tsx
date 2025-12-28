@@ -2,21 +2,22 @@
 
 import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
-import { Button } from "@/shared/ui/button";
+import { Button, type ButtonProps } from "@/shared/ui/button";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
 } from "@/shared/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import * as React from "react";
 import { MockService } from "../../model/mocks";
 
-interface MultiServiceSelectorProps {
+interface MultiServiceSelectorProps
+  extends Omit<ButtonProps, "onChange" | "value"> {
   selectedIds: string[];
   onChange: (ids: string[]) => void;
   availableServices: MockService[];
@@ -28,6 +29,7 @@ export function MultiServiceSelector({
   onChange,
   availableServices,
   className,
+  ...props
 }: MultiServiceSelectorProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -49,6 +51,8 @@ export function MultiServiceSelector({
     onChange(selectedIds.filter((item) => item !== id));
   };
 
+  const isInvalid = props["aria-invalid"] === true || props["aria-invalid"] === "true";
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -58,8 +62,10 @@ export function MultiServiceSelector({
           aria-expanded={open}
           className={cn(
             "h-auto min-h-[2.5rem] w-full justify-between px-3 py-2",
+            isInvalid && "border-destructive/80 ring-destructive/10 hover:border-destructive focus-visible:ring-destructive/50 focus-visible:border-destructive",
             className
           )}
+          {...props}
         >
           <div className="flex flex-wrap items-center gap-1 overflow-x-hidden">
             {selectedServices.length > 0 ? (

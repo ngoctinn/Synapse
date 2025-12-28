@@ -1,5 +1,6 @@
 import { AdminHeader, AdminSidebar } from "@/features/admin";
 import { BottomNav } from "@/features/admin/components/bottom-nav";
+import { HeaderProvider } from "@/shared/lib/header-context";
 import { createClient } from "@/shared/lib/supabase/server";
 import { SidebarInset, SidebarProvider } from "@/shared/ui/sidebar";
 import { cookies } from "next/headers";
@@ -38,18 +39,20 @@ export default async function AdminLayout({
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
 
   return (
-    <SidebarProvider defaultOpen={defaultOpen} className="bg-muted">
-      <AdminSidebar />
-      <SidebarInset className="bg-transparent h-screen max-h-svh overflow-hidden">
-        <AdminHeader
-          user={userProfile}
-          loading={!userProfile && session?.access_token ? true : false}
-        />
-        <div className="flex flex-1 flex-col overflow-y-auto mx-2 mt-3 pb-6 scrollbar-none">
-          {children}
-        </div>
-        <BottomNav />
-      </SidebarInset>
-    </SidebarProvider>
+    <HeaderProvider>
+      <SidebarProvider defaultOpen={defaultOpen} className="bg-muted">
+        <AdminSidebar />
+        <SidebarInset className="bg-transparent h-screen max-h-svh overflow-hidden">
+          <AdminHeader
+            user={userProfile}
+            loading={!userProfile && session?.access_token ? true : false}
+          />
+          <div className="flex flex-1 flex-col overflow-y-auto mx-2 mt-3 pb-6 scrollbar-none">
+            {children}
+          </div>
+          <BottomNav />
+        </SidebarInset>
+      </SidebarProvider>
+    </HeaderProvider>
   );
 }

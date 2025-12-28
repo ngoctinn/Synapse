@@ -85,7 +85,7 @@ function FormItem({ className, size = "regular", ...props }: FormItemProps) {
     <FormItemContext.Provider value={{ id, size }}>
       <div
         data-slot="form-item"
-        className={cn("group", className)}
+        className={cn("group space-y-2", className)}
         {...props}
       />
     </FormItemContext.Provider>
@@ -107,7 +107,7 @@ function FormLabel({ className, required, children, ...props }: FormLabelProps) 
       data-error={!!error}
       size={size}
       className={cn(
-        "text-foreground/80 data-[error=true]:text-destructive/90 font-medium mb-1.5 block",
+        "text-foreground/80 data-[error=true]:text-destructive/90 font-medium block",
         className
       )}
       htmlFor={formItemId}
@@ -154,7 +154,7 @@ function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
     <p
       data-slot="form-description"
       id={formDescriptionId}
-      className={cn("text-muted-foreground text-xs mt-1.5", className)}
+      className={cn("text-muted-foreground text-xs", className)}
       {...props}
     />
   );
@@ -173,7 +173,7 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
       id={formMessageId}
       data-slot="form-message"
       className={cn(
-        "text-destructive text-xs font-medium min-h-[20px] transition-all mt-1.5",
+        "text-destructive text-xs font-medium transition-all",
         !body && "opacity-0", // Hide visually but keep space? Or just use min-h on container.
         // Actually, if we use min-h, we might have extra whitespace when valid.
         // Better approach for "Reserved space":

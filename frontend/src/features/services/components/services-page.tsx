@@ -1,6 +1,5 @@
 "use client";
 
-import { BedType, Resource } from "@/features/resources";
 import {
   PageContent,
   PageHeader,
@@ -8,28 +7,19 @@ import {
   SurfaceCard,
 } from "@/shared/components/layout/page-layout";
 import { ActionResponse } from "@/shared/lib/action-response";
-import { Icon } from "@/shared/ui/custom";
-import { FilterBar } from "@/shared/ui/custom/filter-bar";
-import { Input } from "@/shared/ui/input";
-import { Group, Stack } from "@/shared/ui/layout";
-import { Box } from "@/shared/ui/layout/box";
+import { Stack } from "@/shared/ui/layout/stack";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
-import { Text as UIText } from "@/shared/ui/typography";
-import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, use, useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
-import { PaginatedResponse, Service, ServiceCategory, Skill } from "../model/types";
-import { ServiceFilter } from "./service-filter";
+import { ServiceCategory, ServicePagination, Skill } from "../model/types";
 import { ServiceTable, ServiceTableSkeleton } from "./service-table";
 
 interface ServicesPageProps {
   page: number;
   skills: Skill[];
   categories: ServiceCategory[];
-  bedTypes: BedType[];
-  equipmentList: Resource[];
-  servicesPromise: Promise<ActionResponse<PaginatedResponse<Service>>>;
+  servicesPromise: Promise<ActionResponse<ServicePagination>>;
 }
 
 function ServiceListWrapper({
@@ -37,30 +27,29 @@ function ServiceListWrapper({
   skills,
   categories,
   page,
+  searchProps,
 }: {
-  servicesPromise: Promise<ActionResponse<PaginatedResponse<Service>>>;
+  servicesPromise: Promise<ActionResponse<ServicePagination>>;
   skills: Skill[];
   categories: ServiceCategory[];
   page: number;
+  searchProps: {
+    initialValue: string;
+    onSearch: (term: string) => void;
+  };
 }) {
-  const servicesRes = use(servicesPromise);
+  const response = use(servicesPromise);
 
-  const { data, total } =
-    servicesRes.status === "success" && servicesRes.data
-      ? servicesRes.data
-      : { data: [], total: 0 };
-
-  const totalPages = Math.ceil(total / 10);
-
-  if (servicesRes.status === "error") {
+  if (response.status === "error") {
     return (
-      <Box className="p-4">
-        <UIText variant="error">
-          Lỗi tải dịch vụ: {servicesRes.message}
-        </UIText>
-      </Box>
+      <div className="text-destructive p-4 text-center">
+        Lỗi tải dữ liệu: {response.message}
+      </div>
     );
   }
+
+  const { data, total } = response.data!;
+  const totalPages = Math.ceil(total / 10);
 
   return (
     <ServiceTable
@@ -70,29 +59,27 @@ function ServiceListWrapper({
       page={page}
       totalPages={totalPages}
       variant="flush"
-      hidePagination={false}
+      searchProps={searchProps}
     />
   );
 }
-
 
 export function ServicesPage({
   page,
   skills,
   categories,
-  // bedTypes,
-  // equipmentList,
   servicesPromise,
 }: ServicesPageProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
   const [, startTransition] = useTransition();
 
   // Get active tab from URL or default to 'list'
   const activeTab = searchParams.get("view") || "list";
 
-  // Get initial search query from URL
+  // Get initial search query
   const initialSearch = searchParams.get("search")?.toString() || "";
 
   const handleTabChange = (value: string) => {
@@ -103,7 +90,6 @@ export function ServicesPage({
     });
   };
 
-  // Debounced search handler - syncs with URL params
   const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams);
     if (term) {
@@ -119,8 +105,6 @@ export function ServicesPage({
     });
   }, 300);
 
-  const isServiceTab = activeTab === "list";
-
   return (
     <PageShell>
       <Tabs
@@ -129,42 +113,37 @@ export function ServicesPage({
         onValueChange={handleTabChange}
         className="flex flex-col gap-0"
       >
-        <PageHeader>
-          <TabsList size="default" aria-label="Quản lý dịch vụ">
+        <PageHeader
+           title="Dịch vụ"
+           subtitle="Quản lý danh mục dịch vụ, kỹ năng và tài liệu chuyên môn của spa."
+        >
+          <TabsList size="sm" aria-label="Quản lý dịch vụ">
             <TabsTrigger
               value="list"
               aria-label="Danh sách dịch vụ"
               stretch={false}
             >
-              Dịch vụ
+              Danh sách
+            </TabsTrigger>
+            <TabsTrigger
+              value="skills"
+              aria-label="Kỹ năng kỹ thuật viên"
+              stretch={false}
+            >
+              Kỹ năng
+            </TabsTrigger>
+             <TabsTrigger
+              value="categories"
+              aria-label="Danh mục dịch vụ"
+              stretch={false}
+            >
+              Danh mục
             </TabsTrigger>
           </TabsList>
-
-          <Group gap={3} className="w-full md:w-auto">
-            <FilterBar
-              startContent={
-                  <Input
-                    placeholder={
-                      isServiceTab ? "Tìm kiếm dịch vụ..." : "Tìm kiếm kỹ năng..."
-                    }
-                    defaultValue={initialSearch}
-                    onChange={(e) => handleSearch(e.target.value)}
-                    startContent={<Icon icon={Search} className="text-muted-foreground" size={16} />}
-                    className="w-full md:w-64"
-                  />
-              }
-              endContent={
-                isServiceTab && <ServiceFilter availableSkills={skills} availableCategories={categories} />
-              }
-            />
-          </Group>
         </PageHeader>
 
-        <Stack gap={0} className="overflow-hidden">
-          <TabsContent
-            value="list"
-            className="mt-0"
-          >
+        <Stack gap={0} className="page-entry-animation overflow-hidden">
+          <TabsContent value="list" className="mt-0">
             <PageContent>
               <SurfaceCard>
                 <Suspense fallback={<ServiceTableSkeleton />}>
@@ -173,8 +152,28 @@ export function ServicesPage({
                     skills={skills}
                     categories={categories}
                     page={page}
+                    searchProps={{
+                      initialValue: initialSearch,
+                      onSearch: handleSearch,
+                    }}
                   />
                 </Suspense>
+              </SurfaceCard>
+            </PageContent>
+          </TabsContent>
+
+          <TabsContent value="skills" className="mt-0">
+            <PageContent>
+              <SurfaceCard className="text-muted-foreground flex items-center justify-center p-8">
+                Tính năng quản lý kỹ năng đang được phát triển.
+              </SurfaceCard>
+            </PageContent>
+          </TabsContent>
+
+          <TabsContent value="categories" className="mt-0">
+            <PageContent>
+              <SurfaceCard className="text-muted-foreground flex items-center justify-center p-8">
+                Tính năng quản lý danh mục đang được phát triển.
               </SurfaceCard>
             </PageContent>
           </TabsContent>

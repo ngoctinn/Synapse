@@ -1,5 +1,9 @@
+"use client";
+
+import { useHeader } from "@/shared/lib/header-context";
 import { cn } from "@/shared/lib/utils";
-import React from "react";
+import React, { useEffect } from "react";
+import { createPortal } from "react-dom";
 
 // --- Page Shell ---
 interface PageShellProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -15,7 +19,7 @@ export function PageShell({
   return (
     <div
       className={cn(
-        "flex w-full flex-col gap-4", // Removed min-h-screen, bg-muted/40 (handled by AppShell)
+        "flex w-full flex-col gap-4",
         animate && "page-entry-animation",
         className
       )}
@@ -26,7 +30,7 @@ export function PageShell({
   );
 }
 
-// --- Page Header ---
+// --- Page Header (Bây giờ là một Controller và Portal Target) ---
 interface PageHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
   title?: string;
@@ -35,37 +39,26 @@ interface PageHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function PageHeader({
-  className,
   children,
   title,
   subtitle,
-  backHref,
-  ...props
 }: PageHeaderProps) {
-  return (
-    <header
-      className={cn("z-20 flex flex-col gap-4", className)}
-      {...props}
-    >
-      <div className="flex min-h-[3rem] items-center justify-between gap-4 px-0 py-2">
-        {(title || subtitle) && (
-          <div className="flex flex-col gap-0.5">
-            {title && (
-              <h1 className="text-lg font-semibold tracking-tight md:text-xl">
-                {title}
-              </h1>
-            )}
-            {subtitle && (
-              <p className="text-muted-foreground hidden text-sm md:block">
-                {subtitle}
-              </p>
-            )}
-          </div>
-        )}
-        {children}
-      </div>
-    </header>
-  );
+  const { setHeader, clearHeader, tabsSlot } = useHeader();
+
+  useEffect(() => {
+    // Chỉ set title và subtitle qua context
+    setHeader({
+      title,
+      subtitle,
+    });
+
+    return () => clearHeader();
+  }, [title, subtitle, setHeader, clearHeader]);
+
+  // Sử dụng Portal để đưa children lên Header mà không làm đứt gãy React Tree
+  if (!tabsSlot || !children) return null;
+
+  return createPortal(children, tabsSlot);
 }
 
 // --- Sticky Header ---
@@ -103,10 +96,10 @@ export function PageContent({
   ...props
 }: PageContentProps) {
   return (
-    <div // Changed from main to div
+    <div
       className={cn(
-        "flex flex-1 flex-col", // Removed overflow-hidden to let AppShell scroll
-        !fullWidth && "gap-4", // Removed fixed px/py as AppShell handles padding
+        "flex flex-1 flex-col",
+        !fullWidth && "gap-4",
         className
       )}
       {...props}
@@ -117,7 +110,6 @@ export function PageContent({
 }
 
 // --- Surface Card ---
-// Wrapper chuẩn cho content chính (Table, Form...)
 type SurfaceCardProps = React.HTMLAttributes<HTMLDivElement>;
 
 export function SurfaceCard({
