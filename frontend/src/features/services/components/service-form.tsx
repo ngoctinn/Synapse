@@ -12,7 +12,6 @@ import { Stack } from "@/shared/ui/layout";
 import { SkillsTab } from "./service-form/skills-tab";
 
 interface ServiceFormProps {
-  mode: "create" | "update";
   availableSkills: Skill[];
   availableCategories: ServiceCategory[];
   availableResourceGroups: ResourceGroup[];
@@ -20,7 +19,6 @@ interface ServiceFormProps {
 }
 
 export function ServiceForm({
-  // mode,
   availableSkills,
   availableCategories,
   availableResourceGroups,

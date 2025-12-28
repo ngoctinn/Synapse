@@ -36,7 +36,6 @@ import { SkillTable, SkillTableSkeleton } from "./skill-table";
     resourceGroupsPromise,
     page,
     searchProps,
-    onDataLoaded,
   }: {
     servicesPromise: Promise<ActionResponse<ServicePagination>>;
     skillsPromise: Promise<ActionResponse<Skill[]>>;
@@ -47,7 +46,6 @@ import { SkillTable, SkillTableSkeleton } from "./skill-table";
       initialValue: string;
       onSearch: (term: string) => void;
     };
-    onDataLoaded?: (data: any[]) => void;
   }) {
     const response = use(servicesPromise);
     const skillsRes = use(skillsPromise);

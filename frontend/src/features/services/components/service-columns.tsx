@@ -1,3 +1,4 @@
+import { ResourceGroup } from "@/features/resources";
 import { formatCurrency } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import { Checkbox } from "@/shared/ui/checkbox";
@@ -5,23 +6,24 @@ import { Column } from "@/shared/ui/custom/data-table";
 import { Box, HStack, Stack } from "@/shared/ui/layout";
 import { Switch } from "@/shared/ui/switch";
 import { Text as UIText } from "@/shared/ui/typography";
-import { MOCK_RESOURCE_GROUPS } from "../model/mocks";
 import { Service, ServiceCategory } from "../model/types";
 import { ServiceActions } from "./service-actions";
 
 interface GetServiceColumnsProps {
   availableCategories: ServiceCategory[];
+  availableResourceGroups: ResourceGroup[];
   onToggleStatus: (service: Service, checked: boolean) => void;
   onEdit: (service: Service) => void;
 }
 
 export function getServiceColumns({
   availableCategories,
+  availableResourceGroups,
   onToggleStatus,
   onEdit,
 }: GetServiceColumnsProps): Column<Service>[] {
   const getResourceGroupName = (groupId: string) => {
-    return MOCK_RESOURCE_GROUPS.find((g) => g.id === groupId)?.name || groupId;
+    return availableResourceGroups.find((g) => g.id === groupId)?.name || groupId;
   };
 
   return [

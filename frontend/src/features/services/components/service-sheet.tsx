@@ -11,7 +11,6 @@ import { Save, Send } from "lucide-react";
 import { useCallback } from "react";
 import { createService, updateService } from "../actions";
 import { SERVICE_DEFAULT_VALUES } from "../constants";
-import { MOCK_RESOURCE_GROUPS } from "../model/mocks";
 import { ServiceFormValues, serviceSchema } from "../model/schemas";
 import { Service, ServiceCategory, Skill } from "../model/types";
 import { ServiceForm } from "./service-form";
@@ -23,7 +22,7 @@ import { ServiceForm } from "./service-form";
     onOpenChange: (open: boolean) => void;
     availableSkills: Skill[];
     availableCategories: ServiceCategory[];
-    availableResourceGroups?: ResourceGroup[];
+    availableResourceGroups: ResourceGroup[];
   }
 
   export function ServiceSheet({
@@ -33,7 +32,7 @@ import { ServiceForm } from "./service-form";
     onOpenChange,
     availableSkills,
     availableCategories,
-    availableResourceGroups = MOCK_RESOURCE_GROUPS,
+    availableResourceGroups,
   }: ServiceSheetProps) {
     const isUpdateMode = mode === "update";
 
@@ -147,7 +146,6 @@ import { ServiceForm } from "./service-form";
             >
               <VStack gap={0} className="h-full">
               <ServiceForm
-                mode={mode}
                 availableSkills={availableSkills}
                 availableCategories={availableCategories}
                 availableResourceGroups={availableResourceGroups}

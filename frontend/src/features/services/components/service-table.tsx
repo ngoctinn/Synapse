@@ -99,9 +99,10 @@ export function ServiceTable({
 
   const columns = useMemo(() => getServiceColumns({
     availableCategories,
+    availableResourceGroups,
     onToggleStatus: handleToggleStatus,
     onEdit: (service) => setEditingService(service),
-  }), [availableCategories]);
+  }), [availableCategories, availableResourceGroups]);
 
   // Create column filters from URL params
   const columnFilters = useMemo<ColumnFiltersState>(() => {

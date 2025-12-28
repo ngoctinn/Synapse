@@ -1,5 +1,4 @@
 import {
-  Button,
   FormControl,
   FormField,
   FormItem,
@@ -19,9 +18,7 @@ import { Card, CardContent } from "@/shared/ui/card";
 import { RequiredMark } from "@/shared/ui/custom";
 import { NumberInput } from "@/shared/ui/custom/number-input";
 import { Grid, HStack, Stack } from "@/shared/ui/layout";
-import { Plus } from "lucide-react";
 import { useFormContext } from "react-hook-form";
-import { toast } from "sonner";
 import { ServiceFormValues } from "../../model/schemas";
 import { ServiceCategory } from "../../model/types";
 
@@ -56,35 +53,20 @@ export function BasicTab({ categories }: BasicTabProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Danh mục</FormLabel>
-              <HStack gap={2}>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="flex-1">
-                      <SelectValue placeholder="Chọn danh mục" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {categories.map((cat) => (
-                      <SelectItem key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="size-10 shrink-0"
-                  type="button"
-                  title="Quản lý danh mục"
-                  onClick={() => {
-                    // Trigger a custom event or use a context to open category manager
-                    toast.info("Tính năng quản lý danh mục nhanh đang được đồng bộ");
-                  }}
-                >
-                  <Plus className="size-4" />
-                </Button>
-              </HStack>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Chọn danh mục" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
