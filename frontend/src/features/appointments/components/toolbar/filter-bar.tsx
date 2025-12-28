@@ -143,7 +143,6 @@ export function FilterBar({
             value={filters.searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
             startContent={<Search className="text-muted-foreground size-4" />}
-            isSearch
           />
         </div>
 

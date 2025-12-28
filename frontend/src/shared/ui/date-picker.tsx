@@ -4,9 +4,9 @@ import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { Calendar } from "@/shared/ui/calendar";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/shared/ui/popover";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -51,7 +51,7 @@ export function DatePicker({
           disabled={disabled}
           className={cn(
             "group w-full justify-start text-left font-normal border-input hover:bg-accent/50 transition-all focus-premium",
-            "bg-background shadow-xs text-sm px-3 text-foreground",
+            "bg-background shadow-xs text-base md:text-sm px-3 text-foreground",
             size === "default" && "h-10",
             size === "sm" && "h-8",
             "data-[state=open]:border-primary/80 data-[state=open]:ring-[1.5px] data-[state=open]:ring-primary/20",

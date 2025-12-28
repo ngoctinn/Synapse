@@ -7,7 +7,7 @@ import {
 } from "@/shared/components/layout/page-layout";
 import { ActionResponse } from "@/shared/lib/action-response";
 import { Button } from "@/shared/ui/button";
-import { HStack, VStack } from "@/shared/ui/layout/stack";
+import { HStack } from "@/shared/ui/layout/stack";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Loader2, RotateCcw, Save } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -159,8 +159,9 @@ function SettingsForm({
         value={activeTab}
         asChild
         onValueChange={handleTabChange}
+        className="flex min-h-0 flex-1 flex-col gap-0"
       >
-        <VStack className="flex-1" gap={0}>
+        <PageShell>
         <PageHeader>
           <TabsList size="default">
             <TabsTrigger value="schedule" stretch={false}>
@@ -213,20 +214,13 @@ function SettingsForm({
                 </Button>
               </>
             )}
-
-            {/* Added: Specific save for exceptions if needed, but handled inside panel mostly?
-                Actually, previously we didnt have specific save buttons for exceptions in header,
-                it was handled inside or via auto-save.
-                Since we are reverting, we revert to no header buttons for exceptions.
-            */}
           </HStack>
         </PageHeader>
 
         {/* Tab Contents */}
-        <VStack asChild className="flex-1 overflow-hidden">
           <TabsContent
             value="schedule"
-            className="mt-0 flex flex-1 flex-col border-0 p-0 data-[state=inactive]:hidden"
+            className="mt-0 flex flex-1 flex-col border-0 p-0 overflow-hidden data-[state=inactive]:hidden"
           >
             <PageContent>
               <WeeklySchedule
@@ -238,7 +232,7 @@ function SettingsForm({
 
           <TabsContent
             value="exceptions"
-            className="mt-0 flex flex-1 flex-col border-0 p-0 data-[state=inactive]:hidden"
+            className="mt-0 flex flex-1 flex-col border-0 p-0 overflow-hidden data-[state=inactive]:hidden"
           >
             <PageContent className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               <ExceptionsPanel
@@ -251,7 +245,7 @@ function SettingsForm({
 
           <TabsContent
             value="notifications"
-            className="mt-0 flex flex-1 flex-col border-0 p-0 data-[state=inactive]:hidden"
+            className="mt-0 flex flex-1 flex-col border-0 p-0 overflow-hidden data-[state=inactive]:hidden"
           >
             <PageContent>
               <NotificationsSettings
@@ -260,8 +254,7 @@ function SettingsForm({
               />
             </PageContent>
           </TabsContent>
-        </VStack>
-        </VStack>
+        </PageShell>
       </Tabs>
     </PageShell>
   );

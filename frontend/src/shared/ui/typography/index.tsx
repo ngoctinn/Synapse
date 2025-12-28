@@ -2,9 +2,10 @@ import { cn } from "@/shared/lib/utils";
 import React, { HTMLAttributes, forwardRef } from "react";
 
 export interface TextProps extends HTMLAttributes<HTMLParagraphElement> {
-  variant?: "default" | "muted" | "link" | "error" | "success" | "warning";
+  variant?: "default" | "muted" | "link" | "error" | "success" | "warning" | "highlight";
   size?: "xs" | "sm" | "base" | "lg" | "xl";
   weight?: "normal" | "medium" | "semibold" | "bold" | "black";
+  italic?: boolean;
 }
 
 const sizeClasses = {
@@ -30,6 +31,7 @@ const variantClasses = {
   error: "text-destructive",
   success: "text-emerald-500",
   warning: "text-amber-500",
+  highlight: "text-foreground group-hover:text-primary transition-colors",
 };
 
 const Text = forwardRef<HTMLParagraphElement, TextProps>(
@@ -39,6 +41,7 @@ const Text = forwardRef<HTMLParagraphElement, TextProps>(
       variant = "default",
       size = "base",
       weight = "normal",
+      italic = false,
       ...props
     },
     ref
@@ -50,6 +53,7 @@ const Text = forwardRef<HTMLParagraphElement, TextProps>(
           sizeClasses[size],
           weightClasses[weight],
           variantClasses[variant],
+          italic && "italic",
           className
         )}
         {...props}

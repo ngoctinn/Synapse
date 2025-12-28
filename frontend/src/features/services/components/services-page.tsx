@@ -36,15 +36,11 @@ function ServiceListWrapper({
   servicesPromise,
   skills,
   categories,
-  bedTypes,
-  equipmentList,
   page,
 }: {
   servicesPromise: Promise<ActionResponse<PaginatedResponse<Service>>>;
   skills: Skill[];
   categories: ServiceCategory[];
-  bedTypes: BedType[];
-  equipmentList: Resource[];
   page: number;
 }) {
   const servicesRes = use(servicesPromise);
@@ -84,8 +80,8 @@ export function ServicesPage({
   page,
   skills,
   categories,
-  bedTypes,
-  equipmentList,
+  // bedTypes,
+  // equipmentList,
   servicesPromise,
 }: ServicesPageProps) {
   const router = useRouter();
@@ -127,12 +123,12 @@ export function ServicesPage({
 
   return (
     <PageShell>
-      <Stack gap={0} asChild>
-        <Tabs
-          id="services-tabs"
-          value={activeTab}
-          onValueChange={handleTabChange}
-        >
+      <Tabs
+        id="services-tabs"
+        value={activeTab}
+        onValueChange={handleTabChange}
+        className="flex flex-col gap-0"
+      >
         <PageHeader>
           <TabsList size="default" aria-label="Quản lý dịch vụ">
             <TabsTrigger
@@ -155,7 +151,6 @@ export function ServicesPage({
                     onChange={(e) => handleSearch(e.target.value)}
                     startContent={<Icon icon={Search} className="text-muted-foreground" size={16} />}
                     className="w-full md:w-64"
-                    isSearch
                   />
               }
               endContent={
@@ -177,8 +172,6 @@ export function ServicesPage({
                     servicesPromise={servicesPromise}
                     skills={skills}
                     categories={categories}
-                    bedTypes={bedTypes}
-                    equipmentList={equipmentList}
                     page={page}
                   />
                 </Suspense>
@@ -187,7 +180,6 @@ export function ServicesPage({
           </TabsContent>
         </Stack>
       </Tabs>
-    </Stack>
   </PageShell>
   );
 }

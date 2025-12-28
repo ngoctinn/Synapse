@@ -59,7 +59,6 @@ export function WaitlistPage({ data, page, totalPages }: WaitlistPageProps) {
                 defaultValue={initialSearch}
                 onChange={(e) => handleSearch(e.target.value)}
                 startContent={<Search className="size-4 text-muted-foreground" />}
-                isSearch
               />
           </div>
             }

@@ -11,7 +11,6 @@ import {
 import { useState } from "react";
 
 import { cn } from "@/shared/lib/utils";
-import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
 import { PaginationControls } from "@/shared/ui/custom/pagination-controls";
@@ -176,15 +175,15 @@ export function DataTable<TData, TValue>({
             </TableHeader>
             <TableBody>
               {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row, index) => (
-                  <AnimatedTableRow
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
                     key={row.id}
-                    index={index}
                     data-state={row.getIsSelected() && "selected"}
                     className={cn(
-                        "border-border/30 group border-b transition-all duration-200 last:border-0",
-                        onRowClick && "hover:bg-muted/30 cursor-pointer",
-                        row.getIsSelected() && "bg-primary/8"
+                        "group transition-colors",
+                         // Match AnimatedTableRow behavior + selection styling
+                        onRowClick && "cursor-pointer hover:bg-muted/50",
+                        row.getIsSelected() && "bg-muted"
                     )}
                     onClick={() => onRowClick && onRowClick(row.original)}
                   >
@@ -196,7 +195,7 @@ export function DataTable<TData, TValue>({
                         )}
                       </TableCell>
                     ))}
-                  </AnimatedTableRow>
+                  </TableRow>
                 ))
               ) : (
                 <TableRow>

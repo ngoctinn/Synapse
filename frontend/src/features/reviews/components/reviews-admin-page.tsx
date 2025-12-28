@@ -76,7 +76,6 @@ export function ReviewsAdminPage() {
                 }
                 className="w-full"
                 startContent={<Search size={16} className="text-muted-foreground" />}
-                isSearch
               />
             </div>
           }

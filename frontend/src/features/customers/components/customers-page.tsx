@@ -100,11 +100,11 @@ export function CustomersPage({
 
   return (
     <PageShell>
-      <VStack gap={0} asChild>
-        <Tabs
-          value={activeTab}
-          onValueChange={handleTabChange}
-        >
+      <Tabs
+        value={activeTab}
+        onValueChange={handleTabChange}
+        className="flex flex-col gap-0"
+      >
         <PageHeader>
           <TabsList size="default">
             <TabsTrigger value="list" stretch={false}>
@@ -125,7 +125,6 @@ export function CustomersPage({
                       defaultValue={initialSearch}
                       onChange={(e) => handleSearch(e.target.value)}
                       startContent={<Search className="text-muted-foreground" size={16} />}
-                      isSearch
                     />
                   </div>
                 }
@@ -168,7 +167,6 @@ export function CustomersPage({
           </TabsContent>
         </VStack>
       </Tabs>
-    </VStack>
   </PageShell>
   );
 }

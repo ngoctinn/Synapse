@@ -229,21 +229,19 @@ export function AppointmentsPage({
               <TooltipContent>Cài đặt hiển thị</TooltipContent>
             </Tooltip>
           </Group>
-          <div className="pl-1">
-            <Button
+          <Button
+              className="ml-1"
               onClick={handleCreateClick}
             >
               <Icon icon={Plus} className="sm:mr-2" />
               <span className="hidden font-medium sm:inline">Đặt lịch</span>
             </Button>
-          </div>
         </Group>
       </PageHeader>
 
       <PageContent fullWidth className="p-0">
-        <Stack gap={0} className="min-h-0 min-w-0 flex-1">
-          <Stack gap={0} className="min-h-0 min-w-0" asChild>
-            <SurfaceCard className="overflow-hidden">
+        <Stack gap={0} className="min-h-0 min-w-0 flex-1" asChild>
+          <SurfaceCard className="overflow-hidden">
             <CalendarView
               view={view}
               date={date}
@@ -264,7 +262,6 @@ export function AppointmentsPage({
             />
           </SurfaceCard>
         </Stack>
-      </Stack>
     </PageContent>
 
       <AppointmentSheet

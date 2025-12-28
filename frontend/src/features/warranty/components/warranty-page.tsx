@@ -60,7 +60,6 @@ export function WarrantyPage({ data, page, totalPages }: WarrantyPageProps) {
               defaultValue={initialSearch}
               onChange={(e) => handleSearch(e.target.value)}
               startContent={<Search size={16} className="text-muted-foreground" />}
-              isSearch
             />
           </div>
             }

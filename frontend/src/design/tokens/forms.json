@@ -1,0 +1,52 @@
+{
+  "control": {
+    "height": {
+      "compact": {
+        "value": "32px",
+        "tailwind": "h-8"
+      },
+      "regular": {
+        "value": "40px",
+        "tailwind": "h-10"
+      },
+      "large": {
+        "value": "48px",
+        "tailwind": "h-12"
+      }
+    },
+    "padding": {
+      "x": {
+        "compact": "0.5rem",
+        "regular": "0.75rem",
+        "large": "1rem"
+      }
+    },
+    "radius": {
+      "default": "0.5rem"
+    }
+  },
+  "text": {
+    "size": {
+      "compact": {
+        "value": "12px",
+        "tailwind": "text-xs"
+      },
+      "regular": {
+        "value": "16px",
+        "tailwind": "text-base"
+      },
+      "large": {
+        "value": "18px",
+        "tailwind": "text-lg"
+      }
+    },
+    "weight": {
+      "label": "500",
+      "input": "400"
+    }
+  },
+  "validation": {
+    "spacing": "0.5rem",
+    "reserved_height": "20px"
+  }
+}

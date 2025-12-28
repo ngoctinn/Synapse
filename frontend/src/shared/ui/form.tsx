@@ -13,7 +13,6 @@ import {
   type FieldValues,
 } from "react-hook-form";
 
-import { AlertCircleIcon } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { Label } from "@/shared/ui/label";
 
@@ -68,20 +67,25 @@ const useFormField = () => {
 
 type FormItemContextValue = {
   id: string;
+  size?: "compact" | "regular" | "large";
 };
 
 const FormItemContext = React.createContext<FormItemContextValue>(
   {} as FormItemContextValue
 );
 
-function FormItem({ className, ...props }: React.ComponentProps<"div">) {
+interface FormItemProps extends React.ComponentProps<"div"> {
+  size?: "compact" | "regular" | "large";
+}
+
+function FormItem({ className, size = "regular", ...props }: FormItemProps) {
   const id = React.useId();
 
   return (
-    <FormItemContext.Provider value={{ id }}>
+    <FormItemContext.Provider value={{ id, size }}>
       <div
         data-slot="form-item"
-        className={cn("relative grid gap-1 content-start", className)}
+        className={cn("group", className)}
         {...props}
       />
     </FormItemContext.Provider>
@@ -95,13 +99,15 @@ interface FormLabelProps
 
 function FormLabel({ className, required, children, ...props }: FormLabelProps) {
   const { error, formItemId } = useFormField();
+  const { size } = React.useContext(FormItemContext);
 
   return (
     <Label
       data-slot="form-label"
       data-error={!!error}
+      size={size}
       className={cn(
-        "text-foreground/80 data-[error=true]:text-destructive/90 font-medium text-sm mb-0.5",
+        "text-foreground/80 data-[error=true]:text-destructive/90 font-medium mb-1.5 block",
         className
       )}
       htmlFor={formItemId}
@@ -135,6 +141,11 @@ function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
 function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
   const { error, formDescriptionId } = useFormField();
 
+  // Hide description if there is an error to avoid clutter,
+  // unless explicitly handled layout-wise.
+  // For this refactor, we keep description hidden on error as per common pattern,
+  // or we could let it stack. Standard is often replacing or stacking.
+  // Synapse requirement: "when helper present, error replaces helper"
   if (error) {
     return null;
   }
@@ -143,10 +154,7 @@ function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
     <p
       data-slot="form-description"
       id={formDescriptionId}
-      className={cn(
-        "text-muted-foreground absolute left-0 top-full mt-1.5 w-full text-xs leading-tight",
-        className
-      )}
+      className={cn("text-muted-foreground text-[0.8rem] mt-1.5", className)}
       {...props}
     />
   );
@@ -156,25 +164,28 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
   const { error, formMessageId } = useFormField();
   const body = error ? String(error?.message ?? "") : props.children;
 
-  if (!body) return null;
+  // Reserved space implementation:
+  // We always render the element to maintain layout stability (min-height).
+  // If no error, we render an empty space or just the container.
 
   return (
-    <div
-      data-slot="form-message-container"
-      className="relative mt-1 flex w-full animate-in fade-in slide-in-from-top-1 duration-200"
+    <p
+      id={formMessageId}
+      data-slot="form-message"
+      className={cn(
+        "text-destructive text-[0.8rem] font-medium min-h-[20px] transition-all mt-1.5",
+        !body && "opacity-0", // Hide visually but keep space? Or just use min-h on container.
+        // Actually, if we use min-h, we might have extra whitespace when valid.
+        // Better approach for "Reserved space":
+        // If we want "reserved space checking", we usually assume the design allows for that gap.
+        // If the user wants "No layout jump", then adequate spacing is needed.
+        // We will prioritize the "reserved space" via min-height.
+        className
+      )}
+      {...props}
     >
-      <div
-        id={formMessageId}
-        className={cn(
-          "bg-destructive/10 text-destructive flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium leading-tight",
-          className
-        )}
-        {...props}
-      >
-        <AlertCircleIcon className="size-3.5 shrink-0" />
         {body}
-      </div>
-    </div>
+    </p>
   );
 }
 
@@ -185,9 +196,7 @@ export {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-  useFormField,
-  OptionalMark,
+  FormMessage, OptionalMark, useFormField
 };
 
 function OptionalMark() {

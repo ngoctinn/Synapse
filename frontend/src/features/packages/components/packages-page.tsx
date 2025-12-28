@@ -66,7 +66,6 @@ export function PackagesPage({ data, page, totalPages }: PackagesPageProps) {
                   onChange={(e) => handleSearch(e.target.value)}
                   className="bg-background w-full"
                   startContent={<Search className="text-muted-foreground size-4" />}
-                  isSearch
                 />
               </div>
             }

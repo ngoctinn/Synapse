@@ -1,8 +1,9 @@
 import { cn } from "@/shared/lib/utils";
 import { Slot } from "@radix-ui/react-slot";
 import { HTMLAttributes, forwardRef } from "react";
+import { SpacingProps, extractSpacingProps, getSpacingClasses } from "./utilities";
 
-export interface StackProps extends HTMLAttributes<HTMLDivElement> {
+export interface StackProps extends HTMLAttributes<HTMLDivElement>, SpacingProps {
   gap?: number | string;
   asChild?: boolean;
   align?: "start" | "center" | "end" | "stretch" | "baseline";
@@ -28,6 +29,7 @@ const justifyClasses = {
 
 const VStack = forwardRef<HTMLDivElement, StackProps>(
   ({ className, asChild = false, align = "stretch", justify = "start", ...props }, ref) => {
+    const { spacingProps, otherProps } = extractSpacingProps(props);
     const Comp = asChild ? Slot : "div";
     return (
       <Comp
@@ -36,9 +38,10 @@ const VStack = forwardRef<HTMLDivElement, StackProps>(
           "flex flex-col gap-2",
           alignClasses[align],
           justifyClasses[justify],
+          getSpacingClasses(spacingProps),
           className
         )}
-        {...props}
+        {...otherProps}
       />
     );
   }
@@ -47,6 +50,7 @@ VStack.displayName = "VStack";
 
 const HStack = forwardRef<HTMLDivElement, StackProps>(
   ({ className, asChild = false, align = "center", justify = "start", ...props }, ref) => {
+    const { spacingProps, otherProps } = extractSpacingProps(props);
     const Comp = asChild ? Slot : "div";
     return (
       <Comp
@@ -55,9 +59,10 @@ const HStack = forwardRef<HTMLDivElement, StackProps>(
           "flex flex-row gap-2",
           alignClasses[align],
           justifyClasses[justify],
+          getSpacingClasses(spacingProps),
           className
         )}
-        {...props}
+        {...otherProps}
       />
     );
   }

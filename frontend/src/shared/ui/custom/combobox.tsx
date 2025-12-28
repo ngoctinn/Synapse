@@ -69,7 +69,7 @@ export function Combobox({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "bg-background w-full justify-between items-center font-normal h-10 px-4 rounded-lg text-sm hover:border-primary/30 focus-visible:ring-[1.5px] focus-visible:ring-ring/40 focus-visible:outline-none",
+            "bg-background w-full justify-between items-center font-normal h-10 px-4 rounded-lg text-base md:text-sm hover:border-primary/30 focus-visible:ring-[1.5px] focus-visible:ring-ring/40 focus-visible:outline-none",
             "aria-invalid:hover:border-destructive aria-invalid:border-destructive/80",
             className
           )}

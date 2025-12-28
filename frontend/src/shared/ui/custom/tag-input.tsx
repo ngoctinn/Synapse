@@ -4,12 +4,12 @@ import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
 } from "@/shared/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import { Check, ChevronsUpDown, X } from "lucide-react";
@@ -92,7 +92,7 @@ export function TagInput({
             aria-expanded={open}
             aria-invalid={!!isError}
             className={cn(
-              "h-auto min-h-14 w-full justify-between items-center px-4 py-3 text-left font-normal rounded-lg",
+              "h-auto min-h-10 w-full justify-between items-center px-3 py-2 text-left font-normal rounded-lg",
               "bg-background hover:bg-background border-input",
               "focus-visible:ring-[1.5px] focus-visible:ring-ring/40 focus-visible:outline-none",
               isError && "border-destructive/80 ring-destructive/10 hover:border-destructive",

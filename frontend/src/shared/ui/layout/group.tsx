@@ -1,6 +1,6 @@
-import * as React from "react";
 import { cn } from "@/shared/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
+import * as React from "react";
 
 const groupVariants = cva("flex flex-row", {
   variants: {
@@ -50,17 +50,21 @@ const groupVariants = cva("flex flex-row", {
   },
 });
 
+import { SpacingProps, extractSpacingProps, getSpacingClasses } from "./utilities";
+
 export interface GroupProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof groupVariants> {}
+    VariantProps<typeof groupVariants>,
+    SpacingProps {}
 
 export const Group = React.forwardRef<HTMLDivElement, GroupProps>(
   ({ className, gap, align, justify, wrap, grow, ...props }, ref) => {
+    const { spacingProps, otherProps } = extractSpacingProps(props);
     return (
       <div
         ref={ref}
-        className={cn(groupVariants({ gap, align, justify, wrap, grow, className }))}
-        {...props}
+        className={cn(groupVariants({ gap, align, justify, wrap, grow, className }), getSpacingClasses(spacingProps))}
+        {...otherProps}
       />
     );
   }

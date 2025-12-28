@@ -6,7 +6,7 @@ import {
   SheetClose,
 } from "@/shared/ui";
 import { ActionSheet, Icon } from "@/shared/ui/custom";
-import { Group, Stack } from "@/shared/ui/layout";
+import { Group } from "@/shared/ui/layout";
 import { Save, Send } from "lucide-react";
 import { useCallback } from "react";
 import { createService, updateService } from "../actions";
@@ -141,14 +141,10 @@ import { ServiceForm } from "./service-form";
         }
       >
         <Form {...form}>
-          <Stack
-            gap={0}
-            asChild
-            className="h-full"
-          >
              <form
               id="service-form"
               onSubmit={onSubmit}
+              className="flex h-full flex-col gap-0"
             >
               <ServiceForm
                 mode={mode}
@@ -158,7 +154,6 @@ import { ServiceForm } from "./service-form";
                 className="flex-1"
               />
             </form>
-          </Stack>
         </Form>
       </ActionSheet>
     );

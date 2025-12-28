@@ -36,7 +36,6 @@ export function ResourceToolbar() {
           ) : null
         }
         className="bg-background"
-        isSearch
       />
     </div>
   );

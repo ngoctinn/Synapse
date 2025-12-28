@@ -2,14 +2,13 @@
 
 import { Badge } from "@/shared/ui/badge";
 import { Checkbox } from "@/shared/ui/checkbox";
-import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row";
 import { VStack } from "@/shared/ui/layout/stack";
 import {
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/shared/ui/table";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -68,8 +67,7 @@ export function PermissionMatrix({
 
   return (
     <VStack className={`relative ${className}`}>
-      <div className="">
-        <div className="relative w-full">
+      <div className="relative w-full">
           <table className="w-full caption-bottom text-sm">
             {/* Sticky Header fixed top-0 because it's inside a relative container or we trust the container scroll */}
             <TableHeader className="bg-background sticky top-0 z-30 shadow-sm">
@@ -91,9 +89,8 @@ export function PermissionMatrix({
             </TableHeader>
             <TableBody>
               {MODULES.map((module, index) => (
-                <AnimatedTableRow
+                <TableRow
                   key={module.id}
-                  index={index}
                   className="hover:bg-muted/5 transition-colors"
                 >
                   <TableCell className="py-4 pl-8 font-medium">
@@ -121,12 +118,11 @@ export function PermissionMatrix({
                       </TableCell>
                     );
                   })}
-                </AnimatedTableRow>
+                </TableRow>
               ))}
             </TableBody>
           </table>
         </div>
-      </div>
 
       <BulkSaveBar
         open={hasChanges}

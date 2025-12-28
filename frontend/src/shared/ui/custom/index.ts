@@ -1,10 +1,9 @@
 // Custom UI Components - Barrel exports
-export * from "./confirm-dialog";
 export * from "./action-sheet";
 export * from "./animated-icon";
-export * from "./animated-table-row";
 export * from "./color-swatch-group";
 export * from "./combobox";
+export * from "./confirm-dialog";
 export * from "./data-table";
 export * from "./data-table-empty-state";
 export * from "./data-table-skeleton";
@@ -27,7 +26,8 @@ export * from "./tag-input";
 
 
 
-export * from "./year-picker";
 export * from "./image-upload";
-export * from "./service-time-visualizer";
 export * from "./resource-timeline";
+export * from "./service-time-visualizer";
+export * from "./year-picker";
+

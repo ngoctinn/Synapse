@@ -242,23 +242,21 @@ export function AppointmentSheet({
     >
       <div className="space-y-6">
         {isCreateMode || isEditMode ? (
-          <div className="space-y-6">
-            <AppointmentForm
-              appointment={appointment}
-              defaultValues={defaultValues}
-              onSubmit={handleSave}
-              availableStaff={availableStaff}
-              availableResources={availableResources}
-              availableServices={availableServices}
-              onDirtyChange={setIsDirty}
-            />
-          </div>
+          <AppointmentForm
+            appointment={appointment}
+            defaultValues={defaultValues}
+            onSubmit={handleSave}
+            availableStaff={availableStaff}
+            availableResources={availableResources}
+            availableServices={availableServices}
+            onDirtyChange={setIsDirty}
+          />
         ) : isPaymentMode && invoice ? (
-          <div className="space-y-6">
+          <>
             <InvoiceDetails invoice={invoice} />
             <Separator />
             <PaymentForm invoice={invoice} onSuccess={handlePaymentSuccess} />
-          </div>
+          </>
         ) : event && appointment ? (
           <AppointmentViewContent event={event} appointment={appointment} />
         ) : null}
