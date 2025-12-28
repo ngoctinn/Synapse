@@ -38,6 +38,7 @@ export interface StaffUpdate {
   title?: string;
   color_code?: string;
   commission_rate?: number;
+  is_active?: boolean;
 }
 
 export interface StaffListResponse {

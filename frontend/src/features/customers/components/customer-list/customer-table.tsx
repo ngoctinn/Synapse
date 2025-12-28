@@ -1,25 +1,26 @@
 "use client";
 
-import { useTableParams, useTableSelection } from "@/shared/hooks";
+import { useTableParams } from "@/shared/hooks";
+import { Z_INDEX } from "@/shared/lib/design-tokens";
+import { TruncatedCell } from "@/shared/lib/table-utils";
+import { cn } from "@/shared/lib/utils";
 import { DeleteConfirmDialog, showToast } from "@/shared/ui";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { Badge } from "@/shared/ui/badge";
+import { Checkbox } from "@/shared/ui/checkbox";
 import { AnimatedUsersIcon } from "@/shared/ui/custom/animated-icon";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
+import { Icon } from "@/shared/ui/custom/icon";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
 } from "@/shared/ui/tooltip";
 import { Activity, AlertCircle, Loader2 } from "lucide-react";
-import { Icon } from "@/shared/ui/custom/icon";
-import { TruncatedCell, getAccessibleAvatarColor } from "@/shared/lib/table-utils";
-import { Z_INDEX } from "@/shared/lib/design-tokens";
-import { cn } from "@/shared/lib/utils";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { deleteCustomer } from "../../actions";
@@ -68,14 +69,11 @@ export function CustomerTable({
   const page = pageProp ?? urlPage;
   const handlePageChange = onPageChangeProp ?? urlPageChange;
 
-  const selection = useTableSelection({
-    data,
-    keyExtractor: (item) => item.id,
-  });
+  const [rowSelection, setRowSelection] = useState({});
 
   const handleBulkDelete = async () => {
     startTransition(async () => {
-      const selectedIds = Array.from(selection.selectedIds);
+      const selectedIds = Object.keys(rowSelection);
       let successCount = 0;
       const failures: string[] = [];
 
@@ -96,7 +94,7 @@ export function CustomerTable({
 
       if (successCount > 0) {
         showToast.success("Thành công", `Đã xóa ${successCount} khách hàng`);
-        selection.clearAll();
+        setRowSelection({});
         router.refresh();
       }
 
@@ -113,26 +111,48 @@ export function CustomerTable({
 
   const columns: Column<Customer>[] = [
     {
+      id: "select",
+      header: ({ table }) => (
+        <div className="pl-4">
+            <Checkbox
+            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            aria-label="Select all"
+            />
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div className="pl-4">
+            <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+            />
+        </div>
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
       header: "Khách hàng",
       accessorKey: "full_name",
-      sortable: true,
-      cell: (customer) => (
+      cell: ({ row }) => (
         <div className="flex items-center gap-4">
           <Avatar className="h-11 w-11 border">
             <AvatarImage
-              src={customer.avatar_url || undefined}
-              alt={customer.full_name}
+              src={row.original.avatar_url || undefined}
+              alt={row.original.full_name}
             />
             <AvatarFallback className="bg-primary/10 text-primary font-medium">
-              {customer.full_name.charAt(0).toUpperCase()}
+              {row.original.full_name.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
             <span className="text-foreground group-hover:text-primary text-sm font-semibold transition-colors">
-              {customer.full_name}
+              {row.original.full_name}
             </span>
             <span className="text-muted-foreground text-xs">
-              {customer.email || "Chưa có email"}
+              {row.original.email || "Chưa có email"}
             </span>
           </div>
         </div>
@@ -141,22 +161,23 @@ export function CustomerTable({
     {
       header: "Số điện thoại",
       accessorKey: "phone_number",
-      cell: (c) => (
-        <div className="font-mono text-sm">{c.phone_number || "--"}</div>
+      cell: ({ row }) => (
+        <div className="font-mono text-sm">{row.original.phone_number || "--"}</div>
       ),
     },
     {
       header: "Trạng thái",
       accessorKey: "is_active",
-      cell: (c) => (
-        <Badge preset={c.is_active ? "status-active" : "status-inactive"} />
+      cell: ({ row }) => (
+        <Badge preset={row.original.is_active ? "status-active" : "status-inactive"} />
       ),
     },
     {
       header: "Y tế",
-      cell: (c) => (
+      id: "medical",
+      cell: ({ row }) => (
         <div className="flex gap-1">
-          {c.allergies && (
+          {row.original.allergies && (
             <TooltipProvider delayDuration={300}>
               <Tooltip>
                 <TooltipTrigger>
@@ -164,13 +185,12 @@ export function CustomerTable({
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
                   <p className="text-destructive font-semibold">Dị ứng:</p>
-                  {/* Fix Issue #13: Use TruncatedCell for long text */}
-                  <TruncatedCell maxWidth={250}>{c.allergies}</TruncatedCell>
+                  <TruncatedCell maxWidth={250}>{row.original.allergies}</TruncatedCell>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           )}
-          {c.medical_notes && (
+          {row.original.medical_notes && (
             <TooltipProvider delayDuration={300}>
               <Tooltip>
                 <TooltipTrigger>
@@ -178,8 +198,7 @@ export function CustomerTable({
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
                   <p className="text-info font-semibold">Ghi chú y tế:</p>
-                  {/* Fix Issue #13: Use TruncatedCell for long text */}
-                  <TruncatedCell maxWidth={250}>{c.medical_notes}</TruncatedCell>
+                  <TruncatedCell maxWidth={250}>{row.original.medical_notes}</TruncatedCell>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -188,16 +207,16 @@ export function CustomerTable({
       ),
     },
     {
-      header: "Hành động",
-      className: "pr-6 text-right",
-      cell: (customer) => (
+      id: "actions",
+      header: () => <div className="text-right">Hành động</div>,
+      cell: ({ row }) => (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="flex items-center justify-end"
+          className="flex items-center justify-end pr-6"
         >
           <CustomerActions
-            customer={customer}
-            onEdit={() => setEditingCustomer(customer)}
+            customer={row.original}
+            onEdit={() => setEditingCustomer(row.original)}
           />
         </div>
       ),
@@ -209,7 +228,6 @@ export function CustomerTable({
       <DataTable
         data={data}
         columns={columns}
-        keyExtractor={(item) => item.id}
         page={page}
         totalPages={totalPages}
         onPageChange={handlePageChange}
@@ -217,19 +235,10 @@ export function CustomerTable({
         isLoading={isLoading}
         skeletonCount={5}
         variant={variant}
-        selection={{
-          isSelected: selection.isSelected,
-          onToggleOne: selection.toggleOne,
-          onToggleAll: selection.toggleAll,
-          isAllSelected: selection.isAllSelected,
-          isPartiallySelected: selection.isPartiallySelected,
-        }}
-        onRowClick={(c) => setEditingCustomer(c)}
-        sort={{
-          column: sortBy,
-          direction: order,
-          onSort: handleSort,
-        }}
+        rowSelection={rowSelection}
+        onRowSelectionChange={setRowSelection as any}
+        getRowId={(row) => row.id.toString()}
+        onRowClick={(row) => setEditingCustomer(row)}
         emptyState={
           <DataTableEmptyState
             icon={AnimatedUsersIcon}
@@ -241,9 +250,9 @@ export function CustomerTable({
       />
 
       <TableActionBar
-        selectedCount={selection.selectedCount}
+        selectedCount={Object.keys(rowSelection).length}
         onDelete={() => setShowBulkDeleteDialog(true)}
-        onDeselectAll={selection.clearAll}
+        onDeselectAll={() => setRowSelection({})}
         isLoading={isPending}
       />
 
@@ -252,7 +261,7 @@ export function CustomerTable({
         onOpenChange={setShowBulkDeleteDialog}
         onConfirm={handleBulkDelete}
         isDeleting={isPending}
-        entityName={`${selection.selectedCount} khách hàng`}
+        entityName={`${Object.keys(rowSelection).length} khách hàng`}
       />
 
       {editingCustomer && (

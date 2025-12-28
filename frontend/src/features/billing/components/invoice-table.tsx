@@ -1,10 +1,10 @@
 "use client";
 
+import { formatCurrency } from "@/shared/lib/currency-utils";
+import { formatTableDate } from "@/shared/lib/table-utils";
+import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
-import { formatTableDate } from "@/shared/lib/table-utils";
-import { formatCurrency, getPaymentStatusColor } from "@/shared/lib/currency-utils";
-import { cn } from "@/shared/lib/utils";
 import { Eye } from "lucide-react";
 import { Invoice } from "../model/types";
 import { InvoiceStatusBadge } from "./invoice-status-badge";
@@ -13,88 +13,75 @@ interface InvoiceTableProps {
   data: Invoice[];
   onView: (invoice: Invoice) => void;
   isLoading?: boolean;
-  // Fix Issue #31: Add selection support
-  selection?: {
-    selectedIds: Set<string | number>;
-    onToggle: (id: string | number) => void;
-    onToggleAll: () => void;
-    isAllSelected: boolean;
-    isPartiallySelected: boolean;
-  };
 }
 
-export function InvoiceTable({ data, onView, isLoading, selection }: InvoiceTableProps) {
+export function InvoiceTable({ data, onView, isLoading }: InvoiceTableProps) {
   const columns: Column<Invoice>[] = [
     {
-      id: "id",
       accessorKey: "id",
       header: "Mã hóa đơn",
-      cell: (item) => <span className="font-medium">{item.id}</span>,
+      cell: ({ row }) => <span className="font-medium">{row.original.id}</span>,
     },
     {
-      id: "customerName",
       accessorKey: "customerName",
       header: "Khách hàng",
-      cell: (item) => (
+      cell: ({ row }) => (
         <div className="flex flex-col">
-          <span>{item.customerName}</span>
+          <span>{row.original.customerName}</span>
           <span className="text-muted-foreground text-xs">
-            {item.customerPhone}
+            {row.original.customerPhone}
           </span>
         </div>
       ),
     },
     {
-      id: "finalAmount",
       accessorKey: "finalAmount",
       header: "Tổng tiền",
-      cell: (item) => (
-        <span className="font-medium">{formatCurrency(item.finalAmount)}</span>
+      cell: ({ row }) => (
+        <span className="font-medium">{formatCurrency(row.original.finalAmount)}</span>
       ),
     },
     {
-      id: "paidAmount",
       accessorKey: "paidAmount",
       header: "Đã thanh toán",
-      cell: (item) => (
+      cell: ({ row }) => (
         <span
           className={cn(
             "font-medium",
-            item.paidAmount < item.finalAmount
+            row.original.paidAmount < row.original.finalAmount
               ? "text-amber-600 dark:text-amber-500" // Increased contrast for A11y
               : "text-emerald-600 dark:text-emerald-500"
           )}
         >
-          {formatCurrency(item.paidAmount)}
+          {formatCurrency(row.original.paidAmount)}
         </span>
       ),
     },
     {
-      id: "status",
       accessorKey: "status",
       header: "Trạng thái",
-      cell: (item) => <InvoiceStatusBadge status={item.status} />,
+      cell: ({ row }) => <InvoiceStatusBadge status={row.original.status} />,
     },
     {
-      id: "issuedAt",
       accessorKey: "issuedAt",
       header: "Ngày tạo",
-      cell: (item) => formatTableDate(item.issuedAt, "long"),
+      cell: ({ row }) => formatTableDate(row.original.issuedAt, "long"),
     },
     {
       id: "actions",
-      header: "Hành động",
-      className: "pr-6 text-right",
-      cell: (item) => (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="size-8"
-          onClick={() => onView(item)}
-          aria-label={`Xem chi tiết hóa đơn ${item.id}`} // Fix Issue 21
-        >
-          <Eye className="size-4" />
-        </Button>
+      header: () => <div className="text-right">Hành động</div>,
+      cell: ({ row }) => (
+        <div className="text-right pr-6">
+            <Button
+            variant="ghost"
+            size="icon"
+            className="size-8"
+            onClick={() => onView(row.original)}
+            aria-label={`Xem chi tiết hóa đơn ${row.original.id}`}
+            >
+            <Eye className="size-4" />
+            </Button>
+        </div>
       ),
     },
   ];
@@ -103,7 +90,6 @@ export function InvoiceTable({ data, onView, isLoading, selection }: InvoiceTabl
     <DataTable
       columns={columns}
       data={data}
-      keyExtractor={(item) => item.id}
       isLoading={isLoading}
     />
   );

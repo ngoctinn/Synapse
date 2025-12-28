@@ -11,8 +11,6 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/shared/ui/alert";
-import { format, addDays } from "date-fns";
-import { vi } from "date-fns/locale";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,63 +24,21 @@ import {
 } from "@/shared/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { Badge } from "@/shared/ui/badge";
-import {
-  Breadcrumb,
-  BreadcrumbEllipsis,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/shared/ui/breadcrumb";
 import { Button } from "@/shared/ui/button";
 import { Calendar } from "@/shared/ui/calendar";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/shared/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/shared/ui/carousel";
 import { Checkbox } from "@/shared/ui/checkbox";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/shared/ui/collapsible";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-  CommandShortcut,
-} from "@/shared/ui/command";
-import {
-  ContextMenu,
-  ContextMenuCheckboxItem,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuLabel,
-  ContextMenuRadioGroup,
-  ContextMenuRadioItem,
-  ContextMenuSeparator,
-  ContextMenuShortcut,
-  ContextMenuSub,
-  ContextMenuSubContent,
-  ContextMenuSubTrigger,
-  ContextMenuTrigger,
-} from "@/shared/ui/context-menu";
 import {
   Dialog,
   DialogContent,
@@ -92,33 +48,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/ui/dialog";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/shared/ui/drawer";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/shared/ui/dropdown-menu";
 import {
   HoverCard,
   HoverCardContent,
@@ -133,39 +62,6 @@ import {
 } from "@/shared/ui/input-otp";
 import { Label } from "@/shared/ui/label";
 import {
-  Menubar,
-  MenubarCheckboxItem,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarRadioGroup,
-  MenubarRadioItem,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarSub,
-  MenubarSubContent,
-  MenubarSubTrigger,
-  MenubarTrigger,
-} from "@/shared/ui/menubar";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@/shared/ui/navigation-menu";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/shared/ui/pagination";
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -173,30 +69,20 @@ import {
 import { Progress } from "@/shared/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/shared/ui/radio-group";
 import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/shared/ui/resizable";
-import { ScrollArea } from "@/shared/ui/scroll-area";
-import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/shared/ui/select";
 import { Separator } from "@/shared/ui/separator";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
+  SheetTrigger
 } from "@/shared/ui/sheet";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { Slider } from "@/shared/ui/slider";
@@ -211,7 +97,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Textarea } from "@/shared/ui/textarea";
 import {
   Tooltip,
@@ -219,7 +105,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/shared/ui/tooltip";
+import { addDays, format } from "date-fns";
+import { vi } from "date-fns/locale";
 
+import { cn } from "@/shared/lib/utils";
+import { AspectRatio } from "@/shared/ui/aspect-ratio";
+import { NumberInput } from "@/shared/ui/custom/number-input";
 import {
   Form,
   FormControl,
@@ -229,40 +120,24 @@ import {
   FormLabel,
   FormMessage,
 } from "@/shared/ui/form";
-import { NumberInput } from "@/shared/ui/custom/number-input";
 import { showToast } from "@/shared/ui/sonner";
-import { AspectRatio } from "@/shared/ui/aspect-ratio";
-import { ButtonGroup } from "@/shared/ui/button-group";
-import { Item } from "@/shared/ui/item";
-import { Kbd } from "@/shared/ui/kbd";
 import { Spinner } from "@/shared/ui/spinner";
-import { Toggle, toggleVariants } from "@/shared/ui/toggle";
-import { ToggleGroup, ToggleGroupItem } from "@/shared/ui/toggle-group";
-import { ConfirmDialog } from "@/shared/ui/custom/confirm-dialog";
 import { TimePicker } from "@/shared/ui/time-picker";
-import { cn } from "@/shared/lib/utils";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  CalendarDays,
+  Info,
+  Moon,
+  OctagonXIcon,
+  Settings,
+  Sun,
+  User
+} from "lucide-react";
+import { useTheme } from "next-themes";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useTheme } from "next-themes";
-import Link from "next/link";
-import {
-  Calculator,
-  CalendarDays,
-  Clock,
-  CreditCard,
-  Moon,
-  Settings,
-  Smile,
-  Sun,
-  User,
-  MoreVertical,
-  Info,
-  OctagonXIcon
-} from "lucide-react";
-import Image from "next/image";
-import { useState } from "react";
 
 const showcaseSchema = z.object({
   fullName: z.string().min(2, "Họ tên phải có ít nhất 2 ký tự"),
@@ -888,6 +763,68 @@ export default function DesignSystemPage() {
                       <p className="text-xs opacity-70">Thành phần này sử dụng phong cách Card tiêu chuẩn.</p>
                     </CardContent>
                   </Card>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* ======================= TABLES ======================= */}
+          <Card className="shadow-premium-md">
+            <CardHeader>
+              <CardTitle className="text-xl">7. Tables</CardTitle>
+              <CardDescription>
+                Bảng dữ liệu chuẩn với các variant hiển thị khác nhau.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-10">
+              <div className="space-y-4">
+                <h4 className="text-xs font-semibold uppercase text-muted-foreground">
+                  Basic Table (Native)
+                </h4>
+                <div className="rounded-lg border border-border/50 overflow-hidden">
+                  <Table>
+                    <TableCaption>Danh sách hoá đơn gần đây (Demo).</TableCaption>
+                    <TableHeader className="bg-muted/30">
+                      <TableRow>
+                        <TableHead className="w-[100px]">Mã đơn</TableHead>
+                        <TableHead>Trạng thái</TableHead>
+                        <TableHead>Phương thức</TableHead>
+                        <TableHead className="text-right">Số tiền</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell className="font-medium">INV001</TableCell>
+                        <TableCell>
+                          <Badge variant="success">Đã thanh toán</Badge>
+                        </TableCell>
+                        <TableCell>Thẻ tín dụng</TableCell>
+                        <TableCell className="text-right">250.000 ₫</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">INV002</TableCell>
+                        <TableCell>
+                          <Badge variant="warning">Chờ xử lý</Badge>
+                        </TableCell>
+                        <TableCell>Chuyển khoản</TableCell>
+                        <TableCell className="text-right">150.000 ₫</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">INV003</TableCell>
+                        <TableCell>
+                          <Badge variant="destructive">Huỷ bỏ</Badge>
+                        </TableCell>
+                        <TableCell>Tiền mặt</TableCell>
+                        <TableCell className="text-right">450.000 ₫</TableCell>
+                      </TableRow>
+                    </TableBody>
+                    <TableFooter>
+                      <TableRow>
+                        <TableCell colSpan={3}>Tổng cộng</TableCell>
+                        <TableCell className="text-right">850.000 ₫</TableCell>
+                      </TableRow>
+                    </TableFooter>
+                  </Table>
                 </div>
               </div>
             </CardContent>

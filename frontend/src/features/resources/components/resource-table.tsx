@@ -1,17 +1,17 @@
 "use client";
 
-import { useTableSelection } from "@/shared/hooks/use-table-selection";
-import { cn } from "@/shared/lib/utils";
 import { Z_INDEX } from "@/shared/lib/design-tokens";
+import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
+import { Checkbox } from "@/shared/ui/checkbox";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
 import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
+import { Icon } from "@/shared/ui/custom/icon";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import { showToast } from "@/shared/ui/sonner";
 import { Bed, Box, Loader2 } from "lucide-react";
-import { Icon } from "@/shared/ui/custom/icon";
 import { useState, useTransition } from "react";
 import { deleteResource } from "../actions";
 import { Resource, ResourceGroup } from "../model/types";
@@ -37,14 +37,10 @@ export function ResourceTable({
   const [editResource, setEditResource] = useState<Resource | null>(null);
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
   const [isPending, startTransition] = useTransition();
-
-  const selection = useTableSelection({
-    data,
-    keyExtractor: (item) => item.id,
-  });
+  const [rowSelection, setRowSelection] = useState({});
 
   const handleBulkDelete = async () => {
-    const ids = Array.from(selection.selectedIds) as string[];
+    const ids = Object.keys(rowSelection);
     if (ids.length === 0) return;
 
     startTransition(async () => {
@@ -61,7 +57,7 @@ export function ResourceTable({
 
         if (successCount > 0) {
           showToast.success("Thành công", `Đã xóa ${successCount} tài nguyên`);
-          selection.clearAll();
+          setRowSelection({});
         }
         if (successCount < ids.length) {
           showToast.error(
@@ -80,21 +76,46 @@ export function ResourceTable({
 
   const columns: Column<Resource>[] = [
     {
+      id: "select",
+      header: ({ table }) => (
+        <div className="pl-4">
+            <Checkbox
+            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            aria-label="Select all"
+            />
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div className="pl-4">
+            <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+            />
+        </div>
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
       header: "Tên & Mã",
-      cell: (row) => (
+      accessorKey: "name",
+      cell: ({ row }) => (
         <div className="flex flex-col">
-          <span className="text-foreground font-medium">{row.name}</span>
-          <span className="text-muted-foreground text-xs">{row.code}</span>
+          <span className="text-foreground font-medium">{row.original.name}</span>
+          <span className="text-muted-foreground text-xs">{row.original.code}</span>
         </div>
       ),
     },
     {
       header: "Loại",
-      cell: (row) => (
+      accessorKey: "type",
+      cell: ({ row }) => (
         <Badge
-          preset={row.type === "BED" ? "resource-bed" : "resource-equipment"}
+          preset={row.original.type === "BED" ? "resource-bed" : "resource-equipment"}
         >
-          {row.type === "BED" ? (
+          {row.original.type === "BED" ? (
             <Icon icon={Bed} />
           ) : (
             <Icon icon={Box} />
@@ -104,50 +125,52 @@ export function ResourceTable({
     },
     {
       header: "Trạng thái",
-      cell: (row) => {
+      accessorKey: "status",
+      cell: ({ row }) => {
         const presetMap: Record<string, any> = {
           ACTIVE: "resource-available",
           MAINTENANCE: "resource-maintenance",
           INACTIVE: "appointment-cancelled", // Hết hoạt động dùng cancelled
         };
-        const preset = presetMap[row.status] || "status-inactive";
+        const preset = presetMap[row.original.status] || "status-inactive";
 
         return <Badge preset={preset} size="sm" />;
       },
     },
     {
       header: "Chi tiết",
-      cell: (row) => {
-        if (row.type === "BED") {
+      id: "details",
+      cell: ({ row }) => {
+        if (row.original.type === "BED") {
           return (
             <div className="text-sm">
               <span className="text-muted-foreground">
                 Sức chứa:{" "}
-                <span className="text-foreground">{row.capacity}</span> người
+                <span className="text-foreground">{row.original.capacity}</span> người
               </span>
-              {row.setupTime !== undefined && row.setupTime > 0 && (
+              {row.original.setupTime !== undefined && row.original.setupTime > 0 && (
                 <span className="text-muted-foreground ml-3 border-l pl-3">
                   Setup:{" "}
-                  <span className="text-foreground">{row.setupTime}p</span>
+                  <span className="text-foreground">{row.original.setupTime}p</span>
                 </span>
               )}
             </div>
           );
         }
 
-        if (row.type === "EQUIPMENT") {
+        if (row.original.type === "EQUIPMENT") {
           return (
             <div className="flex items-center gap-3 text-sm">
-              {row.tags && row.tags.length > 0 ? (
+              {row.original.tags && row.original.tags.length > 0 ? (
                 <div className="flex flex-wrap gap-1">
-                  {row.tags.slice(0, 2).map((tag, i) => (
+                  {row.original.tags.slice(0, 2).map((tag: string, i: number) => (
                     <Badge key={i} preset="tag">
                       {tag}
                     </Badge>
                   ))}
-                  {row.tags.length > 2 && (
+                  {row.original.tags.length > 2 && (
                     <span className="text-muted-foreground text-[10px]">
-                      +{row.tags.length - 2}
+                      +{row.original.tags.length - 2}
                     </span>
                   )}
                 </div>
@@ -162,10 +185,10 @@ export function ResourceTable({
     },
     {
       header: "Hành động",
-      className: "pr-6 text-right",
-      cell: (row) => (
-        <div onClick={(e) => e.stopPropagation()}>
-          <ResourceActions resource={row} onEdit={() => setEditResource(row)} />
+      id: "actions",
+      cell: ({ row }) => (
+        <div onClick={(e) => e.stopPropagation()} className="flex justify-end pr-6">
+          <ResourceActions resource={row.original} onEdit={() => setEditResource(row.original)} />
         </div>
       ),
     },
@@ -176,17 +199,12 @@ export function ResourceTable({
       <DataTable
         data={data}
         columns={columns}
-        keyExtractor={(item) => item.id}
         isLoading={isLoading}
         className={cn(className)}
         variant={variant}
-        selection={{
-          isSelected: selection.isSelected,
-          onToggleOne: selection.toggleOne,
-          onToggleAll: selection.toggleAll,
-          isAllSelected: selection.isAllSelected,
-          isPartiallySelected: selection.isPartiallySelected,
-        }}
+        rowSelection={rowSelection}
+        onRowSelectionChange={setRowSelection as any}
+        getRowId={(row) => row.id.toString()}
         onRowClick={(resource) => setEditResource(resource)}
         emptyState={
           <DataTableEmptyState
@@ -196,7 +214,6 @@ export function ResourceTable({
             action={<CreateResourceTrigger groups={groups} />}
           />
         }
-        disabled={isPending}
       />
 
       {/* Loading Overlay */}
@@ -208,9 +225,9 @@ export function ResourceTable({
       )}
 
       <TableActionBar
-        selectedCount={selection.selectedCount}
+        selectedCount={Object.keys(rowSelection).length}
         onDelete={() => setShowBulkDeleteDialog(true)}
-        onDeselectAll={selection.clearAll}
+        onDeselectAll={() => setRowSelection({})}
         isLoading={isPending}
       />
 
@@ -227,7 +244,7 @@ export function ResourceTable({
         onOpenChange={setShowBulkDeleteDialog}
         onConfirm={handleBulkDelete}
         isDeleting={isPending}
-        entityName={`${selection.selectedCount} tài nguyên`}
+        entityName={`${Object.keys(rowSelection).length} tài nguyên`}
       />
     </>
   );

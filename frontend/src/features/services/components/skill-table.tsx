@@ -1,17 +1,18 @@
 "use client";
 
 import {
-  useBulkAction,
-  useTableParams,
-  useTableSelection,
+    useBulkAction,
+    useTableParams
 } from "@/shared/hooks";
 import { Badge } from "@/shared/ui/badge";
+import { Checkbox } from "@/shared/ui/checkbox";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
 import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import { Plus } from "lucide-react";
+import { useState } from "react";
 import { deleteSkill } from "../actions";
 import { Skill } from "../model/types";
 import { CreateSkillDialog } from "./create-skill-dialog";
@@ -43,10 +44,7 @@ export function SkillTable({
   const page = pageProp ?? urlPage;
   const handlePageChange = onPageChangeProp ?? urlPageChange;
 
-  const selection = useTableSelection({
-    data: skills,
-    keyExtractor: (item) => item.id,
-  });
+  const [rowSelection, setRowSelection] = useState({});
 
   // Use custom hook for bulk delete
   const {
@@ -60,39 +58,65 @@ export function SkillTable({
   });
 
   const handleBulkDelete = () => {
-    const ids = Array.from(selection.selectedIds) as string[];
-    executeBulkDelete(ids, selection.clearAll);
+    const ids = Object.keys(rowSelection);
+    executeBulkDelete(ids, () => setRowSelection({}));
   };
 
   const columns: Column<Skill>[] = [
     {
+      id: "select",
+      header: ({ table }) => (
+        <div className="pl-4">
+            <Checkbox
+            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            aria-label="Select all"
+            />
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div className="pl-4">
+            <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+            />
+        </div>
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
       header: "Tên kỹ năng",
-      cell: (skill) => (
+      accessorKey: "name",
+      cell: ({ row }) => (
         <span className="text-foreground group-hover:text-primary font-medium transition-colors">
-          {skill.name}
+          {row.original.name}
         </span>
       ),
     },
     {
       header: "Mã kỹ năng",
-      cell: (skill) => (
+      accessorKey: "code",
+      cell: ({ row }) => (
         <Badge variant="outline" size="sm">
-          {skill.code}
+          {row.original.code}
         </Badge>
       ),
     },
     {
       header: "Mô tả",
-      cell: (skill) => (
+      accessorKey: "description",
+      cell: ({ row }) => (
         <span className="text-muted-foreground block max-w-md truncate">
-          {skill.description || "-"}
+          {row.original.description || "-"}
         </span>
       ),
     },
     {
       header: "Hành động",
-      className: "pr-6 text-right",
-      cell: (skill) => <SkillActions skill={skill} />,
+      id: "actions",
+      cell: ({ row }) => <SkillActions skill={row.original} />,
     },
   ];
 
@@ -101,7 +125,6 @@ export function SkillTable({
       <DataTable
         data={skills}
         columns={columns}
-        keyExtractor={(skill) => skill.id}
         page={page}
         totalPages={totalPages}
         onPageChange={handlePageChange}
@@ -109,13 +132,9 @@ export function SkillTable({
         variant={variant}
         isLoading={isLoading}
         skeletonCount={5}
-        selection={{
-          isSelected: selection.isSelected,
-          onToggleOne: selection.toggleOne,
-          onToggleAll: selection.toggleAll,
-          isAllSelected: selection.isAllSelected,
-          isPartiallySelected: selection.isPartiallySelected,
-        }}
+        rowSelection={rowSelection}
+        onRowSelectionChange={setRowSelection as any}
+        getRowId={(row) => row.id.toString()}
         emptyState={
           <DataTableEmptyState
             icon={Plus}
@@ -127,9 +146,9 @@ export function SkillTable({
       />
 
       <TableActionBar
-        selectedCount={selection.selectedCount}
+        selectedCount={Object.keys(rowSelection).length}
         onDelete={() => setShowBulkDeleteDialog(true)}
-        onDeselectAll={selection.clearAll}
+        onDeselectAll={() => setRowSelection({})}
         isLoading={isPending}
       />
 
@@ -138,7 +157,7 @@ export function SkillTable({
         onOpenChange={setShowBulkDeleteDialog}
         onConfirm={handleBulkDelete}
         isDeleting={isPending}
-        entityName={`${selection.selectedCount} kỹ năng`}
+        entityName={`${Object.keys(rowSelection).length} kỹ năng`}
       />
     </>
   );

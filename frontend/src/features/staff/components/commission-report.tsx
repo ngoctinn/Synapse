@@ -1,6 +1,5 @@
 "use client";
 
-import { useTableSelection } from "@/shared/hooks";
 import { formatCurrency } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
@@ -8,11 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select";
 import { BarChart3, Download, FileText } from "lucide-react";
 import { useState } from "react";
@@ -34,36 +33,36 @@ export function CommissionReport({ data }: CommissionReportProps) {
     {
       header: "Nhân viên",
       accessorKey: "staffName",
-      cell: (row) => (
+      cell: ({ row }) => (
         <div className="flex flex-col">
-          <span className="font-medium">{row.staffName}</span>
-          <span className="text-muted-foreground text-xs">{row.role}</span>
+          <span className="font-medium">{row.original.staffName}</span>
+          <span className="text-muted-foreground text-xs">{row.original.role}</span>
         </div>
       ),
     },
     {
       header: "Tổng dịch vụ",
       accessorKey: "totalServices",
-      cell: (row) => <div className="text-center">{row.totalServices}</div>,
+      cell: ({ row }) => <div className="text-center">{row.original.totalServices}</div>,
     },
     {
       header: "Doanh thu",
       accessorKey: "totalRevenue",
-      cell: (row) => (
-        <div className="font-medium">{formatCurrency(row.totalRevenue)}</div>
+      cell: ({ row }) => (
+        <div className="font-medium">{formatCurrency(row.original.totalRevenue)}</div>
       ),
     },
     {
       header: "Tỉ lệ hoa hồng",
       accessorKey: "commissionRate",
-      cell: (row) => <Badge variant="outline">{row.commissionRate}%</Badge>,
+      cell: ({ row }) => <Badge variant="outline">{row.original.commissionRate}%</Badge>,
     },
     {
       header: "Hoa hồng nhận được",
       accessorKey: "totalCommission",
-      cell: (row) => (
+      cell: ({ row }) => (
         <div className="text-success-foreground font-bold">
-          {formatCurrency(row.totalCommission)}
+          {formatCurrency(row.original.totalCommission)}
         </div>
       ),
     },
@@ -146,7 +145,7 @@ export function CommissionReport({ data }: CommissionReportProps) {
       <DataTable
         data={data}
         columns={columns}
-        keyExtractor={(item) => item.staffId}
+        getRowId={(row) => row.staffId}
         page={1}
         totalPages={1}
         onPageChange={() => {}}

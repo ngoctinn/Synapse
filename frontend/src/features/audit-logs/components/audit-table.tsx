@@ -35,13 +35,13 @@ export function AuditTable({
     {
       header: "Thời gian",
       accessorKey: "created_at",
-      cell: (row) => (
+      cell: ({ row }) => (
         <div className="flex flex-col text-sm">
           <span className="font-medium">
-            {format(new Date(row.created_at), "HH:mm", { locale: vi })}
+            {format(new Date(row.original.created_at), "HH:mm", { locale: vi })}
           </span>
           <span className="text-muted-foreground text-xs">
-            {format(new Date(row.created_at), "dd/MM/yyyy", { locale: vi })}
+            {format(new Date(row.original.created_at), "dd/MM/yyyy", { locale: vi })}
           </span>
         </div>
       ),
@@ -49,17 +49,17 @@ export function AuditTable({
     {
       header: "Người thực hiện",
       accessorKey: "actor_name",
-      cell: (row) => (
+      cell: ({ row }) => (
         <div className="flex flex-col text-sm">
-          <span className="font-medium">{row.actor_name}</span>
-          {/* <span className="text-xs text-muted-foreground">{row.actor_id}</span> */}
+          <span className="font-medium">{row.original.actor_name}</span>
+          {/* <span className="text-xs text-muted-foreground">{row.original.actor_id}</span> */}
         </div>
       ),
     },
     {
       header: "Hành động",
       accessorKey: "action",
-      cell: (row) => {
+      cell: ({ row }) => {
         const variants: Record<
           string,
           | "default"
@@ -77,8 +77,8 @@ export function AuditTable({
           COMPLETE: "success",
         };
         return (
-          <Badge variant={variants[row.action] || "outline"}>
-            {row.action}
+          <Badge variant={variants[row.original.action] || "outline"}>
+            {row.original.action}
           </Badge>
         );
       },
@@ -86,22 +86,22 @@ export function AuditTable({
     {
       header: "Đối tượng",
       accessorKey: "entity_type",
-      cell: (row) => (
-        <div className="text-sm font-medium">{row.entity_type}</div>
+      cell: ({ row }) => (
+        <div className="text-sm font-medium">{row.original.entity_type}</div>
       ),
     },
     {
       header: "Chi tiết",
       accessorKey: "details",
-      cell: (row) => (
+      cell: ({ row }) => (
         <div
           className="text-muted-foreground max-w-72 truncate text-xs"
-          title={JSON.stringify(row.details, null, 2)}
+          title={JSON.stringify(row.original.details, null, 2)}
         >
-          {row.entity_name && (
-            <div className="text-foreground font-medium">{row.entity_name}</div>
+          {row.original.entity_name && (
+            <div className="text-foreground font-medium">{row.original.entity_name}</div>
           )}
-          {JSON.stringify(row.details)}
+          {JSON.stringify(row.original.details)}
         </div>
       ),
     },
@@ -111,7 +111,6 @@ export function AuditTable({
     <DataTable
       data={data}
       columns={columns}
-      keyExtractor={(item) => item.id}
       page={page}
       totalPages={totalPages}
       onPageChange={handlePageChange}

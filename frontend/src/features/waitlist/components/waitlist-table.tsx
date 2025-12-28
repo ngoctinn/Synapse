@@ -1,16 +1,16 @@
 "use client";
 
 import { useTableParams } from "@/shared/hooks";
+import { showToast } from "@/shared/ui";
 import { DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
-import { showToast } from "@/shared/ui";
 import { CalendarClock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { updateWaitlistStatus, deleteWaitlistEntry } from "../actions";
+import { deleteWaitlistEntry, updateWaitlistStatus } from "../actions";
 import { WaitlistEntry } from "../model/types";
-import { WaitlistSheet } from "./waitlist-sheet";
 import { getWaitlistColumns } from "./waitlist-columns";
+import { WaitlistSheet } from "./waitlist-sheet";
 
 interface WaitlistTableProps {
   data: WaitlistEntry[];
@@ -33,6 +33,7 @@ export function WaitlistTable({
 }: WaitlistTableProps) {
   const router = useRouter();
   const [editingEntry, setEditingEntry] = useState<WaitlistEntry | null>(null);
+  const [rowSelection, setRowSelection] = useState({});
   const [, startTransition] = useTransition();
 
   const {
@@ -85,7 +86,6 @@ export function WaitlistTable({
       <DataTable
         data={data}
         columns={columns}
-        keyExtractor={(item) => item.id}
         page={page}
         totalPages={totalPages}
         onPageChange={handlePageChange}
@@ -94,11 +94,9 @@ export function WaitlistTable({
         skeletonCount={5}
         variant="flush"
         hidePagination={hidePagination}
-        sort={{
-          column: sortBy,
-          direction: order,
-          onSort: handleSort,
-        }}
+        rowSelection={rowSelection}
+        onRowSelectionChange={setRowSelection as any}
+        getRowId={(row) => row.id}
         emptyState={
           <DataTableEmptyState
             icon={CalendarClock}

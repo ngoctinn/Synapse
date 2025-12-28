@@ -1,32 +1,33 @@
 "use client";
 
-import { useTransition } from "react";
 import { useTableParams } from "@/shared/hooks";
+import { showToast } from "@/shared/ui";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
+import { Checkbox } from "@/shared/ui/checkbox";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
-import { showToast } from "@/shared/ui";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/shared/ui/dropdown-menu";
+import { Group, Stack } from "@/shared/ui/layout";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import {
-  AlertTriangle,
-  MoreHorizontal,
-  ShieldCheck,
-  XCircle,
+    AlertTriangle,
+    MoreHorizontal,
+    ShieldCheck,
+    XCircle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 import { updateWarrantyStatus } from "../actions";
 import { WarrantyTicket } from "../model/types";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/shared/ui/dropdown-menu";
-import { Stack, Group } from "@/shared/ui/layout";
 
 interface WarrantyTableProps {
   data: WarrantyTicket[];
@@ -47,6 +48,7 @@ export function WarrantyTable({
 }: WarrantyTableProps) {
   const router = useRouter();
   const [, startTransition] = useTransition();
+  const [rowSelection, setRowSelection] = useState({});
 
   const {
     page: urlPage,
@@ -76,27 +78,56 @@ export function WarrantyTable({
 
   const columns: Column<WarrantyTicket>[] = [
     {
+      id: "select",
+      header: ({ table }) => (
+        <div className="pl-4">
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            aria-label="Select all"
+          />
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div className="pl-4">
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+          />
+        </div>
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
       header: "Mã bảo hành",
       accessorKey: "code",
-      cell: (w) => <span>{w.code}</span>,
+      enableSorting: true,
+      cell: ({ row }) => <span>{row.original.code}</span>,
     },
     {
       header: "Khách hàng",
       accessorKey: "customer_name",
+      enableSorting: true,
+      cell: ({ row }) => <span>{row.original.customer_name}</span>,
     },
     {
       header: "Dịch vụ/Liệu trình",
       accessorKey: "service_name",
-      cell: (w) => (
-        <div className="max-w-48 truncate">{w.service_name}</div>
+      cell: ({ row }) => (
+        <div className="max-w-48 truncate">{row.original.service_name}</div>
       ),
     },
     {
       header: "Thời hạn",
       accessorKey: "end_date",
-      sortable: true,
-      cell: (w) => {
-        const end = new Date(w.end_date);
+      enableSorting: true,
+      cell: ({ row }) => {
+        const end = new Date(row.original.end_date);
         const now = new Date();
         const daysLeft = Math.ceil(
           (end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
@@ -118,7 +149,8 @@ export function WarrantyTable({
     {
       header: "Trạng thái",
       accessorKey: "status",
-      cell: (w) => {
+      enableSorting: true,
+      cell: ({ row }) => {
         const variants: Record<
           string,
           | "default"
@@ -140,16 +172,15 @@ export function WarrantyTable({
           claimed: "Đang xử lý",
         };
         return (
-          <Badge variant={variants[w.status] || "outline"}>
-            {labels[w.status] || w.status}
+          <Badge variant={variants[row.original.status] || "outline"}>
+            {labels[row.original.status] || row.original.status}
           </Badge>
         );
       },
     },
     {
-      header: "",
       id: "actions",
-      cell: (w) => (
+      cell: ({ row }) => (
         <Group justify="end">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -160,16 +191,16 @@ export function WarrantyTable({
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => handleStatusUpdate(w.id, "claimed")}
+                onClick={() => handleStatusUpdate(row.original.id, "claimed")}
               >
-                <AlertTriangle /> Yêu cầu bảo hành
+                <AlertTriangle className="mr-2 h-4 w-4" /> Yêu cầu bảo hành
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onClick={() => handleStatusUpdate(w.id, "voided")}
+                onClick={() => handleStatusUpdate(row.original.id, "voided")}
                 className="text-destructive"
               >
-                <XCircle /> Hủy hiệu lực
+                <XCircle className="mr-2 h-4 w-4" /> Hủy hiệu lực
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -183,7 +214,6 @@ export function WarrantyTable({
       <DataTable
         data={data}
         columns={columns}
-        keyExtractor={(item) => item.id}
         page={page}
         totalPages={totalPages}
         onPageChange={handlePageChange}
@@ -191,11 +221,9 @@ export function WarrantyTable({
         isLoading={isLoading}
         skeletonCount={5}
         variant="flush"
-        sort={{
-          column: sortBy,
-          direction: order,
-          onSort: handleSort,
-        }}
+        rowSelection={rowSelection}
+        onRowSelectionChange={setRowSelection as any}
+        getRowId={(row) => row.id}
         emptyState={
           <DataTableEmptyState
             icon={ShieldCheck}

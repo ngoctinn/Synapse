@@ -1,21 +1,22 @@
 "use client";
 
-import { useTableParams, useTableSelection } from "@/shared/hooks";
+import { useTableParams } from "@/shared/hooks";
+import { Z_INDEX } from "@/shared/lib/design-tokens";
+import { cn, formatCurrency } from "@/shared/lib/utils";
 import { DeleteConfirmDialog, showToast } from "@/shared/ui";
 import { Badge } from "@/shared/ui/badge";
+import { Checkbox } from "@/shared/ui/checkbox";
 import { AnimatedGiftIcon } from "@/shared/ui/custom/animated-icon";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
-import { formatCurrency, cn } from "@/shared/lib/utils";
-import { Z_INDEX } from "@/shared/lib/design-tokens";
 import { Loader2, Package } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { deletePackage } from "../actions";
 import { ServicePackage } from "../model/types";
-import { PackageSheet } from "./package-sheet";
 import { CreatePackageTrigger } from "./create-package-trigger";
+import { PackageSheet } from "./package-sheet";
 
 interface PackageTableProps {
   data: ServicePackage[];
@@ -55,14 +56,11 @@ export function PackageTable({
   const page = pageProp ?? urlPage;
   const handlePageChange = onPageChangeProp ?? urlPageChange;
 
-  const selection = useTableSelection({
-    data,
-    keyExtractor: (item) => item.id,
-  });
+  const [rowSelection, setRowSelection] = useState({});
 
   const handleBulkDelete = async () => {
     startTransition(async () => {
-      const selectedIds = Array.from(selection.selectedIds);
+      const selectedIds = Object.keys(rowSelection);
       let successCount = 0;
 
       const results = await Promise.allSettled(
@@ -80,7 +78,7 @@ export function PackageTable({
 
       if (successCount > 0) {
         showToast.success("Thành công", `Đã xóa ${successCount} gói dịch vụ`);
-        selection.clearAll();
+        setRowSelection({});
         router.refresh();
       }
 
@@ -90,20 +88,42 @@ export function PackageTable({
 
   const columns: Column<ServicePackage>[] = [
     {
+      id: "select",
+      header: ({ table }) => (
+        <div className="pl-4">
+            <Checkbox
+            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            aria-label="Select all"
+            />
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div className="pl-4">
+            <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+            />
+        </div>
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
       header: "Gói dịch vụ",
       accessorKey: "name",
-      sortable: true,
-      cell: (pkg) => (
+      cell: ({ row }) => (
         <div className="flex items-center gap-3">
           <div className="bg-primary/10 flex size-10 items-center justify-center rounded-lg">
             <Package className="text-primary size-5" />
           </div>
           <div className="flex flex-col">
             <span className="text-foreground text-sm font-semibold">
-              {pkg.name}
+              {row.original.name}
             </span>
             <span className="text-muted-foreground line-clamp-1 text-xs">
-              {pkg.description || "Không có mô tả"}
+              {row.original.description || "Không có mô tả"}
             </span>
           </div>
         </div>
@@ -111,16 +131,16 @@ export function PackageTable({
     },
     {
       header: "Dịch vụ",
-      cell: (pkg) => (
+      cell: ({ row }) => (
         <div className="flex flex-wrap gap-1">
-          {pkg.services.slice(0, 2).map((s) => (
+          {row.original.services.slice(0, 2).map((s) => (
             <Badge key={s.service_id} variant="secondary" size="sm">
               {s.service_name} x{s.quantity}
             </Badge>
           ))}
-          {pkg.services.length > 2 && (
+          {row.original.services.length > 2 && (
             <Badge variant="outline" size="sm">
-              +{pkg.services.length - 2}
+              +{row.original.services.length - 2}
             </Badge>
           )}
         </div>
@@ -129,22 +149,21 @@ export function PackageTable({
     {
       header: "Giá",
       accessorKey: "price",
-      sortable: true,
-      cell: (pkg) => (
-        <div className="text-sm font-semibold">{formatCurrency(pkg.price)}</div>
+      cell: ({ row }) => (
+        <div className="text-sm font-semibold">{formatCurrency(row.original.price)}</div>
       ),
     },
     {
       header: "Hiệu lực",
       accessorKey: "validity_days",
-      cell: (pkg) => <div className="text-sm">{pkg.validity_days} ngày</div>,
+      cell: ({ row }) => <div className="text-sm">{row.original.validity_days} ngày</div>,
     },
     {
       header: "Trạng thái",
       accessorKey: "is_active",
-      cell: (pkg) => (
-        <Badge variant={pkg.is_active ? "success" : "secondary"}>
-          {pkg.is_active ? "Đang bán" : "Tạm ngưng"}
+      cell: ({ row }) => (
+        <Badge variant={row.original.is_active ? "success" : "secondary"}>
+          {row.original.is_active ? "Đang bán" : "Tạm ngưng"}
         </Badge>
       ),
     },
@@ -155,7 +174,6 @@ export function PackageTable({
       <DataTable
         data={data}
         columns={columns}
-        keyExtractor={(item) => item.id}
         page={page}
         totalPages={totalPages}
         onPageChange={handlePageChange}
@@ -163,19 +181,10 @@ export function PackageTable({
         isLoading={isLoading}
         skeletonCount={5}
         variant="flush"
-        selection={{
-          isSelected: selection.isSelected,
-          onToggleOne: selection.toggleOne,
-          onToggleAll: selection.toggleAll,
-          isAllSelected: selection.isAllSelected,
-          isPartiallySelected: selection.isPartiallySelected,
-        }}
+        rowSelection={rowSelection}
+        onRowSelectionChange={setRowSelection as any}
+        getRowId={(row) => row.id.toString()}
         onRowClick={(pkg) => setEditingPackage(pkg)}
-        sort={{
-          column: sortBy,
-          direction: order,
-          onSort: handleSort,
-        }}
         emptyState={
           <DataTableEmptyState
             icon={AnimatedGiftIcon}
@@ -187,9 +196,9 @@ export function PackageTable({
       />
 
       <TableActionBar
-        selectedCount={selection.selectedCount}
+        selectedCount={Object.keys(rowSelection).length}
         onDelete={() => setShowBulkDeleteDialog(true)}
-        onDeselectAll={selection.clearAll}
+        onDeselectAll={() => setRowSelection({})}
         isLoading={isPending}
       />
 
@@ -198,7 +207,7 @@ export function PackageTable({
         onOpenChange={setShowBulkDeleteDialog}
         onConfirm={handleBulkDelete}
         isDeleting={isPending}
-        entityName={`${selection.selectedCount} gói dịch vụ`}
+        entityName={`${Object.keys(rowSelection).length} gói dịch vụ`}
       />
 
       {editingPackage && (

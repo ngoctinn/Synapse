@@ -1,15 +1,18 @@
 "use client";
 
 import {
-  type SelectionConfig,
-  type SortConfig,
-  type FilterConfig,
-} from "@/shared/lib/design-system.types";
-import { getNestedValue } from "@/shared/lib/object-utils";
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  SortingState,
+  useReactTable
+} from "@tanstack/react-table";
+import { useState } from "react";
+
 import { cn } from "@/shared/lib/utils";
-import { Checkbox } from "@/shared/ui/checkbox";
-import { Badge } from "@/shared/ui/badge";
 import { AnimatedTableRow } from "@/shared/ui/custom/animated-table-row";
+import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
 import { PaginationControls } from "@/shared/ui/custom/pagination-controls";
 import {
@@ -20,145 +23,88 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/ui/table";
-import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
-import { useTableKeyboard } from "@/shared/lib/table-utils";
-import { ReactNode } from "react";
+import { ArrowDown, ArrowUp, ArrowUpDown, FileText } from "lucide-react";
 
-export interface Column<T> {
-  header: string | ReactNode;
-  accessorKey?: keyof T | string; // Allow string for nested keys
-  id?: string; // For sorting/identifying when accessorKey is nested
-  cell?: (item: T) => ReactNode;
-  className?: string;
-  headerClassName?: string;
-  sortable?: boolean;
-  /** Cấu hình cho Filter Inline */
-  filterable?: boolean;
-  filterControl?: (value: any, onChange: (value: any) => void) => ReactNode;
-}
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+  isLoading?: boolean;
+  emptyState?: React.ReactNode;
 
-// Fix Issue #12: Error State
-interface ErrorState {
-  title: string;
-  message: string;
-  retry?: () => void;
-}
-
-interface DataTableProps<T> {
-  data: T[];
-  columns: Column<T>[];
-  keyExtractor: (item: T) => string | number;
+  // Pagination
   page?: number;
   totalPages?: number;
   onPageChange?: (page: number) => void;
-  emptyState?: ReactNode;
+  // If true, hide built-in pagination controls (e.g. if parent handles it or no pagination needed)
+  hidePagination?: boolean;
+
+  // Interaction
+  onRowClick?: (row: TData) => void;
+
+  // Selection
+  rowSelection?: Record<string, boolean>;
+  onRowSelectionChange?: (rowSelection: Record<string, boolean>) => void;
+  getRowId?: (originalRow: TData, index: number, parent?: any) => string;
+
   className?: string;
   variant?: "default" | "flush";
-  isLoading?: boolean;
   skeletonCount?: number;
-  disabled?: boolean;
-
-  // Fix Issue #12: Error handling
-  error?: ErrorState;
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // Selection - Grouped config (recommended)
-  // ─────────────────────────────────────────────────────────────────────────
-  /** Grouped selection config */
-  selection?: SelectionConfig;
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // Sorting - Grouped config (recommended)
-  // ─────────────────────────────────────────────────────────────────────────
-  /** Grouped sort config */
-  sort?: SortConfig;
-  /** Grouped filter config */
-  filter?: FilterConfig;
-
-  onRowClick?: (item: T) => void;
-  hidePagination?: boolean;
 }
 
-export function DataTable<T>({
-  data,
+export function DataTable<TData, TValue>({
   columns,
-  keyExtractor,
+  data,
+  isLoading = false,
+  emptyState,
   page = 1,
   totalPages = 1,
   onPageChange,
-  emptyState,
+  hidePagination = false,
+  onRowClick,
+  rowSelection: externalRowSelection,
+  onRowSelectionChange,
+  getRowId,
   className,
   variant = "default",
-  isLoading = false,
   skeletonCount = 5,
-  disabled = false,
-  hidePagination = false,
-  error, // Fix lint: add error to destructuring
+}: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [internalRowSelection, setInternalRowSelection] = useState({});
 
-  // Grouped configs
-  selection,
-  sort,
-  filter,
+  const rowSelection = externalRowSelection ?? internalRowSelection;
+  const setRowSelection = onRowSelectionChange ?? setInternalRowSelection;
 
-  onRowClick,
-}: DataTableProps<T>) {
-  const isSelectable = !!selection;
-
-  // Fix Issue #5: Keyboard navigation
-  const { handleKeyDown } = useTableKeyboard({
-    rowCount: data.length,
-    onEnter: (index: number) => {
-      if (selection && index >= 0 && index < data.length) {
-        const item = data[index];
-        const id = keyExtractor(item);
-        selection.onToggleOne(id);
-      }
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    // Client-side pagination if needed, but we mostly use server-side.
+    // getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    onRowSelectionChange: setRowSelection as any,
+    getRowId,
+    state: {
+      sorting,
+      rowSelection,
     },
-    onEscape: () => {
-      if (selection?.onToggleAll && selection.isAllSelected) {
-        selection.onToggleAll();
-      }
-    },
-    disabled: disabled || isLoading,
+    manualPagination: true, // We handle pagination via props usually
+    pageCount: totalPages,
   });
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Fix Issue #10: Sticky header - remove overflow-hidden from container
   const containerClasses = cn(
     "relative w-full overflow-hidden",
-    disabled && "pointer-events-none opacity-60 grayscale",
+    isLoading && "pointer-events-none opacity-60 grayscale",
     variant === "default" && "border rounded-lg bg-background shadow-sm hover:shadow-md transition-shadow duration-300",
     className
   );
 
-  const effectiveColumnCount = isSelectable
-    ? columns.length + 1
-    : columns.length;
-
-  // Fix Issue #12: Error state
-  if (error) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12 px-4">
-        <div className="text-destructive mb-2 text-lg font-semibold">{error.title}</div>
-        <p className="text-muted-foreground mb-4 text-center text-sm">{error.message}</p>
-        {error.retry && (
-          <button
-            onClick={error.retry}
-            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-          >
-            Thử lại
-          </button>
-        )}
-      </div>
-    );
-  }
-
-  // Fix Issue #3: Loading transitions - add fade animation
+  // Loading State
   if (isLoading) {
     return (
       <div className="animate-in fade-in duration-200">
         <DataTableSkeleton
-          columnCount={effectiveColumnCount}
+          columnCount={columns.length}
           rowCount={skeletonCount}
           searchable={false}
           filterable={false}
@@ -169,186 +115,118 @@ export function DataTable<T>({
     );
   }
 
-  if (data.length === 0 && emptyState) {
-    return <>{emptyState}</>;
+  // Empty State
+  if (data.length === 0) {
+      if (emptyState) return <>{emptyState}</>;
+      return (
+        <div className={containerClasses}>
+             <DataTableEmptyState
+                icon={FileText}
+                title="Không có dữ liệu"
+                description="Chưa có dữ liệu nào để hiển thị."
+             />
+        </div>
+      );
   }
 
   return (
     <div className="flex flex-col gap-4">
       <div className={containerClasses}>
-        {/* Fix Issue #10: Overflow-x-auto moved here for sticky header to work */}
         <div className="scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent w-full overflow-x-auto overflow-y-visible">
           <Table>
-            {/* Fix Issue #10: Sticky header with proper z-index */}
             <TableHeader className="bg-muted/30 sticky top-0 z-20 border-b">
-              <TableRow className="border-border/50 hover:bg-transparent">
-                {selection && (
-                  <TableHead className="w-12 pl-6">
-                    <div className="flex items-center gap-2">
-                      <Checkbox
-                        checked={selection.isAllSelected}
-                        // @ts-expect-error - indeterminate is valid
-                        indeterminate={
-                          selection.isPartiallySelected ? "true" : undefined
-                        }
-                        onCheckedChange={selection.onToggleAll}
-                        aria-label="Chọn tất cả"
-                        className="translate-y-[2px]"
-                      />
-                      {/* Fix Issue #6: Selection count indicator */}
-                      {selection.isPartiallySelected && (
-                        <Badge
-                          variant="secondary"
-                          className="h-5 px-1.5 text-[10px] font-medium"
-                        >
-                          {/* Get count from selectedIds if available */}
-                          {(selection as any).selectedCount || 0}
-                        </Badge>
-                      )}
-                    </div>
-                  </TableHead>
-                )}
-
-                {columns.map((col, index) => {
-                  const isSorted = sort?.column === col.accessorKey?.toString();
-                  return (
-                    <TableHead
-                      key={index}
-                      className={cn(
-                        "group transition-colors duration-200",
-                        col.sortable ? "cursor-pointer select-none" : "",
-                        isSorted && "text-foreground font-semibold",
-                        col.headerClassName
-                      )}
-                      onClick={() => {
-                        if (col.sortable && sort?.onSort && col.accessorKey) {
-                          sort.onSort(col.accessorKey.toString());
-                        }
-                      }}
-                    >
-                      <div
-                        className={cn(
-                          "flex items-center gap-2",
-                          index === columns.length - 1 && "justify-end"
-                        )}
-                      >
-                        <span className="truncate">{col.header}</span>
-                        {col.sortable && (
-                          <span className="flex h-4 w-4 shrink-0 items-center justify-center">
-                            {isSorted ? (
-                              sort?.direction === "asc" ? (
-                                <ArrowUp className="text-primary h-3.5 w-3.5 transition-all duration-300" />
-                              ) : (
-                                <ArrowDown className="text-primary h-3.5 w-3.5 transition-all duration-300" />
-                              )
-                            ) : (
-                              <ArrowUpDown className="text-muted-foreground/40 h-3.5 w-3.5 opacity-0 transition-all duration-300 group-hover:opacity-100" />
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id} className="border-border/50 hover:bg-transparent">
+                  {headerGroup.headers.map((header) => {
+                    const isSortable = header.column.getCanSort();
+                    return (
+                      <TableHead key={header.id} className="h-11">
+                        {header.isPlaceholder ? null : (
+                          <div
+                            className={cn(
+                              "flex items-center gap-2",
+                              isSortable && "cursor-pointer select-none group",
+                              // Center align or Right align based on column meta or simple convention could go here
                             )}
-                          </span>
+                            onClick={header.column.getToggleSortingHandler()}
+                          >
+                            <span className="truncate font-semibold text-muted-foreground group-hover:text-foreground transition-colors">
+                                {flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext()
+                                )}
+                            </span>
+                            {isSortable && (
+                                <span className="flex h-4 w-4 shrink-0 items-center justify-center">
+                                    {{
+                                    asc: <ArrowUp className="text-primary h-3.5 w-3.5 transition-all duration-300" />,
+                                    desc: <ArrowDown className="text-primary h-3.5 w-3.5 transition-all duration-300" />,
+                                    }[header.column.getIsSorted() as string] ?? (
+                                        <ArrowUpDown className="text-muted-foreground/40 h-3.5 w-3.5 opacity-0 transition-all duration-300 group-hover:opacity-100" />
+                                    )}
+                                </span>
+                            )}
+                          </div>
                         )}
-                      </div>
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-
-              {/* Fix Issue: Inline Filter Row */}
-              {filter && (
-                <TableRow className="bg-muted/10 h-14 border-b hover:bg-transparent">
-                  {selection && <TableHead className="w-12 pl-6" />}
-                  {columns.map((col, index) => (
-                    <TableHead key={`filter-${index}`} className={col.headerClassName}>
-                      {col.filterable && col.filterControl && col.accessorKey ? (
-                        <div className="flex items-center gap-1.5 px-0.5">
-                          {col.filterControl(
-                            filter.values[col.accessorKey.toString()],
-                            (val) => filter.onFilterChange(col.accessorKey!.toString(), val)
-                          )}
-                        </div>
-                      ) : null}
-                    </TableHead>
-                  ))}
+                      </TableHead>
+                    );
+                  })}
                 </TableRow>
-              )}
+              ))}
             </TableHeader>
             <TableBody>
-              {data.map((item, index) => {
-                const itemId = keyExtractor(item);
-                const selected = selection?.isSelected(itemId) ?? false;
-                const isClickable = !!onRowClick;
-
-                return (
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row, index) => (
                   <AnimatedTableRow
-                    key={itemId}
+                    key={row.id}
                     index={index}
+                    data-state={row.getIsSelected() && "selected"}
                     className={cn(
-                      "border-border/30 group border-b transition-all duration-200 last:border-0",
-                      isClickable && "hover:bg-muted/30 cursor-pointer",
-                      selected && "bg-primary/8"
+                        "border-border/30 group border-b transition-all duration-200 last:border-0",
+                        onRowClick && "hover:bg-muted/30 cursor-pointer",
+                        row.getIsSelected() && "bg-primary/8"
                     )}
-                    onClick={() => {
-                      if (onRowClick) onRowClick(item);
-                    }}
+                    onClick={() => onRowClick && onRowClick(row.original)}
                   >
-                    {/* Checkbox Cell */}
-                    {selection && (
-                      <TableCell
-                        className="w-12 pl-6"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Checkbox
-                          checked={selected}
-                          onCheckedChange={() => selection.onToggleOne(itemId)}
-                          aria-label="Chọn hàng"
-                          className="translate-y-[2px]"
-                        />
-                      </TableCell>
-                    )}
-
-                    {columns.map((col, colIndex) => (
-                      <TableCell
-                        key={colIndex}
-                        className={cn(
-                          "py-4",
-                          colIndex === 0 && !selection
-                            ? "table-first-cell-padding text-foreground font-medium"
-                            : "",
-                          colIndex === 0 && selection
-                            ? "text-foreground font-medium"
-                            : "",
-                          colIndex === columns.length - 1
-                            ? "table-last-cell-padding"
-                            : "text-muted-foreground",
-                          col.className
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id} className="py-3">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
                         )}
-                      >
-                        {col.cell
-                          ? col.cell(item)
-                          : col.accessorKey
-                            ? (getNestedValue(
-                                item,
-                                col.accessorKey
-                              ) as ReactNode)
-                            : null}
                       </TableCell>
                     ))}
                   </AnimatedTableRow>
-                );
-              })}
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </div>
       </div>
+
+      {/* Pagination Controls */}
       {!hidePagination && totalPages > 1 && onPageChange && (
-        <div className="py-2">
-          <PaginationControls
-            currentPage={page}
-            totalPages={totalPages}
-            onPageChange={onPageChange}
-            isLoading={isLoading}
-          />
-        </div>
+         <div className="py-2">
+            <PaginationControls
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={onPageChange}
+                isLoading={isLoading}
+            />
+         </div>
       )}
     </div>
   );
 }
+
+// Re-export Column type for consumers
+export type Column<T> = ColumnDef<T>;

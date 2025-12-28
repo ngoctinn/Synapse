@@ -1,19 +1,24 @@
 "use client";
 
 import { Skill } from "@/features/services";
-import { deleteStaff } from "@/features/staff/actions";
-import { useTableParams, useTableSelection } from "@/shared/hooks";
+import { deleteStaff, updateStaff } from "@/features/staff/actions";
+import {
+    useBulkAction,
+    useTableParams,
+} from "@/shared/hooks";
 import { Z_INDEX } from "@/shared/lib/design-tokens";
-import { cn } from "@/shared/lib/utils";
-import { DeleteConfirmDialog, showToast, Spinner } from "@/shared/ui";
+import { cn, getInitials } from "@/shared/lib/utils";
+import { DeleteConfirmDialog, Spinner } from "@/shared/ui";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { Badge } from "@/shared/ui/badge";
-import { AnimatedUsersIcon } from "@/shared/ui/custom/animated-icon";
+import { Checkbox } from "@/shared/ui/checkbox";
+import { Icon } from "@/shared/ui/custom";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import { Group, Stack } from "@/shared/ui/layout";
+import { Switch } from "@/shared/ui/switch";
 import {
     Tooltip,
     TooltipContent,
@@ -21,8 +26,10 @@ import {
     TooltipTrigger,
 } from "@/shared/ui/tooltip";
 import { Text as UIText } from "@/shared/ui/typography";
+import { Phone, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState } from "react";
+import { toast } from "sonner";
 import { ROLE_CONFIG } from "../../model/constants";
 import { Staff } from "../../model/types";
 import { InviteStaffTrigger } from "../invite-staff-trigger";
@@ -56,6 +63,7 @@ export function StaffTable({
 }: StaffTableProps) {
   const router = useRouter();
   const [editingStaff, setEditingStaff] = useState<Staff | null>(null);
+  const [rowSelection, setRowSelection] = useState({});
 
   // Use custom hook for URL state management
   const {
@@ -73,161 +81,186 @@ export function StaffTable({
   const page = pageProp ?? urlPage;
   const handlePageChange = onPageChangeProp ?? urlPageChange;
 
-  const selection = useTableSelection({
-    data,
-    keyExtractor: (item) => item.user_id,
+  // Use custom hook for bulk delete
+  const {
+    execute: executeBulkDelete,
+    isPending,
+    showDialog: showBulkDeleteDialog,
+    setShowDialog: setShowBulkDeleteDialog,
+  } = useBulkAction(deleteStaff, {
+    successMessage: (count) => `Đã xóa ${count} nhân viên`,
+    errorMessage: (count) => `Không thể xóa ${count} nhân viên`,
   });
 
-  const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
-  const [isPending, startTransition] = useTransition();
-
   const handleBulkDelete = () => {
-    const ids = Array.from(selection.selectedIds) as string[];
-    if (ids.length === 0) return;
-
-    startTransition(async () => {
-      try {
-        const results = await Promise.allSettled(
-          ids.map((id) => deleteStaff(id))
-        );
-
-        const successCount = results.filter(
-          (r) => r.status === "fulfilled" && r.value.status === "success"
-        ).length;
-        const failures = results.filter(
-          (r) =>
-            r.status === "rejected" ||
-            (r.status === "fulfilled" && r.value.status !== "success")
-        );
-
-        if (successCount > 0) {
-          showToast.success("Thành công", `Đã xóa ${successCount} nhân viên`);
-          selection.clearAll();
-          router.refresh();
-        }
-
-        if (failures.length > 0) {
-          showToast.error("Lỗi", `Không thể xóa ${failures.length} nhân viên`);
-        }
-      } catch (error) {
-        console.error(error);
-        showToast.error("Lỗi", "Không thể xóa nhân viên");
-      } finally {
-        setShowBulkDeleteDialog(false);
-      }
-    });
+    const ids = Object.keys(rowSelection);
+    executeBulkDelete(ids, () => setRowSelection({}));
   };
+
+  const handleToggleStatus = async (staff: Staff, checked: boolean) => {
+    try {
+      await updateStaff(staff.user_id, { is_active: checked });
+      toast.success(checked ? "Đã kích hoạt nhân viên" : "Đã vô hiệu hóa nhân viên");
+      router.refresh(); // Refresh data after status change
+    } catch (error) {
+      toast.error("Không thể thay đổi trạng thái");
+    }
+  };
+
+  const getRoleBadge = (role: string) => {
+    const config = ROLE_CONFIG[role as keyof typeof ROLE_CONFIG];
+    return config?.label || role;
+  }
 
   const columns: Column<Staff>[] = [
     {
+      id: "select",
+      header: ({ table }) => (
+        <div className="pl-4">
+            <Checkbox
+            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            aria-label="Select all"
+            />
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div className="pl-4">
+            <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+            />
+        </div>
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
       header: "Nhân viên",
-      accessorKey: "user.full_name",
+      accessorKey: "user.full_name", // Keep accessorKey for sorting if needed
       id: "user.full_name",
-      sortable: true,
-      cell: (staff) => (
+      enableSorting: true,
+      cell: ({ row }) => (
         <Group align="center" gap={4}>
           <Avatar className="h-10 w-10 border">
             <AvatarImage
-              src={staff.user.avatar_url || undefined}
-              alt={staff.user.full_name || ""}
+              src={row.original.user.avatar_url || undefined}
+              alt={row.original.user.full_name || ""}
             />
             <AvatarFallback
               className="font-medium text-white shadow-sm"
               style={{
-                backgroundColor: staff.color_code || "hsl(var(--primary))",
+                backgroundColor: row.original.color_code || "hsl(var(--primary))",
               }}
             >
-              {(staff.user.full_name || staff.user.email || "?")
-                .charAt(0)
-                .toUpperCase()}
+              {getInitials(row.original.user.full_name || row.original.user.email || "?")}
             </AvatarFallback>
           </Avatar>
           <Stack gap={0}>
             <UIText size="sm" weight="medium" className="group-hover:text-primary transition-colors">
-              {staff.user.full_name || "Chưa cập nhật tên"}
+              {row.original.user.full_name || "Chưa cập nhật tên"}
             </UIText>
             <UIText size="xs" variant="muted">
-              {staff.user.email}
+              {row.original.user.email}
             </UIText>
           </Stack>
         </Group>
       ),
     },
     {
-      header: "Vai trò",
-      accessorKey: "user.role",
+      header: "Vai trò & Chức vụ",
+      accessorKey: "user.role", // Keep accessorKey for sorting if needed
       id: "user.role",
-      sortable: true,
-      cell: (staff) => (
-        <Badge
-          variant={ROLE_CONFIG[staff.user.role]?.variant || "outline"}
-          size="sm"
-        >
-          {ROLE_CONFIG[staff.user.role]?.label || staff.user.role}
-        </Badge>
+      enableSorting: true,
+      cell: ({ row }) => (
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <Badge variant={ROLE_CONFIG[row.original.user.role as keyof typeof ROLE_CONFIG]?.variant || "outline"} className="w-fit">
+              {getRoleBadge(row.original.user.role)}
+            </Badge>
+          </div>
+          {row.original.title && (
+             <span className="text-xs text-muted-foreground">{row.original.title}</span>
+          )}
+        </div>
       ),
     },
     {
       header: "Kỹ năng",
-      cell: (staff) => (
-        <Group wrap gap={2}>
-          {staff.skills.length > 0 ? (
-            <>
-              {staff.skills.slice(0, 2).map((skill) => (
-                <Badge key={skill.id} variant="violet" size="sm">
-                  {skill.name}
-                </Badge>
-              ))}
-              {staff.skills.length > 2 && (
+      cell: ({ row }) => {
+        const skills = row.original.skills || [];
+        if (skills.length === 0) return <span className="text-xs text-muted-foreground italic">Chưa có kỹ năng</span>;
+
+        return (
+          <Group wrap gap={2}>
+            {skills.slice(0, 2).map((skill) => (
+              <Badge key={skill.id} variant="violet" size="sm">
+                {skill.name}
+              </Badge>
+            ))}
+            {skills.length > 2 && (
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Badge variant="violet" size="sm">
-                        +{staff.skills.length - 2} nữa
+                        +{skills.length - 2} nữa
                       </Badge>
                     </TooltipTrigger>
                     <TooltipContent>
                       <Stack gap={1}>
-                        {staff.skills.slice(2).map((skill) => (
+                        {skills.slice(2).map((skill) => (
                           <span key={skill.id}>{skill.name}</span>
                         ))}
                       </Stack>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-              )}
-            </>
-          ) : (
-            <UIText size="xs" variant="muted" className="pl-1 italic">
-              --
-            </UIText>
+            )}
+          </Group>
+        );
+      },
+    },
+    {
+      header: "Liên hệ",
+      cell: ({ row }) => (
+        <div className="flex flex-col gap-1 text-xs text-muted-foreground">
+          {row.original.user.phone_number && (
+            <div className="flex items-center gap-1">
+              <Icon icon={Phone} className="h-3 w-3" />
+              <span>{row.original.user.phone_number}</span>
+            </div>
           )}
-        </Group>
+        </div>
       ),
     },
     {
       header: "Trạng thái",
-      cell: (staff) => (
-        <Badge
-          variant={staff.user.is_active ? "status-active" : "status-inactive"}
-          withIndicator
-          indicatorPulse={staff.user.is_active}
-          size="sm"
-        >
-          {staff.user.is_active ? "Hoạt động" : "Ẩn"}
-        </Badge>
+      accessorKey: "user.is_active", // Keep accessorKey for sorting if needed
+      id: "user.is_active",
+      enableSorting: true,
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+           <Switch
+              checked={row.original.user.is_active}
+              onCheckedChange={(checked) => handleToggleStatus(row.original, checked)}
+           />
+           <Badge variant={row.original.user.is_active ? "status-active" : "status-inactive"}>
+             {row.original.user.is_active ? "Đang làm việc" : "Đã nghỉ"}
+           </Badge>
+        </div>
       ),
     },
     {
       header: "Hành động",
-      className: "pr-6 text-right",
-      cell: (staff) => (
-        <Group
-          onClick={(e) => e.stopPropagation()}
-          justify="end"
-        >
-          <StaffActions staff={staff} onEdit={() => setEditingStaff(staff)} />
-        </Group>
+      id: "actions",
+      cell: ({ row }) => (
+        <div className="pr-6 text-right" onClick={(e) => e.stopPropagation()}>
+          <StaffActions
+            staff={row.original}
+            onEdit={() => setEditingStaff(row.original)}
+          />
+        </div>
       ),
     },
   ];
@@ -237,7 +270,6 @@ export function StaffTable({
       <DataTable
         data={data}
         columns={columns}
-        keyExtractor={(staff) => staff.user_id}
         page={page}
         totalPages={totalPages}
         onPageChange={handlePageChange}
@@ -246,25 +278,14 @@ export function StaffTable({
         isLoading={isLoading}
         skeletonCount={5}
         hidePagination={hidePagination}
-        disabled={isPending}
-        selection={{
-          isSelected: selection.isSelected,
-          onToggleOne: selection.toggleOne,
-          onToggleAll: selection.toggleAll,
-          isAllSelected: selection.isAllSelected,
-          isPartiallySelected: selection.isPartiallySelected,
-        }}
-        sort={{
-          column: sortBy,
-          direction: order,
-          onSort: handleSort,
-        }}
-        onRowClick={(staff) => setEditingStaff(staff)}
+        rowSelection={rowSelection}
+        onRowSelectionChange={setRowSelection as any}
+        getRowId={(row) => row.user_id}
         emptyState={
           <DataTableEmptyState
-            icon={AnimatedUsersIcon}
-            title="Chưa có nhân viên nào"
-            description="Danh sách nhân viên hiện đang trống."
+            icon={Users}
+            title="Chưa có nhân viên"
+            description="Thêm nhân viên mới để quản lý lịch làm việc và dịch vụ."
             action={<InviteStaffTrigger skills={skills} />}
           />
         }
@@ -279,9 +300,9 @@ export function StaffTable({
       )}
 
       <TableActionBar
-        selectedCount={selection.selectedCount}
+        selectedCount={Object.keys(rowSelection).length}
         onDelete={() => setShowBulkDeleteDialog(true)}
-        onDeselectAll={selection.clearAll}
+        onDeselectAll={() => setRowSelection({})}
         isLoading={isPending}
       />
 
@@ -290,7 +311,7 @@ export function StaffTable({
         onOpenChange={setShowBulkDeleteDialog}
         onConfirm={handleBulkDelete}
         isDeleting={isPending}
-        entityName={`${selection.selectedCount} nhân viên`}
+        entityName={`${Object.keys(rowSelection).length} nhân viên`}
       />
 
       {editingStaff && (
