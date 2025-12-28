@@ -169,6 +169,13 @@
     height: 100%;
   }
 
+  @supports (height: 100dvh) {
+    html,
+    body {
+      height: 100dvh;
+    }
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
 

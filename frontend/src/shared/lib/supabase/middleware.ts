@@ -42,7 +42,10 @@ export async function updateSession(request: NextRequest) {
 
   const isCallbackRoute = path.startsWith("/auth"); // Callback oauth, confirm email...
 
-  if (!user && !isAuthRoute && !isCallbackRoute) {
+  // Những route công khai, ai cũng vào được (kể cả chưa login)
+  const isPublicRoute = path.startsWith("/booking");
+
+  if (!user && !isAuthRoute && !isCallbackRoute && !isPublicRoute) {
     url.pathname = "/login";
     url.searchParams.set("returnUrl", path); // Lưu lại URL để redirect sau khi login xong
     return NextResponse.redirect(url);

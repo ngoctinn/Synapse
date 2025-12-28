@@ -70,7 +70,7 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
     <th
       data-slot="table-head"
       className={cn(
-        "text-muted-foreground h-12 whitespace-nowrap px-4 text-left align-middle text-[13px] font-medium transition-colors focus-within:bg-muted/50 [&:has([role=checkbox])]:px-3",
+        "text-muted-foreground h-12 whitespace-nowrap px-4 text-left align-middle text-sm font-medium transition-colors focus-within:bg-muted/50 [&:has([role=checkbox])]:px-3",
         className
       )}
       {...props}
@@ -105,12 +105,7 @@ function TableCaption({
 }
 
 export {
-  Table,
-  TableHeader,
-  TableBody,
-  TableFooter,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableCaption,
+    Table, TableBody, TableCaption, TableCell, TableFooter,
+    TableHead, TableHeader, TableRow
 };
+

@@ -154,7 +154,7 @@ function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
     <p
       data-slot="form-description"
       id={formDescriptionId}
-      className={cn("text-muted-foreground text-[0.8rem] mt-1.5", className)}
+      className={cn("text-muted-foreground text-xs mt-1.5", className)}
       {...props}
     />
   );
@@ -173,7 +173,7 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
       id={formMessageId}
       data-slot="form-message"
       className={cn(
-        "text-destructive text-[0.8rem] font-medium min-h-[20px] transition-all mt-1.5",
+        "text-destructive text-xs font-medium min-h-[20px] transition-all mt-1.5",
         !body && "opacity-0", // Hide visually but keep space? Or just use min-h on container.
         // Actually, if we use min-h, we might have extra whitespace when valid.
         // Better approach for "Reserved space":
