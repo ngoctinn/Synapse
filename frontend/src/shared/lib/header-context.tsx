@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, ReactNode, useCallback, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
 
 interface HeaderState {
   title?: string;
@@ -32,7 +38,9 @@ export function HeaderProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <HeaderContext.Provider value={{ state, setHeader, clearHeader, tabsSlot, setTabsSlot }}>
+    <HeaderContext.Provider
+      value={{ state, setHeader, clearHeader, tabsSlot, setTabsSlot }}
+    >
       {children}
     </HeaderContext.Provider>
   );

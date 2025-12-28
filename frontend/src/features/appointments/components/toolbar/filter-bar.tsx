@@ -152,9 +152,7 @@ export function FilterBar({
             <Button
               variant="outline"
               size="sm"
-              className={cn(
-                filters.staffIds.length > 0 && "border-primary"
-              )}
+              className={cn(filters.staffIds.length > 0 && "border-primary")}
             >
               <Filter className="size-4" />
               Kỹ thuật viên
@@ -199,9 +197,7 @@ export function FilterBar({
             <Button
               variant="outline"
               size="sm"
-              className={cn(
-                filters.serviceIds.length > 0 && "border-primary"
-              )}
+              className={cn(filters.serviceIds.length > 0 && "border-primary")}
             >
               <Filter className="size-4" />
               Dịch vụ
@@ -246,9 +242,7 @@ export function FilterBar({
             <Button
               variant="outline"
               size="sm"
-              className={cn(
-                filters.statuses.length > 0 && "border-primary"
-              )}
+              className={cn(filters.statuses.length > 0 && "border-primary")}
             >
               Trạng thái
               {filters.statuses.length > 0 && (

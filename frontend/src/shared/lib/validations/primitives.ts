@@ -20,9 +20,7 @@ export const CONSTRAINTS = {
   DOB: { MIN_YEAR: 1900 },
 } as const;
 
-
 // ATOMIC VALIDATORS (Building blocks)
-
 
 /**
  * Họ tên - Bắt buộc
@@ -137,9 +135,7 @@ export const colorHexWithDefault = (defaultColor = "#3b82f6") =>
     .regex(PATTERNS.HEX_COLOR, ValidationMessages.COLOR_INVALID)
     .default(defaultColor);
 
-
 // COMPOSITE SCHEMAS (Pre-built combinations)
-
 
 /**
  * Thông tin liên hệ cơ bản (dùng cho booking, customer form)

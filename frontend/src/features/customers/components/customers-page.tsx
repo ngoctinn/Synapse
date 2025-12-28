@@ -107,8 +107,8 @@ export function CustomersPage({
         className="flex flex-col gap-0"
       >
         <PageHeader
-           title="Khách hàng"
-           subtitle="Quản lý hồ sơ, lịch sử dịch vụ và thông tin liên hệ của khách hàng."
+          title="Khách hàng"
+          subtitle="Quản lý hồ sơ, lịch sử dịch vụ và thông tin liên hệ của khách hàng."
         >
           <TabsList size="sm">
             <TabsTrigger value="list" stretch={false}>
@@ -147,12 +147,13 @@ export function CustomersPage({
           >
             <PageContent>
               <SurfaceCard className="text-muted-foreground flex items-center justify-center p-8">
-                Tính năng báo cáo và thông tin chi tiết khách hàng đang được phát triển.
+                Tính năng báo cáo và thông tin chi tiết khách hàng đang được
+                phát triển.
               </SurfaceCard>
             </PageContent>
           </TabsContent>
         </VStack>
       </Tabs>
-  </PageShell>
+    </PageShell>
   );
 }

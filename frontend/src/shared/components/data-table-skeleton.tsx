@@ -1,6 +1,13 @@
 import { cn } from "@/shared/lib/utils";
 import { Skeleton } from "@/shared/ui/skeleton";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/shared/ui/table";
 
 interface DataTableSkeletonProps {
   columnCount?: number;
@@ -63,7 +70,10 @@ export function DataTableSkeleton({
             {filterable && (
               <TableRow className="bg-muted/10 h-14 border-b hover:bg-transparent">
                 {Array.from({ length: columnCount }).map((_, i) => (
-                  <TableHead key={`filter-${i}`} className={cn(i === 0 && "pl-6")}>
+                  <TableHead
+                    key={`filter-${i}`}
+                    className={cn(i === 0 && "pl-6")}
+                  >
                     <Skeleton className="h-9 w-full rounded-lg" />
                   </TableHead>
                 ))}
@@ -74,7 +84,10 @@ export function DataTableSkeleton({
             {Array.from({ length: rowCount }).map((_, rowIdx) => (
               <TableRow key={rowIdx}>
                 {Array.from({ length: columnCount }).map((_, colIdx) => (
-                  <TableCell key={colIdx} className={cn(colIdx === 0 && "pl-6")}>
+                  <TableCell
+                    key={colIdx}
+                    className={cn(colIdx === 0 && "pl-6")}
+                  >
                     <Skeleton className="h-4 w-full" />
                   </TableCell>
                 ))}

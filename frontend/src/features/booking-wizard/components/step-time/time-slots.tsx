@@ -20,14 +20,14 @@ interface TimeSlotsProps {
 }
 
 const EmptyState = () => (
-  <div className="flex flex-col items-center justify-center py-10 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+  <div className="animate-in fade-in slide-in-from-bottom-4 flex flex-col items-center justify-center py-10 text-center duration-500">
     <div className="bg-muted mb-4 flex h-16 w-16 items-center justify-center rounded-full">
       <CalendarOff className="text-muted-foreground size-8" />
     </div>
     <h4 className="text-lg font-medium">Không có khung giờ trống</h4>
     <p className="text-muted-foreground mx-auto mt-2 max-w-[250px] text-sm">
-      Rất tiếc, hiện tại không còn khung giờ nào khả dụng. Vui lòng chọn một ngày
-      khác.
+      Rất tiếc, hiện tại không còn khung giờ nào khả dụng. Vui lòng chọn một
+      ngày khác.
     </p>
   </div>
 );
@@ -76,8 +76,8 @@ export const TimeSlots: React.FC<TimeSlotsProps> = ({
         }
         return (
           <div key={group.label}>
-            <div className="bg-background/95 sticky top-[-1.5px] z-10 -mx-4 mb-4 border-b border-transparent px-4 py-2 backdrop-blur-sm transition-colors group-has-[[data-sticky=true]]:border-border">
-              <h3 className="text-base font-bold tracking-tight text-foreground/90">
+            <div className="bg-background/95 group-has-[[data-sticky=true]]:border-border sticky top-[-1.5px] z-10 -mx-4 mb-4 border-b border-transparent px-4 py-2 backdrop-blur-sm transition-colors">
+              <h3 className="text-foreground/90 text-base font-bold tracking-tight">
                 {group.label}
               </h3>
             </div>

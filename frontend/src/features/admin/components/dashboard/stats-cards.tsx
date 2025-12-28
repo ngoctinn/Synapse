@@ -1,13 +1,13 @@
 import { StatCard } from "@/shared/ui/data-display/stat-card";
 import { Grid } from "@/shared/ui/layout/grid";
 import {
-    ArrowDownRight,
-    ArrowUpRight,
-    CalendarCheck,
-    Clock,
-    CreditCard,
-    Hotel,
-    Users,
+  ArrowDownRight,
+  ArrowUpRight,
+  CalendarCheck,
+  Clock,
+  CreditCard,
+  Hotel,
+  Users,
 } from "lucide-react";
 
 export function StatsCards() {

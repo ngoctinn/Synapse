@@ -150,9 +150,9 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 8px);
-  --animate-fade-in: fadeIn 0.5s ease-out forwards;
-  --animate-slide-up: slideUp 0.5s ease-out forwards;
-  --animate-scale-in: scaleIn 0.3s ease-out forwards;
+  --animate-fade-in: fadein 0.5s ease-out forwards;
+  --animate-slide-up: slideup 0.5s ease-out forwards;
+  --animate-scale-in: scalein 0.3s ease-out forwards;
 }
 
 @layer base {
@@ -183,7 +183,7 @@
       "rlig" 1,
       "calt" 1;
     line-height: 1.5;
-    text-rendering: optimizeLegibility;
+    text-rendering: optimizelegibility;
   }
 
   html {
@@ -203,7 +203,6 @@
   .glass-card {
     @apply bg-card border-border border shadow-md transition-all duration-300;
   }
-
 
   .btn-hero {
     @apply h-12 rounded-full px-8 text-lg transition-all hover:scale-105 active:scale-95;
@@ -463,11 +462,11 @@
 }
 
 .scrollbar-hover:hover::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.15);
+  background: hsl(var(--muted-foreground) / 15%);
 }
 
 .scrollbar-hover::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary) / 0.5);
+  background: hsl(var(--primary) / 50%);
 }
 
 .scrollbar-none::-webkit-scrollbar {

@@ -7,7 +7,6 @@
 
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
 import { Switch } from "@/shared/ui/switch";
 import { TimePicker } from "@/shared/ui/time-picker";
 import {
@@ -56,12 +55,6 @@ export function DayRow({
     }
     return validateTimeSlots(day.timeSlots);
   }, [day.isOpen, day.timeSlots]);
-
-  const isSlotOverlapping = (index: number) => {
-    return validation.overlappingPairs.some(
-      ([i, j]: [number, number]) => i === index || j === index
-    );
-  };
 
   const handleToggle = (checked: boolean) => {
     onChange({
@@ -148,7 +141,7 @@ export function DayRow({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                        className="text-destructive hover:bg-destructive/10 h-8 w-8"
                         onClick={() => removeSlot(index)}
                       >
                         <X className="size-4" />

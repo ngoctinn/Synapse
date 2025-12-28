@@ -2,7 +2,6 @@
 
 import { useBookingStore } from "../../hooks/use-booking-store";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
-import { Badge } from "@/shared/ui/badge";
 import {
   Calendar,
   Clock,
@@ -10,7 +9,6 @@ import {
   ClipboardList,
   Phone,
   Mail,
-  MapPin,
 } from "lucide-react";
 import { formatCurrency } from "@/shared/lib/utils";
 import { format } from "date-fns";
@@ -20,7 +18,6 @@ export const SummaryStep = () => {
   const {
     selectedServices,
     staffName,
-    staffId,
     selectedDate,
     selectedSlot,
     customerInfo,

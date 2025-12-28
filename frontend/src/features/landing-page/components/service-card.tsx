@@ -55,12 +55,12 @@ export function ServiceCard({ service }: ServiceCardProps) {
         </div>
 
         <div className="absolute bottom-3 left-3">
-
           <Badge
             variant="glass"
             className="border-white/20 bg-black/40 text-white backdrop-blur-md"
           >
-            {service.category?.name || MOCK_CATEGORIES.find(c => c.id === service.category_id)?.name}
+            {service.category?.name ||
+              MOCK_CATEGORIES.find((c) => c.id === service.category_id)?.name}
           </Badge>
         </div>
       </div>

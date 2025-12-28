@@ -2,18 +2,25 @@ import { cn } from "@/shared/lib/utils";
 import React, { HTMLAttributes, forwardRef } from "react";
 
 export interface TextProps extends HTMLAttributes<HTMLParagraphElement> {
-  variant?: "default" | "muted" | "link" | "error" | "success" | "warning" | "highlight";
+  variant?:
+    | "default"
+    | "muted"
+    | "link"
+    | "error"
+    | "success"
+    | "warning"
+    | "highlight";
   size?: "xs" | "sm" | "base" | "lg" | "xl";
   weight?: "normal" | "medium" | "semibold" | "bold" | "black";
   italic?: boolean;
 }
 
 const sizeClasses = {
-  xs: "text-xs",        // 12px
-  sm: "text-sm",        // 14px
-  base: "text-base",    // 16px
-  lg: "text-xl",        // 20px (Guiideline type-lg)
-  xl: "text-2xl",       // 24px (Guideline type-xl)
+  xs: "text-xs", // 12px
+  sm: "text-sm", // 14px
+  base: "text-base", // 16px
+  lg: "text-xl", // 20px (Guiideline type-lg)
+  xl: "text-2xl", // 24px (Guideline type-xl)
 };
 
 const weightClasses = {
@@ -73,17 +80,22 @@ const Heading = forwardRef<HTMLHeadingElement, HeadingProps>(
     const Tag = `h${level}` as React.ElementType;
     const sizes = {
       1: "text-[32px] md:text-4xl", // 32px (type-xxl)
-      2: "text-2xl",                // 24px (type-xl)
-      3: "text-xl",                 // 20px (type-lg)
-      4: "text-base",               // 16px (type-md)
-      5: "text-sm",                 // 14px (type-sm)
-      6: "text-xs",                 // 12px (type-xs)
+      2: "text-2xl", // 24px (type-xl)
+      3: "text-xl", // 20px (type-lg)
+      4: "text-base", // 16px (type-md)
+      5: "text-sm", // 14px (type-sm)
+      6: "text-xs", // 12px (type-xs)
     };
 
     return (
       <Tag
         ref={ref}
-        className={cn(sizes[level], weightClasses[weight], "tracking-tight", className)}
+        className={cn(
+          sizes[level],
+          weightClasses[weight],
+          "tracking-tight",
+          className
+        )}
         {...props}
       />
     );
@@ -92,4 +104,3 @@ const Heading = forwardRef<HTMLHeadingElement, HeadingProps>(
 Heading.displayName = "Heading";
 
 export { Heading, Text };
-

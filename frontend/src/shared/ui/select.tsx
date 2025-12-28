@@ -46,7 +46,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "border-input data-[placeholder]:text-muted-foreground/60 [&_svg:not([class*='text'])]:text-muted-foreground aria-invalid:ring-destructive/10 dark:aria-invalid:ring-destructive/20 aria-invalid:border-destructive/80 aria-invalid:hover:border-destructive aria-invalid:focus-visible:ring-destructive/50 aria-invalid:focus-visible:border-destructive dark:bg-input/30 dark:hover:bg-input/50 bg-transparent shadow-xs focus-visible:ring-[1.5px] focus-visible:ring-ring/40 focus-visible:outline-none relative flex w-full items-center justify-between gap-2 whitespace-nowrap rounded-lg border px-4 py-2 text-base transition-[color,box-shadow] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm data-[size=default]:h-10 data-[size=icon]:h-10 data-[size=lg]:h-12 data-[size=lg]:text-lg data-[size=sm]:h-8 data-[size=sm]:text-xs hover:border-primary/30 data-[size=icon]:w-10 data-[size=icon]:p-0 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg:not([class*='size'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        "border-input data-[placeholder]:text-muted-foreground/60 [&_svg:not([class*='text'])]:text-muted-foreground aria-invalid:ring-destructive/10 dark:aria-invalid:ring-destructive/20 aria-invalid:border-destructive/80 aria-invalid:hover:border-destructive aria-invalid:focus-visible:ring-destructive/50 aria-invalid:focus-visible:border-destructive dark:bg-input/30 dark:hover:bg-input/50 shadow-xs focus-visible:ring-ring/40 hover:border-primary/30 relative flex w-full items-center justify-between gap-2 whitespace-nowrap rounded-lg border bg-transparent px-4 py-2 text-base transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-[1.5px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-10 data-[size=icon]:h-10 data-[size=lg]:h-12 data-[size=sm]:h-8 data-[size=icon]:w-10 data-[size=icon]:p-0 data-[size=lg]:text-lg data-[size=sm]:text-xs *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 md:text-sm [&_svg:not([class*='size'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
         startContent && "pl-12",
         endContent && "pr-14",
         !endContent && "pr-10",
@@ -60,7 +60,7 @@ function SelectTrigger({
         </div>
       )}
       {children}
-      <div className="flex items-center gap-2 absolute right-4 top-1/2 -translate-y-1/2">
+      <div className="absolute right-4 top-1/2 flex -translate-y-1/2 items-center gap-2">
         {endContent && (
           <div className="text-muted-foreground flex items-center justify-center">
             {endContent}
@@ -91,7 +91,7 @@ function SelectContent({
       <SelectPrimitive.Content
         data-slot="select-content"
         className={cn(
-          "bg-popover/95 backdrop-blur-xl text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 max-h-[var(--radix-select-content-available-height)] origin-[var(--radix-select-content-transform-origin)] relative z-[60] min-w-[8rem] overflow-y-auto overflow-x-hidden rounded-md border shadow-lg",
+          "bg-popover/95 text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-[60] max-h-[var(--radix-select-content-available-height)] min-w-[8rem] origin-[var(--radix-select-content-transform-origin)] overflow-y-auto overflow-x-hidden rounded-md border shadow-lg backdrop-blur-xl",
           position === "popper" &&
             "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
           className
@@ -212,6 +212,5 @@ export {
   SelectScrollUpButton,
   SelectSeparator,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 };
-

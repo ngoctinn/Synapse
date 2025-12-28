@@ -5,7 +5,7 @@ import {
   getServiceList,
   getStaffList,
 } from "@/features/appointments/actions";
-import { MOCK_APPOINTMENTS } from "@/features/appointments";
+
 import { endOfMonth, startOfMonth } from "date-fns";
 import { Suspense } from "react";
 import { createInvoice, getInvoice } from "@/features/billing/actions";

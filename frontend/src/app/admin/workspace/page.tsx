@@ -2,12 +2,12 @@ import { Badge } from "@/shared/ui/badge";
 import { Card, CardContent } from "@/shared/ui/card";
 
 import {
-    Bed,
-    Calendar,
-    ChevronRight,
-    ClipboardList,
-    Clock,
-    User,
+  Bed,
+  Calendar,
+  ChevronRight,
+  ClipboardList,
+  Clock,
+  User,
 } from "lucide-react";
 
 export default function WorkspacePage() {
@@ -130,5 +130,3 @@ export default function WorkspacePage() {
     </div>
   );
 }
-
-

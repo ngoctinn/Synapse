@@ -38,7 +38,9 @@ export function InvoiceTable({ data, onView, isLoading }: InvoiceTableProps) {
       accessorKey: "finalAmount",
       header: "Tổng tiền",
       cell: ({ row }) => (
-        <span className="font-medium">{formatCurrency(row.original.finalAmount)}</span>
+        <span className="font-medium">
+          {formatCurrency(row.original.finalAmount)}
+        </span>
       ),
     },
     {
@@ -71,26 +73,20 @@ export function InvoiceTable({ data, onView, isLoading }: InvoiceTableProps) {
       id: "actions",
       header: () => <div className="text-right">Hành động</div>,
       cell: ({ row }) => (
-        <div className="text-right pr-6">
-            <Button
+        <div className="pr-6 text-right">
+          <Button
             variant="ghost"
             size="icon"
             className="size-8"
             onClick={() => onView(row.original)}
             aria-label={`Xem chi tiết hóa đơn ${row.original.id}`}
-            >
+          >
             <Eye className="size-4" />
-            </Button>
+          </Button>
         </div>
       ),
     },
   ];
 
-  return (
-    <DataTable
-      columns={columns}
-      data={data}
-      isLoading={isLoading}
-    />
-  );
+  return <DataTable columns={columns} data={data} isLoading={isLoading} />;
 }

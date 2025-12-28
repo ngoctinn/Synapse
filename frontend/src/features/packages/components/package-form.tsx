@@ -5,20 +5,20 @@ import { NumberInput } from "@/shared/components/number-input";
 import { RequiredMark } from "@/shared/components/required-mark";
 import { cn } from "@/shared/lib/utils";
 import {
-    Button,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-    Input,
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-    Switch,
-    Textarea,
+  Button,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Switch,
+  Textarea,
 } from "@/shared/ui";
 import { Plus, Trash2 } from "lucide-react";
 import { useFieldArray, useFormContext } from "react-hook-form";
@@ -30,7 +30,11 @@ interface PackageFormProps {
   className?: string;
 }
 
-export function PackageForm({ mode, availableServices, className }: PackageFormProps) {
+export function PackageForm({
+  mode,
+  availableServices,
+  className,
+}: PackageFormProps) {
   const form = useFormContext<PackageFormValues>();
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -39,7 +43,6 @@ export function PackageForm({ mode, availableServices, className }: PackageFormP
 
   return (
     <div className={cn("space-y-6 p-6", className)}>
-
       {/* Tên gói */}
       <FormField
         control={form.control}
@@ -108,7 +111,12 @@ export function PackageForm({ mode, availableServices, className }: PackageFormP
                 Hiệu lực (ngày) <RequiredMark />
               </FormLabel>
               <FormControl>
-                <NumberInput min={1} placeholder="30" {...field} suffix="ngày" />
+                <NumberInput
+                  min={1}
+                  placeholder="30"
+                  {...field}
+                  suffix="ngày"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

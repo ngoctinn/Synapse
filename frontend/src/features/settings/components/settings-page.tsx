@@ -162,65 +162,62 @@ function SettingsForm({
         className="flex min-h-0 flex-1 flex-col gap-0"
       >
         <PageShell>
-        <PageHeader>
-          <TabsList size="default">
-            <TabsTrigger value="schedule" stretch={false}>
-              Lịch làm việc
-            </TabsTrigger>
-            <TabsTrigger value="exceptions" stretch={false}>
-              Ngày ngoại lệ
-            </TabsTrigger>
-            <TabsTrigger
-              value="notifications"
-              stretch={false}
-            >
-              Thông báo
-            </TabsTrigger>
-          </TabsList>
+          <PageHeader>
+            <TabsList size="default">
+              <TabsTrigger value="schedule" stretch={false}>
+                Lịch làm việc
+              </TabsTrigger>
+              <TabsTrigger value="exceptions" stretch={false}>
+                Ngày ngoại lệ
+              </TabsTrigger>
+              <TabsTrigger value="notifications" stretch={false}>
+                Thông báo
+              </TabsTrigger>
+            </TabsList>
 
-          <HStack gap={2}>
-            {/* Action Buttons based on Tab */}
-            {activeTab === "schedule" && (
-              <>
-                {isDirty && (
-                  <span className="text-muted-foreground mr-2 hidden items-center gap-1.5 text-xs sm:inline-flex">
-                    <span className="relative flex h-2 w-2">
-                      <span className="bg-warning absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" />
-                      <span className="bg-warning relative inline-flex h-2 w-2 rounded-full" />
+            <HStack gap={2}>
+              {/* Action Buttons based on Tab */}
+              {activeTab === "schedule" && (
+                <>
+                  {isDirty && (
+                    <span className="text-muted-foreground mr-2 hidden items-center gap-1.5 text-xs sm:inline-flex">
+                      <span className="relative flex h-2 w-2">
+                        <span className="bg-warning absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" />
+                        <span className="bg-warning relative inline-flex h-2 w-2 rounded-full" />
+                      </span>
+                      Chưa lưu
                     </span>
-                    Chưa lưu
-                  </span>
-                )}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleReset}
-                  disabled={!isDirty || isPending}
-                >
-                  <RotateCcw className="mr-1.5 size-4" />
-                  <span className="hidden sm:inline">Khôi phục</span>
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={handleSaveSchedule}
-                  disabled={!isDirty || isPending}
-                >
-                  {isPending ? (
-                    <Loader2 className="mr-1.5 size-4 animate-spin" />
-                  ) : (
-                    <Save className="mr-1.5 size-4" />
                   )}
-                  Lưu thay đổi
-                </Button>
-              </>
-            )}
-          </HStack>
-        </PageHeader>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleReset}
+                    disabled={!isDirty || isPending}
+                  >
+                    <RotateCcw className="mr-1.5 size-4" />
+                    <span className="hidden sm:inline">Khôi phục</span>
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={handleSaveSchedule}
+                    disabled={!isDirty || isPending}
+                  >
+                    {isPending ? (
+                      <Loader2 className="mr-1.5 size-4 animate-spin" />
+                    ) : (
+                      <Save className="mr-1.5 size-4" />
+                    )}
+                    Lưu thay đổi
+                  </Button>
+                </>
+              )}
+            </HStack>
+          </PageHeader>
 
-        {/* Tab Contents */}
+          {/* Tab Contents */}
           <TabsContent
             value="schedule"
-            className="mt-0 flex flex-1 flex-col border-0 p-0 overflow-hidden data-[state=inactive]:hidden"
+            className="mt-0 flex flex-1 flex-col overflow-hidden border-0 p-0 data-[state=inactive]:hidden"
           >
             <PageContent>
               <WeeklySchedule
@@ -232,7 +229,7 @@ function SettingsForm({
 
           <TabsContent
             value="exceptions"
-            className="mt-0 flex flex-1 flex-col border-0 p-0 overflow-hidden data-[state=inactive]:hidden"
+            className="mt-0 flex flex-1 flex-col overflow-hidden border-0 p-0 data-[state=inactive]:hidden"
           >
             <PageContent className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               <ExceptionsPanel
@@ -245,7 +242,7 @@ function SettingsForm({
 
           <TabsContent
             value="notifications"
-            className="mt-0 flex flex-1 flex-col border-0 p-0 overflow-hidden data-[state=inactive]:hidden"
+            className="mt-0 flex flex-1 flex-col overflow-hidden border-0 p-0 data-[state=inactive]:hidden"
           >
             <PageContent>
               <NotificationsSettings

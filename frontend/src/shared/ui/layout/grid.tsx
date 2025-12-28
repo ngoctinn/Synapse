@@ -21,7 +21,9 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(
                 : cols,
           }
         : {}),
-      ...(gap ? { gap: typeof gap === "number" ? `${gap * 0.25}rem` : gap } : {}),
+      ...(gap
+        ? { gap: typeof gap === "number" ? `${gap * 0.25}rem` : gap }
+        : {}),
     } as React.CSSProperties;
 
     return (
@@ -37,4 +39,3 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(
 Grid.displayName = "Grid";
 
 export { Grid };
-

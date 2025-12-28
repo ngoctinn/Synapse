@@ -2,12 +2,12 @@
 
 import { Button } from "@/shared/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu";
 import { Edit2, MoreHorizontal, Trash2 } from "lucide-react";
 import * as React from "react";
@@ -34,7 +34,7 @@ export function TableRowActions({
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+          className="data-[state=open]:bg-muted flex h-8 w-8 p-0"
         >
           <MoreHorizontal className="h-4 w-4" />
           <span className="sr-only">Mở menu</span>
@@ -43,7 +43,7 @@ export function TableRowActions({
       <DropdownMenuContent align="end" className="w-[160px]">
         {label && (
           <>
-            <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
+            <DropdownMenuLabel className="text-muted-foreground text-xs font-normal">
               {label}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
@@ -52,7 +52,7 @@ export function TableRowActions({
 
         {onEdit && (
           <DropdownMenuItem onClick={onEdit}>
-            <Edit2 className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
+            <Edit2 className="text-muted-foreground/70 mr-2 h-3.5 w-3.5" />
             Chỉnh sửa
           </DropdownMenuItem>
         )}

@@ -149,8 +149,9 @@ export function useSheetForm<TFormValues extends FieldValues, TData = unknown>(
     onSuccess,
     onError,
     toastMessages,
-    warnOnUnsavedChanges = true,
-    unsavedWarningMessage = "Bạn có thay đổi chưa lưu. Bạn có chắc muốn đóng?",
+    warnOnUnsavedChanges: _warnOnUnsavedChanges = true,
+    unsavedWarningMessage:
+      _unsavedWarningMessage = "Bạn có thay đổi chưa lưu. Bạn có chắc muốn đóng?",
   } = options;
 
   const [isPending, startTransition] = useTransition();

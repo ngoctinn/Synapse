@@ -41,11 +41,16 @@ export function CustomerFilter() {
     <HStack gap={2} className="items-center">
       {/* Lọc Trạng thái */}
       <Select value={status || "all"} onValueChange={handleStatusChange}>
-        <SelectTrigger id="status" className="h-10 w-[180px] bg-background text-sm">
-           <SelectValue placeholder="Trạng thái" />
+        <SelectTrigger
+          id="status"
+          className="bg-background h-10 w-[180px] text-sm"
+        >
+          <SelectValue placeholder="Trạng thái" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all" className="text-xs">Tất cả trạng thái</SelectItem>
+          <SelectItem value="all" className="text-xs">
+            Tất cả trạng thái
+          </SelectItem>
           {STATUS_OPTIONS.map((s) => (
             <SelectItem key={s.id} value={s.id} className="text-xs">
               {s.name}
@@ -56,11 +61,16 @@ export function CustomerFilter() {
 
       {/* Lọc Giới tính */}
       <Select value={gender || "all"} onValueChange={handleGenderChange}>
-        <SelectTrigger id="gender" className="h-10 w-[160px] bg-background text-sm">
-           <SelectValue placeholder="Giới tính" />
+        <SelectTrigger
+          id="gender"
+          className="bg-background h-10 w-[160px] text-sm"
+        >
+          <SelectValue placeholder="Giới tính" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all" className="text-xs">Tất cả giới tính</SelectItem>
+          <SelectItem value="all" className="text-xs">
+            Tất cả giới tính
+          </SelectItem>
           {GENDER_OPTIONS.map((g) => (
             <SelectItem key={g.id} value={g.id} className="text-xs">
               {g.name}

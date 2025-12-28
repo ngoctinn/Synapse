@@ -93,7 +93,7 @@ export function ScheduleDetailSheet({
                 className="flex-1"
                 onClick={() => setShowDeleteDialog(true)}
               >
-                <Icon icon={Trash2} className="size-4 text-destructive" />
+                <Icon icon={Trash2} className="text-destructive size-4" />
                 <span className="text-destructive">Xóa</span>
               </Button>
               <Button
@@ -141,10 +141,7 @@ export function ScheduleDetailSheet({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Hủy</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              variant="destructive"
-            >
+            <AlertDialogAction onClick={handleDelete} variant="destructive">
               Xóa
             </AlertDialogAction>
           </AlertDialogFooter>

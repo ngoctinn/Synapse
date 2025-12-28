@@ -2,11 +2,7 @@
 
 import { LucideIcon } from "lucide-react";
 import { Icon } from "@/shared/components/icon";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/shared/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/ui/tooltip";
 import { cn } from "@/shared/lib/utils";
 
 interface StatBadgeProps {
@@ -41,10 +37,15 @@ export function StatBadge({
               <span className="border-background absolute -right-0.5 -top-0.5 h-2 w-2 animate-pulse rounded-full border bg-amber-500" />
             )}
           </div>
-          <span className="text-sm font-semibold leading-relaxed tabular-nums">{value}</span>
+          <span className="text-sm font-semibold tabular-nums leading-relaxed">
+            {value}
+          </span>
         </div>
       </TooltipTrigger>
-      <TooltipContent className="px-3 py-1.5 text-xs font-medium" sideOffset={8}>
+      <TooltipContent
+        className="px-3 py-1.5 text-xs font-medium"
+        sideOffset={8}
+      >
         {label}
       </TooltipContent>
     </Tooltip>

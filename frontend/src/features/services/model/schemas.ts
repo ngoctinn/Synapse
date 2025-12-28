@@ -4,7 +4,10 @@ import * as z from "zod";
 export const serviceResourceRequirementSchema = z.object({
   group_id: z.string().min(1, "Vui lòng chọn tài nguyên"),
   quantity: z.coerce.number().min(1, "Số lượng tối thiểu 1").default(1),
-  start_delay: z.coerce.number().min(0, "Thời gian bắt đầu không được âm").default(0),
+  start_delay: z.coerce
+    .number()
+    .min(0, "Thời gian bắt đầu không được âm")
+    .default(0),
   usage_duration: z.coerce.number().optional().nullable(),
 });
 
@@ -27,7 +30,7 @@ export const serviceSchema = z
     image_url: z.string().optional(),
     color: colorHexWithDefault("#3b82f6"),
     description: z.string().optional(),
-    category_id: z.string().min(1, "Vui lòng chọn danh mục").optional(),
+    category_id: z.string().min(1, "Vui lòng chọn danh mục"),
     resource_requirements: z
       .array(serviceResourceRequirementSchema)
       .default([]),
@@ -38,23 +41,24 @@ export const serviceSchema = z
     if (data.skill_ids.length === 0) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Vui lòng chọn ít nhất 1 kỹ năng để dịch vụ có thể được gán cho nhân viên",
+        message:
+          "Vui lòng chọn ít nhất 1 kỹ năng để dịch vụ có thể được gán cho nhân viên",
         path: ["skill_ids"],
       });
     }
 
     // Validate resource requirement timelines
     data.resource_requirements.forEach((req, index) => {
-       if (req.usage_duration) {
-         const endTime = req.start_delay + req.usage_duration;
-         if (endTime > data.duration) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: `Tài nguyên #${index + 1}: Thời gian sử dụng vượt quá thời lượng dịch vụ`,
-              path: ["resource_requirements", index, "usage_duration"],
-            });
-         }
-       }
+      if (req.usage_duration) {
+        const endTime = req.start_delay + req.usage_duration;
+        if (endTime > data.duration) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Tài nguyên #${index + 1}: Thời gian sử dụng vượt quá thời lượng dịch vụ`,
+            path: ["resource_requirements", index, "usage_duration"],
+          });
+        }
+      }
     });
   });
 

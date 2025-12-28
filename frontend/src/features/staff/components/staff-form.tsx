@@ -2,12 +2,7 @@
 
 import { Skill } from "@/features/services";
 import { cn } from "@/shared/lib/utils";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/shared/ui";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui";
 import { StaffGeneralInfo } from "./staff-form/staff-general-info";
 import { StaffProfessionalInfo } from "./staff-form/staff-professional-info";
 import { StaffHRInfo } from "./staff-form/staff-hr-info";

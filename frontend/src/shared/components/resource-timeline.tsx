@@ -22,16 +22,16 @@ export function ResourceTimeline({
   className,
 }: ResourceTimelineProps) {
   return (
-    <div className={cn("rounded-xl border bg-card p-4 shadow-sm", className)}>
-      <h4 className="mb-4 text-sm font-medium text-muted-foreground">
+    <div className={cn("bg-card rounded-xl border p-4 shadow-sm", className)}>
+      <h4 className="text-muted-foreground mb-4 text-sm font-medium">
         Mô phỏng quy trình
       </h4>
-      <div className="relative h-12 w-full rounded-lg bg-muted/30">
+      <div className="bg-muted/30 relative h-12 w-full rounded-lg">
         {/* Time markers */}
-        <div className="absolute -bottom-6 left-0 text-xs text-muted-foreground">
+        <div className="text-muted-foreground absolute -bottom-6 left-0 text-xs">
           0p
         </div>
-        <div className="absolute -bottom-6 right-0 text-xs text-muted-foreground">
+        <div className="text-muted-foreground absolute -bottom-6 right-0 text-xs">
           {duration}p
         </div>
 
@@ -39,7 +39,7 @@ export function ResourceTimeline({
         {items.map((item, index) => (
           <div
             key={index}
-            className="absolute top-1/2 -translate-y-1/2 flex h-8 items-center justify-center rounded-md text-[10px] font-medium text-white shadow-sm transition-all hover:z-10"
+            className="absolute top-1/2 flex h-8 -translate-y-1/2 items-center justify-center rounded-md text-[10px] font-medium text-white shadow-sm transition-all hover:z-10"
             style={{
               left: `${item.startPercentage}%`,
               width: `${item.widthPercentage}%`,

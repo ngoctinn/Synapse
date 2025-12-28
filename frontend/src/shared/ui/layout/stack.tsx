@@ -1,9 +1,14 @@
 import { cn } from "@/shared/lib/utils";
 import { Slot } from "@radix-ui/react-slot";
 import { HTMLAttributes, forwardRef } from "react";
-import { SpacingProps, extractSpacingProps, getSpacingClasses } from "./utilities";
+import {
+  SpacingProps,
+  extractSpacingProps,
+  getSpacingClasses,
+} from "./utilities";
 
-export interface StackProps extends HTMLAttributes<HTMLDivElement>, SpacingProps {
+export interface StackProps
+  extends HTMLAttributes<HTMLDivElement>, SpacingProps {
   gap?: number | string;
   asChild?: boolean;
   align?: "start" | "center" | "end" | "stretch" | "baseline";
@@ -28,7 +33,16 @@ const justifyClasses = {
 };
 
 const VStack = forwardRef<HTMLDivElement, StackProps>(
-  ({ className, asChild = false, align = "stretch", justify = "start", ...props }, ref) => {
+  (
+    {
+      className,
+      asChild = false,
+      align = "stretch",
+      justify = "start",
+      ...props
+    },
+    ref
+  ) => {
     const { spacingProps, otherProps } = extractSpacingProps(props);
     const Comp = asChild ? Slot : "div";
     return (
@@ -49,7 +63,16 @@ const VStack = forwardRef<HTMLDivElement, StackProps>(
 VStack.displayName = "VStack";
 
 const HStack = forwardRef<HTMLDivElement, StackProps>(
-  ({ className, asChild = false, align = "center", justify = "start", ...props }, ref) => {
+  (
+    {
+      className,
+      asChild = false,
+      align = "center",
+      justify = "start",
+      ...props
+    },
+    ref
+  ) => {
     const { spacingProps, otherProps } = extractSpacingProps(props);
     const Comp = asChild ? Slot : "div";
     return (
@@ -72,4 +95,3 @@ HStack.displayName = "HStack";
 const Stack = VStack;
 
 export { HStack, Stack, VStack };
-

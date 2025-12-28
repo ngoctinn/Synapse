@@ -77,7 +77,8 @@ const sheetVariants = cva(
 );
 
 interface SheetContentProps
-  extends React.ComponentProps<typeof SheetPrimitive.Content>,
+  extends
+    React.ComponentProps<typeof SheetPrimitive.Content>,
     VariantProps<typeof sheetVariants> {
   /**
    * Ngăn đóng sheet bằng Escape key hoặc click outside (#4, #14)
@@ -126,7 +127,7 @@ function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="sheet-header"
       className={cn(
-        "flex flex-col gap-1.5 border-b border-border/50 px-6 py-4",
+        "border-border/50 flex flex-col gap-1.5 border-b px-6 py-4",
         className
       )}
       {...props}
@@ -138,7 +139,7 @@ function SheetBody({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="sheet-body"
-      className={cn("flex-1 overflow-y-auto p-6 scrollbar-hide", className)}
+      className={cn("scrollbar-hide flex-1 overflow-y-auto p-6", className)}
       {...props}
     />
   );
@@ -149,7 +150,7 @@ function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="sheet-footer"
       className={cn(
-        "sticky bottom-0 z-10 mt-auto border-t border-border/50 bg-background px-6 py-4",
+        "border-border/50 bg-background sticky bottom-0 z-10 mt-auto border-t px-6 py-4",
         "flex flex-col-reverse gap-2 sm:flex-row sm:justify-end",
         className
       )}
@@ -165,7 +166,7 @@ function SheetTitle({
   return (
     <SheetPrimitive.Title
       data-slot="sheet-title"
-      className={cn("text-lg font-semibold text-foreground", className)}
+      className={cn("text-foreground text-lg font-semibold", className)}
       {...props}
     />
   );
@@ -178,18 +179,20 @@ function SheetDescription({
   return (
     <SheetPrimitive.Description
       data-slot="sheet-description"
-      className={cn("text-sm text-muted-foreground", className)}
+      className={cn("text-muted-foreground text-sm", className)}
       {...props}
     />
   );
 }
 
 export {
-  Sheet, SheetBody, SheetClose,
+  Sheet,
+  SheetBody,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
-  SheetHeader, SheetTitle,
-  SheetTrigger
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
 };
-

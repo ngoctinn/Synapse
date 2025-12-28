@@ -112,7 +112,10 @@ export const getWaitlistColumns = ({
     header: "Yêu cầu",
     accessorKey: "service_name",
     cell: ({ row }) => (
-      <div className="truncate font-medium max-w-[200px]" title={row.original.service_name}>
+      <div
+        className="max-w-[200px] truncate font-medium"
+        title={row.original.service_name}
+      >
         {row.original.service_name || "Bất kỳ dịch vụ nào"}
       </div>
     ),

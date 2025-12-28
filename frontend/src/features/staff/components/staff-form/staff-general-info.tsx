@@ -25,8 +25,12 @@ export function StaffGeneralInfo({ mode }: StaffGeneralInfoProps) {
   return (
     <Stack gap={4}>
       {/* Avatar Placeholder */}
-      <Group align="center" gap={4} className="bg-muted/20 rounded-lg border p-4">
-        <div className="bg-background border-muted-foreground/30 flex size-12 items-center justify-center rounded-full border border-dashed text-muted-foreground/50">
+      <Group
+        align="center"
+        gap={4}
+        className="bg-muted/20 rounded-lg border p-4"
+      >
+        <div className="bg-background border-muted-foreground/30 text-muted-foreground/50 flex size-12 items-center justify-center rounded-full border border-dashed">
           <Icon icon={User} size="xl" strokeWidth={1.5} />
         </div>
         <Stack gap={0} className="flex-1">
@@ -46,7 +50,9 @@ export function StaffGeneralInfo({ mode }: StaffGeneralInfoProps) {
               <FormLabel required>Họ và tên</FormLabel>
               <FormControl>
                 <Input
-                  startContent={<Icon icon={User} className="text-muted-foreground/60" />}
+                  startContent={
+                    <Icon icon={User} className="text-muted-foreground/60" />
+                  }
                   placeholder="Nguyễn Văn A"
                   {...field}
                   className="bg-background"

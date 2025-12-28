@@ -104,8 +104,9 @@ export function TreatmentSheet({
 
         {/* Progress */}
         <div className="space-y-3">
-          <h3 className="flex items-center gap-2 text-sm font-medium text-foreground">
-            <Icon icon={Clock} className="size-4 text-muted-foreground" /> Tiến độ thực hiện
+          <h3 className="text-foreground flex items-center gap-2 text-sm font-medium">
+            <Icon icon={Clock} className="text-muted-foreground size-4" /> Tiến
+            độ thực hiện
           </h3>
           <div className="bg-muted/30 space-y-2 rounded-lg border p-4">
             <div className="mb-2 flex items-end justify-between">
@@ -154,8 +155,12 @@ export function TreatmentSheet({
         {/* Notes Section */}
         <div className="space-y-3 border-t pt-4">
           <div className="flex items-center justify-between">
-            <h3 className="flex items-center gap-2 text-sm font-medium text-foreground">
-              <Icon icon={StickyNote} className="size-4 text-muted-foreground" /> Ghi chú chuyên môn
+            <h3 className="text-foreground flex items-center gap-2 text-sm font-medium">
+              <Icon
+                icon={StickyNote}
+                className="text-muted-foreground size-4"
+              />{" "}
+              Ghi chú chuyên môn
             </h3>
             {!isEditing && (
               <Button

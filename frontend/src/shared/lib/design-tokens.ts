@@ -194,10 +194,10 @@ export const LAYOUT_SIZES = {
 export const SHEET_TOKENS = {
   /** Width variants cho SheetContent */
   widths: {
-    sm: "sm:max-w-md",      // ~448px
+    sm: "sm:max-w-md", // ~448px
     default: "sm:max-w-lg", // ~512px
-    lg: "sm:max-w-xl",      // ~576px
-    xl: "sm:max-w-3xl",     // ~768px
+    lg: "sm:max-w-xl", // ~576px
+    xl: "sm:max-w-3xl", // ~768px
   },
   /** Base content container - NO padding (children handle it) */
   content: "bg-background flex w-full flex-col gap-0 border-l p-0 shadow-lg",

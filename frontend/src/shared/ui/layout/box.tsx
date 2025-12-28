@@ -2,7 +2,11 @@ import { cn } from "@/shared/lib/utils";
 import { Slot } from "@radix-ui/react-slot";
 import { HTMLAttributes, forwardRef } from "react";
 
-import { SpacingProps, extractSpacingProps, getSpacingClasses } from "./utilities";
+import {
+  SpacingProps,
+  extractSpacingProps,
+  getSpacingClasses,
+} from "./utilities";
 
 export interface BoxProps extends HTMLAttributes<HTMLDivElement>, SpacingProps {
   asChild?: boolean;
@@ -24,4 +28,3 @@ const Box = forwardRef<HTMLDivElement, BoxProps>(
 Box.displayName = "Box";
 
 export { Box };
-

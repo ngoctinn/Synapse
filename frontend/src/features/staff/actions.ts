@@ -10,7 +10,6 @@ import { staffCreateSchema } from "./model/schemas";
 import {
   CommissionReportItem,
   Schedule,
-  Staff,
   StaffListResponse,
   StaffUpdate,
 } from "./model/types";
@@ -80,7 +79,7 @@ export async function getSkills(): Promise<ActionResponse<Skill[]>> {
       return success(data);
     }
   } catch (e) {
-    // Fallback or ignore
+    console.error("Error fetching skills:", e);
   }
   // Fallback to mock if API not ready
   const { MOCK_SKILLS } = await import("@/features/services/model/mocks");
@@ -157,6 +156,7 @@ export async function inviteStaff(
     revalidatePath("/admin/staff");
     return success(undefined, "Đã gửi lời mời thành công");
   } catch (e) {
+    console.error("Invite error:", e);
     return error("Gửi lời mời thất bại: Lỗi hệ thống");
   }
 }
@@ -178,6 +178,7 @@ export async function deleteStaff(staffId: string): Promise<ActionResponse> {
     revalidatePath("/admin/staff");
     return success(undefined, "Đã xóa nhân viên thành công");
   } catch (e) {
+    console.error("Delete staff error:", e);
     return error("Xóa nhân viên thất bại: Lỗi hệ thống");
   }
 }
@@ -202,6 +203,7 @@ export async function updateStaff(
     }
     return success(undefined); // Success
   } catch (e) {
+    console.error("Update staff API error:", e);
     throw e;
   }
 }
@@ -226,6 +228,7 @@ export async function updateStaffSkills(
     }
     return success(undefined);
   } catch (e) {
+    console.error("Update staff skills API error:", e);
     throw e;
   }
 }
@@ -239,9 +242,6 @@ export async function updateStaffAction(
 ): Promise<ActionResponse> {
   const staffId = formData.get("staff_id") as string;
   if (!staffId) return error("Missing Staff ID");
-
-  const full_name = formData.get("full_name") as string;
-  const phone_number = formData.get("phone_number") as string;
 
   // 1. Prepare Staff Data (Domain data)
   const staffData: StaffUpdate = {
@@ -286,21 +286,21 @@ export async function updateStaffAction(
     revalidatePath("/admin/staff");
     return success(undefined, "Cập nhật nhân viên thành công");
   } catch (e) {
-    console.error(e);
+    console.error("Update staff action error:", e);
     return error("Cập nhật thất bại: Lỗi hệ thống");
   }
 }
 
 export async function updateUser(
-  userId: string,
-  data: { full_name?: string; phone_number?: string }
+  _userId: string,
+  _data: { full_name?: string; phone_number?: string }
 ): Promise<ActionResponse> {
   // Placeholder API call
   // const res = await fetchWithAuth(`/api/v1/users/${userId}`, { method: "PUT", body: ... });
   return success(undefined);
 }
 
- MOCK / NOT IMPLEMENTED YET =====
+// ===== MOCK / NOT IMPLEMENTED YET =====
 
 export async function getPermissions(): Promise<
   ActionResponse<Record<string, Record<string, boolean>>>

@@ -1,10 +1,8 @@
-import {
-    useBulkAction,
-    useTableParams
-} from "@/shared/hooks";
+import { useBulkAction, useTableParams } from "@/shared/hooks";
 import { Badge } from "@/shared/ui/badge";
 import { Checkbox } from "@/shared/ui/checkbox";
 import { Column, DataTable } from "@/shared/components/data-table";
+import { RowSelectionState } from "@tanstack/react-table";
 import { DataTableEmptyState } from "@/shared/components/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/components/data-table-skeleton";
 import { DataTableToolbar } from "@/shared/components/data-table-toolbar";
@@ -45,7 +43,7 @@ export function SkillTable({
   const page = pageProp ?? urlPage;
   const handlePageChange = onPageChangeProp ?? urlPageChange;
 
-  const [rowSelection, setRowSelection] = useState({});
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   // Use custom hook for bulk delete
   const {
@@ -68,20 +66,25 @@ export function SkillTable({
       id: "select",
       header: ({ table }) => (
         <Box pl={4}>
-            <Checkbox
-            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
             aria-label="Select all"
-            />
+          />
         </Box>
       ),
       cell: ({ row }) => (
         <Box pl={4}>
-            <Checkbox
+          <Checkbox
             checked={row.getIsSelected()}
             onCheckedChange={(value) => row.toggleSelected(!!value)}
             aria-label="Select row"
-            />
+          />
         </Box>
       ),
       enableSorting: false,
@@ -91,7 +94,10 @@ export function SkillTable({
       header: "Tên kỹ năng",
       accessorKey: "name",
       cell: ({ row }) => (
-        <UIText weight="medium" className="group-hover:text-primary transition-colors">
+        <UIText
+          weight="medium"
+          className="group-hover:text-primary transition-colors"
+        >
           {row.original.name}
         </UIText>
       ),
@@ -134,13 +140,9 @@ export function SkillTable({
         isLoading={isLoading}
         skeletonCount={5}
         rowSelection={rowSelection}
-        onRowSelectionChange={setRowSelection as any}
+        onRowSelectionChange={setRowSelection}
         getRowId={(row) => row.id.toString()}
-        toolbar={
-          <DataTableToolbar
-            actions={<CreateSkillSheet />}
-          />
-        }
+        toolbar={<DataTableToolbar actions={<CreateSkillSheet />} />}
         emptyState={
           <DataTableEmptyState
             icon={Plus}

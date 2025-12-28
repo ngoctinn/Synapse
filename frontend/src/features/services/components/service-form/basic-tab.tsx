@@ -6,6 +6,7 @@ import {
   FormMessage,
   Input,
   Select,
+  Button,
   SelectContent,
   SelectItem,
   SelectTrigger,
@@ -38,7 +39,9 @@ export function BasicTab({ categories }: BasicTabProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tên dịch vụ <RequiredMark /></FormLabel>
+              <FormLabel>
+                Tên dịch vụ <RequiredMark />
+              </FormLabel>
               <FormControl>
                 <Input placeholder="Ví dụ: Cắt tóc nam basic" {...field} />
               </FormControl>
@@ -52,7 +55,9 @@ export function BasicTab({ categories }: BasicTabProps) {
           name="category_id"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Danh mục</FormLabel>
+              <FormLabel>
+                Danh mục <RequiredMark />
+              </FormLabel>
               <Select onValueChange={field.onChange} value={field.value || ""}>
                 <FormControl>
                   <SelectTrigger>
@@ -75,7 +80,7 @@ export function BasicTab({ categories }: BasicTabProps) {
 
       {/* Price & Duration */}
       <Grid gap={4} cols={2}>
-         <FormField
+        <FormField
           control={form.control}
           name="price"
           render={({ field }) => (
@@ -98,78 +103,83 @@ export function BasicTab({ categories }: BasicTabProps) {
         <FormField
           control={form.control}
           name="duration"
-          render={({ field }) => {
-            const isCustom = ![15, 30, 45, 60, 75, 90, 120, 150, 180].includes(field.value);
-            return (
-              <FormItem>
-                <FormLabel>Thời lượng (Phút)</FormLabel>
-                <HStack gap={2}>
-                  <Select
-                    onValueChange={(val) => {
-                      if (val !== "custom") field.onChange(Number(val));
-                    }}
-                    value={isCustom ? "custom" : field.value?.toString()}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="flex-1">
-                        <SelectValue placeholder="Chọn thời lượng" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {[15, 30, 45, 60, 75, 90, 120, 150, 180].map((min) => (
-                        <SelectItem key={min} value={min.toString()}>
-                          {min} phút
-                        </SelectItem>
-                      ))}
-                      <SelectItem value="custom">Tuỳ chỉnh...</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  {isCustom && (
-                    <NumberInput
-                      className="w-24"
-                      min={5}
-                      max={480}
-                      step={5}
-                      value={field.value}
-                      onChange={field.onChange}
-                      suffix="ph"
-                    />
-                  )}
-                </HStack>
-                <FormMessage />
-              </FormItem>
-            );
-          }}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Thời lượng (Phút)</FormLabel>
+              <FormControl>
+                <Stack gap={3}>
+                  <NumberInput
+                    min={5}
+                    max={480}
+                    step={5}
+                    value={field.value}
+                    onChange={field.onChange}
+                    suffix="phút"
+                    className="w-full"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    {[15, 30, 45, 60, 90, 120].map((preset) => (
+                      <Button
+                        key={preset}
+                        type="button"
+                        variant={field.value === preset ? "default" : "outline"}
+                        size="sm"
+                        className="h-7 px-3 text-xs"
+                        onClick={() => field.onChange(preset)}
+                      >
+                        {preset}p
+                      </Button>
+                    ))}
+                  </div>
+                </Stack>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
       </Grid>
 
       {/* Buffer Time */}
       <FormField
-          control={form.control}
-          name="buffer_time"
-          render={({ field }) => (
-            <FormItem>
-              <HStack align="center" justify="between" className="mb-2">
-                 <FormLabel>Thời gian nghỉ (Buffer Time)</FormLabel>
-                 <span className="text-sm font-mono text-muted-foreground">{field.value} phút</span>
-              </HStack>
-              <FormControl>
-                <Slider
-                   min={0}
-                   max={120}
-                   step={5}
-                   value={[field.value || 0]}
-                   onValueChange={(vals) => field.onChange(vals[0])}
+        control={form.control}
+        name="buffer_time"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Thời gian nghỉ (Buffer Time)</FormLabel>
+            <FormControl>
+              <Stack gap={3}>
+                <NumberInput
+                  min={0}
+                  max={120}
+                  step={5}
+                  value={field.value}
+                  onChange={field.onChange}
+                  suffix="phút"
+                  className="w-full"
                 />
-              </FormControl>
-              <p className="text-xs text-muted-foreground">
-                Khoảng nghỉ bắt buộc sau mỗi dịch vụ để dọn dẹp và chuẩn bị.
-              </p>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                <div className="flex flex-wrap gap-2">
+                  {[0, 5, 10, 15, 30, 45].map((preset) => (
+                    <Button
+                      key={preset}
+                      type="button"
+                      variant={field.value === preset ? "default" : "outline"}
+                      size="sm"
+                      className="h-7 px-3 text-xs"
+                      onClick={() => field.onChange(preset)}
+                    >
+                      {preset === 0 ? "Không nghỉ" : `${preset}p`}
+                    </Button>
+                  ))}
+                </div>
+              </Stack>
+            </FormControl>
+            <p className="text-muted-foreground text-xs">
+              Khoảng nghỉ bắt buộc sau mỗi dịch vụ để dọn dẹp và chuẩn bị.
+            </p>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
       {/* Description */}
       <FormField
@@ -200,9 +210,12 @@ export function BasicTab({ categories }: BasicTabProps) {
             <Card>
               <CardContent className="flex items-center justify-between p-4">
                 <div className="space-y-0.5">
-                  <FormLabel className="text-base">Trạng thái hoạt động</FormLabel>
-                   <p className="text-sm text-muted-foreground">
-                    Dịch vụ sẽ hiển thị trên trang đặt lịch của khách hàng khi bật.
+                  <FormLabel className="text-base">
+                    Trạng thái hoạt động
+                  </FormLabel>
+                  <p className="text-muted-foreground text-sm">
+                    Dịch vụ sẽ hiển thị trên trang đặt lịch của khách hàng khi
+                    bật.
                   </p>
                 </div>
                 <FormControl>

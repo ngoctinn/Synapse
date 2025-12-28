@@ -1,6 +1,9 @@
-  "use client";
+"use client";
 
-  import { PackageTable, PackageTableSkeleton } from "@/features/packages/components/package-table";
+import {
+  PackageTable,
+  PackageTableSkeleton,
+} from "@/features/packages/components/package-table";
 import { PaginatedPackages as PackagePaginationResponse } from "@/features/packages/model/types";
 import { ResourceGroup } from "@/features/resources";
 import {
@@ -20,286 +23,289 @@ import { CategoryTable, CategoryTableSkeleton } from "./category-table";
 import { ServiceTable, ServiceTableSkeleton } from "./service-table";
 import { SkillTable, SkillTableSkeleton } from "./skill-table";
 
-  interface ServicesPageProps {
-    page: number;
-    skillsPromise: Promise<ActionResponse<Skill[]>>;
-    categoriesPromise: Promise<ActionResponse<ServiceCategory[]>>;
-    resourceGroupsPromise: Promise<ActionResponse<ResourceGroup[]>>;
-    servicesPromise: Promise<ActionResponse<ServicePagination>>;
-    packagesPromise: Promise<ActionResponse<PackagePaginationResponse>>;
-  }
+interface ServicesPageProps {
+  page: number;
+  skillsPromise: Promise<ActionResponse<Skill[]>>;
+  categoriesPromise: Promise<ActionResponse<ServiceCategory[]>>;
+  resourceGroupsPromise: Promise<ActionResponse<ResourceGroup[]>>;
+  servicesPromise: Promise<ActionResponse<ServicePagination>>;
+  packagesPromise: Promise<ActionResponse<PackagePaginationResponse>>;
+}
 
-  function ServiceListWrapper({
-    servicesPromise,
-    skillsPromise,
-    categoriesPromise,
-    resourceGroupsPromise,
-    page,
-    searchProps,
-  }: {
-    servicesPromise: Promise<ActionResponse<ServicePagination>>;
-    skillsPromise: Promise<ActionResponse<Skill[]>>;
-    categoriesPromise: Promise<ActionResponse<ServiceCategory[]>>;
-    resourceGroupsPromise: Promise<ActionResponse<ResourceGroup[]>>;
-    page: number;
-    searchProps: {
-      initialValue: string;
-      onSearch: (term: string) => void;
-    };
-  }) {
-    const response = use(servicesPromise);
-    const skillsRes = use(skillsPromise);
-    const categoriesRes = use(categoriesPromise);
-    const resourceGroupsRes = use(resourceGroupsPromise);
+function ServiceListWrapper({
+  servicesPromise,
+  skillsPromise,
+  categoriesPromise,
+  resourceGroupsPromise,
+  page,
+  searchProps,
+}: {
+  servicesPromise: Promise<ActionResponse<ServicePagination>>;
+  skillsPromise: Promise<ActionResponse<Skill[]>>;
+  categoriesPromise: Promise<ActionResponse<ServiceCategory[]>>;
+  resourceGroupsPromise: Promise<ActionResponse<ResourceGroup[]>>;
+  page: number;
+  searchProps: {
+    initialValue: string;
+    onSearch: (term: string) => void;
+  };
+}) {
+  const response = use(servicesPromise);
+  const skillsRes = use(skillsPromise);
+  const categoriesRes = use(categoriesPromise);
+  const resourceGroupsRes = use(resourceGroupsPromise);
 
-    if (response.status === "error") {
-      return (
-        <div className="text-destructive p-4 text-center">
-          Lỗi tải dữ liệu: {response.message}
-        </div>
-      );
-    }
-
-    const skills = skillsRes.status === "success" ? skillsRes.data || [] : [];
-    const categories = categoriesRes.status === "success" ? categoriesRes.data || [] : [];
-    const resourceGroups = resourceGroupsRes.status === "success" ? resourceGroupsRes.data || [] : [];
-
-    const { data, total } = response.data!;
-    const totalPages = Math.ceil(total / 10);
-
+  if (response.status === "error") {
     return (
-      <ServiceTable
-        services={data}
-        availableSkills={skills}
-        availableCategories={categories}
-        availableResourceGroups={resourceGroups}
-        page={page}
-        totalPages={totalPages}
-        variant="flush"
-        searchProps={searchProps}
-      />
+      <div className="text-destructive p-4 text-center">
+        Lỗi tải dữ liệu: {response.message}
+      </div>
     );
   }
 
-  function PackageListWrapper({
-    packagesPromise,
-    page,
-    servicesPromise,
-  }: {
-    packagesPromise: Promise<ActionResponse<PackagePaginationResponse>>;
-    page: number;
-    servicesPromise: Promise<ActionResponse<ServicePagination>>;
-  }) {
-    const response = use(packagesPromise);
-    const servicesResponse = use(servicesPromise);
+  const skills = skillsRes.status === "success" ? skillsRes.data || [] : [];
+  const categories =
+    categoriesRes.status === "success" ? categoriesRes.data || [] : [];
+  const resourceGroups =
+    resourceGroupsRes.status === "success" ? resourceGroupsRes.data || [] : [];
 
-    if (response.status === "error") {
-      return (
-        <div className="text-destructive p-4 text-center">
-          Lỗi tải gói dịch vụ: {response.message}
-        </div>
-      );
-    }
+  const { data, total } = response.data!;
+  const totalPages = Math.ceil(total / 10);
 
-    const { data, total } = response.data!;
-    const totalPages = Math.ceil(total / 10);
-    const availableServices = servicesResponse.status === "success" ? servicesResponse.data!.data : [];
+  return (
+    <ServiceTable
+      services={data}
+      availableSkills={skills}
+      availableCategories={categories}
+      availableResourceGroups={resourceGroups}
+      page={page}
+      totalPages={totalPages}
+      variant="flush"
+      searchProps={searchProps}
+    />
+  );
+}
 
+function PackageListWrapper({
+  packagesPromise,
+  page,
+  servicesPromise,
+}: {
+  packagesPromise: Promise<ActionResponse<PackagePaginationResponse>>;
+  page: number;
+  servicesPromise: Promise<ActionResponse<ServicePagination>>;
+}) {
+  const response = use(packagesPromise);
+  const servicesResponse = use(servicesPromise);
+
+  if (response.status === "error") {
     return (
-      <PackageTable
-        data={data}
-        page={page}
-        totalPages={totalPages}
-        availableServices={availableServices}
-      />
+      <div className="text-destructive p-4 text-center">
+        Lỗi tải gói dịch vụ: {response.message}
+      </div>
     );
   }
 
-  function CategoryListWrapper({
-    categoriesPromise,
-  }: {
-    categoriesPromise: Promise<ActionResponse<ServiceCategory[]>>;
-  }) {
-    const response = use(categoriesPromise);
+  const { data, total } = response.data!;
+  const totalPages = Math.ceil(total / 10);
+  const availableServices =
+    servicesResponse.status === "success" ? servicesResponse.data!.data : [];
 
-    if (response.status === "error") {
-      return (
-        <div className="text-destructive p-4 text-center">
-          Lỗi tải danh mục: {response.message}
-        </div>
-      );
-    }
+  return (
+    <PackageTable
+      data={data}
+      page={page}
+      totalPages={totalPages}
+      availableServices={availableServices}
+    />
+  );
+}
 
-    const categories = response.data || [];
+function CategoryListWrapper({
+  categoriesPromise,
+}: {
+  categoriesPromise: Promise<ActionResponse<ServiceCategory[]>>;
+}) {
+  const response = use(categoriesPromise);
 
-    return <CategoryTable categories={categories} variant="flush" />;
+  if (response.status === "error") {
+    return (
+      <div className="text-destructive p-4 text-center">
+        Lỗi tải danh mục: {response.message}
+      </div>
+    );
   }
 
-  function SkillListWrapper({
-    skillsPromise,
-  }: {
-    skillsPromise: Promise<ActionResponse<Skill[]>>;
-  }) {
-    const response = use(skillsPromise);
+  const categories = response.data || [];
 
-    if (response.status === "error") {
-      return (
-        <div className="text-destructive p-4 text-center">
-          Lỗi tải kỹ năng: {response.message}
-        </div>
-      );
-    }
+  return <CategoryTable categories={categories} variant="flush" />;
+}
 
-    const skills = response.data || [];
+function SkillListWrapper({
+  skillsPromise,
+}: {
+  skillsPromise: Promise<ActionResponse<Skill[]>>;
+}) {
+  const response = use(skillsPromise);
 
-    return <SkillTable skills={skills} variant="flush" />;
+  if (response.status === "error") {
+    return (
+      <div className="text-destructive p-4 text-center">
+        Lỗi tải kỹ năng: {response.message}
+      </div>
+    );
   }
 
-  export function ServicesPage({
-    page,
-    skillsPromise,
-    categoriesPromise,
-    resourceGroupsPromise,
-    servicesPromise,
-    packagesPromise,
-  }: ServicesPageProps) {
-    const router = useRouter();
-    const pathname = usePathname();
-    const searchParams = useSearchParams();
+  const skills = response.data || [];
 
-    const [, startTransition] = useTransition();
+  return <SkillTable skills={skills} variant="flush" />;
+}
 
-    // Get active tab from URL or default to 'list'
-    const activeTab = searchParams.get("view") || "list";
+export function ServicesPage({
+  page,
+  skillsPromise,
+  categoriesPromise,
+  resourceGroupsPromise,
+  servicesPromise,
+  packagesPromise,
+}: ServicesPageProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-    // Get initial search query
-    const initialSearch = searchParams.get("search")?.toString() || "";
+  const [, startTransition] = useTransition();
 
-    const handleTabChange = (value: string) => {
-      const params = new URLSearchParams(searchParams);
-      params.set("view", value);
-      // Reset page to 1 when switching tabs
-      params.set("page", "1");
+  // Get active tab from URL or default to 'list'
+  const activeTab = searchParams.get("view") || "list";
+
+  // Get initial search query
+  const initialSearch = searchParams.get("search")?.toString() || "";
+
+  const handleTabChange = (value: string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("view", value);
+    // Reset page to 1 when switching tabs
+    params.set("page", "1");
+    params.delete("search");
+    params.delete("status");
+
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`);
+    });
+  };
+
+  const handleSearch = useDebouncedCallback((term: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (term) {
+      params.set("search", term);
+    } else {
       params.delete("search");
-      params.delete("status");
+    }
+    // Reset page to 1 when searching
+    params.set("page", "1");
 
-      startTransition(() => {
-        router.push(`${pathname}?${params.toString()}`);
-      });
-    };
+    startTransition(() => {
+      router.replace(`${pathname}?${params.toString()}`);
+    });
+  }, 300);
 
-    const handleSearch = useDebouncedCallback((term: string) => {
-      const params = new URLSearchParams(searchParams);
-      if (term) {
-        params.set("search", term);
-      } else {
-        params.delete("search");
-      }
-      // Reset page to 1 when searching
-      params.set("page", "1");
+  return (
+    <PageShell>
+      <Tabs
+        id="services-tabs"
+        value={activeTab}
+        onValueChange={handleTabChange}
+        className="flex flex-col gap-0"
+      >
+        <PageHeader title="Quản lý dịch vụ">
+          <TabsList size="sm" aria-label="Quản lý dịch vụ">
+            <TabsTrigger
+              value="list"
+              aria-label="Danh sách dịch vụ"
+              stretch={false}
+            >
+              Dịch vụ đơn
+            </TabsTrigger>
+            <TabsTrigger
+              value="packages"
+              aria-label="Gói combo dịch vụ"
+              stretch={false}
+            >
+              Gói combo
+            </TabsTrigger>
+            <TabsTrigger
+              value="skills"
+              aria-label="Kỹ năng kỹ thuật viên"
+              stretch={false}
+            >
+              Kỹ năng
+            </TabsTrigger>
+            <TabsTrigger
+              value="categories"
+              aria-label="Danh mục dịch vụ"
+              stretch={false}
+            >
+              Danh mục
+            </TabsTrigger>
+          </TabsList>
+        </PageHeader>
 
-      startTransition(() => {
-        router.replace(`${pathname}?${params.toString()}`);
-      });
-    }, 300);
+        <Stack gap={0} className="page-entry-animation">
+          <TabsContent value="list" className="mt-0">
+            <PageContent>
+              <SurfaceCard>
+                <Suspense fallback={<ServiceTableSkeleton />}>
+                  <ServiceListWrapper
+                    servicesPromise={servicesPromise}
+                    skillsPromise={skillsPromise}
+                    categoriesPromise={categoriesPromise}
+                    resourceGroupsPromise={resourceGroupsPromise}
+                    page={page}
+                    searchProps={{
+                      initialValue: initialSearch,
+                      onSearch: handleSearch,
+                    }}
+                  />
+                </Suspense>
+              </SurfaceCard>
+            </PageContent>
+          </TabsContent>
 
-    return (
-      <PageShell>
-        <Tabs
-          id="services-tabs"
-          value={activeTab}
-          onValueChange={handleTabChange}
-          className="flex flex-col gap-0"
-        >
-          <PageHeader title="Danh mục sản phẩm">
-            <TabsList size="sm" aria-label="Quản lý dịch vụ">
-              <TabsTrigger
-                value="list"
-                aria-label="Danh sách dịch vụ"
-                stretch={false}
-              >
-                Dịch vụ đơn
-              </TabsTrigger>
-              <TabsTrigger
-                value="packages"
-                aria-label="Gói combo dịch vụ"
-                stretch={false}
-              >
-                Gói combo
-              </TabsTrigger>
-              <TabsTrigger
-                value="skills"
-                aria-label="Kỹ năng kỹ thuật viên"
-                stretch={false}
-              >
-                Kỹ năng
-              </TabsTrigger>
-              <TabsTrigger
-                value="categories"
-                aria-label="Danh mục dịch vụ"
-                stretch={false}
-              >
-                Danh mục
-              </TabsTrigger>
-            </TabsList>
-          </PageHeader>
+          <TabsContent value="packages" className="mt-0">
+            <PageContent>
+              <SurfaceCard>
+                <Suspense fallback={<PackageTableSkeleton />}>
+                  <PackageListWrapper
+                    packagesPromise={packagesPromise}
+                    servicesPromise={servicesPromise}
+                    page={page}
+                  />
+                </Suspense>
+              </SurfaceCard>
+            </PageContent>
+          </TabsContent>
 
-          <Stack gap={0} className="page-entry-animation overflow-hidden">
-            <TabsContent value="list" className="mt-0">
-              <PageContent>
-                <SurfaceCard>
-                  <Suspense fallback={<ServiceTableSkeleton />}>
-                    <ServiceListWrapper
-                      servicesPromise={servicesPromise}
-                      skillsPromise={skillsPromise}
-                      categoriesPromise={categoriesPromise}
-                      resourceGroupsPromise={resourceGroupsPromise}
-                      page={page}
-                      searchProps={{
-                        initialValue: initialSearch,
-                        onSearch: handleSearch,
-                      }}
-                    />
-                  </Suspense>
-                </SurfaceCard>
-              </PageContent>
-            </TabsContent>
+          <TabsContent value="skills" className="mt-0">
+            <PageContent>
+              <SurfaceCard>
+                <Suspense fallback={<SkillTableSkeleton />}>
+                  <SkillListWrapper skillsPromise={skillsPromise} />
+                </Suspense>
+              </SurfaceCard>
+            </PageContent>
+          </TabsContent>
 
-            <TabsContent value="packages" className="mt-0">
-              <PageContent>
-                <SurfaceCard>
-                  <Suspense fallback={<PackageTableSkeleton />}>
-                    <PackageListWrapper
-                      packagesPromise={packagesPromise}
-                      servicesPromise={servicesPromise}
-                      page={page}
-                    />
-                  </Suspense>
-                </SurfaceCard>
-              </PageContent>
-            </TabsContent>
-
-            <TabsContent value="skills" className="mt-0">
-              <PageContent>
-                <SurfaceCard>
-                  <Suspense fallback={<SkillTableSkeleton />}>
-                    <SkillListWrapper skillsPromise={skillsPromise} />
-                  </Suspense>
-                </SurfaceCard>
-              </PageContent>
-            </TabsContent>
-
-            <TabsContent value="categories" className="mt-0">
-              <PageContent>
-                <SurfaceCard>
-                  <Suspense fallback={<CategoryTableSkeleton />}>
-                    <CategoryListWrapper categoriesPromise={categoriesPromise} />
-                  </Suspense>
-                </SurfaceCard>
-              </PageContent>
-            </TabsContent>
-          </Stack>
-        </Tabs>
-      </PageShell>
-    );
-  }
+          <TabsContent value="categories" className="mt-0">
+            <PageContent>
+              <SurfaceCard>
+                <Suspense fallback={<CategoryTableSkeleton />}>
+                  <CategoryListWrapper categoriesPromise={categoriesPromise} />
+                </Suspense>
+              </SurfaceCard>
+            </PageContent>
+          </TabsContent>
+        </Stack>
+      </Tabs>
+    </PageShell>
+  );
+}

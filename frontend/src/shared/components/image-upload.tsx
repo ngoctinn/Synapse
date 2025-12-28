@@ -47,7 +47,7 @@ export function ImageUpload({
     <div className={cn("flex flex-col gap-4", className)}>
       <div className="flex items-center gap-4">
         {preview ? (
-          <div className="relative h-24 w-24 overflow-hidden rounded-lg border group">
+          <div className="group relative h-24 w-24 overflow-hidden rounded-lg border">
             <Image
               src={preview}
               alt="Preview"
@@ -71,13 +71,15 @@ export function ImageUpload({
         ) : (
           <div
             onClick={() => fileInputRef.current?.click()}
-            className="flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-muted-foreground/25 bg-muted/5 transition-colors hover:bg-muted/10 group relative overflow-hidden"
+            className="border-muted-foreground/25 bg-muted/5 hover:bg-muted/10 group relative flex h-24 w-24 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border border-dashed transition-colors"
           >
-            <div className={`absolute inset-0 bg-gradient-to-br from-transparent to-muted/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100`} />
-            <div className="relative z-10 mb-2 rounded-full p-2 shadow-sm transition-all duration-300 group-hover:scale-110 bg-background">
-              <ImagePlus className="h-5 w-5 text-muted-foreground transition-colors duration-300 group-hover:text-primary" />
+            <div
+              className={`to-muted/20 absolute inset-0 bg-gradient-to-br from-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100`}
+            />
+            <div className="bg-background relative z-10 mb-2 rounded-full p-2 shadow-sm transition-all duration-300 group-hover:scale-110">
+              <ImagePlus className="text-muted-foreground group-hover:text-primary h-5 w-5 transition-colors duration-300" />
             </div>
-            <span className="relative z-10 text-[10px] font-medium text-muted-foreground transition-colors duration-300 group-hover:text-primary">
+            <span className="text-muted-foreground group-hover:text-primary relative z-10 text-[10px] font-medium transition-colors duration-300">
               Tải ảnh lên
             </span>
           </div>

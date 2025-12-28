@@ -10,7 +10,9 @@ interface CreatePackageTriggerProps {
   availableServices: Service[];
 }
 
-export function CreatePackageTrigger({ availableServices }: CreatePackageTriggerProps) {
+export function CreatePackageTrigger({
+  availableServices,
+}: CreatePackageTriggerProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -28,4 +30,3 @@ export function CreatePackageTrigger({ availableServices }: CreatePackageTrigger
     </>
   );
 }
-

@@ -16,7 +16,16 @@ import {
   type TechnicianOption,
 } from "@/features/staff/actions";
 import { useSheetForm } from "@/shared/hooks/use-sheet-form";
-import { Badge, Button, Form, SheetClose, Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui";
+import {
+  Badge,
+  Button,
+  Form,
+  SheetClose,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/shared/ui";
 import { ActionSheet, Icon } from "@/shared/components";
 import { CustomerForm } from "./customer-form";
 import { CustomerHistory } from "./customer-history";
@@ -108,7 +117,11 @@ export function CustomerSheet({
       footer={
         <>
           <SheetClose asChild>
-            <Button variant="outline" disabled={isPending} className="min-w-[100px]">
+            <Button
+              variant="outline"
+              disabled={isPending}
+              className="min-w-[100px]"
+            >
               Hủy
             </Button>
           </SheetClose>
@@ -134,11 +147,14 @@ export function CustomerSheet({
             />
           ) : (
             <Tabs defaultValue="info" className="flex h-full w-full flex-col">
-              <TabsList className="mb-4 w-full grid grid-cols-2">
+              <TabsList className="mb-4 grid w-full grid-cols-2">
                 <TabsTrigger value="info">Thông tin</TabsTrigger>
                 <TabsTrigger value="history">Lịch sử & Thống kê</TabsTrigger>
               </TabsList>
-              <TabsContent value="info" className="form-tab-enter mt-0 space-y-6">
+              <TabsContent
+                value="info"
+                className="form-tab-enter mt-0 space-y-6"
+              >
                 <CustomerForm
                   mode={mode}
                   disabled={isPending}

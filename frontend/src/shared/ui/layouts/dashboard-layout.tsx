@@ -16,12 +16,8 @@ export function DashboardLayoutWrapper({
   mobileNav,
 }: DashboardLayoutWrapperProps) {
   return (
-    <AppShell
-      header={header}
-      sidebar={sidebar}
-      mobileNav={mobileNav}
-    >
-      <div className="flex flex-col min-h-full">
+    <AppShell header={header} sidebar={sidebar} mobileNav={mobileNav}>
+      <div className="flex min-h-full flex-col">
         <div className="flex-1">{children}</div>
         {footer && <div className="mt-8">{footer}</div>}
       </div>

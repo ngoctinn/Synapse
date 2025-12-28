@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useTransition, useCallback } from "react";
 import { getAppointmentMetrics } from "../actions";
 import type { AppointmentMetrics } from "../model/types";
 
@@ -12,18 +12,18 @@ export function useAppointmentMetrics(date: Date) {
   const [metrics, setMetrics] = useState<AppointmentMetrics | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  const fetchMetrics = () => {
+  const fetchMetrics = useCallback(() => {
     startTransition(async () => {
       const res = await getAppointmentMetrics(date);
       if (res.status === "success" && res.data) {
         setMetrics(res.data);
       }
     });
-  };
+  }, [date]);
 
   useEffect(() => {
     fetchMetrics();
-  }, [date]);
+  }, [fetchMetrics]);
 
   return {
     metrics,

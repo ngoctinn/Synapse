@@ -68,7 +68,7 @@ export function TableRowActions({
         "flex items-center justify-end gap-1",
         // Fix Issue #4: Use visibility instead of opacity for better performance
         // Only visible on hover, but always in DOM for consistent layout
-        "invisible group-hover:visible transition-[visibility] duration-150",
+        "invisible transition-[visibility] duration-150 group-hover:visible",
         className
       )}
     >
@@ -77,7 +77,7 @@ export function TableRowActions({
           <Button
             variant="ghost"
             size="icon-sm"
-            className="h-8 w-8 hover:bg-muted"
+            className="hover:bg-muted h-8 w-8"
             disabled={disabled}
           >
             <span className="sr-only">Mở menu</span>
@@ -112,7 +112,9 @@ export function TableRowActions({
 
       {/* Fallback: Nếu không có quick actions, chỉ có more button */}
       {!hasQuickActions && !hasExtraActions && (
-        <span className="text-muted-foreground text-xs" aria-hidden="true">-</span>
+        <span className="text-muted-foreground text-xs" aria-hidden="true">
+          -
+        </span>
       )}
     </div>
   );

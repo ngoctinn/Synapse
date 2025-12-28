@@ -11,10 +11,10 @@ import { useScheduleFilters } from "../../hooks/use-schedule-filters";
 import { useScheduleNavigation } from "../../hooks/use-schedule-navigation";
 import { useSchedules } from "../../hooks/use-schedules";
 import type {
-    Schedule,
-    ScheduleWithShift,
-    Shift,
-    Staff,
+  Schedule,
+  ScheduleWithShift,
+  Shift,
+  Staff,
 } from "../../model/types";
 import { useBatchOperations } from "./hooks/use-batch-operations";
 
@@ -22,9 +22,9 @@ import { MonthView, WeekView } from "./calendar";
 import { ShiftLegend } from "./legend";
 import { SelectionToolbar, useSelection } from "./selection";
 import {
-    AddScheduleSheet,
-    ScheduleDetailSheet,
-    ShiftManagerSheet,
+  AddScheduleSheet,
+  ScheduleDetailSheet,
+  ShiftManagerSheet,
 } from "./sheets";
 import { ActionBar, DateNavigator, StaffFilter, ViewSwitcher } from "./toolbar";
 
@@ -136,7 +136,7 @@ export function StaffSchedulingPage({
     handleBatchApplyShift,
     handleBatchPublish,
     handleBatchDelete,
-    handlePublishAll
+    handlePublishAll,
   } = useBatchOperations({
     selectedSlots,
     draftSchedules,
@@ -144,7 +144,7 @@ export function StaffSchedulingPage({
     batchAddSchedules,
     batchPublishSchedules,
     batchRemoveSchedules,
-    clearSelection
+    clearSelection,
   });
 
   // Get staff name for sheet

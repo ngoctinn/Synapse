@@ -103,7 +103,8 @@ export function PaginationControls({
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              if (currentPage < totalPages && !isLoading) onPageChange(currentPage + 1);
+              if (currentPage < totalPages && !isLoading)
+                onPageChange(currentPage + 1);
             }}
             className={
               currentPage === totalPages || isLoading

@@ -9,6 +9,7 @@ import { Column, DataTable } from "@/shared/components/data-table";
 import { DataTableEmptyState } from "@/shared/components/data-table-empty-state";
 import { Group, Stack } from "@/shared/ui/layout";
 import { Progress } from "@/shared/ui/progress";
+import { RowSelectionState } from "@tanstack/react-table";
 import { CheckCircle2, ClipboardList } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -36,15 +37,15 @@ export function TreatmentTable({
   const router = useRouter();
   const [editingTreatment, setEditingTreatment] =
     useState<CustomerTreatment | null>(null);
-  const [rowSelection, setRowSelection] = useState({});
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [isPending, startTransition] = useTransition();
 
   const {
     page: urlPage,
-    sortBy,
-    order,
+    sortBy: _sortBy,
+    order: _order,
     handlePageChange: urlPageChange,
-    handleSort,
+    handleSort: _handleSort,
   } = useTableParams({
     defaultSortBy: "created_at",
     defaultOrder: "desc",
@@ -75,7 +76,9 @@ export function TreatmentTable({
               table.getIsAllPageRowsSelected() ||
               (table.getIsSomePageRowsSelected() && "indeterminate")
             }
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
             aria-label="Select all"
           />
         </div>
@@ -108,7 +111,9 @@ export function TreatmentTable({
     {
       header: "Gói dịch vụ",
       accessorKey: "package_name",
-      cell: ({ row }) => <div className="font-medium">{row.original.package_name}</div>,
+      cell: ({ row }) => (
+        <div className="font-medium">{row.original.package_name}</div>
+      ),
     },
     {
       header: "Tiến độ",
@@ -118,7 +123,8 @@ export function TreatmentTable({
         <Stack gap={1.5} className="w-36">
           <Group justify="between" className="text-xs">
             <span>
-              {row.original.sessions_completed}/{row.original.total_sessions} buổi
+              {row.original.sessions_completed}/{row.original.total_sessions}{" "}
+              buổi
             </span>
             <span className="text-muted-foreground">
               {Math.round(row.original.progress)}%
@@ -133,7 +139,9 @@ export function TreatmentTable({
       accessorKey: "start_date",
       enableSorting: true,
       cell: ({ row }) => {
-        const date = new Date(row.original.start_date).toLocaleDateString("vi-VN");
+        const date = new Date(row.original.start_date).toLocaleDateString(
+          "vi-VN"
+        );
         return <div className="text-muted-foreground">{date}</div>;
       },
     },
@@ -200,7 +208,7 @@ export function TreatmentTable({
         skeletonCount={5}
         variant="flush"
         rowSelection={rowSelection}
-        onRowSelectionChange={setRowSelection as any}
+        onRowSelectionChange={setRowSelection}
         getRowId={(row) => row.id}
         onRowClick={(t) => setEditingTreatment(t)}
         emptyState={

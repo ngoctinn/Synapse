@@ -27,7 +27,7 @@ export async function getPackages(
     });
     if (search) params.append("search", search);
     if (status && status !== "all") {
-        params.append("active", (status === "active").toString());
+      params.append("active", (status === "active").toString());
     }
 
     const response = await fetchWithAuth(`/packages?${params.toString()}`);
@@ -47,13 +47,13 @@ export async function getPackage(
   try {
     const response = await fetchWithAuth(`/packages/${id}`);
     if (!response.ok) {
-       if (response.status === 404) return error("Gói dịch vụ không tồn tại");
-       return error("Không thể tải thông tin gói dịch vụ");
+      if (response.status === 404) return error("Gói dịch vụ không tồn tại");
+      return error("Không thể tải thông tin gói dịch vụ");
     }
 
     const result = await response.json();
     return success(result);
-  } catch (err) {
+  } catch (_) {
     return error("Lỗi kết nối máy chủ");
   }
 }
@@ -83,7 +83,7 @@ export async function createPackage(
     const result = await response.json();
     revalidatePath("/admin/packages");
     return success(result, "Tạo gói dịch vụ thành công");
-  } catch (err) {
+  } catch (_) {
     return error("Lỗi kết nối máy chủ");
   }
 }
@@ -114,7 +114,7 @@ export async function updatePackage(
     const result = await response.json();
     revalidatePath("/admin/packages");
     return success(result, "Cập nhật gói dịch vụ thành công");
-  } catch (err) {
+  } catch (_) {
     return error("Lỗi kết nối máy chủ");
   }
 }
@@ -129,7 +129,7 @@ export async function deletePackage(id: string): Promise<ActionResponse> {
 
     revalidatePath("/admin/packages");
     return success(undefined, "Đã xóa gói dịch vụ thành công");
-  } catch (err) {
+  } catch (_) {
     return error("Lỗi kết nối máy chủ");
   }
 }
@@ -140,4 +140,3 @@ export async function togglePackageStatus(
 ): Promise<ActionResponse<ServicePackage>> {
   return updatePackage({ id, is_active: !currentStatus });
 }
-

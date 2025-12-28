@@ -31,14 +31,19 @@ export function StaffFilter() {
     <HStack gap={2} className="items-center">
       {/* Lọc Vai trò */}
       <Select value={role || "all"} onValueChange={handleRoleChange}>
-        <SelectTrigger id="role" className="h-10 w-[180px] bg-background text-sm">
-           <SelectValue placeholder="Vai trò" />
+        <SelectTrigger
+          id="role"
+          className="bg-background h-10 w-[180px] text-sm"
+        >
+          <SelectValue placeholder="Vai trò" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all" className="text-xs">Tất cả vai trò</SelectItem>
+          <SelectItem value="all" className="text-xs">
+            Tất cả vai trò
+          </SelectItem>
           {ROLES.map((r) => (
             <SelectItem key={r.id} value={r.id} className="text-xs">
-               {r.name}
+              {r.name}
             </SelectItem>
           ))}
         </SelectContent>
@@ -46,13 +51,22 @@ export function StaffFilter() {
 
       {/* Lọc Trạng thái */}
       <Select value={isActive || "all"} onValueChange={handleStatusChange}>
-        <SelectTrigger id="status" className="h-10 w-[180px] bg-background text-sm">
-           <SelectValue placeholder="Trạng thái" />
+        <SelectTrigger
+          id="status"
+          className="bg-background h-10 w-[180px] text-sm"
+        >
+          <SelectValue placeholder="Trạng thái" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all" className="text-xs">Tất cả trạng thái</SelectItem>
-          <SelectItem value="true" className="text-xs text-success">Hoạt động</SelectItem>
-          <SelectItem value="false" className="text-xs text-muted-foreground">Ngừng hoạt động</SelectItem>
+          <SelectItem value="all" className="text-xs">
+            Tất cả trạng thái
+          </SelectItem>
+          <SelectItem value="true" className="text-success text-xs">
+            Hoạt động
+          </SelectItem>
+          <SelectItem value="false" className="text-muted-foreground text-xs">
+            Ngừng hoạt động
+          </SelectItem>
         </SelectContent>
       </Select>
     </HStack>

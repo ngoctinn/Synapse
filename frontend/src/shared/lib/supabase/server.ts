@@ -55,4 +55,3 @@ export async function isCurrentUserManager(): Promise<boolean> {
   const role = await getCurrentUserRole();
   return role === "manager";
 }
-

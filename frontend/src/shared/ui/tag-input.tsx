@@ -54,7 +54,7 @@ export function TagInput({
   return (
     <div
       className={cn(
-        "flex min-h-10 w-full flex-wrap items-center gap-2 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+        "border-input bg-background ring-offset-background focus-within:ring-ring flex min-h-10 w-full flex-wrap items-center gap-2 rounded-md border px-3 py-2 text-sm focus-within:ring-2 focus-within:ring-offset-2",
         className
       )}
     >
@@ -62,12 +62,12 @@ export function TagInput({
         <Badge
           key={`${tag}-${index}`}
           variant="secondary"
-          className="flex items-center gap-1 pr-1.5 py-0.5 text-xs animate-in fade-in zoom-in duration-200"
+          className="animate-in fade-in zoom-in flex items-center gap-1 py-0.5 pr-1.5 text-xs duration-200"
         >
           {tag}
           <button
             type="button"
-            className="ml-1 rounded-full outline-none hover:bg-muted focus:ring-1 focus:ring-ring"
+            className="hover:bg-muted focus:ring-ring ml-1 rounded-full outline-none focus:ring-1"
             onClick={() => removeTag(index)}
           >
             <X className="h-3 w-3" />

@@ -7,22 +7,23 @@ import { Button } from "@/shared/ui/button";
 import { Checkbox } from "@/shared/ui/checkbox";
 import { Column, DataTable } from "@/shared/components/data-table";
 import { DataTableEmptyState } from "@/shared/components/data-table-empty-state";
+import { RowSelectionState } from "@tanstack/react-table";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu";
 import { Group, Stack } from "@/shared/ui/layout";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import {
-    AlertTriangle,
-    MoreHorizontal,
-    ShieldCheck,
-    XCircle,
+  AlertTriangle,
+  MoreHorizontal,
+  ShieldCheck,
+  XCircle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -48,14 +49,14 @@ export function WarrantyTable({
 }: WarrantyTableProps) {
   const router = useRouter();
   const [, startTransition] = useTransition();
-  const [rowSelection, setRowSelection] = useState({});
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const {
     page: urlPage,
-    sortBy,
-    order,
+    sortBy: _sortBy,
+    order: _order,
     handlePageChange: urlPageChange,
-    handleSort,
+    handleSort: _handleSort,
   } = useTableParams({
     defaultSortBy: "created_at",
     defaultOrder: "desc",
@@ -86,7 +87,9 @@ export function WarrantyTable({
               table.getIsAllPageRowsSelected() ||
               (table.getIsSomePageRowsSelected() && "indeterminate")
             }
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
             aria-label="Select all"
           />
         </div>
@@ -222,7 +225,7 @@ export function WarrantyTable({
         skeletonCount={5}
         variant="flush"
         rowSelection={rowSelection}
-        onRowSelectionChange={setRowSelection as any}
+        onRowSelectionChange={setRowSelection}
         getRowId={(row) => row.id}
         emptyState={
           <DataTableEmptyState

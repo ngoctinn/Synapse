@@ -28,7 +28,8 @@ export function ServiceForm({
 
   // Watch for validation errors to show indicators on tabs
   const { errors } = form.formState;
-  const hasBasicErrors = !!errors.name || !!errors.price || !!errors.category_id;
+  const hasBasicErrors =
+    !!errors.name || !!errors.price || !!errors.category_id;
   const hasResourceErrors = !!errors.resource_requirements;
   const hasSkillErrors = !!errors.skill_ids;
 
@@ -41,19 +42,19 @@ export function ServiceForm({
           <TabsTrigger value="basic" className="gap-2">
             Thông tin
             {hasBasicErrors && (
-               <AlertCircle className="h-3.5 w-3.5 text-destructive" />
+              <AlertCircle className="text-destructive h-3.5 w-3.5" />
             )}
           </TabsTrigger>
           <TabsTrigger value="resources" className="gap-2">
             Tài nguyên
             {hasResourceErrors && (
-               <AlertCircle className="h-3.5 w-3.5 text-destructive" />
+              <AlertCircle className="text-destructive h-3.5 w-3.5" />
             )}
           </TabsTrigger>
           <TabsTrigger value="skills" className="gap-2">
             Kỹ năng
             {hasSkillErrors && (
-               <AlertCircle className="h-3.5 w-3.5 text-destructive" />
+              <AlertCircle className="text-destructive h-3.5 w-3.5" />
             )}
           </TabsTrigger>
         </TabsList>
@@ -67,8 +68,8 @@ export function ServiceForm({
         <TabsContent value="resources" asChild>
           <Stack gap={4} className="mt-4">
             <ResourcesTab
-                availableResourceGroups={availableResourceGroups}
-                duration={duration}
+              availableResourceGroups={availableResourceGroups}
+              duration={duration}
             />
           </Stack>
         </TabsContent>

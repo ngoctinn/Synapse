@@ -1,5 +1,10 @@
 import { useEffect, useCallback } from "react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/shared/ui/tooltip";
 import { cn } from "./utils";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -122,10 +127,7 @@ export function TruncatedCell({
       <Tooltip>
         <TooltipTrigger asChild>
           <span
-            className={cn(
-              "inline-block truncate",
-              className
-            )}
+            className={cn("inline-block truncate", className)}
             style={{ maxWidth: `${maxWidth}px` }}
           >
             {children}
@@ -138,7 +140,6 @@ export function TruncatedCell({
     </TooltipProvider>
   );
 }
-
 
 /**
  * Format date cho table display
@@ -168,7 +169,9 @@ export function formatTableDate(
     time: "HH:mm",
   };
 
-  return format(dateObj, formats[formatType as "short" | "long" | "time"], { locale: vi });
+  return format(dateObj, formats[formatType as "short" | "long" | "time"], {
+    locale: vi,
+  });
 }
 
 /**

@@ -3,7 +3,7 @@
 import { cn } from "@/shared/lib/utils";
 import * as React from "react";
 
-interface RequiredMarkProps extends React.HTMLAttributes<HTMLSpanElement> {}
+type RequiredMarkProps = React.HTMLAttributes<HTMLSpanElement>;
 
 /**
  * Hiển thị dấu * màu đỏ cho các trường bắt buộc.

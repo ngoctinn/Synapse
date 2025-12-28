@@ -18,7 +18,11 @@ export function ReviewList({
 }: ReviewListProps) {
   if (reviews.length === 0) {
     return (
-      <Stack align="center" justify="center" className="text-muted-foreground py-8 text-center">
+      <Stack
+        align="center"
+        justify="center"
+        className="text-muted-foreground py-8 text-center"
+      >
         <Frown size={48} />
         <p className="text-sm">{emptyMessage}</p>
       </Stack>

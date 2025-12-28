@@ -19,12 +19,9 @@ export const BookingWizard = () => {
     currentStep,
     goToStep,
     selectedServices,
-    staffId,
     holdExpiresAt,
     clearHold,
-    selectedDate,
     selectedSlot,
-    customerInfo,
     reset,
   } = useBookingStore();
   const { canProceed } = useBookingValidation();
@@ -62,8 +59,6 @@ export const BookingWizard = () => {
   // UX Decision: Step 1 hides main footer, uses FloatingSummary for "Add to Cart" feel.
   // Step 2-5 use Main Footer.
   const showMainFooter = currentStep !== 1 && !isSuccess;
-
-
 
   if (isSuccess) {
     return (

@@ -10,7 +10,10 @@ export function AuthLayoutWrapper({ children }: { children: React.ReactNode }) {
 
         <div className="text-primary-foreground relative z-10 max-w-lg select-none p-12">
           <div className="mb-8">
-            <HeaderLogo variant="inverted" textClassName="text-3xl font-serif" />
+            <HeaderLogo
+              variant="inverted"
+              textClassName="text-3xl font-serif"
+            />
           </div>
 
           <blockquote className="space-y-6">

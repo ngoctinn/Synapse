@@ -20,13 +20,15 @@ export function DataTableToolbar({
   return (
     <div
       className={cn(
-        "flex items-center justify-between border-b bg-muted/5 px-4 py-3",
+        "bg-muted/5 flex items-center justify-between border-b px-4 py-3",
         className
       )}
       {...props}
     >
       <HStack gap={3} className="flex-1 items-center">
-        {searchField && <div className="w-full max-w-[280px]">{searchField}</div>}
+        {searchField && (
+          <div className="w-full max-w-[280px]">{searchField}</div>
+        )}
         {filters && <HStack gap={2}>{filters}</HStack>}
       </HStack>
 

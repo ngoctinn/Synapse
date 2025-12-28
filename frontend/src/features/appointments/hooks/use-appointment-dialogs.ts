@@ -8,9 +8,15 @@ import type { CalendarEvent } from "../model/types";
  */
 export function useAppointmentDialogs() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
-  const [sheetMode, setSheetMode] = useState<"view" | "edit" | "create">("view");
-  const [selectedBookingForReview, setSelectedBookingForReview] = useState<string | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
+    null
+  );
+  const [sheetMode, setSheetMode] = useState<"view" | "edit" | "create">(
+    "view"
+  );
+  const [selectedBookingForReview, setSelectedBookingForReview] = useState<
+    string | null
+  >(null);
 
   // Dialog actions (Cancel, Delete)
   const [actionEvent, setActionEvent] = useState<CalendarEvent | null>(null);
@@ -45,7 +51,10 @@ export function useAppointmentDialogs() {
     setIsDeleteOpen(true);
   };
 
-  const openSheetWithData = (event: CalendarEvent, mode: "view" | "edit" | "create") => {
+  const openSheetWithData = (
+    event: CalendarEvent,
+    mode: "view" | "edit" | "create"
+  ) => {
     setSelectedEvent(event);
     setSheetMode(mode);
     setIsSheetOpen(true);

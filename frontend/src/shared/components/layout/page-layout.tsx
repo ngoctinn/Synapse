@@ -38,11 +38,7 @@ interface PageHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   backHref?: string;
 }
 
-export function PageHeader({
-  children,
-  title,
-  subtitle,
-}: PageHeaderProps) {
+export function PageHeader({ children, title, subtitle }: PageHeaderProps) {
   const { setHeader, clearHeader, tabsSlot } = useHeader();
 
   useEffect(() => {
@@ -97,11 +93,7 @@ export function PageContent({
 }: PageContentProps) {
   return (
     <div
-      className={cn(
-        "flex flex-1 flex-col",
-        !fullWidth && "gap-3",
-        className
-      )}
+      className={cn("flex flex-1 flex-col", !fullWidth && "gap-3", className)}
       {...props}
     >
       {children}

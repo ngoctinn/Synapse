@@ -11,27 +11,28 @@
  * [REFACTORED] Fix C4: Icon semantic (Plus thay vì Send)
  */
 
+import { ActionSheet } from "@/shared/components/action-sheet";
+import { Icon } from "@/shared/components/icon";
+import { Button } from "@/shared/ui/button";
+import { DatePicker } from "@/shared/ui/date-picker";
 import {
-  Button,
   Field,
   FieldDescription,
   FieldError,
   FieldLabel,
-  Input,
+} from "@/shared/ui/field";
+import { Input } from "@/shared/ui/input";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Switch,
-  DatePicker,
-  TimePicker,
-} from "@/shared/ui";
-import { cn } from "@/shared/lib/utils";
-import { ActionSheet, Icon } from "@/shared/components";
-import { format, isSameDay } from "date-fns";
-import { vi } from "date-fns/locale";
-import { AlertTriangle, CalendarIcon, Plus, Save } from "lucide-react";
+} from "@/shared/ui/select";
+import { Switch } from "@/shared/ui/switch";
+import { TimePicker } from "@/shared/ui/time-picker";
+import { isSameDay } from "date-fns";
+import { AlertTriangle, Plus, Save } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
   DEFAULT_EXCEPTION_CLOSE,
@@ -120,11 +121,15 @@ export function ExceptionSheet({
         type !== exception.type ||
         reason !== exception.reason ||
         isClosed !== exception.isClosed ||
-        (!isClosed && (openTime !== exception.openTime || closeTime !== exception.closeTime))
+        (!isClosed &&
+          (openTime !== exception.openTime ||
+            closeTime !== exception.closeTime))
       );
     }
     // So sánh với default khi create
-    return date !== undefined || reason !== "" || type !== "HOLIDAY" || !isClosed;
+    return (
+      date !== undefined || reason !== "" || type !== "HOLIDAY" || !isClosed
+    );
   }, [date, type, reason, isClosed, openTime, closeTime, exception]);
 
   // Handle submit
@@ -198,14 +203,14 @@ export function ExceptionSheet({
           <FieldLabel>
             Ngày <span className="text-destructive">*</span>
           </FieldLabel>
-            {/* Date Picker Replacement */}
-            <DatePicker
-              value={date}
-              onChange={setDate}
-              disabled={isSubmitting}
-              placeholder="Chọn ngày"
-              modal={true}
-            />
+          {/* Date Picker Replacement */}
+          <DatePicker
+            value={date}
+            onChange={setDate}
+            disabled={isSubmitting}
+            placeholder="Chọn ngày"
+            modal={true}
+          />
           {duplicateCheck.isDuplicate && (
             <FieldError>
               <div className="flex items-start gap-2">

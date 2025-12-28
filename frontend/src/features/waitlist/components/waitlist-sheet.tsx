@@ -1,116 +1,110 @@
-  "use client";
+"use client";
 
-  import { createWaitlistEntry, updateWaitlistEntry } from "../actions";
-  import {
-    waitlistCreateSchema,
-    type WaitlistFormValues,
-  } from "../model/schemas";
-  import { WaitlistEntry } from "../model/types";
-  import { MOCK_SERVICES } from "@/features/services/model/mocks";
-  import { useSheetForm } from "@/shared/hooks/use-sheet-form";
-  import {
-    Button,
-    DatePicker,
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-    Input,
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-    SheetClose,
-    Textarea,
-  } from "@/shared/ui";
-  import { cn } from "@/shared/lib/utils";
-  import { format, parse } from "date-fns";
-  import { vi } from "date-fns/locale";
-  import { ActionSheet } from "@/shared/components";
-  import { Stack, Grid } from "@/shared/ui/layout";
+import { createWaitlistEntry, updateWaitlistEntry } from "../actions";
+import {
+  waitlistCreateSchema,
+  type WaitlistFormValues,
+} from "../model/schemas";
+import { WaitlistEntry } from "../model/types";
+import { MOCK_SERVICES } from "@/features/services/model/mocks";
+import { useSheetForm } from "@/shared/hooks/use-sheet-form";
+import {
+  Button,
+  DatePicker,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SheetClose,
+  Textarea,
+} from "@/shared/ui";
+import { format, parse } from "date-fns";
+import { ActionSheet } from "@/shared/components";
+import { Stack, Grid } from "@/shared/ui/layout";
 
-  interface WaitlistSheetProps {
-    mode: "create" | "edit";
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    data?: WaitlistEntry;
-    defaultValues?: Partial<WaitlistFormValues>;
-  }
+interface WaitlistSheetProps {
+  mode: "create" | "edit";
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  data?: WaitlistEntry;
+  defaultValues?: Partial<WaitlistFormValues>;
+}
 
-  export function WaitlistSheet({
-    mode,
+export function WaitlistSheet({
+  mode,
+  open,
+  onOpenChange,
+  data,
+  defaultValues,
+}: WaitlistSheetProps) {
+  const isCreate = mode === "create";
+
+  const { form, isPending, onSubmit, isDirty } = useSheetForm<
+    WaitlistFormValues,
+    WaitlistEntry
+  >({
+    schema: waitlistCreateSchema,
+    defaultValues: {
+      customer_id: "",
+      customer_name: "",
+      phone_number: "",
+      service_id: "",
+      preferred_date: new Date().toISOString().split("T")[0],
+      preferred_time_slot: "",
+      notes: "",
+      ...defaultValues,
+    },
     open,
-    onOpenChange,
     data,
-    defaultValues,
-  }: WaitlistSheetProps) {
-    const isCreate = mode === "create";
+    transformData: (entry) => ({
+      ...entry,
+      customer_id: entry.customer_id,
+    }),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    action: (isCreate ? createWaitlistEntry : updateWaitlistEntry) as any,
+    onSuccess: () => onOpenChange(false),
+    toastMessages: {
+      success: isCreate ? "Đã thêm vào danh sách chờ" : "Đã cập nhật yêu cầu",
+    },
+  });
 
-    const { form, isPending, onSubmit, isDirty } = useSheetForm<
-      WaitlistFormValues,
-      WaitlistEntry
-    >({
-      schema: waitlistCreateSchema,
-      defaultValues: {
-        customer_id: "",
-        customer_name: "",
-        phone_number: "",
-        service_id: "",
-        preferred_date: new Date().toISOString().split("T")[0],
-        preferred_time_slot: "",
-        notes: "",
-        ...defaultValues,
-      },
-      open,
-      data,
-      transformData: (entry) => ({
-        ...entry,
-        customer_id: entry.customer_id,
-      }),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      action: (isCreate ? createWaitlistEntry : updateWaitlistEntry) as any,
-      onSuccess: () => onOpenChange(false),
-      toastMessages: {
-        success: isCreate ? "Đã thêm vào danh sách chờ" : "Đã cập nhật yêu cầu",
-      },
-    });
-
-    return (
-      <ActionSheet
-        open={open}
-        onOpenChange={onOpenChange}
-        title={isCreate ? "Thêm vào danh sách chờ" : "Chi tiết yêu cầu"}
-        description={
-          isCreate
-            ? "Thêm khách hàng vào danh sách chờ"
-            : "Xem và chỉnh sửa yêu cầu"
-        }
-        isPending={isPending}
-        isDirty={isDirty}
-        footer={
-          <>
-            <SheetClose asChild>
-              <Button variant="outline" disabled={isPending}>
-                Hủy
-              </Button>
-            </SheetClose>
-            <Button
-              type="submit"
-              form="waitlist-form"
-              isLoading={isPending}
-            >
-              {isCreate ? "Gửi yêu cầu" : "Lưu thay đổi"}
+  return (
+    <ActionSheet
+      open={open}
+      onOpenChange={onOpenChange}
+      title={isCreate ? "Thêm vào danh sách chờ" : "Chi tiết yêu cầu"}
+      description={
+        isCreate
+          ? "Thêm khách hàng vào danh sách chờ"
+          : "Xem và chỉnh sửa yêu cầu"
+      }
+      isPending={isPending}
+      isDirty={isDirty}
+      footer={
+        <>
+          <SheetClose asChild>
+            <Button variant="outline" disabled={isPending}>
+              Hủy
             </Button>
-          </>
-        }
-      >
-        <Form {...form}>
-          <Stack id="waitlist-form" onSubmit={onSubmit} gap={6} asChild>
-            <form>
-              <Stack gap={4}>
+          </SheetClose>
+          <Button type="submit" form="waitlist-form" isLoading={isPending}>
+            {isCreate ? "Gửi yêu cầu" : "Lưu thay đổi"}
+          </Button>
+        </>
+      }
+    >
+      <Form {...form}>
+        <Stack id="waitlist-form" onSubmit={onSubmit} gap={6} asChild>
+          <form>
+            <Stack gap={4}>
               <FormField
                 control={form.control}
                 name="customer_name"
@@ -176,8 +170,16 @@
                       <FormLabel>Ngày mong muốn</FormLabel>
                       <FormControl>
                         <DatePicker
-                          value={field.value ? parse(field.value, "yyyy-MM-dd", new Date()) : undefined}
-                          onChange={(date) => field.onChange(date ? format(date, "yyyy-MM-dd") : "")}
+                          value={
+                            field.value
+                              ? parse(field.value, "yyyy-MM-dd", new Date())
+                              : undefined
+                          }
+                          onChange={(date) =>
+                            field.onChange(
+                              date ? format(date, "yyyy-MM-dd") : ""
+                            )
+                          }
                           placeholder="Chọn ngày"
                           modal={true}
                         />
@@ -239,10 +241,10 @@
                   </FormItem>
                 )}
               />
-              </Stack>
-            </form>
-          </Stack>
-        </Form>
-      </ActionSheet>
-    );
-  }
+            </Stack>
+          </form>
+        </Stack>
+      </Form>
+    </ActionSheet>
+  );
+}

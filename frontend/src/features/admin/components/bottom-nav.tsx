@@ -1,6 +1,9 @@
 "use client";
 
-import { MobileNavBar, MobileNavItem } from "@/shared/ui/navigation/mobile-nav-bar";
+import {
+  MobileNavBar,
+  MobileNavItem,
+} from "@/shared/ui/navigation/mobile-nav-bar";
 import { Calendar, ClipboardList, Home, PlusCircle, User } from "lucide-react";
 import { usePathname } from "next/navigation";
 

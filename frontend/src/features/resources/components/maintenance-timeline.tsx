@@ -4,10 +4,10 @@ import { DateRangeNavigator } from "@/shared/components/date-range-navigator";
 import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/shared/ui/tooltip";
 import { addDays, format, isSameDay, startOfWeek } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -34,8 +34,6 @@ export function MaintenanceTimeline({
     () => Array.from({ length: 7 }).map((_, i) => addDays(startDate, i)),
     [startDate]
   );
-
-
 
   // Optimize: Create a fast lookup map for tasks
   // Key: `${resourceId}-${dateString}` -> Value: MaintenanceTask[]

@@ -53,8 +53,7 @@ export function AddScheduleSheet({
       <div className="space-y-4">
         {staffName && date && (
           <p className="text-muted-foreground mb-4 text-sm">
-            Chọn ca cho{" "}
-            <strong className="text-foreground">{staffName}</strong>
+            Chọn ca cho <strong className="text-foreground">{staffName}</strong>
             <br />
             <span className="capitalize">{dateStr}</span>
           </p>

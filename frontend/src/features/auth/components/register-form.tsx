@@ -11,15 +11,15 @@ import { registerAction } from "../actions";
 import { registerSchema, type RegisterInput } from "../model/schemas";
 
 import {
-    Button,
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-    Input,
-    showToast,
+  Button,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+  showToast,
 } from "@/shared/ui";
 import { PasswordInput } from "@/shared/components/password-input";
 

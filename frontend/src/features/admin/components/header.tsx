@@ -5,11 +5,7 @@ import { useNotificationStore } from "@/features/notifications/hooks/use-notific
 import { UserProfile } from "@/shared/components/layout/components/header/types";
 import { useHeader } from "@/shared/lib/header-context";
 import { cn } from "@/shared/lib/utils";
-import {
-  Card,
-  Separator,
-  SidebarTrigger
-} from "@/shared/ui";
+import { Card, Separator, SidebarTrigger } from "@/shared/ui";
 import dynamic from "next/dynamic";
 import { useCallback } from "react";
 
@@ -30,20 +26,19 @@ interface AdminHeaderProps {
   loading?: boolean;
 }
 
-export function AdminHeader({
-  className,
-  user,
-  loading,
-}: AdminHeaderProps) {
+export function AdminHeader({ className, user, loading }: AdminHeaderProps) {
   const { state, setTabsSlot } = useHeader();
   const unreadCount = useNotificationStore((state) => state.unreadCount);
 
   // Sử dụng callback ref để đăng ký slot element vào context
-  const slotRef = useCallback((node: HTMLDivElement | null) => {
-    if (node !== null) {
-      setTabsSlot(node);
-    }
-  }, [setTabsSlot]);
+  const slotRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (node !== null) {
+        setTabsSlot(node);
+      }
+    },
+    [setTabsSlot]
+  );
 
   return (
     <header
@@ -52,16 +47,19 @@ export function AdminHeader({
         className
       )}
     >
-      <Card className="flex flex-col border-none shadow-sm overflow-hidden">
+      <Card className="flex flex-col overflow-hidden border-none shadow-sm">
         {/* Main Row - h-16 (64px) */}
-        <div className="flex h-16 items-center gap-2 px-4 bg-background">
-          <div className="flex items-center gap-4 flex-1 overflow-hidden">
+        <div className="bg-background flex h-16 items-center gap-2 px-4">
+          <div className="flex flex-1 items-center gap-4 overflow-hidden">
             <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="h-4 hidden md:block opacity-40" />
+            <Separator
+              orientation="vertical"
+              className="hidden h-4 opacity-40 md:block"
+            />
 
-            <div className="flex flex-col items-start gap-1 min-w-fit py-2">
+            <div className="flex min-w-fit flex-col items-start gap-1 py-2">
               {state.title && (
-                <h1 className="text-base font-bold tracking-tight text-foreground/90 leading-tight">
+                <h1 className="text-foreground/90 text-base font-bold leading-tight tracking-tight">
                   {state.title}
                 </h1>
               )}
@@ -69,9 +67,9 @@ export function AdminHeader({
             </div>
 
             {/* Đích của Portal cho Tabs - Moved to left */}
-             <div
+            <div
               ref={slotRef}
-              className="hidden md:flex items-center px-4"
+              className="hidden items-center px-4 md:flex"
               id="header-tabs-slot"
             />
 
@@ -80,14 +78,20 @@ export function AdminHeader({
           </div>
 
           <div className="flex items-center gap-3 pr-2">
-            <Separator orientation="vertical" className="h-6 opacity-30 hidden md:block" />
+            <Separator
+              orientation="vertical"
+              className="hidden h-6 opacity-30 md:block"
+            />
 
             <div className="flex items-center gap-1.5">
               <NotificationPopover>
                 <NotificationBell unreadCount={unreadCount} />
               </NotificationPopover>
 
-              <Separator orientation="vertical" className="h-4 mx-1 opacity-50" />
+              <Separator
+                orientation="vertical"
+                className="mx-1 h-4 opacity-50"
+              />
               <UserNav user={user} loading={loading} />
             </div>
           </div>

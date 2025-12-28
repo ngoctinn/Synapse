@@ -7,11 +7,9 @@ import { DayButton, DayPicker, getDefaultClassNames } from "react-day-picker";
 import { cn } from "@/shared/lib/utils";
 import { Button, buttonVariants } from "@/shared/ui/button";
 
-
 // CONSTANTS - Kích thước ô lịch cố định
 
 const CELL_SIZE = "2rem"; // 32px - kích thước chuẩn cho mỗi ô ngày
-
 
 // CALENDAR COMPONENT - Lịch chọn ngày với hỗ trợ single/range selection
 
@@ -20,13 +18,10 @@ function Calendar({
   classNames,
   showOutsideDays = true,
   captionLayout = "label",
-  buttonVariant = "ghost",
   formatters,
   components,
   ...props
-}: React.ComponentProps<typeof DayPicker> & {
-  buttonVariant?: React.ComponentProps<typeof Button>["variant"];
-}) {
+}: React.ComponentProps<typeof DayPicker>) {
   const defaultClassNames = getDefaultClassNames();
 
   // Tạo style object cho CSS variable
@@ -133,14 +128,17 @@ function Calendar({
           "rounded-l-full bg-primary/10",
           defaultClassNames.range_start
         ),
-        range_middle: cn("rounded-none bg-primary/10", defaultClassNames.range_middle),
-        range_end: cn("rounded-r-full bg-primary/10", defaultClassNames.range_end),
+        range_middle: cn(
+          "rounded-none bg-primary/10",
+          defaultClassNames.range_middle
+        ),
+        range_end: cn(
+          "rounded-r-full bg-primary/10",
+          defaultClassNames.range_end
+        ),
 
         // Special states
-        today: cn(
-          "text-primary font-bold",
-          defaultClassNames.today
-        ),
+        today: cn("text-primary font-bold", defaultClassNames.today),
         outside: cn(
           "text-muted-foreground/30 aria-selected:text-muted-foreground/30",
           defaultClassNames.outside
@@ -200,7 +198,6 @@ function Calendar({
   );
 }
 
-
 // DAY BUTTON - Nút chọn ngày với các trạng thái selection
 
 function CalendarDayButton({
@@ -245,14 +242,14 @@ function CalendarDayButton({
 
         // Range selection
         "data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-start=true]:rounded-full data-[range-start=true]:shadow-md",
-        "data-[range-middle=true]:bg-transparent data-[range-middle=true]:text-primary data-[range-middle=true]:rounded-none",
+        "data-[range-middle=true]:text-primary data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-transparent",
         "data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-end=true]:rounded-full data-[range-end=true]:shadow-md",
 
         // Today state (No dot per design)
         "data-[today=true]:not([data-selected-single=true]):not([data-range-start=true]):not([data-range-end=true]):text-primary data-[today=true]:not([data-selected-single=true]):not([data-range-start=true]):not([data-range-end=true]):font-extrabold",
 
         // Hover state
-        "hover:bg-accent/50 hover:text-accent-foreground hover:rounded-full transition-all",
+        "hover:bg-accent/50 hover:text-accent-foreground transition-all hover:rounded-full",
 
         // Child span styling (for additional content)
         "[&>span]:text-xs [&>span]:opacity-70",

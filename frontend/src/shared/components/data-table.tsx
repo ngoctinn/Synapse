@@ -1,17 +1,17 @@
 "use client";
 
 import {
-    ColumnDef,
-    ColumnFiltersState,
-    flexRender,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getSortedRowModel,
-    OnChangeFn,
-    Row,
-    RowSelectionState,
-    SortingState,
-    useReactTable
+  ColumnDef,
+  ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
+  OnChangeFn,
+  Row,
+  RowSelectionState,
+  SortingState,
+  useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
 
@@ -27,12 +27,12 @@ import { DataTableSkeleton } from "@/shared/components/data-table-skeleton";
 import { PaginationControls } from "@/shared/components/pagination-controls";
 import { cn } from "@/shared/lib/utils";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/shared/ui/table";
 import { ArrowDown, ArrowUp, ArrowUpDown, FileText } from "lucide-react";
 
@@ -84,11 +84,13 @@ export function DataTable<TData, TValue>({
   toolbar,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [internalRowSelection, setInternalRowSelection] = useState<RowSelectionState>({});
+  const [internalRowSelection, setInternalRowSelection] =
+    useState<RowSelectionState>({});
 
   const rowSelection = externalRowSelection ?? internalRowSelection;
   const setRowSelection = onRowSelectionChange ?? setInternalRowSelection;
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: data ?? [],
     columns,
@@ -112,7 +114,8 @@ export function DataTable<TData, TValue>({
   const containerClasses = cn(
     "relative w-full overflow-hidden",
     isLoading && "pointer-events-none opacity-60 grayscale",
-    variant === "default" && "border rounded-lg bg-background shadow-sm hover:shadow-md transition-shadow duration-300",
+    variant === "default" &&
+      "border rounded-lg bg-background shadow-sm hover:shadow-md transition-shadow duration-300",
     className
   );
 
@@ -134,16 +137,16 @@ export function DataTable<TData, TValue>({
 
   // Empty State
   if (!data || data.length === 0) {
-      if (emptyState) return <>{emptyState}</>;
-      return (
-        <div className={containerClasses}>
-             <DataTableEmptyState
-                icon={FileText}
-                title="Không có dữ liệu"
-                description="Chưa có dữ liệu nào để hiển thị."
-             />
-        </div>
-      );
+    if (emptyState) return <>{emptyState}</>;
+    return (
+      <div className={containerClasses}>
+        <DataTableEmptyState
+          icon={FileText}
+          title="Không có dữ liệu"
+          description="Chưa có dữ liệu nào để hiển thị."
+        />
+      </div>
+    );
   }
 
   return (
@@ -152,9 +155,12 @@ export function DataTable<TData, TValue>({
         {toolbar}
         <div className="scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent w-full overflow-x-auto overflow-y-visible">
           <Table>
-            <TableHeader className="bg-muted/80 sticky top-0 z-20 backdrop-blur-sm border-b shadow-[0_1px_rgba(0,0,0,0.05)]">
+            <TableHeader className="bg-muted/80 sticky top-0 z-20 border-b shadow-[0_1px_rgba(0,0,0,0.05)] backdrop-blur-sm">
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id} className="border-border/50 hover:bg-transparent">
+                <TableRow
+                  key={headerGroup.id}
+                  className="border-border/50 hover:bg-transparent"
+                >
                   {headerGroup.headers.map((header) => {
                     const isSortable = header.column.getCanSort();
                     return (
@@ -163,27 +169,33 @@ export function DataTable<TData, TValue>({
                           <div
                             className={cn(
                               "flex items-center gap-2",
-                              isSortable && "cursor-pointer select-none group",
-                              header.column.columnDef.meta?.align === "right" && "justify-end flex-row-reverse",
-                              header.column.columnDef.meta?.align === "center" && "justify-center",
+                              isSortable && "group cursor-pointer select-none",
+                              header.column.columnDef.meta?.align === "right" &&
+                                "flex-row-reverse justify-end",
+                              header.column.columnDef.meta?.align ===
+                                "center" && "justify-center"
                             )}
                             onClick={header.column.getToggleSortingHandler()}
                           >
-                            <span className="truncate font-semibold text-muted-foreground group-hover:text-foreground transition-colors">
-                                {flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext()
-                                )}
+                            <span className="text-muted-foreground group-hover:text-foreground truncate font-semibold transition-colors">
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
                             </span>
                             {isSortable && (
-                                <span className="flex h-4 w-4 shrink-0 items-center justify-center">
-                                    {{
-                                    asc: <ArrowUp className="text-primary h-3.5 w-3.5 transition-all duration-300" />,
-                                    desc: <ArrowDown className="text-primary h-3.5 w-3.5 transition-all duration-300" />,
-                                    }[header.column.getIsSorted() as string] ?? (
-                                        <ArrowUpDown className="text-muted-foreground/40 h-3.5 w-3.5 opacity-0 transition-all duration-300 group-hover:opacity-100" />
-                                    )}
-                                </span>
+                              <span className="flex h-4 w-4 shrink-0 items-center justify-center">
+                                {{
+                                  asc: (
+                                    <ArrowUp className="text-primary h-3.5 w-3.5 transition-all duration-300" />
+                                  ),
+                                  desc: (
+                                    <ArrowDown className="text-primary h-3.5 w-3.5 transition-all duration-300" />
+                                  ),
+                                }[header.column.getIsSorted() as string] ?? (
+                                  <ArrowUpDown className="text-muted-foreground/40 h-3.5 w-3.5 opacity-0 transition-all duration-300 group-hover:opacity-100" />
+                                )}
+                              </span>
                             )}
                           </div>
                         )}
@@ -200,10 +212,10 @@ export function DataTable<TData, TValue>({
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
                     className={cn(
-                        "group transition-colors",
-                         // Match AnimatedTableRow behavior + selection styling
-                        onRowClick && "cursor-pointer hover:bg-muted/50",
-                        row.getIsSelected() && "bg-muted"
+                      "group transition-colors",
+                      // Match AnimatedTableRow behavior + selection styling
+                      onRowClick && "hover:bg-muted/50 cursor-pointer",
+                      row.getIsSelected() && "bg-muted"
                     )}
                     onClick={() => onRowClick && onRowClick(row.original)}
                   >
@@ -212,8 +224,10 @@ export function DataTable<TData, TValue>({
                         key={cell.id}
                         className={cn(
                           "py-3",
-                          cell.column.columnDef.meta?.align === "right" && "text-right",
-                          cell.column.columnDef.meta?.align === "center" && "text-center"
+                          cell.column.columnDef.meta?.align === "right" &&
+                            "text-right",
+                          cell.column.columnDef.meta?.align === "center" &&
+                            "text-center"
                         )}
                       >
                         {flexRender(
@@ -241,14 +255,14 @@ export function DataTable<TData, TValue>({
 
       {/* Pagination Controls */}
       {!hidePagination && totalPages > 1 && onPageChange && (
-         <div className="py-2">
-            <PaginationControls
-                currentPage={page}
-                totalPages={totalPages}
-                onPageChange={onPageChange}
-                isLoading={isLoading}
-            />
-         </div>
+        <div className="py-2">
+          <PaginationControls
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={onPageChange}
+            isLoading={isLoading}
+          />
+        </div>
       )}
     </div>
   );

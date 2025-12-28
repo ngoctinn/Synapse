@@ -48,17 +48,22 @@ export function getSpacingClasses(props: SpacingProps): string {
   return cn(...classes);
 }
 
-export function extractSpacingProps<T extends SpacingProps>(props: T): { spacingProps: SpacingProps; otherProps: Omit<T, keyof SpacingProps> } {
+export function extractSpacingProps<T extends SpacingProps>(
+  props: T
+): { spacingProps: SpacingProps; otherProps: Omit<T, keyof SpacingProps> } {
   const spacingProps: SpacingProps = {};
-  const otherProps: any = {};
+  const otherProps = {} as Record<string, unknown>;
 
   Object.entries(props).forEach(([key, value]) => {
     if (key in spacingMap) {
-      (spacingProps as any)[key] = value;
+      (spacingProps as Record<string, unknown>)[key] = value;
     } else {
       otherProps[key] = value;
     }
   });
 
-  return { spacingProps, otherProps };
+  return {
+    spacingProps,
+    otherProps: otherProps as Omit<T, keyof SpacingProps>,
+  };
 }

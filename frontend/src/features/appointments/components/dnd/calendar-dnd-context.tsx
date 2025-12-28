@@ -99,9 +99,7 @@ export function CalendarDndContext({
     createGridSnapModifier(zoomLevel),
   ];
 
-  
   // HANDLERS
-  
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
     const data = event.active.data.current as DragData;
@@ -160,9 +158,7 @@ export function CalendarDndContext({
     setActiveEvent(null);
   }, []);
 
-  
   // RENDER
-  
 
   if (disabled) {
     return <>{children}</>;

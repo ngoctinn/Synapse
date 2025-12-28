@@ -42,12 +42,12 @@ export default async function AdminLayout({
     <HeaderProvider>
       <SidebarProvider defaultOpen={defaultOpen} className="bg-muted">
         <AdminSidebar />
-        <SidebarInset className="bg-transparent h-screen max-h-svh overflow-hidden p-2">
+        <SidebarInset className="h-screen max-h-svh overflow-hidden bg-transparent p-2">
           <AdminHeader
             user={userProfile}
             loading={!userProfile && session?.access_token ? true : false}
           />
-          <div className="flex flex-1 flex-col overflow-y-auto mt-3 pb-6 scrollbar-none">
+          <div className="scrollbar-none mt-3 flex flex-1 flex-col overflow-y-auto pb-6">
             {children}
           </div>
           <BottomNav />

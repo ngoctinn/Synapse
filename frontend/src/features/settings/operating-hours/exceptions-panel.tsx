@@ -11,18 +11,18 @@
 
 import { cn } from "@/shared/lib/utils";
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    Badge,
-    Button,
-    Calendar,
-    ScrollArea,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  Badge,
+  Button,
+  Calendar,
+  ScrollArea,
 } from "@/shared/ui";
 import { HStack, VStack } from "@/shared/ui/layout/stack";
 import { format, isSameDay } from "date-fns";
@@ -128,7 +128,7 @@ export function ExceptionsPanel({
       <div className="min-h-0 flex-1">
         <div className="flex h-full flex-col gap-6 xl:flex-row">
           {/* Left: Exceptions List */}
-          <VStack className="overflow-hidden flex-1">
+          <VStack className="flex-1 overflow-hidden">
             <div className="min-h-0 flex-1">
               {sortedExceptions.length === 0 ? (
                 <div className="bg-muted/10 flex h-full flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 text-center">
@@ -288,10 +288,7 @@ export function ExceptionsPanel({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Hủy</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmDelete}
-              variant="destructive"
-            >
+            <AlertDialogAction onClick={confirmDelete} variant="destructive">
               Xóa
             </AlertDialogAction>
           </AlertDialogFooter>

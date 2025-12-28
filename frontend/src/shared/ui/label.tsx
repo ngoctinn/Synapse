@@ -11,9 +11,9 @@ const labelVariants = cva(
   {
     variants: {
       size: {
-        compact: "text-xs",    // 12px
-        regular: "text-sm",    // 14px (Standard label size)
-        large: "text-base",    // 16px
+        compact: "text-xs", // 12px
+        regular: "text-sm", // 14px (Standard label size)
+        large: "text-base", // 16px
       },
     },
     defaultVariants: {
@@ -26,7 +26,8 @@ function Label({
   className,
   size,
   ...props
-}: React.ComponentProps<typeof LabelPrimitive.Root> & VariantProps<typeof labelVariants>) {
+}: React.ComponentProps<typeof LabelPrimitive.Root> &
+  VariantProps<typeof labelVariants>) {
   return (
     <LabelPrimitive.Root
       data-slot="label"

@@ -148,7 +148,9 @@ export async function updatePasswordAction(
  * Đăng nhập bằng Google OAuth
  * Trả về URL để redirect sang Google
  */
-export async function signInWithGoogle(): Promise<ActionResponse<{ url: string }>> {
+export async function signInWithGoogle(): Promise<
+  ActionResponse<{ url: string }>
+> {
   const supabase = await createClient();
   const origin = (await headers()).get("origin");
 

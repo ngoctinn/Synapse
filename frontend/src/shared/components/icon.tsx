@@ -21,7 +21,16 @@ const sizeMap = {
  * Icon - Wrapper chuẩn cho Lucide icons giúp đồng nhất size và stroke-width.
  */
 export const Icon = React.forwardRef<SVGSVGElement, IconProps>(
-  ({ icon: LucideIconComponent, size = "md", strokeWidth = 2, className, ...props }, ref) => {
+  (
+    {
+      icon: LucideIconComponent,
+      size = "md",
+      strokeWidth = 2,
+      className,
+      ...props
+    },
+    ref
+  ) => {
     const iconSize = typeof size === "number" ? size : sizeMap[size];
 
     return (

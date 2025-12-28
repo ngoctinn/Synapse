@@ -10,7 +10,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  Input,
   Select,
   SelectContent,
   SelectItem,
@@ -69,9 +68,9 @@ export function WarrantySheet({
       footer={
         <>
           <SheetClose asChild>
-              <Button variant="outline" disabled={isPending}>
-                Hủy
-              </Button>
+            <Button variant="outline" disabled={isPending}>
+              Hủy
+            </Button>
           </SheetClose>
           <Button type="submit" form="warranty-form" isLoading={isPending}>
             Tạo phiếu
@@ -83,104 +82,104 @@ export function WarrantySheet({
         <Stack id="warranty-form" onSubmit={onSubmit} gap={6} asChild>
           <form>
             <Stack gap={4}>
-            <FormField
-              control={form.control}
-              name="customer_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel required>Khách hàng</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Chọn khách hàng" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {Array.from(
-                        new Set(
-                          MOCK_TREATMENTS.map((t) =>
-                            JSON.stringify({
-                              id: t.customer_id,
-                              name: t.customer_name,
-                            })
+              <FormField
+                control={form.control}
+                name="customer_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel required>Khách hàng</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Chọn khách hàng" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {Array.from(
+                          new Set(
+                            MOCK_TREATMENTS.map((t) =>
+                              JSON.stringify({
+                                id: t.customer_id,
+                                name: t.customer_name,
+                              })
+                            )
                           )
                         )
-                      )
-                        .map((s) => JSON.parse(s))
-                        .map((c: { id: string; name: string }) => (
-                          <SelectItem key={c.id} value={c.id}>
-                            {c.name}
+                          .map((s) => JSON.parse(s))
+                          .map((c: { id: string; name: string }) => (
+                            <SelectItem key={c.id} value={c.id}>
+                              {c.name}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="treatment_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel required>Liệu trình áp dụng</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Chọn liệu trình" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {MOCK_TREATMENTS.map((t) => (
+                          <SelectItem key={t.id} value={t.id}>
+                            {t.package_name} - {t.customer_name}
                           </SelectItem>
                         ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="treatment_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel required>Liệu trình áp dụng</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+              <FormField
+                control={form.control}
+                name="duration_months"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel required>Thời hạn (tháng)</FormLabel>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Chọn liệu trình" />
-                      </SelectTrigger>
+                      <NumberInput min={1} {...field} suffix="tháng" />
                     </FormControl>
-                    <SelectContent>
-                      {MOCK_TREATMENTS.map((t) => (
-                        <SelectItem key={t.id} value={t.id}>
-                          {t.package_name} - {t.customer_name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="duration_months"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel required>Thời hạn (tháng)</FormLabel>
-                  <FormControl>
-                    <NumberInput min={1} {...field} suffix="tháng" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="terms"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel required>Điều khoản bảo hành</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Nhập điều khoản chi tiết..."
-                      rows={6}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="terms"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel required>Điều khoản bảo hành</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Nhập điều khoản chi tiết..."
+                        rows={6}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </Stack>
           </form>
         </Stack>

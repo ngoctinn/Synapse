@@ -15,7 +15,6 @@ import {
   FormLabel,
   FormMessage,
   Textarea,
-  showToast,
 } from "@/shared/ui";
 
 import { MockService } from "@/features/appointments/model/mocks";
@@ -40,9 +39,7 @@ import { Stack } from "@/shared/ui/layout";
 const DEFAULT_SERVICE_COLOR = "#8b5cf6";
 const MS_PER_MINUTE = 60000;
 
-
 // TYPES
-
 
 interface AppointmentFormProps {
   id?: string;
@@ -59,9 +56,7 @@ interface AppointmentFormProps {
   onDirtyChange?: (isDirty: boolean) => void;
 }
 
-
 // COMPONENT
-
 
 export function AppointmentForm({
   id = "appointment-form",
@@ -111,9 +106,7 @@ export function AppointmentForm({
     }
   }, [isDirty, onDirtyChange]);
 
-  
   // HANDLERS
-  
 
   const handleSubmit = useCallback(
     (values: QuickAppointmentFormValues) => {
@@ -210,64 +203,64 @@ export function AppointmentForm({
         className="form" // Dummy class to keep the id and other props if needed, but Stack asChild will pass them to the form
       >
         <form onSubmit={form.handleSubmit(handleSubmit)}>
-        <CustomerPicker
-          placeholder={appointment?.customerName}
-          customerOptions={customerOptions}
-          isSearching={isSearching}
-          onSearch={setCustomerSearch}
-        />
+          <CustomerPicker
+            placeholder={appointment?.customerName}
+            customerOptions={customerOptions}
+            isSearching={isSearching}
+            onSearch={setCustomerSearch}
+          />
 
-        <FormField
-          control={form.control}
-          name="serviceIds"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel required>Dịch vụ trị liệu</FormLabel>
-              <FormControl>
-                <MultiServiceSelector
-                  selectedIds={field.value}
-                  onChange={field.onChange}
-                  availableServices={availableServices}
-                />
-              </FormControl>
-              <FormDescription>
-                Tổng thời lượng: {totalDuration} phút
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="serviceIds"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel required>Dịch vụ trị liệu</FormLabel>
+                <FormControl>
+                  <MultiServiceSelector
+                    selectedIds={field.value}
+                    onChange={field.onChange}
+                    availableServices={availableServices}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Tổng thời lượng: {totalDuration} phút
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <StaffResourceSelect
-          availableStaff={availableStaff}
-          availableResources={availableResources}
-        />
+          <StaffResourceSelect
+            availableStaff={availableStaff}
+            availableResources={availableResources}
+          />
 
-        <AppointmentDateTime
-          timeWarning={timeWarning}
-          conflicts={conflicts}
-        />
+          <AppointmentDateTime
+            timeWarning={timeWarning}
+            conflicts={conflicts}
+          />
 
-        <FormField
-          control={form.control}
-          name="notes"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Ghi chú</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Ghi chú cho lịch hẹn..."
-                  className="min-h-20 resize-none"
-                  rows={3}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </form>
-    </Stack>
-  </Form>
+          <FormField
+            control={form.control}
+            name="notes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Ghi chú</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Ghi chú cho lịch hẹn..."
+                    className="min-h-20 resize-none"
+                    rows={3}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </form>
+      </Stack>
+    </Form>
   );
 }

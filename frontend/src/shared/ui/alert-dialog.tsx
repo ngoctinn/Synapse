@@ -123,7 +123,16 @@ function AlertDialogAction({
   variant = "default",
   ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Action> & {
-  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "warning" | "success" | "soft";
+  variant?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link"
+    | "warning"
+    | "success"
+    | "soft";
 }) {
   return (
     <AlertDialogPrimitive.Action
@@ -139,7 +148,10 @@ function AlertDialogCancel({
 }: React.ComponentProps<typeof AlertDialogPrimitive.Cancel>) {
   return (
     <AlertDialogPrimitive.Cancel
-      className={cn(buttonVariants({ variant: "outline", size: "default" }), className)}
+      className={cn(
+        buttonVariants({ variant: "outline", size: "default" }),
+        className
+      )}
       {...props}
     />
   );

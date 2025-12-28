@@ -120,7 +120,8 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
                       })}
                     </span>
                     <span className="text-xs">
-                      {format(new Date(appt.startTime), "HH:mm")} ({formatDuration(appt.duration)})
+                      {format(new Date(appt.startTime), "HH:mm")} (
+                      {formatDuration(appt.duration)})
                     </span>
                   </div>
                 </div>

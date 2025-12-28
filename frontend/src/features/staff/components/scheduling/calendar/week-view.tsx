@@ -8,10 +8,10 @@ import { Grid } from "@/shared/ui/layout/grid";
 import { VStack } from "@/shared/ui/layout/stack";
 import { getSchedulesByStaffAndDate } from "../../../model/schedules";
 import {
-    Schedule,
-    ScheduleWithShift,
-    SelectedSlot,
-    Staff,
+  Schedule,
+  ScheduleWithShift,
+  SelectedSlot,
+  Staff,
 } from "../../../model/types";
 import { ScheduleCell } from "./schedule-cell";
 

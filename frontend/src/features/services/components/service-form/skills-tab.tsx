@@ -46,9 +46,12 @@ export function SkillsTab({ availableSkills }: SkillsTabProps) {
                 <AlertTriangle className="text-warning size-6" />
               </div>
               <div className="space-y-1">
-                <p className="text-foreground font-medium">Chưa có kỹ năng nào</p>
+                <p className="text-foreground font-medium">
+                  Chưa có kỹ năng nào
+                </p>
                 <p className="text-muted-foreground text-sm">
-                  Vui lòng tạo kỹ năng tại tab &quot;Kỹ năng&quot; trước khi tạo dịch vụ.
+                  Vui lòng tạo kỹ năng tại tab &quot;Kỹ năng&quot; trước khi tạo
+                  dịch vụ.
                 </p>
               </div>
             </div>

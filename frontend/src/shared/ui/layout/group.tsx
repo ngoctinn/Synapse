@@ -50,10 +50,15 @@ const groupVariants = cva("flex flex-row", {
   },
 });
 
-import { SpacingProps, extractSpacingProps, getSpacingClasses } from "./utilities";
+import {
+  SpacingProps,
+  extractSpacingProps,
+  getSpacingClasses,
+} from "./utilities";
 
 export interface GroupProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof groupVariants>,
     SpacingProps {}
 
@@ -63,7 +68,10 @@ export const Group = React.forwardRef<HTMLDivElement, GroupProps>(
     return (
       <div
         ref={ref}
-        className={cn(groupVariants({ gap, align, justify, wrap, grow, className }), getSpacingClasses(spacingProps))}
+        className={cn(
+          groupVariants({ gap, align, justify, wrap, grow, className }),
+          getSpacingClasses(spacingProps)
+        )}
         {...otherProps}
       />
     );

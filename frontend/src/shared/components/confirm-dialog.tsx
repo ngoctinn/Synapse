@@ -57,38 +57,38 @@ export function ConfirmDialog({
   variant = "warning",
   isLoading = false,
 }: ConfirmDialogProps) {
-
   // Lấy icon tương ứng với variant
   const getIcon = () => {
     switch (variant) {
       case "destructive":
-        return <AlertCircle className="size-5 text-destructive" />;
+        return <AlertCircle className="text-destructive size-5" />;
       case "info":
         return <Info className="size-5 text-blue-500" />;
       default:
-        return <AlertTriangle className="size-5 text-warning" />;
+        return <AlertTriangle className="text-warning size-5" />;
     }
   };
-
-
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <div className="mb-2 flex items-center gap-3">
-            <div className={cn(
-              "flex size-10 items-center justify-center rounded-full",
-              variant === "destructive" ? "bg-destructive/10" :
-              variant === "info" ? "bg-primary/10" : "bg-warning/10"
-            )}>
+            <div
+              className={cn(
+                "flex size-10 items-center justify-center rounded-full",
+                variant === "destructive"
+                  ? "bg-destructive/10"
+                  : variant === "info"
+                    ? "bg-primary/10"
+                    : "bg-warning/10"
+              )}
+            >
               {getIcon()}
             </div>
             <AlertDialogTitle>{title}</AlertDialogTitle>
           </div>
-          <AlertDialogDescription>
-            {description}
-          </AlertDialogDescription>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="mt-6">
           <AlertDialogCancel
@@ -104,7 +104,13 @@ export function ConfirmDialog({
               onConfirm();
             }}
             disabled={isLoading}
-            variant={variant === "destructive" ? "destructive" : variant === "warning" ? "warning" : "default"}
+            variant={
+              variant === "destructive"
+                ? "destructive"
+                : variant === "warning"
+                  ? "warning"
+                  : "default"
+            }
             className="flex-1"
           >
             {isLoading ? "Đang xử lý..." : confirmText}

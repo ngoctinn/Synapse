@@ -1,45 +1,41 @@
 "use client";
 
+import { Invoice } from "@/features/billing/model/types";
 import { ReviewPrompt } from "@/features/reviews/components/review-prompt";
 import { DeleteConfirmDialog } from "@/shared/components/delete-confirm-dialog";
 import { Icon } from "@/shared/components/icon";
 import {
-    PageContent,
-    PageHeader,
-    PageShell,
-    SurfaceCard,
+  PageContent,
+  PageHeader,
+  PageShell,
+  SurfaceCard,
 } from "@/shared/components/layout/page-layout";
 import { ActionResponse } from "@/shared/lib/action-response";
 import { cn } from "@/shared/lib/utils";
-import {
-    Button,
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger
-} from "@/shared/ui";
+import { Button, Tooltip, TooltipContent, TooltipTrigger } from "@/shared/ui";
 import { Group, Stack } from "@/shared/ui/layout";
 import {
-    Activity,
-    CalendarCheck,
-    Clock,
-    Plus,
-    RefreshCw,
-    Settings2
+  Activity,
+  CalendarCheck,
+  Clock,
+  Plus,
+  RefreshCw,
+  Settings2,
 } from "lucide-react";
 import { use, useState } from "react";
 import {
-    useAppointmentActions,
-    useAppointmentDialogs,
-    useAppointmentEvents,
-    useAppointmentMetrics,
-    useCalendarState,
+  useAppointmentActions,
+  useAppointmentDialogs,
+  useAppointmentEvents,
+  useAppointmentMetrics,
+  useCalendarState,
 } from "../hooks";
 import { createDraftAppointment } from "../model/factory";
 import { MockService } from "../model/mocks";
 import type {
-    AppointmentFilters,
-    CalendarEvent,
-    TimelineResource,
+  AppointmentFilters,
+  CalendarEvent,
+  TimelineResource,
 } from "../model/types";
 import { CalendarView } from "./calendar";
 import { AppointmentSheet } from "./sheet";
@@ -55,9 +51,11 @@ interface AppointmentsPageProps {
   serviceListPromise: Promise<ActionResponse<MockService[]>>;
 
   // Dependency Injection for cross-feature actions (FSD compliance)
-  createInvoiceAction: (bookingId: string) => Promise<ActionResponse<unknown>>;
-  getInvoiceAction: (bookingId: string) => Promise<ActionResponse<unknown>>;
-  getBookingReviewAction: (bookingId: string) => Promise<ActionResponse<unknown>>;
+  createInvoiceAction: (bookingId: string) => Promise<ActionResponse<Invoice>>;
+  getInvoiceAction: (bookingId: string) => Promise<ActionResponse<Invoice>>;
+  getBookingReviewAction: (
+    bookingId: string
+  ) => Promise<ActionResponse<unknown>>;
 }
 
 export function AppointmentsPage({
@@ -90,27 +88,49 @@ export function AppointmentsPage({
   const [filters, setFilters] = useState<Partial<AppointmentFilters>>({});
 
   const staffList = staffRes.status === "success" ? staffRes.data || [] : [];
-  const bedList = resourceRes.status === "success" ? resourceRes.data || [] : [];
-  const serviceList = serviceRes.status === "success" ? serviceRes.data || [] : [];
+  const bedList =
+    resourceRes.status === "success" ? resourceRes.data || [] : [];
+  const serviceList =
+    serviceRes.status === "success" ? serviceRes.data || [] : [];
 
-  const { metrics, refreshMetrics, isPending: isMetricsPending } = useAppointmentMetrics(date);
+  const {
+    metrics,
+    refreshMetrics,
+    isPending: isMetricsPending,
+  } = useAppointmentMetrics(date);
 
-  const { events, refreshEvents, isPending: isEventsPending, addOptimisticEvent } = useAppointmentEvents({
+  const {
+    events,
+    refreshEvents,
+    isPending: isEventsPending,
+    addOptimisticEvent,
+  } = useAppointmentEvents({
     dateRange,
     filters,
-    initialEvents: appointmentsRes.status === "success" ? appointmentsRes.data || [] : [],
+    initialEvents:
+      appointmentsRes.status === "success" ? appointmentsRes.data || [] : [],
     onRefreshMetrics: refreshMetrics,
   });
 
   const {
-    isSheetOpen, setIsSheetOpen,
-    selectedEvent, setSelectedEvent,
-    sheetMode, setSheetMode,
-    selectedBookingForReview, setSelectedBookingForReview,
-    actionEvent, isCancelOpen, setIsCancelOpen,
-    isDeleteOpen, setIsDeleteOpen,
-    handleEventClick, handleCreateClick, handleEditRequest,
-    handleCancelRequest, handleDeleteRequest,
+    isSheetOpen,
+    setIsSheetOpen,
+    selectedEvent,
+    setSelectedEvent,
+    sheetMode,
+    setSheetMode,
+    selectedBookingForReview,
+    setSelectedBookingForReview,
+    actionEvent,
+    isCancelOpen,
+    setIsCancelOpen,
+    isDeleteOpen,
+    setIsDeleteOpen,
+    handleEventClick,
+    handleCreateClick,
+    handleEditRequest,
+    handleCancelRequest,
+    handleDeleteRequest,
   } = useAppointmentDialogs();
 
   const {
@@ -218,10 +238,7 @@ export function AppointmentsPage({
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                >
+                <Button variant="ghost" size="icon">
                   <Icon icon={Settings2} />
                   <span className="sr-only">Cài đặt</span>
                 </Button>
@@ -229,13 +246,10 @@ export function AppointmentsPage({
               <TooltipContent>Cài đặt hiển thị</TooltipContent>
             </Tooltip>
           </Group>
-          <Button
-              className="ml-1"
-              onClick={handleCreateClick}
-            >
-              <Icon icon={Plus} className="sm:mr-2" />
-              <span className="hidden font-medium sm:inline">Đặt lịch</span>
-            </Button>
+          <Button className="ml-1" onClick={handleCreateClick}>
+            <Icon icon={Plus} className="sm:mr-2" />
+            <span className="hidden font-medium sm:inline">Đặt lịch</span>
+          </Button>
         </Group>
       </PageHeader>
 
@@ -262,7 +276,7 @@ export function AppointmentsPage({
             />
           </SurfaceCard>
         </Stack>
-    </PageContent>
+      </PageContent>
 
       <AppointmentSheet
         open={isSheetOpen}

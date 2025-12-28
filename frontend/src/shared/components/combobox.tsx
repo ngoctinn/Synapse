@@ -61,7 +61,8 @@ export function Combobox({
   }, [searchQuery, open, onSearch]);
 
   const selectedOption = options.find((option) => option.value === value);
-  const isInvalid = props["aria-invalid"] === true || props["aria-invalid"] === "true";
+  const isInvalid =
+    props["aria-invalid"] === true || props["aria-invalid"] === "true";
 
   return (
     <Popover open={open} onOpenChange={setOpen} modal={modal}>
@@ -71,10 +72,11 @@ export function Combobox({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "bg-background w-full justify-between items-center font-normal h-10 px-4 rounded-lg text-base md:text-sm",
-            "data-[state=open]:border-primary/80 data-[state=open]:ring-[1.5px] data-[state=open]:ring-primary/20",
+            "bg-background h-10 w-full items-center justify-between rounded-lg px-4 text-base font-normal md:text-sm",
+            "data-[state=open]:border-primary/80 data-[state=open]:ring-primary/20 data-[state=open]:ring-[1.5px]",
             !value && "text-muted-foreground",
-            isInvalid && "border-destructive/80 text-destructive focus-visible:ring-destructive/20 hover:border-destructive",
+            isInvalid &&
+              "border-destructive/80 text-destructive focus-visible:ring-destructive/20 hover:border-destructive",
             className
           )}
           disabled={disabled}

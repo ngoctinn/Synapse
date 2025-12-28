@@ -117,9 +117,18 @@ export async function getAvailableSlots(params: {
 
     const result = await response.json();
 
+    interface BackendSlot {
+      start_time: string;
+      end_time: string;
+      staff: {
+        id: string;
+        name: string;
+      };
+    }
+
     // Convert backend SlotOption to frontend TimeSlot
     const slots: TimeSlot[] = (result.available_slots || []).map(
-      (opt: any) => ({
+      (opt: BackendSlot) => ({
         id: `${format(new Date(opt.start_time), "yyyy-MM-dd-HH-mm")}-${opt.staff.id}`,
         date: format(new Date(opt.start_time), "yyyy-MM-dd"),
         start_time: format(new Date(opt.start_time), "HH:mm"),

@@ -1,8 +1,8 @@
 "use client";
 
 import {
-    HeaderLogo,
-    HeaderUserDropdown,
+  HeaderLogo,
+  HeaderUserDropdown,
 } from "@/shared/components/layout/components/header";
 import { UserProfile } from "../model/types";
 

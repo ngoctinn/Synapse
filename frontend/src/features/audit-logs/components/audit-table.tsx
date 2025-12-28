@@ -41,7 +41,9 @@ export function AuditTable({
             {format(new Date(row.original.created_at), "HH:mm", { locale: vi })}
           </span>
           <span className="text-muted-foreground text-xs">
-            {format(new Date(row.original.created_at), "dd/MM/yyyy", { locale: vi })}
+            {format(new Date(row.original.created_at), "dd/MM/yyyy", {
+              locale: vi,
+            })}
           </span>
         </div>
       ),
@@ -99,7 +101,9 @@ export function AuditTable({
           title={JSON.stringify(row.original.details, null, 2)}
         >
           {row.original.entity_name && (
-            <div className="text-foreground font-medium">{row.original.entity_name}</div>
+            <div className="text-foreground font-medium">
+              {row.original.entity_name}
+            </div>
           )}
           {JSON.stringify(row.original.details)}
         </div>

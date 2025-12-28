@@ -13,7 +13,11 @@ import { ChannelConfigDialog } from "../notifications/components/channel-config-
 import { NotificationChannels } from "../notifications/components/notification-channels";
 import { NotificationList } from "../notifications/components/notification-list";
 import { TemplateEditor } from "../notifications/components/template-editor";
-import { NotificationChannel, NotificationEvent } from "../notifications";
+import {
+  NotificationChannel,
+  NotificationEvent,
+  NotificationTemplate,
+} from "../notifications";
 
 interface NotificationsSettingsProps {
   initialChannels: NotificationChannel[];
@@ -84,8 +88,10 @@ export function NotificationsSettings({
     });
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleSaveChannelConfig = (channelId: string, config: any) => {
+  const handleSaveChannelConfig = (
+    channelId: string,
+    config: Record<string, unknown>
+  ) => {
     startTransition(async () => {
       const result = await updateChannelConfigAction(channelId, config);
       if (result.status === "success") {
@@ -105,11 +111,10 @@ export function NotificationsSettings({
     });
   };
 
-   
   const handleSaveTemplate = (
     eventId: string,
     channelId: string,
-    template: any
+    template: NotificationTemplate
   ) => {
     startTransition(async () => {
       const result = await updateTemplateAction(eventId, channelId, template);

@@ -53,14 +53,16 @@ export function WaitlistPage({ data, page, totalPages }: WaitlistPageProps) {
         <HStack gap={3}>
           <FilterBar
             startContent={
-          <div className="w-full md:w-64">
-             <Input
-                placeholder="Tìm khách hàng..."
-                defaultValue={initialSearch}
-                onChange={(e) => handleSearch(e.target.value)}
-                startContent={<Search className="size-4 text-muted-foreground" />}
-              />
-          </div>
+              <div className="w-full md:w-64">
+                <Input
+                  placeholder="Tìm khách hàng..."
+                  defaultValue={initialSearch}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  startContent={
+                    <Search className="text-muted-foreground size-4" />
+                  }
+                />
+              </div>
             }
           />
           <CreateWaitlistTrigger />

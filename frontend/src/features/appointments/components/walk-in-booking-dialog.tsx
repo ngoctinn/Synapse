@@ -5,6 +5,7 @@ import { AppointmentForm } from "@/features/appointments/components/sheet/appoin
 import { MockService } from "@/features/appointments/model/mocks";
 import {
   Appointment,
+  BookingItem,
   TimelineResource,
 } from "@/features/appointments/model/types";
 import {
@@ -40,7 +41,9 @@ export function WalkInBookingDialog({
     startTransition(async () => {
       const result = await createAppointment({
         customerId: appointment.customerId,
-        serviceIds: appointment.items.map((item: any) => item.serviceId),
+        serviceIds: appointment.items.map(
+          (item: BookingItem) => item.serviceId
+        ),
         staffId: appointment.staffId,
         resourceId: appointment.resourceId,
         startTime: appointment.startTime,

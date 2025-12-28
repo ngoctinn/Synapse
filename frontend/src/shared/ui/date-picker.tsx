@@ -3,11 +3,7 @@
 import { cn } from "@/shared/lib/utils";
 import { Button, type ButtonProps } from "@/shared/ui/button";
 import { Calendar } from "@/shared/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/shared/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
@@ -38,7 +34,11 @@ export function DatePicker({
   size = "default",
   ...props
 }: DatePickerProps) {
-  const isInvalid = !!(hasError || props["aria-invalid"] === true || props["aria-invalid"] === "true");
+  const isInvalid = !!(
+    hasError ||
+    props["aria-invalid"] === true ||
+    props["aria-invalid"] === "true"
+  );
 
   return (
     <Popover modal={modal}>
@@ -47,21 +47,34 @@ export function DatePicker({
           variant={"outline"}
           disabled={disabled}
           className={cn(
-            "group w-full justify-start text-left font-normal border-input hover:bg-accent/50 transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
-            "bg-background shadow-xs text-base md:text-sm px-3 text-foreground",
+            "border-input hover:bg-accent/50 focus-visible:ring-ring group w-full justify-start text-left font-normal transition-all focus-visible:outline-none focus-visible:ring-1",
+            "bg-background shadow-xs text-foreground px-3 text-base md:text-sm",
             size === "default" && "h-10",
             size === "sm" && "h-8",
             !value && "text-muted-foreground",
-            isInvalid && "border-destructive/80 text-destructive focus-visible:ring-destructive/20 hover:border-destructive",
+            isInvalid &&
+              "border-destructive/80 text-destructive focus-visible:ring-destructive/20 hover:border-destructive",
             className
           )}
           {...props}
         >
-          <CalendarIcon className={cn("mr-2 h-4 w-4 opacity-50 transition-colors group-data-[state=open]:text-primary group-hover:text-foreground", isInvalid && "text-destructive")} />
-          {value ? format(value, "dd/MM/yyyy", { locale: vi }) : <span>{placeholder}</span>}
+          <CalendarIcon
+            className={cn(
+              "group-data-[state=open]:text-primary group-hover:text-foreground mr-2 h-4 w-4 opacity-50 transition-colors",
+              isInvalid && "text-destructive"
+            )}
+          />
+          {value ? (
+            format(value, "dd/MM/yyyy", { locale: vi })
+          ) : (
+            <span>{placeholder}</span>
+          )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 border-border bg-popover shadow-md" align="start">
+      <PopoverContent
+        className="border-border bg-popover w-auto p-0 shadow-md"
+        align="start"
+      >
         <Calendar
           mode="single"
           selected={value}

@@ -12,7 +12,6 @@ import {
   Skill,
 } from "./model/types";
 
-
 /**
  * Lấy danh sách dịch vụ (phân trang, tìm kiếm)
  */
@@ -54,7 +53,7 @@ export async function getService(id: string): Promise<ActionResponse<Service>> {
 
     const result = await response.json();
     return success(result);
-  } catch (err) {
+  } catch (_) {
     return error("Lỗi kết nối máy chủ");
   }
 }
@@ -87,7 +86,7 @@ export async function createService(
     const result = await response.json();
     revalidatePath("/admin/services");
     return success(result, "Tạo dịch vụ thành công");
-  } catch (err) {
+  } catch (_) {
     return error("Lỗi kết nối máy chủ");
   }
 }
@@ -114,7 +113,7 @@ export async function updateService(
     const result = await response.json();
     revalidatePath("/admin/services");
     return success(result, "Cập nhật dịch vụ thành công");
-  } catch (err) {
+  } catch (_) {
     return error("Lỗi kết nối máy chủ");
   }
 }
@@ -132,11 +131,10 @@ export async function deleteService(id: string): Promise<ActionResponse<void>> {
 
     revalidatePath("/admin/services");
     return success(undefined, "Đã xóa dịch vụ");
-  } catch (err) {
+  } catch (_) {
     return error("Lỗi kết nối máy chủ");
   }
 }
-
 
 /**
  * Bật/Tắt trạng thái hoạt động
@@ -148,9 +146,7 @@ export async function toggleServiceStatus(
   return updateService(id, { is_active: isActive });
 }
 
-
 // CATEGORIES
-
 
 /**
  * Lấy danh sách danh mục
@@ -164,7 +160,7 @@ export async function getServiceCategories(): Promise<
 
     const result = await response.json();
     return success(result);
-  } catch (err) {
+  } catch (_) {
     return error("Lỗi kết nối máy chủ");
   }
 }
@@ -188,7 +184,7 @@ export async function createServiceCategory(
     const result = await response.json();
     revalidatePath("/admin/services");
     return success(result, "Đã tạo danh mục");
-  } catch (err) {
+  } catch (_) {
     return error("Lỗi kết nối máy chủ");
   }
 }
@@ -213,7 +209,7 @@ export async function updateServiceCategory(
     const result = await response.json();
     revalidatePath("/admin/services");
     return success(result, "Đã cập nhật danh mục");
-  } catch (err) {
+  } catch (_) {
     return error("Lỗi kết nối máy chủ");
   }
 }
@@ -233,14 +229,12 @@ export async function deleteServiceCategory(
 
     revalidatePath("/admin/services");
     return success(undefined, "Đã xóa danh mục");
-  } catch (err) {
+  } catch (_) {
     return error("Lỗi kết nối máy chủ");
   }
 }
 
-
 // SKILLS
-
 
 /**
  * Lấy danh sách kỹ năng
@@ -252,7 +246,7 @@ export async function getSkills(): Promise<ActionResponse<Skill[]>> {
 
     const result = await response.json();
     return success(result);
-  } catch (err) {
+  } catch (_) {
     return error("Lỗi kết nối máy chủ");
   }
 }
@@ -277,7 +271,7 @@ export async function createSkill(
     const result = await response.json();
     revalidatePath("/admin/services");
     return success(result, "Đã tạo kỹ năng");
-  } catch (err) {
+  } catch (_) {
     return error("Lỗi kết nối máy chủ");
   }
 }
@@ -301,7 +295,7 @@ export async function updateSkill(
     const result = await response.json();
     revalidatePath("/admin/services");
     return success(result, "Đã cập nhật kỹ năng");
-  } catch (err) {
+  } catch (_) {
     return error("Lỗi kết nối máy chủ");
   }
 }
@@ -319,7 +313,7 @@ export async function deleteSkill(id: string): Promise<ActionResponse<void>> {
 
     revalidatePath("/admin/services");
     return success(undefined, "Đã xóa kỹ năng");
-  } catch (err) {
+  } catch (_) {
     return error("Lỗi kết nối máy chủ");
   }
 }

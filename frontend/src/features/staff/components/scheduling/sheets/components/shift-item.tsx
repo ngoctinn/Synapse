@@ -49,7 +49,11 @@ export function ShiftItem({
           className="h-8 w-8 hover:bg-white/50"
           onClick={onEdit}
         >
-          <Icon icon={Pencil} className="size-4" style={{ color: shift.colorCode }} />
+          <Icon
+            icon={Pencil}
+            className="size-4"
+            style={{ color: shift.colorCode }}
+          />
         </Button>
         <Button
           variant="ghost"

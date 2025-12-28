@@ -2,6 +2,7 @@
 
 import { useBulkAction, useTableParams } from "@/shared/hooks";
 import { Checkbox } from "@/shared/ui/checkbox";
+import { RowSelectionState } from "@tanstack/react-table";
 import { Column, DataTable } from "@/shared/components/data-table";
 import { DataTableEmptyState } from "@/shared/components/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/components/data-table-skeleton";
@@ -40,7 +41,7 @@ export function CategoryTable({
   const page = pageProp ?? urlPage;
   const handlePageChange = onPageChangeProp ?? urlPageChange;
 
-  const [rowSelection, setRowSelection] = useState({});
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const {
     execute: executeBulkDelete,
@@ -63,8 +64,13 @@ export function CategoryTable({
       header: ({ table }) => (
         <Box pl={4}>
           <Checkbox
-            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
             aria-label="Select all"
           />
         </Box>
@@ -83,7 +89,11 @@ export function CategoryTable({
     {
       header: "Thứ tự",
       accessorKey: "sort_order",
-      cell: ({ row }) => <UIText variant="muted" className="font-mono">{row.original.sort_order}</UIText>,
+      cell: ({ row }) => (
+        <UIText variant="muted" className="font-mono">
+          {row.original.sort_order}
+        </UIText>
+      ),
     },
     {
       header: "Tên danh mục",
@@ -110,13 +120,9 @@ export function CategoryTable({
         isLoading={isLoading}
         skeletonCount={5}
         rowSelection={rowSelection}
-        onRowSelectionChange={setRowSelection as any}
+        onRowSelectionChange={setRowSelection}
         getRowId={(row) => row.id.toString()}
-        toolbar={
-          <DataTableToolbar
-            actions={<CreateCategorySheet />}
-          />
-        }
+        toolbar={<DataTableToolbar actions={<CreateCategorySheet />} />}
         emptyState={
           <DataTableEmptyState
             icon={Plus}

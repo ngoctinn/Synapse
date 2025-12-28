@@ -8,22 +8,22 @@ import { NumberInput } from "@/shared/components/number-input";
 import { TagInput } from "@/shared/components/tag-input";
 import { cn } from "@/shared/lib/utils";
 import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-    Input,
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-    Textarea,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  Textarea,
 } from "@/shared/ui";
 
 import { ResourceGroup } from "../model/types";

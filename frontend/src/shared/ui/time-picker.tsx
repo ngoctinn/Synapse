@@ -2,16 +2,19 @@
 
 import { cn } from "@/shared/lib/utils";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/shared/ui/select";
 import { Clock } from "lucide-react";
 import * as React from "react";
 
-export interface TimePickerProps extends Omit<React.ComponentProps<typeof SelectTrigger>, "onChange" | "value"> {
+export interface TimePickerProps extends Omit<
+  React.ComponentProps<typeof SelectTrigger>,
+  "onChange" | "value"
+> {
   value?: string;
   onChange?: (value: string) => void;
   className?: string;
@@ -61,23 +64,25 @@ export function TimePicker({
   }, [step, min, max]);
 
   return (
-    <Select
-      value={value}
-      onValueChange={onChange}
-      disabled={disabled}
-    >
+    <Select value={value} onValueChange={onChange} disabled={disabled}>
       <SelectTrigger
         size={size}
         className={cn(
           "font-normal",
-          (hasError || props["aria-invalid"]) && "border-destructive text-destructive focus-visible:ring-destructive/20",
+          (hasError || props["aria-invalid"]) &&
+            "border-destructive text-destructive focus-visible:ring-destructive/20",
           className
         )}
         aria-invalid={!!(hasError || props["aria-invalid"])}
         {...props}
       >
         <div className="flex items-center gap-2">
-          <Clock className={cn("size-4 shrink-0", hasError ? "text-destructive" : "text-muted-foreground/50")} />
+          <Clock
+            className={cn(
+              "size-4 shrink-0",
+              hasError ? "text-destructive" : "text-muted-foreground/50"
+            )}
+          />
           <SelectValue placeholder={placeholder} />
         </div>
       </SelectTrigger>
@@ -88,7 +93,7 @@ export function TimePicker({
           </SelectItem>
         ))}
         {timeSlots.length === 0 && (
-          <div className="p-2 text-sm text-muted-foreground text-center">
+          <div className="text-muted-foreground p-2 text-center text-sm">
             Không có giờ phù hợp
           </div>
         )}

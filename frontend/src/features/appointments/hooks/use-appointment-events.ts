@@ -1,8 +1,19 @@
 "use client";
 
-import { useCallback, useEffect, useState, useTransition, useOptimistic } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+  useTransition,
+  useOptimistic,
+} from "react";
 import { getAppointments } from "../actions";
-import type { CalendarEvent, AppointmentFilters, DateRange, AppointmentStatus } from "../model/types";
+import type {
+  CalendarEvent,
+  AppointmentFilters,
+  DateRange,
+  AppointmentStatus,
+} from "../model/types";
 
 export type OptimisticAction =
   | { type: "delete"; id: string }

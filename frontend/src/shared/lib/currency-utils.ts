@@ -137,9 +137,9 @@ export function getPaymentStatusColor(
   const percentage = calculatePaymentPercentage(paidAmount, totalAmount);
 
   if (percentage === 0) return "destructive"; // Chưa thanh toán
-  if (percentage < 100) return "warning";     // Thanh toán 1 phần
-  if (percentage === 100) return "success";   // Thanh toán đủ
-  return "info";                              // Thanh toán thừa
+  if (percentage < 100) return "warning"; // Thanh toán 1 phần
+  if (percentage === 100) return "success"; // Thanh toán đủ
+  return "info"; // Thanh toán thừa
 }
 
 /**

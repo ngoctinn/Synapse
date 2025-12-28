@@ -16,7 +16,6 @@ import {
   Skeleton,
 } from "@/shared/ui";
 import { LogOut, Settings, User } from "lucide-react";
-import { cn } from "@/shared/lib/utils";
 
 interface UserNavProps {
   user: UserProfile | null;
@@ -73,7 +72,7 @@ export function UserNav({
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{displayName}</p>
-            <p className="text-xs leading-none text-muted-foreground">
+            <p className="text-muted-foreground text-xs leading-none">
               {displayEmail}
             </p>
           </div>
@@ -89,7 +88,7 @@ export function UserNav({
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          className="cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/5"
+          className="text-destructive focus:text-destructive focus:bg-destructive/5 cursor-pointer"
           onSelect={handleLogout}
         >
           <LogOut className="h-4 w-4" />

@@ -1,6 +1,9 @@
 "use client";
 
-import { MOCK_CATEGORIES, MOCK_SERVICES } from "@/features/services/model/mocks";
+import {
+  MOCK_CATEGORIES,
+  MOCK_SERVICES,
+} from "@/features/services/model/mocks";
 import { Badge } from "@/shared/ui/badge";
 import { SearchX } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -24,7 +27,9 @@ export function ServicesSection() {
           .includes(searchQuery.toLowerCase());
 
       // Map category_id to name for comparison
-      const serviceCategoryName = MOCK_CATEGORIES.find(c => c.id === service.category_id)?.name;
+      const serviceCategoryName = MOCK_CATEGORIES.find(
+        (c) => c.id === service.category_id
+      )?.name;
       const matchesCategory =
         category === "All" || serviceCategoryName === category;
 

@@ -2,7 +2,7 @@
 
 import { Z_INDEX } from "@/shared/lib/design-tokens";
 import { cn } from "@/shared/lib/utils";
-import { Badge } from "@/shared/ui/badge";
+import { Badge, type BadgePreset } from "@/shared/ui/badge";
 import { Checkbox } from "@/shared/ui/checkbox";
 import { Column, DataTable } from "@/shared/components/data-table";
 import { DataTableEmptyState } from "@/shared/components/data-table-empty-state";
@@ -11,6 +11,7 @@ import { DeleteConfirmDialog } from "@/shared/components/delete-confirm-dialog";
 import { Icon } from "@/shared/components/icon";
 import { TableActionBar } from "@/shared/components/table-action-bar";
 import { showToast } from "@/shared/ui/sonner";
+import { RowSelectionState } from "@tanstack/react-table";
 import { Bed, Box, Loader2 } from "lucide-react";
 import { useState, useTransition } from "react";
 import { deleteResource } from "../actions";
@@ -37,7 +38,7 @@ export function ResourceTable({
   const [editResource, setEditResource] = useState<Resource | null>(null);
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const [rowSelection, setRowSelection] = useState({});
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const handleBulkDelete = async () => {
     const ids = Object.keys(rowSelection);
@@ -79,20 +80,25 @@ export function ResourceTable({
       id: "select",
       header: ({ table }) => (
         <div className="pl-4">
-            <Checkbox
-            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
             aria-label="Select all"
-            />
+          />
         </div>
       ),
       cell: ({ row }) => (
         <div className="pl-4">
-            <Checkbox
+          <Checkbox
             checked={row.getIsSelected()}
             onCheckedChange={(value) => row.toggleSelected(!!value)}
             aria-label="Select row"
-            />
+          />
         </div>
       ),
       enableSorting: false,
@@ -103,8 +109,12 @@ export function ResourceTable({
       accessorKey: "name",
       cell: ({ row }) => (
         <div className="flex flex-col">
-          <span className="text-foreground font-medium">{row.original.name}</span>
-          <span className="text-muted-foreground text-xs">{row.original.code}</span>
+          <span className="text-foreground font-medium">
+            {row.original.name}
+          </span>
+          <span className="text-muted-foreground text-xs">
+            {row.original.code}
+          </span>
         </div>
       ),
     },
@@ -113,7 +123,9 @@ export function ResourceTable({
       accessorKey: "type",
       cell: ({ row }) => (
         <Badge
-          preset={row.original.type === "BED" ? "resource-bed" : "resource-equipment"}
+          preset={
+            row.original.type === "BED" ? "resource-bed" : "resource-equipment"
+          }
         >
           {row.original.type === "BED" ? (
             <Icon icon={Bed} />
@@ -127,7 +139,7 @@ export function ResourceTable({
       header: "Trạng thái",
       accessorKey: "status",
       cell: ({ row }) => {
-        const presetMap: Record<string, any> = {
+        const presetMap: Record<string, BadgePreset> = {
           ACTIVE: "resource-available",
           MAINTENANCE: "resource-maintenance",
           INACTIVE: "appointment-cancelled", // Hết hoạt động dùng cancelled
@@ -146,14 +158,18 @@ export function ResourceTable({
             <div className="text-sm">
               <span className="text-muted-foreground">
                 Sức chứa:{" "}
-                <span className="text-foreground">{row.original.capacity}</span> người
+                <span className="text-foreground">{row.original.capacity}</span>{" "}
+                người
               </span>
-              {row.original.setupTime !== undefined && row.original.setupTime > 0 && (
-                <span className="text-muted-foreground ml-3 border-l pl-3">
-                  Setup:{" "}
-                  <span className="text-foreground">{row.original.setupTime}p</span>
-                </span>
-              )}
+              {row.original.setupTime !== undefined &&
+                row.original.setupTime > 0 && (
+                  <span className="text-muted-foreground ml-3 border-l pl-3">
+                    Setup:{" "}
+                    <span className="text-foreground">
+                      {row.original.setupTime}p
+                    </span>
+                  </span>
+                )}
             </div>
           );
         }
@@ -163,11 +179,13 @@ export function ResourceTable({
             <div className="flex items-center gap-3 text-sm">
               {row.original.tags && row.original.tags.length > 0 ? (
                 <div className="flex flex-wrap gap-1">
-                  {row.original.tags.slice(0, 2).map((tag: string, i: number) => (
-                    <Badge key={i} preset="tag">
-                      {tag}
-                    </Badge>
-                  ))}
+                  {row.original.tags
+                    .slice(0, 2)
+                    .map((tag: string, i: number) => (
+                      <Badge key={i} preset="tag">
+                        {tag}
+                      </Badge>
+                    ))}
                   {row.original.tags.length > 2 && (
                     <span className="text-muted-foreground text-[10px]">
                       +{row.original.tags.length - 2}
@@ -187,8 +205,14 @@ export function ResourceTable({
       header: "Hành động",
       id: "actions",
       cell: ({ row }) => (
-        <div onClick={(e) => e.stopPropagation()} className="flex justify-end pr-6">
-          <ResourceActions resource={row.original} onEdit={() => setEditResource(row.original)} />
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="flex justify-end pr-6"
+        >
+          <ResourceActions
+            resource={row.original}
+            onEdit={() => setEditResource(row.original)}
+          />
         </div>
       ),
     },
@@ -203,7 +227,7 @@ export function ResourceTable({
         className={cn(className)}
         variant={variant}
         rowSelection={rowSelection}
-        onRowSelectionChange={setRowSelection as any}
+        onRowSelectionChange={setRowSelection}
         getRowId={(row) => row.id.toString()}
         onRowClick={(resource) => setEditResource(resource)}
         emptyState={
@@ -218,7 +242,12 @@ export function ResourceTable({
 
       {/* Loading Overlay */}
       {isPending && (
-        <div className={cn(Z_INDEX.loadingOverlay, "bg-background/50 text-muted-foreground absolute inset-0 flex items-center justify-center gap-2 text-sm backdrop-blur-[1px]")}>
+        <div
+          className={cn(
+            Z_INDEX.loadingOverlay,
+            "bg-background/50 text-muted-foreground absolute inset-0 flex items-center justify-center gap-2 text-sm backdrop-blur-[1px]"
+          )}
+        >
           <Icon icon={Loader2} className="animate-spin" />
           <span>Đang xử lý...</span>
         </div>

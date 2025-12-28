@@ -18,11 +18,12 @@ import { Badge } from "@/shared/ui/badge";
 import { Checkbox } from "@/shared/ui/checkbox";
 import { Input } from "@/shared/ui/input";
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/shared/ui/tooltip";
+import { RowSelectionState } from "@tanstack/react-table";
 import { Activity, AlertCircle, Loader2, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -62,10 +63,7 @@ export function CustomerTable({
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  const {
-    page: urlPage,
-    handlePageChange: urlPageChange,
-  } = useTableParams({
+  const { page: urlPage, handlePageChange: urlPageChange } = useTableParams({
     defaultSortBy: "created_at",
     defaultOrder: "desc",
   });
@@ -73,7 +71,7 @@ export function CustomerTable({
   const page = pageProp ?? urlPage;
   const handlePageChange = onPageChangeProp ?? urlPageChange;
 
-  const [rowSelection, setRowSelection] = useState({});
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const handleBulkDelete = async () => {
     startTransition(async () => {
@@ -118,20 +116,25 @@ export function CustomerTable({
       id: "select",
       header: ({ table }) => (
         <div className="pl-4">
-            <Checkbox
-            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
             aria-label="Select all"
-            />
+          />
         </div>
       ),
       cell: ({ row }) => (
         <div className="pl-4">
-            <Checkbox
+          <Checkbox
             checked={row.getIsSelected()}
             onCheckedChange={(value) => row.toggleSelected(!!value)}
             aria-label="Select row"
-            />
+          />
         </div>
       ),
       enableSorting: false,
@@ -167,7 +170,9 @@ export function CustomerTable({
       accessorKey: "phone_number",
       meta: { align: "right" },
       cell: ({ row }) => (
-        <div className="font-mono text-sm">{row.original.phone_number || "--"}</div>
+        <div className="font-mono text-sm">
+          {row.original.phone_number || "--"}
+        </div>
       ),
     },
     {
@@ -175,7 +180,9 @@ export function CustomerTable({
       accessorKey: "is_active",
       meta: { align: "center" },
       cell: ({ row }) => (
-        <Badge preset={row.original.is_active ? "status-active" : "status-inactive"} />
+        <Badge
+          preset={row.original.is_active ? "status-active" : "status-inactive"}
+        />
       ),
     },
     {
@@ -191,7 +198,9 @@ export function CustomerTable({
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
                   <p className="text-destructive font-semibold">Dị ứng:</p>
-                  <TruncatedCell maxWidth={250}>{row.original.allergies}</TruncatedCell>
+                  <TruncatedCell maxWidth={250}>
+                    {row.original.allergies}
+                  </TruncatedCell>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -204,7 +213,9 @@ export function CustomerTable({
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
                   <p className="text-info font-semibold">Ghi chú y tế:</p>
-                  <TruncatedCell maxWidth={250}>{row.original.medical_notes}</TruncatedCell>
+                  <TruncatedCell maxWidth={250}>
+                    {row.original.medical_notes}
+                  </TruncatedCell>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -246,13 +257,15 @@ export function CustomerTable({
           <DataTableToolbar
             searchField={
               searchProps && (
-                  <Input
-                    placeholder="Tìm kiếm khách hàng..."
-                    defaultValue={searchProps.initialValue}
-                    onChange={(e) => searchProps.onSearch(e.target.value)}
-                    startContent={<Search className="text-muted-foreground" size={16} />}
-                    className="w-full"
-                  />
+                <Input
+                  placeholder="Tìm kiếm khách hàng..."
+                  defaultValue={searchProps.initialValue}
+                  onChange={(e) => searchProps.onSearch(e.target.value)}
+                  startContent={
+                    <Search className="text-muted-foreground" size={16} />
+                  }
+                  className="w-full"
+                />
               )
             }
             filters={<CustomerFilter />}
@@ -260,7 +273,7 @@ export function CustomerTable({
           />
         }
         rowSelection={rowSelection}
-        onRowSelectionChange={setRowSelection as any}
+        onRowSelectionChange={setRowSelection}
         getRowId={(row) => row.id.toString()}
         onRowClick={(row) => setEditingCustomer(row)}
         emptyState={
@@ -297,8 +310,17 @@ export function CustomerTable({
         />
       )}
       {isPending && (
-        <div className={cn(Z_INDEX.loadingOverlay, "bg-background/50 absolute inset-0 flex flex-col items-center justify-center backdrop-blur-[2px]")}>
-          <Icon icon={Loader2} className="text-primary mb-2 animate-spin" size="xl" />
+        <div
+          className={cn(
+            Z_INDEX.loadingOverlay,
+            "bg-background/50 absolute inset-0 flex flex-col items-center justify-center backdrop-blur-[2px]"
+          )}
+        >
+          <Icon
+            icon={Loader2}
+            className="text-primary mb-2 animate-spin"
+            size="xl"
+          />
           <p className="text-muted-foreground animate-pulse text-sm font-medium will-change-[opacity]">
             Đang xử lý...
           </p>

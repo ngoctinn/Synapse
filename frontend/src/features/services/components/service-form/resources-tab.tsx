@@ -1,7 +1,5 @@
 import { ResourceGroup } from "@/features/resources";
-import {
-    Button
-} from "@/shared/ui";
+import { Button } from "@/shared/ui";
 import { ResourceTimeline } from "@/shared/components/resource-timeline";
 import { Stack } from "@/shared/ui/layout";
 import { Plus } from "lucide-react";
@@ -15,7 +13,10 @@ interface ResourcesTabProps {
   duration: number; // Total service duration for timeline
 }
 
-export function ResourcesTab({ availableResourceGroups, duration }: ResourcesTabProps) {
+export function ResourcesTab({
+  availableResourceGroups,
+  duration,
+}: ResourcesTabProps) {
   const form = useFormContext<ServiceFormValues>();
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -23,28 +24,35 @@ export function ResourcesTab({ availableResourceGroups, duration }: ResourcesTab
   });
 
   const watchRequirements = form.watch("resource_requirements");
-  const [advancedOpen, setAdvancedOpen] = React.useState<Record<number, boolean>>({});
+  const [advancedOpen, setAdvancedOpen] = React.useState<
+    Record<number, boolean>
+  >({});
 
   // Helper to get group name safely
   const getGroupName = (groupId: string) => {
-    return availableResourceGroups.find((g) => g.id === groupId)?.name || "Unknown";
+    return (
+      availableResourceGroups.find((g) => g.id === groupId)?.name || "Unknown"
+    );
   };
 
-  const timelineItems = watchRequirements?.map((req, index) => {
-      if (!req.group_id) return null;
-      const startPct = (req.start_delay / duration) * 100;
-      const usage = req.usage_duration || (duration - req.start_delay);
-      const widthPct = (usage / duration) * 100;
-      const finalWidth = Math.min(widthPct, 100 - startPct);
+  const timelineItems =
+    watchRequirements
+      ?.map((req, index) => {
+        if (!req.group_id) return null;
+        const startPct = (req.start_delay / duration) * 100;
+        const usage = req.usage_duration || duration - req.start_delay;
+        const widthPct = (usage / duration) * 100;
+        const finalWidth = Math.min(widthPct, 100 - startPct);
 
-      return {
-        startPercentage: startPct,
-        widthPercentage: finalWidth,
-        color: getItemColor(index),
-        label: (index + 1).toString(),
-        tooltip: `${getGroupName(req.group_id)}: ${req.start_delay}p - ${req.start_delay + usage}p`
-      };
-  }).filter((x): x is NonNullable<typeof x> => x !== null) || [];
+        return {
+          startPercentage: startPct,
+          widthPercentage: finalWidth,
+          color: getItemColor(index),
+          label: (index + 1).toString(),
+          tooltip: `${getGroupName(req.group_id)}: ${req.start_delay}p - ${req.start_delay + usage}p`,
+        };
+      })
+      .filter((x): x is NonNullable<typeof x> => x !== null) || [];
 
   return (
     <Stack gap={6}>
@@ -54,11 +62,11 @@ export function ResourcesTab({ availableResourceGroups, duration }: ResourcesTab
       {/* Dynamic List */}
       <Stack gap={4}>
         {fields.map((field, index) => {
-           // Watch values for this specific field to validate timeline
-           const currentReq = watchRequirements?.[index];
-           const maxDuration = duration - (currentReq?.start_delay || 0);
+          // Watch values for this specific field to validate timeline
+          const currentReq = watchRequirements?.[index];
+          const _maxDuration = duration - (currentReq?.start_delay || 0);
 
-           return (
+          return (
             <ResourceRequirementCard
               key={field.id}
               index={index}
@@ -80,7 +88,14 @@ export function ResourcesTab({ availableResourceGroups, duration }: ResourcesTab
           type="button"
           variant="outline"
           className="w-full border-dashed"
-          onClick={() => append({ group_id: "", quantity: 1, start_delay: 0, usage_duration: null })}
+          onClick={() =>
+            append({
+              group_id: "",
+              quantity: 1,
+              start_delay: 0,
+              usage_duration: null,
+            })
+          }
         >
           <Plus className="mr-2 size-4" />
           Thêm tài nguyên
@@ -101,5 +116,5 @@ const COLORS = [
 ];
 
 function getItemColor(index: number) {
-   return COLORS[index % COLORS.length];
+  return COLORS[index % COLORS.length];
 }

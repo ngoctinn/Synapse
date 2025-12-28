@@ -98,9 +98,9 @@ export function PaymentForm({ invoice, onSuccess }: PaymentFormProps) {
             <FormItem>
               <FormLabel>Số tiền thanh toán</FormLabel>
               <FormControl>
-              <FormControl>
-                <NumberInput {...field} suffix="VNĐ" />
-              </FormControl>
+                <FormControl>
+                  <NumberInput {...field} suffix="VNĐ" />
+                </FormControl>
               </FormControl>
               <FormMessage />
             </FormItem>

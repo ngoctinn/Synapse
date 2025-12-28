@@ -1,17 +1,17 @@
 import { ResourceGroup } from "@/features/resources";
 import {
-    Button,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-    Slider
+  Button,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Slider,
 } from "@/shared/ui";
 import { NumberInput } from "@/shared/components/number-input";
 import { Box, Grid, HStack } from "@/shared/ui/layout";
@@ -43,12 +43,12 @@ export function ResourceRequirementCard({
   const form = useFormContext<ServiceFormValues>();
   const maxDuration = duration - (startDelay || 0);
   return (
-    <Box className="relative rounded-xl border bg-card p-4 transition-all hover:border-primary/50">
+    <Box className="bg-card hover:border-primary/50 relative rounded-xl border p-4 transition-all">
       <Box className="absolute right-2 top-2">
         <Button
           variant="ghost"
           size="icon"
-          className="size-8 text-muted-foreground hover:text-destructive"
+          className="text-muted-foreground hover:text-destructive size-8"
           onClick={onRemove}
         >
           <Trash2 className="size-4" />
@@ -57,7 +57,10 @@ export function ResourceRequirementCard({
 
       {/* Header with Color Indicator */}
       <HStack align="center" gap={2} className="mb-4">
-        <Box className="size-3 rounded-full" style={{ backgroundColor: color }} />
+        <Box
+          className="size-3 rounded-full"
+          style={{ backgroundColor: color }}
+        />
         <span className="text-sm font-medium">Tài nguyên #{index + 1}</span>
       </HStack>
 
@@ -70,7 +73,10 @@ export function ResourceRequirementCard({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Loại tài nguyên</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Chọn loại (VD: Giường)" />
@@ -96,7 +102,7 @@ export function ResourceRequirementCard({
               type="button"
               variant="ghost"
               size="sm"
-              className="h-8 w-full justify-start pl-0 text-xs text-muted-foreground hover:bg-transparent hover:text-primary"
+              className="text-muted-foreground hover:text-primary h-8 w-full justify-start pl-0 text-xs hover:bg-transparent"
               onClick={(e) => {
                 e.preventDefault();
                 onToggleAdvanced();
@@ -137,7 +143,7 @@ export function ResourceRequirementCard({
                         onChange={field.onChange}
                       />
                     </FormControl>
-                    <FormMessage className="text-xs text-muted-foreground">
+                    <FormMessage className="text-muted-foreground text-xs">
                       *Mặc định: 1
                     </FormMessage>
                   </FormItem>
@@ -179,7 +185,7 @@ export function ResourceRequirementCard({
                         ))}
                       </SelectContent>
                     </Select>
-                    <FormMessage className="text-xs text-muted-foreground">
+                    <FormMessage className="text-muted-foreground text-xs">
                       *Mặc định: Toàn thời gian
                     </FormMessage>
                   </FormItem>
@@ -194,7 +200,7 @@ export function ResourceRequirementCard({
                   <FormItem className="col-span-1 md:col-span-2">
                     <HStack justify="between" className="mb-2">
                       <FormLabel>Thời gian chờ (Start Delay)</FormLabel>
-                      <span className="text-xs font-mono">{field.value}p</span>
+                      <span className="font-mono text-xs">{field.value}p</span>
                     </HStack>
                     <FormControl>
                       <Slider
@@ -202,11 +208,14 @@ export function ResourceRequirementCard({
                         max={duration - 5}
                         step={5}
                         value={[field.value || 0]}
-                        onValueChange={(vals: number[]) => field.onChange(vals[0])}
+                        onValueChange={(vals: number[]) =>
+                          field.onChange(vals[0])
+                        }
                       />
                     </FormControl>
-                    <FormMessage className="text-xs text-muted-foreground">
-                      *Dịch vụ bắt đầu sau bao nhiêu phút mới dùng tài nguyên này
+                    <FormMessage className="text-muted-foreground text-xs">
+                      *Dịch vụ bắt đầu sau bao nhiêu phút mới dùng tài nguyên
+                      này
                     </FormMessage>
                   </FormItem>
                 )}

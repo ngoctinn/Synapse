@@ -47,16 +47,13 @@ export function PackageTable({
   );
   const [isPending, startTransition] = useTransition();
 
-  const {
-    page: urlPage,
-    handlePageChange: urlPageChange,
-  } = useTableParams({
+  const { page: urlPage, handlePageChange: urlPageChange } = useTableParams({
     defaultSortBy: "created_at",
     defaultOrder: "desc",
   });
 
   const page = pageProp ?? urlPage;
-  /* eslint-disable @typescript-eslint/no-unused-vars */
+
   const handlePageChange = onPageChangeProp ?? urlPageChange;
 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -94,20 +91,25 @@ export function PackageTable({
       id: "select",
       header: ({ table }) => (
         <div className="pl-4">
-            <Checkbox
-            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
             aria-label="Select all"
-            />
+          />
         </div>
       ),
       cell: ({ row }) => (
         <div className="pl-4">
-            <Checkbox
+          <Checkbox
             checked={row.getIsSelected()}
             onCheckedChange={(value) => row.toggleSelected(!!value)}
             aria-label="Select row"
-            />
+          />
         </div>
       ),
       enableSorting: false,
@@ -153,13 +155,17 @@ export function PackageTable({
       header: "Giá",
       accessorKey: "price",
       cell: ({ row }) => (
-        <div className="text-sm font-semibold">{formatCurrency(row.original.price)}</div>
+        <div className="text-sm font-semibold">
+          {formatCurrency(row.original.price)}
+        </div>
       ),
     },
     {
       header: "Hiệu lực",
       accessorKey: "validity_days",
-      cell: ({ row }) => <div className="text-sm">{row.original.validity_days} ngày</div>,
+      cell: ({ row }) => (
+        <div className="text-sm">{row.original.validity_days} ngày</div>
+      ),
     },
     {
       header: "Trạng thái",
@@ -193,7 +199,9 @@ export function PackageTable({
             icon={AnimatedGiftIcon}
             title="Chưa có gói dịch vụ"
             description="Tạo gói combo để bán cho khách hàng."
-            action={<CreatePackageTrigger availableServices={availableServices} />}
+            action={
+              <CreatePackageTrigger availableServices={availableServices} />
+            }
           />
         }
       />
@@ -224,7 +232,12 @@ export function PackageTable({
       )}
 
       {isPending && (
-        <div className={cn(Z_INDEX.loadingOverlay, "bg-background/50 absolute inset-0 flex flex-col items-center justify-center backdrop-blur-[2px]")}>
+        <div
+          className={cn(
+            Z_INDEX.loadingOverlay,
+            "bg-background/50 absolute inset-0 flex flex-col items-center justify-center backdrop-blur-[2px]"
+          )}
+        >
           <Loader2 className="text-primary mb-2 h-8 w-8 animate-spin" />
           <p className="text-muted-foreground animate-pulse text-sm font-medium">
             Đang xử lý...

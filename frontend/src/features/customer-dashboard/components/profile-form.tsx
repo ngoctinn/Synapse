@@ -66,7 +66,8 @@ export function ProfileForm({ user }: ProfileFormProps) {
   const onSubmit = (values: ProfileInput) => {
     const formData = new FormData();
     formData.append("fullName", values.fullName);
-    if (values.phone_number) formData.append("phone_number", values.phone_number);
+    if (values.phone_number)
+      formData.append("phone_number", values.phone_number);
     if (values.email) formData.append("email", values.email);
     if (values.address) formData.append("address", values.address);
     if (values.dateOfBirth) formData.append("dateOfBirth", values.dateOfBirth);

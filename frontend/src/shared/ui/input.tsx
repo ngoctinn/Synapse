@@ -14,8 +14,8 @@ const inputVariants = cva(
       },
       size: {
         default: "h-10 px-3 py-2", // 40px (Regular)
-        sm: "h-8 px-2 text-xs",    // 32px (Compact)
-        lg: "h-12 px-4 text-lg",   // 48px (Large)
+        sm: "h-8 px-2 text-xs", // 32px (Compact)
+        lg: "h-12 px-4 text-lg", // 48px (Large)
         xl: "h-14 px-6 text-xl",
         icon: "h-10 w-10 p-0 text-center",
       },
@@ -31,7 +31,8 @@ const inputVariants = cva(
 );
 
 export interface InputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
+  extends
+    Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
     VariantProps<typeof inputVariants> {
   startContent?: React.ReactNode;
   endContent?: React.ReactNode;
@@ -91,4 +92,3 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 Input.displayName = "Input";
 
 export { Input, inputVariants };
-

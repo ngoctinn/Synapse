@@ -68,7 +68,6 @@ export function isError<T>(
   return response.status === "error";
 }
 
-
 // BACKWARD COMPATIBILITY (Deprecated)
 
 /**

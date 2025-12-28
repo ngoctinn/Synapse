@@ -2,23 +2,23 @@
 
 import { cn } from "@/shared/lib/utils";
 import {
-    CollapsibleContent as CollapsibleContentRoot,
-    Collapsible as CollapsibleRoot,
-    CollapsibleTrigger as CollapsibleTriggerRoot,
+  CollapsibleContent as CollapsibleContentRoot,
+  Collapsible as CollapsibleRoot,
+  CollapsibleTrigger as CollapsibleTriggerRoot,
 } from "@/shared/ui/collapsible";
 import {
-    DropdownMenuContent as DropdownMenuContentRoot,
-    DropdownMenu as DropdownMenuRoot,
-    DropdownMenuItem as DropdownMenuRootItem,
-    DropdownMenuTrigger as DropdownMenuRootTrigger,
+  DropdownMenuContent as DropdownMenuContentRoot,
+  DropdownMenu as DropdownMenuRoot,
+  DropdownMenuItem as DropdownMenuRootItem,
+  DropdownMenuTrigger as DropdownMenuRootTrigger,
 } from "@/shared/ui/dropdown-menu";
 import {
-    SidebarMenuButton,
-    SidebarMenuItem,
-    SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem,
-    useSidebar,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  useSidebar,
 } from "@/shared/ui/sidebar";
 
 import { ChevronRight } from "lucide-react";
@@ -54,24 +54,33 @@ export function SidebarItem({ item }: SidebarItemProps) {
                 tooltip={item.title}
                 isActive={isActive}
                 className={cn(
-                  "h-12 transition-colors px-2",
+                  "h-12 px-2 transition-colors",
                   "group-data-[collapsible=icon]:hover:bg-muted/70 group-data-[collapsible=icon]:data-[active=true]:bg-primary/15",
-                  isActive ? "bg-primary/10 text-primary" : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
+                  isActive
+                    ? "bg-primary/10 text-primary"
+                    : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
                 )}
               >
                 <Icon className="size-5 shrink-0" strokeWidth={2} />
               </SidebarMenuButton>
             </DropdownMenuRootTrigger>
-            <DropdownMenuContentRoot side="right" align="start" className="min-w-56 ml-4 shadow-md">
-              <div className="px-3 py-2 text-xs font-bold text-muted-foreground border-b uppercase mb-1">{item.title}</div>
+            <DropdownMenuContentRoot
+              side="right"
+              align="start"
+              className="ml-4 min-w-56 shadow-md"
+            >
+              <div className="text-muted-foreground mb-1 border-b px-3 py-2 text-xs font-bold uppercase">
+                {item.title}
+              </div>
               <div className="p-1">
                 {item.items.map((subItem) => (
                   <DropdownMenuRootItem
                     key={subItem.title}
                     asChild
                     className={cn(
-                      "my-0.5 cursor-pointer focus:bg-primary/10 focus:text-primary px-3 py-2 text-sm",
-                      isSubItemActive(subItem.href) && "bg-primary/10 text-primary font-medium"
+                      "focus:bg-primary/10 focus:text-primary my-0.5 cursor-pointer px-3 py-2 text-sm",
+                      isSubItemActive(subItem.href) &&
+                        "bg-primary/10 text-primary font-medium"
                     )}
                   >
                     <Link href={subItem.href}>{subItem.title}</Link>
@@ -91,9 +100,11 @@ export function SidebarItem({ item }: SidebarItemProps) {
           tooltip={item.title}
           isActive={isActive}
           className={cn(
-            "h-12 transition-colors px-2",
+            "h-12 px-2 transition-colors",
             "group-data-[collapsible=icon]:hover:bg-muted/70 group-data-[collapsible=icon]:data-[active=true]:bg-primary/15",
-            isActive ? "bg-primary/10 text-primary" : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
+            isActive
+              ? "bg-primary/10 text-primary"
+              : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
           )}
         >
           <Link href={item.href}>
@@ -107,7 +118,11 @@ export function SidebarItem({ item }: SidebarItemProps) {
   // Render khi mở rộng
   if (item.items) {
     return (
-      <CollapsibleRoot asChild defaultOpen={isActive} className="group/collapsible">
+      <CollapsibleRoot
+        asChild
+        defaultOpen={isActive}
+        className="group/collapsible"
+      >
         <SidebarMenuItem>
           <CollapsibleTriggerRoot asChild>
             <SidebarMenuButton
@@ -116,7 +131,9 @@ export function SidebarItem({ item }: SidebarItemProps) {
               className={cn(
                 "h-12 px-2 transition-colors",
                 "group-data-[collapsible=icon]:hover:bg-muted/70 group-data-[collapsible=icon]:data-[active=true]:bg-primary/15",
-                isActive ? "bg-primary/5 text-primary font-medium" : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
+                isActive
+                  ? "bg-primary/5 text-primary font-medium"
+                  : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
               )}
             >
               <Icon className="size-5 shrink-0" strokeWidth={2} />
@@ -128,7 +145,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
             </SidebarMenuButton>
           </CollapsibleTriggerRoot>
           <CollapsibleContentRoot>
-            <SidebarMenuSub className="border-l ml-5 mr-0 py-1">
+            <SidebarMenuSub className="ml-5 mr-0 border-l py-1">
               {item.items.map((subItem) => (
                 <SidebarMenuSubItem key={subItem.title}>
                   <SidebarMenuSubButton
@@ -136,11 +153,23 @@ export function SidebarItem({ item }: SidebarItemProps) {
                     isActive={isSubItemActive(subItem.href)}
                     className={cn(
                       "h-12 px-3 transition-colors",
-                      isSubItemActive(subItem.href) ? "text-primary font-bold bg-primary/5" : "text-muted-foreground/60 hover:text-foreground/80 hover:bg-transparent"
+                      isSubItemActive(subItem.href)
+                        ? "text-primary bg-primary/5 font-bold"
+                        : "text-muted-foreground/60 hover:text-foreground/80 hover:bg-transparent"
                     )}
                   >
-                    <Link href={subItem.href} className="flex items-center gap-2">
-                      <div className={cn("h-1 w-1 shrink-0 rounded-full", isSubItemActive(subItem.href) ? "bg-primary" : "bg-muted-foreground/20")} />
+                    <Link
+                      href={subItem.href}
+                      className="flex items-center gap-2"
+                    >
+                      <div
+                        className={cn(
+                          "h-1 w-1 shrink-0 rounded-full",
+                          isSubItemActive(subItem.href)
+                            ? "bg-primary"
+                            : "bg-muted-foreground/20"
+                        )}
+                      />
                       <span className="text-[13px]">{subItem.title}</span>
                     </Link>
                   </SidebarMenuSubButton>
@@ -162,7 +191,9 @@ export function SidebarItem({ item }: SidebarItemProps) {
         className={cn(
           "h-12 px-2 transition-colors",
           "group-data-[collapsible=icon]:hover:bg-muted/70 group-data-[collapsible=icon]:data-[active=true]:bg-primary/15",
-          isActive ? "bg-primary/5 text-primary font-medium" : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
+          isActive
+            ? "bg-primary/5 text-primary font-medium"
+            : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
         )}
       >
         <Link href={item.href} className="flex items-center gap-2">

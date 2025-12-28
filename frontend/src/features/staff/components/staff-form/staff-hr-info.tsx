@@ -8,11 +8,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  Input,
-  Button,
   DatePicker,
 } from "@/shared/ui";
-import { cn } from "@/shared/lib/utils";
 import { NumberInput } from "@/shared/components/number-input";
 import { Stack } from "@/shared/ui/layout";
 
@@ -30,8 +27,14 @@ export function StaffHRInfo() {
             <FormLabel>Ngày tuyển dụng</FormLabel>
             <FormControl>
               <DatePicker
-                value={field.value ? parse(field.value, "yyyy-MM-dd", new Date()) : undefined}
-                onChange={(date) => field.onChange(date ? format(date, "yyyy-MM-dd") : "")}
+                value={
+                  field.value
+                    ? parse(field.value, "yyyy-MM-dd", new Date())
+                    : undefined
+                }
+                onChange={(date) =>
+                  field.onChange(date ? format(date, "yyyy-MM-dd") : "")
+                }
                 placeholder="Chọn ngày"
               />
             </FormControl>

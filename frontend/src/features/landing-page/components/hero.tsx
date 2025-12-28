@@ -13,9 +13,7 @@ export function Hero() {
     >
       <div className="container relative z-10 mx-auto px-4">
         <div className="animate-fade-in mx-auto mb-16 flex max-w-[64rem] flex-col items-center gap-6 text-center">
-          <Badge variant="soft">
-            🚀 Phiên bản Beta đã sẵn sàng
-          </Badge>
+          <Badge variant="soft">🚀 Phiên bản Beta đã sẵn sàng</Badge>
 
           <h1 className="font-heading text-foreground text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
             Quản lý Spa chuyên nghiệp <br />

@@ -17,7 +17,7 @@ interface ChannelConfigDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   channel?: NotificationChannel;
-  onSave: (channelId: string, config: unknown) => void;
+  onSave: (channelId: string, config: Record<string, unknown>) => void;
   isSaving?: boolean;
 }
 

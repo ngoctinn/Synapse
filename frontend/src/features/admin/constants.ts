@@ -11,7 +11,7 @@ import {
   ShieldCheck,
   Star,
   User,
-  Users
+  Users,
 } from "lucide-react";
 
 export type SidebarItem = {

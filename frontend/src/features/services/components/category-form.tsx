@@ -56,9 +56,13 @@ export function CategoryForm({
       let result;
 
       if (mode === "edit" && category) {
-         result = await updateServiceCategory(category.id, values.name, values.sort_order);
+        result = await updateServiceCategory(
+          category.id,
+          values.name,
+          values.sort_order
+        );
       } else {
-         result = await createServiceCategory(values.name, values.sort_order);
+        result = await createServiceCategory(values.name, values.sort_order);
       }
 
       if (result.status === "success") {
@@ -74,7 +78,7 @@ export function CategoryForm({
   };
 
   return (
-    <Box className="bg-muted/40 p-4 border rounded-lg">
+    <Box className="bg-muted/40 rounded-lg border p-4">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
@@ -107,7 +111,9 @@ export function CategoryForm({
                     className="bg-background"
                     {...field}
                     value={(field.value ?? 0) as number}
-                    onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                    onChange={(e) =>
+                      field.onChange(parseInt(e.target.value) || 0)
+                    }
                   />
                 </FormControl>
                 <FormMessage />

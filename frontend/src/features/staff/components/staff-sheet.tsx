@@ -13,7 +13,7 @@ import {
 } from "@/features/staff/model/schemas";
 import { Staff } from "@/features/staff/model/types";
 import { useSheetForm } from "@/shared/hooks/use-sheet-form";
-import { Badge, Button, Form, SheetClose } from "@/shared/ui";
+import { Button, Form, SheetClose } from "@/shared/ui";
 import { ActionSheet, Icon } from "@/shared/components";
 import { StaffForm } from "./staff-form";
 
@@ -54,7 +54,7 @@ export function StaffSheet({
     transformData: (data) => ({
       full_name: data.user.full_name || "",
       phone_number: data.user.phone_number || "",
-      role: data.user.role === "customer" ? "technician" : (data.user.role as any) || "technician",
+      role: data.user.role === "customer" ? "technician" : data.user.role,
       title: data.title || "",
       bio: data.bio || "",
       color_code: data.color_code || "#3B82F6",
@@ -80,7 +80,8 @@ export function StaffSheet({
     },
     onSuccess: () => onOpenChange(false),
     toastMessages: {
-      success: mode === "create" ? "Đã gửi lời mời thành công" : "Cập nhật thành công",
+      success:
+        mode === "create" ? "Đã gửi lời mời thành công" : "Cập nhật thành công",
     },
   });
 
@@ -99,11 +100,7 @@ export function StaffSheet({
       footer={
         <>
           <ActionSheetClose asChild>
-            <Button
-              variant="outline"
-              disabled={isPending}
-              className=""
-            >
+            <Button variant="outline" disabled={isPending} className="">
               Hủy
             </Button>
           </ActionSheetClose>
@@ -126,4 +123,3 @@ export function StaffSheet({
     </ActionSheet>
   );
 }
-

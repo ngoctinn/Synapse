@@ -1,5 +1,6 @@
 "use client";
 
+import { Invoice } from "@/features/billing/model/types";
 import { ActionResponse } from "@/shared/lib/action-response";
 import { showToast } from "@/shared/ui/sonner";
 import { useCallback, useTransition } from "react";
@@ -9,7 +10,11 @@ import {
   deleteAppointment,
   markNoShow,
 } from "../actions";
-import type { Appointment, AppointmentStatus, CalendarEvent } from "../model/types";
+import type {
+  Appointment,
+  AppointmentStatus,
+  CalendarEvent,
+} from "../model/types";
 import { OptimisticAction } from "./use-appointment-events";
 
 interface UseAppointmentActionsProps {
@@ -22,8 +27,8 @@ interface UseAppointmentActionsProps {
   addOptimisticEvent: (action: OptimisticAction) => void;
 
   // Dependency Injection: Actions from other features
-  createInvoice: (bookingId: string) => Promise<ActionResponse<unknown>>;
-  getInvoice: (bookingId: string) => Promise<ActionResponse<unknown>>;
+  createInvoice: (bookingId: string) => Promise<ActionResponse<Invoice>>;
+  getInvoice: (bookingId: string) => Promise<ActionResponse<Invoice>>;
   getBookingReview: (bookingId: string) => Promise<ActionResponse<unknown>>;
 }
 
@@ -53,7 +58,11 @@ export function useAppointmentActions({
 
       const invoiceRes = await getInvoice(bookingId);
       const invoice = invoiceRes.data as { status: string } | null;
-      if (invoiceRes.status !== "success" || !invoice || invoice.status !== "PAID") {
+      if (
+        invoiceRes.status !== "success" ||
+        !invoice ||
+        invoice.status !== "PAID"
+      ) {
         return;
       }
 
@@ -84,7 +93,11 @@ export function useAppointmentActions({
         if (!event.id) return;
 
         // Perform optimistic update
-        addOptimisticEvent({ type: "update_status", id: event.id, status: targetStatus });
+        addOptimisticEvent({
+          type: "update_status",
+          id: event.id,
+          status: targetStatus,
+        });
 
         startTransition(async () => {
           const res = await fn(event.id!);
@@ -119,11 +132,18 @@ export function useAppointmentActions({
     });
   };
 
-  const handleConfirmCancel = (actionEvent: CalendarEvent | null, reason?: string) => {
+  const handleConfirmCancel = (
+    actionEvent: CalendarEvent | null,
+    reason?: string
+  ) => {
     if (!actionEvent?.id) return;
 
     // Optimistic cancel
-    addOptimisticEvent({ type: "update_status", id: actionEvent.id, status: "CANCELLED" });
+    addOptimisticEvent({
+      type: "update_status",
+      id: actionEvent.id,
+      status: "CANCELLED",
+    });
     setIsCancelOpen(false);
 
     startCancelTransition(async () => {
@@ -137,16 +157,18 @@ export function useAppointmentActions({
     });
   };
 
-  const handleCreateInvoice = useCallback(async (bookingId: string) => {
-    const res = await createInvoice(bookingId);
-    if (res.status === "success" && res.data) {
-      showToast.success(res.message || "Tạo hóa đơn thành công");
-      return res.data as any; // Cast to any for DI compatibility
-    }
-    showToast.error(res.message || "Không thể tạo hóa đơn");
-    return null;
-  }, [createInvoice]);
-
+  const handleCreateInvoice = useCallback(
+    async (bookingId: string) => {
+      const res = await createInvoice(bookingId);
+      if (res.status === "success" && res.data) {
+        showToast.success(res.message || "Tạo hóa đơn thành công");
+        return res.data;
+      }
+      showToast.error(res.message || "Không thể tạo hóa đơn");
+      return null;
+    },
+    [createInvoice]
+  );
 
   return {
     isPending,
@@ -157,7 +179,17 @@ export function useAppointmentActions({
     handleConfirmCancel,
     handleCreateInvoice,
     handleReviewNeeded: internalReviewNeeded,
-    onCheckIn: wrapAction(checkInAppointment, "Check-in thành công", "Không thể check-in", "IN_PROGRESS"),
-    onNoShow: wrapAction(markNoShow, "Đã đánh dấu No-show", "Không thể đánh dấu No-show", "NO_SHOW"),
+    onCheckIn: wrapAction(
+      checkInAppointment,
+      "Check-in thành công",
+      "Không thể check-in",
+      "IN_PROGRESS"
+    ),
+    onNoShow: wrapAction(
+      markNoShow,
+      "Đã đánh dấu No-show",
+      "Không thể đánh dấu No-show",
+      "NO_SHOW"
+    ),
   };
 }

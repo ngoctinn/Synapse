@@ -53,19 +53,21 @@ export function TreatmentsPage({
         title="Liệu trình"
         subtitle="Theo dõi tiến độ điều trị của khách hàng"
       >
-          <FilterBar
-            startContent={
-          <div className="w-full md:w-64">
-            <Input
-              type="search"
-              placeholder="Tìm theo tên khách hoặc mã..."
-              defaultValue={initialSearch}
-              onChange={(e) => handleSearch(e.target.value)}
-              startContent={<Search size={16} className="text-muted-foreground" />}
-            />
-          </div>
-            }
-          />
+        <FilterBar
+          startContent={
+            <div className="w-full md:w-64">
+              <Input
+                type="search"
+                placeholder="Tìm theo tên khách hoặc mã..."
+                defaultValue={initialSearch}
+                onChange={(e) => handleSearch(e.target.value)}
+                startContent={
+                  <Search size={16} className="text-muted-foreground" />
+                }
+              />
+            </div>
+          }
+        />
       </PageHeader>
 
       <PageContent>

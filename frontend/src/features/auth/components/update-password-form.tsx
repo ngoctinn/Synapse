@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Lock } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { startTransition, useActionState, useEffect } from "react";
@@ -21,7 +20,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  Input,
   showToast,
 } from "@/shared/ui";
 import { PasswordInput } from "@/shared/components/password-input";

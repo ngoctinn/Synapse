@@ -80,7 +80,6 @@ function StaffListWrapper({
   );
 }
 
-
 function StaffSchedulerWrapper({
   staffListPromise,
   initialSchedules,
@@ -154,8 +153,8 @@ export function StaffPage({
         className="flex flex-col gap-0"
       >
         <PageHeader
-           title="Nhân viên"
-           subtitle="Quản lý đội ngũ kỹ thuật viên, phân quyền và lịch làm việc của nhân sự."
+          title="Nhân viên"
+          subtitle="Quản lý đội ngũ kỹ thuật viên, phân quyền và lịch làm việc của nhân sự."
         >
           <TabsList size="sm" aria-label="Quản lý nhân viên">
             <TabsTrigger value="list" stretch={false}>
@@ -170,7 +169,10 @@ export function StaffPage({
           </TabsList>
         </PageHeader>
 
-        <VStack gap={0} className="page-entry-animation min-h-0 overflow-hidden">
+        <VStack
+          gap={0}
+          className="page-entry-animation min-h-0 overflow-hidden"
+        >
           <TabsContent
             value="list"
             className="mt-0 data-[state=inactive]:hidden"
@@ -199,9 +201,7 @@ export function StaffPage({
           >
             <PageContent>
               <SurfaceCard>
-                <PermissionMatrix
-                  initialPermissions={initialPermissions}
-                />
+                <PermissionMatrix initialPermissions={initialPermissions} />
               </SurfaceCard>
             </PageContent>
           </TabsContent>
@@ -212,15 +212,15 @@ export function StaffPage({
           >
             <Suspense
               fallback={
-                <VStack gap={4} className="p-0 flex-1">
+                <VStack gap={4} className="flex-1 p-0">
                   <div className="flex items-center justify-between">
                     <Skeleton className="h-10 w-48" />
                     <div className="flex gap-2">
-                       <Skeleton className="h-10 w-24" />
-                       <Skeleton className="h-10 w-24" />
+                      <Skeleton className="h-10 w-24" />
+                      <Skeleton className="h-10 w-24" />
                     </div>
                   </div>
-                  <Skeleton className="min-h-80 w-full flex-1 border border-dashed rounded-lg" />
+                  <Skeleton className="min-h-80 w-full flex-1 rounded-lg border border-dashed" />
                 </VStack>
               }
             >
@@ -232,6 +232,6 @@ export function StaffPage({
           </TabsContent>
         </VStack>
       </Tabs>
-  </PageShell>
+    </PageShell>
   );
 }

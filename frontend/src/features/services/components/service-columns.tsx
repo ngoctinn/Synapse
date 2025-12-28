@@ -21,7 +21,9 @@ export function getServiceColumns({
   onEdit,
 }: GetServiceColumnsProps): Column<Service>[] {
   const getResourceGroupName = (groupId: string) => {
-    return availableResourceGroups.find((g) => g.id === groupId)?.name || groupId;
+    return (
+      availableResourceGroups.find((g) => g.id === groupId)?.name || groupId
+    );
   };
 
   return [
@@ -34,7 +36,9 @@ export function getServiceColumns({
               table.getIsAllPageRowsSelected() ||
               (table.getIsSomePageRowsSelected() && "indeterminate")
             }
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
             aria-label="Select all"
           />
         </Box>
@@ -56,11 +60,7 @@ export function getServiceColumns({
       accessorKey: "name",
       cell: ({ row }) => (
         <Stack gap={0}>
-          <UIText
-            size="sm"
-            weight="medium"
-            variant="highlight"
-          >
+          <UIText size="sm" weight="medium" variant="highlight">
             {row.original.name}
           </UIText>
         </Stack>
@@ -128,7 +128,12 @@ export function getServiceColumns({
         return (
           <HStack className="flex-wrap" gap={1}>
             {reqs.map((req, idx) => (
-              <Badge key={idx} variant="outline" size="md" className="font-normal">
+              <Badge
+                key={idx}
+                variant="outline"
+                size="md"
+                className="font-normal"
+              >
                 {req.quantity}x {getResourceGroupName(req.group_id)}
               </Badge>
             ))}
@@ -141,7 +146,7 @@ export function getServiceColumns({
       accessorKey: "price",
       meta: { align: "right" },
       cell: ({ row }) => (
-        <UIText weight="medium" size="sm">
+        <UIText weight="medium" size="sm" className="text-right block">
           {formatCurrency(row.original.price)}
         </UIText>
       ),

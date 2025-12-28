@@ -139,6 +139,7 @@ export function PhonePromptDialog({ user }: PhonePromptDialogProps) {
               </Button>
               <Button
                 type="submit"
+                // eslint-disable-next-line react-hooks/incompatible-library
                 disabled={!form.watch("phone_number")}
                 isLoading={isPending}
               >

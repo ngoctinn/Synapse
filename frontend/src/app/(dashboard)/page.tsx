@@ -1,12 +1,12 @@
 import {
-    AppointmentTimeline,
-    DashboardStats,
-    PhonePromptDialog,
+  AppointmentTimeline,
+  DashboardStats,
+  PhonePromptDialog,
 } from "@/features/customer-dashboard";
 import {
-    getCustomerAppointments,
-    getCustomerProfile,
-    getCustomerTreatments,
+  getCustomerAppointments,
+  getCustomerProfile,
+  getCustomerTreatments,
 } from "@/features/customer-dashboard/index.server";
 
 export default async function DashboardPage() {

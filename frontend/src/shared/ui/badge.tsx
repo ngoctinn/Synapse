@@ -5,9 +5,7 @@ import * as React from "react";
 import { cn } from "@/shared/lib/utils";
 import { BADGE_PRESETS, type BadgePreset } from "./badge-presets";
 
-
 // BADGE VARIANTS - Visual Clarity Design System
-
 
 const badgeVariants = cva(
   "inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-semibold w-fit whitespace-nowrap shrink-0 [&>svg]:size-3.5 gap-1.5 [&>svg]:pointer-events-none transition-colors overflow-hidden",
@@ -15,8 +13,7 @@ const badgeVariants = cva(
     variants: {
       variant: {
         // === CORE VARIANTS ===
-        default:
-          "bg-primary/10 text-primary hover:bg-primary/20",
+        default: "bg-primary/10 text-primary hover:bg-primary/20",
         secondary: "bg-secondary text-secondary-foreground",
         outline: "text-foreground bg-accent/50 hover:bg-accent",
 
@@ -162,4 +159,3 @@ function Badge({
 
 export { Badge, badgeVariants };
 export type { BadgePreset, BadgeVariant };
-

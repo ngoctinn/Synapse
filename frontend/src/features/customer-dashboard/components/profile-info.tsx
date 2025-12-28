@@ -3,8 +3,6 @@
 import { PROFILE_LABELS } from "@/features/customer-dashboard/constants";
 import { ProfileInput } from "@/features/customer-dashboard";
 import { Button, DatePicker } from "@/shared/ui";
-import { cn } from "@/shared/lib/utils";
-import { vi } from "date-fns/locale";
 import {
   FormControl,
   FormField,
@@ -21,7 +19,7 @@ import {
 } from "@/shared/ui/tooltip";
 import { format, parse } from "date-fns";
 import { motion } from "framer-motion";
-import { Cake, Calendar as CalendarIcon, Lock, MapPin, Phone, User } from "lucide-react";
+import { Lock, MapPin, Phone, User } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 
 interface ProfileInfoProps {
@@ -70,8 +68,14 @@ export function ProfileInfo({
                 <FormLabel>{PROFILE_LABELS.DATE_OF_BIRTH}</FormLabel>
                 <FormControl>
                   <DatePicker
-                    value={field.value ? parse(field.value, "yyyy-MM-dd", new Date()) : undefined}
-                    onChange={(date) => field.onChange(date ? format(date, "yyyy-MM-dd") : "")}
+                    value={
+                      field.value
+                        ? parse(field.value, "yyyy-MM-dd", new Date())
+                        : undefined
+                    }
+                    onChange={(date) =>
+                      field.onChange(date ? format(date, "yyyy-MM-dd") : "")
+                    }
                     minDate={minDate}
                     maxDate={maxDate}
                     placeholder={PROFILE_LABELS.DATE_OF_BIRTH}

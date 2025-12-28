@@ -80,9 +80,9 @@ export interface SortConfig {
  */
 export interface FilterConfig {
   /** Các giá trị filter hiện tại mapping theo column key */
-  values: Record<string, any>;
+  values: Record<string, unknown>;
   /** Handler khi thay đổi filter của một column */
-  onFilterChange: (column: string, value: any) => void;
+  onFilterChange: (column: string, value: unknown) => void;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -92,7 +92,8 @@ export function TableActionBar({
       ) : (
         <span className="whitespace-nowrap text-sm font-medium">
           Đã chọn{" "}
-          <span className="text-primary font-semibold">{selectedCount}</span> mục
+          <span className="text-primary font-semibold">{selectedCount}</span>{" "}
+          mục
         </span>
       )}
 

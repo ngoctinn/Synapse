@@ -6,9 +6,7 @@ import * as React from "react";
 
 import { cn } from "@/shared/lib/utils";
 
-
 // TABS ROOT
-
 
 function Tabs({
   className,
@@ -23,9 +21,7 @@ function Tabs({
   );
 }
 
-
 // TABS LIST - với variant và size hỗ trợ
-
 
 const tabsListVariants = cva(
   // Base styles
@@ -92,9 +88,7 @@ function TabsList({
   );
 }
 
-
 // TABS TRIGGER - với variant tương ứng
-
 
 const tabsTriggerVariants = cva(
   // Base styles - focus, disabled, icon handling
@@ -165,9 +159,7 @@ function TabsTrigger({
   );
 }
 
-
 // TABS CONTENT
-
 
 function TabsContent({
   className,
@@ -187,11 +179,7 @@ function TabsContent({
   );
 }
 
-
-
-
 // EXPORTS
-
 
 export {
   Tabs,
@@ -199,7 +187,6 @@ export {
   TabsList,
   tabsListVariants,
   TabsTrigger,
-  tabsTriggerVariants
+  tabsTriggerVariants,
 };
 export type { TabsListProps, TabsTriggerProps };
-

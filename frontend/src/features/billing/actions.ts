@@ -5,7 +5,6 @@ import {
   MOCK_CUSTOMERS,
   MOCK_SERVICES,
 } from "@/features/appointments/model/mocks";
-import { error, success } from "@/shared/lib/action-response";
 import { executeAction } from "@/shared/lib/execute-action";
 import { revalidatePath } from "next/cache";
 import { MOCK_INVOICES } from "./model/mocks";

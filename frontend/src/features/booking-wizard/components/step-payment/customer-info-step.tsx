@@ -9,7 +9,7 @@ import { customerInfoSchema, CustomerInfoSchema } from "../../schemas";
 import { BookingSummary } from "./booking-summary";
 import { CustomerForm } from "./customer-form";
 import { Alert, AlertDescription, AlertTitle } from "@/shared/ui/alert";
-import { Info, CreditCard } from "lucide-react";
+import { CreditCard } from "lucide-react";
 import { createClient } from "@/shared/lib/supabase/client";
 
 export const CustomerInfoStep = () => {

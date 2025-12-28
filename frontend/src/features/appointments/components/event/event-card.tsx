@@ -93,7 +93,11 @@ export function EventCard({
       >
         <span
           className="h-2 w-2 flex-shrink-0 rounded-full"
-          style={{ backgroundColor: event.color.startsWith("#") ? event.color : `#${event.color}` }}
+          style={{
+            backgroundColor: event.color.startsWith("#")
+              ? event.color
+              : `#${event.color}`,
+          }}
         />
         <span className="truncate">{event.appointment.customerName}</span>
       </button>
@@ -111,19 +115,28 @@ export function EventCard({
           "border-l-3 cursor-pointer",
           "transition-all duration-150 hover:brightness-95",
           isDragging && "scale-95 opacity-40",
-          isOverlay && "ring-primary scale-105 shadow-xl ring-[1.5px] ring-offset-2",
+          isOverlay &&
+            "ring-primary scale-105 shadow-xl ring-[1.5px] ring-offset-2",
           hasConflict && "ring-[1.5px] ring-red-500 ring-offset-1",
           className
         )}
         style={{
           ...getEventStyles(event.color, "15"),
-          borderLeftColor: event.color.startsWith("#") ? event.color : `#${event.color}`,
+          borderLeftColor: event.color.startsWith("#")
+            ? event.color
+            : `#${event.color}`,
         }}
         title={event.title}
       >
         {/* Time + Status */}
         <div className="text-muted-foreground flex items-center gap-1 text-[10px]">
-          <span style={{ color: event.color.startsWith("#") ? event.color : `#${event.color}` }}>
+          <span
+            style={{
+              color: event.color.startsWith("#")
+                ? event.color
+                : `#${event.color}`,
+            }}
+          >
             {STATUS_ICONS[event.status]}
           </span>
           <span>{format(event.start, "HH:mm")}</span>
@@ -135,7 +148,11 @@ export function EventCard({
         {/* Customer Name */}
         <span
           className="mt-0.5 truncate text-xs font-medium"
-          style={{ color: event.color.startsWith("#") ? event.color : `#${event.color}` }}
+          style={{
+            color: event.color.startsWith("#")
+              ? event.color
+              : `#${event.color}`,
+          }}
         >
           {event.appointment.customerName}
         </span>
@@ -159,11 +176,16 @@ export function EventCard({
         "transition-all duration-200 hover:shadow-md",
         "bg-card",
         isDragging && "scale-95 opacity-40",
-        isOverlay && "ring-primary scale-105 shadow-2xl ring-[1.5px] ring-offset-2",
+        isOverlay &&
+          "ring-primary scale-105 shadow-2xl ring-[1.5px] ring-offset-2",
         hasConflict && "ring-[1.5px] ring-red-500",
         className
       )}
-      style={{ borderLeftColor: event.color.startsWith("#") ? event.color : `#${event.color}` }}
+      style={{
+        borderLeftColor: event.color.startsWith("#")
+          ? event.color
+          : `#${event.color}`,
+      }}
     >
       {/* Header: Status + Time */}
       <div className="mb-2 flex items-center justify-between">

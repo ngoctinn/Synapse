@@ -3,10 +3,7 @@
 import { DeleteConfirmDialog } from "@/shared/components/delete-confirm-dialog";
 import { TableRowActions } from "@/shared/components/table-row-actions";
 import { useDeleteAction } from "@/shared/hooks";
-import {
-    DropdownMenuItem,
-    DropdownMenuLabel,
-} from "@/shared/ui";
+import { DropdownMenuItem, DropdownMenuLabel } from "@/shared/ui";
 import { History } from "lucide-react";
 import { deleteResource } from "../actions";
 import { Resource } from "../model/types";

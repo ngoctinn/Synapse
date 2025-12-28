@@ -7,7 +7,15 @@ interface StatCardProps {
   title: string;
   value: string | number;
   icon: LucideIcon;
-  variant?: "default" | "primary" | "secondary" | "accent" | "success" | "warning" | "info" | "purple";
+  variant?:
+    | "default"
+    | "primary"
+    | "secondary"
+    | "accent"
+    | "success"
+    | "warning"
+    | "info"
+    | "purple";
   className?: string;
   description?: React.ReactNode;
   trend?: "up" | "down" | "neutral";
@@ -20,7 +28,7 @@ export function StatCard({
   variant = "default",
   className,
   description,
-  trend,
+  trend: _trend,
 }: StatCardProps) {
   const variantStyles = {
     default: "bg-card border-border",
@@ -65,25 +73,27 @@ export function StatCard({
     >
       <HStack justify="between" align="start">
         <span
-          className={cn(
-            "text-[10px] font-bold uppercase",
-            textStyles[variant]
-          )}
+          className={cn("text-[10px] font-bold uppercase", textStyles[variant])}
         >
           {title}
         </span>
-        <div className={cn("rounded-lg p-1.5 bg-background/50", iconStyles[variant])}>
-           <Icon className="size-4" />
+        <div
+          className={cn(
+            "bg-background/50 rounded-lg p-1.5",
+            iconStyles[variant]
+          )}
+        >
+          <Icon className="size-4" />
         </div>
       </HStack>
 
       <div className="mt-2">
-         <span className="text-2xl font-black">{value}</span>
-         {description && (
-            <div className="text-muted-foreground mt-1 flex items-center text-xs gap-1">
-              {description}
-            </div>
-         )}
+        <span className="text-2xl font-black">{value}</span>
+        {description && (
+          <div className="text-muted-foreground mt-1 flex items-center gap-1 text-xs">
+            {description}
+          </div>
+        )}
       </div>
     </div>
   );

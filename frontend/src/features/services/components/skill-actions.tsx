@@ -2,11 +2,11 @@ import { DeleteConfirmDialog } from "@/shared/components/delete-confirm-dialog";
 import { TableRowActions } from "@/shared/components/table-row-actions";
 import { useDeleteAction } from "@/shared/hooks";
 import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
 } from "@/shared/ui/sheet";
 import { useState } from "react";
 import { deleteSkill } from "../actions";
@@ -41,7 +41,10 @@ export function SkillActions({ skill }: SkillActionsProps) {
             <SheetDescription>Chỉnh sửa thông tin kỹ năng.</SheetDescription>
           </SheetHeader>
           <div className="mt-6">
-            <SkillForm skill={skill} onSuccess={() => setShowEditSheet(false)} />
+            <SkillForm
+              skill={skill}
+              onSuccess={() => setShowEditSheet(false)}
+            />
           </div>
         </SheetContent>
       </Sheet>

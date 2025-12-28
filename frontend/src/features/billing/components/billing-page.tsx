@@ -72,7 +72,10 @@ export function BillingPage() {
               <CardTitle className="text-sm font-medium">
                 Tổng doanh thu
               </CardTitle>
-              <Icon icon={DollarSign} className="text-muted-foreground size-4" />
+              <Icon
+                icon={DollarSign}
+                className="text-muted-foreground size-4"
+              />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
@@ -85,7 +88,10 @@ export function BillingPage() {
               <CardTitle className="text-sm font-medium">
                 Chờ thanh toán
               </CardTitle>
-              <Icon icon={AlertCircle} className="text-muted-foreground size-4" />
+              <Icon
+                icon={AlertCircle}
+                className="text-muted-foreground size-4"
+              />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-orange-600">
@@ -98,7 +104,10 @@ export function BillingPage() {
               <CardTitle className="text-sm font-medium">
                 Đã thanh toán
               </CardTitle>
-              <Icon icon={CheckCircle} className="text-muted-foreground size-4" />
+              <Icon
+                icon={CheckCircle}
+                className="text-muted-foreground size-4"
+              />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-600">

@@ -1,7 +1,11 @@
 import { getPackages } from "@/features/packages/actions";
 import { getResourceGroups } from "@/features/resources/actions";
 import { ServicesPage } from "@/features/services";
-import { getServiceCategories, getServices, getSkills } from "@/features/services/actions";
+import {
+  getServiceCategories,
+  getServices,
+  getSkills,
+} from "@/features/services/actions";
 import { Suspense } from "react";
 
 export default async function Page({

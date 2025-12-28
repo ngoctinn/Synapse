@@ -1,6 +1,10 @@
 import { Toaster } from "@/shared/ui/sonner";
 import type { Metadata } from "next";
-import { Be_Vietnam_Pro, Source_Serif_4, JetBrains_Mono } from "next/font/google";
+import {
+  Be_Vietnam_Pro,
+  Source_Serif_4,
+  JetBrains_Mono,
+} from "next/font/google";
 import "./globals.css";
 
 const beVietnamPro = Be_Vietnam_Pro({

@@ -53,15 +53,17 @@ export function WarrantyPage({ data, page, totalPages }: WarrantyPageProps) {
         <Group gap={3}>
           <FilterBar
             startContent={
-          <div className="w-full md:w-[250px]">
-            <Input
-              type="search"
-              placeholder="Tìm mã phiếu hoặc khách hàng..."
-              defaultValue={initialSearch}
-              onChange={(e) => handleSearch(e.target.value)}
-              startContent={<Search size={16} className="text-muted-foreground" />}
-            />
-          </div>
+              <div className="w-full md:w-[250px]">
+                <Input
+                  type="search"
+                  placeholder="Tìm mã phiếu hoặc khách hàng..."
+                  defaultValue={initialSearch}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  startContent={
+                    <Search size={16} className="text-muted-foreground" />
+                  }
+                />
+              </div>
             }
           />
           <CreateWarrantyTrigger />

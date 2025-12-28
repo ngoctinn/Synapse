@@ -1,15 +1,12 @@
 "use client";
 
-import { ColumnFiltersState } from "@tanstack/react-table";
+import { ColumnFiltersState, RowSelectionState } from "@tanstack/react-table";
 import { Loader2, Plus, Search } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 
 import { ResourceGroup } from "@/features/resources";
-import {
-  useBulkAction,
-  useTableParams
-} from "@/shared/hooks";
+import { useBulkAction, useTableParams } from "@/shared/hooks";
 import { cn } from "@/shared/lib/utils";
 import { Icon } from "@/shared/components";
 import { DataTable } from "@/shared/components/data-table";
@@ -69,7 +66,7 @@ export function ServiceTable({
   const page = pageProp ?? urlPage;
   const handlePageChange = onPageChangeProp ?? urlPageChange;
 
-  const [rowSelection, setRowSelection] = useState({});
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   // Use custom hook for bulk delete
   const {
@@ -87,11 +84,15 @@ export function ServiceTable({
     executeBulkDelete(ids, () => setRowSelection({}));
   };
 
-  const columns = useMemo(() => getServiceColumns({
-    availableCategories,
-    availableResourceGroups,
-    onEdit: (service) => setEditingService(service),
-  }), [availableCategories, availableResourceGroups]);
+  const columns = useMemo(
+    () =>
+      getServiceColumns({
+        availableCategories,
+        availableResourceGroups,
+        onEdit: (service) => setEditingService(service),
+      }),
+    [availableCategories, availableResourceGroups]
+  );
 
   // Create column filters from URL params
   const columnFilters = useMemo<ColumnFiltersState>(() => {
@@ -107,8 +108,6 @@ export function ServiceTable({
 
   return (
     <>
-
-
       <DataTable
         data={services}
         columns={columns}
@@ -122,7 +121,7 @@ export function ServiceTable({
         skeletonCount={6}
         hidePagination={hidePagination}
         rowSelection={rowSelection}
-        onRowSelectionChange={setRowSelection as any}
+        onRowSelectionChange={setRowSelection}
         getRowId={(row) => row.id.toString()}
         onRowClick={(service) => {
           const selection = window.getSelection();
@@ -133,25 +132,26 @@ export function ServiceTable({
           <DataTableToolbar
             searchField={
               searchProps && (
-                  <Input
-                    placeholder="Tìm kiếm dịch vụ..."
-                    defaultValue={searchProps.initialValue}
-                    onChange={(e) => searchProps.onSearch(e.target.value)}
-                    startContent={
-                      <Icon
-                        icon={isLoading ? Loader2 : Search}
-                        className={cn("text-muted-foreground", isLoading && "animate-spin")}
-                        size={16}
-                      />
-                    }
-                    className="w-full"
-                  />
+                <Input
+                  placeholder="Tìm kiếm dịch vụ..."
+                  defaultValue={searchProps.initialValue}
+                  onChange={(e) => searchProps.onSearch(e.target.value)}
+                  startContent={
+                    <Icon
+                      icon={isLoading ? Loader2 : Search}
+                      className={cn(
+                        "text-muted-foreground",
+                        isLoading && "animate-spin"
+                      )}
+                      size={16}
+                    />
+                  }
+                  className="w-full"
+                />
               )
             }
             filters={
-              <ServiceFilter
-                availableCategories={availableCategories}
-              />
+              <ServiceFilter availableCategories={availableCategories} />
             }
             actions={
               <CreateServiceTrigger
@@ -168,11 +168,11 @@ export function ServiceTable({
             title="Chưa có dịch vụ nào"
             description="Bắt đầu bằng cách tạo dịch vụ đầu tiên của bạn. Dịch vụ sẽ hiển thị trên trang đặt lịch."
             action={
-               <CreateServiceTrigger
-                  availableSkills={availableSkills}
-                  availableCategories={availableCategories}
-                  availableResourceGroups={availableResourceGroups}
-               />
+              <CreateServiceTrigger
+                availableSkills={availableSkills}
+                availableCategories={availableCategories}
+                availableResourceGroups={availableResourceGroups}
+              />
             }
           />
         }
@@ -197,8 +197,6 @@ export function ServiceTable({
           availableResourceGroups={availableResourceGroups}
         />
       )}
-
-
 
       <DeleteConfirmDialog
         open={showBulkDeleteDialog}

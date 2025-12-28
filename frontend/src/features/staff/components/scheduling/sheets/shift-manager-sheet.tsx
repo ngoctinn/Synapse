@@ -1,11 +1,10 @@
 "use client";
 
-import { Clock, Pencil, Plus, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { cn } from "@/shared/lib/utils";
-import { Button, Input, Separator } from "@/shared/ui";
+import { Button, Separator } from "@/shared/ui";
 import { ActionSheet, Icon } from "@/shared/components";
 import {
   AlertDialog,
@@ -200,10 +199,7 @@ export function ShiftManagerSheet({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Hủy</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              variant="destructive"
-            >
+            <AlertDialogAction onClick={handleDelete} variant="destructive">
               Xóa
             </AlertDialogAction>
           </AlertDialogFooter>

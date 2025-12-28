@@ -26,7 +26,9 @@ export function ServiceFilter({
           placeholder="Tìm kiếm liệu trình..."
           className="bg-background border-border hover:border-primary/50 focus:border-primary h-12 text-base shadow-sm transition-all"
           onChange={(e) => onSearch(e.target.value)}
-          startContent={<Search className="text-muted-foreground group-focus-within:text-primary h-5 w-5 transition-colors duration-300" />}
+          startContent={
+            <Search className="text-muted-foreground group-focus-within:text-primary h-5 w-5 transition-colors duration-300" />
+          }
         />
       </div>
 

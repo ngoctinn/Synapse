@@ -83,9 +83,7 @@ export function PackageSheet({
       onOpenChange={onOpenChange}
       title={isUpdateMode ? "Chỉnh sửa gói dịch vụ" : "Tạo gói dịch vụ mới"}
       description={
-        isUpdateMode
-          ? "Chỉnh sửa thông tin gói dịch vụ"
-          : "Tạo gói dịch vụ mới"
+        isUpdateMode ? "Chỉnh sửa thông tin gói dịch vụ" : "Tạo gói dịch vụ mới"
       }
       isPending={isPending}
       isDirty={isDirty}

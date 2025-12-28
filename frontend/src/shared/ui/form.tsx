@@ -92,12 +92,18 @@ function FormItem({ className, size = "regular", ...props }: FormItemProps) {
   );
 }
 
-interface FormLabelProps
-  extends React.ComponentProps<typeof LabelPrimitive.Root> {
+interface FormLabelProps extends React.ComponentProps<
+  typeof LabelPrimitive.Root
+> {
   required?: boolean;
 }
 
-function FormLabel({ className, required, children, ...props }: FormLabelProps) {
+function FormLabel({
+  className,
+  required,
+  children,
+  ...props
+}: FormLabelProps) {
   const { error, formItemId } = useFormField();
   const { size } = React.useContext(FormItemContext);
 
@@ -107,7 +113,7 @@ function FormLabel({ className, required, children, ...props }: FormLabelProps) 
       data-error={!!error}
       size={size}
       className={cn(
-        "text-foreground/80 data-[error=true]:text-destructive/90 font-medium block",
+        "text-foreground/80 data-[error=true]:text-destructive/90 block font-medium",
         className
       )}
       htmlFor={formItemId}
@@ -184,7 +190,7 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
       )}
       {...props}
     >
-        {body}
+      {body}
     </p>
   );
 }
@@ -196,7 +202,9 @@ export {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage, OptionalMark, useFormField
+  FormMessage,
+  OptionalMark,
+  useFormField,
 };
 
 function OptionalMark() {
@@ -209,4 +217,3 @@ function OptionalMark() {
     </span>
   );
 }
-

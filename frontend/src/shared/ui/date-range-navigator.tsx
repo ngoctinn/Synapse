@@ -25,7 +25,7 @@ export function DateRangeNavigator({
 }: DateRangeNavigatorProps) {
   return (
     <div className={cn("flex items-center gap-2", className)}>
-      <div className="flex items-center rounded-lg border border-border bg-background p-0.5">
+      <div className="border-border bg-background flex items-center rounded-lg border p-0.5">
         <Button
           variant="ghost"
           size="icon"
@@ -39,7 +39,7 @@ export function DateRangeNavigator({
         <Button
           variant="ghost"
           size="sm"
-          className="h-8 px-3 rounded-md text-xs font-medium"
+          className="h-8 rounded-md px-3 text-xs font-medium"
           onClick={onToday}
         >
           Hôm nay
@@ -57,7 +57,7 @@ export function DateRangeNavigator({
       </div>
 
       {label && (
-        <span className="text-sm font-semibold text-foreground ml-2 min-w-[120px] text-center">
+        <span className="text-foreground ml-2 min-w-[120px] text-center text-sm font-semibold">
           {label}
         </span>
       )}

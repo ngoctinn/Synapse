@@ -8,15 +8,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  Input,
-  Button,
   DatePicker,
   TimePicker,
 } from "@/shared/ui";
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
-import { cn } from "@/shared/lib/utils";
-import { AlertTriangle, CalendarIcon } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import { Icon } from "@/shared/components/icon";
 import type { QuickAppointmentFormValues } from "@/features/appointments/model/schemas";
 import { Stack, Grid } from "@/shared/ui/layout";
@@ -69,7 +64,10 @@ export function AppointmentDateTime({
 
       {/* Warnings */}
       {(timeWarning || conflicts.length > 0) && (
-        <Stack gap={1} className="col-span-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm dark:border-amber-800 dark:bg-amber-950/20">
+        <Stack
+          gap={1}
+          className="col-span-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm dark:border-amber-800 dark:bg-amber-950/20"
+        >
           {timeWarning && (
             <div className="flex items-center gap-2 font-medium text-amber-800 dark:text-amber-500">
               <Icon icon={AlertTriangle} /> {timeWarning}

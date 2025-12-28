@@ -4,8 +4,14 @@ import { ScheduleWithShift, Shift } from "../../../model/types";
 interface UseBatchOperationsProps {
   selectedSlots: { staffId: string; dateStr: string }[];
   draftSchedules: ScheduleWithShift[];
-  getSchedulesForCell: (staffId: string, dateStr: string) => ScheduleWithShift[];
-  batchAddSchedules: (slots: { staffId: string; dateStr: string }[], shift: Shift) => void;
+  getSchedulesForCell: (
+    staffId: string,
+    dateStr: string
+  ) => ScheduleWithShift[];
+  batchAddSchedules: (
+    slots: { staffId: string; dateStr: string }[],
+    shift: Shift
+  ) => void;
   batchPublishSchedules: (scheduleIds: string[]) => void;
   batchRemoveSchedules: (scheduleIds: string[]) => void;
   clearSelection: () => void;
@@ -20,7 +26,6 @@ export function useBatchOperations({
   batchRemoveSchedules,
   clearSelection,
 }: UseBatchOperationsProps) {
-
   const handleBatchApplyShift = (shift: Shift) => {
     batchAddSchedules(selectedSlots, shift);
     clearSelection();

@@ -1,11 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import {
-  Badge,
-  Button,
-  Separator,
-} from "@/shared/ui";
+import { Badge, Button, Separator } from "@/shared/ui";
 import { ActionSheet, Icon } from "@/shared/components";
 
 import { InvoiceDetails } from "@/features/billing/components/sheet/invoice-details";
@@ -27,8 +23,6 @@ import {
   ViewModeFooter,
 } from "./appointment-sheet-footer";
 import { AppointmentViewContent } from "./appointment-view-content";
-
-
 
 type SheetMode = "view" | "edit" | "create" | "payment";
 
@@ -53,8 +47,6 @@ interface AppointmentSheetProps {
   availableResources: TimelineResource[];
   availableServices: MockService[];
 }
-
-
 
 export function AppointmentSheet({
   open,
@@ -92,9 +84,7 @@ export function AppointmentSheet({
     }
   }, [open, isViewMode, appointment?.status, appointment?.id, onReviewNeeded]);
 
-
-
-  const handleClose = (newOpen?: boolean | unknown) => {
+  const handleClose = () => {
     onOpenChange(false);
     setIsDirty(false);
 
@@ -140,8 +130,6 @@ export function AppointmentSheet({
     setInvoice(null);
   };
 
-
-
   const canCheckIn =
     appointment?.status === "CONFIRMED" || appointment?.status === "PENDING";
   const canCancel =
@@ -155,8 +143,6 @@ export function AppointmentSheet({
       : isPaymentMode
         ? "Thanh toán hóa đơn"
         : "Chi tiết lịch hẹn";
-
-
 
   return (
     <ActionSheet

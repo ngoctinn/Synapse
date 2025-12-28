@@ -4,6 +4,7 @@ import { useTableParams } from "@/shared/hooks";
 import { showToast } from "@/shared/ui";
 import { DataTable } from "@/shared/components/data-table";
 import { DataTableEmptyState } from "@/shared/components/data-table-empty-state";
+import { RowSelectionState } from "@tanstack/react-table";
 import { CalendarClock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -33,15 +34,15 @@ export function WaitlistTable({
 }: WaitlistTableProps) {
   const router = useRouter();
   const [editingEntry, setEditingEntry] = useState<WaitlistEntry | null>(null);
-  const [rowSelection, setRowSelection] = useState({});
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [, startTransition] = useTransition();
 
   const {
     page: urlPage,
-    sortBy,
-    order,
+    sortBy: _sortBy,
+    order: _order,
     handlePageChange: urlPageChange,
-    handleSort,
+    handleSort: _handleSort,
   } = useTableParams({
     defaultSortBy: "created_at",
     defaultOrder: "desc",
@@ -95,7 +96,7 @@ export function WaitlistTable({
         variant="flush"
         hidePagination={hidePagination}
         rowSelection={rowSelection}
-        onRowSelectionChange={setRowSelection as any}
+        onRowSelectionChange={setRowSelection}
         getRowId={(row) => row.id}
         emptyState={
           <DataTableEmptyState

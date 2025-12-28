@@ -4,12 +4,12 @@ import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
 } from "@/shared/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import { Check, ChevronsUpDown, X } from "lucide-react";
@@ -30,8 +30,6 @@ interface TagInputProps {
   className?: string;
   isError?: boolean;
 }
-
-
 
 export function TagInput({
   options,
@@ -92,27 +90,30 @@ export function TagInput({
             aria-expanded={open}
             aria-invalid={!!isError}
             className={cn(
-              "h-auto min-h-10 w-full justify-between items-center px-3 py-2 text-left font-normal rounded-lg",
+              "h-auto min-h-10 w-full items-center justify-between rounded-lg px-3 py-2 text-left font-normal",
               "bg-background hover:bg-background border-input",
-              "focus-visible:ring-[1.5px] focus-visible:ring-ring/40 focus-visible:outline-none",
-              isError && "border-destructive/80 ring-destructive/10 hover:border-destructive",
-              open && "border-primary/50 ring-[1.5px] ring-primary/20"
+              "focus-visible:ring-ring/40 focus-visible:outline-none focus-visible:ring-[1.5px]",
+              isError &&
+                "border-destructive/80 ring-destructive/10 hover:border-destructive",
+              open && "border-primary/50 ring-primary/20 ring-[1.5px]"
             )}
             onClick={() => setOpen(!open)}
           >
-            <div className="flex w-full flex-wrap gap-1.5 items-center">
+            <div className="flex w-full flex-wrap items-center gap-1.5">
               {selectedOptions.length === 0 && newTags.length === 0 && (
-                <span className="text-muted-foreground text-sm">{placeholder}</span>
+                <span className="text-muted-foreground text-sm">
+                  {placeholder}
+                </span>
               )}
               {selectedOptions.map((opt) => (
                 <Badge
                   key={opt.id}
                   variant="secondary"
-                  className="gap-1 pr-1 bg-primary/5 text-primary border-primary/20 animate-in fade-in zoom-in-95 duration-200"
+                  className="bg-primary/5 text-primary border-primary/20 animate-in fade-in zoom-in-95 gap-1 pr-1 duration-200"
                 >
                   <span className="max-w-[120px] truncate">{opt.label}</span>
                   <div
-                    className="cursor-pointer rounded-full p-0.5 transition-colors hover:bg-primary/10"
+                    className="hover:bg-primary/10 cursor-pointer rounded-full p-0.5 transition-colors"
                     onMouseDown={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -131,7 +132,7 @@ export function TagInput({
                 <Badge
                   key={tag}
                   variant="secondary"
-                  className="gap-1 border-dashed bg-muted/50 text-muted-foreground animate-in fade-in zoom-in-95 duration-200"
+                  className="bg-muted/50 text-muted-foreground animate-in fade-in zoom-in-95 gap-1 border-dashed duration-200"
                 >
                   + {tag}
                   <div

@@ -110,14 +110,10 @@ export function ActionSheet({
             {description && <SheetDescription>{description}</SheetDescription>}
           </SheetHeader>
 
-          <SheetBody className={bodyClassName}>
-            {children}
-          </SheetBody>
+          <SheetBody className={bodyClassName}>{children}</SheetBody>
 
           {footer && (
-            <SheetFooter className={footerClassName}>
-              {footer}
-            </SheetFooter>
+            <SheetFooter className={footerClassName}>{footer}</SheetFooter>
           )}
         </SheetContent>
       </Sheet>
@@ -128,12 +124,16 @@ export function ActionSheet({
           <AlertDialogHeader>
             <AlertDialogTitle>Thay đổi chưa được lưu</AlertDialogTitle>
             <AlertDialogDescription>
-              Bạn có các thay đổi chưa được lưu. Bạn có chắc chắn muốn đóng và hủy bỏ các thay đổi này không?
+              Bạn có các thay đổi chưa được lưu. Bạn có chắc chắn muốn đóng và
+              hủy bỏ các thay đổi này không?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Tiếp tục chỉnh sửa</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmClose} variant="destructive">
+            <AlertDialogAction
+              onClick={handleConfirmClose}
+              variant="destructive"
+            >
               Đóng và hủy bỏ
             </AlertDialogAction>
           </AlertDialogFooter>

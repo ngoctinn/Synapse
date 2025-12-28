@@ -1,7 +1,11 @@
 "use server";
 
 import { ActionResponse, success } from "@/shared/lib/action-response";
-import { NotificationChannel, NotificationEvent } from "./model/types";
+import {
+  NotificationChannel,
+  NotificationEvent,
+  NotificationTemplate,
+} from "./model/types";
 
 // Mock data simulation helpers
 const DELAY_MS = 800;
@@ -30,7 +34,7 @@ export async function updateChannelConfigAction(
 export async function updateTemplateAction(
   _eventId: string,
   _channelId: string,
-  _template: Record<string, unknown>
+  _template: NotificationTemplate
 ): Promise<ActionResponse> {
   await delay();
   return success(undefined, "Đã lưu mẫu tin nhắn thành công");
