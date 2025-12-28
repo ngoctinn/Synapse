@@ -1,20 +1,22 @@
 "use client";
 
+import { ResourceGroup } from "@/features/resources";
 import { Button } from "@/shared/ui/button";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { MOCK_RESOURCE_GROUPS } from "../model/mocks";
 import { ServiceCategory, Skill } from "../model/types";
 import { ServiceSheet } from "./service-sheet";
 
 interface CreateServiceTriggerProps {
   availableSkills: Skill[];
   availableCategories: ServiceCategory[];
+  availableResourceGroups: ResourceGroup[];
 }
 
 export function CreateServiceTrigger({
   availableSkills,
   availableCategories,
+  availableResourceGroups,
 }: CreateServiceTriggerProps) {
   const [open, setOpen] = useState(false);
 
@@ -34,7 +36,7 @@ export function CreateServiceTrigger({
         onOpenChange={setOpen}
         availableSkills={availableSkills}
         availableCategories={availableCategories}
-        availableResourceGroups={MOCK_RESOURCE_GROUPS}
+        availableResourceGroups={availableResourceGroups}
       />
     </>
   );

@@ -1,7 +1,6 @@
 "use client";
 
 import { ResourceGroup } from "@/features/resources";
-import { cn } from "@/shared/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui";
 import { AlertCircle } from "lucide-react";
 import { useFormContext } from "react-hook-form";
@@ -33,12 +32,12 @@ export function ServiceForm({
   const { errors } = form.formState;
   const hasBasicErrors = !!errors.name || !!errors.price || !!errors.category_id;
   const hasResourceErrors = !!errors.resource_requirements;
-  // const hasSkillErrors = !!errors.skill_ids; // Usually optional but if required
+  const hasSkillErrors = !!errors.skill_ids;
 
   const duration = form.watch("duration") || 60;
 
   return (
-    <Stack gap={2} className={cn("pt-2", className)}>
+    <Stack gap={2} className={className}>
       <Tabs defaultValue="basic" className="h-full w-full">
         <TabsList gridCols={3} fullWidth>
           <TabsTrigger value="basic" className="relative">
@@ -53,7 +52,12 @@ export function ServiceForm({
                <AlertCircle className="text-destructive absolute -right-1 -top-1 h-3 w-3" />
             )}
           </TabsTrigger>
-          <TabsTrigger value="skills">Kỹ năng</TabsTrigger>
+          <TabsTrigger value="skills" className="relative">
+            Kỹ năng
+            {hasSkillErrors && (
+               <AlertCircle className="text-destructive absolute -right-1 -top-1 h-3 w-3" />
+            )}
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="basic" asChild>

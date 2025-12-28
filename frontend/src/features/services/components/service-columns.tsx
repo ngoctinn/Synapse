@@ -67,6 +67,7 @@ export function getServiceColumns({
       ),
     },
     {
+      accessorKey: "category_id",
       header: "Danh mục",
       cell: ({ row }) => {
         const category = availableCategories.find(
@@ -82,7 +83,22 @@ export function getServiceColumns({
       },
     },
     {
+      accessorKey: "duration",
       header: "Thời lượng",
+      filterFn: (row, id, value) => {
+        if (!value || value === "all") return true;
+
+        const duration = row.getValue(id) as number;
+        const [minStr, maxStr] = (value as string).split("-");
+        const min = minStr ? parseInt(minStr) : 0;
+        const max = maxStr === "inf" ? Infinity : parseInt(maxStr);
+
+        // Logic: (min, max] -> Lớn hơn min và nhỏ hơn hoặc bằng max
+        // Ngoại lệ: Nhóm đầu tiên "0-30" sẽ bao gồm cả 0 (nếu có) đến 30.
+        if (min === 0) return duration >= 0 && duration <= max;
+
+        return duration >= min && duration <= max;
+      },
       cell: ({ row }) => {
         const totalTime = row.original.duration + row.original.buffer_time;
         return (
@@ -123,6 +139,7 @@ export function getServiceColumns({
     {
       header: "Giá",
       accessorKey: "price",
+      meta: { align: "right" },
       cell: ({ row }) => (
         <UIText weight="medium" size="sm">
           {formatCurrency(row.original.price)}
@@ -139,6 +156,7 @@ export function getServiceColumns({
             onCheckedChange={(checked) =>
               onToggleStatus(row.original, checked)
             }
+            aria-label={`Trạng thái dịch vụ ${row.original.name}`}
           />
           <Badge
             variant={row.original.is_active ? "status-active" : "status-inactive"}
@@ -152,11 +170,11 @@ export function getServiceColumns({
     {
       header: "Hành động",
       id: "actions",
+      meta: { align: "right" },
       cell: ({ row }) => (
         <Group
           justify="end"
           onClick={(e) => e.stopPropagation()}
-          pr={6}
         >
           <ServiceActions
             service={row.original}

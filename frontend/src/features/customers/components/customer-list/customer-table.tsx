@@ -164,6 +164,7 @@ export function CustomerTable({
     {
       header: "Số điện thoại",
       accessorKey: "phone_number",
+      meta: { align: "right" },
       cell: ({ row }) => (
         <div className="font-mono text-sm">{row.original.phone_number || "--"}</div>
       ),
@@ -171,6 +172,7 @@ export function CustomerTable({
     {
       header: "Trạng thái",
       accessorKey: "is_active",
+      meta: { align: "center" },
       cell: ({ row }) => (
         <Badge preset={row.original.is_active ? "status-active" : "status-inactive"} />
       ),
@@ -211,11 +213,12 @@ export function CustomerTable({
     },
     {
       id: "actions",
-      header: () => <div className="text-right">Hành động</div>,
+      header: "Hành động",
+      meta: { align: "right" },
       cell: ({ row }) => (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="flex items-center justify-end pr-6"
+          className="flex items-center justify-end"
         >
           <CustomerActions
             customer={row.original}

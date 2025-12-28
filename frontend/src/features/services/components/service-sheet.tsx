@@ -139,6 +139,7 @@ import { ServiceForm } from "./service-form";
             </Button>
           </Group>
         }
+        bodyClassName="pt-0"
       >
         <Form {...form}>
              <form

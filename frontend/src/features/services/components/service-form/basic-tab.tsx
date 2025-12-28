@@ -1,26 +1,29 @@
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  Input,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  Slider,
-  Textarea,
-  Switch,
+    Button,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+    Input,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+    Slider,
+    Switch,
+    Textarea,
 } from "@/shared/ui";
+import { Card, CardContent } from "@/shared/ui/card";
+import { RequiredMark } from "@/shared/ui/custom";
+import { NumberInput } from "@/shared/ui/custom/number-input";
+import { Grid, Group, Stack } from "@/shared/ui/layout";
+import { Plus } from "lucide-react";
 import { useFormContext } from "react-hook-form";
+import { toast } from "sonner";
 import { ServiceFormValues } from "../../model/schemas";
 import { ServiceCategory } from "../../model/types";
-import { NumberInput } from "@/shared/ui/custom/number-input";
-import { RequiredMark } from "@/shared/ui/custom";
-import { Card, CardContent } from "@/shared/ui/card";
-import { Stack, Group, Grid } from "@/shared/ui/layout";
 
 interface BasicTabProps {
   categories: ServiceCategory[];
@@ -53,20 +56,35 @@ export function BasicTab({ categories }: BasicTabProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Danh mục</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Chọn danh mục" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Group gap={2}>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="flex-1">
+                      <SelectValue placeholder="Chọn danh mục" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-10 w-10 shrink-0"
+                  type="button"
+                  title="Quản lý danh mục"
+                  onClick={() => {
+                    // Trigger a custom event or use a context to open category manager
+                    toast.info("Tính năng quản lý danh mục nhanh đang được đồng bộ");
+                  }}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </Group>
               <FormMessage />
             </FormItem>
           )}
@@ -98,29 +116,48 @@ export function BasicTab({ categories }: BasicTabProps) {
         <FormField
           control={form.control}
           name="duration"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Thời lượng (Phút)</FormLabel>
-              <Select
-                onValueChange={(val) => field.onChange(Number(val))}
-                value={field.value?.toString()}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                     <SelectValue placeholder="Chọn thời lượng" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {[15, 30, 45, 60, 75, 90, 120, 150, 180].map((min) => (
-                    <SelectItem key={min} value={min.toString()}>
-                      {min} phút
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
+          render={({ field }) => {
+            const isCustom = ![15, 30, 45, 60, 75, 90, 120, 150, 180].includes(field.value);
+            return (
+              <FormItem>
+                <FormLabel>Thời lượng (Phút)</FormLabel>
+                <Group gap={2}>
+                  <Select
+                    onValueChange={(val) => {
+                      if (val !== "custom") field.onChange(Number(val));
+                    }}
+                    value={isCustom ? "custom" : field.value?.toString()}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="flex-1">
+                        <SelectValue placeholder="Chọn thời lượng" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {[15, 30, 45, 60, 75, 90, 120, 150, 180].map((min) => (
+                        <SelectItem key={min} value={min.toString()}>
+                          {min} phút
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="custom">Tuỳ chỉnh...</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  {isCustom && (
+                    <NumberInput
+                      className="w-24"
+                      min={5}
+                      max={480}
+                      value={field.value}
+                      onChange={field.onChange}
+                      suffix="ph"
+                    />
+                  )}
+                </Group>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
       </Grid>
 
@@ -137,7 +174,7 @@ export function BasicTab({ categories }: BasicTabProps) {
               <FormControl>
                 <Slider
                    min={0}
-                   max={60}
+                   max={120}
                    step={5}
                    value={[field.value || 0]}
                    onValueChange={(vals) => field.onChange(vals[0])}

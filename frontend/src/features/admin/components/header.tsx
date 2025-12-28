@@ -48,7 +48,7 @@ export function AdminHeader({
   return (
     <header
       className={cn(
-        "sticky top-2 z-30 ml-2 mr-2 shrink-0 transition-all duration-300 ease-in-out",
+        "sticky top-0 z-30 shrink-0 transition-all duration-300 ease-in-out",
         className
       )}
     >
@@ -65,22 +65,18 @@ export function AdminHeader({
                   {state.title}
                 </h1>
               )}
-              {state.subtitle && (
-                <p className="text-[11px] text-muted-foreground/70 leading-normal hidden lg:block truncate max-w-[450px]">
-                  {state.subtitle}
-                </p>
-              )}
+              {/* Subtitle removed as requested */}
             </div>
 
-            {/* Gap filler */}
-            <div className="flex-1" />
-
-            {/* Đích của Portal cho Tabs */}
-            <div
+            {/* Đích của Portal cho Tabs - Moved to left */}
+             <div
               ref={slotRef}
               className="hidden md:flex items-center px-4"
               id="header-tabs-slot"
             />
+
+            {/* Gap filler */}
+            <div className="flex-1" />
           </div>
 
           <div className="flex items-center gap-3 pr-2">

@@ -223,10 +223,11 @@ export function StaffTable({
     },
     {
       header: "Liên hệ",
+      meta: { align: "right" },
       cell: ({ row }) => (
         <div className="flex flex-col gap-1 text-xs text-muted-foreground">
           {row.original.user.phone_number && (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 justify-end">
               <Icon icon={Phone} className="h-3 w-3" />
               <span>{row.original.user.phone_number}</span>
             </div>
@@ -237,6 +238,7 @@ export function StaffTable({
     {
       header: "Trạng thái",
       id: "user.is_active",
+      meta: { align: "center" },
       cell: ({ row }) => (
         <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
            <Switch
@@ -252,8 +254,9 @@ export function StaffTable({
     {
       header: "Hành động",
       id: "actions",
+      meta: { align: "right" },
       cell: ({ row }) => (
-        <div className="pr-6 text-right" onClick={(e) => e.stopPropagation()}>
+        <div className="text-right" onClick={(e) => e.stopPropagation()}>
           <StaffActions
             staff={row.original}
             onEdit={() => setEditingStaff(row.original)}

@@ -19,7 +19,7 @@ export function PageShell({
   return (
     <div
       className={cn(
-        "flex w-full flex-col gap-4",
+        "flex w-full flex-col gap-3",
         animate && "page-entry-animation",
         className
       )}
@@ -99,7 +99,7 @@ export function PageContent({
     <div
       className={cn(
         "flex flex-1 flex-col",
-        !fullWidth && "gap-4",
+        !fullWidth && "gap-3",
         className
       )}
       {...props}

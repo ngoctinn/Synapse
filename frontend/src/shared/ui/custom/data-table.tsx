@@ -2,13 +2,22 @@
 
 import {
   ColumnDef,
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getSortedRowModel,
   SortingState,
   useReactTable
 } from "@tanstack/react-table";
 import { useState } from "react";
+
+declare module "@tanstack/react-table" {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface ColumnMeta<TData, TValue> {
+    align?: "left" | "center" | "right";
+  }
+}
 
 import { cn } from "@/shared/lib/utils";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
@@ -48,6 +57,7 @@ interface DataTableProps<TData, TValue> {
   className?: string;
   variant?: "default" | "flush";
   skeletonCount?: number;
+  columnFilters?: ColumnFiltersState;
   toolbar?: React.ReactNode;
 }
 
@@ -67,6 +77,7 @@ export function DataTable<TData, TValue>({
   className,
   variant = "default",
   skeletonCount = 5,
+  columnFilters = [], // Default empty
   toolbar,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -79,6 +90,7 @@ export function DataTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(), // Required for filtering
     // Client-side pagination if needed, but we mostly use server-side.
     // getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
@@ -88,8 +100,9 @@ export function DataTable<TData, TValue>({
     state: {
       sorting,
       rowSelection,
+      columnFilters,
     },
-    manualPagination: true, // We handle pagination via props usually
+    manualPagination: true,
     pageCount: totalPages,
   });
 
@@ -136,7 +149,7 @@ export function DataTable<TData, TValue>({
         {toolbar}
         <div className="scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent w-full overflow-x-auto overflow-y-visible">
           <Table>
-            <TableHeader className="bg-muted/30 sticky top-0 z-20 border-b">
+            <TableHeader className="bg-muted/80 sticky top-0 z-20 backdrop-blur-sm border-b shadow-[0_1px_rgba(0,0,0,0.05)]">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id} className="border-border/50 hover:bg-transparent">
                   {headerGroup.headers.map((header) => {
@@ -148,7 +161,8 @@ export function DataTable<TData, TValue>({
                             className={cn(
                               "flex items-center gap-2",
                               isSortable && "cursor-pointer select-none group",
-                              // Center align or Right align based on column meta or simple convention could go here
+                              header.column.columnDef.meta?.align === "right" && "justify-end flex-row-reverse",
+                              header.column.columnDef.meta?.align === "center" && "justify-center",
                             )}
                             onClick={header.column.getToggleSortingHandler()}
                           >
@@ -191,7 +205,14 @@ export function DataTable<TData, TValue>({
                     onClick={() => onRowClick && onRowClick(row.original)}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="py-3">
+                      <TableCell
+                        key={cell.id}
+                        className={cn(
+                          "py-3",
+                          cell.column.columnDef.meta?.align === "right" && "text-right",
+                          cell.column.columnDef.meta?.align === "center" && "text-center"
+                        )}
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

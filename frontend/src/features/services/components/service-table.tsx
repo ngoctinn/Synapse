@@ -1,9 +1,17 @@
 "use client";
 
+import { ColumnFiltersState } from "@tanstack/react-table";
+import { Loader2, Plus, Search } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
+
+import { ResourceGroup } from "@/features/resources";
 import {
   useBulkAction,
   useTableParams
 } from "@/shared/hooks";
+import { cn } from "@/shared/lib/utils";
 import { Icon } from "@/shared/ui/custom";
 import { DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
@@ -12,11 +20,8 @@ import { DataTableToolbar } from "@/shared/ui/custom/data-table-toolbar";
 import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import { Input } from "@/shared/ui/input";
-import { Plus, Search } from "lucide-react";
-import { useMemo, useState } from "react";
-import { toast } from "sonner";
+
 import { deleteService, toggleServiceStatus } from "../actions";
-import { MOCK_RESOURCE_GROUPS } from "../model/mocks";
 import { Service, ServiceCategory, Skill } from "../model/types";
 import { CreateServiceTrigger } from "./create-service-trigger";
 import { getServiceColumns } from "./service-columns";
@@ -27,7 +32,7 @@ interface ServiceTableProps {
   services: Service[];
   availableSkills: Skill[];
   availableCategories: ServiceCategory[];
-  // Removed legacy bed/equipment props
+  availableResourceGroups: ResourceGroup[];
   page?: number;
   totalPages?: number;
   onPageChange?: (page: number) => void;
@@ -45,6 +50,7 @@ export function ServiceTable({
   services,
   availableSkills,
   availableCategories,
+  availableResourceGroups,
   page: pageProp,
   totalPages = 1,
   onPageChange: onPageChangeProp,
@@ -55,6 +61,7 @@ export function ServiceTable({
   searchProps,
 }: ServiceTableProps) {
   const [editingService, setEditingService] = useState<Service | null>(null);
+  const searchParams = useSearchParams();
 
   // Use custom hook for URL state management
   const { page: urlPage, handlePageChange: urlPageChange } = useTableParams();
@@ -96,6 +103,18 @@ export function ServiceTable({
     onEdit: (service) => setEditingService(service),
   }), [availableCategories]);
 
+  // Create column filters from URL params
+  const columnFilters = useMemo<ColumnFiltersState>(() => {
+    const filters: ColumnFiltersState = [];
+    const duration = searchParams.get("duration");
+    const categoryId = searchParams.get("category_id");
+
+    if (duration) filters.push({ id: "duration", value: duration });
+    if (categoryId) filters.push({ id: "category_id", value: categoryId });
+
+    return filters;
+  }, [searchParams]);
+
   return (
     <>
 
@@ -103,6 +122,7 @@ export function ServiceTable({
       <DataTable
         data={services}
         columns={columns}
+        columnFilters={columnFilters}
         page={page}
         totalPages={totalPages}
         onPageChange={handlePageChange}
@@ -114,7 +134,11 @@ export function ServiceTable({
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection as any}
         getRowId={(row) => row.id.toString()}
-        onRowClick={(service) => setEditingService(service)}
+        onRowClick={(service) => {
+          const selection = window.getSelection();
+          if (selection && selection.toString().length > 0) return;
+          setEditingService(service);
+        }}
         toolbar={
           <DataTableToolbar
             searchField={
@@ -125,8 +149,8 @@ export function ServiceTable({
                     onChange={(e) => searchProps.onSearch(e.target.value)}
                     startContent={
                       <Icon
-                        icon={Search}
-                        className="text-muted-foreground"
+                        icon={isLoading ? Loader2 : Search}
+                        className={cn("text-muted-foreground", isLoading && "animate-spin")}
                         size={16}
                       />
                     }
@@ -136,7 +160,6 @@ export function ServiceTable({
             }
             filters={
               <ServiceFilter
-                availableSkills={availableSkills}
                 availableCategories={availableCategories}
               />
             }
@@ -144,6 +167,7 @@ export function ServiceTable({
               <CreateServiceTrigger
                 availableSkills={availableSkills}
                 availableCategories={availableCategories}
+                availableResourceGroups={availableResourceGroups}
               />
             }
           />
@@ -157,6 +181,7 @@ export function ServiceTable({
                <CreateServiceTrigger
                   availableSkills={availableSkills}
                   availableCategories={availableCategories}
+                  availableResourceGroups={availableResourceGroups}
                />
             }
           />
@@ -179,7 +204,7 @@ export function ServiceTable({
           onOpenChange={(open) => !open && setEditingService(null)}
           availableSkills={availableSkills}
           availableCategories={availableCategories}
-          availableResourceGroups={MOCK_RESOURCE_GROUPS}
+          availableResourceGroups={availableResourceGroups}
         />
       )}
 
@@ -199,7 +224,7 @@ export function ServiceTable({
 export function ServiceTableSkeleton() {
   return (
     <DataTableSkeleton
-      columnCount={7}
+      columnCount={8}
       rowCount={5}
       searchable={false}
       filterable={true}
