@@ -17,7 +17,7 @@ import {
 } from "@/features/staff/actions";
 import { useSheetForm } from "@/shared/hooks/use-sheet-form";
 import { Badge, Button, Form, SheetClose, Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui";
-import { ActionSheet, Icon } from "@/shared/ui/custom";
+import { ActionSheet, Icon } from "@/shared/components";
 import { CustomerForm } from "./customer-form";
 import { CustomerHistory } from "./customer-history";
 

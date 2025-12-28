@@ -2,30 +2,31 @@
 
 import { Skill } from "@/features/services";
 import { deleteStaff, updateStaff } from "@/features/staff/actions";
+import { Icon } from "@/shared/components";
+import { Column, DataTable } from "@/shared/components/data-table";
+import { DataTableEmptyState } from "@/shared/components/data-table-empty-state";
+import { DataTableSkeleton } from "@/shared/components/data-table-skeleton";
+import { DataTableToolbar } from "@/shared/components/data-table-toolbar";
+import { DeleteConfirmDialog } from "@/shared/components/delete-confirm-dialog";
+import { TableActionBar } from "@/shared/components/table-action-bar";
 import {
-  useBulkAction,
-  useTableParams,
+    useBulkAction,
+    useTableParams,
 } from "@/shared/hooks";
 import { Z_INDEX } from "@/shared/lib/design-tokens";
 import { cn, getInitials } from "@/shared/lib/utils";
-import { DeleteConfirmDialog, Spinner } from "@/shared/ui";
+import { Spinner } from "@/shared/ui";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { Badge } from "@/shared/ui/badge";
 import { Checkbox } from "@/shared/ui/checkbox";
-import { Icon } from "@/shared/ui/custom";
-import { Column, DataTable } from "@/shared/ui/custom/data-table";
-import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
-import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
-import { DataTableToolbar } from "@/shared/ui/custom/data-table-toolbar";
-import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import { Input } from "@/shared/ui/input";
 import { Group, Stack } from "@/shared/ui/layout";
 import { Switch } from "@/shared/ui/switch";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
 } from "@/shared/ui/tooltip";
 import { Text as UIText } from "@/shared/ui/typography";
 import { Phone, Search, Users } from "lucide-react";

@@ -15,8 +15,8 @@ import {
   Textarea,
 } from "@/shared/ui";
 import { Card, CardContent } from "@/shared/ui/card";
-import { RequiredMark } from "@/shared/ui/custom";
-import { NumberInput } from "@/shared/ui/custom/number-input";
+import { RequiredMark } from "@/shared/components";
+import { NumberInput } from "@/shared/components/number-input";
 import { Grid, HStack, Stack } from "@/shared/ui/layout";
 import { useFormContext } from "react-hook-form";
 import { ServiceFormValues } from "../../model/schemas";

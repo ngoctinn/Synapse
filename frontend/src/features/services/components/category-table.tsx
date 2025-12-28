@@ -2,12 +2,12 @@
 
 import { useBulkAction, useTableParams } from "@/shared/hooks";
 import { Checkbox } from "@/shared/ui/checkbox";
-import { Column, DataTable } from "@/shared/ui/custom/data-table";
-import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
-import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
-import { DataTableToolbar } from "@/shared/ui/custom/data-table-toolbar";
-import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
-import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
+import { Column, DataTable } from "@/shared/components/data-table";
+import { DataTableEmptyState } from "@/shared/components/data-table-empty-state";
+import { DataTableSkeleton } from "@/shared/components/data-table-skeleton";
+import { DataTableToolbar } from "@/shared/components/data-table-toolbar";
+import { DeleteConfirmDialog } from "@/shared/components/delete-confirm-dialog";
+import { TableActionBar } from "@/shared/components/table-action-bar";
 import { Box } from "@/shared/ui/layout";
 import { Text as UIText } from "@/shared/ui/typography";
 import { Plus } from "lucide-react";

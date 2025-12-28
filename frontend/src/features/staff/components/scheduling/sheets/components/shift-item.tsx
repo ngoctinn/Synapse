@@ -3,7 +3,7 @@
 import { Pencil, Trash2 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui";
-import { Icon } from "@/shared/ui/custom";
+import { Icon } from "@/shared/components";
 import type { Shift } from "../../../../model/types";
 
 interface ShiftItemProps {

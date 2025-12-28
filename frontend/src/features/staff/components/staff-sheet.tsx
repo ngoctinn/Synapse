@@ -14,7 +14,7 @@ import {
 import { Staff } from "@/features/staff/model/types";
 import { useSheetForm } from "@/shared/hooks/use-sheet-form";
 import { Badge, Button, Form, SheetClose } from "@/shared/ui";
-import { ActionSheet, Icon } from "@/shared/ui/custom";
+import { ActionSheet, Icon } from "@/shared/components";
 import { StaffForm } from "./staff-form";
 
 // Sử dụng SheetClose từ shared/ui

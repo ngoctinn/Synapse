@@ -24,7 +24,7 @@ import {
   Input,
   showToast,
 } from "@/shared/ui";
-import { PasswordInput } from "@/shared/ui/custom/password-input";
+import { PasswordInput } from "@/shared/components/password-input";
 
 export function UpdatePasswordForm() {
   const router = useRouter();

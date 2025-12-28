@@ -1,7 +1,7 @@
 "use client";
 
 import { useFilterParams } from "@/shared/lib/hooks/use-filter-params";
-import { FilterButton } from "@/shared/ui/custom/filter-button";
+import { FilterButton } from "@/shared/components/filter-button";
 import { Label } from "@/shared/ui/label";
 import {
   Select,

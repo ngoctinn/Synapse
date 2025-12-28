@@ -5,8 +5,8 @@ import { showToast } from "@/shared/ui";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import { Checkbox } from "@/shared/ui/checkbox";
-import { Column, DataTable } from "@/shared/ui/custom/data-table";
-import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
+import { Column, DataTable } from "@/shared/components/data-table";
+import { DataTableEmptyState } from "@/shared/components/data-table-empty-state";
 import {
     DropdownMenu,
     DropdownMenuContent,

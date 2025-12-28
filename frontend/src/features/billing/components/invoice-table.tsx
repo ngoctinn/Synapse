@@ -4,7 +4,7 @@ import { formatCurrency } from "@/shared/lib/currency-utils";
 import { formatTableDate } from "@/shared/lib/table-utils";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
-import { Column, DataTable } from "@/shared/ui/custom/data-table";
+import { Column, DataTable } from "@/shared/components/data-table";
 import { Eye } from "lucide-react";
 import { Invoice } from "../model/types";
 import { InvoiceStatusBadge } from "./invoice-status-badge";

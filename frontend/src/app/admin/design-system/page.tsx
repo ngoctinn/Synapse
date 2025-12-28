@@ -110,7 +110,7 @@ import { vi } from "date-fns/locale";
 
 import { cn } from "@/shared/lib/utils";
 import { AspectRatio } from "@/shared/ui/aspect-ratio";
-import { NumberInput } from "@/shared/ui/custom/number-input";
+import { NumberInput } from "@/shared/components/number-input";
 import {
   Form,
   FormControl,

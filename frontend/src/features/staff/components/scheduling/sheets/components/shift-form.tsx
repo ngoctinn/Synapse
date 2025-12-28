@@ -3,7 +3,7 @@
 import { Clock } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { Button, Input, TimePicker } from "@/shared/ui";
-import { Icon } from "@/shared/ui/custom";
+import { Icon } from "@/shared/components";
 
 const DEFAULT_COLORS = [
   "#D97706", // Amber

@@ -1,12 +1,12 @@
 "use client";
 
 import { deleteStaff } from "@/features/staff/actions";
+import { DeleteConfirmDialog } from "@/shared/components/delete-confirm-dialog";
+import { TableRowActions } from "@/shared/components/table-row-actions";
 import { useDeleteAction } from "@/shared/hooks";
 import {
-  DeleteConfirmDialog,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  TableRowActions,
+    DropdownMenuItem,
+    DropdownMenuLabel,
 } from "@/shared/ui";
 import { Calendar, KeyRound } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";

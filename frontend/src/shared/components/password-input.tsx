@@ -1,9 +1,9 @@
 "use client";
 
+import { cn } from "@/shared/lib/utils";
+import { Input, InputProps } from "@/shared/ui/input";
 import { Eye, EyeOff, Lock } from "lucide-react";
 import * as React from "react";
-import { Input, InputProps } from "../input";
-import { cn } from "@/shared/lib/utils";
 
 export interface PasswordInputProps extends Omit<InputProps, "type"> {
   showIcon?: boolean;

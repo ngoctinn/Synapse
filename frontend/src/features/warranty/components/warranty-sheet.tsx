@@ -20,8 +20,8 @@ import {
   Textarea,
 } from "@/shared/ui";
 import { Stack } from "@/shared/ui/layout";
-import { NumberInput } from "@/shared/ui/custom/number-input";
-import { ActionSheet } from "@/shared/ui/custom";
+import { NumberInput } from "@/shared/components/number-input";
+import { ActionSheet } from "@/shared/components";
 import { createWarranty, updateWarranty } from "../actions";
 import { warrantyCreateSchema, WarrantyFormValues } from "../model/schemas";
 import { WarrantyTicket } from "../model/types";

@@ -1,4 +1,4 @@
-import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
+import { DataTableSkeleton } from "@/shared/components/data-table-skeleton";
 
 export function PackageTableSkeleton() {
   return (

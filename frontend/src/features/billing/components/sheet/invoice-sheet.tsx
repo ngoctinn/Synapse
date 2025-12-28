@@ -1,5 +1,5 @@
 import { Separator } from "@/shared/ui";
-import { ActionSheet } from "@/shared/ui/custom";
+import { ActionSheet } from "@/shared/components";
 import { Invoice } from "../../model/types";
 import { InvoiceDetails } from "./invoice-details";
 import { PaymentForm } from "./payment-form";

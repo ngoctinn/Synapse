@@ -1,6 +1,6 @@
 "use client";
 
-import { DateRangeNavigator } from "@/shared/ui";
+import { DateRangeNavigator } from "@/shared/components/date-range-navigator";
 
 interface DateNavigatorProps {
   date: Date;

@@ -29,7 +29,7 @@
   import { cn } from "@/shared/lib/utils";
   import { format, parse } from "date-fns";
   import { vi } from "date-fns/locale";
-  import { ActionSheet } from "@/shared/ui/custom";
+  import { ActionSheet } from "@/shared/components";
   import { Stack, Grid } from "@/shared/ui/layout";
 
   interface WaitlistSheetProps {

@@ -2,7 +2,7 @@ import { ResourceGroup } from "@/features/resources";
 import {
     Button
 } from "@/shared/ui";
-import { ResourceTimeline } from "@/shared/ui/custom/resource-timeline";
+import { ResourceTimeline } from "@/shared/components/resource-timeline";
 import { Stack } from "@/shared/ui/layout";
 import { Plus } from "lucide-react";
 import React from "react";

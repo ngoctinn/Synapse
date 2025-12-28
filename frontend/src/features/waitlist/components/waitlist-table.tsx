@@ -2,8 +2,8 @@
 
 import { useTableParams } from "@/shared/hooks";
 import { showToast } from "@/shared/ui";
-import { DataTable } from "@/shared/ui/custom/data-table";
-import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
+import { DataTable } from "@/shared/components/data-table";
+import { DataTableEmptyState } from "@/shared/components/data-table-empty-state";
 import { CalendarClock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";

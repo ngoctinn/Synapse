@@ -1,6 +1,6 @@
 "use client";
 
-import { TableRowActions } from "@/shared/ui";
+import { TableRowActions } from "@/shared/components/table-row-actions";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { deleteService } from "../actions";

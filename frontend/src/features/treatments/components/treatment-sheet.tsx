@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge, Button, Progress, Textarea } from "@/shared/ui";
-import { ActionSheet, Icon } from "@/shared/ui/custom";
+import { ActionSheet, Icon } from "@/shared/components";
 import {
   Calendar,
   User,

@@ -7,7 +7,7 @@ import {
     SurfaceCard,
 } from "@/shared/components/layout/page-layout";
 import { ActionResponse } from "@/shared/lib/action-response";
-import { FilterBar } from "@/shared/ui/custom/filter-bar";
+import { FilterBar } from "@/shared/components/filter-bar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, use, useTransition } from "react";

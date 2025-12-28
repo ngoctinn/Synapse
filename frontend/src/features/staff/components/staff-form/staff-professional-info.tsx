@@ -1,22 +1,22 @@
 "use client";
 
 import { Skill } from "@/features/services";
+import { TagInput } from "@/shared/components/tag-input";
 import { cn } from "@/shared/lib/utils";
 import {
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  Input,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  TagInput,
-  showToast,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+    Input,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+    showToast,
 } from "@/shared/ui";
 import { Grid, Group, Stack } from "@/shared/ui/layout";
 import { Briefcase, Check } from "lucide-react";

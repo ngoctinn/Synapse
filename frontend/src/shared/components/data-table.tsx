@@ -7,6 +7,9 @@ import {
     getCoreRowModel,
     getFilteredRowModel,
     getSortedRowModel,
+    OnChangeFn,
+    Row,
+    RowSelectionState,
     SortingState,
     useReactTable
 } from "@tanstack/react-table";
@@ -19,10 +22,10 @@ declare module "@tanstack/react-table" {
   }
 }
 
+import { DataTableEmptyState } from "@/shared/components/data-table-empty-state";
+import { DataTableSkeleton } from "@/shared/components/data-table-skeleton";
+import { PaginationControls } from "@/shared/components/pagination-controls";
 import { cn } from "@/shared/lib/utils";
-import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
-import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
-import { PaginationControls } from "@/shared/ui/custom/pagination-controls";
 import {
     Table,
     TableBody,
@@ -50,9 +53,9 @@ interface DataTableProps<TData, TValue> {
   onRowClick?: (row: TData) => void;
 
   // Selection
-  rowSelection?: Record<string, boolean>;
-  onRowSelectionChange?: (rowSelection: Record<string, boolean>) => void;
-  getRowId?: (originalRow: TData, index: number, parent?: any) => string;
+  rowSelection?: RowSelectionState;
+  onRowSelectionChange?: OnChangeFn<RowSelectionState>;
+  getRowId?: (originalRow: TData, index: number, parent?: Row<TData>) => string;
 
   className?: string;
   variant?: "default" | "flush";
@@ -81,7 +84,7 @@ export function DataTable<TData, TValue>({
   toolbar,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [internalRowSelection, setInternalRowSelection] = useState({});
+  const [internalRowSelection, setInternalRowSelection] = useState<RowSelectionState>({});
 
   const rowSelection = externalRowSelection ?? internalRowSelection;
   const setRowSelection = onRowSelectionChange ?? setInternalRowSelection;
@@ -95,7 +98,7 @@ export function DataTable<TData, TValue>({
     // getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    onRowSelectionChange: setRowSelection as any,
+    onRowSelectionChange: setRowSelection,
     getRowId,
     state: {
       sorting,

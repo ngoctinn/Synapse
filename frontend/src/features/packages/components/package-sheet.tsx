@@ -6,7 +6,7 @@ import * as React from "react";
 import { Service } from "@/features/services";
 import { useSheetForm } from "@/shared/hooks";
 import { Button, Form, SheetClose } from "@/shared/ui";
-import { ActionSheet, Icon } from "@/shared/ui/custom";
+import { ActionSheet, Icon } from "@/shared/components";
 import { createPackage, updatePackage } from "../actions";
 import { PackageFormValues, packageSchema } from "../model/schemas";
 import { ServicePackage } from "../model/types";

@@ -17,7 +17,7 @@ import {
   showToast,
   Spinner,
 } from "@/shared/ui";
-import { NumberInput } from "@/shared/ui/custom/number-input";
+import { NumberInput } from "@/shared/components/number-input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";

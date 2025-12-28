@@ -4,8 +4,8 @@ import { formatCurrency } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
-import { Column, DataTable } from "@/shared/ui/custom/data-table";
-import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
+import { Column, DataTable } from "@/shared/components/data-table";
+import { DataTableEmptyState } from "@/shared/components/data-table-empty-state";
 import {
     Select,
     SelectContent,

@@ -24,7 +24,7 @@ import {
   Input,
   showToast,
 } from "@/shared/ui";
-import { PasswordInput } from "@/shared/ui/custom/password-input";
+import { PasswordInput } from "@/shared/components/password-input";
 
 // Google Icon SVG Component
 function GoogleIcon({ className }: { className?: string }) {

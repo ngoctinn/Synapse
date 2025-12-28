@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 
 import { Button, SheetClose } from "@/shared/ui";
-import { ActionSheet } from "@/shared/ui/custom";
+import { ActionSheet } from "@/shared/components";
 
 import { MOCK_SHIFTS } from "../../../model/shifts";
 import { Shift } from "../../../model/types";

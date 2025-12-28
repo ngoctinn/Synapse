@@ -1,0 +1,34 @@
+
+> frontend@0.1.0 lint E:\Synapse\frontend
+> eslint "src/features/packages" "src/app"
+
+
+E:\Synapse\frontend\src\app\(dashboard)\appointments\page.tsx
+  8:10  warning  'MOCK_APPOINTMENTS' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+E:\Synapse\frontend\src\app\admin\appointments\page.tsx
+  8:10  warning  'MOCK_APPOINTMENTS' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+E:\Synapse\frontend\src\app\admin\design-system\page.tsx
+  423:66  error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  480:28  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  480:48  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  652:28  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  652:84  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+E:\Synapse\frontend\src\features\packages\actions.ts
+   56:12  warning  'err' is defined but never used. Allowed unused caught errors must match /^_/u  @typescript-eslint/no-unused-vars
+   86:12  warning  'err' is defined but never used. Allowed unused caught errors must match /^_/u  @typescript-eslint/no-unused-vars
+  117:12  warning  'err' is defined but never used. Allowed unused caught errors must match /^_/u  @typescript-eslint/no-unused-vars
+  132:12  warning  'err' is defined but never used. Allowed unused caught errors must match /^_/u  @typescript-eslint/no-unused-vars
+
+E:\Synapse\frontend\src\features\packages\components\package-table.tsx
+  51:5  warning  'sortBy' is assigned a value but never used. Allowed unused vars must match /^_/u                     @typescript-eslint/no-unused-vars
+  52:5  warning  'order' is assigned a value but never used. Allowed unused vars must match /^_/u                      @typescript-eslint/no-unused-vars
+  54:5  warning  'handleSort' is assigned a value but never used. Allowed unused vars must match /^_/u                 @typescript-eslint/no-unused-vars
+  61:3  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-unused-vars')
+
+✖ 15 problems (5 errors, 10 warnings)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
+
+ ELIFECYCLE  Command failed with exit code 1.

@@ -1,8 +1,6 @@
+import { DeleteConfirmDialog } from "@/shared/components/delete-confirm-dialog";
+import { TableRowActions } from "@/shared/components/table-row-actions";
 import { useDeleteAction } from "@/shared/hooks";
-import {
-    DeleteConfirmDialog,
-    TableRowActions,
-} from "@/shared/ui";
 import {
     Sheet,
     SheetContent,

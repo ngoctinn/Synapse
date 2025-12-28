@@ -3,28 +3,28 @@
 import { Tags } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 
+import { Icon } from "@/shared/components/icon";
+import { NumberInput } from "@/shared/components/number-input";
+import { TagInput } from "@/shared/components/tag-input";
 import { cn } from "@/shared/lib/utils";
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  Input,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-  TagInput,
-  Textarea,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+    Input,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+    Textarea,
 } from "@/shared/ui";
-import { NumberInput } from "@/shared/ui/custom/number-input";
-import { Icon } from "@/shared/ui/custom/icon";
 
 import { ResourceGroup } from "../model/types";
 

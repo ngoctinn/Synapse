@@ -13,7 +13,7 @@ import {
     SelectValue,
     Slider
 } from "@/shared/ui";
-import { NumberInput } from "@/shared/ui/custom/number-input";
+import { NumberInput } from "@/shared/components/number-input";
 import { Box, Grid, HStack } from "@/shared/ui/layout";
 import { ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 import { useFormContext } from "react-hook-form";

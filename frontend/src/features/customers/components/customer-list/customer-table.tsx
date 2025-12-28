@@ -1,26 +1,27 @@
 "use client";
 
+import { AnimatedUsersIcon } from "@/shared/components/animated-icon";
+import { Column, DataTable } from "@/shared/components/data-table";
+import { DataTableEmptyState } from "@/shared/components/data-table-empty-state";
+import { DataTableSkeleton } from "@/shared/components/data-table-skeleton";
+import { DataTableToolbar } from "@/shared/components/data-table-toolbar";
+import { DeleteConfirmDialog } from "@/shared/components/delete-confirm-dialog";
+import { Icon } from "@/shared/components/icon";
+import { TableActionBar } from "@/shared/components/table-action-bar";
 import { useTableParams } from "@/shared/hooks";
 import { Z_INDEX } from "@/shared/lib/design-tokens";
 import { TruncatedCell } from "@/shared/lib/table-utils";
 import { cn } from "@/shared/lib/utils";
-import { DeleteConfirmDialog, showToast } from "@/shared/ui";
+import { showToast } from "@/shared/ui";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { Badge } from "@/shared/ui/badge";
 import { Checkbox } from "@/shared/ui/checkbox";
-import { AnimatedUsersIcon } from "@/shared/ui/custom/animated-icon";
-import { Column, DataTable } from "@/shared/ui/custom/data-table";
-import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
-import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
-import { DataTableToolbar } from "@/shared/ui/custom/data-table-toolbar";
-import { Icon } from "@/shared/ui/custom/icon";
-import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import { Input } from "@/shared/ui/input";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
 } from "@/shared/ui/tooltip";
 import { Activity, AlertCircle, Loader2, Search } from "lucide-react";
 import { useRouter } from "next/navigation";

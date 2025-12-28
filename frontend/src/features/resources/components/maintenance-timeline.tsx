@@ -1,17 +1,17 @@
 "use client";
 
+import { DateRangeNavigator } from "@/shared/components/date-range-navigator";
 import { cn } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
 } from "@/shared/ui/tooltip";
 import { addDays, format, isSameDay, startOfWeek } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Bed, Box } from "lucide-react";
-import { DateRangeNavigator } from "@/shared/ui";
 import Image from "next/image";
 import * as React from "react";
 import { MaintenanceTask, Resource } from "../model/types";

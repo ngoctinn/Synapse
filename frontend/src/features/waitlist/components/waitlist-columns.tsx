@@ -3,8 +3,8 @@
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import { Checkbox } from "@/shared/ui/checkbox";
-import { Column } from "@/shared/ui/custom/data-table";
-import { Icon } from "@/shared/ui/custom/icon";
+import { Column } from "@/shared/components/data-table";
+import { Icon } from "@/shared/components/icon";
 import {
   DropdownMenu,
   DropdownMenuContent,

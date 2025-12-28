@@ -1,7 +1,7 @@
 "use client";
 
 import { LucideIcon } from "lucide-react";
-import { Icon } from "@/shared/ui/custom/icon";
+import { Icon } from "@/shared/components/icon";
 import {
   Tooltip,
   TooltipContent,

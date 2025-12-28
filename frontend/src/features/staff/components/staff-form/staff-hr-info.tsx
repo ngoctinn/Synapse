@@ -13,7 +13,7 @@ import {
   DatePicker,
 } from "@/shared/ui";
 import { cn } from "@/shared/lib/utils";
-import { NumberInput } from "@/shared/ui/custom/number-input";
+import { NumberInput } from "@/shared/components/number-input";
 import { Stack } from "@/shared/ui/layout";
 
 export function StaffHRInfo() {

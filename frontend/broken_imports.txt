@@ -1,0 +1,8 @@
+src/features/appointments/components/toolbar/date-navigator.tsx:import { DateRangeNavigator } from "@/shared/ui";
+src/features/customers/components/customer-actions.tsx:import { DeleteConfirmDialog, TableRowActions } from "@/shared/ui";
+src/features/customers/components/customer-list/customer-table.tsx:import { DeleteConfirmDialog, showToast } from "@/shared/ui";
+src/features/packages/components/package-table.tsx:import { DeleteConfirmDialog, showToast } from "@/shared/ui";
+src/features/resources/components/maintenance-timeline.tsx:import { DateRangeNavigator } from "@/shared/ui";
+src/features/services/components/service-actions.tsx:import { TableRowActions } from "@/shared/ui";
+src/features/staff/components/scheduling/toolbar/date-navigator.tsx:import { DateRangeNavigator } from "@/shared/ui";
+src/features/staff/components/staff-list/staff-table.tsx:import { DeleteConfirmDialog, Spinner } from "@/shared/ui";

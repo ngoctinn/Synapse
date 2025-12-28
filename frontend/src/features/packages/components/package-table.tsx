@@ -1,16 +1,18 @@
 "use client";
 
 import { Service } from "@/features/services";
+import { AnimatedGiftIcon } from "@/shared/components/animated-icon";
+import { Column, DataTable } from "@/shared/components/data-table";
+import { DataTableEmptyState } from "@/shared/components/data-table-empty-state";
+import { DeleteConfirmDialog } from "@/shared/components/delete-confirm-dialog";
+import { TableActionBar } from "@/shared/components/table-action-bar";
 import { useTableParams } from "@/shared/hooks";
 import { Z_INDEX } from "@/shared/lib/design-tokens";
 import { cn, formatCurrency } from "@/shared/lib/utils";
-import { DeleteConfirmDialog, showToast } from "@/shared/ui";
+import { showToast } from "@/shared/ui";
 import { Badge } from "@/shared/ui/badge";
 import { Checkbox } from "@/shared/ui/checkbox";
-import { AnimatedGiftIcon } from "@/shared/ui/custom/animated-icon";
-import { Column, DataTable } from "@/shared/ui/custom/data-table";
-import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
-import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
+import { RowSelectionState } from "@tanstack/react-table";
 import { Loader2, Package } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -47,19 +49,17 @@ export function PackageTable({
 
   const {
     page: urlPage,
-    sortBy,
-    order,
     handlePageChange: urlPageChange,
-    handleSort,
   } = useTableParams({
     defaultSortBy: "created_at",
     defaultOrder: "desc",
   });
 
   const page = pageProp ?? urlPage;
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   const handlePageChange = onPageChangeProp ?? urlPageChange;
 
-  const [rowSelection, setRowSelection] = useState({});
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const handleBulkDelete = async () => {
     startTransition(async () => {
@@ -185,7 +185,7 @@ export function PackageTable({
         skeletonCount={5}
         variant="flush"
         rowSelection={rowSelection}
-        onRowSelectionChange={setRowSelection as any}
+        onRowSelectionChange={setRowSelection}
         getRowId={(row) => row.id.toString()}
         onRowClick={(pkg) => setEditingPackage(pkg)}
         emptyState={

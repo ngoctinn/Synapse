@@ -8,7 +8,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/shared/ui";
-import { Combobox } from "@/shared/ui/custom/combobox";
+import { Combobox } from "@/shared/components/combobox";
 import { useCustomerSearch } from "@/features/appointments/hooks";
 import type { QuickAppointmentFormValues } from "@/features/appointments/model/schemas";
 

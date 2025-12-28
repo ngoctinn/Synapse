@@ -258,16 +258,27 @@ export function DateRangeNavigator({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
-          {/* @ts-ignore: Dynamic mode typing issue with DayPicker */}
-          <Calendar
-            mode={value instanceof Date ? "single" : "range"}
-            selected={value as any}
-            onSelect={handleCalendarSelect as any}
-            initialFocus
-            locale={vi}
-            weekStartsOn={1}
-            numberOfMonths={mode === 'range' || mode === 'month' ? 2 : 1}
-          />
+          {value instanceof Date ? (
+            <Calendar
+              mode="single"
+              selected={value}
+              onSelect={handleCalendarSelect}
+              initialFocus
+              locale={vi}
+              weekStartsOn={1}
+              numberOfMonths={1}
+            />
+          ) : (
+            <Calendar
+              mode="range"
+              selected={value}
+              onSelect={handleCalendarSelect}
+              initialFocus
+              locale={vi}
+              weekStartsOn={1}
+              numberOfMonths={mode === "range" || mode === "month" ? 2 : 1}
+            />
+          )}
         </PopoverContent>
       </Popover>
     </div>

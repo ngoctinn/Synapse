@@ -5,7 +5,7 @@ import {
     Form,
     SheetClose,
 } from "@/shared/ui";
-import { ActionSheet, Icon } from "@/shared/ui/custom";
+import { ActionSheet, Icon } from "@/shared/components";
 import { Group, VStack } from "@/shared/ui/layout";
 import { Save, Send } from "lucide-react";
 import { useCallback } from "react";

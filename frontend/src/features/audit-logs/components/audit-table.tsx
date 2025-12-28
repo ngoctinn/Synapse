@@ -2,8 +2,8 @@
 
 import { useTableParams } from "@/shared/hooks";
 import { Badge } from "@/shared/ui/badge";
-import { Column, DataTable } from "@/shared/ui/custom/data-table";
-import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
+import { Column, DataTable } from "@/shared/components/data-table";
+import { DataTableEmptyState } from "@/shared/components/data-table-empty-state";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { FileText } from "lucide-react";

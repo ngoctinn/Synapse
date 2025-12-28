@@ -4,7 +4,7 @@ import { Calendar, Send, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { Badge, Button, Separator } from "@/shared/ui";
-import { ActionSheet, Icon } from "@/shared/ui/custom";
+import { ActionSheet, Icon } from "@/shared/components";
 import {
   AlertDialog,
   AlertDialogAction,

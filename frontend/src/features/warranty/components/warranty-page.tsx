@@ -6,7 +6,7 @@ import {
   PageShell,
   SurfaceCard,
 } from "@/shared/components/layout/page-layout";
-import { FilterBar } from "@/shared/ui/custom/filter-bar";
+import { FilterBar } from "@/shared/components/filter-bar";
 import { Input } from "@/shared/ui/input";
 import { Group } from "@/shared/ui/layout";
 import { Search } from "lucide-react";

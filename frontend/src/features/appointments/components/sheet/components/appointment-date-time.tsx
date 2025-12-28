@@ -17,7 +17,7 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { cn } from "@/shared/lib/utils";
 import { AlertTriangle, CalendarIcon } from "lucide-react";
-import { Icon } from "@/shared/ui/custom/icon";
+import { Icon } from "@/shared/components/icon";
 import type { QuickAppointmentFormValues } from "@/features/appointments/model/schemas";
 import { Stack, Grid } from "@/shared/ui/layout";
 

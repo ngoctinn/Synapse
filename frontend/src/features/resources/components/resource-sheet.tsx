@@ -5,7 +5,7 @@ import * as React from "react";
 
 import { useSheetForm } from "@/shared/hooks/use-sheet-form";
 import { Button, Form, SheetClose } from "@/shared/ui";
-import { ActionSheet, Icon } from "@/shared/ui/custom";
+import { ActionSheet, Icon } from "@/shared/components";
 import { manageResource } from "../actions";
 import { Resource, ResourceGroup } from "../model/types";
 import { ResourceFormValues, resourceSchema } from "../schemas";

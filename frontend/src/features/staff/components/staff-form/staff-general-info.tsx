@@ -11,7 +11,7 @@ import {
   Input,
   Textarea,
 } from "@/shared/ui";
-import { Icon } from "@/shared/ui/custom/icon";
+import { Icon } from "@/shared/components/icon";
 import { Stack, Group, Grid } from "@/shared/ui/layout";
 
 interface StaffGeneralInfoProps {

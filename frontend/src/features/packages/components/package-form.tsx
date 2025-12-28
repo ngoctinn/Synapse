@@ -1,6 +1,8 @@
 "use client";
 
 import { Service } from "@/features/services";
+import { NumberInput } from "@/shared/components/number-input";
+import { RequiredMark } from "@/shared/components/required-mark";
 import { cn } from "@/shared/lib/utils";
 import {
     Button,
@@ -10,7 +12,6 @@ import {
     FormLabel,
     FormMessage,
     Input,
-    RequiredMark,
     Select,
     SelectContent,
     SelectItem,
@@ -19,7 +20,6 @@ import {
     Switch,
     Textarea,
 } from "@/shared/ui";
-import { NumberInput } from "@/shared/ui/custom/number-input";
 import { Plus, Trash2 } from "lucide-react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { PackageFormValues } from "../model/schemas";

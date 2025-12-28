@@ -1,13 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Badge } from "@/shared/ui/badge";
-import { Button } from "@/shared/ui/button";
+import { Card, CardContent } from "@/shared/ui/card";
+
 import {
-  Calendar,
-  Clock,
-  User,
-  ClipboardList,
-  ChevronRight,
-  Bed,
+    Bed,
+    Calendar,
+    ChevronRight,
+    ClipboardList,
+    Clock,
+    User,
 } from "lucide-react";
 
 export default function WorkspacePage() {

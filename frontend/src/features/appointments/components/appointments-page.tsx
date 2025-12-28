@@ -1,45 +1,45 @@
 "use client";
 
 import { ReviewPrompt } from "@/features/reviews/components/review-prompt";
+import { DeleteConfirmDialog } from "@/shared/components/delete-confirm-dialog";
+import { Icon } from "@/shared/components/icon";
 import {
-  PageContent,
-  PageHeader,
-  PageShell,
-  SurfaceCard,
+    PageContent,
+    PageHeader,
+    PageShell,
+    SurfaceCard,
 } from "@/shared/components/layout/page-layout";
 import { ActionResponse } from "@/shared/lib/action-response";
 import { cn } from "@/shared/lib/utils";
 import {
-  Button,
-  DeleteConfirmDialog,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger
+    Button,
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger
 } from "@/shared/ui";
-import { Icon } from "@/shared/ui/custom/icon";
 import { Group, Stack } from "@/shared/ui/layout";
 import {
-  Activity,
-  CalendarCheck,
-  Clock,
-  Plus,
-  RefreshCw,
-  Settings2
+    Activity,
+    CalendarCheck,
+    Clock,
+    Plus,
+    RefreshCw,
+    Settings2
 } from "lucide-react";
 import { use, useState } from "react";
 import {
-  useAppointmentActions,
-  useAppointmentDialogs,
-  useAppointmentEvents,
-  useAppointmentMetrics,
-  useCalendarState,
+    useAppointmentActions,
+    useAppointmentDialogs,
+    useAppointmentEvents,
+    useAppointmentMetrics,
+    useCalendarState,
 } from "../hooks";
 import { createDraftAppointment } from "../model/factory";
 import { MockService } from "../model/mocks";
 import type {
-  AppointmentFilters,
-  CalendarEvent,
-  TimelineResource,
+    AppointmentFilters,
+    CalendarEvent,
+    TimelineResource,
 } from "../model/types";
 import { CalendarView } from "./calendar";
 import { AppointmentSheet } from "./sheet";

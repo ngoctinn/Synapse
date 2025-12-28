@@ -2,7 +2,7 @@ import { ResourceGroup } from "@/features/resources";
 import { formatCurrency } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import { Checkbox } from "@/shared/ui/checkbox";
-import { Column } from "@/shared/ui/custom/data-table";
+import { Column } from "@/shared/components/data-table";
 import { Box, HStack, Stack } from "@/shared/ui/layout";
 import { Text as UIText } from "@/shared/ui/typography";
 import { Service, ServiceCategory } from "../model/types";

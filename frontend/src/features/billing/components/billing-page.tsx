@@ -14,7 +14,7 @@ import { formatCurrency } from "@/shared/lib/utils";
 import { Invoice, InvoiceStatus } from "../model/types";
 import { InvoiceTable } from "./invoice-table";
 import { InvoiceSheet } from "./sheet/invoice-sheet";
-import { Icon } from "@/shared/ui/custom";
+import { Icon } from "@/shared/components";
 import { useBillingStore } from "../hooks/use-billing-store";
 
 export function BillingPage() {

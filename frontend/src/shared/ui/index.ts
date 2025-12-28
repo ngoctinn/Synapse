@@ -16,33 +16,13 @@
 // CUSTOM COMPONENTS (PREFERRED - Ưu tiên sử dụng)
 // ==========================================
 
-export { AnimatedUsersIcon } from "./custom/animated-icon";
-export { DataTable } from "./custom/data-table";
-export { DataTableEmptyState } from "./custom/data-table-empty-state";
-export { DataTableSkeleton } from "./custom/data-table-skeleton";
+// ==========================================
+// CUSTOM COMPONENTS (MOVED TO @/shared/components)
+// ==========================================
 
-export * from "./custom/date-range-filter";
-export * from "./custom/date-range-navigator";
-export { DeleteConfirmDialog } from "./custom/delete-confirm-dialog";
-// Dialog primitive
-
-export { FilterButton } from "./custom/filter-button";
-
-export { PaginationControls } from "./custom/pagination-controls";
-export { RequiredMark } from "./custom/required-mark";
-export { SettingsHeader } from "./custom/settings-header";
-export { Dialog } from "./dialog";
-export { OptionalMark } from "./form";
-
-export { TableActionBar } from "./custom/table-action-bar";
-export { TableRowActions } from "./custom/table-row-actions";
-export { TagInput } from "./custom/tag-input";
 export { DatePicker } from "./date-picker";
-export { TimePicker } from "./time-picker";
-
-export { YearPicker } from "./custom/year-picker";
 export {
-    DialogClose,
+    Dialog, DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -52,6 +32,8 @@ export {
     DialogTitle,
     DialogTrigger
 } from "./dialog";
+export { OptionalMark } from "./form";
+export { TimePicker } from "./time-picker";
 
 // Sonner Toast
 export { Toaster, showToast } from "./sonner";

@@ -6,7 +6,7 @@ import {
   Button,
   Separator,
 } from "@/shared/ui";
-import { ActionSheet, Icon } from "@/shared/ui/custom";
+import { ActionSheet, Icon } from "@/shared/components";
 
 import { InvoiceDetails } from "@/features/billing/components/sheet/invoice-details";
 import { PaymentForm } from "@/features/billing/components/sheet/payment-form";

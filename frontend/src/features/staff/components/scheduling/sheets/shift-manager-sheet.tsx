@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import { cn } from "@/shared/lib/utils";
 import { Button, Input, Separator } from "@/shared/ui";
-import { ActionSheet, Icon } from "@/shared/ui/custom";
+import { ActionSheet, Icon } from "@/shared/components";
 import {
   AlertDialog,
   AlertDialogAction,
