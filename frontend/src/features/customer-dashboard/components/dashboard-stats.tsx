@@ -59,7 +59,7 @@ export function DashboardStats({
       className="grid auto-rows-min gap-4 md:grid-cols-3"
     >
       <MotionItem {...itemProps}>
-        <Card className="stats-card-premium group">
+        <Card className="shadow-sm group">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="group-hover:text-primary text-sm font-medium transition-colors">
               Lịch hẹn sắp tới
@@ -79,7 +79,7 @@ export function DashboardStats({
       </MotionItem>
 
       <MotionItem {...itemProps}>
-        <Card className="stats-card-premium group">
+        <Card className="shadow-sm group">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="group-hover:text-primary text-sm font-medium transition-colors">
               Liệu trình đang dùng
@@ -99,7 +99,7 @@ export function DashboardStats({
       </MotionItem>
 
       <MotionItem {...itemProps}>
-        <Card className="stats-card-premium group">
+        <Card className="shadow-sm group">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="group-hover:text-primary text-sm font-medium transition-colors">
               Điểm tích lũy

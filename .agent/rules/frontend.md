@@ -221,13 +221,14 @@ Tách nhỏ logic theo kiến trúc FSD (Logic nghiệp vụ -> Feature/Action; 
 QUAN TRỌNG: LUÔN VIẾT COMMENTS BẰNG TIẾNG VIỆT NGẮN GỌN ĐỂ GIẢI THÍCH CHO CÁC CODE PHỨC TẠP
 7. Quy Tắc Giao Diện & Màu Sắc (UI/UX Rules)
 
-7.1. Hệ Thống Màu Sắc (Premium Spa Palette)
-Sử dụng hệ màu `oklch` định nghĩa trong `globals.css` để đảm bảo tính nhất quán và cảm giác cao cấp.
-- **Background**: `bg-background` (Soft Porcelain / Warm White).
-- **Primary**: `text-primary`, `bg-primary` (Deep Teal/Ocean) cho các hành động chính và điểm nhấn.
-- **Secondary**: `bg-secondary` (Soft Sage/Mist) cho các thành phần phụ.
+7.1. Hệ Thống Màu Sắc (Shadcn Standard)
+Sử dụng hệ màu chuẩn định nghĩa trong `globals.css` tuân theo kiến trúc của Shadcn UI.
+- **Background**: `bg-background` cho nền chính.
+- **Primary**: `text-primary`, `bg-primary` cho các hành động chính.
+- **Secondary**: `bg-secondary` cho các thành phần phụ.
 - **Muted**: `text-muted-foreground` cho văn bản phụ, `bg-muted` cho nền phụ.
-- **Border**: `border-border` (Subtle Gray).
+- **Border**: `border-border` cho các đường kẻ.
+- **Radius**: Sử dụng biến `--radius` chuẩn để đảm bảo bo góc đồng nhất.
 
 7.2. Sticky Headers & Layout
 - **Sticky Positioning**: Sử dụng `sticky top-0` kết hợp với `z-index` phù hợp (`z-40` cho header chính, `z-30`/`z-20` cho header con).

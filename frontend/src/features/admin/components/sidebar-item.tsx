@@ -62,7 +62,7 @@ export function SidebarItem({ item }: SidebarItemProps) {
                 <Icon className="size-5 shrink-0" strokeWidth={2} />
               </SidebarMenuButton>
             </DropdownMenuRootTrigger>
-            <DropdownMenuContentRoot side="right" align="start" className="min-w-56 ml-4 shadow-premium-md">
+            <DropdownMenuContentRoot side="right" align="start" className="min-w-56 ml-4 shadow-md">
               <div className="px-3 py-2 text-xs font-bold text-muted-foreground border-b uppercase mb-1">{item.title}</div>
               <div className="p-1">
                 {item.items.map((subItem) => (

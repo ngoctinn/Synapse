@@ -47,11 +47,10 @@ export function DatePicker({
           variant={"outline"}
           disabled={disabled}
           className={cn(
-            "group w-full justify-start text-left font-normal border-input hover:bg-accent/50 transition-all focus-premium",
+            "group w-full justify-start text-left font-normal border-input hover:bg-accent/50 transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
             "bg-background shadow-xs text-base md:text-sm px-3 text-foreground",
             size === "default" && "h-10",
             size === "sm" && "h-8",
-            "data-[state=open]:border-primary/80 data-[state=open]:ring-[1.5px] data-[state=open]:ring-primary/20",
             !value && "text-muted-foreground",
             isInvalid && "border-destructive/80 text-destructive focus-visible:ring-destructive/20 hover:border-destructive",
             className
@@ -62,7 +61,7 @@ export function DatePicker({
           {value ? format(value, "dd/MM/yyyy", { locale: vi }) : <span>{placeholder}</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 border-none shadow-premium-lg bg-card/95 backdrop-blur-md" align="start">
+      <PopoverContent className="w-auto p-0 border-border bg-popover shadow-md" align="start">
         <Calendar
           mode="single"
           selected={value}

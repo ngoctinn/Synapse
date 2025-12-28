@@ -10,7 +10,8 @@ import {
 import { cn } from "@/shared/lib/utils";
 
   const buttonVariants = cva(
-    "inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-lg text-sm font-medium leading-none transition-all duration-200 focus-premium disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 active:scale-[0.98] cursor-pointer aria-invalid:border-destructive/80 aria-invalid:ring-destructive/10 dark:aria-invalid:ring-destructive/20 aria-invalid:hover:border-destructive aria-invalid:focus-visible:ring-destructive/50 aria-invalid:focus-visible:border-destructive",
+          "inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-lg text-sm font-medium leading-none transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 active:scale-[0.98] cursor-pointer aria-invalid:border-destructive/80 aria-invalid:ring-destructive/10 dark:aria-invalid:ring-destructive/20 aria-invalid:hover:border-destructive aria-invalid:focus-visible:ring-destructive/50 aria-invalid:focus-visible:border-destructive",
+    
     {
       variants: {
         variant: {

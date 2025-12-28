@@ -200,7 +200,7 @@ export default function DesignSystemPage() {
 
         <div className="grid gap-10">
           {/* ======================= FUNDAMENTALS ======================= */}
-          <Card className="shadow-premium-md">
+          <Card className="shadow-md">
             <CardHeader className="pb-4">
               <div className="flex items-center gap-2">
                 <CardTitle className="text-xl">1. Buttons & Controls</CardTitle>
@@ -271,7 +271,7 @@ export default function DesignSystemPage() {
           </Card>
 
           {/* ======================= INPUTS & FORMS ======================= */}
-          <Card className="shadow-premium-md">
+          <Card className="shadow-md">
             <CardHeader className="pb-4">
               <div className="flex items-center gap-2">
                 <CardTitle className="text-xl">2. Inputs & Forms (Premium Logic)</CardTitle>
@@ -375,7 +375,7 @@ export default function DesignSystemPage() {
                           <PopoverTrigger asChild>
                             <Button
                               variant={"outline"}
-                              className="group w-full h-14 justify-start text-left font-normal border-input hover:bg-accent/50 transition-all focus-premium data-[state=open]:border-primary/80 data-[state=open]:ring-[1.5px] data-[state=open]:ring-primary/20"
+                              className="group w-full h-14 justify-start text-left font-normal border-input hover:bg-accent/50 transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring data-[state=open]:border-primary/80 data-[state=open]:ring-[1.5px] data-[state=open]:ring-primary/20"
                             >
                               <CalendarDays className="mr-2 size-4 text-muted-foreground/60 transition-colors group-data-[state=open]:text-primary" />
                               <span className={cn("text-sm transition-colors", !date && "text-muted-foreground/60", date && "text-foreground")}>
@@ -383,7 +383,7 @@ export default function DesignSystemPage() {
                               </span>
                             </Button>
                           </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0 border-none shadow-premium-lg" align="start">
+                          <PopoverContent className="w-auto p-0 border-border shadow-md" align="start">
                             <Calendar
                               mode="single"
                               selected={date}
@@ -398,7 +398,7 @@ export default function DesignSystemPage() {
                           <PopoverTrigger asChild>
                             <Button
                               variant={"outline"}
-                              className="group w-full h-14 justify-start text-left font-normal border-input hover:bg-accent/50 transition-all focus-premium data-[state=open]:border-primary/80 data-[state=open]:ring-[1.5px] data-[state=open]:ring-primary/20"
+                              className="group w-full h-14 justify-start text-left font-normal border-input hover:bg-accent/50 transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring data-[state=open]:border-primary/80 data-[state=open]:ring-[1.5px] data-[state=open]:ring-primary/20"
                             >
                               <CalendarDays className="mr-2 size-4 text-muted-foreground/60 transition-colors group-data-[state=open]:text-primary" />
                               <span className={cn("text-sm transition-colors", !range?.from && "text-muted-foreground/60", range?.from && "text-foreground")}>
@@ -416,7 +416,7 @@ export default function DesignSystemPage() {
                               </span>
                             </Button>
                           </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0 border-none shadow-premium-lg" align="start">
+                          <PopoverContent className="w-auto p-0 border-border shadow-md" align="start">
                             <Calendar
                               mode="range"
                               selected={range}
@@ -487,7 +487,7 @@ export default function DesignSystemPage() {
 
           {/* ======================= FEEDBACK ======================= */}
           <div className="grid md:grid-cols-2 gap-10">
-            <Card className="shadow-premium-md">
+            <Card className="shadow-md">
               <CardHeader>
                 <CardTitle className="text-xl">3. Notifications & States</CardTitle>
                 <CardDescription>Hệ thống thông báo và trạng thái phản hồi người dùng.</CardDescription>
@@ -551,7 +551,7 @@ export default function DesignSystemPage() {
                           <Info className="size-3" /> Hover for info
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent className="border-none shadow-premium-md bg-card/95 backdrop-blur-md">
+                      <TooltipContent className="border-border shadow-md bg-popover">
                         <p className="text-[10px]">Gợi ý thông tin bổ sung cho người dùng.</p>
                       </TooltipContent>
                     </Tooltip>
@@ -560,7 +560,7 @@ export default function DesignSystemPage() {
               </CardContent>
             </Card>
 
-            <Card className="shadow-premium-md">
+            <Card className="shadow-md">
               <CardHeader>
                 <CardTitle className="text-xl">4. Navigation & Layout</CardTitle>
                 <CardDescription>Các thành phần điều hướng nội dung.</CardDescription>
@@ -599,7 +599,7 @@ export default function DesignSystemPage() {
           </div>
 
           {/* ======================= OVERLAYS ======================= */}
-          <Card className="shadow-premium-md">
+          <Card className="shadow-md">
             <CardHeader>
               <CardTitle className="text-xl">5. Overlays & Dialogs</CardTitle>
               <CardDescription>Các thành phần lớp phủ tương tác như Popup, Modal, Sidebar.</CardDescription>
@@ -610,7 +610,7 @@ export default function DesignSystemPage() {
                   <DialogTrigger asChild>
                     <Button variant="outline" className="border-primary/20 hover:bg-primary/5">Mở Dialog Modal</Button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px] border-none shadow-premium-lg">
+                  <DialogContent className="sm:max-w-[425px] border-border shadow-lg">
                     <DialogHeader>
                       <DialogTitle>Xác nhận lịch hẹn</DialogTitle>
                       <DialogDescription>Kiểm tra kỹ thông tin khách hàng và dịch vụ trước khi xác nhận.</DialogDescription>
@@ -637,7 +637,7 @@ export default function DesignSystemPage() {
                   <SheetTrigger asChild>
                     <Button variant="outline" className="border-primary/20 hover:bg-primary/5">Mở Side Sheet</Button>
                   </SheetTrigger>
-                  <SheetContent className="border-none shadow-premium-lg">
+                  <SheetContent className="border-border shadow-lg">
                     <SheetHeader className="pb-6">
                       <SheetTitle>Chi tiết liệu trình</SheetTitle>
                       <SheetDescription>Thông tin chi tiết về các buổi điều trị của khách hàng.</SheetDescription>
@@ -659,7 +659,7 @@ export default function DesignSystemPage() {
                   <AlertDialogTrigger asChild>
                     <Button variant="destructive" className="opacity-90 hover:opacity-100">Xác nhận nguy hiểm</Button>
                   </AlertDialogTrigger>
-                  <AlertDialogContent className="border-none shadow-premium-lg">
+                  <AlertDialogContent className="border-border shadow-lg">
                     <AlertDialogHeader>
                       <AlertDialogTitle>Hành động không thể hoàn tác?</AlertDialogTitle>
                       <AlertDialogDescription>Dữ liệu khách hàng sẽ bị xóa vĩnh viễn khỏi hệ thống quản lý Spa.</AlertDialogDescription>
@@ -691,7 +691,7 @@ export default function DesignSystemPage() {
             </CardContent>
           </Card>
           {/* ======================= MISCELLANEOUS ======================= */}
-          <Card className="shadow-premium-md">
+          <Card className="shadow-md">
             <CardHeader>
               <CardTitle className="text-xl">6. Miscellaneous</CardTitle>
               <CardDescription>Các thành phần tiện ích và hiển thị bổ trợ.</CardDescription>
@@ -718,7 +718,7 @@ export default function DesignSystemPage() {
                     <HoverCardTrigger asChild>
                       <Button variant="link" className="p-0 h-auto text-primary">@synapse_dev</Button>
                     </HoverCardTrigger>
-                    <HoverCardContent className="w-80 border-none shadow-premium-lg">
+                    <HoverCardContent className="w-80 border-border shadow-lg">
                       <div className="flex justify-between space-x-4">
                         <Avatar className="ring-[1.5px] ring-primary/10">
                           <AvatarImage src="https://github.com/vercel.png" />
@@ -743,7 +743,7 @@ export default function DesignSystemPage() {
 
                 <div className="space-y-4">
                   <h4 className="text-xs font-semibold text-muted-foreground uppercase">Aspect Ratio 16:9</h4>
-                  <div className="overflow-hidden rounded-xl border-4 border-background shadow-premium-sm">
+                  <div className="overflow-hidden rounded-xl border-4 border-background shadow-sm">
                     <AspectRatio ratio={16 / 9} className="bg-muted flex items-center justify-center">
                       <div className="flex flex-col items-center gap-2 opacity-40">
                          <User className="size-10" />
@@ -755,7 +755,7 @@ export default function DesignSystemPage() {
 
                 <div className="space-y-4">
                   <h4 className="text-xs font-semibold text-muted-foreground uppercase">Normal Card Variant</h4>
-                  <Card className="border-border/50 shadow-premium-sm">
+                  <Card className="border-border/50 shadow-sm">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-sm">Standard Card</CardTitle>
                     </CardHeader>
@@ -769,7 +769,7 @@ export default function DesignSystemPage() {
           </Card>
 
           {/* ======================= TABLES ======================= */}
-          <Card className="shadow-premium-md">
+          <Card className="shadow-md">
             <CardHeader>
               <CardTitle className="text-xl">7. Tables</CardTitle>
               <CardDescription>
