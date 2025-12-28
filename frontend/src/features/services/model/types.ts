@@ -62,7 +62,6 @@ export interface ServiceCreateInput {
   resource_requirements?: ServiceResourceRequirement[];
   is_active?: boolean;
   skill_ids: string[];
-  new_skills?: string[];
 }
 
 export interface ServiceUpdateInput {
@@ -77,7 +76,6 @@ export interface ServiceUpdateInput {
   resource_requirements?: ServiceResourceRequirement[];
   is_active?: boolean;
   skill_ids?: string[];
-  new_skills?: string[];
 }
 
 export interface PaginatedResponse<T> {

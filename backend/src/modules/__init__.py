@@ -16,6 +16,7 @@ from . import (
     warranty,
     chat,
     settings,
+    packages,
 )
 
 __all__ = [
@@ -36,5 +37,6 @@ __all__ = [
     "warranty",
     "chat",
     "settings",
+    "packages",
 ]
 

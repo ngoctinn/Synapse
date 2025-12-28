@@ -1,18 +1,17 @@
 import {
-  LayoutGrid,
+  Box,
   Calendar,
+  ClipboardList,
   Clock,
   CreditCard,
-  Users,
-  ClipboardList,
-  Box,
+  FileText,
+  LayoutGrid,
+  Scissors,
+  Settings,
   ShieldCheck,
   Star,
   User,
-  Scissors,
-  FileText,
-  Archive,
-  Settings,
+  Users
 } from "lucide-react";
 
 export type SidebarItem = {
@@ -119,11 +118,6 @@ export const SIDEBAR_GROUPS: SidebarGroup[] = [
         icon: ClipboardList,
       },
       {
-        title: "Gói dịch vụ",
-        href: "/admin/packages",
-        icon: Archive,
-      },
-      {
         title: "Bảo hành",
         href: "/admin/warranty",
         icon: ShieldCheck,
@@ -144,7 +138,7 @@ export const SIDEBAR_GROUPS: SidebarGroup[] = [
         icon: User,
       },
       {
-        title: "Dịch vụ",
+        title: "Danh mục sản phẩm",
         href: "/admin/services",
         icon: Scissors,
       },

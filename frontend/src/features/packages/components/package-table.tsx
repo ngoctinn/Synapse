@@ -1,5 +1,6 @@
 "use client";
 
+import { Service } from "@/features/services";
 import { useTableParams } from "@/shared/hooks";
 import { Z_INDEX } from "@/shared/lib/design-tokens";
 import { cn, formatCurrency } from "@/shared/lib/utils";
@@ -22,6 +23,7 @@ interface PackageTableProps {
   data: ServicePackage[];
   page?: number;
   totalPages?: number;
+  availableServices: Service[];
   onPageChange?: (page: number) => void;
   className?: string;
   isLoading?: boolean;
@@ -31,6 +33,7 @@ export function PackageTable({
   data,
   page: pageProp,
   totalPages = 1,
+  availableServices,
   onPageChange: onPageChangeProp,
   className,
   isLoading,
@@ -190,7 +193,7 @@ export function PackageTable({
             icon={AnimatedGiftIcon}
             title="Chưa có gói dịch vụ"
             description="Tạo gói combo để bán cho khách hàng."
-            action={<CreatePackageTrigger />}
+            action={<CreatePackageTrigger availableServices={availableServices} />}
           />
         }
       />
@@ -216,6 +219,7 @@ export function PackageTable({
           initialData={editingPackage}
           open={!!editingPackage}
           onOpenChange={(open) => !open && setEditingPackage(null)}
+          availableServices={availableServices}
         />
       )}
 

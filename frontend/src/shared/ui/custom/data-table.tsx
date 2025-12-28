@@ -1,14 +1,14 @@
 "use client";
 
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  SortingState,
-  useReactTable
+    ColumnDef,
+    ColumnFiltersState,
+    flexRender,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getSortedRowModel,
+    SortingState,
+    useReactTable
 } from "@tanstack/react-table";
 import { useState } from "react";
 
@@ -24,12 +24,12 @@ import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
 import { PaginationControls } from "@/shared/ui/custom/pagination-controls";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/shared/ui/table";
 import { ArrowDown, ArrowUp, ArrowUpDown, FileText } from "lucide-react";
 
@@ -87,7 +87,7 @@ export function DataTable<TData, TValue>({
   const setRowSelection = onRowSelectionChange ?? setInternalRowSelection;
 
   const table = useReactTable({
-    data,
+    data: data ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(), // Required for filtering
@@ -130,7 +130,7 @@ export function DataTable<TData, TValue>({
   }
 
   // Empty State
-  if (data.length === 0) {
+  if (!data || data.length === 0) {
       if (emptyState) return <>{emptyState}</>;
       return (
         <div className={containerClasses}>

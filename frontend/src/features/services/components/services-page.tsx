@@ -1,22 +1,24 @@
   "use client";
 
-  import { ResourceGroup } from "@/features/resources";
-  import {
-    PageContent,
-    PageHeader,
-    PageShell,
-    SurfaceCard,
-  } from "@/shared/components/layout/page-layout";
-  import { ActionResponse } from "@/shared/lib/action-response";
-  import { Stack } from "@/shared/ui/layout/stack";
-  import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
-  import { usePathname, useRouter, useSearchParams } from "next/navigation";
-  import { Suspense, use, useTransition } from "react";
-  import { useDebouncedCallback } from "use-debounce";
-  import { ServiceCategory, ServicePagination, Skill } from "../model/types";
-  import { CategoryTable } from "./category-table";
-  import { ServiceTable, ServiceTableSkeleton } from "./service-table";
-  import { SkillTable } from "./skill-table";
+  import { PackageTable } from "@/features/packages/components/package-table";
+import { PaginatedPackages as PackagePaginationResponse } from "@/features/packages/model/types";
+import { ResourceGroup } from "@/features/resources";
+import {
+  PageContent,
+  PageHeader,
+  PageShell,
+  SurfaceCard,
+} from "@/shared/components/layout/page-layout";
+import { ActionResponse } from "@/shared/lib/action-response";
+import { Stack } from "@/shared/ui/layout/stack";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Suspense, use, useTransition } from "react";
+import { useDebouncedCallback } from "use-debounce";
+import { ServiceCategory, ServicePagination, Skill } from "../model/types";
+import { CategoryTable } from "./category-table";
+import { ServiceTable, ServiceTableSkeleton } from "./service-table";
+import { SkillTable } from "./skill-table";
 
   interface ServicesPageProps {
     page: number;
@@ -24,6 +26,7 @@
     categories: ServiceCategory[];
     resourceGroups: ResourceGroup[];
     servicesPromise: Promise<ActionResponse<ServicePagination>>;
+    packagesPromise: Promise<ActionResponse<PackagePaginationResponse>>;
   }
 
   function ServiceListWrapper({
@@ -33,6 +36,7 @@
     resourceGroups,
     page,
     searchProps,
+    onDataLoaded,
   }: {
     servicesPromise: Promise<ActionResponse<ServicePagination>>;
     skills: Skill[];
@@ -43,6 +47,7 @@
       initialValue: string;
       onSearch: (term: string) => void;
     };
+    onDataLoaded?: (data: any[]) => void;
   }) {
     const response = use(servicesPromise);
 
@@ -71,12 +76,47 @@
     );
   }
 
+  function PackageListWrapper({
+    packagesPromise,
+    page,
+    servicesPromise,
+  }: {
+    packagesPromise: Promise<ActionResponse<PackagePaginationResponse>>;
+    page: number;
+    servicesPromise: Promise<ActionResponse<ServicePagination>>;
+  }) {
+    const response = use(packagesPromise);
+    const servicesResponse = use(servicesPromise);
+
+    if (response.status === "error") {
+      return (
+        <div className="text-destructive p-4 text-center">
+          Lỗi tải gói dịch vụ: {response.message}
+        </div>
+      );
+    }
+
+    const { data, total } = response.data!;
+    const totalPages = Math.ceil(total / 10);
+    const availableServices = servicesResponse.status === "success" ? servicesResponse.data!.data : [];
+
+    return (
+      <PackageTable
+        data={data}
+        page={page}
+        totalPages={totalPages}
+        availableServices={availableServices}
+      />
+    );
+  }
+
   export function ServicesPage({
     page,
     skills,
     categories,
     resourceGroups,
     servicesPromise,
+    packagesPromise,
   }: ServicesPageProps) {
     const router = useRouter();
     const pathname = usePathname();
@@ -96,6 +136,7 @@
       // Reset page to 1 when switching tabs
       params.set("page", "1");
       params.delete("search");
+      params.delete("status");
 
       startTransition(() => {
         router.push(`${pathname}?${params.toString()}`);
@@ -125,14 +166,21 @@
           onValueChange={handleTabChange}
           className="flex flex-col gap-0"
         >
-          <PageHeader title="Dịch vụ">
+          <PageHeader title="Danh mục sản phẩm">
             <TabsList size="sm" aria-label="Quản lý dịch vụ">
               <TabsTrigger
                 value="list"
                 aria-label="Danh sách dịch vụ"
                 stretch={false}
               >
-                Danh sách
+                Dịch vụ đơn
+              </TabsTrigger>
+              <TabsTrigger
+                value="packages"
+                aria-label="Gói combo dịch vụ"
+                stretch={false}
+              >
+                Gói combo
               </TabsTrigger>
               <TabsTrigger
                 value="skills"
@@ -172,6 +220,20 @@
               </PageContent>
             </TabsContent>
 
+            <TabsContent value="packages" className="mt-0">
+              <PageContent>
+                <SurfaceCard>
+                  <Suspense fallback={<ServiceTableSkeleton />}>
+                    <PackageListWrapper
+                      packagesPromise={packagesPromise}
+                      servicesPromise={servicesPromise}
+                      page={page}
+                    />
+                  </Suspense>
+                </SurfaceCard>
+              </PageContent>
+            </TabsContent>
+
             <TabsContent value="skills" className="mt-0">
               <PageContent>
                 <SurfaceCard>
@@ -189,6 +251,6 @@
             </TabsContent>
           </Stack>
         </Tabs>
-    </PageShell>
+      </PageShell>
     );
   }

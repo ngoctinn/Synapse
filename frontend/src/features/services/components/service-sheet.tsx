@@ -51,7 +51,6 @@ import { ServiceForm } from "./service-form";
         // Cast the array to ensure type safety, though it should match if schemas are aligned
         resource_requirements: service.resource_requirements || [],
         skill_ids: service.skills?.map((s) => s.id) || [],
-        new_skills: [],
         category_id: service.category_id || undefined,
       }),
       []
@@ -90,7 +89,6 @@ import { ServiceForm } from "./service-form";
         description: "",
         resource_requirements: [],
         skill_ids: [],
-        new_skills: [],
       },
       open,
       data: initialData,

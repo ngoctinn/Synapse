@@ -1,19 +1,19 @@
 import {
-    Button,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-    Input,
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-    Slider,
-    Switch,
-    Textarea,
+  Button,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Slider,
+  Switch,
+  Textarea,
 } from "@/shared/ui";
 import { Card, CardContent } from "@/shared/ui/card";
 import { RequiredMark } from "@/shared/ui/custom";
@@ -148,6 +148,7 @@ export function BasicTab({ categories }: BasicTabProps) {
                       className="w-24"
                       min={5}
                       max={480}
+                      step={5}
                       value={field.value}
                       onChange={field.onChange}
                       suffix="ph"

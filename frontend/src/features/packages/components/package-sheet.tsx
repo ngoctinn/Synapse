@@ -3,11 +3,12 @@
 import { Save, Send } from "lucide-react";
 import * as React from "react";
 
+import { Service } from "@/features/services";
 import { useSheetForm } from "@/shared/hooks";
 import { Button, Form, SheetClose } from "@/shared/ui";
 import { ActionSheet, Icon } from "@/shared/ui/custom";
 import { createPackage, updatePackage } from "../actions";
-import { packageSchema, PackageFormValues } from "../model/schemas";
+import { PackageFormValues, packageSchema } from "../model/schemas";
 import { ServicePackage } from "../model/types";
 import { PackageForm } from "./package-form";
 
@@ -16,6 +17,7 @@ interface PackageSheetProps {
   initialData?: ServicePackage;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  availableServices: Service[];
 }
 
 const DEFAULT_VALUES: PackageFormValues = {
@@ -32,6 +34,7 @@ export function PackageSheet({
   initialData,
   open,
   onOpenChange,
+  availableServices,
 }: PackageSheetProps) {
   const isUpdateMode = mode === "update";
 
@@ -115,7 +118,11 @@ export function PackageSheet({
           onSubmit={onSubmit}
           className="flex h-full flex-col"
         >
-          <PackageForm mode={mode} className="flex-1" />
+          <PackageForm
+            mode={mode}
+            className="flex-1"
+            availableServices={availableServices}
+          />
         </form>
       </Form>
     </ActionSheet>

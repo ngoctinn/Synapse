@@ -75,6 +75,17 @@ class SkillRequirement(BaseModel):
     """Schema cho yêu cầu kỹ năng của dịch vụ."""
     skill_id: uuid.UUID
 
+class ServiceResourceRequirementBase(BaseModel):
+    """Schema cho yêu cầu tài nguyên."""
+    group_id: uuid.UUID
+    quantity: int = Field(default=1, ge=1)
+    start_delay: int = Field(default=0, ge=0)
+    usage_duration: int | None = Field(default=None, ge=1)
+
+class ServiceResourceRequirementRead(ServiceResourceRequirementBase):
+    """Schema đọc yêu cầu tài nguyên kèm thông tin nhóm."""
+    model_config = ConfigDict(from_attributes=True)
+
 
 # ============================================================================
 # SERVICES
@@ -95,7 +106,7 @@ class ServiceCreate(ServiceBase):
     """Schema tạo mới Service."""
     category_id: uuid.UUID | None = None
     skill_ids: list[uuid.UUID] = []
-    new_skills: list[str] | None = None
+    resource_requirements: list[ServiceResourceRequirementBase] = []
 
 
 class ServiceUpdate(BaseModel):
@@ -109,7 +120,7 @@ class ServiceUpdate(BaseModel):
     image_url: str | None = None
     is_active: bool | None = None
     skill_ids: list[uuid.UUID] | None = None
-    new_skills: list[str] | None = None
+    resource_requirements: list[ServiceResourceRequirementBase] | None = None
 
 
 class ServiceRead(ServiceBase):
@@ -118,6 +129,7 @@ class ServiceRead(ServiceBase):
     category_id: uuid.UUID | None = None
     category: ServiceCategoryRead | None = None
     skills: list[SkillRead] = []
+    resource_requirements: list[ServiceResourceRequirementRead] = []
     created_at: datetime
     updated_at: datetime
 

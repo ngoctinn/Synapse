@@ -1,29 +1,36 @@
 "use client";
 
+import { Service } from "@/features/services";
 import { cn } from "@/shared/lib/utils";
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  Input,
-  RequiredMark,
-  Switch,
-  Textarea,
+    Button,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+    Input,
+    RequiredMark,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+    Switch,
+    Textarea,
 } from "@/shared/ui";
 import { NumberInput } from "@/shared/ui/custom/number-input";
-import { useFormContext, useFieldArray } from "react-hook-form";
-import { Button } from "@/shared/ui";
 import { Plus, Trash2 } from "lucide-react";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import { PackageFormValues } from "../model/schemas";
 
 interface PackageFormProps {
   mode: "create" | "update";
+  availableServices: Service[];
   className?: string;
 }
 
-export function PackageForm({ mode, className }: PackageFormProps) {
+export function PackageForm({ mode, availableServices, className }: PackageFormProps) {
   const form = useFormContext<PackageFormValues>();
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -32,14 +39,6 @@ export function PackageForm({ mode, className }: PackageFormProps) {
 
   return (
     <div className={cn("space-y-6 p-6", className)}>
-      {/* Hidden ID for update mode */}
-      {mode === "update" && (
-        <FormField
-          control={form.control}
-          name="name"
-          render={() => <input type="hidden" />}
-        />
-      )}
 
       {/* Tên gói */}
       <FormField
@@ -147,9 +146,20 @@ export function PackageForm({ mode, className }: PackageFormProps) {
               name={`services.${index}.service_id`}
               render={({ field }) => (
                 <FormItem className="flex-1">
-                  <FormControl>
-                    <Input placeholder="ID dịch vụ" {...field} />
-                  </FormControl>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Chọn dịch vụ" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {availableServices.map((service) => (
+                        <SelectItem key={service.id} value={service.id}>
+                          {service.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

@@ -8,13 +8,15 @@ from typing import Annotated
 import uuid
 import re
 import unicodedata
+from datetime import datetime, timezone
 from fastapi import Depends
-from sqlmodel import select, func
+from sqlmodel import select, func, delete
 from sqlalchemy.orm import selectinload
 from sqlalchemy.exc import IntegrityError
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.common.database import get_db_session
 from src.modules.services.models import Service, Skill, ServiceSkill
+from src.modules.resources.models import ServiceResourceRequirement
 from src.modules.services.schemas import ServiceCreate, ServiceUpdate
 from src.modules.services.exceptions import ServiceNotFoundError
 
@@ -53,7 +55,8 @@ class ServiceManagementService:
         """
         query = select(Service).options(
             selectinload(Service.skills),
-            selectinload(Service.category)
+            selectinload(Service.category),
+            selectinload(Service.resource_requirements)
         )
 
         if only_active:
@@ -96,7 +99,8 @@ class ServiceManagementService:
         """
         query = select(Service).where(Service.id == service_id).options(
             selectinload(Service.skills),
-            selectinload(Service.category)
+            selectinload(Service.category),
+            selectinload(Service.resource_requirements)
         )
         result = await self.session.exec(query)
         service = result.first()
@@ -106,73 +110,38 @@ class ServiceManagementService:
 
         return service
 
-    async def _get_or_create_skills(self, skill_names: list[str]) -> list[uuid.UUID]:
-        """Helper: Lấy hoặc tạo kỹ năng theo tên."""
-        if not skill_names:
-            return []
-
-        # 1. Prepare codes
-        name_map = {f"SK_{simple_slugify(name).upper()}": name for name in skill_names}
-        codes = list(name_map.keys())
-
-        # 2. Find existing skills
-        query = select(Skill).where(Skill.code.in_(codes))
-        result = await self.session.exec(query)
-        existing_skills = result.all()
-        existing_codes = {skill.code for skill in existing_skills}
-        skill_ids = [skill.id for skill in existing_skills]
-
-        # 3. Create missing skills
-        new_skills = []
-        for code, name in name_map.items():
-            if code not in existing_codes:
-                new_skills.append(Skill(name=name, code=code))
-
-        if new_skills:
-            self.session.add_all(new_skills)
-            try:
-                await self.session.flush()
-                skill_ids.extend([skill.id for skill in new_skills])
-            except IntegrityError:
-                # Nếu có lỗi trùng lặp (do race condition), rollback và query lại
-                await self.session.rollback()
-                # Query lại tất cả codes để lấy ID của những cái đã được tạo bởi process khác
-                query_retry = select(Skill).where(Skill.code.in_(codes))
-                result_retry = await self.session.exec(query_retry)
-                all_skills = result_retry.all()
-                skill_ids = [skill.id for skill in all_skills]
-
-        return skill_ids
 
     async def create_service(self, service_in: ServiceCreate) -> Service:
         """
-        Tạo dịch vụ mới (kèm Smart Tagging kỹ năng).
-
-        Args:
-            service_in (ServiceCreate): Dữ liệu tạo dịch vụ.
-
-        Returns:
-            Service: Dịch vụ vừa tạo.
+        Tạo dịch vụ mới kèm gán kỹ năng và tài nguyên.
         """
-        # 1. Handle Smart Tagging
-        final_skill_ids = set(service_in.skill_ids)
-        if service_in.new_skills:
-            new_ids = await self._get_or_create_skills(service_in.new_skills)
-            final_skill_ids.update(new_ids)
-
-        # 2. Create Service
-        service_data = service_in.model_dump(exclude={"skill_ids", "new_skills"})
+        # 1. Create Service
+        service_data = service_in.model_dump(exclude={"skill_ids", "resource_requirements"})
         service = Service(**service_data)
         self.session.add(service)
         await self.session.flush()
 
-        # 3. Bulk Insert Links
-        if final_skill_ids:
+        # 2. Sync Skills
+        if service_in.skill_ids:
             links = [
                 ServiceSkill(service_id=service.id, skill_id=skill_id)
-                for skill_id in final_skill_ids
+                for skill_id in set(service_in.skill_ids)
             ]
             self.session.add_all(links)
+
+        # 3. Sync Resource Requirements
+        if service_in.resource_requirements:
+            reqs = [
+                ServiceResourceRequirement(
+                    service_id=service.id,
+                    group_id=req.group_id,
+                    quantity=req.quantity,
+                    start_delay=req.start_delay,
+                    usage_duration=req.usage_duration
+                )
+                for req in service_in.resource_requirements
+            ]
+            self.session.add_all(reqs)
 
         await self.session.commit()
         await self.session.refresh(service)
@@ -180,59 +149,48 @@ class ServiceManagementService:
 
     async def update_service(self, service_id: uuid.UUID, service_in: ServiceUpdate) -> Service:
         """
-        Cập nhật dịch vụ.
-
-        Args:
-            service_id (uuid.UUID): ID dịch vụ.
-            service_in (ServiceUpdate): Dữ liệu cập nhật.
-
-        Returns:
-            Service: Dịch vụ đã cập nhật.
-
-        Raises:
-            ServiceNotFoundError: Nếu không tìm thấy dịch vụ.
+        Cập nhật dịch vụ (Atomic Sync cho Skills và Resources).
         """
-        # Load service with links
-        query = select(Service).where(Service.id == service_id).options(
-            selectinload(Service.skill_links)
-        )
-        result = await self.session.exec(query)
-        service = result.first()
-
-        if not service:
-            raise ServiceNotFoundError(f"Dịch vụ {service_id} không tồn tại.")
-
-        # Handle Smart Tagging
-        final_skill_ids = None
-        if service_in.skill_ids is not None:
-            final_skill_ids = set(service_in.skill_ids)
-            if service_in.new_skills:
-                new_ids = await self._get_or_create_skills(service_in.new_skills)
-                final_skill_ids.update(new_ids)
+        service = await self.get_service(service_id)
 
         # Update basic fields
-        update_data = service_in.model_dump(exclude_unset=True, exclude={"skill_ids", "new_skills"})
+        update_data = service_in.model_dump(exclude_unset=True, exclude={"skill_ids", "resource_requirements"})
         for key, value in update_data.items():
             setattr(service, key, value)
 
-        # Update Skills
-        if final_skill_ids is not None:
-            current_skill_ids = {link.skill_id for link in service.skill_links}
+        # Atomic Sync Skills
+        if service_in.skill_ids is not None:
+            # Delete old
+            await self.session.exec(
+                delete(ServiceSkill).where(ServiceSkill.service_id == service_id)
+            )
+            # Insert new
+            if service_in.skill_ids:
+                links = [
+                    ServiceSkill(service_id=service_id, skill_id=skill_id)
+                    for skill_id in set(service_in.skill_ids)
+                ]
+                self.session.add_all(links)
 
-            # Add new
-            to_add = final_skill_ids - current_skill_ids
-            new_links = [
-                ServiceSkill(service_id=service.id, skill_id=skill_id)
-                for skill_id in to_add
-            ]
-            if new_links:
-                self.session.add_all(new_links)
-
-            # Remove old
-            to_remove = current_skill_ids - final_skill_ids
-            for link in service.skill_links:
-                if link.skill_id in to_remove:
-                    await self.session.delete(link)
+        # Atomic Sync Resource Requirements
+        if service_in.resource_requirements is not None:
+            # Delete old
+            await self.session.exec(
+                delete(ServiceResourceRequirement).where(ServiceResourceRequirement.service_id == service_id)
+            )
+            # Insert new
+            if service_in.resource_requirements:
+                reqs = [
+                    ServiceResourceRequirement(
+                        service_id=service_id,
+                        group_id=req.group_id,
+                        quantity=req.quantity,
+                        start_delay=req.start_delay,
+                        usage_duration=req.usage_duration
+                    )
+                    for req in service_in.resource_requirements
+                ]
+                self.session.add_all(reqs)
 
         self.session.add(service)
         await self.session.commit()

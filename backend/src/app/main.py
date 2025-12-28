@@ -25,6 +25,7 @@ from src.modules import (
     warranty,
     chat,
     settings as settings_module,
+    packages,
 )
 
 @asynccontextmanager
@@ -72,7 +73,8 @@ async def health_check():
 _MODULES_WITH_ROUTERS = [
     users, services, staff, resources, schedules, bookings, customers,
     scheduling_engine, customer_treatments, billing, operating_hours,
-    promotions, waitlist, notifications, warranty, chat, settings_module
+    promotions, waitlist, notifications, warranty, chat, settings_module,
+    packages,
 ]
 
 for module in _MODULES_WITH_ROUTERS:
