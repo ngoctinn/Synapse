@@ -103,7 +103,7 @@ class Service(SQLModel, table=True):
     price: Decimal = Field(default=0, max_digits=12, decimal_places=2)
     description: str | None = None
     image_url: str | None = None
-    is_active: bool = Field(default=True)
+    is_active: bool = Field(default=True, index=True)
     deleted_at: datetime | None = None  # Soft Delete
 
     created_at: datetime = Field(

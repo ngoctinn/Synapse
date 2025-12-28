@@ -15,11 +15,14 @@ import {
   Switch,
   Textarea,
 } from "@/shared/ui";
+import { Plus } from "lucide-react";
+import { CreateCategoryDialog } from "../create-category-dialog";
 import { Card, CardContent } from "@/shared/ui/card";
 import { RequiredMark } from "@/shared/components";
 import { NumberInput } from "@/shared/components/number-input";
 import { Grid, HStack, Stack } from "@/shared/ui/layout";
 import { useFormContext } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { ServiceFormValues } from "../../model/schemas";
 import { ServiceCategory } from "../../model/types";
 
@@ -29,6 +32,7 @@ interface BasicTabProps {
 
 export function BasicTab({ categories }: BasicTabProps) {
   const form = useFormContext<ServiceFormValues>();
+  const router = useRouter();
 
   return (
     <Stack gap={6}>
@@ -58,21 +62,43 @@ export function BasicTab({ categories }: BasicTabProps) {
               <FormLabel>
                 Danh mục <RequiredMark />
               </FormLabel>
-              <Select onValueChange={field.onChange} value={field.value || ""}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Chọn danh mục" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
+              <HStack gap={2} align="start">
+                <div className="flex-1">
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value || ""}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Chọn danh mục" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {categories.map((cat) => (
+                        <SelectItem key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </div>
+                <CreateCategoryDialog
+                  onSuccess={() => {
+                    router.refresh();
+                  }}
+                  trigger={
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      type="button"
+                      title="Tạo danh mục mới"
+                    >
+                      <Plus className="size-4" />
+                    </Button>
+                  }
+                />
+              </HStack>
             </FormItem>
           )}
         />

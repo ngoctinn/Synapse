@@ -16,7 +16,7 @@ import { useState } from "react";
 import { deleteServiceCategory } from "../actions";
 import { ServiceCategory } from "../model/types";
 import { CategoryActions } from "./category-actions";
-import { CreateCategorySheet } from "./create-category-sheet";
+import { CreateCategoryDialog } from "./create-category-dialog";
 
 interface CategoryTableProps {
   categories: ServiceCategory[];
@@ -122,13 +122,13 @@ export function CategoryTable({
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection}
         getRowId={(row) => row.id.toString()}
-        toolbar={<DataTableToolbar actions={<CreateCategorySheet />} />}
+        toolbar={<DataTableToolbar actions={<CreateCategoryDialog />} />}
         emptyState={
           <DataTableEmptyState
             icon={Plus}
             title="Chưa có danh mục nào"
             description="Tạo danh mục để phân loại các dịch vụ tại spa."
-            action={<CreateCategorySheet />}
+            action={<CreateCategoryDialog />}
           />
         }
       />
