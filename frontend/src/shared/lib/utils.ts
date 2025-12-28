@@ -6,18 +6,14 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 const currencyFormatter = new Intl.NumberFormat("vi-VN", {
-  style: "decimal", // Use decimal style first
+  style: "decimal",
   maximumFractionDigits: 0,
 });
 
 export function formatCurrency(amount: number): string {
-  // Append VND explicitly as requested
   return `${currencyFormatter.format(amount)} VND`;
 }
 
-/**
- * Định dạng ngày theo chuẩn Việt Nam (DD/MM/YYYY)
- */
 export function formatDate(date: Date | string | number): string {
   if (!date) return "--";
   const d = new Date(date);
@@ -29,9 +25,6 @@ export function formatDate(date: Date | string | number): string {
   }).format(d);
 }
 
-/**
- * Định dạng ngày giờ theo chuẩn Việt Nam (HH:mm DD/MM/YYYY)
- */
 export function formatDateTime(date: Date | string | number): string {
   if (!date) return "--";
   const d = new Date(date);
@@ -48,9 +41,6 @@ export function formatDateTime(date: Date | string | number): string {
     .replace(",", "");
 }
 
-/**
- * Định dạng giờ theo chuẩn Việt Nam (HH:mm)
- */
 export function formatTime(date: Date | string | number): string {
   if (!date) return "--";
   const d = new Date(date);
@@ -62,10 +52,6 @@ export function formatTime(date: Date | string | number): string {
   }).format(d);
 }
 
-/**
- * Định dạng số phút sang chuỗi "X giờ Y phút" hoặc "X phút" gọn gàng.
- * Ví dụ: 60 -> "1 giờ", 75 -> "1 giờ 15 phút", 45 -> "45 phút"
- */
 export function formatDuration(minutes: number | string): string {
   const minsNum = typeof minutes === "string" ? parseInt(minutes, 10) : minutes;
   if (isNaN(minsNum) || minsNum === 0) return "0 phút";
@@ -84,7 +70,7 @@ export function toCamelCase(obj: unknown): unknown {
   const convert = (value: unknown): unknown => {
     if (typeof value === "object" && value !== null) {
       if (seen.has(value)) {
-        return value; // Return original value if circular reference detected
+        return value;
       }
       seen.add(value);
     }
@@ -115,7 +101,7 @@ export function toSnakeCase(obj: unknown): unknown {
   const convert = (value: unknown): unknown => {
     if (typeof value === "object" && value !== null) {
       if (seen.has(value)) {
-        return value; // Return original value if circular reference detected
+        return value;
       }
       seen.add(value);
     }

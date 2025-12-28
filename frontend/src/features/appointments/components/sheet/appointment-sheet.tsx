@@ -8,7 +8,6 @@ import {
 } from "@/shared/ui";
 import { ActionSheet, Icon } from "@/shared/ui/custom";
 
-// Billing components
 import { InvoiceDetails } from "@/features/billing/components/sheet/invoice-details";
 import { PaymentForm } from "@/features/billing/components/sheet/payment-form";
 import { Invoice } from "@/features/billing/model/types";
@@ -29,9 +28,7 @@ import {
 } from "./appointment-sheet-footer";
 import { AppointmentViewContent } from "./appointment-view-content";
 
-// ============================================
-// TYPES
-// ============================================
+
 
 type SheetMode = "view" | "edit" | "create" | "payment";
 
@@ -57,9 +54,7 @@ interface AppointmentSheetProps {
   availableServices: MockService[];
 }
 
-// ============================================
-// COMPONENT
-// ============================================
+
 
 export function AppointmentSheet({
   open,
@@ -91,23 +86,16 @@ export function AppointmentSheet({
   const isViewMode = mode === "view" && !!appointment;
   const isPaymentMode = mode === "payment" && !!invoice;
 
-  // Trigger review prompt for completed appointments
   useEffect(() => {
     if (open && isViewMode && appointment?.status === "COMPLETED") {
       onReviewNeeded?.(appointment.id);
     }
   }, [open, isViewMode, appointment?.status, appointment?.id, onReviewNeeded]);
 
-  // ============================================
-  // HANDLERS
-  // ============================================
+
 
   const handleClose = (newOpen?: boolean | unknown) => {
-    // Nếu được gọi từ ActionSheet onOpenChange(false), newOpen sẽ là false
-    if (newOpen === true) return;
-
     onOpenChange(false);
-    // Reset dirty state
     setIsDirty(false);
 
     setTimeout(() => {
@@ -152,9 +140,7 @@ export function AppointmentSheet({
     setInvoice(null);
   };
 
-  // ============================================
-  // COMPUTED
-  // ============================================
+
 
   const canCheckIn =
     appointment?.status === "CONFIRMED" || appointment?.status === "PENDING";
@@ -170,9 +156,7 @@ export function AppointmentSheet({
         ? "Thanh toán hóa đơn"
         : "Chi tiết lịch hẹn";
 
-  // ============================================
-  // RENDER
-  // ============================================
+
 
   return (
     <ActionSheet
@@ -262,7 +246,6 @@ export function AppointmentSheet({
         ) : null}
       </div>
 
-      {/* Review Prompt stays as is, separate component */}
       {appointment && (
         <ReviewPrompt
           bookingId={appointment.id}

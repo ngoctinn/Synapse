@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import { addHours, format, parseISO } from "date-fns";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const { date: rawDate, staffId } = await request.json();
@@ -11,19 +11,17 @@ export async function POST(request: Request) {
     );
   }
 
-  const date = parseISO(rawDate); // Assuming rawDate is an ISO string
+  const date = parseISO(rawDate);
 
-  // Generate mock slots for the given date and staffId
   const mockSlots = generateMockTimeSlots(date, staffId);
 
   return NextResponse.json(mockSlots);
 }
 
-// Helper function to generate mock time slots
 function generateMockTimeSlots(baseDate: Date, staffId: string) {
   const slots = [];
-  const startHour = 9; // 9 AM
-  const endHour = 17; // 5 PM (not inclusive)
+  const startHour = 9;
+  const endHour = 17;
   const intervalMinutes = 30;
 
   for (let hour = startHour; hour < endHour; hour++) {
@@ -33,7 +31,7 @@ function generateMockTimeSlots(baseDate: Date, staffId: string) {
       slotTime.setSeconds(0);
       slotTime.setMilliseconds(0);
 
-      const isBooked = Math.random() > 0.8; // 20% chance of being booked
+      const isBooked = Math.random() > 0.8;
 
       slots.push({
         id: `${format(slotTime, "yyyy-MM-dd-HH-mm")}-${staffId}`,

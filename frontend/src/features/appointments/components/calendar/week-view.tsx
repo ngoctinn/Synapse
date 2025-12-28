@@ -15,20 +15,13 @@ import { TimeGrid } from "./time-grid";
 import { useWeekEventLayout } from "./use-week-event-layout";
 
 interface WeekViewProps {
-  /** Khoảng thời gian tuần */
   dateRange: DateRange;
-  /** Danh sách events */
   events: CalendarEvent[];
-  /** Density mode */
   densityMode?: DensityMode;
-  /** Callback khi click event */
   onEventClick?: (event: CalendarEvent) => void;
-  /** Callback khi click slot trống */
   onSlotClick?: (date: Date, hour: number, minute: number) => void;
-  /** Ẩn cuối tuần */
   hideWeekends?: boolean;
   className?: string;
-  // Actions
   onCheckIn?: (event: CalendarEvent) => void;
   onNoShow?: (event: CalendarEvent) => void;
   onCancel?: (event: CalendarEvent) => void;
@@ -54,14 +47,13 @@ export function WeekView({
   const totalHours = endHour - startHour;
   const totalHeight = totalHours * hourHeight;
 
-  // Generate days of the week
   const weekDays = useMemo(() => {
     const days: Date[] = [];
     let currentDay = dateRange.start;
 
     while (currentDay <= dateRange.end) {
       const dayOfWeek = currentDay.getDay();
-      // Skip weekends if hideWeekends is true
+
       if (!hideWeekends || (dayOfWeek !== 0 && dayOfWeek !== 6)) {
         days.push(currentDay);
       }
@@ -82,10 +74,8 @@ export function WeekView({
 
   return (
     <div className={cn("flex h-full min-h-0 flex-col", className)}>
-      {/* Date Header */}
       <DateHeader startDate={dateRange.start} numberOfDays={numberOfDays} />
 
-      {/* Scrollable Grid Area */}
       <ScrollArea className="min-h-0 flex-1">
         <div
           className="grid"
@@ -94,7 +84,6 @@ export function WeekView({
             height: totalHeight,
           }}
         >
-          {/* Time Labels Column */}
           <TimeGrid
             date={dateRange.start}
             startHour={startHour}
@@ -102,7 +91,6 @@ export function WeekView({
             densityMode={densityMode}
           />
 
-          {/* Day Columns */}
           {weekDays.map((day) => {
             const dateKey = day.toISOString().split("T")[0];
             const dayPositionedEvents =
@@ -118,7 +106,6 @@ export function WeekView({
                 )}
                 style={{ height: totalHeight }}
               >
-                {/* Hour lines (copy from TimeGrid pattern) */}
                 {Array.from({ length: totalHours }).map((_, hourIndex) => (
                   <div
                     key={`line-${hourIndex}`}
@@ -127,7 +114,6 @@ export function WeekView({
                   />
                 ))}
 
-                {/* Half-hour lines */}
                 {Array.from({ length: totalHours }).map((_, hourIndex) => (
                   <div
                     key={`half-${hourIndex}`}
@@ -136,7 +122,6 @@ export function WeekView({
                   />
                 ))}
 
-                {/* Events */}
                 {dayPositionedEvents.map(
                   ({ event, column, totalColumns, position }) => {
                     const width = 100 / totalColumns;
