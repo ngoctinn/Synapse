@@ -1,14 +1,14 @@
-"use client";
-
 import { Button } from "@/shared/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/shared/ui/dialog";
 import { Input } from "@/shared/ui/input";
+import { Box, HStack, VStack } from "@/shared/ui/layout";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle
+} from "@/shared/ui/sheet";
 import { Loader2, Plus, Save } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -17,17 +17,17 @@ import { MOCK_CATEGORIES } from "../../model/mocks";
 import { ServiceCategory } from "../../model/types";
 import { SortableCategoryList } from "./sortable-category-list";
 
-interface CategoryManagerDialogProps {
+interface CategoryManagerSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onCategoriesChange?: (categories: ServiceCategory[]) => void;
 }
 
-export function CategoryManagerDialog({
+export function CategoryManagerSheet({
   open,
   onOpenChange,
   onCategoriesChange,
-}: CategoryManagerDialogProps) {
+}: CategoryManagerSheetProps) {
   // Local state for categories (initialized from mocks for now, normally would be props)
   const [categories, setCategories] =
     useState<ServiceCategory[]>(MOCK_CATEGORIES);
@@ -96,63 +96,67 @@ export function CategoryManagerDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[80vh] flex-col gap-0 p-0 sm:max-w-md">
-        <DialogHeader className="shrink-0 space-y-0 border-b px-6 py-4">
-          <DialogTitle className="text-lg">
-            Quản lý Danh mục Dịch vụ
-          </DialogTitle>
-        </DialogHeader>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent className="flex h-full w-full flex-col sm:max-w-xl">
+        <SheetHeader>
+          <SheetTitle>Quản lý Danh mục Dịch vụ</SheetTitle>
+          <SheetDescription>
+            Thêm, sửa, xóa và sắp xếp thứ tự hiển thị của các danh mục.
+          </SheetDescription>
+        </SheetHeader>
 
-        <div className="flex gap-2 border-b p-4">
-          <Input
-            placeholder="Tên danh mục mới..."
-            value={newCategoryName}
-            onChange={(e) => setNewCategoryName(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleAddCategory()}
-          />
-          <Button
-            onClick={handleAddCategory}
-            disabled={!newCategoryName.trim()}
-          >
-            <Plus className="h-4 w-4" /> Thêm
-          </Button>
-        </div>
+        <VStack gap={4} className="mt-4 flex-1 overflow-hidden">
+            <HStack gap={2}>
+              <Input
+                placeholder="Tên danh mục mới..."
+                value={newCategoryName}
+                onChange={(e) => setNewCategoryName(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleAddCategory()}
+              />
+              <Button
+                onClick={handleAddCategory}
+                disabled={!newCategoryName.trim()}
+                size="sm"
+              >
+                <Plus className="mr-2 size-4" /> Thêm
+              </Button>
+            </HStack>
 
-        <div className="flex-1 overflow-y-auto pr-1">
-          {categories.length === 0 ? (
-            <div className="text-muted-foreground py-8 text-center text-sm">
-              Chưa có danh mục nào.
-            </div>
-          ) : (
-            <SortableCategoryList
-              items={categories}
-              onReorder={handleReorder}
-              onUpdate={handleUpdate}
-              onDelete={handleDelete}
-            />
-          )}
-        </div>
+            <Box className="flex-1 overflow-y-auto rounded-md border p-2">
+              {categories.length === 0 ? (
+                <Box className="py-8 text-center text-sm text-muted-foreground">
+                  Chưa có danh mục nào.
+                </Box>
+              ) : (
+                <SortableCategoryList
+                  items={categories}
+                  onReorder={handleReorder}
+                  onUpdate={handleUpdate}
+                  onDelete={handleDelete}
+                />
+              )}
+            </Box>
+        </VStack>
 
-        <DialogFooter className="mt-4 gap-2 border-t pt-4 sm:gap-0">
+        <SheetFooter className="mt-4 gap-2 sm:gap-0">
           {hasChanges && (
-            <div className="flex flex-1 animate-pulse items-center text-sm font-medium text-amber-600">
+            <Box className="flex flex-1 items-center text-sm font-medium text-amber-600 animate-pulse">
               Thứ tự/Dữ liệu đã thay đổi *
-            </div>
+            </Box>
           )}
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Đóng
           </Button>
           <Button onClick={handleSave} disabled={!hasChanges && !isSaving}>
             {isSaving ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="mr-2 size-4 animate-spin" />
             ) : (
-              <Save className="h-4 w-4" />
+              <Save className="mr-2 size-4" />
             )}
             Lưu thay đổi
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   );
 }

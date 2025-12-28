@@ -1,6 +1,6 @@
 import { ResourceGroup } from "@/features/resources";
 import {
-  Button
+    Button
 } from "@/shared/ui";
 import { ResourceTimeline } from "@/shared/ui/custom/resource-timeline";
 import { Stack } from "@/shared/ui/layout";
@@ -82,7 +82,7 @@ export function ResourcesTab({ availableResourceGroups, duration }: ResourcesTab
           className="w-full border-dashed"
           onClick={() => append({ group_id: "", quantity: 1, start_delay: 0, usage_duration: null })}
         >
-          <Plus className="mr-2 h-4 w-4" />
+          <Plus className="mr-2 size-4" />
           Thêm tài nguyên
         </Button>
       </Stack>

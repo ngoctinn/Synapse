@@ -39,23 +39,23 @@ export function ServiceForm({
   return (
     <Stack gap={2} className={className}>
       <Tabs defaultValue="basic" className="h-full w-full">
-        <TabsList gridCols={3} fullWidth>
-          <TabsTrigger value="basic" className="relative">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="basic" className="gap-2">
             Thông tin
             {hasBasicErrors && (
-               <AlertCircle className="text-destructive absolute -right-1 -top-1 h-3 w-3" />
+               <AlertCircle className="h-3.5 w-3.5 text-destructive" />
             )}
           </TabsTrigger>
-          <TabsTrigger value="resources" className="relative">
+          <TabsTrigger value="resources" className="gap-2">
             Tài nguyên
             {hasResourceErrors && (
-               <AlertCircle className="text-destructive absolute -right-1 -top-1 h-3 w-3" />
+               <AlertCircle className="h-3.5 w-3.5 text-destructive" />
             )}
           </TabsTrigger>
-          <TabsTrigger value="skills" className="relative">
+          <TabsTrigger value="skills" className="gap-2">
             Kỹ năng
             {hasSkillErrors && (
-               <AlertCircle className="text-destructive absolute -right-1 -top-1 h-3 w-3" />
+               <AlertCircle className="h-3.5 w-3.5 text-destructive" />
             )}
           </TabsTrigger>
         </TabsList>

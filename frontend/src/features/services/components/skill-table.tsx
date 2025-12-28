@@ -1,5 +1,3 @@
-"use client";
-
 import {
     useBulkAction,
     useTableParams
@@ -11,11 +9,13 @@ import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
 import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
+import { Box } from "@/shared/ui/layout";
+import { Text as UIText } from "@/shared/ui/typography";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { deleteSkill } from "../actions";
 import { Skill } from "../model/types";
-import { CreateSkillDialog } from "./create-skill-dialog";
+import { CreateSkillSheet } from "./create-skill-sheet";
 import { SkillActions } from "./skill-actions";
 
 interface SkillTableProps {
@@ -66,22 +66,22 @@ export function SkillTable({
     {
       id: "select",
       header: ({ table }) => (
-        <div className="pl-4">
+        <Box pl={4}>
             <Checkbox
             checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
             onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
             aria-label="Select all"
             />
-        </div>
+        </Box>
       ),
       cell: ({ row }) => (
-        <div className="pl-4">
+        <Box pl={4}>
             <Checkbox
             checked={row.getIsSelected()}
             onCheckedChange={(value) => row.toggleSelected(!!value)}
             aria-label="Select row"
             />
-        </div>
+        </Box>
       ),
       enableSorting: false,
       enableHiding: false,
@@ -90,9 +90,9 @@ export function SkillTable({
       header: "Tên kỹ năng",
       accessorKey: "name",
       cell: ({ row }) => (
-        <span className="text-foreground group-hover:text-primary font-medium transition-colors">
+        <UIText weight="medium" className="group-hover:text-primary transition-colors">
           {row.original.name}
-        </span>
+        </UIText>
       ),
     },
     {
@@ -108,9 +108,9 @@ export function SkillTable({
       header: "Mô tả",
       accessorKey: "description",
       cell: ({ row }) => (
-        <span className="text-muted-foreground block max-w-md truncate">
+        <UIText variant="muted" className="block max-w-md truncate">
           {row.original.description || "-"}
-        </span>
+        </UIText>
       ),
     },
     {
@@ -140,7 +140,7 @@ export function SkillTable({
             icon={Plus}
             title="Chưa có kỹ năng nào"
             description="Tạo kỹ năng mới để gán cho dịch vụ và nhân viên."
-            action={<CreateSkillDialog />}
+            action={<CreateSkillSheet />}
           />
         }
       />

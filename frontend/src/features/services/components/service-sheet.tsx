@@ -1,12 +1,12 @@
   import { ResourceGroup } from "@/features/resources";
 import { useSheetForm } from "@/shared/hooks";
 import {
-  Button,
-  Form,
-  SheetClose,
+    Button,
+    Form,
+    SheetClose,
 } from "@/shared/ui";
 import { ActionSheet, Icon } from "@/shared/ui/custom";
-import { Group } from "@/shared/ui/layout";
+import { Group, VStack } from "@/shared/ui/layout";
 import { Save, Send } from "lucide-react";
 import { useCallback } from "react";
 import { createService, updateService } from "../actions";
@@ -143,8 +143,9 @@ import { ServiceForm } from "./service-form";
              <form
               id="service-form"
               onSubmit={onSubmit}
-              className="flex h-full flex-col gap-0"
+              className="h-full"
             >
+              <VStack gap={0} className="h-full">
               <ServiceForm
                 mode={mode}
                 availableSkills={availableSkills}
@@ -152,6 +153,7 @@ import { ServiceForm } from "./service-form";
                 availableResourceGroups={availableResourceGroups}
                 className="flex-1"
               />
+              </VStack>
             </form>
         </Form>
       </ActionSheet>

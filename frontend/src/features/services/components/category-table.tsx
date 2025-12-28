@@ -1,17 +1,20 @@
 "use client";
 
 import { useBulkAction, useTableParams } from "@/shared/hooks";
-import { Badge } from "@/shared/ui/badge";
 import { Checkbox } from "@/shared/ui/checkbox";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
 import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
+import { Box } from "@/shared/ui/layout";
+import { Text as UIText } from "@/shared/ui/typography";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { deleteServiceCategory } from "../actions";
 import { ServiceCategory } from "../model/types";
+import { CategoryActions } from "./category-actions";
+import { CreateCategorySheet } from "./create-category-sheet";
 
 interface CategoryTableProps {
   categories: ServiceCategory[];
@@ -57,41 +60,39 @@ export function CategoryTable({
     {
       id: "select",
       header: ({ table }) => (
-        <div className="pl-4">
+        <Box pl={4}>
           <Checkbox
             checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
             onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
             aria-label="Select all"
           />
-        </div>
+        </Box>
       ),
       cell: ({ row }) => (
-        <div className="pl-4">
+        <Box pl={4}>
           <Checkbox
             checked={row.getIsSelected()}
             onCheckedChange={(value) => row.toggleSelected(!!value)}
             aria-label="Select row"
           />
-        </div>
+        </Box>
       ),
       enableSorting: false,
     },
     {
       header: "Thứ tự",
       accessorKey: "sort_order",
-      cell: ({ row }) => <span className="text-muted-foreground font-mono">{row.original.sort_order}</span>,
+      cell: ({ row }) => <UIText variant="muted" className="font-mono">{row.original.sort_order}</UIText>,
     },
     {
       header: "Tên danh mục",
       accessorKey: "name",
-      cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
+      cell: ({ row }) => <UIText weight="medium">{row.original.name}</UIText>,
     },
     {
       header: "Hành động",
       id: "actions",
-      cell: ({ row }) => (
-        <Badge variant="outline" className="cursor-pointer hover:bg-muted">Chỉnh sửa</Badge>
-      ),
+      cell: ({ row }) => <CategoryActions category={row.original} />,
     },
   ];
 
@@ -115,7 +116,7 @@ export function CategoryTable({
             icon={Plus}
             title="Chưa có danh mục nào"
             description="Tạo danh mục để phân loại các dịch vụ tại spa."
-            action={<Badge>Thêm danh mục mới</Badge>}
+            action={<CreateCategorySheet />}
           />
         }
       />

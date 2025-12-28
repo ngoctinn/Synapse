@@ -36,8 +36,8 @@ export function SkillsTab({ availableSkills }: SkillsTabProps) {
         <div className="mb-4">
           <FormLabel className="text-base">Danh sách kỹ năng</FormLabel>
         </div>
-        <ScrollArea className="h-[300px] rounded-md border p-4">
-          <Grid gap={4} cols={1} className="sm:grid-cols-2">
+        <ScrollArea className="h-72 rounded-md border p-4">
+          <Grid gap={4} className="grid-cols-1 sm:grid-cols-2">
             {availableSkills.map((skill) => (
               <FormItem
                 key={skill.id}

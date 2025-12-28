@@ -2,7 +2,7 @@ import { formatCurrency } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import { Checkbox } from "@/shared/ui/checkbox";
 import { Column } from "@/shared/ui/custom/data-table";
-import { Box, Group, Stack } from "@/shared/ui/layout";
+import { Box, HStack, Stack } from "@/shared/ui/layout";
 import { Switch } from "@/shared/ui/switch";
 import { Text as UIText } from "@/shared/ui/typography";
 import { MOCK_RESOURCE_GROUPS } from "../model/mocks";
@@ -126,13 +126,13 @@ export function getServiceColumns({
         }
 
         return (
-          <Group wrap gap={1}>
+          <HStack className="flex-wrap" gap={1}>
             {reqs.map((req, idx) => (
               <Badge key={idx} variant="outline" size="md" className="font-normal">
                 {req.quantity}x {getResourceGroupName(req.group_id)}
               </Badge>
             ))}
-          </Group>
+          </HStack>
         );
       },
     },
@@ -150,7 +150,7 @@ export function getServiceColumns({
       header: "Trạng thái",
       accessorKey: "is_active",
       cell: ({ row }) => (
-        <Group align="center" gap={2} onClick={(e) => e.stopPropagation()}>
+        <HStack align="center" gap={2} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
           <Switch
             checked={row.original.is_active}
             onCheckedChange={(checked) =>
@@ -164,7 +164,7 @@ export function getServiceColumns({
           >
             {row.original.is_active ? "Hiện" : "Ẩn"}
           </Badge>
-        </Group>
+        </HStack>
       ),
     },
     {
@@ -172,15 +172,15 @@ export function getServiceColumns({
       id: "actions",
       meta: { align: "right" },
       cell: ({ row }) => (
-        <Group
+        <HStack
           justify="end"
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e: React.MouseEvent) => e.stopPropagation()}
         >
           <ServiceActions
             service={row.original}
             onEdit={() => onEdit(row.original)}
           />
-        </Group>
+        </HStack>
       ),
     },
   ];

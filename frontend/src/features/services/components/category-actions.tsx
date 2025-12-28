@@ -1,3 +1,5 @@
+"use client";
+
 import { useDeleteAction } from "@/shared/hooks";
 import {
     DeleteConfirmDialog,
@@ -11,21 +13,21 @@ import {
     SheetTitle,
 } from "@/shared/ui/sheet";
 import { useState } from "react";
-import { deleteSkill } from "../actions";
-import { Skill } from "../model/types";
-import { SkillForm } from "./skill-form";
+import { deleteServiceCategory } from "../actions";
+import { ServiceCategory } from "../model/types";
+import { CategoryForm } from "./category-form";
 
-interface SkillActionsProps {
-  skill: Skill;
+interface CategoryActionsProps {
+  category: ServiceCategory;
 }
 
-export function SkillActions({ skill }: SkillActionsProps) {
+export function CategoryActions({ category }: CategoryActionsProps) {
   const [showEditSheet, setShowEditSheet] = useState(false);
 
   const { handleDelete, dialogProps, openDeleteDialog, isPending } =
     useDeleteAction({
-      deleteAction: deleteSkill,
-      entityName: "kỹ năng",
+      deleteAction: deleteServiceCategory,
+      entityName: "danh mục",
     });
 
   return (
@@ -39,20 +41,27 @@ export function SkillActions({ skill }: SkillActionsProps) {
       <Sheet open={showEditSheet} onOpenChange={setShowEditSheet}>
         <SheetContent className="sm:max-w-md">
           <SheetHeader>
-            <SheetTitle>Cập nhật Kỹ năng</SheetTitle>
-            <SheetDescription>Chỉnh sửa thông tin kỹ năng.</SheetDescription>
+            <SheetTitle>Cập nhật Danh mục</SheetTitle>
+            <SheetDescription>
+              Chỉnh sửa thông tin danh mục dịch vụ.
+            </SheetDescription>
           </SheetHeader>
           <div className="mt-6">
-            <SkillForm skill={skill} onSuccess={() => setShowEditSheet(false)} />
+            <CategoryForm
+              category={category}
+              mode="edit"
+              onSuccess={() => setShowEditSheet(false)}
+              onCancel={() => setShowEditSheet(false)}
+            />
           </div>
         </SheetContent>
       </Sheet>
 
       <DeleteConfirmDialog
         {...dialogProps}
-        onConfirm={() => handleDelete(skill.id)}
-        entityName="kỹ năng"
-        entityLabel={skill.name}
+        onConfirm={() => handleDelete(category.id)}
+        entityName="danh mục"
+        entityLabel={category.name}
       />
     </>
   );

@@ -4,13 +4,13 @@
 import { PaginatedPackages as PackagePaginationResponse } from "@/features/packages/model/types";
 import { ResourceGroup } from "@/features/resources";
 import {
-  PageContent,
-  PageHeader,
-  PageShell,
-  SurfaceCard,
+    PageContent,
+    PageHeader,
+    PageShell,
+    SurfaceCard,
 } from "@/shared/components/layout/page-layout";
 import { ActionResponse } from "@/shared/lib/action-response";
-import { Stack } from "@/shared/ui/layout/stack";
+import { Stack } from "@/shared/ui/layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, use, useTransition } from "react";

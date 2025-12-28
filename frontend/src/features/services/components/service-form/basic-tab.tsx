@@ -18,7 +18,7 @@ import {
 import { Card, CardContent } from "@/shared/ui/card";
 import { RequiredMark } from "@/shared/ui/custom";
 import { NumberInput } from "@/shared/ui/custom/number-input";
-import { Grid, Group, Stack } from "@/shared/ui/layout";
+import { Grid, HStack, Stack } from "@/shared/ui/layout";
 import { Plus } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { toast } from "sonner";
@@ -56,7 +56,7 @@ export function BasicTab({ categories }: BasicTabProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Danh mục</FormLabel>
-              <Group gap={2}>
+              <HStack gap={2}>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger className="flex-1">
@@ -74,7 +74,7 @@ export function BasicTab({ categories }: BasicTabProps) {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-10 w-10 shrink-0"
+                  className="size-10 shrink-0"
                   type="button"
                   title="Quản lý danh mục"
                   onClick={() => {
@@ -82,9 +82,9 @@ export function BasicTab({ categories }: BasicTabProps) {
                     toast.info("Tính năng quản lý danh mục nhanh đang được đồng bộ");
                   }}
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                 </Button>
-              </Group>
+              </HStack>
               <FormMessage />
             </FormItem>
           )}
@@ -121,7 +121,7 @@ export function BasicTab({ categories }: BasicTabProps) {
             return (
               <FormItem>
                 <FormLabel>Thời lượng (Phút)</FormLabel>
-                <Group gap={2}>
+                <HStack gap={2}>
                   <Select
                     onValueChange={(val) => {
                       if (val !== "custom") field.onChange(Number(val));
@@ -154,7 +154,7 @@ export function BasicTab({ categories }: BasicTabProps) {
                       suffix="ph"
                     />
                   )}
-                </Group>
+                </HStack>
                 <FormMessage />
               </FormItem>
             );
@@ -168,10 +168,10 @@ export function BasicTab({ categories }: BasicTabProps) {
           name="buffer_time"
           render={({ field }) => (
             <FormItem>
-              <Group align="center" justify="between" className="mb-2">
+              <HStack align="center" justify="between" className="mb-2">
                  <FormLabel>Thời gian nghỉ (Buffer Time)</FormLabel>
-                 <span className="text-muted-foreground font-mono text-sm">{field.value} phút</span>
-              </Group>
+                 <span className="text-sm font-mono text-muted-foreground">{field.value} phút</span>
+              </HStack>
               <FormControl>
                 <Slider
                    min={0}
@@ -181,7 +181,7 @@ export function BasicTab({ categories }: BasicTabProps) {
                    onValueChange={(vals) => field.onChange(vals[0])}
                 />
               </FormControl>
-              <p className="text-muted-foreground text-xs">
+              <p className="text-xs text-muted-foreground">
                 Khoảng nghỉ bắt buộc sau mỗi dịch vụ để dọn dẹp và chuẩn bị.
               </p>
               <FormMessage />
@@ -219,7 +219,7 @@ export function BasicTab({ categories }: BasicTabProps) {
               <CardContent className="flex items-center justify-between p-4">
                 <div className="space-y-0.5">
                   <FormLabel className="text-base">Trạng thái hoạt động</FormLabel>
-                   <p className="text-muted-foreground text-sm">
+                   <p className="text-sm text-muted-foreground">
                     Dịch vụ sẽ hiển thị trên trang đặt lịch của khách hàng khi bật.
                   </p>
                 </div>

@@ -13,6 +13,7 @@ import {
     showToast,
     Textarea,
 } from "@/shared/ui";
+import { Grid, HStack, VStack } from "@/shared/ui/layout";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Code, Tag } from "lucide-react";
 import { useTransition } from "react";
@@ -73,71 +74,73 @@ export function SkillForm({ skill, onSuccess }: SkillFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="py-4">
+        <VStack gap={6}>
+          <Grid gap={6} className="grid-cols-1 md:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tên kỹ năng</FormLabel>
+                  <FormControl>
+                    <Input
+                      startContent={<Tag className="size-4" />}
+                      placeholder="VD: Massage Body"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="code"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Mã kỹ năng</FormLabel>
+                  <FormControl>
+                    <Input
+                      startContent={<Code className="size-4" />}
+                      placeholder="VD: SK_MASSAGE_BODY"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Mã duy nhất, viết hoa, không dấu cách.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </Grid>
+
           <FormField
             control={form.control}
-            name="name"
+            name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tên kỹ năng</FormLabel>
+                <FormLabel>Mô tả</FormLabel>
                 <FormControl>
-                  <Input
-                    startContent={<Tag className="size-4" />}
-                    placeholder="VD: Massage Body"
+                  <Textarea
+                    placeholder="Mô tả chi tiết về kỹ năng này..."
+                    className="resize-none"
                     {...field}
+                    value={field.value || ""}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="code"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Mã kỹ năng</FormLabel>
-                <FormControl>
-                  <Input
-                    startContent={<Code className="size-4" />}
-                    placeholder="VD: SK_MASSAGE_BODY"
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>
-                  Mã duy nhất, viết hoa, không dấu cách.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
 
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mô tả</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Mô tả chi tiết về kỹ năng này..."
-                  className="resize-none"
-                  {...field}
-                  value={field.value || ""}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <div className="flex justify-end gap-4 border-t pt-4">
-          <Button type="submit" isLoading={isPending}>
-            {skill ? "Cập nhật" : "Tạo mới"}
-          </Button>
-        </div>
+          <HStack justify="end" gap={4} className="border-t pt-4">
+            <Button type="submit" isLoading={isPending}>
+              {skill ? "Cập nhật" : "Tạo mới"}
+            </Button>
+          </HStack>
+        </VStack>
       </form>
     </Form>
   );

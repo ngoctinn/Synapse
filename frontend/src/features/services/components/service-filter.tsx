@@ -3,11 +3,11 @@
 import { useFilterParams } from "@/shared/lib/hooks/use-filter-params";
 import { HStack } from "@/shared/ui/layout";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/shared/ui/select";
 import { ServiceCategory } from "../model/types";
 
@@ -36,7 +36,7 @@ export function ServiceFilter({
     <HStack gap={2} className="items-center">
       {/* 1. Danh mục (Inline - Thao tác nhanh) */}
       <Select value={categoryId || "all"} onValueChange={handleCategoryChange}>
-        <SelectTrigger className="h-10 w-[200px] bg-background text-sm">
+        <SelectTrigger className="w-56 bg-background text-sm">
           <SelectValue placeholder="Danh mục" />
         </SelectTrigger>
         <SelectContent>
@@ -49,7 +49,7 @@ export function ServiceFilter({
 
       {/* 2. Thời lượng (Inline - Thao tác nhanh) */}
       <Select value={duration || "all"} onValueChange={handleDurationChange}>
-        <SelectTrigger className="h-10 w-[180px] bg-background text-sm">
+        <SelectTrigger className="w-48 bg-background text-sm">
           <SelectValue placeholder="Thời lượng" />
         </SelectTrigger>
         <SelectContent>
