@@ -12,19 +12,10 @@ export default async function Page({
   const { page, search, status } = await searchParams;
   const pageNumber = Number(page) || 1;
 
-  const [skillsRes, resourceGroupsRes, categoriesRes] = await Promise.all([
-    getSkills(),
-    getResourceGroups(),
-    getServiceCategories(),
-  ]);
-
-  const skills =
-    skillsRes.status === "success" ? skillsRes.data || [] : [];
-  const resourceGroups =
-    resourceGroupsRes.status === "success" ? resourceGroupsRes.data || [] : [];
-  const categories =
-    categoriesRes.status === "success" ? categoriesRes.data || [] : [];
-
+  // Parallel data fetching - start everything at once
+  const skillsPromise = getSkills();
+  const resourceGroupsPromise = getResourceGroups();
+  const categoriesPromise = getServiceCategories();
   const servicesPromise = getServices(pageNumber, 10, search);
   const packagesPromise = getPackages(pageNumber, 10, search, status);
 
@@ -34,9 +25,9 @@ export default async function Page({
         page={pageNumber}
         servicesPromise={servicesPromise}
         packagesPromise={packagesPromise}
-        skills={skills}
-        categories={categories}
-        resourceGroups={resourceGroups}
+        skillsPromise={skillsPromise}
+        categoriesPromise={categoriesPromise}
+        resourceGroupsPromise={resourceGroupsPromise}
       />
     </Suspense>
   );

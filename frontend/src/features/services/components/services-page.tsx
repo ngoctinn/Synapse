@@ -4,10 +4,10 @@
 import { PaginatedPackages as PackagePaginationResponse } from "@/features/packages/model/types";
 import { ResourceGroup } from "@/features/resources";
 import {
-    PageContent,
-    PageHeader,
-    PageShell,
-    SurfaceCard,
+  PageContent,
+  PageHeader,
+  PageShell,
+  SurfaceCard,
 } from "@/shared/components/layout/page-layout";
 import { ActionResponse } from "@/shared/lib/action-response";
 import { Stack } from "@/shared/ui/layout";
@@ -16,32 +16,32 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, use, useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { ServiceCategory, ServicePagination, Skill } from "../model/types";
-import { CategoryTable } from "./category-table";
+import { CategoryTable, CategoryTableSkeleton } from "./category-table";
 import { ServiceTable, ServiceTableSkeleton } from "./service-table";
-import { SkillTable } from "./skill-table";
+import { SkillTable, SkillTableSkeleton } from "./skill-table";
 
   interface ServicesPageProps {
     page: number;
-    skills: Skill[];
-    categories: ServiceCategory[];
-    resourceGroups: ResourceGroup[];
+    skillsPromise: Promise<ActionResponse<Skill[]>>;
+    categoriesPromise: Promise<ActionResponse<ServiceCategory[]>>;
+    resourceGroupsPromise: Promise<ActionResponse<ResourceGroup[]>>;
     servicesPromise: Promise<ActionResponse<ServicePagination>>;
     packagesPromise: Promise<ActionResponse<PackagePaginationResponse>>;
   }
 
   function ServiceListWrapper({
     servicesPromise,
-    skills,
-    categories,
-    resourceGroups,
+    skillsPromise,
+    categoriesPromise,
+    resourceGroupsPromise,
     page,
     searchProps,
     onDataLoaded,
   }: {
     servicesPromise: Promise<ActionResponse<ServicePagination>>;
-    skills: Skill[];
-    categories: ServiceCategory[];
-    resourceGroups: ResourceGroup[];
+    skillsPromise: Promise<ActionResponse<Skill[]>>;
+    categoriesPromise: Promise<ActionResponse<ServiceCategory[]>>;
+    resourceGroupsPromise: Promise<ActionResponse<ResourceGroup[]>>;
     page: number;
     searchProps: {
       initialValue: string;
@@ -50,6 +50,9 @@ import { SkillTable } from "./skill-table";
     onDataLoaded?: (data: any[]) => void;
   }) {
     const response = use(servicesPromise);
+    const skillsRes = use(skillsPromise);
+    const categoriesRes = use(categoriesPromise);
+    const resourceGroupsRes = use(resourceGroupsPromise);
 
     if (response.status === "error") {
       return (
@@ -58,6 +61,10 @@ import { SkillTable } from "./skill-table";
         </div>
       );
     }
+
+    const skills = skillsRes.status === "success" ? skillsRes.data || [] : [];
+    const categories = categoriesRes.status === "success" ? categoriesRes.data || [] : [];
+    const resourceGroups = resourceGroupsRes.status === "success" ? resourceGroupsRes.data || [] : [];
 
     const { data, total } = response.data!;
     const totalPages = Math.ceil(total / 10);
@@ -110,11 +117,33 @@ import { SkillTable } from "./skill-table";
     );
   }
 
+  function CategoryListWrapper({
+    categoriesPromise,
+  }: {
+    categoriesPromise: Promise<ActionResponse<ServiceCategory[]>>;
+  }) {
+    const response = use(categoriesPromise);
+    const categories = response.status === "success" ? response.data || [] : [];
+
+    return <CategoryTable categories={categories} variant="flush" />;
+  }
+
+  function SkillListWrapper({
+    skillsPromise,
+  }: {
+    skillsPromise: Promise<ActionResponse<Skill[]>>;
+  }) {
+    const response = use(skillsPromise);
+    const skills = response.status === "success" ? response.data || [] : [];
+
+    return <SkillTable skills={skills} variant="flush" />;
+  }
+
   export function ServicesPage({
     page,
-    skills,
-    categories,
-    resourceGroups,
+    skillsPromise,
+    categoriesPromise,
+    resourceGroupsPromise,
     servicesPromise,
     packagesPromise,
   }: ServicesPageProps) {
@@ -206,9 +235,9 @@ import { SkillTable } from "./skill-table";
                   <Suspense fallback={<ServiceTableSkeleton />}>
                     <ServiceListWrapper
                       servicesPromise={servicesPromise}
-                      skills={skills}
-                      categories={categories}
-                      resourceGroups={resourceGroups}
+                      skillsPromise={skillsPromise}
+                      categoriesPromise={categoriesPromise}
+                      resourceGroupsPromise={resourceGroupsPromise}
                       page={page}
                       searchProps={{
                         initialValue: initialSearch,
@@ -237,7 +266,9 @@ import { SkillTable } from "./skill-table";
             <TabsContent value="skills" className="mt-0">
               <PageContent>
                 <SurfaceCard>
-                  <SkillTable skills={skills} variant="flush" />
+                  <Suspense fallback={<SkillTableSkeleton />}>
+                    <SkillListWrapper skillsPromise={skillsPromise} />
+                  </Suspense>
                 </SurfaceCard>
               </PageContent>
             </TabsContent>
@@ -245,7 +276,9 @@ import { SkillTable } from "./skill-table";
             <TabsContent value="categories" className="mt-0">
               <PageContent>
                 <SurfaceCard>
-                  <CategoryTable categories={categories} variant="flush" />
+                  <Suspense fallback={<CategoryTableSkeleton />}>
+                    <CategoryListWrapper categoriesPromise={categoriesPromise} />
+                  </Suspense>
                 </SurfaceCard>
               </PageContent>
             </TabsContent>
