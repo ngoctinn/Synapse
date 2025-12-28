@@ -7,6 +7,7 @@ import { Checkbox } from "@/shared/ui/checkbox";
 import { Column, DataTable } from "@/shared/ui/custom/data-table";
 import { DataTableEmptyState } from "@/shared/ui/custom/data-table-empty-state";
 import { DataTableSkeleton } from "@/shared/ui/custom/data-table-skeleton";
+import { DataTableToolbar } from "@/shared/ui/custom/data-table-toolbar";
 import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import { Box } from "@/shared/ui/layout";
@@ -135,6 +136,11 @@ export function SkillTable({
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection as any}
         getRowId={(row) => row.id.toString()}
+        toolbar={
+          <DataTableToolbar
+            actions={<CreateSkillSheet />}
+          />
+        }
         emptyState={
           <DataTableEmptyState
             icon={Plus}

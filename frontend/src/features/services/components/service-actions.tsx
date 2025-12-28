@@ -29,6 +29,7 @@ export function ServiceActions({ service, onEdit }: ServiceActionsProps) {
     <TableRowActions
       onEdit={onEdit}
       onDelete={handleDelete}
+      disabled={isPending}
     />
   );
 }

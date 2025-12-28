@@ -4,22 +4,20 @@ import { Badge } from "@/shared/ui/badge";
 import { Checkbox } from "@/shared/ui/checkbox";
 import { Column } from "@/shared/ui/custom/data-table";
 import { Box, HStack, Stack } from "@/shared/ui/layout";
-import { Switch } from "@/shared/ui/switch";
 import { Text as UIText } from "@/shared/ui/typography";
 import { Service, ServiceCategory } from "../model/types";
 import { ServiceActions } from "./service-actions";
+import { ServiceStatusToggle } from "./service-status-toggle";
 
 interface GetServiceColumnsProps {
   availableCategories: ServiceCategory[];
   availableResourceGroups: ResourceGroup[];
-  onToggleStatus: (service: Service, checked: boolean) => void;
   onEdit: (service: Service) => void;
 }
 
 export function getServiceColumns({
   availableCategories,
   availableResourceGroups,
-  onToggleStatus,
   onEdit,
 }: GetServiceColumnsProps): Column<Service>[] {
   const getResourceGroupName = (groupId: string) => {
@@ -151,23 +149,7 @@ export function getServiceColumns({
     {
       header: "Trạng thái",
       accessorKey: "is_active",
-      cell: ({ row }) => (
-        <HStack align="center" gap={2} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-          <Switch
-            checked={row.original.is_active}
-            onCheckedChange={(checked) =>
-              onToggleStatus(row.original, checked)
-            }
-            aria-label={`Trạng thái dịch vụ ${row.original.name}`}
-          />
-          <Badge
-            variant={row.original.is_active ? "status-active" : "status-inactive"}
-            size="xs"
-          >
-            {row.original.is_active ? "Hiện" : "Ẩn"}
-          </Badge>
-        </HStack>
-      ),
+      cell: ({ row }) => <ServiceStatusToggle service={row.original} />,
     },
     {
       header: "Hành động",

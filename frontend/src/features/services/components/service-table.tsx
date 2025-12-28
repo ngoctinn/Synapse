@@ -4,7 +4,6 @@ import { ColumnFiltersState } from "@tanstack/react-table";
 import { Loader2, Plus, Search } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
-import { toast } from "sonner";
 
 import { ResourceGroup } from "@/features/resources";
 import {
@@ -21,7 +20,7 @@ import { DeleteConfirmDialog } from "@/shared/ui/custom/delete-confirm-dialog";
 import { TableActionBar } from "@/shared/ui/custom/table-action-bar";
 import { Input } from "@/shared/ui/input";
 
-import { deleteService, toggleServiceStatus } from "../actions";
+import { deleteService } from "../actions";
 import { Service, ServiceCategory, Skill } from "../model/types";
 import { CreateServiceTrigger } from "./create-service-trigger";
 import { getServiceColumns } from "./service-columns";
@@ -88,19 +87,9 @@ export function ServiceTable({
     executeBulkDelete(ids, () => setRowSelection({}));
   };
 
-  const handleToggleStatus = async (service: Service, checked: boolean) => {
-    try {
-       await toggleServiceStatus(service.id, checked);
-       toast.success(checked ? `Đã kích hoạt "${service.name}"` : `Đã ẩn "${service.name}"`);
-    } catch (error) {
-       toast.error("Không thể thay đổi trạng thái");
-    }
- };
-
   const columns = useMemo(() => getServiceColumns({
     availableCategories,
     availableResourceGroups,
-    onToggleStatus: handleToggleStatus,
     onEdit: (service) => setEditingService(service),
   }), [availableCategories, availableResourceGroups]);
 

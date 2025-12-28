@@ -234,3 +234,5 @@ export function PackageTable({
     </>
   );
 }
+
+export { PackageTableSkeleton } from "./package-table-skeleton";

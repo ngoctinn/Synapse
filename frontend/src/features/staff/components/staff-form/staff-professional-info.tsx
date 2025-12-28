@@ -1,7 +1,7 @@
 "use client";
 
-import { useFormContext, useWatch } from "react-hook-form";
-import { Briefcase, Settings2, Check } from "lucide-react";
+import { Skill } from "@/features/services";
+import { cn } from "@/shared/lib/utils";
 import {
   FormControl,
   FormDescription,
@@ -15,15 +15,12 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Button,
   TagInput,
   showToast,
 } from "@/shared/ui";
-import { cn } from "@/shared/lib/utils";
-import { Skill } from "@/features/services";
-import { SkillManagerDialog } from "@/features/services/components/skill-manager/skill-manager-dialog";
-import { Stack, Group, Grid } from "@/shared/ui/layout";
-import { useState } from "react";
+import { Grid, Group, Stack } from "@/shared/ui/layout";
+import { Briefcase, Check } from "lucide-react";
+import { useFormContext, useWatch } from "react-hook-form";
 
 interface StaffProfessionalInfoProps {
   mode: "create" | "update";
@@ -40,16 +37,8 @@ export function StaffProfessionalInfo({ mode, skills }: StaffProfessionalInfoPro
   const control = form.control;
   const role = useWatch({ control, name: "role" });
 
-  const [availableSkills, setAvailableSkills] = useState<Skill[]>(skills);
-  const [isSkillManagerOpen, setSkillManagerOpen] = useState(false);
-
   return (
     <Stack gap={4}>
-      <SkillManagerDialog
-        open={isSkillManagerOpen}
-        onOpenChange={setSkillManagerOpen}
-        onSkillsChange={setAvailableSkills}
-      />
 
       <Grid gap={4} className="grid-cols-1 md:grid-cols-2">
         <FormField
@@ -131,18 +120,7 @@ export function StaffProfessionalInfo({ mode, skills }: StaffProfessionalInfoPro
 
       {role === "technician" && (
         <Stack gap={3} className="animate-in-top pt-2">
-          <Group align="center" justify="between" className="px-1">
-            <FormLabel className="text-sm font-medium">Kỹ năng chuyên môn</FormLabel>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground hover:text-primary h-6 gap-1 px-2 text-xs"
-              onClick={() => setSkillManagerOpen(true)}
-            >
-              <Settings2 className="h-3 w-3" /> Quản lý kỹ năng
-            </Button>
-          </Group>
+          <FormLabel className="text-sm font-medium px-1">Kỹ năng chuyên môn</FormLabel>
           <FormField
             control={control}
             name="skill_ids"
@@ -150,11 +128,11 @@ export function StaffProfessionalInfo({ mode, skills }: StaffProfessionalInfoPro
               <FormItem className="space-y-0">
                 <FormControl>
                   <TagInput
-                    options={availableSkills.map((s) => ({ id: s.id, label: s.name }))}
+                    options={skills.map((s: Skill) => ({ id: s.id, label: s.name }))}
                     selectedIds={field.value || []}
                     newTags={[]}
                     onSelectedChange={field.onChange}
-                    onNewTagsChange={() => showToast.info("Vui lòng dùng nút 'Quản lý kỹ năng' để thêm mới")}
+                    onNewTagsChange={() => showToast.info("Vui lòng tạo kỹ năng tại trang 'Quản lý dịch vụ'")}
                     placeholder="Chọn kỹ năng..."
                     isError={fieldState.invalid}
                     className="bg-background min-h-9 text-sm"

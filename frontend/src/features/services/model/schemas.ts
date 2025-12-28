@@ -34,6 +34,15 @@ export const serviceSchema = z
     skill_ids: z.array(z.string()).default([]),
   })
   .superRefine((data, ctx) => {
+    // Validation: Bắt buộc ít nhất 1 kỹ năng để có thể match KTV
+    if (data.skill_ids.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Vui lòng chọn ít nhất 1 kỹ năng để dịch vụ có thể được gán cho nhân viên",
+        path: ["skill_ids"],
+      });
+    }
+
     // Validate resource requirement timelines
     data.resource_requirements.forEach((req, index) => {
        if (req.usage_duration) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useFilterParams } from "@/shared/lib/hooks/use-filter-params";
+import { Button } from "@/shared/ui/button";
 import { HStack } from "@/shared/ui/layout";
 import {
     Select,
@@ -9,6 +10,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/shared/ui/select";
+import { X } from "lucide-react";
 import { ServiceCategory } from "../model/types";
 
 interface ServiceFilterProps {
@@ -18,7 +20,7 @@ interface ServiceFilterProps {
 export function ServiceFilter({
   availableCategories,
 }: ServiceFilterProps) {
-  const { searchParams, updateParam } =
+  const { searchParams, updateParam, clearFilters } =
     useFilterParams({
       filterKeys: [
         "duration",
@@ -28,6 +30,9 @@ export function ServiceFilter({
 
   const duration = searchParams.get("duration");
   const categoryId = searchParams.get("category_id");
+
+  // Kiểm tra xem có filter nào đang active không
+  const hasActiveFilters = duration || categoryId;
 
   const handleDurationChange = (value: string) => updateParam("duration", value === "all" ? null : value);
   const handleCategoryChange = (value: string) => updateParam("category_id", value === "all" ? null : value);
@@ -60,6 +65,19 @@ export function ServiceFilter({
           <SelectItem value="90-inf" className="text-xs">Trên 90 phút</SelectItem>
         </SelectContent>
       </Select>
+
+      {/* 3. Nút xóa bộ lọc (hiển thị khi có filter active) */}
+      {hasActiveFilters && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={clearFilters}
+          className="text-muted-foreground hover:text-foreground"
+        >
+          <X className="mr-1 size-3.5" />
+          Xóa bộ lọc
+        </Button>
+      )}
     </HStack>
   );
 }

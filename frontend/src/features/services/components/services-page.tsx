@@ -1,6 +1,6 @@
   "use client";
 
-  import { PackageTable } from "@/features/packages/components/package-table";
+  import { PackageTable, PackageTableSkeleton } from "@/features/packages/components/package-table";
 import { PaginatedPackages as PackagePaginationResponse } from "@/features/packages/model/types";
 import { ResourceGroup } from "@/features/resources";
 import {
@@ -121,7 +121,16 @@ import { SkillTable, SkillTableSkeleton } from "./skill-table";
     categoriesPromise: Promise<ActionResponse<ServiceCategory[]>>;
   }) {
     const response = use(categoriesPromise);
-    const categories = response.status === "success" ? response.data || [] : [];
+
+    if (response.status === "error") {
+      return (
+        <div className="text-destructive p-4 text-center">
+          Lỗi tải danh mục: {response.message}
+        </div>
+      );
+    }
+
+    const categories = response.data || [];
 
     return <CategoryTable categories={categories} variant="flush" />;
   }
@@ -132,7 +141,16 @@ import { SkillTable, SkillTableSkeleton } from "./skill-table";
     skillsPromise: Promise<ActionResponse<Skill[]>>;
   }) {
     const response = use(skillsPromise);
-    const skills = response.status === "success" ? response.data || [] : [];
+
+    if (response.status === "error") {
+      return (
+        <div className="text-destructive p-4 text-center">
+          Lỗi tải kỹ năng: {response.message}
+        </div>
+      );
+    }
+
+    const skills = response.data || [];
 
     return <SkillTable skills={skills} variant="flush" />;
   }
@@ -250,7 +268,7 @@ import { SkillTable, SkillTableSkeleton } from "./skill-table";
             <TabsContent value="packages" className="mt-0">
               <PageContent>
                 <SurfaceCard>
-                  <Suspense fallback={<ServiceTableSkeleton />}>
+                  <Suspense fallback={<PackageTableSkeleton />}>
                     <PackageListWrapper
                       packagesPromise={packagesPromise}
                       servicesPromise={servicesPromise}
