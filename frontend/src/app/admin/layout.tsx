@@ -19,7 +19,7 @@ export default async function AdminLayout({
 
   if (session?.access_token) {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const apiUrl = process.env.API_URL;
       if (apiUrl) {
         const response = await fetch(`${apiUrl}/users/me`, {
           headers: {

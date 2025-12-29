@@ -3,6 +3,9 @@
 // Actions
 export * from "./actions";
 
+// Model
+export * from "./model/types";
+
 // Components
 export { StaffPage } from "./components/staff-page";
 export { StaffSheet } from "./components/staff-sheet";

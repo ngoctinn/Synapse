@@ -9,7 +9,7 @@ trigger: always_on
 
 Mô hình: Modular Monolith (Khối đơn nhất theo mô-đun) kết hợp Vertical Slice Architecture (Kiến trúc lát cắt dọc).
 Chiến lược tích hợp: Tách biệt Backend và Frontend nhưng cùng chia sẻ tư duy nghiệp vụ (Domain-driven).
-Giao tiếp: Next.js Server Actions đóng vai trò là lớp Backend-for-Frontend (BFF), gọi trực tiếp đến FastAPI.
+Giao tiếp: Data Access Layer (DAL) pattern. Server Components gọi trực tiếp hàm fetch từ file `.api.ts` (wrapped bởi `React.cache()`). Server Actions chỉ dùng cho mutations.
 
 ### **2. Backend (Máy Chủ & Xử Lý Dữ Liệu)**
 
@@ -108,15 +108,20 @@ RLS Injection:
 
 ---
 
-## **6.2. Frontend (Next.js 15 / React 19)**
+## **6.2. Frontend (Next.js 16 / React 19)**
 
-Async trong Next.js 15:
+Async trong Next.js 16:
 – params, searchParams, cookies, headers đều là Promise.
 – Bắt buộc `await` trước khi destructure.
 
+Data Fetching (DAL Pattern):
+– Sử dụng file `[feature].api.ts` cho tất cả API calls.
+– GET requests: Sử dụng `React.cache()` và `fetch` với `revalidate`/`tags`. Gọi trực tiếp từ Server Components.
+– Mutations: Sử dụng Server Actions kết hợp với `revalidateTag()`.
+– Biến môi trường: Sử dụng `API_URL` (không có prefix `NEXT_PUBLIC_`) để bảo mật, chỉ truy cập từ phía Server.
+
 Form & Mutation:
 – Dùng `useActionState`.
-– Server Actions làm BFF, không gọi API từ Client Component.
 – Sử dụng native `fetch` (không dùng Axios).
 
 ---

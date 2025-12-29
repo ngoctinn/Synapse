@@ -4,9 +4,9 @@ import {
   getServices, 
   getSkills, 
   getServiceCategories 
-} from "@/features/services";
-import { getResourceGroups } from "@/features/resources";
-import { getPackages } from "@/features/packages";
+} from "@/features/services/services.api";
+import { getResourceGroups } from "@/features/resources/resources.api";
+import { getPackages } from "@/features/packages/packages.api";
 
 export default async function Page({
   searchParams,

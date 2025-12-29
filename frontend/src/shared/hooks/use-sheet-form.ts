@@ -50,6 +50,7 @@ interface UseSheetFormOptions<
   TData = unknown,
 > {
   /** Zod schema để validate form */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   schema: z.ZodType<TFormValues, any, any>;
 
   /** Giá trị mặc định cho form */

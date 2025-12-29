@@ -3,9 +3,9 @@
 import { ActionResponse, error, success } from "@/shared/lib/action-response";
 import { fetchWithAuth } from "@/shared/lib/api";
 import { format } from "date-fns";
-import { getServices } from "../services/actions";
+import { getServices } from "../services/services.api";
 import { Service } from "../services/model/types";
-import { getStaffList } from "../staff/actions";
+import { getStaffList, Staff } from "../staff";
 import { ServiceItem, StaffItem, TimeSlot } from "./types";
 
 /**
@@ -63,13 +63,11 @@ export async function getAvailableStaff(_params: {
     }
 
     // Filter staff who are technicians and active
-    // In a real app, we would also check if they have the skills for the selected services
-    // and check availability for the date
     const technicians = staffResponse.data.data.filter(
-      (s) => s.user.role === "technician" && s.user.is_active
+      (s: Staff) => s.user.role === "technician" && s.user.is_active
     );
 
-    const staffItems: StaffItem[] = technicians.map((tech) => ({
+    const staffItems: StaffItem[] = technicians.map((tech: Staff) => ({
       id: tech.user_id, // Map user_id to id
       name: tech.user.full_name || "Nhân viên",
       role: tech.title,

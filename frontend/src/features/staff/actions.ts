@@ -1,27 +1,25 @@
 "use server";
 
-import "server-only";
-
-/**
- * @production-mock
- * WARNING: This action is currently using MOCK_SCHEDULES for demo purposes.
- * Roadmap: Replace with real API calls to /api/v1/staff/...
- */
-
 import { ActionResponse, error, success } from "@/shared/lib/action-response";
-import { fetchWithAuth } from "@/shared/lib/api";
-import { revalidatePath } from "next/cache";
-import { Skill } from "@/features/services";
+import { revalidateTag } from "next/cache";
+import { getSkills as getServicesSkills } from "@/features/services/services.api";
 import { staffCreateSchema } from "./model/schemas";
 import {
   CommissionReportItem,
   Schedule,
-  StaffListResponse,
   StaffUpdate,
 } from "./model/types";
 import { MOCK_SCHEDULES } from "./model/schedules";
+import {
+  deleteStaffApi,
+  getStaffList as getStaffListApi,
+  getTechniciansApi,
+  inviteStaffApi,
+  updateStaffApi as updateStaffApiCall,
+  updateStaffSkillsApi,
+} from "./staff.api";
 
-const API_ROOT = "/staff";
+export type { TechnicianOption } from "./staff.api";
 
 /**
  * Handle Staff Form Submission (Create/Update)
@@ -37,82 +35,29 @@ export async function manageStaff(
 }
 
 /**
- * Get Paginated Staff List
+ * Get Staff List (Server Action wrapper for Client Components or compatibility)
  */
 export async function getStaffList(
   page: number = 1,
   limit: number = 10,
   role?: string,
   isActive?: boolean
-): Promise<ActionResponse<StaffListResponse>> {
-  try {
-    const params = new URLSearchParams({
-      page: page.toString(),
-      limit: limit.toString(),
-    });
-    if (role) params.append("role", role);
-    if (isActive !== undefined) params.append("is_active", String(isActive));
-
-    const res = await fetchWithAuth(`${API_ROOT}/?${params.toString()}`);
-
-    if (!res.ok) {
-      if (res.status === 401) return error("Unauthorized");
-      const errData = await res.json();
-      return error(errData.detail || "Failed to fetch staff list");
-    }
-
-    const data = await res.json();
-    return success(data);
-  } catch (e) {
-    console.error("Error fetching staff list:", e);
-    return error("Failed to fetch staff list");
-  }
+) {
+  return getStaffListApi(page, limit, role, isActive);
 }
 
 /**
- * Get All Skills (Proxy to Services Module or direct mock if not ready)
- * TODO: Replace with real API call to /api/v1/skills if available
+ * Get All Skills (Delegated to Services)
  */
-export async function getSkills(): Promise<ActionResponse<Skill[]>> {
-  // Temporary: Fetch skills via Services API path if exists,
-  // OR fallback to mock. Since Service Module usually owns Skills.
-  // We will assume a standard endpoint exists or use Service module actions.
-  // For now simple fetch from backend if endpoint exists.
-  try {
-    const res = await fetchWithAuth("/api/v1/services/skills"); // Assumption
-    if (res.ok) {
-      const data = await res.json();
-      return success(data);
-    }
-  } catch (e) {
-    console.error("Error fetching skills:", e);
-  }
-  // Fallback to mock if API not ready
-  const { MOCK_SKILLS } = await import("@/features/services/model/mocks");
-  return success(MOCK_SKILLS);
+export async function getSkills() {
+  return getServicesSkills();
 }
 
-export type TechnicianOption = { id: string; name: string };
-
 /**
- * Get Technicians Options (Dropdown)
+ * Get Technicians (Server Action for Client Components)
  */
-export async function getTechnicians(): Promise<TechnicianOption[]> {
-  try {
-    const res = await fetchWithAuth(
-      `${API_ROOT}/?role=technician&is_active=true&limit=100`
-    );
-    if (!res.ok) return [];
-
-    const data: StaffListResponse = await res.json();
-    return data.data.map((staff) => ({
-      id: staff.user_id,
-      name: staff.user.full_name || "N/A",
-    }));
-  } catch (e) {
-    console.error("Error fetching technicians:", e);
-    return [];
-  }
+export async function getTechnicians() {
+  return getTechniciansApi();
 }
 
 /**
@@ -132,10 +77,6 @@ export async function inviteStaff(
     skill_ids: formData.get("skill_ids")
       ? JSON.parse(formData.get("skill_ids") as string)
       : [],
-    // hired_at: Not used in invite, optional in backend logic?
-    // Actually backend StaffInvite doesn't take hired_at.
-    // Backend StaffCreate takes hired_at.
-    // We strictly follow backend StaffInvite schema.
   };
 
   const validatedFields = staffCreateSchema.safeParse(rawData);
@@ -147,96 +88,36 @@ export async function inviteStaff(
     );
   }
 
-  try {
-    const res = await fetchWithAuth(`${API_ROOT}/invite`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(validatedFields.data),
-    });
-
-    if (!res.ok) {
-      const errData = await res.json();
-      return error(errData.detail || "Gửi lời mời thất bại");
-    }
-
-    revalidatePath("/admin/staff");
-    return success(undefined, "Đã gửi lời mời thành công");
-  } catch (e) {
-    console.error("Invite error:", e);
-    return error("Gửi lời mời thất bại: Lỗi hệ thống");
+  const result = await inviteStaffApi(validatedFields.data);
+  if (result.status === "success") {
+    revalidateTag("staff", "max");
   }
+  return result;
 }
 
 /**
  * Delete (Deactivate) Staff
  */
 export async function deleteStaff(staffId: string): Promise<ActionResponse> {
-  try {
-    const res = await fetchWithAuth(`${API_ROOT}/${staffId}`, {
-      method: "DELETE",
-    });
-
-    if (!res.ok) {
-      const errData = await res.json();
-      return error(errData.detail || "Xóa nhân viên thất bại");
-    }
-
-    revalidatePath("/admin/staff");
-    return success(undefined, "Đã xóa nhân viên thành công");
-  } catch (e) {
-    console.error("Delete staff error:", e);
-    return error("Xóa nhân viên thất bại: Lỗi hệ thống");
+  const result = await deleteStaffApi(staffId);
+  if (result.status === "success") {
+    revalidateTag("staff", "max");
   }
+  return result;
 }
 
 /**
- * Common Update Function (Single API Call)
+ * Update Staff (Exported for direct use in components)
  */
 export async function updateStaff(
   staffId: string,
   data: StaffUpdate
 ): Promise<ActionResponse> {
-  try {
-    const res = await fetchWithAuth(`${API_ROOT}/${staffId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-
-    if (!res.ok) {
-      const errData = await res.json();
-      return error(errData.detail || "Cập nhật thất bại");
-    }
-    return success(undefined); // Success
-  } catch (e) {
-    console.error("Update staff API error:", e);
-    throw e;
+  const result = await updateStaffApiCall(staffId, data);
+  if (result.status === "success") {
+    revalidateTag("staff", "max");
   }
-}
-
-/**
- * Update Staff Skills
- */
-export async function updateStaffSkills(
-  staffId: string,
-  skillIds: string[]
-): Promise<ActionResponse> {
-  try {
-    const res = await fetchWithAuth(`${API_ROOT}/${staffId}/skills`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ skill_ids: skillIds }),
-    });
-
-    if (!res.ok) {
-      const errData = await res.json();
-      return error(errData.detail || "Cập nhật kỹ năng thất bại");
-    }
-    return success(undefined);
-  } catch (e) {
-    console.error("Update staff skills API error:", e);
-    throw e;
-  }
+  return result;
 }
 
 /**
@@ -249,7 +130,6 @@ export async function updateStaffAction(
   const staffId = formData.get("staff_id") as string;
   if (!staffId) return error("Missing Staff ID");
 
-  // 1. Prepare Staff Data (Domain data)
   const staffData: StaffUpdate = {
     title: formData.get("title") as string,
     bio: formData.get("bio") as string,
@@ -265,45 +145,18 @@ export async function updateStaffAction(
     : [];
 
   try {
-    // 2. Call APIs sequentially or parallel
-    // Currently backend splits User Update and Staff Update?
-    // Based on router.py, typical update_staff only updates Staff table (bio, title, color).
-    // User info (fullname, phone) might need separate API if not included in staff update.
-    // However, Frontend Form includes basic info.
-    // Checking router.py -> update_staff only accepts StaffUpdate (bio, title, color).
-    // We need a way to update User info. Usually /api/v1/users/{id}
-    // Assumption: We have /api/v1/users/{id} for basic info update.
-    // If not, we skip updating basic info here or need to add endpoint.
-    // Let's implement User Update via assumed endpoint.
-
-    // A. Update Staff Profile
     await updateStaff(staffId, staffData);
 
-    // B. Update Skills if Technician
     if (role === "technician") {
-      await updateStaffSkills(staffId, skillIds);
+      await updateStaffSkillsApi(staffId, skillIds);
     }
 
-    // C. Update User Info (Fullname, Phone) - Pending backend implementation
-    // For now we assume a user update endpoint exists or ignore it if not critical.
-    // TODO: Implement User Update API call
-    // await updateUser(staffId, { full_name, phone_number });
-
-    revalidatePath("/admin/staff");
+    revalidateTag("staff", "max");
     return success(undefined, "Cập nhật nhân viên thành công");
   } catch (e) {
     console.error("Update staff action error:", e);
     return error("Cập nhật thất bại: Lỗi hệ thống");
   }
-}
-
-export async function updateUser(
-  _userId: string,
-  _data: { full_name?: string; phone_number?: string }
-): Promise<ActionResponse> {
-  // Placeholder API call
-  // const res = await fetchWithAuth(`/api/v1/users/${userId}`, { method: "PUT", body: ... });
-  return success(undefined);
 }
 
 // ===== MOCK / NOT IMPLEMENTED YET =====
@@ -338,14 +191,14 @@ export async function getSchedules(
 export async function updateSchedule(
   _schedule: Schedule
 ): Promise<ActionResponse> {
-  revalidatePath("/admin/staff");
+  revalidateTag("staff", "max");
   return success(undefined, "Cập nhật lịch làm việc thành công");
 }
 
 export async function deleteSchedule(
   _scheduleId: string
 ): Promise<ActionResponse> {
-  revalidatePath("/admin/staff");
+  revalidateTag("staff", "max");
   return success(undefined, "Đã xóa lịch làm việc thành công");
 }
 
@@ -353,7 +206,7 @@ export async function batchUpdateSchedule(
   creates: Schedule[],
   deletes: string[]
 ): Promise<ActionResponse> {
-  revalidatePath("/admin/staff");
+  revalidateTag("staff", "max");
   return success(
     undefined,
     `Đã lưu ${creates.length + deletes.length} thay đổi`
@@ -364,7 +217,6 @@ export async function getCommissionReport(
   month: number,
   year: number
 ): Promise<ActionResponse<CommissionReportItem[]>> {
-  // Use mock for now
   const { MOCK_STAFF } = await import("./model/mocks");
   const report: CommissionReportItem[] = MOCK_STAFF.filter(
     (staff) => staff.user.role === "technician" && staff.user.is_active

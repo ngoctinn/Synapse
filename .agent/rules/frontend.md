@@ -152,23 +152,26 @@ Tính năng: React Compiler (React Forget) được tích hợp chính thức.
 
 Hành động Clean Code: Loại bỏ hầu hết các lệnh useMemo và useCallback thủ công. Compiler tự động thực hiện memoization ở mức độ chi tiết (fine-grained), giúp mã nguồn gọn gàng và dễ đọc hơn.
 
-4. Server Actions và Pattern "Backend-for-Frontend" (BFF)
+4. Data Access Layer (DAL) Pattern
 
-Server Actions cho phép gọi hàm server trực tiếp từ client, loại bỏ nhu cầu tạo API Route truyền thống (/api/*).
+Next.js 16 khuyến nghị tách biệt logic truy cập dữ liệu ra khỏi Server Components và Server Actions để tối ưu hóa caching và bảo mật.
 
-4.1. Quy tắc Clean Code cho Server Actions
+4.1. Cấu trúc và Quy tắc DAL
+- File API: Mỗi feature phải có file `[feature].api.ts` (ví dụ: `services.api.ts`) chứa tất cả API calls.
+- Server-Only Guard: Bắt buộc `import 'server-only'` ở đầu file để ngăn chặn việc gọi từ client.
+- Request Deduplication: Sử dụng `React.cache()` cho các hàm GET để tránh gọi API trùng lặp trong cùng một render cycle.
+- Next.js Data Cache: Thêm options `next: { revalidate, tags }` vào `fetch` để tận dụng cơ chế caching của Next.js.
+- Phân biệt GET và Mutations:
+    - GET: Viết trong file `.api.ts`, gọi trực tiếp từ Server Components. KHÔNG dùng Server Actions cho GET.
+    - Mutations (POST/PUT/DELETE): Viết trong file `.api.ts`, sau đó wrap lại trong Server Actions (`actions.ts`) để sử dụng với `useActionState`.
 
-Tách Biệt Logic: Định nghĩa Server Actions trong các file riêng biệt (actions.ts) trong tầng Feature/Entity, không viết inline trong components.
+4.2. Quản lý Cache và Revalidation
+- Tag-based Revalidation: Ưu tiên sử dụng `revalidateTag()` thay vì `revalidatePath()`. Định nghĩa tag rõ ràng cho từng thực thể (ví dụ: `['services', 'service-1']`).
+- Mutation Flow: Server Action -> Gọi API Mutation -> `revalidateTag()` -> Trả về kết quả.
 
-Xác Thực Đầu Vào (Input Validation): Bắt buộc sử dụng thư viện validation (ví dụ: Zod) để kiểm tra dữ liệu gửi từ client ngay tại Server Action.
-
-Bảo Mật (Server-Only Guard): Sử dụng package server-only ở đầu các file chứa logic truy cập DB hoặc API Secret Keys để ngăn chặn rò rỉ bảo mật.
-
-4.2. Xử Lý Form và Mutation với useActionState
-
-Hook useActionState (thay thế useFormState của React 18) là cách chuẩn để quản lý trạng thái client của Server Action (loading, error, message).
-
-Lợi ích: Loại bỏ useState, useEffect, và fetch thủ công, tạo ra mã nguồn khai báo (declarative) và type-safe.
+4.3. Xử lý Form và Mutation với useActionState
+Hook useActionState là cách chuẩn để quản lý trạng thái client của Server Action (loading, error, message).
+- Lợi ích: Loại bỏ useState, useEffect, và fetch thủ công, tạo ra mã nguồn khai báo (declarative) và type-safe.
 
 5. Các Kỹ Thuật Refactoring Clean Code
 

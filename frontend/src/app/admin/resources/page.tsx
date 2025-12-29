@@ -3,7 +3,7 @@ import {
   getMaintenanceTasks,
   getResourceGroups,
   getResources,
-} from "@/features/resources/actions";
+} from "@/features/resources/resources.api";
 
 export default async function Page() {
   const resourcesPromise = getResources();

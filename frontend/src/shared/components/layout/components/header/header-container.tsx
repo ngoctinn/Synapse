@@ -11,7 +11,7 @@ export async function HeaderContainer() {
 
   if (session?.access_token) {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const apiUrl = process.env.API_URL;
       if (apiUrl) {
         const FETCH_TIMEOUT_MS = 10000;
         const controller = new AbortController();

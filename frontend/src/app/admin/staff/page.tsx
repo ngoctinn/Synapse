@@ -3,8 +3,8 @@ import {
   getPermissions,
   getSchedules,
   getSkills,
-  getStaffList,
 } from "@/features/staff";
+import { getStaffList } from "@/features/staff/staff.api";
 import { getCurrentUserRole } from "@/shared/lib/supabase/server";
 import { endOfWeek, format, startOfWeek } from "date-fns";
 import { Suspense } from "react";

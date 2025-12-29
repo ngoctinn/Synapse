@@ -29,7 +29,7 @@ export interface StaffInvite {
   email: string;
   role: Role;
   full_name: string;
-  title: string;
+  title?: string;
   bio?: string;
 }
 

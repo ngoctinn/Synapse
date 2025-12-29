@@ -12,9 +12,9 @@ export async function fetchWithAuth(path: string, options: RequestInit = {}) {
     headers.set("Authorization", `Bearer ${token}`);
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  const baseUrl = process.env.API_URL;
   if (!baseUrl) {
-    throw new Error("NEXT_PUBLIC_API_URL is not defined");
+    throw new Error("API_URL is not defined");
   }
 
   const response = await fetch(`${baseUrl}${path}`, {
