@@ -1,9 +1,9 @@
 export function getNestedValue(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  obj: any,
+  obj: Record<string, unknown> | null | undefined,
   path: string | number | symbol | undefined
 ) {
-  if (!path || typeof path !== "string") return path ? obj[path] : undefined;
+  if (!obj) return undefined;
+  if (!path || typeof path !== "string") return path ? (obj as any)[path] : undefined;
 
   return path.split(".").reduce((acc, part) => {
     return acc && acc[part] !== undefined ? acc[part] : undefined;

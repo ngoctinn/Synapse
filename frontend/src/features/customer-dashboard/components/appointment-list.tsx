@@ -1,6 +1,6 @@
 "use client";
 
-import { Appointment, AppointmentStatus } from "@/features/appointments";
+import { Appointment, AppointmentStatus } from "../model/types";
 import { useReducedMotion } from "@/shared/hooks";
 import { formatDuration } from "@/shared/lib/utils";
 import { Badge, BadgePreset } from "@/shared/ui/badge";
@@ -121,26 +121,26 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
                     </span>
                     <span className="text-xs">
                       {format(new Date(appt.startTime), "HH:mm")} (
-                      {formatDuration(appt.duration)})
+                      {appt.durationMinutes} phút)
                     </span>
                   </div>
                 </div>
 
-                {appt.resourceName && (
+                {appt.location && (
                   <div className="text-muted-foreground flex items-center gap-3">
                     <div className="bg-muted text-muted-foreground flex h-8 w-8 items-center justify-center rounded-full">
                       <MapPin className="size-4" aria-hidden="true" />
                     </div>
-                    <span>{appt.resourceName || "Chưa xếp giường"}</span>
+                    <span>{appt.location}</span>
                   </div>
                 )}
 
-                {appt.staffName && (
+                {appt.technicianName && (
                   <div className="text-muted-foreground flex items-center gap-3">
                     <div className="bg-muted text-muted-foreground flex h-8 w-8 items-center justify-center rounded-full">
                       <User className="size-4" aria-hidden="true" />
                     </div>
-                    <span>KTV: {appt.staffName}</span>
+                    <span>KTV: {appt.technicianName}</span>
                   </div>
                 )}
 

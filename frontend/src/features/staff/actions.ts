@@ -2,10 +2,16 @@
 
 import "server-only";
 
+/**
+ * @production-mock
+ * WARNING: This action is currently using MOCK_SCHEDULES for demo purposes.
+ * Roadmap: Replace with real API calls to /api/v1/staff/...
+ */
+
 import { ActionResponse, error, success } from "@/shared/lib/action-response";
 import { fetchWithAuth } from "@/shared/lib/api";
 import { revalidatePath } from "next/cache";
-import { Skill } from "@/features/services/model/types";
+import { Skill } from "@/features/services";
 import { staffCreateSchema } from "./model/schemas";
 import {
   CommissionReportItem,

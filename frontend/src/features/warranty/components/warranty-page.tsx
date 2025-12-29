@@ -53,7 +53,7 @@ export function WarrantyPage({ data, page, totalPages }: WarrantyPageProps) {
         <Group gap={3}>
           <FilterBar
             startContent={
-              <div className="w-full md:w-[250px]">
+              <div className="w-full md:w-64">
                 <Input
                   type="search"
                   placeholder="Tìm mã phiếu hoặc khách hàng..."

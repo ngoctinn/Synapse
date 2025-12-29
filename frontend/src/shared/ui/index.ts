@@ -18,7 +18,6 @@
 
 export { DatePicker } from "./date-picker";
 export { DateRangeNavigator } from "./date-range-navigator";
-export { DeleteConfirmDialog } from "./delete-confirm-dialog";
 export {
   Dialog,
   DialogClose,
@@ -33,7 +32,6 @@ export {
 } from "./dialog";
 export { OptionalMark } from "./form";
 export { RequiredMark } from "./required-mark";
-export { TableRowActions } from "./table-row-actions";
 export { TagInput } from "./tag-input";
 export { TimePicker } from "./time-picker";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useFilterParams } from "@/shared/lib/hooks/use-filter-params";
+import { useFilterParams } from "@/shared/hooks/use-filter-params";
 import { Button } from "@/shared/ui/button";
 import { HStack } from "@/shared/ui/layout";
 import {

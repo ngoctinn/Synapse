@@ -1,6 +1,6 @@
 "use client";
 
-import { useFilterParams } from "@/shared/lib/hooks/use-filter-params";
+import { useFilterParams } from "@/shared/hooks/use-filter-params";
 import { Label } from "@/shared/ui/label";
 import {
   Select,

@@ -349,7 +349,7 @@ export function StaffTable({
           justify="center"
           className={cn(
             Z_INDEX.loadingOverlay,
-            "bg-background/50 absolute inset-0 backdrop-blur-[2px]"
+            "bg-background/50 absolute inset-0 backdrop-blur-sm"
           )}
         >
           <Spinner className="text-primary mb-2 h-8 w-8" />

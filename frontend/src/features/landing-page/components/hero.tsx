@@ -12,7 +12,7 @@ export function Hero() {
       className="relative overflow-hidden py-16 md:py-24 lg:py-32"
     >
       <div className="container relative z-10 mx-auto px-4">
-        <div className="animate-fade-in mx-auto mb-16 flex max-w-[64rem] flex-col items-center gap-6 text-center">
+        <div className="animate-fade-in mx-auto mb-16 flex max-w-5xl flex-col items-center gap-6 text-center">
           <Badge variant="soft">🚀 Phiên bản Beta đã sẵn sàng</Badge>
 
           <h1 className="font-heading text-foreground text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
@@ -20,7 +20,7 @@ export function Hero() {
             <span className="text-gradient-premium">Đơn giản hóa vận hành</span>
           </h1>
 
-          <p className="text-muted-foreground max-w-[42rem] leading-normal sm:text-xl sm:leading-8">
+          <p className="text-muted-foreground max-w-2xl leading-normal sm:text-xl sm:leading-8">
             Synapse giúp bạn quản lý lịch hẹn, khách hàng và nhân viên một cách
             hiệu quả. Tập trung vào trải nghiệm khách hàng, để công nghệ lo phần
             còn lại.
@@ -82,9 +82,9 @@ export function Hero() {
 
       {/* Simple Background - No heavy animations */}
       <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-full w-full max-w-7xl -translate-x-1/2 overflow-hidden">
-        <div className="bg-blob left-[-10%] top-[-10%] h-[40rem] w-[40rem] bg-purple-500/20" />
-        <div className="bg-blob bg-primary/20 right-[-10%] top-[-10%] h-[40rem] w-[40rem]" />
-        <div className="bg-blob bottom-[-20%] left-[20%] h-[50rem] w-[50rem] bg-pink-500/20" />
+        <div className="bg-blob left-[-10%] top-[-10%] h-160 w-160 bg-purple-500/20" />
+        <div className="bg-blob bg-primary/20 right-[-10%] top-[-10%] h-160 w-160" />
+        <div className="bg-blob bottom-[-20%] left-[20%] h-200 w-200 bg-pink-500/20" />
       </div>
     </section>
   );

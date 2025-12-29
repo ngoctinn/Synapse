@@ -44,7 +44,6 @@ export function TreatmentSheet({
 
   const handleSaveNotes = () => {
     // Mock save logic
-    console.log("Saving notes for treatment:", data.id, editedNotes);
     setIsEditing(false);
   };
 
@@ -69,7 +68,7 @@ export function TreatmentSheet({
         <div className="flex items-center gap-2">
           <Badge
             variant="outline"
-            className="text-[10px] font-semibold uppercase tracking-wider"
+            className="text-2xs font-semibold uppercase tracking-wider"
           >
             {data.id.split("_")[0].toUpperCase()}
           </Badge>

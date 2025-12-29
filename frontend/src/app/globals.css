@@ -153,6 +153,18 @@
   --animate-fade-in: fadein 0.5s ease-out forwards;
   --animate-slide-up: slideup 0.5s ease-out forwards;
   --animate-scale-in: scalein 0.3s ease-out forwards;
+
+  /* Custom spacing and sizes to replace arbitrary values */
+  --spacing-filter: 11.25rem; /* 180px */
+  --spacing-search: 15.625rem; /* 250px */
+  --spacing-sidebar-wide: 18.75rem; /* 300px */
+  --spacing-popover-wide: 23.75rem; /* 380px */
+  --spacing-dialog-lg: 37.5rem; /* 600px */
+  --spacing-160: 40rem; /* 640px */
+  --spacing-200: 50rem; /* 800px */
+  
+  --font-size-2xs: 0.625rem; /* 10px */
+  --font-size-3xs: 0.5rem; /* 8px */
 }
 
 @layer base {

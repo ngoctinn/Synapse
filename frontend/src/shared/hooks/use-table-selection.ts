@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useState } from "react";
 
 type SelectableId = string | number;
 
@@ -47,7 +47,7 @@ export function useTableSelection<T>({
 }: UseTableSelectionOptions<T>): UseTableSelectionReturn {
   const [selectedIds, setSelectedIds] = useState<Set<SelectableId>>(new Set());
 
-  const toggleOne = useCallback((id: SelectableId) => {
+  const toggleOne = (id: SelectableId) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
@@ -57,9 +57,9 @@ export function useTableSelection<T>({
       }
       return next;
     });
-  }, []);
+  };
 
-  const toggleAll = useCallback(() => {
+  const toggleAll = () => {
     setSelectedIds((prev) => {
       const allIds = data.map(keyExtractor);
       const allSelected = allIds.every((id) => prev.has(id));
@@ -70,28 +70,20 @@ export function useTableSelection<T>({
         return new Set(allIds);
       }
     });
-  }, [data, keyExtractor]);
+  };
 
-  const clearAll = useCallback(() => {
+  const clearAll = () => {
     setSelectedIds(new Set());
-  }, []);
+  };
 
-  const isSelected = useCallback(
-    (id: SelectableId) => selectedIds.has(id),
-    [selectedIds]
-  );
+  const isSelected = (id: SelectableId) => selectedIds.has(id);
 
-  const allIds = useMemo(() => data.map(keyExtractor), [data, keyExtractor]);
+  const allIds = data.map(keyExtractor);
 
-  const isAllSelected = useMemo(
-    () => allIds.length > 0 && allIds.every((id) => selectedIds.has(id)),
-    [allIds, selectedIds]
-  );
+  const isAllSelected =
+    allIds.length > 0 && allIds.every((id) => selectedIds.has(id));
 
-  const isPartiallySelected = useMemo(
-    () => selectedIds.size > 0 && !isAllSelected,
-    [selectedIds.size, isAllSelected]
-  );
+  const isPartiallySelected = selectedIds.size > 0 && !isAllSelected;
 
   const selectedCount = selectedIds.size;
 

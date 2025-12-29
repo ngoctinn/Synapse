@@ -1,51 +1,29 @@
-import { AppointmentsPage } from "@/features/appointments/components/appointments-page";
-import {
-  getAppointments,
-  getResourceList,
-  getServiceList,
-  getStaffList,
-} from "@/features/appointments/actions";
-
-import { endOfMonth, startOfMonth } from "date-fns";
+import { AppointmentList } from "@/features/customer-dashboard";
+import { getCustomerAppointments } from "@/features/customer-dashboard/index.server";
+import { Separator } from "@/shared/ui/separator";
 import { Suspense } from "react";
-import { createInvoice, getInvoice } from "@/features/billing/actions";
-import { getBookingReview } from "@/features/reviews/actions";
-import { AppointmentsPageSkeleton } from "@/features/appointments/components/appointments-page-skeleton";
 
-/**
- * PAGE COMPONENT (Orchestrator)
- * ----------------------------
- * Tầng này chịu trách nhiệm quản lý sự phụ thuộc giữa các features.
- * Nó "tiêm" (inject) các actions từ billing và reviews vào module appointments.
- */
+export const metadata = {
+  title: "Lịch hẹn của tôi | Synapse",
+  description: "Quản lý và theo dõi các lịch hẹn chăm sóc sắc đẹp của bạn",
+};
 
-export default async function Appointments() {
-  const today = new Date();
-  const dateRange = {
-    start: startOfMonth(today),
-    end: endOfMonth(today),
-  };
-
-  const appointmentsPromise = getAppointments(dateRange);
-  const staffListPromise = getStaffList();
-  const resourceListPromise = getResourceList();
-  const serviceListPromise = getServiceList();
-
-  // For now, passing full MOCK_STAFF for other components that might expect it directly
-  // const fullStaffList = MOCK_STAFF; // TODO: Remove or replace with proper data
+export default async function AppointmentsPage() {
+  const appointments = await getCustomerAppointments();
 
   return (
-    <Suspense fallback={<AppointmentsPageSkeleton />}>
-      <AppointmentsPage
-        appointmentsPromise={appointmentsPromise}
-        staffListPromise={staffListPromise}
-        resourceListPromise={resourceListPromise}
-        serviceListPromise={serviceListPromise}
-        // Injecting cross-feature actions (Dependency Injection)
-        createInvoiceAction={createInvoice}
-        getInvoiceAction={getInvoice}
-        getBookingReviewAction={getBookingReview}
-      />
-    </Suspense>
+    <div className="space-y-6">
+      <div className="flex flex-col gap-1">
+        <h3 className="text-2xl font-bold tracking-tight">Lịch hẹn của tôi</h3>
+        <p className="text-muted-foreground text-sm">
+          Xem thông tin chi tiết và trạng thái các lịch hẹn đã đặt.
+        </p>
+      </div>
+      <Separator />
+      
+      <Suspense fallback={<div className="flex h-40 items-center justify-center">Đang tải lịch hẹn...</div>}>
+        <AppointmentList appointments={appointments} />
+      </Suspense>
+    </div>
   );
 }

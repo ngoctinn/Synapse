@@ -2,6 +2,12 @@
 
 import "server-only";
 
+/**
+ * @production-mock
+ * WARNING: This action uses local memory (let warranties) and MOCK_WARRANTIES.
+ * Roadmap: Implement Database persistence via API.
+ */
+
 import { executeAction } from "@/shared/lib/execute-action";
 import { revalidatePath } from "next/cache";
 import { MOCK_WARRANTIES } from "./model/mocks";
@@ -11,7 +17,7 @@ import type {
   WarrantyCreateInput,
   WarrantyTicket,
 } from "./model/types";
-import { MOCK_TREATMENTS } from "@/features/treatments/model/mocks";
+import { MOCK_TREATMENTS } from "@/features/treatments";
 
 let warranties = [...MOCK_WARRANTIES];
 

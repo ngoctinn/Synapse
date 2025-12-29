@@ -1,7 +1,7 @@
 "use client";
 
 import { ROLES } from "@/features/staff/model/constants";
-import { useFilterParams } from "@/shared/lib/hooks/use-filter-params";
+import { useFilterParams } from "@/shared/hooks/use-filter-params";
 import { HStack } from "@/shared/ui/layout/stack";
 import {
   Select,
@@ -9,7 +9,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/shared/ui/select";
+} from "@/shared/ui";
 
 export function StaffFilter() {
   const { searchParams, updateParam } = useFilterParams({
@@ -33,7 +33,7 @@ export function StaffFilter() {
       <Select value={role || "all"} onValueChange={handleRoleChange}>
         <SelectTrigger
           id="role"
-          className="bg-background h-10 w-[180px] text-sm"
+          className="bg-background h-10 w-filter text-sm"
         >
           <SelectValue placeholder="Vai trò" />
         </SelectTrigger>
@@ -53,7 +53,7 @@ export function StaffFilter() {
       <Select value={isActive || "all"} onValueChange={handleStatusChange}>
         <SelectTrigger
           id="status"
-          className="bg-background h-10 w-[180px] text-sm"
+          className="bg-background h-10 w-filter text-sm"
         >
           <SelectValue placeholder="Trạng thái" />
         </SelectTrigger>
