@@ -1,6 +1,6 @@
 import { cn } from "@/shared/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
-import { StatCard } from "@/shared/ui/data-display/stat-card";
+import { StatCard } from "@/shared/components/data-display/stat-card";
 import { Grid } from "@/shared/ui/layout/grid";
 import { HStack, VStack } from "@/shared/ui/layout/stack";
 import { Progress } from "@/shared/ui/progress";

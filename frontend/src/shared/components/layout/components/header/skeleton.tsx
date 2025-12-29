@@ -1,4 +1,4 @@
-import { HeaderLogo } from "@/shared/ui/branding/header-logo";
+import { HeaderLogo } from "@/shared/components/branding/header-logo";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { HeaderNav } from "./nav-links";
 

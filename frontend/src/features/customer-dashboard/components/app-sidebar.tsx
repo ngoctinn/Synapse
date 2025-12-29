@@ -1,7 +1,7 @@
 "use client";
 
 import { HeaderUserDropdown } from "@/shared/components/layout/components/header";
-import { HeaderLogo } from "@/shared/ui/branding/header-logo";
+import { HeaderLogo } from "@/shared/components/branding/header-logo";
 import {
   Sidebar,
   SidebarContent,

@@ -22,8 +22,8 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  showToast,
 } from "@/shared/ui";
+import { showToast } from "@/shared/components/sonner";
 
 import { updateProfile } from "../actions";
 import { UserProfile } from "../model/types";

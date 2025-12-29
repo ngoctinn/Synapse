@@ -19,8 +19,8 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  showToast,
 } from "@/shared/ui";
+import { showToast } from "@/shared/components/sonner";
 import { PasswordInput } from "@/shared/components/password-input";
 
 export function RegisterForm() {

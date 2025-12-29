@@ -15,8 +15,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   Button,
-  showToast,
 } from "@/shared/ui";
+import { showToast } from "@/shared/components/sonner";
 import { Copy, X } from "lucide-react";
 import { useCallback, useState } from "react";
 import { DayRow } from "./day-row";

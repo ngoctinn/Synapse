@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 
 import { cn } from "@/shared/lib/utils";
-import { BADGE_PRESETS, type BadgePreset } from "./badge-presets";
+import { BADGE_PRESETS, type BadgePreset } from "@/shared/lib/badge-presets";
 
 // BADGE VARIANTS - Visual Clarity Design System
 

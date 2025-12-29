@@ -10,7 +10,7 @@ import { DataTableSkeleton } from "@/shared/components/data-table-skeleton";
 import { DeleteConfirmDialog } from "@/shared/components/delete-confirm-dialog";
 import { Icon } from "@/shared/components/icon";
 import { TableActionBar } from "@/shared/components/table-action-bar";
-import { showToast } from "@/shared/ui/sonner";
+import { showToast } from "@/shared/components/sonner";
 import { RowSelectionState } from "@tanstack/react-table";
 import { Bed, Box, Loader2 } from "lucide-react";
 import { useState, useTransition } from "react";

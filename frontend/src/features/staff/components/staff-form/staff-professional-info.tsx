@@ -16,8 +16,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  showToast,
 } from "@/shared/ui";
+import { showToast } from "@/shared/components/sonner";
 import { Grid, Group, Stack } from "@/shared/ui/layout";
 import { Briefcase, Check } from "lucide-react";
 import { useFormContext, useWatch } from "react-hook-form";

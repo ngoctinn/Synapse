@@ -10,9 +10,9 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  showToast,
   Textarea,
 } from "@/shared/ui";
+import { showToast } from "@/shared/components/sonner";
 import { Grid, HStack, VStack } from "@/shared/ui/layout";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Code, Tag } from "lucide-react";

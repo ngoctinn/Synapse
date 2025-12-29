@@ -1,6 +1,6 @@
 import { DashboardNav, MobileNav } from "@/features/customer-dashboard";
 import { Footer, Header } from "@/shared/components/layout";
-import { DashboardLayoutWrapper } from "@/shared/ui/layouts/dashboard-layout";
+import { DashboardLayoutWrapper } from "@/shared/components/layouts/dashboard-layout";
 
 export default function DashboardLayout({
   children,

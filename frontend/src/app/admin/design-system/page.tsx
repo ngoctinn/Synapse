@@ -113,7 +113,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/shared/ui/form";
-import { showToast } from "@/shared/ui/sonner";
+import { showToast } from "@/shared/components/sonner";
 import { Spinner } from "@/shared/ui/spinner";
 import { TimePicker } from "@/shared/ui/time-picker";
 

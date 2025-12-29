@@ -9,7 +9,7 @@ import { TableActionBar } from "@/shared/components/table-action-bar";
 import { useTableParams } from "@/shared/hooks";
 import { Z_INDEX } from "@/shared/lib/design-tokens";
 import { cn, formatCurrency } from "@/shared/lib/utils";
-import { showToast } from "@/shared/ui";
+import { showToast } from "@/shared/components/sonner";
 import { Badge } from "@/shared/ui/badge";
 import { Checkbox } from "@/shared/ui/checkbox";
 import { RowSelectionState } from "@tanstack/react-table";

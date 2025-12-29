@@ -1,5 +1,5 @@
 import { type VariantProps } from "class-variance-authority";
-import { badgeVariants } from "./badge";
+import { badgeVariants } from "../ui/badge";
 
 // PRESET SYSTEM - Domain Specific Configurations
 

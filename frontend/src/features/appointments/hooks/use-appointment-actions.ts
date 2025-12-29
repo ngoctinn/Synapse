@@ -2,7 +2,7 @@
 
 import { Invoice } from "@/features/billing/model/types";
 import { ActionResponse } from "@/shared/lib/action-response";
-import { showToast } from "@/shared/ui/sonner";
+import { showToast } from "@/shared/components/sonner";
 import { useCallback, useTransition } from "react";
 import {
   cancelAppointment,

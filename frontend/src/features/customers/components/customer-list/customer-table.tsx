@@ -12,7 +12,7 @@ import { useTableParams } from "@/shared/hooks";
 import { Z_INDEX } from "@/shared/lib/design-tokens";
 import { TruncatedCell } from "@/shared/lib/table-utils";
 import { cn } from "@/shared/lib/utils";
-import { showToast } from "@/shared/ui";
+import { showToast } from "@/shared/components/sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { Badge } from "@/shared/ui/badge";
 import { Checkbox } from "@/shared/ui/checkbox";

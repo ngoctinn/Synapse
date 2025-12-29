@@ -16,8 +16,8 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  showToast,
 } from "@/shared/ui";
+import { showToast } from "@/shared/components/sonner";
 import { forgotPasswordAction } from "../actions";
 import {
   forgotPasswordSchema,

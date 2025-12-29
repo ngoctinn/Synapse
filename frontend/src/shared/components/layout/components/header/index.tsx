@@ -2,7 +2,7 @@
 
 import { logoutAction } from "@/features/auth/actions";
 import { PhonePromptDialog } from "@/features/customer-dashboard";
-import { HeaderLogo } from "@/shared/ui/branding/header-logo";
+import { HeaderLogo } from "@/shared/components/branding/header-logo";
 import * as React from "react";
 import { HeaderAuthButtons } from "./auth-buttons";
 import { MobileMenuOverlay, MobileMenuTrigger } from "./mobile-menu";
@@ -11,7 +11,7 @@ import { HeaderNav } from "./nav-links";
 import { UserProfile } from "./types";
 import { HeaderUserDropdown } from "./user-dropdown";
 
-export { HeaderLogo } from "@/shared/ui/branding/header-logo";
+export { HeaderLogo } from "@/shared/components/branding/header-logo";
 export { HeaderUserDropdown } from "./user-dropdown";
 
 interface HeaderProps {

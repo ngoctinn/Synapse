@@ -1,6 +1,6 @@
 "use client";
 
-import { showToast } from "@/shared/ui/sonner";
+import { showToast } from "@/shared/components/sonner";
 import {
   Dialog,
   DialogContent,

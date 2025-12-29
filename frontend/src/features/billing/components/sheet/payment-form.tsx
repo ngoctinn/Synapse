@@ -14,9 +14,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  showToast,
   Spinner,
 } from "@/shared/ui";
+import { showToast } from "@/shared/components/sonner";
 import { NumberInput } from "@/shared/components/number-input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";

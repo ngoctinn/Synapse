@@ -1,4 +1,4 @@
-import { StatCard } from "@/shared/ui/data-display/stat-card";
+import { StatCard } from "@/shared/components/data-display/stat-card";
 import { Grid } from "@/shared/ui/layout/grid";
 import {
   ArrowDownRight,

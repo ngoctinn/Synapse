@@ -1,7 +1,7 @@
 "use client";
 
 import { useTableParams } from "@/shared/hooks";
-import { showToast } from "@/shared/ui";
+import { showToast } from "@/shared/components/sonner";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import { Checkbox } from "@/shared/ui/checkbox";

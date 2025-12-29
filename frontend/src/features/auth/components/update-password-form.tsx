@@ -20,8 +20,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  showToast,
 } from "@/shared/ui";
+import { showToast } from "@/shared/components/sonner";
 import { PasswordInput } from "@/shared/components/password-input";
 
 export function UpdatePasswordForm() {

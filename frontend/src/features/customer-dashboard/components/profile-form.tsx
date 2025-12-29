@@ -12,8 +12,8 @@ import {
   CardHeader,
   CardTitle,
   Form,
-  showToast,
 } from "@/shared/ui";
+import { showToast } from "@/shared/components/sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, Transition } from "framer-motion";
 import { startTransition, useActionState, useEffect } from "react";

@@ -1,4 +1,4 @@
-import { AuthLayoutWrapper } from "@/shared/ui/layouts/auth-layout";
+import { AuthLayoutWrapper } from "@/shared/components/layouts/auth-layout";
 import React from "react";
 
 export default function AuthLayout({

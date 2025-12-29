@@ -1,4 +1,4 @@
-import { Toaster } from "@/shared/ui/sonner";
+import { Toaster } from "@/shared/components/sonner";
 import type { Metadata } from "next";
 import {
   Be_Vietnam_Pro,

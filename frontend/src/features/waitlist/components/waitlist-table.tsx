@@ -1,7 +1,7 @@
 "use client";
 
 import { useTableParams } from "@/shared/hooks";
-import { showToast } from "@/shared/ui";
+import { showToast } from "@/shared/components/sonner";
 import { DataTable } from "@/shared/components/data-table";
 import { DataTableEmptyState } from "@/shared/components/data-table-empty-state";
 import { RowSelectionState } from "@tanstack/react-table";
