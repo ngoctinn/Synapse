@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useMemo } from "react";
 
 interface UseFilterParamsOptions {
   /**
@@ -21,55 +20,46 @@ export function useFilterParams(options: UseFilterParamsOptions = {}) {
   const { filterKeys = [] } = options;
 
   // Tính toán số lượng filter đang active
-  const activeCount = useMemo(() => {
-    let count = 0;
-    filterKeys.forEach((key) => {
-      if (searchParams.has(key)) {
-        count++;
-      }
-    });
-    return count;
-  }, [searchParams, filterKeys]);
+  let activeCount = 0;
+  filterKeys.forEach((key) => {
+    if (searchParams.has(key)) {
+      activeCount++;
+    }
+  });
 
-  // Tạo query string mới
-  const createQueryString = useCallback((params: URLSearchParams) => {
+  // Helper để tạo query string mới
+  const createQueryString = (params: URLSearchParams) => {
     // Luôn reset về trang 1 khi filter thay đổi
     params.set("page", "1");
     return params.toString();
-  }, []);
+  };
 
   // Cập nhật một param cụ thể
-  const updateParam = useCallback(
-    (name: string, value: string | null) => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (value) {
-        params.set(name, value);
-      } else {
-        params.delete(name);
-      }
-      router.push(`${pathname}?${createQueryString(params)}`);
-    },
-    [pathname, router, searchParams, createQueryString]
-  );
+  const updateParam = (name: string, value: string | null) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) {
+      params.set(name, value);
+    } else {
+      params.delete(name);
+    }
+    router.push(`${pathname}?${createQueryString(params)}`);
+  };
 
   // Cập nhật nhiều params cùng lúc
-  const updateParams = useCallback(
-    (updates: Record<string, string | null>) => {
-      const params = new URLSearchParams(searchParams.toString());
-      Object.entries(updates).forEach(([key, value]) => {
-        if (value) {
-          params.set(key, value);
-        } else {
-          params.delete(key);
-        }
-      });
-      router.push(`${pathname}?${createQueryString(params)}`);
-    },
-    [pathname, router, searchParams, createQueryString]
-  );
+  const updateParams = (updates: Record<string, string | null>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+    });
+    router.push(`${pathname}?${createQueryString(params)}`);
+  };
 
   // Xóa toàn bộ filter
-  const clearFilters = useCallback(() => {
+  const clearFilters = () => {
     const params = new URLSearchParams(searchParams.toString());
     filterKeys.forEach((key) => {
       params.delete(key);
@@ -81,7 +71,7 @@ export function useFilterParams(options: UseFilterParamsOptions = {}) {
     }
 
     router.push(`${pathname}?${params.toString()}`);
-  }, [pathname, router, searchParams, filterKeys, options]);
+  };
 
   return {
     searchParams,

@@ -1,6 +1,9 @@
-import { SettingsPage } from "@/features/settings/components/settings-page";
-import { MOCK_CHANNELS, MOCK_EVENTS } from "@/features/settings/notifications";
-import { getOperatingHours } from "@/features/settings/operating-hours";
+import {
+  getOperatingHours,
+  MOCK_CHANNELS,
+  MOCK_EVENTS,
+  SettingsPage,
+} from "@/features/settings";
 import { Suspense } from "react";
 
 export default function AdminSettingsPage() {

@@ -1,3 +1,5 @@
+import { ResourceGroup } from "@/features/resources";
+
 export interface Skill {
   id: string;
   name: string;
@@ -9,14 +11,6 @@ export interface ServiceCategory {
   id: string;
   name: string;
   sort_order: number;
-}
-
-export interface ResourceGroup {
-  id: string;
-  name: string;
-  description?: string | null;
-  /** "BED" | "EQUIPMENT" */
-  type: string;
 }
 
 export interface ServiceResourceRequirement {

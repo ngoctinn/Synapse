@@ -8,7 +8,7 @@ import { RowSelectionState } from "@tanstack/react-table";
 import { CalendarClock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { deleteWaitlistEntry, updateWaitlistStatus } from "../actions";
+import { deleteWaitlistEntry, updateWaitlistStatus, updateWaitlistEntry } from "../actions";
 import { WaitlistEntry } from "../model/types";
 import { getWaitlistColumns } from "./waitlist-columns";
 import { WaitlistSheet } from "./waitlist-sheet";

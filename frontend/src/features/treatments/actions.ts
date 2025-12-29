@@ -16,6 +16,12 @@ import { MOCK_PACKAGES } from "../packages/model/mocks";
 
 let treatments = [...MOCK_TREATMENTS];
 
+/**
+ * @production-mock
+ * Roadmap: Replace the in-memory filtering with:
+ * const response = await fetchWithAuth(`/treatments?page=${page}&limit=${limit}&status=${status}&search=${search}`);
+ * return response.json();
+ */
 export async function getTreatments(
   page = 1,
   limit = 10,
@@ -25,24 +31,29 @@ export async function getTreatments(
   return executeAction(
     "getTreatments",
     async () => {
-      let filtered = treatments;
+      // Giả lập Backend Filtering
+      let result = [...treatments];
+
       if (status && status !== "all") {
-        filtered = filtered.filter((t) => t.status === status);
+        result = result.filter((t) => t.status === status);
       }
 
       if (search && search.trim()) {
         const q = search.trim().toLowerCase();
-        filtered = filtered.filter(
+        result = result.filter(
           (t) =>
             t.customer_name.toLowerCase().includes(q) ||
             t.id.toLowerCase().includes(q)
         );
       }
 
+      const total = result.length;
       const start = (page - 1) * limit;
+      const data = result.slice(start, start + limit);
+
       return {
-        data: filtered.slice(start, start + limit),
-        total: filtered.length,
+        data,
+        total,
         page,
         limit,
       } as PaginatedTreatments;

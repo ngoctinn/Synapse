@@ -6,7 +6,7 @@ import {
   type WaitlistFormValues,
 } from "../model/schemas";
 import { WaitlistEntry } from "../model/types";
-import { MOCK_SERVICES } from "@/features/services/model/mocks";
+import { MOCK_SERVICES } from "@/features/services";
 import { useSheetForm } from "@/shared/hooks/use-sheet-form";
 import {
   Button,
@@ -23,8 +23,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  SheetClose,
   Textarea,
+  SheetClose,
 } from "@/shared/ui";
 import { format, parse } from "date-fns";
 import { ActionSheet } from "@/shared/components";

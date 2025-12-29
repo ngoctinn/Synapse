@@ -1,6 +1,6 @@
 "use client";
 
-import { MOCK_TREATMENTS } from "@/features/treatments/model/mocks";
+import { MOCK_TREATMENTS } from "@/features/treatments";
 import { useSheetForm } from "@/shared/hooks/use-sheet-form";
 import {
   Button,
@@ -15,9 +15,10 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  SheetClose,
   Textarea,
+  SheetClose,
 } from "@/shared/ui";
+
 import { Stack } from "@/shared/ui/layout";
 import { NumberInput } from "@/shared/components/number-input";
 import { ActionSheet } from "@/shared/components";

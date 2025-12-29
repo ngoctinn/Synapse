@@ -11,7 +11,6 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Slider,
   Switch,
   Textarea,
 } from "@/shared/ui";

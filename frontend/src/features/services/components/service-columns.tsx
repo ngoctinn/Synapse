@@ -1,7 +1,6 @@
 import { ResourceGroup } from "@/features/resources";
 import { formatCurrency } from "@/shared/lib/utils";
-import { Badge } from "@/shared/ui/badge";
-import { Checkbox } from "@/shared/ui/checkbox";
+import { Badge, Checkbox } from "@/shared/ui";
 import { Column } from "@/shared/components/data-table";
 import { Box, HStack, Stack } from "@/shared/ui/layout";
 import { Text as UIText } from "@/shared/ui/typography";
@@ -20,11 +19,9 @@ export function getServiceColumns({
   availableResourceGroups,
   onEdit,
 }: GetServiceColumnsProps): Column<Service>[] {
-  const getResourceGroupName = (groupId: string) => {
-    return (
-      availableResourceGroups.find((g) => g.id === groupId)?.name || groupId
-    );
-  };
+  // Pre-calculate lookup maps for performance O(1)
+  const categoryMap = new Map(availableCategories.map((c) => [c.id, c.name]));
+  const groupMap = new Map(availableResourceGroups.map((g) => [g.id, g.name]));
 
   return [
     {
@@ -70,11 +67,12 @@ export function getServiceColumns({
       accessorKey: "category_id",
       header: "Danh mục",
       cell: ({ row }) => {
-        const category = availableCategories.find(
-          (c) => c.id === row.original.category_id
-        );
-        return category ? (
-          <Badge variant="secondary">{category.name}</Badge>
+        const categoryName = row.original.category_id
+          ? categoryMap.get(row.original.category_id)
+          : null;
+
+        return categoryName ? (
+          <Badge variant="secondary">{categoryName}</Badge>
         ) : (
           <UIText variant="muted" size="xs" italic>
             Chưa phân loại
@@ -93,10 +91,7 @@ export function getServiceColumns({
         const min = minStr ? parseInt(minStr) : 0;
         const max = maxStr === "inf" ? Infinity : parseInt(maxStr);
 
-        // Logic: (min, max] -> Lớn hơn min và nhỏ hơn hoặc bằng max
-        // Ngoại lệ: Nhóm đầu tiên "0-30" sẽ bao gồm cả 0 (nếu có) đến 30.
         if (min === 0) return duration >= 0 && duration <= max;
-
         return duration >= min && duration <= max;
       },
       cell: ({ row }) => {
@@ -134,7 +129,7 @@ export function getServiceColumns({
                 size="md"
                 className="font-normal"
               >
-                {req.quantity}x {getResourceGroupName(req.group_id)}
+                {req.quantity}x {groupMap.get(req.group_id) || req.group_id}
               </Badge>
             ))}
           </HStack>
