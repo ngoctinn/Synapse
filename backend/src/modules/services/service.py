@@ -1,7 +1,7 @@
 """
 Services Module - Business Logic (Service Layer)
 
-Quản lý danh mục dịch vụ, kỹ năng và quy trình Smart Tagging.
+Quản lý danh mục dịch vụ và kỹ năng.
 """
 
 from typing import Annotated

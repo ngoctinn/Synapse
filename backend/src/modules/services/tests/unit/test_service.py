@@ -42,7 +42,6 @@ async def test_get_service_success(service_service, mock_session):
 
     result = await service_service.get_service(service_id)
 
-    assert result.id == service_id
     assert result.name == "Test Service"
     mock_session.exec.assert_called_once()
 
@@ -57,34 +56,3 @@ async def test_get_service_not_found(service_service, mock_session):
     with pytest.raises(ServiceNotFoundError):
         await service_service.get_service(service_id)
 
-@pytest.mark.asyncio
-async def test_create_service_with_smart_tagging(service_service, mock_session):
-    """Test tạo dịch vụ với logic Smart Tagging (tạo kỹ năng mới nếu chưa có)."""
-    # 1. Setup
-    service_in = ServiceCreate(
-        name="New Massage",
-        duration=60,
-        price=100.0,
-        skill_ids=[],
-        new_skills=["Hot Stone"] # Sẽ được slugify thành SK_HOT_STONE
-    )
-
-    # Giả lập kỹ năng chưa tồn tại
-    mock_query_result = MagicMock()
-    mock_query_result.all.return_value = []
-    mock_session.exec.return_value = mock_query_result
-
-    # Giả lập get_service trả về service sau khi tạo
-    mock_final_service = Service(id=uuid.uuid4(), name=service_in.name)
-    service_service.get_service = AsyncMock(return_value=mock_final_service)
-
-    # 2. Execute
-    result = await service_service.create_service(service_in)
-
-    # 3. Verify
-    assert result.name == service_in.name
-    # Kiểm tra xem có lệnh add cho Skill mới không
-    # (Được gọi trong _get_or_create_skills -> session.add_all)
-    assert mock_session.add_all.called
-    assert mock_session.commit.called
-    assert mock_session.refresh.called

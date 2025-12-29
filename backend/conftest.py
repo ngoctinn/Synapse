@@ -15,7 +15,7 @@ from unittest.mock import AsyncMock, MagicMock
 MOCK_USER_ID = uuid.uuid4()
 MOCK_ADMIN_PAYLOAD = {
     "sub": str(MOCK_USER_ID),
-    "role": "admin",
+    "role": "manager",
     "email": "admin@synapse.com",
     "full_name": "Admin Test"
 }

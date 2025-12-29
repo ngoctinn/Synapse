@@ -1,7 +1,7 @@
 """
 Services Module - API Endpoints
 
-Quản lý danh mục dịch vụ làm đẹp, kỹ năng yêu cầu và quy trình Smart Tagging tự động.
+Quản lý danh mục dịch vụ làm đẹp và các kỹ năng yêu cầu.
 """
 
 from typing import Annotated
@@ -241,17 +241,15 @@ async def create_service(
     """
     **Tạo một dịch vụ mới hoàn chỉnh.**
 
-    Yêu cầu quyền Quản lý. Hỗ trợ tính năng **Smart Tagging**: Tự động tạo kỹ năng mới nếu chưa có trong hệ thống.
+    Yêu cầu quyền Quản lý.
 
-    ### Logic Flow (Smart Tagging Process):
+    ### Logic Flow:
     1. Kiểm tra quyền `MANAGER`.
-    2. Xử lý `new_skills`: Chuyển đổi tên thành *Slug code*, kiểm tra tồn tại, nếu chưa có thì tạo mới trong bảng `skills`.
-    3. Tạo bản ghi `service`.
-    4. Liên kết `service` với danh sách kỹ năng (cả cũ và mới) vào bảng trung gian.
+    2. Tạo bản ghi `service`.
+    3. Liên kết `service` với danh sách kỹ năng vào bảng trung gian.
 
     ### Tham số đầu vào quan trọng:
-    - **skill_ids**: Danh sách các ID kỹ năng đã có.
-    - **new_skills**: Danh sách tên các kỹ năng mới muốn tạo nhanh.
+    - **skill_ids**: Danh sách các ID kỹ năng yêu cầu cho dịch vụ.
 
     ### Lỗi có thể xảy ra:
     - `403 Forbidden`: Thiếu quyền quản lý.

@@ -189,7 +189,6 @@ export function PackageTable({
         className={className}
         isLoading={isLoading}
         skeletonCount={5}
-        variant="flush"
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection}
         getRowId={(row) => row.id.toString()}

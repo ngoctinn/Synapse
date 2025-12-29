@@ -1,9 +1,7 @@
 "use client";
 
-import {
-  PackageTable,
-  PackageTableSkeleton,
-} from "@/features/packages/components/package-table";
+import dynamic from "next/dynamic";
+import { PackageTableSkeleton } from "@/features/packages/components/package-table";
 import { PaginatedPackages as PackagePaginationResponse } from "@/features/packages/model/types";
 import { ResourceGroup } from "@/features/resources";
 import {
@@ -19,9 +17,38 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, use, useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { ServiceCategory, ServicePagination, Skill } from "../model/types";
-import { CategoryTable, CategoryTableSkeleton } from "./category-table";
-import { ServiceTable, ServiceTableSkeleton } from "./service-table";
-import { SkillTable, SkillTableSkeleton } from "./skill-table";
+import { CategoryTableSkeleton } from "./category-table";
+import { ServiceTableSkeleton } from "./service-table";
+import { SkillTableSkeleton } from "./skill-table";
+
+// Dynamic imports
+const PackageTable = dynamic(
+  () =>
+    import("@/features/packages/components/package-table").then(
+      (mod) => mod.PackageTable
+    ),
+  {
+    loading: () => <PackageTableSkeleton />,
+  }
+);
+const ServiceTable = dynamic(
+  () => import("./service-table").then((mod) => mod.ServiceTable),
+  {
+    loading: () => <ServiceTableSkeleton />,
+  }
+);
+const CategoryTable = dynamic(
+  () => import("./category-table").then((mod) => mod.CategoryTable),
+  {
+    loading: () => <CategoryTableSkeleton />,
+  }
+);
+const SkillTable = dynamic(
+  () => import("./skill-table").then((mod) => mod.SkillTable),
+  {
+    loading: () => <SkillTableSkeleton />,
+  }
+);
 
 interface ServicesPageProps {
   page: number;
@@ -80,7 +107,6 @@ function ServiceListWrapper({
       availableResourceGroups={resourceGroups}
       page={page}
       totalPages={totalPages}
-      variant="flush"
       searchProps={searchProps}
     />
   );
@@ -138,7 +164,7 @@ function CategoryListWrapper({
 
   const categories = response.data || [];
 
-  return <CategoryTable categories={categories} variant="flush" />;
+  return <CategoryTable categories={categories} />;
 }
 
 function SkillListWrapper({
@@ -158,7 +184,7 @@ function SkillListWrapper({
 
   const skills = response.data || [];
 
-  return <SkillTable skills={skills} variant="flush" />;
+  return <SkillTable skills={skills} />;
 }
 
 export function ServicesPage({
@@ -234,18 +260,18 @@ export function ServicesPage({
               Gói combo
             </TabsTrigger>
             <TabsTrigger
-              value="skills"
-              aria-label="Kỹ năng kỹ thuật viên"
-              stretch={false}
-            >
-              Kỹ năng
-            </TabsTrigger>
-            <TabsTrigger
               value="categories"
               aria-label="Danh mục dịch vụ"
               stretch={false}
             >
               Danh mục
+            </TabsTrigger>
+            <TabsTrigger
+              value="skills"
+              aria-label="Kỹ năng kỹ thuật viên"
+              stretch={false}
+            >
+              Kỹ năng
             </TabsTrigger>
           </TabsList>
         </PageHeader>
@@ -285,21 +311,21 @@ export function ServicesPage({
             </PageContent>
           </TabsContent>
 
-          <TabsContent value="skills" className="mt-0">
-            <PageContent>
-              <SurfaceCard>
-                <Suspense fallback={<SkillTableSkeleton />}>
-                  <SkillListWrapper skillsPromise={skillsPromise} />
-                </Suspense>
-              </SurfaceCard>
-            </PageContent>
-          </TabsContent>
-
           <TabsContent value="categories" className="mt-0">
             <PageContent>
               <SurfaceCard>
                 <Suspense fallback={<CategoryTableSkeleton />}>
                   <CategoryListWrapper categoriesPromise={categoriesPromise} />
+                </Suspense>
+              </SurfaceCard>
+            </PageContent>
+          </TabsContent>
+
+          <TabsContent value="skills" className="mt-0">
+            <PageContent>
+              <SurfaceCard>
+                <Suspense fallback={<SkillTableSkeleton />}>
+                  <SkillListWrapper skillsPromise={skillsPromise} />
                 </Suspense>
               </SurfaceCard>
             </PageContent>
